@@ -79,6 +79,23 @@ func workoutsTestServer(t *testing.T) *httptest.Server {
 		_, _ = w.Write([]byte(resp))
 	})
 
+	mux.HandleFunc("/calendar-service/year/2026/month/1/day/12/start/0", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{"calendarItems":[{"itemType":"workout","scheduleId":123,"workoutId":77,"title":"Morning Run","sportTypeKey":"running","date":"2026-02-12"},{"itemType":"activity","activityId":999,"date":"2026-02-12"},{"itemType":"workout","scheduleId":456,"workoutId":88,"title":"Evening Ride","sportTypeKey":"cycling","date":"2026-02-13"}]}`))
+	})
+
+	mux.HandleFunc("/workout-service/schedule/123", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodDelete {
+			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
+		w.WriteHeader(http.StatusNoContent)
+	})
+
 	return httptest.NewServer(mux)
 }
 
@@ -121,6 +138,27 @@ func TestExecute_WorkoutsUploadHelp(t *testing.T) {
 
 func TestExecute_WorkoutsScheduleHelp(t *testing.T) {
 	code := Execute([]string{"workouts", "schedule", "--help"}, "1.0.0", "abc123", "2024-01-01")
+	if code != 0 {
+		t.Fatalf("expected exit code 0, got %d", code)
+	}
+}
+
+func TestExecute_WorkoutsScheduleAddHelp(t *testing.T) {
+	code := Execute([]string{"workouts", "schedule", "add", "--help"}, "1.0.0", "abc123", "2024-01-01")
+	if code != 0 {
+		t.Fatalf("expected exit code 0, got %d", code)
+	}
+}
+
+func TestExecute_WorkoutsScheduleListHelp(t *testing.T) {
+	code := Execute([]string{"workouts", "schedule", "list", "--help"}, "1.0.0", "abc123", "2024-01-01")
+	if code != 0 {
+		t.Fatalf("expected exit code 0, got %d", code)
+	}
+}
+
+func TestExecute_WorkoutsScheduleRemoveHelp(t *testing.T) {
+	code := Execute([]string{"workouts", "schedule", "remove", "--help"}, "1.0.0", "abc123", "2024-01-01")
 	if code != 0 {
 		t.Fatalf("expected exit code 0, got %d", code)
 	}
@@ -437,12 +475,12 @@ func TestWorkoutUpload_InvalidJSON(t *testing.T) {
 	}
 }
 
-// --- WorkoutScheduleCmd tests ---
+// --- WorkoutScheduleAddCmd tests ---
 
-func TestWorkoutSchedule_NoAccount(t *testing.T) {
+func TestWorkoutScheduleAdd_NoAccount(t *testing.T) {
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &WorkoutScheduleCmd{ID: "77", Date: "2026-02-12"}
+	cmd := &WorkoutScheduleAddCmd{ID: "77", Date: "2026-02-12"}
 	err := cmd.Run(g)
 	if err == nil {
 		t.Fatal("expected error, got nil")
@@ -452,7 +490,7 @@ func TestWorkoutSchedule_NoAccount(t *testing.T) {
 	}
 }
 
-func TestWorkoutSchedule_Success(t *testing.T) {
+func TestWorkoutScheduleAdd_Success(t *testing.T) {
 	server := workoutsTestServer(t)
 	defer server.Close()
 
@@ -463,7 +501,7 @@ func TestWorkoutSchedule_Success(t *testing.T) {
 
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &WorkoutScheduleCmd{ID: "77", Date: "2026-02-12"}
+	cmd := &WorkoutScheduleAddCmd{ID: "77", Date: "2026-02-12"}
 	err := cmd.Run(g)
 	if err != nil {
 		t.Fatalf("expected no error, got: %v", err)
@@ -473,7 +511,7 @@ func TestWorkoutSchedule_Success(t *testing.T) {
 	}
 }
 
-func TestWorkoutSchedule_JSON(t *testing.T) {
+func TestWorkoutScheduleAdd_JSON(t *testing.T) {
 	server := workoutsTestServer(t)
 	defer server.Close()
 
@@ -484,22 +522,172 @@ func TestWorkoutSchedule_JSON(t *testing.T) {
 
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &WorkoutScheduleCmd{ID: "77", Date: "2026-02-12"}
+	cmd := &WorkoutScheduleAddCmd{ID: "77", Date: "2026-02-12"}
 	err := cmd.Run(g)
 	if err != nil {
 		t.Fatalf("expected no error, got: %v", err)
 	}
 }
 
-func TestWorkoutSchedule_InvalidDate(t *testing.T) {
+func TestWorkoutScheduleAdd_InvalidDate(t *testing.T) {
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &WorkoutScheduleCmd{ID: "77", Date: "bad-date"}
+	cmd := &WorkoutScheduleAddCmd{ID: "77", Date: "bad-date"}
 	err := cmd.Run(g)
 	if err == nil {
 		t.Fatal("expected error, got nil")
 	}
 	if !strings.Contains(err.Error(), "invalid date format") {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+// --- WorkoutScheduleListCmd tests ---
+
+func TestWorkoutScheduleList_Success(t *testing.T) {
+	server := workoutsTestServer(t)
+	defer server.Close()
+
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	overrideNewClient(t, server)
+	storeTestTokens(t, store, "test@example.com", testTokens())
+
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
+	cmd := &WorkoutScheduleListCmd{Date: "2026-02-12"}
+	err := cmd.Run(g)
+	if err != nil {
+		t.Fatalf("expected no error, got: %v", err)
+	}
+}
+
+func TestWorkoutScheduleList_JSON(t *testing.T) {
+	server := workoutsTestServer(t)
+	defer server.Close()
+
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	overrideNewClient(t, server)
+	storeTestTokens(t, store, "test@example.com", testTokens())
+
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
+	cmd := &WorkoutScheduleListCmd{Date: "2026-02-12"}
+	err := cmd.Run(g)
+	if err != nil {
+		t.Fatalf("expected no error, got: %v", err)
+	}
+}
+
+func TestWorkoutScheduleList_InvalidDate(t *testing.T) {
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
+	cmd := &WorkoutScheduleListCmd{Date: "bad-date"}
+	err := cmd.Run(g)
+	if err == nil {
+		t.Fatal("expected error, got nil")
+	}
+	if !strings.Contains(err.Error(), "invalid date format") {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestWorkoutScheduleList_NoAccount(t *testing.T) {
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "")
+	cmd := &WorkoutScheduleListCmd{Date: "2026-02-12"}
+	err := cmd.Run(g)
+	if err == nil {
+		t.Fatal("expected error, got nil")
+	}
+	if !strings.Contains(err.Error(), "no account specified") {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+// --- WorkoutScheduleRemoveCmd tests ---
+
+func TestWorkoutScheduleRemove_Success(t *testing.T) {
+	server := workoutsTestServer(t)
+	defer server.Close()
+
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	overrideNewClient(t, server)
+	storeTestTokens(t, store, "test@example.com", testTokens())
+
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
+	cmd := &WorkoutScheduleRemoveCmd{ID: "123", Force: true}
+	err := cmd.Run(g)
+	if err != nil {
+		t.Fatalf("expected no error, got: %v", err)
+	}
+	if !strings.Contains(buf.String(), "Removed scheduled workout 123") {
+		t.Fatalf("expected success message, got: %q", buf.String())
+	}
+}
+
+func TestWorkoutScheduleRemove_Cancelled(t *testing.T) {
+	server := workoutsTestServer(t)
+	defer server.Close()
+
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	overrideNewClient(t, server)
+	storeTestTokens(t, store, "test@example.com", testTokens())
+
+	orig := confirmReader
+	confirmReader = strings.NewReader("n\n")
+	t.Cleanup(func() { confirmReader = orig })
+
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
+	cmd := &WorkoutScheduleRemoveCmd{ID: "123"}
+	err := cmd.Run(g)
+	if err != nil {
+		t.Fatalf("expected no error, got: %v", err)
+	}
+	if !strings.Contains(buf.String(), "Cancelled") {
+		t.Fatalf("expected 'Cancelled' message, got: %q", buf.String())
+	}
+}
+
+func TestWorkoutScheduleRemove_ConfirmYes(t *testing.T) {
+	server := workoutsTestServer(t)
+	defer server.Close()
+
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	overrideNewClient(t, server)
+	storeTestTokens(t, store, "test@example.com", testTokens())
+
+	orig := confirmReader
+	confirmReader = strings.NewReader("y\n")
+	t.Cleanup(func() { confirmReader = orig })
+
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
+	cmd := &WorkoutScheduleRemoveCmd{ID: "123"}
+	err := cmd.Run(g)
+	if err != nil {
+		t.Fatalf("expected no error, got: %v", err)
+	}
+	if !strings.Contains(buf.String(), "Removed scheduled workout 123") {
+		t.Fatalf("expected success message, got: %q", buf.String())
+	}
+}
+
+func TestWorkoutScheduleRemove_NoAccount(t *testing.T) {
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "")
+	cmd := &WorkoutScheduleRemoveCmd{ID: "123", Force: true}
+	err := cmd.Run(g)
+	if err == nil {
+		t.Fatal("expected error, got nil")
+	}
+	if !strings.Contains(err.Error(), "no account specified") {
 		t.Fatalf("unexpected error: %v", err)
 	}
 }
@@ -699,6 +887,98 @@ func TestFormatWorkoutRows(t *testing.T) {
 	}
 	if rows[1][3] != "" {
 		t.Errorf("row[1][3] = %q, want empty", rows[1][3])
+	}
+}
+
+// --- filterCalendarWorkouts tests ---
+
+func TestFilterCalendarWorkouts(t *testing.T) {
+	data := json.RawMessage(`{"calendarItems":[
+		{"itemType":"workout","scheduleId":123,"workoutId":77,"title":"Morning Run","sportTypeKey":"running","date":"2026-02-12"},
+		{"itemType":"activity","activityId":999,"date":"2026-02-12"},
+		{"itemType":"workout","scheduleId":456,"workoutId":88,"title":"Evening Ride","sportTypeKey":"cycling","date":"2026-02-13"}
+	]}`)
+
+	items, err := filterCalendarWorkouts(data, "2026-02-12")
+	if err != nil {
+		t.Fatalf("filterCalendarWorkouts: %v", err)
+	}
+	if len(items) != 1 {
+		t.Fatalf("got %d items, want 1", len(items))
+	}
+	if items[0]["title"] != "Morning Run" {
+		t.Errorf("title = %v, want Morning Run", items[0]["title"])
+	}
+}
+
+func TestFilterCalendarWorkouts_NoItems(t *testing.T) {
+	data := json.RawMessage(`{"calendarItems":[]}`)
+	items, err := filterCalendarWorkouts(data, "2026-02-12")
+	if err != nil {
+		t.Fatalf("filterCalendarWorkouts: %v", err)
+	}
+	if len(items) != 0 {
+		t.Errorf("got %d items, want 0", len(items))
+	}
+}
+
+func TestFilterCalendarWorkouts_NoCalendarItems(t *testing.T) {
+	data := json.RawMessage(`{"startDate":"2026-02-12"}`)
+	items, err := filterCalendarWorkouts(data, "2026-02-12")
+	if err != nil {
+		t.Fatalf("filterCalendarWorkouts: %v", err)
+	}
+	if items != nil {
+		t.Errorf("got %v, want nil", items)
+	}
+}
+
+func TestFilterCalendarWorkouts_InvalidJSON(t *testing.T) {
+	data := json.RawMessage(`not json`)
+	_, err := filterCalendarWorkouts(data, "2026-02-12")
+	if err == nil {
+		t.Fatal("expected error, got nil")
+	}
+}
+
+// --- formatCalendarWorkoutRows tests ---
+
+func TestFormatCalendarWorkoutRows(t *testing.T) {
+	items := []map[string]any{
+		{
+			"scheduleId":   float64(123),
+			"workoutId":    float64(77),
+			"title":        "Morning Run",
+			"sportTypeKey": "running",
+			"date":         "2026-02-12",
+		},
+	}
+
+	rows := formatCalendarWorkoutRows(items)
+	if len(rows) != 1 {
+		t.Fatalf("got %d rows, want 1", len(rows))
+	}
+	if rows[0][0] != "123" {
+		t.Errorf("scheduleId = %q, want 123", rows[0][0])
+	}
+	if rows[0][1] != "77" {
+		t.Errorf("workoutId = %q, want 77", rows[0][1])
+	}
+	if rows[0][2] != "Morning Run" {
+		t.Errorf("title = %q, want Morning Run", rows[0][2])
+	}
+	if rows[0][3] != "running" {
+		t.Errorf("sport = %q, want running", rows[0][3])
+	}
+	if rows[0][4] != "2026-02-12" {
+		t.Errorf("date = %q, want 2026-02-12", rows[0][4])
+	}
+}
+
+func TestFormatCalendarWorkoutRows_Empty(t *testing.T) {
+	rows := formatCalendarWorkoutRows(nil)
+	if len(rows) != 0 {
+		t.Errorf("got %d rows, want 0", len(rows))
 	}
 }
 

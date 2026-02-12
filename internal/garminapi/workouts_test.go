@@ -247,6 +247,102 @@ func TestScheduleWorkout_Success(t *testing.T) {
 	}
 }
 
+// --- GetCalendarWeek tests ---
+
+func TestGetCalendarWeek_Success(t *testing.T) {
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// February is month 2, 0-indexed = 1.
+		if r.URL.Path != "/calendar-service/year/2026/month/1/day/12/start/0" {
+			t.Errorf("path = %s, want /calendar-service/year/2026/month/1/day/12/start/0", r.URL.Path)
+		}
+		if r.Method != http.MethodGet {
+			t.Errorf("method = %s, want GET", r.Method)
+		}
+		_, _ = w.Write([]byte(`{"calendarItems":[{"itemType":"workout","date":"2026-02-12"}]}`))
+	})
+
+	_, client := testServer(t, handler)
+	data, err := client.GetCalendarWeek(context.Background(), "2026-02-12")
+	if err != nil {
+		t.Fatalf("GetCalendarWeek: %v", err)
+	}
+
+	var calendar map[string]any
+	if err := json.Unmarshal(data, &calendar); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+	if calendar["calendarItems"] == nil {
+		t.Error("expected calendarItems in response")
+	}
+}
+
+func TestGetCalendarWeek_ServerError(t *testing.T) {
+	handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = w.Write([]byte("error"))
+	})
+
+	_, client := testServer(t, handler)
+	_, err := client.GetCalendarWeek(context.Background(), "2026-02-12")
+	if err == nil {
+		t.Fatal("expected error")
+	}
+
+	var apiErr *GarminAPIError
+	if !errors.As(err, &apiErr) {
+		t.Fatalf("expected GarminAPIError, got %T: %v", err, err)
+	}
+}
+
+func TestGetCalendarWeek_InvalidDate(t *testing.T) {
+	_, client := testServer(t, http.HandlerFunc(func(http.ResponseWriter, *http.Request) {}))
+	_, err := client.GetCalendarWeek(context.Background(), "not-a-date")
+	if err == nil {
+		t.Fatal("expected error")
+	}
+}
+
+// --- UnscheduleWorkout tests ---
+
+func TestUnscheduleWorkout_Success(t *testing.T) {
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/workout-service/schedule/456" {
+			t.Errorf("path = %s, want /workout-service/schedule/456", r.URL.Path)
+		}
+		if r.Method != http.MethodDelete {
+			t.Errorf("method = %s, want DELETE", r.Method)
+		}
+		w.WriteHeader(http.StatusNoContent)
+	})
+
+	_, client := testServer(t, handler)
+	err := client.UnscheduleWorkout(context.Background(), "456")
+	if err != nil {
+		t.Fatalf("UnscheduleWorkout: %v", err)
+	}
+}
+
+func TestUnscheduleWorkout_NotFound(t *testing.T) {
+	handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusNotFound)
+		_, _ = w.Write([]byte("not found"))
+	})
+
+	_, client := testServer(t, handler)
+	err := client.UnscheduleWorkout(context.Background(), "999")
+	if err == nil {
+		t.Fatal("expected error")
+	}
+
+	var apiErr *GarminAPIError
+	if !errors.As(err, &apiErr) {
+		t.Fatalf("expected GarminAPIError, got %T: %v", err, err)
+	}
+	if apiErr.StatusCode != 404 {
+		t.Errorf("status = %d, want 404", apiErr.StatusCode)
+	}
+}
+
 // --- DeleteWorkout tests ---
 
 func TestDeleteWorkout_Success(t *testing.T) {

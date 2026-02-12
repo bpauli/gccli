@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 )
 
 // GetWorkouts returns a page of workouts.
@@ -36,6 +37,23 @@ func (c *Client) ScheduleWorkout(ctx context.Context, workoutID, date string) (j
 		return nil, fmt.Errorf("marshal schedule: %w", err)
 	}
 	return c.ConnectAPI(ctx, http.MethodPost, "/workout-service/schedule/"+workoutID, bytes.NewReader(body))
+}
+
+// GetCalendarWeek returns the calendar data for the week containing the given date.
+// The date must be in YYYY-MM-DD format. The Garmin calendar API uses 0-indexed months.
+func (c *Client) GetCalendarWeek(ctx context.Context, date string) (json.RawMessage, error) {
+	t, err := time.Parse("2006-01-02", date)
+	if err != nil {
+		return nil, fmt.Errorf("parse date %q: %w", date, err)
+	}
+	path := fmt.Sprintf("/calendar-service/year/%d/month/%d/day/%d/start/0", t.Year(), t.Month()-1, t.Day())
+	return c.ConnectAPI(ctx, http.MethodGet, path, nil)
+}
+
+// UnscheduleWorkout removes a scheduled workout from the calendar.
+func (c *Client) UnscheduleWorkout(ctx context.Context, scheduleID string) error {
+	_, err := c.ConnectAPI(ctx, http.MethodDelete, "/workout-service/schedule/"+scheduleID, nil)
+	return err
 }
 
 // DeleteWorkout deletes a workout by ID.
