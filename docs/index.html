@@ -5,8 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>gccli — Garmin Connect in your terminal</title>
     <meta name="description" content="gccli is a fast, script-friendly CLI for Garmin Connect. Activities, health data, workouts, body composition, devices, gear, goals, badges, and more." />
+    <link rel="canonical" href="https://gccli.sh/" />
+    <meta name="theme-color" content="#0d1017" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://gccli.sh/" />
+    <meta property="og:title" content="gccli — Garmin Connect CLI for your terminal" />
+    <meta property="og:description" content="A fast, script-friendly CLI for Garmin Connect. Activities, health data, workouts, body composition, devices, gear, goals, badges, and more. JSON output and secure credential storage built in." />
+    <meta property="og:site_name" content="gccli" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="gccli — Garmin Connect CLI for your terminal" />
+    <meta name="twitter:description" content="A fast, script-friendly CLI for Garmin Connect. Activities, health data, workouts, body composition, devices, gear, goals, badges, and more." />
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "gccli",
+      "description": "A fast, script-friendly CLI for Garmin Connect. Activities, health data, workouts, body composition, devices, gear, goals, badges, and more.",
+      "url": "https://gccli.sh/",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "macOS, Linux",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "license": "https://github.com/bpauli/gccli/blob/main/LICENSE",
+      "codeRepository": "https://github.com/bpauli/gccli",
+      "programmingLanguage": "Go"
+    }
+    </script>
+
     <link rel="icon" href="/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <noscript><style>.fade-in { opacity: 1 !important; transform: none !important; }</style></noscript>
     <style>
       *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
       :root {
@@ -164,6 +204,8 @@
       /* ── Fade-in ── */
       .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
       .fade-in.visible { opacity: 1; transform: translateY(0); }
+      @media (prefers-reduced-motion: reduce) { .fade-in { opacity: 1; transform: none; transition: none; } }
+      noscript + .fade-in, noscript ~ .fade-in { opacity: 1; transform: none; }
 
       /* ── Responsive ── */
       @media (max-width: 900px) {
@@ -749,7 +791,7 @@ gccli activity download "$latest" --format fit</pre>
           <span>&mdash; Garmin Connect in your terminal.</span>
         </div>
         <div class="footer-right">
-          Build by Burkhard Pauli &middot; <a href="https://github.com/bpauli/gccli/blob/main/LICENSE">MIT License</a> &middot; Built with Go
+          Built by Burkhard Pauli &middot; <a href="https://github.com/bpauli/gccli/blob/main/LICENSE">MIT License</a> &middot; Built with Go
         </div>
       </div>
       <div style="max-width: 1120px; margin: 16px auto 0; padding: 0 24px; font-size: 12px; color: var(--fg-muted);">
