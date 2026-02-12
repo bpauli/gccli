@@ -8,11 +8,11 @@ import (
 
 // Environment variable names for configuration overrides.
 const (
-	EnvDomain         = "GC_DOMAIN"
-	EnvColor          = "GC_COLOR"
-	EnvJSON           = "GC_JSON"
-	EnvPlain          = "GC_PLAIN"
-	EnvKeyringBackend = "GC_KEYRING_BACKEND"
+	EnvDomain         = "GCCLI_DOMAIN"
+	EnvColor          = "GCCLI_COLOR"
+	EnvJSON           = "GCCLI_JSON"
+	EnvPlain          = "GCCLI_PLAIN"
+	EnvKeyringBackend = "GCCLI_KEYRING_BACKEND"
 )
 
 // File represents the on-disk configuration file.
@@ -94,17 +94,17 @@ func (f *File) KeyringBackendValue() string {
 	return f.KeyringBackend
 }
 
-// IsJSON returns true if the GC_JSON environment variable is set to a truthy value.
+// IsJSON returns true if the GCCLI_JSON environment variable is set to a truthy value.
 func IsJSON() bool {
 	return isTruthy(os.Getenv(EnvJSON))
 }
 
-// IsPlain returns true if the GC_PLAIN environment variable is set to a truthy value.
+// IsPlain returns true if the GCCLI_PLAIN environment variable is set to a truthy value.
 func IsPlain() bool {
 	return isTruthy(os.Getenv(EnvPlain))
 }
 
-// ColorMode returns the color mode from the GC_COLOR environment variable.
+// ColorMode returns the color mode from the GCCLI_COLOR environment variable.
 // Returns empty string if not set.
 func ColorMode() string {
 	return os.Getenv(EnvColor)

@@ -53,7 +53,7 @@ func colorizeLine(out *termenv.Output, line string) string {
 		return out.String(line).Bold().String()
 	}
 
-	// Hint lines like 'Run "gc <command> --help" ...' — dim.
+	// Hint lines like 'Run "gccli <command> --help" ...' — dim.
 	if strings.HasPrefix(trimmed, "Run \"") {
 		return out.String(line).Faint().String()
 	}

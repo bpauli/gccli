@@ -68,17 +68,17 @@ func Format(err error) string {
 	var authErr *AuthRequiredError
 	if errors.As(err, &authErr) {
 		if authErr.Email != "" {
-			return fmt.Sprintf("No auth found. Run: gc auth login %s", authErr.Email)
+			return fmt.Sprintf("No auth found. Run: gccli auth login %s", authErr.Email)
 		}
-		return "No auth found. Run: gc auth login <email>"
+		return "No auth found. Run: gccli auth login <email>"
 	}
 
 	var tokenErr *TokenExpiredError
 	if errors.As(err, &tokenErr) {
 		if tokenErr.Email != "" {
-			return fmt.Sprintf("Token expired. Run: gc auth login %s", tokenErr.Email)
+			return fmt.Sprintf("Token expired. Run: gccli auth login %s", tokenErr.Email)
 		}
-		return "Token expired. Run: gc auth login <email>"
+		return "Token expired. Run: gccli auth login <email>"
 	}
 
 	var rateErr *RateLimitError

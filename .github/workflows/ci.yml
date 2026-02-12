@@ -33,4 +33,4 @@ jobs:
       - name: Test
         run: make test
       - name: Build (Keychain / cgo)
-        run: CGO_ENABLED=1 go build ./cmd/gc
+        run: CGO_ENABLED=1 go build ./cmd/gccli

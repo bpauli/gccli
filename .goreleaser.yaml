@@ -1,8 +1,8 @@
 version: 2
 
 builds:
-  - main: ./cmd/gc
-    binary: gc
+  - main: ./cmd/gccli
+    binary: gccli
     env:
       - CGO_ENABLED=0
     goos:

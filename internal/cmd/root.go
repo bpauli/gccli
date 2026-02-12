@@ -48,12 +48,12 @@ type CLI struct {
 // Execute runs the CLI with the given arguments and version info.
 // It returns the process exit code.
 func Execute(args []string, version, commit, date string) int {
-	versionStr := fmt.Sprintf("gc %s (%s) built %s", version, commit, date)
+	versionStr := fmt.Sprintf("gccli %s (%s) built %s", version, commit, date)
 
 	var cli CLI
 
 	parser, err := kong.New(&cli,
-		kong.Name("gc"),
+		kong.Name("gccli"),
 		kong.Description("Garmin Connect CLI"),
 		kong.UsageOnError(),
 		kong.ConfigureHelp(kong.HelpOptions{
@@ -63,7 +63,7 @@ func Execute(args []string, version, commit, date string) int {
 		kong.Vars{"version": versionStr},
 	)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "gc: %s\n", err)
+		fmt.Fprintf(os.Stderr, "gccli: %s\n", err)
 		return 1
 	}
 

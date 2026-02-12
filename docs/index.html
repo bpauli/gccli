@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>gccli — Garmin Connect in your terminal</title>
-    <meta name="description" content="gc is a fast, script-friendly CLI for Garmin Connect. Activities, health data, workouts, body composition, devices, gear, goals, badges, and more." />
+    <meta name="description" content="gccli is a fast, script-friendly CLI for Garmin Connect. Activities, health data, workouts, body composition, devices, gear, goals, badges, and more." />
     <link rel="icon" href="/favicon.ico" />
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <style>
@@ -193,7 +193,7 @@
     <nav>
       <div class="nav-inner">
         <div class="nav-brand">
-          <strong>gc</strong>
+          <strong>gccli</strong>
           <span class="tag">gccli</span>
         </div>
         <div class="nav-links">
@@ -215,7 +215,7 @@
           <div>
             <p class="hero-label">Garmin Connect. One binary.</p>
             <h1 class="hero-title">Garmin<br>Connect<br>in your terminal</h1>
-            <p class="hero-desc"><strong>gc</strong> is a fast, script-friendly CLI for Garmin Connect &mdash; activities, health data, workouts, body composition, devices, gear, goals, badges, and more. JSON output and secure credential storage built in.</p>
+            <p class="hero-desc"><strong>gccli</strong> is a fast, script-friendly CLI for Garmin Connect &mdash; activities, health data, workouts, body composition, devices, gear, goals, badges, and more. JSON output and secure credential storage built in.</p>
             <div class="badges">
               <span class="badge">Activities</span>
               <span class="badge">Health</span>
@@ -234,23 +234,23 @@
               <a href="#install" class="btn-primary">Install</a>
               <a href="https://github.com/bpauli/gccli#readme" class="btn-secondary">Readme</a>
             </div>
-            <p class="hero-tip">Tip: export <code>GC_ACCOUNT=you@example.com</code> once to stop repeating <code>--account</code>.</p>
+            <p class="hero-tip">Tip: export <code>GCCLI_ACCOUNT=you@example.com</code> once to stop repeating <code>--account</code>.</p>
           </div>
 
           <div class="terminal fade-in">
             <div class="terminal-bar">
               <div class="terminal-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
-              <span class="terminal-title">gc &mdash; terminal</span>
+              <span class="terminal-title">gccli &mdash; terminal</span>
               <div style="width:56px"></div>
             </div>
             <div class="terminal-body">
-              <div><span class="dim">$</span> gc auth login you@example.com</div>
-              <div><span class="dim">$</span> export GC_ACCOUNT=you@example.com</div>
+              <div><span class="dim">$</span> gccli auth login you@example.com</div>
+              <div><span class="dim">$</span> export GCCLI_ACCOUNT=you@example.com</div>
               <div style="height:8px"></div>
-              <div><span class="dim">$</span> gc activities list --limit 5</div>
-              <div><span class="dim">$</span> gc health summary today</div>
-              <div><span class="dim">$</span> gc <span class="cyan">--json</span> body weigh-ins <span class="yellow">--start</span> 2024-01-01 <span class="yellow">--end</span> 2024-06-30</div>
-              <div><span class="dim">$</span> gc workouts create <span class="green">"Easy Run"</span> <span class="yellow">--type</span> run <span class="yellow">--step</span> <span class="green">"warmup:5m"</span></div>
+              <div><span class="dim">$</span> gccli activities list --limit 5</div>
+              <div><span class="dim">$</span> gccli health summary today</div>
+              <div><span class="dim">$</span> gccli <span class="cyan">--json</span> body weigh-ins <span class="yellow">--start</span> 2024-01-01 <span class="yellow">--end</span> 2024-06-30</div>
+              <div><span class="dim">$</span> gccli workouts create <span class="green">"Easy Run"</span> <span class="yellow">--type</span> run <span class="yellow">--step</span> <span class="green">"warmup:5m"</span></div>
             </div>
             <div class="terminal-meta">
               <div class="terminal-meta-item"><div class="terminal-meta-label">Output</div><div class="terminal-meta-value">tables / <code>--json</code></div></div>
@@ -277,7 +277,7 @@
               <pre class="code-block">git clone https://github.com/bpauli/gccli.git
 cd gccli
 make build
-./bin/gc --help</pre>
+./bin/gccli --help</pre>
             </div>
             <div class="card fade-in">
               <h3>Development</h3>
@@ -307,7 +307,7 @@ make ci       <span class="dim"># Full CI gate</span></pre>
                 <div class="step-content">
                   <h3>Log in via browser SSO</h3>
                   <p>Opens your browser for Garmin SSO. Tokens are stored in your system keyring.</p>
-                  <pre class="code-block">gc auth login you@example.com</pre>
+                  <pre class="code-block">gccli auth login you@example.com</pre>
                 </div>
               </div>
               <div class="step fade-in">
@@ -315,8 +315,8 @@ make ci       <span class="dim"># Full CI gate</span></pre>
                 <div class="step-content">
                   <h3>Or log in headless</h3>
                   <p>For servers or CI. Supports MFA.</p>
-                  <pre class="code-block">gc auth login you@example.com --headless
-gc auth login you@example.com --headless --mfa-code 123456</pre>
+                  <pre class="code-block">gccli auth login you@example.com --headless
+gccli auth login you@example.com --headless --mfa-code 123456</pre>
                 </div>
               </div>
               <div class="step fade-in">
@@ -324,7 +324,7 @@ gc auth login you@example.com --headless --mfa-code 123456</pre>
                 <div class="step-content">
                   <h3>Set default account</h3>
                   <p>Avoid repeating <code>--account</code> on every command.</p>
-                  <pre class="code-block">export GC_ACCOUNT=you@example.com</pre>
+                  <pre class="code-block">export GCCLI_ACCOUNT=you@example.com</pre>
                 </div>
               </div>
               <div class="step fade-in">
@@ -332,8 +332,8 @@ gc auth login you@example.com --headless --mfa-code 123456</pre>
                 <div class="step-content">
                   <h3>Start using</h3>
                   <p>Check auth status and fetch your recent activities.</p>
-                  <pre class="code-block">gc auth status
-gc activities list --limit 5</pre>
+                  <pre class="code-block">gccli auth status
+gccli activities list --limit 5</pre>
                 </div>
               </div>
             </div>
@@ -342,7 +342,7 @@ gc activities list --limit 5</pre>
               <div class="callout-icon">&#x1f511;</div>
               <div class="callout-body">
                 <h3>Keyring backends</h3>
-                <p>Defaults to auto-detect. Force with <code>GC_KEYRING_BACKEND</code>: <strong>keychain</strong> (macOS), <strong>secret-service</strong> (Linux D-Bus), or <strong>file</strong> (encrypted fallback).</p>
+                <p>Defaults to auto-detect. Force with <code>GCCLI_KEYRING_BACKEND</code>: <strong>keychain</strong> (macOS), <strong>secret-service</strong> (Linux D-Bus), or <strong>file</strong> (encrypted fallback).</p>
               </div>
             </div>
           </div>
@@ -432,12 +432,12 @@ gc activities list --limit 5</pre>
           <div class="cmd-group is-open fade-in">
             <div class="cmd-header"><h3>Authentication</h3><span class="cmd-arrow">&#x25B6;</span></div>
             <div class="cmd-body">
-              <div class="cmd-row"><div class="cmd">gc auth login &lt;email&gt;</div><div class="desc">Log in via browser SSO</div></div>
-              <div class="cmd-row"><div class="cmd">gc auth login &lt;email&gt; --headless</div><div class="desc">Log in via email/password</div></div>
-              <div class="cmd-row"><div class="cmd">gc auth login &lt;email&gt; --headless --mfa-code &lt;code&gt;</div><div class="desc">Log in with MFA</div></div>
-              <div class="cmd-row"><div class="cmd">gc auth status</div><div class="desc">Show auth state and token expiry</div></div>
-              <div class="cmd-row"><div class="cmd">gc auth token</div><div class="desc">Print OAuth2 access token</div></div>
-              <div class="cmd-row"><div class="cmd">gc auth remove</div><div class="desc">Remove stored credentials</div></div>
+              <div class="cmd-row"><div class="cmd">gccli auth login &lt;email&gt;</div><div class="desc">Log in via browser SSO</div></div>
+              <div class="cmd-row"><div class="cmd">gccli auth login &lt;email&gt; --headless</div><div class="desc">Log in via email/password</div></div>
+              <div class="cmd-row"><div class="cmd">gccli auth login &lt;email&gt; --headless --mfa-code &lt;code&gt;</div><div class="desc">Log in with MFA</div></div>
+              <div class="cmd-row"><div class="cmd">gccli auth status</div><div class="desc">Show auth state and token expiry</div></div>
+              <div class="cmd-row"><div class="cmd">gccli auth token</div><div class="desc">Print OAuth2 access token</div></div>
+              <div class="cmd-row"><div class="cmd">gccli auth remove</div><div class="desc">Remove stored credentials</div></div>
             </div>
           </div>
 
@@ -445,20 +445,20 @@ gc activities list --limit 5</pre>
           <div class="cmd-group fade-in">
             <div class="cmd-header"><h3>Activities</h3><span class="cmd-arrow">&#x25B6;</span></div>
             <div class="cmd-body">
-              <div class="cmd-row"><div class="cmd">gc activities list --limit 20 --start 0</div><div class="desc">List recent activities</div></div>
-              <div class="cmd-row"><div class="cmd">gc activities list --type running</div><div class="desc">Filter by activity type</div></div>
-              <div class="cmd-row"><div class="cmd">gc activities count</div><div class="desc">Total activity count</div></div>
-              <div class="cmd-row"><div class="cmd">gc activities search --start-date ... --end-date ...</div><div class="desc">Search by date range</div></div>
-              <div class="cmd-row"><div class="cmd">gc activity summary &lt;id&gt;</div><div class="desc">Activity summary</div></div>
-              <div class="cmd-row"><div class="cmd">gc activity details &lt;id&gt;</div><div class="desc">Full activity details</div></div>
-              <div class="cmd-row"><div class="cmd">gc activity splits &lt;id&gt;</div><div class="desc">Activity split data</div></div>
-              <div class="cmd-row"><div class="cmd">gc activity weather &lt;id&gt;</div><div class="desc">Weather during activity</div></div>
-              <div class="cmd-row"><div class="cmd">gc activity hr-zones &lt;id&gt;</div><div class="desc">Heart rate zone breakdown</div></div>
-              <div class="cmd-row"><div class="cmd">gc activity download &lt;id&gt; --format fit</div><div class="desc">Download as FIT/GPX/TCX/KML/CSV</div></div>
-              <div class="cmd-row"><div class="cmd">gc activity upload ./activity.fit</div><div class="desc">Upload a FIT file</div></div>
-              <div class="cmd-row"><div class="cmd">gc activity create --name "Run" --type running --duration 30m</div><div class="desc">Create manual activity entry</div></div>
-              <div class="cmd-row"><div class="cmd">gc activity rename &lt;id&gt; "New Name"</div><div class="desc">Rename an activity</div></div>
-              <div class="cmd-row"><div class="cmd">gc activity delete &lt;id&gt; --force</div><div class="desc">Delete an activity</div></div>
+              <div class="cmd-row"><div class="cmd">gccli activities list --limit 20 --start 0</div><div class="desc">List recent activities</div></div>
+              <div class="cmd-row"><div class="cmd">gccli activities list --type running</div><div class="desc">Filter by activity type</div></div>
+              <div class="cmd-row"><div class="cmd">gccli activities count</div><div class="desc">Total activity count</div></div>
+              <div class="cmd-row"><div class="cmd">gccli activities search --start-date ... --end-date ...</div><div class="desc">Search by date range</div></div>
+              <div class="cmd-row"><div class="cmd">gccli activity summary &lt;id&gt;</div><div class="desc">Activity summary</div></div>
+              <div class="cmd-row"><div class="cmd">gccli activity details &lt;id&gt;</div><div class="desc">Full activity details</div></div>
+              <div class="cmd-row"><div class="cmd">gccli activity splits &lt;id&gt;</div><div class="desc">Activity split data</div></div>
+              <div class="cmd-row"><div class="cmd">gccli activity weather &lt;id&gt;</div><div class="desc">Weather during activity</div></div>
+              <div class="cmd-row"><div class="cmd">gccli activity hr-zones &lt;id&gt;</div><div class="desc">Heart rate zone breakdown</div></div>
+              <div class="cmd-row"><div class="cmd">gccli activity download &lt;id&gt; --format fit</div><div class="desc">Download as FIT/GPX/TCX/KML/CSV</div></div>
+              <div class="cmd-row"><div class="cmd">gccli activity upload ./activity.fit</div><div class="desc">Upload a FIT file</div></div>
+              <div class="cmd-row"><div class="cmd">gccli activity create --name "Run" --type running --duration 30m</div><div class="desc">Create manual activity entry</div></div>
+              <div class="cmd-row"><div class="cmd">gccli activity rename &lt;id&gt; "New Name"</div><div class="desc">Rename an activity</div></div>
+              <div class="cmd-row"><div class="cmd">gccli activity delete &lt;id&gt; --force</div><div class="desc">Delete an activity</div></div>
             </div>
           </div>
 
@@ -466,28 +466,28 @@ gc activities list --limit 5</pre>
           <div class="cmd-group fade-in">
             <div class="cmd-header"><h3>Health Data</h3><span class="cmd-arrow">&#x25B6;</span></div>
             <div class="cmd-body">
-              <div class="cmd-row"><div class="cmd">gc health summary [date]</div><div class="desc">Daily health summary</div></div>
-              <div class="cmd-row"><div class="cmd">gc health steps [date]</div><div class="desc">Step chart for a day</div></div>
-              <div class="cmd-row"><div class="cmd">gc health steps daily --start ... --end ...</div><div class="desc">Daily step totals in a range</div></div>
-              <div class="cmd-row"><div class="cmd">gc health hr [date]</div><div class="desc">Heart rate data</div></div>
-              <div class="cmd-row"><div class="cmd">gc health rhr [date]</div><div class="desc">Resting heart rate</div></div>
-              <div class="cmd-row"><div class="cmd">gc health sleep [date]</div><div class="desc">Sleep data</div></div>
-              <div class="cmd-row"><div class="cmd">gc health stress [date]</div><div class="desc">Stress scores</div></div>
-              <div class="cmd-row"><div class="cmd">gc health hrv [date]</div><div class="desc">Heart rate variability</div></div>
-              <div class="cmd-row"><div class="cmd">gc health spo2 [date]</div><div class="desc">Blood oxygen saturation</div></div>
-              <div class="cmd-row"><div class="cmd">gc health body-battery [date]</div><div class="desc">Body battery levels</div></div>
-              <div class="cmd-row"><div class="cmd">gc health respiration [date]</div><div class="desc">Respiration rate</div></div>
-              <div class="cmd-row"><div class="cmd">gc health floors [date]</div><div class="desc">Floors climbed</div></div>
-              <div class="cmd-row"><div class="cmd">gc health training-readiness [date]</div><div class="desc">Training readiness score</div></div>
-              <div class="cmd-row"><div class="cmd">gc health training-status [date]</div><div class="desc">Training status</div></div>
-              <div class="cmd-row"><div class="cmd">gc health fitness-age [date]</div><div class="desc">Fitness age estimate</div></div>
-              <div class="cmd-row"><div class="cmd">gc health max-metrics [date]</div><div class="desc">VO2max and performance metrics</div></div>
-              <div class="cmd-row"><div class="cmd">gc health race-predictions</div><div class="desc">Race time predictions</div></div>
-              <div class="cmd-row"><div class="cmd">gc health endurance-score [date]</div><div class="desc">Endurance score</div></div>
-              <div class="cmd-row"><div class="cmd">gc health hill-score [date]</div><div class="desc">Hill score</div></div>
-              <div class="cmd-row"><div class="cmd">gc health intensity-minutes [date]</div><div class="desc">Intensity minutes</div></div>
-              <div class="cmd-row"><div class="cmd">gc health lactate-threshold</div><div class="desc">Lactate threshold</div></div>
-              <div class="cmd-row"><div class="cmd">gc health cycling-ftp</div><div class="desc">Cycling FTP</div></div>
+              <div class="cmd-row"><div class="cmd">gccli health summary [date]</div><div class="desc">Daily health summary</div></div>
+              <div class="cmd-row"><div class="cmd">gccli health steps [date]</div><div class="desc">Step chart for a day</div></div>
+              <div class="cmd-row"><div class="cmd">gccli health steps daily --start ... --end ...</div><div class="desc">Daily step totals in a range</div></div>
+              <div class="cmd-row"><div class="cmd">gccli health hr [date]</div><div class="desc">Heart rate data</div></div>
+              <div class="cmd-row"><div class="cmd">gccli health rhr [date]</div><div class="desc">Resting heart rate</div></div>
+              <div class="cmd-row"><div class="cmd">gccli health sleep [date]</div><div class="desc">Sleep data</div></div>
+              <div class="cmd-row"><div class="cmd">gccli health stress [date]</div><div class="desc">Stress scores</div></div>
+              <div class="cmd-row"><div class="cmd">gccli health hrv [date]</div><div class="desc">Heart rate variability</div></div>
+              <div class="cmd-row"><div class="cmd">gccli health spo2 [date]</div><div class="desc">Blood oxygen saturation</div></div>
+              <div class="cmd-row"><div class="cmd">gccli health body-battery [date]</div><div class="desc">Body battery levels</div></div>
+              <div class="cmd-row"><div class="cmd">gccli health respiration [date]</div><div class="desc">Respiration rate</div></div>
+              <div class="cmd-row"><div class="cmd">gccli health floors [date]</div><div class="desc">Floors climbed</div></div>
+              <div class="cmd-row"><div class="cmd">gccli health training-readiness [date]</div><div class="desc">Training readiness score</div></div>
+              <div class="cmd-row"><div class="cmd">gccli health training-status [date]</div><div class="desc">Training status</div></div>
+              <div class="cmd-row"><div class="cmd">gccli health fitness-age [date]</div><div class="desc">Fitness age estimate</div></div>
+              <div class="cmd-row"><div class="cmd">gccli health max-metrics [date]</div><div class="desc">VO2max and performance metrics</div></div>
+              <div class="cmd-row"><div class="cmd">gccli health race-predictions</div><div class="desc">Race time predictions</div></div>
+              <div class="cmd-row"><div class="cmd">gccli health endurance-score [date]</div><div class="desc">Endurance score</div></div>
+              <div class="cmd-row"><div class="cmd">gccli health hill-score [date]</div><div class="desc">Hill score</div></div>
+              <div class="cmd-row"><div class="cmd">gccli health intensity-minutes [date]</div><div class="desc">Intensity minutes</div></div>
+              <div class="cmd-row"><div class="cmd">gccli health lactate-threshold</div><div class="desc">Lactate threshold</div></div>
+              <div class="cmd-row"><div class="cmd">gccli health cycling-ftp</div><div class="desc">Cycling FTP</div></div>
             </div>
           </div>
 
@@ -495,14 +495,14 @@ gc activities list --limit 5</pre>
           <div class="cmd-group fade-in">
             <div class="cmd-header"><h3>Body Composition</h3><span class="cmd-arrow">&#x25B6;</span></div>
             <div class="cmd-body">
-              <div class="cmd-row"><div class="cmd">gc body composition</div><div class="desc">Today's body composition</div></div>
-              <div class="cmd-row"><div class="cmd">gc body composition --start ... --end ...</div><div class="desc">Body composition over a date range</div></div>
-              <div class="cmd-row"><div class="cmd">gc body weigh-ins --start ... --end ...</div><div class="desc">Weigh-in history</div></div>
-              <div class="cmd-row"><div class="cmd">gc body add-weight 75.5 --unit kg</div><div class="desc">Log a weight entry</div></div>
-              <div class="cmd-row"><div class="cmd">gc body add-composition 75.5 --body-fat 15.2 --muscle-mass 35.0</div><div class="desc">Log full body composition</div></div>
-              <div class="cmd-row"><div class="cmd">gc body blood-pressure --start ... --end ...</div><div class="desc">Blood pressure history</div></div>
-              <div class="cmd-row"><div class="cmd">gc body add-blood-pressure --systolic 120 --diastolic 80</div><div class="desc">Log blood pressure</div></div>
-              <div class="cmd-row"><div class="cmd">gc body delete-weight &lt;pk&gt; --date ...</div><div class="desc">Delete a weight entry</div></div>
+              <div class="cmd-row"><div class="cmd">gccli body composition</div><div class="desc">Today's body composition</div></div>
+              <div class="cmd-row"><div class="cmd">gccli body composition --start ... --end ...</div><div class="desc">Body composition over a date range</div></div>
+              <div class="cmd-row"><div class="cmd">gccli body weigh-ins --start ... --end ...</div><div class="desc">Weigh-in history</div></div>
+              <div class="cmd-row"><div class="cmd">gccli body add-weight 75.5 --unit kg</div><div class="desc">Log a weight entry</div></div>
+              <div class="cmd-row"><div class="cmd">gccli body add-composition 75.5 --body-fat 15.2 --muscle-mass 35.0</div><div class="desc">Log full body composition</div></div>
+              <div class="cmd-row"><div class="cmd">gccli body blood-pressure --start ... --end ...</div><div class="desc">Blood pressure history</div></div>
+              <div class="cmd-row"><div class="cmd">gccli body add-blood-pressure --systolic 120 --diastolic 80</div><div class="desc">Log blood pressure</div></div>
+              <div class="cmd-row"><div class="cmd">gccli body delete-weight &lt;pk&gt; --date ...</div><div class="desc">Delete a weight entry</div></div>
             </div>
           </div>
 
@@ -510,13 +510,13 @@ gc activities list --limit 5</pre>
           <div class="cmd-group fade-in">
             <div class="cmd-header"><h3>Workouts</h3><span class="cmd-arrow">&#x25B6;</span></div>
             <div class="cmd-body">
-              <div class="cmd-row"><div class="cmd">gc workouts list --limit 20</div><div class="desc">List saved workouts</div></div>
-              <div class="cmd-row"><div class="cmd">gc workouts detail &lt;id&gt;</div><div class="desc">View workout details</div></div>
-              <div class="cmd-row"><div class="cmd">gc workouts download &lt;id&gt; --output workout.fit</div><div class="desc">Download workout as FIT</div></div>
-              <div class="cmd-row"><div class="cmd">gc workouts upload ./workout.json</div><div class="desc">Upload workout from JSON</div></div>
-              <div class="cmd-row"><div class="cmd">gc workouts create "Name" --type run --step "warmup:5m" ...</div><div class="desc">Create with pace/HR/power targets</div></div>
-              <div class="cmd-row"><div class="cmd">gc workouts schedule &lt;id&gt; &lt;YYYY-MM-DD&gt;</div><div class="desc">Schedule workout on a date</div></div>
-              <div class="cmd-row"><div class="cmd">gc workouts delete &lt;id&gt;</div><div class="desc">Delete a workout</div></div>
+              <div class="cmd-row"><div class="cmd">gccli workouts list --limit 20</div><div class="desc">List saved workouts</div></div>
+              <div class="cmd-row"><div class="cmd">gccli workouts detail &lt;id&gt;</div><div class="desc">View workout details</div></div>
+              <div class="cmd-row"><div class="cmd">gccli workouts download &lt;id&gt; --output workout.fit</div><div class="desc">Download workout as FIT</div></div>
+              <div class="cmd-row"><div class="cmd">gccli workouts upload ./workout.json</div><div class="desc">Upload workout from JSON</div></div>
+              <div class="cmd-row"><div class="cmd">gccli workouts create "Name" --type run --step "warmup:5m" ...</div><div class="desc">Create with pace/HR/power targets</div></div>
+              <div class="cmd-row"><div class="cmd">gccli workouts schedule &lt;id&gt; &lt;YYYY-MM-DD&gt;</div><div class="desc">Schedule workout on a date</div></div>
+              <div class="cmd-row"><div class="cmd">gccli workouts delete &lt;id&gt;</div><div class="desc">Delete a workout</div></div>
             </div>
           </div>
 
@@ -524,12 +524,12 @@ gc activities list --limit 5</pre>
           <div class="cmd-group fade-in">
             <div class="cmd-header"><h3>Devices</h3><span class="cmd-arrow">&#x25B6;</span></div>
             <div class="cmd-body">
-              <div class="cmd-row"><div class="cmd">gc devices list</div><div class="desc">List registered devices</div></div>
-              <div class="cmd-row"><div class="cmd">gc devices settings &lt;device-id&gt;</div><div class="desc">View device settings</div></div>
-              <div class="cmd-row"><div class="cmd">gc devices primary</div><div class="desc">Show primary device</div></div>
-              <div class="cmd-row"><div class="cmd">gc devices last-used</div><div class="desc">Show last-used device</div></div>
-              <div class="cmd-row"><div class="cmd">gc devices alarms</div><div class="desc">List device alarms</div></div>
-              <div class="cmd-row"><div class="cmd">gc devices solar &lt;device-id&gt; --start ... --end ...</div><div class="desc">Solar charging data</div></div>
+              <div class="cmd-row"><div class="cmd">gccli devices list</div><div class="desc">List registered devices</div></div>
+              <div class="cmd-row"><div class="cmd">gccli devices settings &lt;device-id&gt;</div><div class="desc">View device settings</div></div>
+              <div class="cmd-row"><div class="cmd">gccli devices primary</div><div class="desc">Show primary device</div></div>
+              <div class="cmd-row"><div class="cmd">gccli devices last-used</div><div class="desc">Show last-used device</div></div>
+              <div class="cmd-row"><div class="cmd">gccli devices alarms</div><div class="desc">List device alarms</div></div>
+              <div class="cmd-row"><div class="cmd">gccli devices solar &lt;device-id&gt; --start ... --end ...</div><div class="desc">Solar charging data</div></div>
             </div>
           </div>
 
@@ -537,12 +537,12 @@ gc activities list --limit 5</pre>
           <div class="cmd-group fade-in">
             <div class="cmd-header"><h3>Gear</h3><span class="cmd-arrow">&#x25B6;</span></div>
             <div class="cmd-body">
-              <div class="cmd-row"><div class="cmd">gc gear list</div><div class="desc">List all gear</div></div>
-              <div class="cmd-row"><div class="cmd">gc gear stats &lt;uuid&gt;</div><div class="desc">Gear usage statistics</div></div>
-              <div class="cmd-row"><div class="cmd">gc gear activities &lt;uuid&gt; --limit 20</div><div class="desc">Activities linked to gear</div></div>
-              <div class="cmd-row"><div class="cmd">gc gear defaults</div><div class="desc">Default gear per activity type</div></div>
-              <div class="cmd-row"><div class="cmd">gc gear link &lt;uuid&gt; &lt;activity-id&gt;</div><div class="desc">Link gear to activity</div></div>
-              <div class="cmd-row"><div class="cmd">gc gear unlink &lt;uuid&gt; &lt;activity-id&gt;</div><div class="desc">Unlink gear from activity</div></div>
+              <div class="cmd-row"><div class="cmd">gccli gear list</div><div class="desc">List all gear</div></div>
+              <div class="cmd-row"><div class="cmd">gccli gear stats &lt;uuid&gt;</div><div class="desc">Gear usage statistics</div></div>
+              <div class="cmd-row"><div class="cmd">gccli gear activities &lt;uuid&gt; --limit 20</div><div class="desc">Activities linked to gear</div></div>
+              <div class="cmd-row"><div class="cmd">gccli gear defaults</div><div class="desc">Default gear per activity type</div></div>
+              <div class="cmd-row"><div class="cmd">gccli gear link &lt;uuid&gt; &lt;activity-id&gt;</div><div class="desc">Link gear to activity</div></div>
+              <div class="cmd-row"><div class="cmd">gccli gear unlink &lt;uuid&gt; &lt;activity-id&gt;</div><div class="desc">Unlink gear from activity</div></div>
             </div>
           </div>
 
@@ -550,13 +550,13 @@ gc activities list --limit 5</pre>
           <div class="cmd-group fade-in">
             <div class="cmd-header"><h3>Goals, Badges &amp; Challenges</h3><span class="cmd-arrow">&#x25B6;</span></div>
             <div class="cmd-body">
-              <div class="cmd-row"><div class="cmd">gc goals list</div><div class="desc">List all goals</div></div>
-              <div class="cmd-row"><div class="cmd">gc goals list --status active</div><div class="desc">Filter by goal status</div></div>
-              <div class="cmd-row"><div class="cmd">gc badges earned</div><div class="desc">Earned badges</div></div>
-              <div class="cmd-row"><div class="cmd">gc badges available</div><div class="desc">Available badges</div></div>
-              <div class="cmd-row"><div class="cmd">gc badges in-progress</div><div class="desc">In-progress badges</div></div>
-              <div class="cmd-row"><div class="cmd">gc challenges list</div><div class="desc">Active challenges</div></div>
-              <div class="cmd-row"><div class="cmd">gc records</div><div class="desc">Personal records</div></div>
+              <div class="cmd-row"><div class="cmd">gccli goals list</div><div class="desc">List all goals</div></div>
+              <div class="cmd-row"><div class="cmd">gccli goals list --status active</div><div class="desc">Filter by goal status</div></div>
+              <div class="cmd-row"><div class="cmd">gccli badges earned</div><div class="desc">Earned badges</div></div>
+              <div class="cmd-row"><div class="cmd">gccli badges available</div><div class="desc">Available badges</div></div>
+              <div class="cmd-row"><div class="cmd">gccli badges in-progress</div><div class="desc">In-progress badges</div></div>
+              <div class="cmd-row"><div class="cmd">gccli challenges list</div><div class="desc">Active challenges</div></div>
+              <div class="cmd-row"><div class="cmd">gccli records</div><div class="desc">Personal records</div></div>
             </div>
           </div>
 
@@ -564,15 +564,15 @@ gc activities list --limit 5</pre>
           <div class="cmd-group fade-in">
             <div class="cmd-header"><h3>Hydration, Profile, Training &amp; Wellness</h3><span class="cmd-arrow">&#x25B6;</span></div>
             <div class="cmd-body">
-              <div class="cmd-row"><div class="cmd">gc hydration [date]</div><div class="desc">View hydration data</div></div>
-              <div class="cmd-row"><div class="cmd">gc hydration add 500</div><div class="desc">Log 500ml of water</div></div>
-              <div class="cmd-row"><div class="cmd">gc profile</div><div class="desc">User profile</div></div>
-              <div class="cmd-row"><div class="cmd">gc profile settings</div><div class="desc">Account settings</div></div>
-              <div class="cmd-row"><div class="cmd">gc training plans --locale en</div><div class="desc">Browse training plans</div></div>
-              <div class="cmd-row"><div class="cmd">gc training plan &lt;id&gt;</div><div class="desc">View a training plan</div></div>
-              <div class="cmd-row"><div class="cmd">gc wellness menstrual-cycle --start-date ... --end-date ...</div><div class="desc">Menstrual cycle data</div></div>
-              <div class="cmd-row"><div class="cmd">gc wellness pregnancy-summary</div><div class="desc">Pregnancy summary</div></div>
-              <div class="cmd-row"><div class="cmd">gc reload [date]</div><div class="desc">Reload data for a date</div></div>
+              <div class="cmd-row"><div class="cmd">gccli hydration [date]</div><div class="desc">View hydration data</div></div>
+              <div class="cmd-row"><div class="cmd">gccli hydration add 500</div><div class="desc">Log 500ml of water</div></div>
+              <div class="cmd-row"><div class="cmd">gccli profile</div><div class="desc">User profile</div></div>
+              <div class="cmd-row"><div class="cmd">gccli profile settings</div><div class="desc">Account settings</div></div>
+              <div class="cmd-row"><div class="cmd">gccli training plans --locale en</div><div class="desc">Browse training plans</div></div>
+              <div class="cmd-row"><div class="cmd">gccli training plan &lt;id&gt;</div><div class="desc">View a training plan</div></div>
+              <div class="cmd-row"><div class="cmd">gccli wellness menstrual-cycle --start-date ... --end-date ...</div><div class="desc">Menstrual cycle data</div></div>
+              <div class="cmd-row"><div class="cmd">gccli wellness pregnancy-summary</div><div class="desc">Pregnancy summary</div></div>
+              <div class="cmd-row"><div class="cmd">gccli reload [date]</div><div class="desc">Reload data for a date</div></div>
             </div>
           </div>
 
@@ -594,12 +594,12 @@ gc activities list --limit 5</pre>
               <table class="env-table">
                 <thead><tr><th>Variable</th><th>Description</th></tr></thead>
                 <tbody>
-                  <tr><td>GC_ACCOUNT</td><td>Default account email</td></tr>
-                  <tr><td>GC_DOMAIN</td><td>Garmin domain (<code>garmin.com</code> or <code>garmin.cn</code>)</td></tr>
-                  <tr><td>GC_JSON</td><td>Enable JSON output (<code>1</code>, <code>true</code>, <code>yes</code>)</td></tr>
-                  <tr><td>GC_PLAIN</td><td>Enable plain/TSV output</td></tr>
-                  <tr><td>GC_COLOR</td><td>Color mode: <code>auto</code>, <code>always</code>, <code>never</code></td></tr>
-                  <tr><td>GC_KEYRING_BACKEND</td><td>Keyring: <code>keychain</code>, <code>secret-service</code>, <code>file</code></td></tr>
+                  <tr><td>GCCLI_ACCOUNT</td><td>Default account email</td></tr>
+                  <tr><td>GCCLI_DOMAIN</td><td>Garmin domain (<code>garmin.com</code> or <code>garmin.cn</code>)</td></tr>
+                  <tr><td>GCCLI_JSON</td><td>Enable JSON output (<code>1</code>, <code>true</code>, <code>yes</code>)</td></tr>
+                  <tr><td>GCCLI_PLAIN</td><td>Enable plain/TSV output</td></tr>
+                  <tr><td>GCCLI_COLOR</td><td>Color mode: <code>auto</code>, <code>always</code>, <code>never</code></td></tr>
+                  <tr><td>GCCLI_KEYRING_BACKEND</td><td>Keyring: <code>keychain</code>, <code>secret-service</code>, <code>file</code></td></tr>
                 </tbody>
               </table>
             </div>
@@ -609,7 +609,7 @@ gc activities list --limit 5</pre>
               <table class="env-table">
                 <thead><tr><th>Flag</th><th>Description</th></tr></thead>
                 <tbody>
-                  <tr><td>--account &lt;email&gt;</td><td>Account to use (overrides <code>GC_ACCOUNT</code>)</td></tr>
+                  <tr><td>--account &lt;email&gt;</td><td>Account to use (overrides <code>GCCLI_ACCOUNT</code>)</td></tr>
                   <tr><td>--json, -j</td><td>Output JSON to stdout</td></tr>
                   <tr><td>--plain</td><td>Output stable TSV to stdout</td></tr>
                   <tr><td>--color &lt;mode&gt;</td><td>Color mode: <code>auto</code>, <code>always</code>, <code>never</code></td></tr>
@@ -657,18 +657,18 @@ gc activities list --limit 5</pre>
           <div class="example fade-in">
             <h3>Export all runs from the last month</h3>
             <p>Fetch running activities and download each as GPX.</p>
-            <pre class="code-block">gc --json activities search \
+            <pre class="code-block">gccli --json activities search \
   --start-date 2024-05-15 --end-date 2024-06-15 \
   --limit 100 | \
   jq -r '.[] | select(.activityType.typeKey == "running") | .activityId' | \
   while read id; do
-    gc activity download "$id" --format gpx --output "run_${id}.gpx"
+    gccli activity download "$id" --format gpx --output "run_${id}.gpx"
   done</pre>
           </div>
           <div class="example fade-in">
             <h3>Daily health dashboard</h3>
             <p>Pull today's key metrics into a JSON summary.</p>
-            <pre class="code-block">gc --json health summary | jq '{
+            <pre class="code-block">gccli --json health summary | jq '{
   steps: .totalSteps,
   calories: .totalKilocalories,
   distance_km: (.totalDistanceMeters / 1000),
@@ -678,20 +678,20 @@ gc activities list --limit 5</pre>
           <div class="example fade-in">
             <h3>Track weight over time</h3>
             <p>Export weigh-in data as tab-separated values.</p>
-            <pre class="code-block">gc --json body weigh-ins \
+            <pre class="code-block">gccli --json body weigh-ins \
   --start 2024-01-01 --end 2024-06-30 | \
   jq -r '.dailyWeightSummaries[] | [.summaryDate, .weight.value] | @tsv'</pre>
           </div>
           <div class="example fade-in">
             <h3>Download the latest activity</h3>
             <p>One-liner to grab your most recent activity.</p>
-            <pre class="code-block">latest=$(gc --json activities list --limit 1 | jq -r '.[0].activityId')
-gc activity download "$latest" --format fit</pre>
+            <pre class="code-block">latest=$(gccli --json activities list --limit 1 | jq -r '.[0].activityId')
+gccli activity download "$latest" --format fit</pre>
           </div>
           <div class="example fade-in">
             <h3>Create a structured running workout</h3>
             <p>Warmup, pace intervals, and cooldown.</p>
-            <pre class="code-block">gc workouts create "Tempo 30min" --type run \
+            <pre class="code-block">gccli workouts create "Tempo 30min" --type run \
   --step "warmup:5m@pace:5:30-6:00" \
   --step "run:20m@pace:5:00-5:30" \
   --step "cooldown:5m"</pre>
@@ -699,7 +699,7 @@ gc activity download "$latest" --format fit</pre>
           <div class="example fade-in">
             <h3>Cycling with power targets</h3>
             <p>FTP interval workout for the bike.</p>
-            <pre class="code-block">gc workouts create "FTP Intervals" --type bike \
+            <pre class="code-block">gccli workouts create "FTP Intervals" --type bike \
   --step "warmup:10m" \
   --step "run:5m@power:250-280" \
   --step "recovery:3m" \
@@ -717,7 +717,7 @@ gc activity download "$latest" --format fit</pre>
         <p class="section-desc">Clean layered design with function-variable DI and context-based injection.</p>
 
         <div class="arch-flow fade-in">
-          <span class="layer">cmd/gc/main.go</span>
+          <span class="layer">cmd/gccli/main.go</span>
           <span class="arrow">&rarr;</span>
           <span class="layer">internal/cmd/</span>
           <span class="arrow">&rarr;</span>
@@ -750,7 +750,7 @@ gc activity download "$latest" --format fit</pre>
     <footer>
       <div class="footer-inner">
         <div class="footer-brand">
-          <strong>gc</strong>
+          <strong>gccli</strong>
           <span>&mdash; Garmin Connect in your terminal.</span>
         </div>
         <div class="footer-right">

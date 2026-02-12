@@ -2,9 +2,9 @@
 
 ## Overview
 
-`gc` is a Go CLI tool that wraps the Garmin Connect API, modeled after the architecture of [gogcli](https://github.com/steipete/gogcli). The goal is to cover all 113 API methods from the [python-garminconnect](https://github.com/cyberjunky/python-garminconnect) library. Phase 1 focuses on authentication and activities -- the most common use case.
+`gccli` is a Go CLI tool that wraps the Garmin Connect API, modeled after the architecture of [gogcli](https://github.com/steipete/gogcli). The goal is to cover all 113 API methods from the [python-garminconnect](https://github.com/cyberjunky/python-garminconnect) library. Phase 1 focuses on authentication and activities -- the most common use case.
 
-**Binary**: `gc`
+**Binary**: `gccli`
 **Module**: `github.com/bpauli/gccli`
 **Auth**: Browser SSO + headless email/password with MFA
 **Reference**: gogcli for architecture, python-garminconnect for API coverage
@@ -40,7 +40,7 @@ Developers, power users, and automation enthusiasts who use Garmin devices and w
 Layered CLI architecture following gogcli patterns:
 
 ```
-cmd/gc/main.go                  -- Entry point (minimal)
+cmd/gccli/main.go                  -- Entry point (minimal)
 internal/cmd/                   -- CLI commands (Kong)
 internal/config/                -- Config management
 internal/garminauth/            -- Garmin SSO authentication
@@ -121,11 +121,11 @@ GARMIN_PASSWORD=your-test-password
   {
     "id": 1,
     "category": "setup",
-    "description": "Project scaffolding: go.mod, cmd/gc/main.go, Makefile, .goreleaser.yaml, .golangci.yml",
+    "description": "Project scaffolding: go.mod, cmd/gccli/main.go, Makefile, .goreleaser.yaml, .golangci.yml",
     "steps": [
       "Create go.mod with module github.com/bpauli/gccli, Go 1.23+",
-      "Create cmd/gc/main.go with minimal entry point calling cmd.Execute(os.Args[1:])",
-      "Create Makefile with targets: build (go build -ldflags with version/commit/date), test (go test ./...), lint (golangci-lint), fmt (goimports + gofumpt), fmt-check, tools (install dev tools to .tools/), ci (fmt-check + lint + test). Binary output to ./bin/gc",
+      "Create cmd/gccli/main.go with minimal entry point calling cmd.Execute(os.Args[1:])",
+      "Create Makefile with targets: build (go build -ldflags with version/commit/date), test (go test ./...), lint (golangci-lint), fmt (goimports + gofumpt), fmt-check, tools (install dev tools to .tools/), ci (fmt-check + lint + test). Binary output to ./bin/gccli",
       "Create .goreleaser.yaml for multi-platform builds (darwin/linux, amd64/arm64, CGO_ENABLED=1 for macOS)",
       "Create .golangci.yml with linters: gofumpt, govet, errcheck, staticcheck, unused, gosimple",
       "Add go.sum by running go mod tidy",
@@ -140,7 +140,7 @@ GARMIN_PASSWORD=your-test-password
     "steps": [
       "Create internal/config/paths.go with ConfigDir() returning ~/.config/gccli/ via os.UserConfigDir(), ConfigFilePath(), CredentialsDir()",
       "Create internal/config/config.go with File struct (KeyringBackend, Domain, DefaultFormat), Read() and Write() functions",
-      "Support env vars: GC_DOMAIN, GC_COLOR, GC_JSON, GC_PLAIN, GC_KEYRING_BACKEND",
+      "Support env vars: GCCLI_DOMAIN, GCCLI_COLOR, GCCLI_JSON, GCCLI_PLAIN, GCCLI_KEYRING_BACKEND",
       "Write unit tests in internal/config/config_test.go using temp directories",
       "Verify: go test ./internal/config/... passes"
     ],
@@ -181,8 +181,8 @@ GARMIN_PASSWORD=your-test-password
     "steps": [
       "Create internal/errfmt/errfmt.go with typed error types: AuthRequiredError, RateLimitError, GarminAPIError, TokenExpiredError",
       "Implement Format(err error) string that maps errors to actionable user messages",
-      "AuthRequiredError -> 'No auth found. Run: gc auth login <email>'",
-      "TokenExpiredError -> 'Token expired. Run: gc auth login <email>'",
+      "AuthRequiredError -> 'No auth found. Run: gccli auth login <email>'",
+      "TokenExpiredError -> 'Token expired. Run: gccli auth login <email>'",
       "RateLimitError -> 'Rate limited. Wait and retry.'",
       "GarminAPIError -> HTTP status + message",
       "Write unit tests verifying all error format strings",
@@ -199,7 +199,7 @@ GARMIN_PASSWORD=your-test-password
       "Create internal/secrets/store.go with Store struct wrapping keyring",
       "Implement OpenDefault(backend string) that selects keyring backend (auto, keychain, file)",
       "Implement Get(email string), Set(email string, data []byte), Delete(email string) methods",
-      "Key format: gc:token:{email}",
+      "Key format: gccli:token:{email}",
       "Handle Linux D-Bus timeout with file backend fallback (adopt gogcli pattern)",
       "Write unit tests using file backend for portability",
       "Verify: go test ./internal/secrets/... passes"
@@ -217,8 +217,8 @@ GARMIN_PASSWORD=your-test-password
       "Create internal/cmd/output_helpers.go with tableWriter() and printNextPageHint() helpers",
       "Create internal/cmd/help_printer.go with custom colorized help output for Kong",
       "Create internal/cmd/root.go with CLI struct embedding RootFlags and placeholder command groups (Auth only for now), Execute(args []string) function with Kong setup, context-based DI (output mode, UI, account), centralized error formatting",
-      "Update cmd/gc/main.go to call cmd.Execute(os.Args[1:])",
-      "Verify: make build succeeds, ./bin/gc --help shows usage, ./bin/gc --version shows version"
+      "Update cmd/gccli/main.go to call cmd.Execute(os.Args[1:])",
+      "Verify: make build succeeds, ./bin/gccli --help shows usage, ./bin/gccli --version shows version"
     ],
     "passes": true
   },
@@ -290,14 +290,14 @@ GARMIN_PASSWORD=your-test-password
     "description": "Auth commands: internal/cmd/auth.go, auth_login.go",
     "steps": [
       "Create internal/cmd/auth.go with AuthCmd struct containing Login, Status, Remove, Token subcommands",
-      "Create internal/cmd/auth_login.go with login command: gc auth login <email> with --headless and --mfa-code flags",
+      "Create internal/cmd/auth_login.go with login command: gccli auth login <email> with --headless and --mfa-code flags",
       "Implement auth status command showing current auth state (email, domain, token expiry)",
       "Implement auth remove command to delete stored tokens from keyring",
       "Implement auth token command to print current access token (for debugging)",
       "Prompt for password securely (no echo) during headless login",
       "Wire auth commands into CLI struct in root.go",
       "Write unit tests for command parsing and output formatting",
-      "Verify: make build succeeds, ./bin/gc auth --help shows subcommands"
+      "Verify: make build succeeds, ./bin/gccli auth --help shows subcommands"
     ],
     "passes": true
   },
@@ -363,16 +363,16 @@ GARMIN_PASSWORD=your-test-password
     "description": "Activities list/count/search commands: internal/cmd/activities.go",
     "steps": [
       "Create internal/cmd/activities.go with ActivitiesCmd struct",
-      "Implement gc activities (list recent, default 20) with --limit, --start, --type flags",
-      "Implement gc activities count to show total activity count",
-      "Implement gc activities search with --start-date and --end-date flags",
+      "Implement gccli activities (list recent, default 20) with --limit, --start, --type flags",
+      "Implement gccli activities count to show total activity count",
+      "Implement gccli activities search with --start-date and --end-date flags",
       "Table output: ID, DATE, TYPE, NAME, DISTANCE, DURATION, CALORIES columns",
       "JSON output: activities array with count and total",
       "Plain output: TSV format",
       "Wire into CLI struct in root.go",
       "Create helper to resolve authenticated client from context (load tokens from keyring, create API client)",
       "Write unit tests for command parsing and output formatting",
-      "Verify: make build succeeds, ./bin/gc activities --help shows usage"
+      "Verify: make build succeeds, ./bin/gccli activities --help shows usage"
     ],
     "passes": true
   },
@@ -382,17 +382,17 @@ GARMIN_PASSWORD=your-test-password
     "description": "Activity detail commands: internal/cmd/activity.go",
     "steps": [
       "Create internal/cmd/activity.go with ActivityCmd struct",
-      "Implement gc activity <id> showing activity summary (name, type, date, distance, duration, pace, HR, calories)",
-      "Implement gc activity <id> details for full activity data",
-      "Implement gc activity <id> splits, typed-splits, split-summaries",
-      "Implement gc activity <id> weather for weather conditions",
-      "Implement gc activity <id> hr-zones and power-zones",
-      "Implement gc activity <id> exercise-sets for strength training",
-      "Implement gc activity <id> gear for linked gear",
+      "Implement gccli activity <id> showing activity summary (name, type, date, distance, duration, pace, HR, calories)",
+      "Implement gccli activity <id> details for full activity data",
+      "Implement gccli activity <id> splits, typed-splits, split-summaries",
+      "Implement gccli activity <id> weather for weather conditions",
+      "Implement gccli activity <id> hr-zones and power-zones",
+      "Implement gccli activity <id> exercise-sets for strength training",
+      "Implement gccli activity <id> gear for linked gear",
       "Support --json and --plain output modes for all subcommands",
       "Wire into CLI struct in root.go",
       "Write unit tests for command structure and output",
-      "Verify: make build succeeds, ./bin/gc activity --help shows subcommands"
+      "Verify: make build succeeds, ./bin/gccli activity --help shows subcommands"
     ],
     "passes": true
   },
@@ -402,13 +402,13 @@ GARMIN_PASSWORD=your-test-password
     "description": "Activity download command: internal/cmd/activity_download.go",
     "steps": [
       "Create internal/cmd/activity_download.go",
-      "Implement gc activity <id> download with --format flag (fit, gpx, tcx, kml, csv; default fit)",
+      "Implement gccli activity <id> download with --format flag (fit, gpx, tcx, kml, csv; default fit)",
       "Implement --output flag for custom output filename",
       "Default filename: activity_{id}.{format}",
       "Handle FIT download (comes as zip -- extract .fit file from zip)",
       "Print download path on success",
       "Write unit tests for filename generation and format validation",
-      "Verify: make build succeeds, ./bin/gc activity download --help shows usage"
+      "Verify: make build succeeds, ./bin/gccli activity download --help shows usage"
     ],
     "passes": true
   },
@@ -418,14 +418,14 @@ GARMIN_PASSWORD=your-test-password
     "description": "Activity upload, create, and modify commands: internal/cmd/activity_upload.go, activity_modify.go, confirm.go",
     "steps": [
       "Create internal/cmd/confirm.go with confirmation prompt helper for destructive actions (with --force bypass)",
-      "Create internal/cmd/activity_upload.go with gc activity upload <file> (FIT/GPX/TCX)",
-      "Implement gc activity create --name --type --distance --duration for manual activities",
+      "Create internal/cmd/activity_upload.go with gccli activity upload <file> (FIT/GPX/TCX)",
+      "Implement gccli activity create --name --type --distance --duration for manual activities",
       "Create internal/cmd/activity_modify.go with rename, retype, delete subcommands",
-      "gc activity <id> rename 'New Name'",
-      "gc activity <id> retype --type-id 1 --type-key running",
-      "gc activity <id> delete with confirmation prompt (skippable with --force)",
+      "gccli activity <id> rename 'New Name'",
+      "gccli activity <id> retype --type-id 1 --type-key running",
+      "gccli activity <id> delete with confirmation prompt (skippable with --force)",
       "Write unit tests for all commands",
-      "Verify: make build succeeds, ./bin/gc activity --help shows all subcommands"
+      "Verify: make build succeeds, ./bin/gccli activity --help shows all subcommands"
     ],
     "passes": true
   },
@@ -436,12 +436,12 @@ GARMIN_PASSWORD=your-test-password
     "steps": [
       "Create internal/garminapi/workouts.go with workout API methods: GetWorkouts, GetWorkout, DownloadWorkout, UploadWorkout, GetScheduledWorkout",
       "Create internal/cmd/workouts.go with WorkoutsCmd struct",
-      "Implement gc workouts (list), gc workouts <id> (details), gc workouts <id> download (FIT)",
-      "Implement gc workouts upload <file.json> for workout JSON upload",
-      "Implement gc workouts schedule <id> for scheduled workout view",
+      "Implement gccli workouts (list), gccli workouts <id> (details), gccli workouts <id> download (FIT)",
+      "Implement gccli workouts upload <file.json> for workout JSON upload",
+      "Implement gccli workouts schedule <id> for scheduled workout view",
       "Wire WorkoutsCmd into CLI struct in root.go",
       "Write unit tests for API methods and commands",
-      "Verify: make build succeeds, ./bin/gc workouts --help shows subcommands"
+      "Verify: make build succeeds, ./bin/gccli workouts --help shows subcommands"
     ],
     "passes": true
   },
@@ -472,17 +472,17 @@ GARMIN_PASSWORD=your-test-password
     "description": "Health basic commands: internal/cmd/health.go",
     "steps": [
       "Create internal/cmd/health.go with HealthCmd struct",
-      "Implement gc health summary [date] for daily summary",
-      "Implement gc health steps [date] with gc health steps daily --start --end and gc health steps weekly --end --weeks",
-      "Implement gc health hr [date] and gc health rhr [date]",
-      "Implement gc health floors [date]",
-      "Implement gc health sleep [date]",
-      "Implement gc health stress [date] with gc health stress weekly --end --weeks",
-      "Implement gc health respiration [date]",
+      "Implement gccli health summary [date] for daily summary",
+      "Implement gccli health steps [date] with gccli health steps daily --start --end and gccli health steps weekly --end --weeks",
+      "Implement gccli health hr [date] and gccli health rhr [date]",
+      "Implement gccli health floors [date]",
+      "Implement gccli health sleep [date]",
+      "Implement gccli health stress [date] with gccli health stress weekly --end --weeks",
+      "Implement gccli health respiration [date]",
       "Support date positional arg defaulting to today, including relative dates (today, yesterday, 3d)",
       "Wire HealthCmd into CLI struct in root.go",
       "Write unit tests for date parsing and command structure",
-      "Verify: make build succeeds, ./bin/gc health --help shows subcommands"
+      "Verify: make build succeeds, ./bin/gccli health --help shows subcommands"
     ],
     "passes": true
   },
@@ -492,17 +492,17 @@ GARMIN_PASSWORD=your-test-password
     "description": "Health advanced commands: internal/cmd/health_advanced.go",
     "steps": [
       "Create internal/cmd/health_advanced.go with advanced health subcommands",
-      "Implement gc health spo2 [date], gc health hrv [date]",
-      "Implement gc health body-battery [date] with --start/--end range option",
-      "Implement gc health intensity-minutes [date] with weekly --start/--end option",
-      "Implement gc health training-readiness [date], gc health training-status [date]",
-      "Implement gc health fitness-age [date], gc health max-metrics [date]",
-      "Implement gc health lactate-threshold, gc health cycling-ftp",
-      "Implement gc health race-predictions [date]",
-      "Implement gc health endurance-score [date], gc health hill-score [date]",
-      "Implement gc health events [date], gc health lifestyle [date]",
+      "Implement gccli health spo2 [date], gccli health hrv [date]",
+      "Implement gccli health body-battery [date] with --start/--end range option",
+      "Implement gccli health intensity-minutes [date] with weekly --start/--end option",
+      "Implement gccli health training-readiness [date], gccli health training-status [date]",
+      "Implement gccli health fitness-age [date], gccli health max-metrics [date]",
+      "Implement gccli health lactate-threshold, gccli health cycling-ftp",
+      "Implement gccli health race-predictions [date]",
+      "Implement gccli health endurance-score [date], gccli health hill-score [date]",
+      "Implement gccli health events [date], gccli health lifestyle [date]",
       "Write unit tests for command structure",
-      "Verify: make build succeeds, ./bin/gc health --help shows all subcommands"
+      "Verify: make build succeeds, ./bin/gccli health --help shows all subcommands"
     ],
     "passes": true
   },
@@ -513,17 +513,17 @@ GARMIN_PASSWORD=your-test-password
     "steps": [
       "Create internal/garminapi/body.go with body composition API methods: GetBodyComposition, GetBodyCompositionRange, GetWeighIns, GetDailyWeighIns, AddWeight, AddBodyComposition, DeleteWeight, GetBloodPressure, AddBloodPressure, DeleteBloodPressure",
       "Create internal/cmd/body.go with BodyCmd struct",
-      "Implement gc body composition [date] with --start/--end range",
-      "Implement gc body weigh-ins --start/--end and gc body weigh-ins daily [date]",
-      "Implement gc body add-weight <value> with --unit (kg default, lbs)",
-      "Implement gc body add-composition --weight --body-fat --muscle-mass",
-      "Implement gc body delete-weight <pk> --date with confirmation",
-      "Implement gc body blood-pressure --start/--end",
-      "Implement gc body add-blood-pressure --systolic --diastolic --pulse",
-      "Implement gc body delete-blood-pressure <version> --date with confirmation",
+      "Implement gccli body composition [date] with --start/--end range",
+      "Implement gccli body weigh-ins --start/--end and gccli body weigh-ins daily [date]",
+      "Implement gccli body add-weight <value> with --unit (kg default, lbs)",
+      "Implement gccli body add-composition --weight --body-fat --muscle-mass",
+      "Implement gccli body delete-weight <pk> --date with confirmation",
+      "Implement gccli body blood-pressure --start/--end",
+      "Implement gccli body add-blood-pressure --systolic --diastolic --pulse",
+      "Implement gccli body delete-blood-pressure <version> --date with confirmation",
       "Wire BodyCmd into CLI struct in root.go",
       "Write unit tests",
-      "Verify: make build succeeds, ./bin/gc body --help shows subcommands"
+      "Verify: make build succeeds, ./bin/gccli body --help shows subcommands"
     ],
     "passes": true
   },
@@ -535,7 +535,7 @@ GARMIN_PASSWORD=your-test-password
       "Create internal/fit/encoder.go porting Python FitEncoderWeight class to Go",
       "Implement FIT protocol binary encoding with CRC checks",
       "Support encoding body composition data (weight, body fat %, muscle mass, etc.) into FIT format",
-      "Integrate with gc body add-composition command to encode and upload FIT data",
+      "Integrate with gccli body add-composition command to encode and upload FIT data",
       "Write unit tests comparing output against known-good FIT file bytes",
       "Verify: go test ./internal/fit/... passes"
     ],
@@ -548,11 +548,11 @@ GARMIN_PASSWORD=your-test-password
     "steps": [
       "Create internal/garminapi/devices.go with device API methods: GetDevices, GetDeviceSettings, GetPrimaryTrainingDevice, GetDeviceSolar, GetDeviceAlarms, GetLastUsedDevice",
       "Create internal/cmd/devices.go with DevicesCmd struct",
-      "Implement gc devices (list), gc devices <id> settings, gc devices primary",
-      "Implement gc devices <id> solar, gc devices alarms, gc devices last-used",
+      "Implement gccli devices (list), gccli devices <id> settings, gccli devices primary",
+      "Implement gccli devices <id> solar, gccli devices alarms, gccli devices last-used",
       "Wire DevicesCmd into CLI struct in root.go",
       "Write unit tests",
-      "Verify: make build succeeds, ./bin/gc devices --help shows subcommands"
+      "Verify: make build succeeds, ./bin/gccli devices --help shows subcommands"
     ],
     "passes": true
   },
@@ -563,12 +563,12 @@ GARMIN_PASSWORD=your-test-password
     "steps": [
       "Create internal/garminapi/gear.go with gear API methods: GetGear, GetGearStats, GetGearActivities, GetGearDefaults, LinkGear, UnlinkGear",
       "Create internal/cmd/gear.go with GearCmd struct",
-      "Implement gc gear (list), gc gear <uuid> stats, gc gear <uuid> activities",
-      "Implement gc gear defaults for gear defaults per activity type",
-      "Implement gc gear <uuid> link <activity-id> and gc gear <uuid> unlink <activity-id>",
+      "Implement gccli gear (list), gccli gear <uuid> stats, gccli gear <uuid> activities",
+      "Implement gccli gear defaults for gear defaults per activity type",
+      "Implement gccli gear <uuid> link <activity-id> and gccli gear <uuid> unlink <activity-id>",
       "Wire GearCmd into CLI struct in root.go",
       "Write unit tests",
-      "Verify: make build succeeds, ./bin/gc gear --help shows subcommands"
+      "Verify: make build succeeds, ./bin/gccli gear --help shows subcommands"
     ],
     "passes": true
   },
@@ -579,13 +579,13 @@ GARMIN_PASSWORD=your-test-password
     "steps": [
       "Create internal/garminapi/goals.go with API methods: GetGoals, GetBadgesEarned, GetBadgesAvailable, GetBadgesInProgress, GetChallenges, GetBadgeChallenges, GetPersonalRecords",
       "Create internal/cmd/goals.go with GoalsCmd, BadgesCmd, ChallengesCmd, RecordsCmd",
-      "Implement gc goals with --status filter (active, completed)",
-      "Implement gc badges earned, gc badges available, gc badges in-progress",
-      "Implement gc challenges and gc challenges badge",
-      "Implement gc records for personal records",
+      "Implement gccli goals with --status filter (active, completed)",
+      "Implement gccli badges earned, gccli badges available, gccli badges in-progress",
+      "Implement gccli challenges and gccli challenges badge",
+      "Implement gccli records for personal records",
       "Wire all into CLI struct in root.go",
       "Write unit tests",
-      "Verify: make build succeeds, ./bin/gc goals --help shows subcommands"
+      "Verify: make build succeeds, ./bin/gccli goals --help shows subcommands"
     ],
     "passes": true
   },
@@ -595,14 +595,14 @@ GARMIN_PASSWORD=your-test-password
     "description": "Profile, hydration, training, wellness commands",
     "steps": [
       "Create internal/garminapi/profile.go with API methods: GetProfile, GetUserSettings",
-      "Create internal/cmd/profile.go with gc profile and gc profile settings",
-      "Create internal/cmd/hydration.go with gc hydration [date] and gc hydration add <amount_ml>",
-      "Create internal/cmd/training.go with gc training plans and gc training plan <id>",
+      "Create internal/cmd/profile.go with gccli profile and gccli profile settings",
+      "Create internal/cmd/hydration.go with gccli hydration [date] and gccli hydration add <amount_ml>",
+      "Create internal/cmd/training.go with gccli training plans and gccli training plan <id>",
       "Create internal/cmd/wellness.go for menstrual/pregnancy data if applicable",
-      "Add gc reload [date] command for requesting data reload",
+      "Add gccli reload [date] command for requesting data reload",
       "Wire all commands into CLI struct in root.go",
       "Write unit tests for all new commands",
-      "Verify: make build succeeds, ./bin/gc --help shows all top-level commands"
+      "Verify: make build succeeds, ./bin/gccli --help shows all top-level commands"
     ],
     "passes": true
   },

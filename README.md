@@ -37,18 +37,18 @@ cd gccli
 make build
 ```
 
-The binary is output to `./bin/gc`.
+The binary is output to `./bin/gccli`.
 
 Run:
 
 ```bash
-./bin/gc --help
+./bin/gccli --help
 ```
 
 Help:
 
-- `gc --help` shows top-level command groups.
-- Drill down with `gc <group> --help` (and deeper subcommands).
+- `gccli --help` shows top-level command groups.
+- Drill down with `gccli <group> --help` (and deeper subcommands).
 - Make shortcut: `make run -- --help` (or `make run -- activities --help`).
 
 ## Quick Start
@@ -56,7 +56,7 @@ Help:
 ### 1. Log In (Browser SSO)
 
 ```bash
-gc auth login you@example.com
+gccli auth login you@example.com
 ```
 
 This opens your browser for Garmin SSO authentication. The OAuth tokens are stored securely in your system keyring.
@@ -66,50 +66,50 @@ This opens your browser for Garmin SSO authentication. The OAuth tokens are stor
 For servers or environments without a browser:
 
 ```bash
-gc auth login you@example.com --headless
+gccli auth login you@example.com --headless
 ```
 
 You'll be prompted for your password. If your account has two-factor authentication:
 
 ```bash
-gc auth login you@example.com --headless --mfa-code 123456
+gccli auth login you@example.com --headless --mfa-code 123456
 ```
 
 ### 3. Set Your Default Account
 
 ```bash
-export GC_ACCOUNT=you@example.com
+export GCCLI_ACCOUNT=you@example.com
 ```
 
 ### 4. Test Authentication
 
 ```bash
-gc auth status
-gc activities list --limit 5
+gccli auth status
+gccli activities list --limit 5
 ```
 
 ## Authentication & Secrets
 
 ### Accounts and Tokens
 
-`gc` stores your OAuth tokens in a keyring backend. Default is auto-detection (best available backend for your OS/environment).
+`gccli` stores your OAuth tokens in a keyring backend. Default is auto-detection (best available backend for your OS/environment).
 
 List current auth state:
 
 ```bash
-gc auth status
+gccli auth status
 ```
 
 Print the raw OAuth2 access token (useful for scripting):
 
 ```bash
-gc auth token
+gccli auth token
 ```
 
 Remove stored credentials:
 
 ```bash
-gc auth remove
+gccli auth remove
 ```
 
 ### Keyring Backend
@@ -124,7 +124,7 @@ Backends:
 Set backend via environment variable:
 
 ```bash
-export GC_KEYRING_BACKEND=file
+export GCCLI_KEYRING_BACKEND=file
 ```
 
 Or in the config file (`config.json`):
@@ -135,14 +135,14 @@ Or in the config file (`config.json`):
 }
 ```
 
-On Linux, if D-Bus is unavailable, `gc` automatically falls back to the file backend.
+On Linux, if D-Bus is unavailable, `gccli` automatically falls back to the file backend.
 
 ### Garmin Domain (China)
 
 For Garmin China accounts (garmin.cn):
 
 ```bash
-export GC_DOMAIN=garmin.cn
+export GCCLI_DOMAIN=garmin.cn
 ```
 
 Or in `config.json`:
@@ -161,11 +161,11 @@ Specify the account using either a flag or environment variable:
 
 ```bash
 # Via flag
-gc activities list --account you@example.com
+gccli activities list --account you@example.com
 
 # Via environment
-export GC_ACCOUNT=you@example.com
-gc activities list
+export GCCLI_ACCOUNT=you@example.com
+gccli activities list
 ```
 
 ### Output
@@ -196,12 +196,12 @@ Example:
 
 | Variable | Description |
 | --- | --- |
-| `GC_ACCOUNT` | Default account email |
-| `GC_DOMAIN` | Garmin domain (`garmin.com` or `garmin.cn`) |
-| `GC_JSON` | Enable JSON output (`1`, `true`, `yes`) |
-| `GC_PLAIN` | Enable plain/TSV output (`1`, `true`, `yes`) |
-| `GC_COLOR` | Color mode: `auto`, `always`, `never` |
-| `GC_KEYRING_BACKEND` | Keyring backend: `keychain`, `secret-service`, `file` |
+| `GCCLI_ACCOUNT` | Default account email |
+| `GCCLI_DOMAIN` | Garmin domain (`garmin.com` or `garmin.cn`) |
+| `GCCLI_JSON` | Enable JSON output (`1`, `true`, `yes`) |
+| `GCCLI_PLAIN` | Enable plain/TSV output (`1`, `true`, `yes`) |
+| `GCCLI_COLOR` | Color mode: `auto`, `always`, `never` |
+| `GCCLI_KEYRING_BACKEND` | Keyring backend: `keychain`, `secret-service`, `file` |
 
 ## Security
 
@@ -215,148 +215,148 @@ OAuth tokens are stored securely in your system's keyring:
 
 The CLI uses [github.com/99designs/keyring](https://github.com/99designs/keyring) for secure storage.
 
-Tokens are keyed by email (`gc:token:<email>`) and never stored in plaintext files.
+Tokens are keyed by email (`gccli:token:<email>`) and never stored in plaintext files.
 
 ## Commands
 
 ### Authentication
 
 ```bash
-gc auth login <email>               # Log in via browser SSO
-gc auth login <email> --headless    # Log in via email/password
-gc auth login <email> --headless --mfa-code <code>  # With MFA
-gc auth status                      # Show auth state and token expiry
-gc auth token                       # Print OAuth2 access token
-gc auth remove                      # Remove stored credentials
+gccli auth login <email>               # Log in via browser SSO
+gccli auth login <email> --headless    # Log in via email/password
+gccli auth login <email> --headless --mfa-code <code>  # With MFA
+gccli auth status                      # Show auth state and token expiry
+gccli auth token                       # Print OAuth2 access token
+gccli auth remove                      # Remove stored credentials
 ```
 
 ### Activities
 
 ```bash
 # List and search
-gc activities list --limit 20 --start 0
-gc activities list --type running
-gc activities count
-gc activities search --start-date 2024-01-01 --end-date 2024-12-31
+gccli activities list --limit 20 --start 0
+gccli activities list --type running
+gccli activities count
+gccli activities search --start-date 2024-01-01 --end-date 2024-12-31
 
 # View details
-gc activity summary <id>
-gc activity details <id>
-gc activity splits <id>
-gc activity typed-splits <id>
-gc activity split-summaries <id>
-gc activity weather <id>
-gc activity hr-zones <id>
-gc activity power-zones <id>
-gc activity exercise-sets <id>
-gc activity gear <id>
+gccli activity summary <id>
+gccli activity details <id>
+gccli activity splits <id>
+gccli activity typed-splits <id>
+gccli activity split-summaries <id>
+gccli activity weather <id>
+gccli activity hr-zones <id>
+gccli activity power-zones <id>
+gccli activity exercise-sets <id>
+gccli activity gear <id>
 
 # Download and upload
-gc activity download <id> --format fit
-gc activity download <id> --format gpx --output track.gpx
-gc activity upload ./activity.fit
+gccli activity download <id> --format fit
+gccli activity download <id> --format gpx --output track.gpx
+gccli activity upload ./activity.fit
 
 # Create and modify
-gc activity create --name "Morning Run" --type running --duration 30m --distance 5000
-gc activity rename <id> "New Name"
-gc activity retype <id> --type-id 1 --type-key running
-gc activity delete <id>
-gc activity delete <id> --force
+gccli activity create --name "Morning Run" --type running --duration 30m --distance 5000
+gccli activity rename <id> "New Name"
+gccli activity retype <id> --type-id 1 --type-key running
+gccli activity delete <id>
+gccli activity delete <id> --force
 ```
 
 ### Health Data
 
 ```bash
 # Daily summary
-gc health summary                   # Today
-gc health summary yesterday
-gc health summary 2024-06-15
-gc health summary 3d                # 3 days ago
+gccli health summary                   # Today
+gccli health summary yesterday
+gccli health summary 2024-06-15
+gccli health summary 3d                # 3 days ago
 
 # Vitals
-gc health steps                     # Step chart for today
-gc health steps daily --start 2024-01-01 --end 2024-01-31
-gc health steps weekly --weeks 4
-gc health hr [date]                 # Heart rate
-gc health rhr [date]                # Resting heart rate
-gc health floors [date]             # Floors climbed
-gc health sleep [date]              # Sleep data
-gc health respiration [date]
-gc health spo2 [date]               # Blood oxygen
-gc health hrv [date]                # Heart rate variability
+gccli health steps                     # Step chart for today
+gccli health steps daily --start 2024-01-01 --end 2024-01-31
+gccli health steps weekly --weeks 4
+gccli health hr [date]                 # Heart rate
+gccli health rhr [date]                # Resting heart rate
+gccli health floors [date]             # Floors climbed
+gccli health sleep [date]              # Sleep data
+gccli health respiration [date]
+gccli health spo2 [date]               # Blood oxygen
+gccli health hrv [date]                # Heart rate variability
 
 # Stress and recovery
-gc health stress                    # Stress for today
-gc health stress weekly --weeks 4
-gc health body-battery [date]
-gc health body-battery range --start 2024-01-01 --end 2024-01-07
-gc health training-readiness [date]
-gc health training-status [date]
+gccli health stress                    # Stress for today
+gccli health stress weekly --weeks 4
+gccli health body-battery [date]
+gccli health body-battery range --start 2024-01-01 --end 2024-01-07
+gccli health training-readiness [date]
+gccli health training-status [date]
 
 # Fitness metrics
-gc health fitness-age [date]
-gc health max-metrics [date]        # VO2max and more
-gc health lactate-threshold
-gc health cycling-ftp
-gc health race-predictions
-gc health race-predictions range --start 2024-01-01 --end 2024-06-30
-gc health endurance-score [date]
-gc health hill-score [date]
-gc health intensity-minutes [date]
-gc health intensity-minutes weekly --start 2024-01-01 --end 2024-01-31
+gccli health fitness-age [date]
+gccli health max-metrics [date]        # VO2max and more
+gccli health lactate-threshold
+gccli health cycling-ftp
+gccli health race-predictions
+gccli health race-predictions range --start 2024-01-01 --end 2024-06-30
+gccli health endurance-score [date]
+gccli health hill-score [date]
+gccli health intensity-minutes [date]
+gccli health intensity-minutes weekly --start 2024-01-01 --end 2024-01-31
 
 # Wellness events
-gc health events [date]
-gc health lifestyle [date]
+gccli health events [date]
+gccli health lifestyle [date]
 ```
 
 ### Body Composition
 
 ```bash
 # View data
-gc body composition                 # Today
-gc body composition --start 2024-01-01 --end 2024-01-31
-gc body weigh-ins --start 2024-01-01 --end 2024-01-31
-gc body daily-weigh-ins [date]
+gccli body composition                 # Today
+gccli body composition --start 2024-01-01 --end 2024-01-31
+gccli body weigh-ins --start 2024-01-01 --end 2024-01-31
+gccli body daily-weigh-ins [date]
 
 # Add data
-gc body add-weight 75.5 --unit kg
-gc body add-weight 166.4 --unit lbs
-gc body add-composition 75.5 --body-fat 15.2 --muscle-mass 35.0
+gccli body add-weight 75.5 --unit kg
+gccli body add-weight 166.4 --unit lbs
+gccli body add-composition 75.5 --body-fat 15.2 --muscle-mass 35.0
 
 # Blood pressure
-gc body blood-pressure --start 2024-01-01 --end 2024-01-31
-gc body add-blood-pressure --systolic 120 --diastolic 80 --pulse 65
+gccli body blood-pressure --start 2024-01-01 --end 2024-01-31
+gccli body add-blood-pressure --systolic 120 --diastolic 80 --pulse 65
 
 # Delete entries
-gc body delete-weight <pk> --date 2024-01-15
-gc body delete-blood-pressure <version> --date 2024-01-15
+gccli body delete-weight <pk> --date 2024-01-15
+gccli body delete-blood-pressure <version> --date 2024-01-15
 ```
 
 ### Workouts
 
 ```bash
-gc workouts list --limit 20
-gc workouts detail <id>
-gc workouts download <id> --output workout.fit
-gc workouts upload ./workout.json   # See JSON structure below
-gc workouts schedule <id> <YYYY-MM-DD>
-gc workouts delete <id>
+gccli workouts list --limit 20
+gccli workouts detail <id>
+gccli workouts download <id> --output workout.fit
+gccli workouts upload ./workout.json   # See JSON structure below
+gccli workouts schedule <id> <YYYY-MM-DD>
+gccli workouts delete <id>
 
 # Create a running workout with pace targets
-gc workouts create "Easy 30min Run" --type run \
+gccli workouts create "Easy 30min Run" --type run \
   --step "warmup:5m@pace:5:30-6:00" \
   --step "run:20m@pace:5:00-5:30" \
   --step "cooldown:5m"
 
 # Running with heart rate targets
-gc workouts create "HR Zone Run" --type run \
+gccli workouts create "HR Zone Run" --type run \
   --step "warmup:10m" \
   --step "run:20m@hr:140-160" \
   --step "cooldown:10m"
 
 # Cycling with power targets
-gc workouts create "FTP Intervals" --type bike \
+gccli workouts create "FTP Intervals" --type bike \
   --step "warmup:10m" \
   --step "run:5m@power:250-280" \
   --step "recovery:3m" \
@@ -364,20 +364,20 @@ gc workouts create "FTP Intervals" --type bike \
   --step "cooldown:10m"
 
 # Imperial paces (miles)
-gc workouts create "Easy 30min Run" --type run \
+gccli workouts create "Easy 30min Run" --type run \
   --step "warmup:5m@pace:8:51-9:39" \
   --step "run:20m@pace:8:03-8:51" \
   --step "cooldown:5m" \
   --unit mi
 
 # Strength workout (no targets)
-gc workouts create "Full Body" --type strength \
+gccli workouts create "Full Body" --type strength \
   --step "warmup:5m" \
   --step "run:30m" \
   --step "cooldown:5m"
 ```
 
-**Workout JSON structure** for `gc workouts upload`:
+**Workout JSON structure** for `gccli workouts upload`:
 
 ```json
 {
@@ -436,73 +436,73 @@ Key reference values:
 ### Devices
 
 ```bash
-gc devices list
-gc devices settings <device-id>
-gc devices primary
-gc devices last-used
-gc devices alarms
-gc devices solar <device-id> --start 2024-06-01 --end 2024-06-30
+gccli devices list
+gccli devices settings <device-id>
+gccli devices primary
+gccli devices last-used
+gccli devices alarms
+gccli devices solar <device-id> --start 2024-06-01 --end 2024-06-30
 ```
 
 ### Gear
 
 ```bash
-gc gear list
-gc gear stats <uuid>
-gc gear activities <uuid> --limit 20
-gc gear defaults
-gc gear link <uuid> <activity-id>
-gc gear unlink <uuid> <activity-id>
+gccli gear list
+gccli gear stats <uuid>
+gccli gear activities <uuid> --limit 20
+gccli gear defaults
+gccli gear link <uuid> <activity-id>
+gccli gear unlink <uuid> <activity-id>
 ```
 
 ### Goals, Badges & Challenges
 
 ```bash
-gc goals list
-gc goals list --status active
-gc badges earned
-gc badges available
-gc badges in-progress
-gc challenges list
-gc challenges badge
-gc records
+gccli goals list
+gccli goals list --status active
+gccli badges earned
+gccli badges available
+gccli badges in-progress
+gccli challenges list
+gccli challenges badge
+gccli records
 ```
 
 ### Profile
 
 ```bash
-gc profile
-gc profile settings
+gccli profile
+gccli profile settings
 ```
 
 ### Hydration
 
 ```bash
-gc hydration [date]                 # View hydration data
-gc hydration add 500                # Log 500ml of water
-gc hydration add 500 --date 2024-06-15
+gccli hydration [date]                 # View hydration data
+gccli hydration add 500                # Log 500ml of water
+gccli hydration add 500 --date 2024-06-15
 ```
 
 ### Training Plans
 
 ```bash
-gc training plans --locale en
-gc training plan <id>
+gccli training plans --locale en
+gccli training plan <id>
 ```
 
 ### Wellness
 
 ```bash
-gc wellness menstrual-cycle --start-date 2024-01-01 --end-date 2024-03-31
-gc wellness menstrual-summary --start-date 2024-01-01 --end-date 2024-03-31
-gc wellness pregnancy-summary
+gccli wellness menstrual-cycle --start-date 2024-01-01 --end-date 2024-03-31
+gccli wellness menstrual-summary --start-date 2024-01-01 --end-date 2024-03-31
+gccli wellness pregnancy-summary
 ```
 
 ### Data Reload
 
 ```bash
-gc reload                           # Reload today's data
-gc reload 2024-06-15                # Reload specific date
+gccli reload                           # Reload today's data
+gccli reload 2024-06-15                # Reload specific date
 ```
 
 ## Output Formats
@@ -512,7 +512,7 @@ gc reload 2024-06-15                # Reload specific date
 Human-readable output with colors:
 
 ```bash
-$ gc activities list --limit 3
+$ gccli activities list --limit 3
 ID          NAME                TYPE       DATE
 123456789   Morning Run         running    2024-06-15
 123456780   Evening Walk        walking    2024-06-14
@@ -524,7 +524,7 @@ ID          NAME                TYPE       DATE
 Machine-readable output for scripting and automation:
 
 ```bash
-$ gc --json activities list --limit 3
+$ gccli --json activities list --limit 3
 [
   {
     "activityId": 123456789,
@@ -539,7 +539,7 @@ $ gc --json activities list --limit 3
 Data goes to stdout, errors and progress to stderr for clean piping:
 
 ```bash
-gc --json activities list --limit 100 | jq '.[] | select(.activityType.typeKey == "running")'
+gccli --json activities list --limit 100 | jq '.[] | select(.activityType.typeKey == "running")'
 ```
 
 ### Plain (TSV)
@@ -547,7 +547,7 @@ gc --json activities list --limit 100 | jq '.[] | select(.activityType.typeKey =
 Stable, tab-separated output for scripting:
 
 ```bash
-$ gc --plain activities list --limit 3
+$ gccli --plain activities list --limit 3
 123456789	Morning Run	running	2024-06-15
 123456780	Evening Walk	walking	2024-06-14
 123456771	Cycling Workout	cycling	2024-06-13
@@ -558,17 +558,17 @@ $ gc --plain activities list --limit 3
 ### Export all runs from the last month
 
 ```bash
-gc --json activities search --start-date 2024-05-15 --end-date 2024-06-15 --limit 100 | \
+gccli --json activities search --start-date 2024-05-15 --end-date 2024-06-15 --limit 100 | \
   jq -r '.[] | select(.activityType.typeKey == "running") | .activityId' | \
   while read id; do
-    gc activity download "$id" --format gpx --output "run_${id}.gpx"
+    gccli activity download "$id" --format gpx --output "run_${id}.gpx"
   done
 ```
 
 ### Daily health check script
 
 ```bash
-gc --json health summary | jq '{
+gccli --json health summary | jq '{
   steps: .totalSteps,
   calories: .totalKilocalories,
   distance_km: (.totalDistanceMeters / 1000),
@@ -579,15 +579,15 @@ gc --json health summary | jq '{
 ### Track weight over time
 
 ```bash
-gc --json body weigh-ins --start 2024-01-01 --end 2024-06-30 | \
+gccli --json body weigh-ins --start 2024-01-01 --end 2024-06-30 | \
   jq -r '.dailyWeightSummaries[] | [.summaryDate, .weight.value] | @tsv'
 ```
 
 ### Download the latest activity
 
 ```bash
-latest=$(gc --json activities list --limit 1 | jq -r '.[0].activityId')
-gc activity download "$latest" --format fit
+latest=$(gccli --json activities list --limit 1 | jq -r '.[0].activityId')
+gccli activity download "$latest" --format fit
 ```
 
 ## Global Flags
@@ -596,7 +596,7 @@ All commands support these flags:
 
 | Flag | Description |
 | --- | --- |
-| `--account <email>` | Account to use (overrides `GC_ACCOUNT`) |
+| `--account <email>` | Account to use (overrides `GCCLI_ACCOUNT`) |
 | `--json`, `-j` | Output JSON to stdout |
 | `--plain` | Output stable TSV to stdout |
 | `--color <mode>` | Color mode: `auto`, `always`, `never` (default: `auto`) |
@@ -625,7 +625,7 @@ make tools
 Build, test, and lint:
 
 ```bash
-make build          # Build to ./bin/gc
+make build          # Build to ./bin/gccli
 make test           # Unit tests with race detector
 make lint           # golangci-lint
 make fmt            # Format with goimports + gofumpt

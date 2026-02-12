@@ -11,7 +11,7 @@ import (
 
 const (
 	// keyPrefix is the prefix for all keyring keys.
-	keyPrefix = "gc:token:"
+	keyPrefix = "gccli:token:"
 
 	// serviceName is the keyring service name.
 	serviceName = "gccli"

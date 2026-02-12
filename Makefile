@@ -1,7 +1,7 @@
 MODULE   := github.com/bpauli/gccli
-BINARY   := gc
+BINARY   := gccli
 BIN_DIR  := ./bin
-CMD_DIR  := ./cmd/gc
+CMD_DIR  := ./cmd/gccli
 TOOLS_DIR := .tools
 
 VERSION  ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo "dev")

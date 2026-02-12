@@ -114,7 +114,7 @@ func TestMultipleEmails(t *testing.T) {
 
 func TestKeyFor(t *testing.T) {
 	got := keyFor("user@garmin.com")
-	want := "gc:token:user@garmin.com"
+	want := "gccli:token:user@garmin.com"
 	if got != want {
 		t.Errorf("keyFor = %q, want %q", got, want)
 	}

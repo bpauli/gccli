@@ -20,7 +20,7 @@ func defaultNewClient(tokens *garminauth.Tokens) *garminapi.Client {
 func resolveClient(g *Globals) (*garminapi.Client, error) {
 	email := g.Account
 	if email == "" {
-		return nil, fmt.Errorf("no account specified; use --account or set GC_ACCOUNT")
+		return nil, fmt.Errorf("no account specified; use --account or set GCCLI_ACCOUNT")
 	}
 
 	store, err := loadSecretsStore()
@@ -31,7 +31,7 @@ func resolveClient(g *Globals) (*garminapi.Client, error) {
 	data, err := store.Get(email)
 	if err != nil {
 		if err == secrets.ErrNotFound {
-			return nil, fmt.Errorf("no credentials stored for %s; run: gc auth login %s", email, email)
+			return nil, fmt.Errorf("no credentials stored for %s; run: gccli auth login %s", email, email)
 		}
 		return nil, fmt.Errorf("read credentials: %w", err)
 	}

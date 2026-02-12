@@ -89,22 +89,22 @@ func TestFormat(t *testing.T) {
 		{
 			name: "auth required with email",
 			err:  &AuthRequiredError{Email: "user@example.com"},
-			want: "No auth found. Run: gc auth login user@example.com",
+			want: "No auth found. Run: gccli auth login user@example.com",
 		},
 		{
 			name: "auth required without email",
 			err:  &AuthRequiredError{},
-			want: "No auth found. Run: gc auth login <email>",
+			want: "No auth found. Run: gccli auth login <email>",
 		},
 		{
 			name: "token expired with email",
 			err:  &TokenExpiredError{Email: "user@example.com"},
-			want: "Token expired. Run: gc auth login user@example.com",
+			want: "Token expired. Run: gccli auth login user@example.com",
 		},
 		{
 			name: "token expired without email",
 			err:  &TokenExpiredError{},
-			want: "Token expired. Run: gc auth login <email>",
+			want: "Token expired. Run: gccli auth login <email>",
 		},
 		{
 			name: "rate limited with retry-after",
@@ -134,12 +134,12 @@ func TestFormat(t *testing.T) {
 		{
 			name: "wrapped auth error",
 			err:  fmt.Errorf("login failed: %w", &AuthRequiredError{Email: "a@b.com"}),
-			want: "No auth found. Run: gc auth login a@b.com",
+			want: "No auth found. Run: gccli auth login a@b.com",
 		},
 		{
 			name: "wrapped token error",
 			err:  fmt.Errorf("refresh failed: %w", &TokenExpiredError{Email: "a@b.com"}),
-			want: "Token expired. Run: gc auth login a@b.com",
+			want: "Token expired. Run: gccli auth login a@b.com",
 		},
 		{
 			name: "wrapped rate limit error",
