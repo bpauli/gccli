@@ -27,6 +27,12 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 
 ## Installation
 
+### Homebrew (macOS / Linux)
+
+```bash
+brew install bpauli/tap/gccli
+```
+
 ### Build from Source
 
 Requires Go 1.24+.

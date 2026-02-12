@@ -12,6 +12,13 @@ metadata:
         "install":
           [
             {
+              "id": "homebrew",
+              "kind": "homebrew",
+              "formula": "bpauli/tap/gccli",
+              "bins": ["gccli"],
+              "label": "Homebrew (recommended)",
+            },
+            {
               "id": "source",
               "kind": "source",
               "url": "https://github.com/bpauli/gccli",
