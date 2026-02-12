@@ -36,13 +36,14 @@ go.work.sum
 
 # Local build output
 bin/
-/gog
+/gc
 
 # Node (optional dev scripts)
 node_modules/
 
 # AI Coding agent
 .claude/
+.agents/
 CLAUDE.md
 activity.md
 prd.md

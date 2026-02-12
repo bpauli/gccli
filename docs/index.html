@@ -1,0 +1,788 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>gccli — Garmin Connect in your terminal</title>
+    <meta name="description" content="gc is a fast, script-friendly CLI for Garmin Connect. Activities, health data, workouts, body composition, devices, gear, goals, badges, and more." />
+    <link rel="icon" href="/favicon.ico" />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+      *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+      :root {
+        --bg: #0d1017; --bg-card: #141922; --bg-terminal: #111720;
+        --fg: #c8d1dc; --fg-dim: #4e5768; --fg-muted: #6b7a8d;
+        --green: #34d399; --green-dim: rgba(52,211,153,0.12); --green-glow: rgba(52,211,153,0.15);
+        --cyan: #38bdf8; --yellow: #fbbf24; --red: #f87171;
+        --orange: #fb923c; --violet: #a78bfa; --rose: #fb7185;
+        --border: #1e2633; --surface: #1a2130; --radius: 12px;
+      }
+      html { scroll-behavior: smooth; }
+      body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+      code, pre, .mono { font-family: 'JetBrains Mono', monospace; }
+      a { color: inherit; text-decoration: none; }
+
+      /* ── Nav ── */
+      nav { position: sticky; top: 0; z-index: 50; background: rgba(13,16,23,0.82); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+      .nav-inner { max-width: 1120px; margin: 0 auto; padding: 0 24px; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+      .nav-brand { display: flex; align-items: center; gap: 8px; }
+      .nav-brand strong { font-size: 18px; }
+      .nav-brand .tag { font-size: 12px; color: var(--fg-muted); font-family: 'JetBrains Mono', monospace; padding: 2px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); }
+      .nav-links { display: flex; align-items: center; gap: 28px; }
+      .nav-links a { font-size: 14px; color: var(--fg-muted); transition: color 0.2s; }
+      .nav-links a:hover { color: var(--fg); }
+      .btn-nav { padding: 6px 16px; border-radius: 8px; background: var(--surface); font-size: 14px; font-weight: 500; color: var(--fg); transition: background 0.2s; border: 1px solid var(--border); }
+      .btn-nav:hover { background: var(--border); }
+
+      /* ── Shared ── */
+      .section { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+      .section-border { border-top: 1px solid var(--border); }
+      .section-title { font-size: 30px; font-weight: 700; background: linear-gradient(180deg,#fff 20%,#8899aa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+      .section-desc { margin-top: 12px; color: var(--fg-muted); font-size: 15px; }
+      .split { display: grid; grid-template-columns: 1fr 2fr; gap: 48px; align-items: start; }
+      .card { border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; background: linear-gradient(180deg,#171d28 0%,#131820 100%); }
+      .card h3 { font-size: 15px; font-weight: 600; margin-bottom: 12px; }
+      .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+      pre.code-block { background: var(--bg-terminal); border: 1px solid var(--border); border-radius: 10px; padding: 16px; font-size: 13px; overflow-x: auto; line-height: 1.7; color: var(--fg); margin-top: 8px; }
+
+      /* ── Hero ── */
+      .hero { padding: 80px 0 96px; }
+      .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+      .hero-label { font-size: 13px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--green); }
+      .hero-title { font-size: clamp(42px,5.5vw,60px); font-weight: 900; line-height: 1.05; letter-spacing: -0.02em; margin-top: 16px; background: linear-gradient(180deg,#fff 20%,#8899aa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+      .hero-desc { margin-top: 20px; font-size: 17px; color: var(--fg-muted); max-width: 440px; line-height: 1.7; }
+      .hero-desc strong { color: var(--fg); }
+      .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+      .badge { padding: 4px 14px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); font-size: 12px; font-weight: 500; color: var(--fg-muted); transition: border-color 0.2s; }
+      .badge:hover { border-color: rgba(52,211,153,0.3); color: var(--fg); }
+      .hero-actions { display: flex; gap: 12px; margin-top: 24px; }
+      .btn-primary { display: inline-block; padding: 10px 24px; border-radius: 10px; background: var(--green); color: var(--bg); font-weight: 600; font-size: 14px; transition: opacity 0.2s; }
+      .btn-primary:hover { opacity: 0.88; }
+      .btn-secondary { display: inline-block; padding: 10px 24px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); color: var(--fg); font-weight: 500; font-size: 14px; transition: background 0.2s; }
+      .btn-secondary:hover { background: var(--border); }
+      .hero-tip { font-size: 13px; color: var(--fg-muted); margin-top: 20px; }
+      .hero-tip code { padding: 2px 8px; border-radius: 6px; background: var(--surface); font-size: 12px; color: var(--fg); border: 1px solid var(--border); }
+
+      /* ── Terminal ── */
+      .terminal { border-radius: var(--radius); border: 1px solid var(--border); background: var(--bg-terminal); overflow: hidden; box-shadow: 0 0 30px var(--green-glow), 0 8px 32px rgba(0,0,0,0.4); }
+      .terminal-bar { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+      .terminal-dots { display: flex; gap: 7px; }
+      .terminal-dots span { width: 12px; height: 12px; border-radius: 50%; display: block; }
+      .dot-red { background: #f87171; } .dot-yellow { background: #fbbf24; } .dot-green { background: #34d399; }
+      .terminal-title { font-size: 12px; color: var(--fg-muted); font-family: 'JetBrains Mono', monospace; }
+      .terminal-body { padding: 20px; font-size: 13px; line-height: 1.9; font-family: 'JetBrains Mono', monospace; }
+      .dim { color: var(--fg-dim); } .green { color: var(--green); } .muted-t { color: var(--fg-muted); } .yellow { color: var(--yellow); } .cyan { color: var(--cyan); }
+      .terminal-meta { display: grid; grid-template-columns: repeat(4,1fr); border-top: 1px solid var(--border); }
+      .terminal-meta-item { padding: 12px 16px; }
+      .terminal-meta-item:not(:last-child) { border-right: 1px solid var(--border); }
+      .terminal-meta-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--fg-muted); margin-bottom: 4px; }
+      .terminal-meta-value { font-size: 13px; font-family: 'JetBrains Mono', monospace; }
+      .terminal-meta-value code { padding: 2px 8px; border-radius: 6px; background: var(--surface); font-size: 11px; border: 1px solid var(--border); }
+
+      /* ── Steps ── */
+      .steps { display: flex; flex-direction: column; gap: 24px; }
+      .step { display: flex; gap: 20px; }
+      .step-num { flex-shrink: 0; width: 36px; height: 36px; border-radius: 50%; background: var(--green-dim); border: 1px solid rgba(52,211,153,0.25); display: flex; align-items: center; justify-content: center; color: var(--green); font-weight: 700; font-size: 14px; }
+      .step-content { flex: 1; }
+      .step-content h3 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+      .step-content p { font-size: 13px; color: var(--fg-muted); margin-bottom: 8px; }
+      .step-content p code { padding: 2px 6px; border-radius: 6px; background: var(--surface); font-size: 12px; color: var(--fg); border: 1px solid var(--border); }
+
+      /* ── Features ── */
+      .features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-top: 48px; }
+      .feature-card { border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; background: linear-gradient(180deg,#171d28 0%,#131820 100%); transition: border-color 0.2s, transform 0.2s; }
+      .feature-card:hover { border-color: rgba(52,211,153,0.25); transform: translateY(-2px); }
+      .feature-icon { font-size: 20px; margin-bottom: 10px; display: inline-flex; width: 36px; height: 36px; align-items: center; justify-content: center; border-radius: 10px; background: var(--green-dim); border: 1px solid rgba(52,211,153,0.18); }
+      .feature-icon.blue { background: rgba(56,189,248,0.1); border-color: rgba(56,189,248,0.18); }
+      .feature-icon.orange { background: rgba(251,146,60,0.1); border-color: rgba(251,146,60,0.18); }
+      .feature-icon.rose { background: rgba(251,113,133,0.1); border-color: rgba(251,113,133,0.18); }
+      .feature-icon.violet { background: rgba(167,139,250,0.1); border-color: rgba(167,139,250,0.18); }
+      .feature-icon.yellow { background: rgba(251,191,36,0.1); border-color: rgba(251,191,36,0.18); }
+      .feature-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+      .feature-card p { font-size: 13px; color: var(--fg-muted); line-height: 1.6; }
+
+      /* ── Commands ── */
+      .cmd-group { margin-bottom: 12px; }
+      .cmd-header { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-radius: 10px; background: linear-gradient(180deg,#171d28 0%,#131820 100%); border: 1px solid var(--border); cursor: pointer; user-select: none; transition: border-color 0.2s; }
+      .cmd-header:hover { border-color: rgba(52,211,153,0.2); }
+      .cmd-header h3 { margin: 0; font-size: 15px; font-weight: 600; flex: 1; }
+      .cmd-arrow { font-size: 11px; color: var(--fg-dim); transition: transform 0.25s; font-family: 'JetBrains Mono', monospace; }
+      .cmd-group.is-open .cmd-arrow { transform: rotate(90deg); }
+      .cmd-group.is-open .cmd-header { border-radius: 10px 10px 0 0; border-bottom-color: transparent; }
+      .cmd-body { display: none; border: 1px solid var(--border); border-top: none; border-radius: 0 0 10px 10px; background: var(--bg-terminal); padding: 4px 0; }
+      .cmd-group.is-open .cmd-body { display: block; }
+      .cmd-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 9px 18px; font-size: 13px; border-bottom: 1px solid rgba(30,38,51,0.5); }
+      .cmd-row:last-child { border-bottom: none; }
+      .cmd-row .cmd { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: var(--fg); }
+      .cmd-row .desc { color: var(--fg-muted); }
+
+      /* ── Callout ── */
+      .callout { display: flex; gap: 16px; padding: 20px; border-radius: var(--radius); border: 1px solid rgba(52,211,153,0.18); background: linear-gradient(135deg,rgba(52,211,153,0.06),rgba(56,189,248,0.03)); margin-top: 20px; }
+      .callout-icon { flex-shrink: 0; width: 36px; height: 36px; border-radius: 10px; background: var(--green-dim); border: 1px solid rgba(52,211,153,0.18); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+      .callout-body h3 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+      .callout-body p { font-size: 13px; color: var(--fg-muted); line-height: 1.6; }
+      .callout-body code { padding: 2px 6px; border-radius: 6px; background: var(--surface); font-size: 12px; color: var(--fg); border: 1px solid var(--border); }
+
+      /* ── Env table ── */
+      .env-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+      .env-table th { text-align: left; color: var(--fg-muted); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; padding: 8px 0; border-bottom: 1px solid var(--border); }
+      .env-table td { padding: 10px 0; border-bottom: 1px solid rgba(30,38,51,0.5); color: var(--fg-muted); }
+      .env-table td:first-child { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: var(--fg); white-space: nowrap; padding-right: 24px; }
+      .env-table tr:last-child td { border-bottom: none; }
+      .env-table code { padding: 2px 6px; border-radius: 6px; background: var(--surface); font-size: 11px; color: var(--fg); border: 1px solid var(--border); }
+
+      /* ── Architecture ── */
+      .arch-flow { margin-top: 24px; padding: 18px 24px; border-radius: var(--radius); background: var(--bg-terminal); border: 1px solid var(--border); font-family: 'JetBrains Mono', monospace; font-size: 13px; text-align: center; color: var(--fg); line-height: 2.2; }
+      .arch-flow .layer { display: inline-block; padding: 4px 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); }
+      .arch-flow .arrow { color: var(--green); margin: 0 8px; }
+      .arch-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-top: 16px; }
+      .arch-card { border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; background: linear-gradient(180deg,#171d28 0%,#131820 100%); }
+      .arch-card h4 { font-size: 13px; font-family: 'JetBrains Mono', monospace; font-weight: 600; margin-bottom: 6px; }
+      .arch-card p { font-size: 12px; color: var(--fg-muted); line-height: 1.5; }
+
+      /* ── Examples ── */
+      .examples-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; margin-top: 32px; }
+      .example { border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; background: linear-gradient(180deg,#171d28 0%,#131820 100%); }
+      .example h3 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+      .example p { font-size: 13px; color: var(--fg-muted); margin-bottom: 8px; }
+
+      /* ── Image placeholder ── */
+      .image-placeholder { margin-top: 48px; border-radius: var(--radius); border: 2px dashed var(--border); background: linear-gradient(180deg,#171d28 0%,#131820 100%); height: 320px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 12px; }
+      .image-placeholder span { font-size: 14px; color: var(--fg-dim); }
+      .image-placeholder .ph-icon { font-size: 32px; color: var(--fg-dim); }
+
+      /* ── Footer ── */
+      footer { border-top: 1px solid var(--border); padding: 40px 0; }
+      .footer-inner { max-width: 1120px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
+      .footer-brand { display: flex; align-items: center; gap: 10px; }
+      .footer-brand strong { color: var(--green); font-family: 'JetBrains Mono', monospace; }
+      .footer-brand span { font-size: 14px; color: var(--fg-muted); }
+      .footer-right { font-size: 13px; color: var(--fg-muted); }
+      .footer-right a { color: var(--fg-muted); transition: color 0.2s; }
+      .footer-right a:hover { color: var(--fg); }
+
+      /* ── Fade-in ── */
+      .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+      .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+      /* ── Responsive ── */
+      @media (max-width: 900px) {
+        .hero-grid { grid-template-columns: 1fr; }
+        .split { grid-template-columns: 1fr; }
+        .card-grid { grid-template-columns: 1fr; }
+        .features-grid { grid-template-columns: 1fr 1fr; }
+        .arch-grid { grid-template-columns: 1fr 1fr; }
+        .examples-grid { grid-template-columns: 1fr; }
+      }
+      @media (max-width: 640px) {
+        .features-grid { grid-template-columns: 1fr; }
+        .arch-grid { grid-template-columns: 1fr; }
+        .terminal-meta { grid-template-columns: 1fr; }
+        .terminal-meta-item:not(:last-child) { border-right: none; border-bottom: 1px solid var(--border); }
+        .nav-links { display: none; }
+        .footer-inner { flex-direction: column; gap: 12px; text-align: center; }
+        .cmd-row { grid-template-columns: 1fr; gap: 4px; }
+        .arch-flow .layer { display: block; margin: 4px auto; }
+        .arch-flow .arrow { display: block; }
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- ── Nav ── -->
+    <nav>
+      <div class="nav-inner">
+        <div class="nav-brand">
+          <strong>gc</strong>
+          <span class="tag">gccli</span>
+        </div>
+        <div class="nav-links">
+          <a href="#install">Install</a>
+          <a href="#quickstart">Quickstart</a>
+          <a href="#features">Features</a>
+          <a href="#commands">Commands</a>
+          <a href="#examples">Examples</a>
+          <a href="#architecture">Architecture</a>
+          <a href="https://github.com/bpauli/gccli" class="btn-nav">GitHub</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ── Hero ── -->
+    <section class="hero">
+      <div class="section">
+        <div class="hero-grid">
+          <div>
+            <p class="hero-label">Garmin Connect. One binary.</p>
+            <h1 class="hero-title">Garmin<br>Connect<br>in your terminal</h1>
+            <p class="hero-desc"><strong>gc</strong> is a fast, script-friendly CLI for Garmin Connect &mdash; activities, health data, workouts, body composition, devices, gear, goals, badges, and more. JSON output and secure credential storage built in.</p>
+            <div class="badges">
+              <span class="badge">Activities</span>
+              <span class="badge">Health</span>
+              <span class="badge">Workouts</span>
+              <span class="badge">Body</span>
+              <span class="badge">Devices</span>
+              <span class="badge">Gear</span>
+              <span class="badge">Goals</span>
+              <span class="badge">Badges</span>
+              <span class="badge">Training</span>
+              <span class="badge">Hydration</span>
+              <span class="badge">Wellness</span>
+              <span class="badge">Profile</span>
+            </div>
+            <div class="hero-actions">
+              <a href="#install" class="btn-primary">Install</a>
+              <a href="https://github.com/bpauli/gccli#readme" class="btn-secondary">Readme</a>
+            </div>
+            <p class="hero-tip">Tip: export <code>GC_ACCOUNT=you@example.com</code> once to stop repeating <code>--account</code>.</p>
+          </div>
+
+          <div class="terminal fade-in">
+            <div class="terminal-bar">
+              <div class="terminal-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+              <span class="terminal-title">gc &mdash; terminal</span>
+              <div style="width:56px"></div>
+            </div>
+            <div class="terminal-body">
+              <div><span class="dim">$</span> gc auth login you@example.com</div>
+              <div><span class="dim">$</span> export GC_ACCOUNT=you@example.com</div>
+              <div style="height:8px"></div>
+              <div><span class="dim">$</span> gc activities list --limit 5</div>
+              <div><span class="dim">$</span> gc health summary today</div>
+              <div><span class="dim">$</span> gc <span class="cyan">--json</span> body weigh-ins <span class="yellow">--start</span> 2024-01-01 <span class="yellow">--end</span> 2024-06-30</div>
+              <div><span class="dim">$</span> gc workouts create <span class="green">"Easy Run"</span> <span class="yellow">--type</span> run <span class="yellow">--step</span> <span class="green">"warmup:5m"</span></div>
+            </div>
+            <div class="terminal-meta">
+              <div class="terminal-meta-item"><div class="terminal-meta-label">Output</div><div class="terminal-meta-value">tables / <code>--json</code></div></div>
+              <div class="terminal-meta-item"><div class="terminal-meta-label">Accounts</div><div class="terminal-meta-value">multi-account</div></div>
+              <div class="terminal-meta-item"><div class="terminal-meta-label">Secrets</div><div class="terminal-meta-value">OS keyring</div></div>
+              <div class="terminal-meta-item"><div class="terminal-meta-label">Resilience</div><div class="terminal-meta-value">retry + CB</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Install ── -->
+    <section id="install" class="section-border" style="padding: 96px 0;">
+      <div class="section">
+        <div class="split">
+          <div>
+            <h2 class="section-title">Install</h2>
+            <p class="section-desc">Build from source. Requires Go&nbsp;1.24+.</p>
+          </div>
+          <div class="card-grid">
+            <div class="card fade-in">
+              <h3>Build from source</h3>
+              <pre class="code-block">git clone https://github.com/bpauli/gccli.git
+cd gccli
+make build
+./bin/gc --help</pre>
+            </div>
+            <div class="card fade-in">
+              <h3>Development</h3>
+              <pre class="code-block">make tools    <span class="dim"># Install dev tools</span>
+make test     <span class="dim"># Unit tests + race</span>
+make lint     <span class="dim"># golangci-lint</span>
+make fmt      <span class="dim"># goimports + gofumpt</span>
+make ci       <span class="dim"># Full CI gate</span></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Quickstart ── -->
+    <section id="quickstart" class="section-border" style="padding: 96px 0;">
+      <div class="section">
+        <div class="split">
+          <div>
+            <h2 class="section-title">Quickstart</h2>
+            <p class="section-desc">Authenticate once via browser or headless, then start querying your Garmin data.</p>
+          </div>
+          <div>
+            <div class="steps">
+              <div class="step fade-in">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                  <h3>Log in via browser SSO</h3>
+                  <p>Opens your browser for Garmin SSO. Tokens are stored in your system keyring.</p>
+                  <pre class="code-block">gc auth login you@example.com</pre>
+                </div>
+              </div>
+              <div class="step fade-in">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                  <h3>Or log in headless</h3>
+                  <p>For servers or CI. Supports MFA.</p>
+                  <pre class="code-block">gc auth login you@example.com --headless
+gc auth login you@example.com --headless --mfa-code 123456</pre>
+                </div>
+              </div>
+              <div class="step fade-in">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                  <h3>Set default account</h3>
+                  <p>Avoid repeating <code>--account</code> on every command.</p>
+                  <pre class="code-block">export GC_ACCOUNT=you@example.com</pre>
+                </div>
+              </div>
+              <div class="step fade-in">
+                <div class="step-num">4</div>
+                <div class="step-content">
+                  <h3>Start using</h3>
+                  <p>Check auth status and fetch your recent activities.</p>
+                  <pre class="code-block">gc auth status
+gc activities list --limit 5</pre>
+                </div>
+              </div>
+            </div>
+
+            <div class="callout fade-in">
+              <div class="callout-icon">&#x1f511;</div>
+              <div class="callout-body">
+                <h3>Keyring backends</h3>
+                <p>Defaults to auto-detect. Force with <code>GC_KEYRING_BACKEND</code>: <strong>keychain</strong> (macOS), <strong>secret-service</strong> (Linux D-Bus), or <strong>file</strong> (encrypted fallback).</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Features ── -->
+    <section id="features" class="section-border" style="padding: 96px 0;">
+      <div class="section">
+        <h2 class="section-title">Features</h2>
+        <p class="section-desc">Comprehensive Garmin Connect coverage with consistent CLI patterns and clean output.</p>
+        <div class="features-grid">
+          <div class="feature-card fade-in">
+            <div class="feature-icon">&#x1f3c3;</div>
+            <h3>Activities</h3>
+            <p>List, search, view details, splits, weather, HR/power zones. Download FIT/GPX/TCX/KML/CSV. Upload, create, rename, retype, delete.</p>
+          </div>
+          <div class="feature-card fade-in">
+            <div class="feature-icon blue">&#x2764;</div>
+            <h3>Health Data</h3>
+            <p>Steps, heart rate, sleep, stress, HRV, SpO2, respiration, body battery, floors, training readiness, VO2max, fitness age, race predictions.</p>
+          </div>
+          <div class="feature-card fade-in">
+            <div class="feature-icon orange">&#x1f4aa;</div>
+            <h3>Workouts</h3>
+            <p>Create with pace/HR/power/cadence targets, schedule to calendar, download as FIT, upload from JSON. Running, cycling, strength, and more.</p>
+          </div>
+          <div class="feature-card fade-in">
+            <div class="feature-icon rose">&#x2696;</div>
+            <h3>Body Composition</h3>
+            <p>Weight tracking, body fat, muscle mass, weigh-in history, blood pressure. Add entries and upload via FIT encoding.</p>
+          </div>
+          <div class="feature-card fade-in">
+            <div class="feature-icon violet">&#x231a;</div>
+            <h3>Devices</h3>
+            <p>List registered devices, view settings, solar data, alarms. Query primary and last-used device.</p>
+          </div>
+          <div class="feature-card fade-in">
+            <div class="feature-icon">&#x1f45f;</div>
+            <h3>Gear</h3>
+            <p>List gear, usage stats, linked activities, defaults per activity type. Link and unlink gear to activities.</p>
+          </div>
+          <div class="feature-card fade-in">
+            <div class="feature-icon yellow">&#x1f3af;</div>
+            <h3>Goals &amp; Badges</h3>
+            <p>Active goals, earned/available/in-progress badges, challenges, and personal records.</p>
+          </div>
+          <div class="feature-card fade-in">
+            <div class="feature-icon blue">&#x1f4c5;</div>
+            <h3>Training Plans</h3>
+            <p>Browse and view training plans from the Garmin training catalog.</p>
+          </div>
+          <div class="feature-card fade-in">
+            <div class="feature-icon orange">&#x1f4a7;</div>
+            <h3>Hydration</h3>
+            <p>View and log daily water intake. Track hydration by date.</p>
+          </div>
+          <div class="feature-card fade-in">
+            <div class="feature-icon rose">&#x1f33f;</div>
+            <h3>Wellness</h3>
+            <p>Menstrual cycle tracking, menstrual summaries, and pregnancy summary data.</p>
+          </div>
+          <div class="feature-card fade-in">
+            <div class="feature-icon violet">&#x1f464;</div>
+            <h3>Profile</h3>
+            <p>View user profile information and account settings.</p>
+          </div>
+          <div class="feature-card fade-in">
+            <div class="feature-icon">&#x1f504;</div>
+            <h3>Resilient Networking</h3>
+            <p>Auto-retry on 429/5xx with exponential backoff, circuit breaker, and automatic OAuth2 token refresh on 401.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Commands ── -->
+    <section id="commands" class="section-border" style="padding: 96px 0;">
+      <div class="section">
+        <h2 class="section-title">Commands</h2>
+        <p class="section-desc">Click a group to expand. Every command supports <code style="padding:2px 6px;border-radius:6px;background:var(--surface);font-size:12px;color:var(--fg);border:1px solid var(--border);">--json</code>, <code style="padding:2px 6px;border-radius:6px;background:var(--surface);font-size:12px;color:var(--fg);border:1px solid var(--border);">--plain</code>, and <code style="padding:2px 6px;border-radius:6px;background:var(--surface);font-size:12px;color:var(--fg);border:1px solid var(--border);">--help</code>.</p>
+
+        <div style="margin-top: 32px;">
+
+          <!-- Auth -->
+          <div class="cmd-group is-open fade-in">
+            <div class="cmd-header"><h3>Authentication</h3><span class="cmd-arrow">&#x25B6;</span></div>
+            <div class="cmd-body">
+              <div class="cmd-row"><div class="cmd">gc auth login &lt;email&gt;</div><div class="desc">Log in via browser SSO</div></div>
+              <div class="cmd-row"><div class="cmd">gc auth login &lt;email&gt; --headless</div><div class="desc">Log in via email/password</div></div>
+              <div class="cmd-row"><div class="cmd">gc auth login &lt;email&gt; --headless --mfa-code &lt;code&gt;</div><div class="desc">Log in with MFA</div></div>
+              <div class="cmd-row"><div class="cmd">gc auth status</div><div class="desc">Show auth state and token expiry</div></div>
+              <div class="cmd-row"><div class="cmd">gc auth token</div><div class="desc">Print OAuth2 access token</div></div>
+              <div class="cmd-row"><div class="cmd">gc auth remove</div><div class="desc">Remove stored credentials</div></div>
+            </div>
+          </div>
+
+          <!-- Activities -->
+          <div class="cmd-group fade-in">
+            <div class="cmd-header"><h3>Activities</h3><span class="cmd-arrow">&#x25B6;</span></div>
+            <div class="cmd-body">
+              <div class="cmd-row"><div class="cmd">gc activities list --limit 20 --start 0</div><div class="desc">List recent activities</div></div>
+              <div class="cmd-row"><div class="cmd">gc activities list --type running</div><div class="desc">Filter by activity type</div></div>
+              <div class="cmd-row"><div class="cmd">gc activities count</div><div class="desc">Total activity count</div></div>
+              <div class="cmd-row"><div class="cmd">gc activities search --start-date ... --end-date ...</div><div class="desc">Search by date range</div></div>
+              <div class="cmd-row"><div class="cmd">gc activity summary &lt;id&gt;</div><div class="desc">Activity summary</div></div>
+              <div class="cmd-row"><div class="cmd">gc activity details &lt;id&gt;</div><div class="desc">Full activity details</div></div>
+              <div class="cmd-row"><div class="cmd">gc activity splits &lt;id&gt;</div><div class="desc">Activity split data</div></div>
+              <div class="cmd-row"><div class="cmd">gc activity weather &lt;id&gt;</div><div class="desc">Weather during activity</div></div>
+              <div class="cmd-row"><div class="cmd">gc activity hr-zones &lt;id&gt;</div><div class="desc">Heart rate zone breakdown</div></div>
+              <div class="cmd-row"><div class="cmd">gc activity download &lt;id&gt; --format fit</div><div class="desc">Download as FIT/GPX/TCX/KML/CSV</div></div>
+              <div class="cmd-row"><div class="cmd">gc activity upload ./activity.fit</div><div class="desc">Upload a FIT file</div></div>
+              <div class="cmd-row"><div class="cmd">gc activity create --name "Run" --type running --duration 30m</div><div class="desc">Create manual activity entry</div></div>
+              <div class="cmd-row"><div class="cmd">gc activity rename &lt;id&gt; "New Name"</div><div class="desc">Rename an activity</div></div>
+              <div class="cmd-row"><div class="cmd">gc activity delete &lt;id&gt; --force</div><div class="desc">Delete an activity</div></div>
+            </div>
+          </div>
+
+          <!-- Health -->
+          <div class="cmd-group fade-in">
+            <div class="cmd-header"><h3>Health Data</h3><span class="cmd-arrow">&#x25B6;</span></div>
+            <div class="cmd-body">
+              <div class="cmd-row"><div class="cmd">gc health summary [date]</div><div class="desc">Daily health summary</div></div>
+              <div class="cmd-row"><div class="cmd">gc health steps [date]</div><div class="desc">Step chart for a day</div></div>
+              <div class="cmd-row"><div class="cmd">gc health steps daily --start ... --end ...</div><div class="desc">Daily step totals in a range</div></div>
+              <div class="cmd-row"><div class="cmd">gc health hr [date]</div><div class="desc">Heart rate data</div></div>
+              <div class="cmd-row"><div class="cmd">gc health rhr [date]</div><div class="desc">Resting heart rate</div></div>
+              <div class="cmd-row"><div class="cmd">gc health sleep [date]</div><div class="desc">Sleep data</div></div>
+              <div class="cmd-row"><div class="cmd">gc health stress [date]</div><div class="desc">Stress scores</div></div>
+              <div class="cmd-row"><div class="cmd">gc health hrv [date]</div><div class="desc">Heart rate variability</div></div>
+              <div class="cmd-row"><div class="cmd">gc health spo2 [date]</div><div class="desc">Blood oxygen saturation</div></div>
+              <div class="cmd-row"><div class="cmd">gc health body-battery [date]</div><div class="desc">Body battery levels</div></div>
+              <div class="cmd-row"><div class="cmd">gc health respiration [date]</div><div class="desc">Respiration rate</div></div>
+              <div class="cmd-row"><div class="cmd">gc health floors [date]</div><div class="desc">Floors climbed</div></div>
+              <div class="cmd-row"><div class="cmd">gc health training-readiness [date]</div><div class="desc">Training readiness score</div></div>
+              <div class="cmd-row"><div class="cmd">gc health training-status [date]</div><div class="desc">Training status</div></div>
+              <div class="cmd-row"><div class="cmd">gc health fitness-age [date]</div><div class="desc">Fitness age estimate</div></div>
+              <div class="cmd-row"><div class="cmd">gc health max-metrics [date]</div><div class="desc">VO2max and performance metrics</div></div>
+              <div class="cmd-row"><div class="cmd">gc health race-predictions</div><div class="desc">Race time predictions</div></div>
+              <div class="cmd-row"><div class="cmd">gc health endurance-score [date]</div><div class="desc">Endurance score</div></div>
+              <div class="cmd-row"><div class="cmd">gc health hill-score [date]</div><div class="desc">Hill score</div></div>
+              <div class="cmd-row"><div class="cmd">gc health intensity-minutes [date]</div><div class="desc">Intensity minutes</div></div>
+              <div class="cmd-row"><div class="cmd">gc health lactate-threshold</div><div class="desc">Lactate threshold</div></div>
+              <div class="cmd-row"><div class="cmd">gc health cycling-ftp</div><div class="desc">Cycling FTP</div></div>
+            </div>
+          </div>
+
+          <!-- Body -->
+          <div class="cmd-group fade-in">
+            <div class="cmd-header"><h3>Body Composition</h3><span class="cmd-arrow">&#x25B6;</span></div>
+            <div class="cmd-body">
+              <div class="cmd-row"><div class="cmd">gc body composition</div><div class="desc">Today's body composition</div></div>
+              <div class="cmd-row"><div class="cmd">gc body composition --start ... --end ...</div><div class="desc">Body composition over a date range</div></div>
+              <div class="cmd-row"><div class="cmd">gc body weigh-ins --start ... --end ...</div><div class="desc">Weigh-in history</div></div>
+              <div class="cmd-row"><div class="cmd">gc body add-weight 75.5 --unit kg</div><div class="desc">Log a weight entry</div></div>
+              <div class="cmd-row"><div class="cmd">gc body add-composition 75.5 --body-fat 15.2 --muscle-mass 35.0</div><div class="desc">Log full body composition</div></div>
+              <div class="cmd-row"><div class="cmd">gc body blood-pressure --start ... --end ...</div><div class="desc">Blood pressure history</div></div>
+              <div class="cmd-row"><div class="cmd">gc body add-blood-pressure --systolic 120 --diastolic 80</div><div class="desc">Log blood pressure</div></div>
+              <div class="cmd-row"><div class="cmd">gc body delete-weight &lt;pk&gt; --date ...</div><div class="desc">Delete a weight entry</div></div>
+            </div>
+          </div>
+
+          <!-- Workouts -->
+          <div class="cmd-group fade-in">
+            <div class="cmd-header"><h3>Workouts</h3><span class="cmd-arrow">&#x25B6;</span></div>
+            <div class="cmd-body">
+              <div class="cmd-row"><div class="cmd">gc workouts list --limit 20</div><div class="desc">List saved workouts</div></div>
+              <div class="cmd-row"><div class="cmd">gc workouts detail &lt;id&gt;</div><div class="desc">View workout details</div></div>
+              <div class="cmd-row"><div class="cmd">gc workouts download &lt;id&gt; --output workout.fit</div><div class="desc">Download workout as FIT</div></div>
+              <div class="cmd-row"><div class="cmd">gc workouts upload ./workout.json</div><div class="desc">Upload workout from JSON</div></div>
+              <div class="cmd-row"><div class="cmd">gc workouts create "Name" --type run --step "warmup:5m" ...</div><div class="desc">Create with pace/HR/power targets</div></div>
+              <div class="cmd-row"><div class="cmd">gc workouts schedule &lt;id&gt; &lt;YYYY-MM-DD&gt;</div><div class="desc">Schedule workout on a date</div></div>
+              <div class="cmd-row"><div class="cmd">gc workouts delete &lt;id&gt;</div><div class="desc">Delete a workout</div></div>
+            </div>
+          </div>
+
+          <!-- Devices -->
+          <div class="cmd-group fade-in">
+            <div class="cmd-header"><h3>Devices</h3><span class="cmd-arrow">&#x25B6;</span></div>
+            <div class="cmd-body">
+              <div class="cmd-row"><div class="cmd">gc devices list</div><div class="desc">List registered devices</div></div>
+              <div class="cmd-row"><div class="cmd">gc devices settings &lt;device-id&gt;</div><div class="desc">View device settings</div></div>
+              <div class="cmd-row"><div class="cmd">gc devices primary</div><div class="desc">Show primary device</div></div>
+              <div class="cmd-row"><div class="cmd">gc devices last-used</div><div class="desc">Show last-used device</div></div>
+              <div class="cmd-row"><div class="cmd">gc devices alarms</div><div class="desc">List device alarms</div></div>
+              <div class="cmd-row"><div class="cmd">gc devices solar &lt;device-id&gt; --start ... --end ...</div><div class="desc">Solar charging data</div></div>
+            </div>
+          </div>
+
+          <!-- Gear -->
+          <div class="cmd-group fade-in">
+            <div class="cmd-header"><h3>Gear</h3><span class="cmd-arrow">&#x25B6;</span></div>
+            <div class="cmd-body">
+              <div class="cmd-row"><div class="cmd">gc gear list</div><div class="desc">List all gear</div></div>
+              <div class="cmd-row"><div class="cmd">gc gear stats &lt;uuid&gt;</div><div class="desc">Gear usage statistics</div></div>
+              <div class="cmd-row"><div class="cmd">gc gear activities &lt;uuid&gt; --limit 20</div><div class="desc">Activities linked to gear</div></div>
+              <div class="cmd-row"><div class="cmd">gc gear defaults</div><div class="desc">Default gear per activity type</div></div>
+              <div class="cmd-row"><div class="cmd">gc gear link &lt;uuid&gt; &lt;activity-id&gt;</div><div class="desc">Link gear to activity</div></div>
+              <div class="cmd-row"><div class="cmd">gc gear unlink &lt;uuid&gt; &lt;activity-id&gt;</div><div class="desc">Unlink gear from activity</div></div>
+            </div>
+          </div>
+
+          <!-- Goals, Badges, Challenges -->
+          <div class="cmd-group fade-in">
+            <div class="cmd-header"><h3>Goals, Badges &amp; Challenges</h3><span class="cmd-arrow">&#x25B6;</span></div>
+            <div class="cmd-body">
+              <div class="cmd-row"><div class="cmd">gc goals list</div><div class="desc">List all goals</div></div>
+              <div class="cmd-row"><div class="cmd">gc goals list --status active</div><div class="desc">Filter by goal status</div></div>
+              <div class="cmd-row"><div class="cmd">gc badges earned</div><div class="desc">Earned badges</div></div>
+              <div class="cmd-row"><div class="cmd">gc badges available</div><div class="desc">Available badges</div></div>
+              <div class="cmd-row"><div class="cmd">gc badges in-progress</div><div class="desc">In-progress badges</div></div>
+              <div class="cmd-row"><div class="cmd">gc challenges list</div><div class="desc">Active challenges</div></div>
+              <div class="cmd-row"><div class="cmd">gc records</div><div class="desc">Personal records</div></div>
+            </div>
+          </div>
+
+          <!-- Hydration, Profile, Training, Wellness -->
+          <div class="cmd-group fade-in">
+            <div class="cmd-header"><h3>Hydration, Profile, Training &amp; Wellness</h3><span class="cmd-arrow">&#x25B6;</span></div>
+            <div class="cmd-body">
+              <div class="cmd-row"><div class="cmd">gc hydration [date]</div><div class="desc">View hydration data</div></div>
+              <div class="cmd-row"><div class="cmd">gc hydration add 500</div><div class="desc">Log 500ml of water</div></div>
+              <div class="cmd-row"><div class="cmd">gc profile</div><div class="desc">User profile</div></div>
+              <div class="cmd-row"><div class="cmd">gc profile settings</div><div class="desc">Account settings</div></div>
+              <div class="cmd-row"><div class="cmd">gc training plans --locale en</div><div class="desc">Browse training plans</div></div>
+              <div class="cmd-row"><div class="cmd">gc training plan &lt;id&gt;</div><div class="desc">View a training plan</div></div>
+              <div class="cmd-row"><div class="cmd">gc wellness menstrual-cycle --start-date ... --end-date ...</div><div class="desc">Menstrual cycle data</div></div>
+              <div class="cmd-row"><div class="cmd">gc wellness pregnancy-summary</div><div class="desc">Pregnancy summary</div></div>
+              <div class="cmd-row"><div class="cmd">gc reload [date]</div><div class="desc">Reload data for a date</div></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Configuration ── -->
+    <section id="config" class="section-border" style="padding: 96px 0;">
+      <div class="section">
+        <div class="split">
+          <div>
+            <h2 class="section-title">Configuration</h2>
+            <p class="section-desc">Environment variables, config file, and global flags.</p>
+          </div>
+          <div>
+            <div class="card fade-in">
+              <h3>Environment Variables</h3>
+              <table class="env-table">
+                <thead><tr><th>Variable</th><th>Description</th></tr></thead>
+                <tbody>
+                  <tr><td>GC_ACCOUNT</td><td>Default account email</td></tr>
+                  <tr><td>GC_DOMAIN</td><td>Garmin domain (<code>garmin.com</code> or <code>garmin.cn</code>)</td></tr>
+                  <tr><td>GC_JSON</td><td>Enable JSON output (<code>1</code>, <code>true</code>, <code>yes</code>)</td></tr>
+                  <tr><td>GC_PLAIN</td><td>Enable plain/TSV output</td></tr>
+                  <tr><td>GC_COLOR</td><td>Color mode: <code>auto</code>, <code>always</code>, <code>never</code></td></tr>
+                  <tr><td>GC_KEYRING_BACKEND</td><td>Keyring: <code>keychain</code>, <code>secret-service</code>, <code>file</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="card fade-in" style="margin-top: 16px;">
+              <h3>Global Flags</h3>
+              <table class="env-table">
+                <thead><tr><th>Flag</th><th>Description</th></tr></thead>
+                <tbody>
+                  <tr><td>--account &lt;email&gt;</td><td>Account to use (overrides <code>GC_ACCOUNT</code>)</td></tr>
+                  <tr><td>--json, -j</td><td>Output JSON to stdout</td></tr>
+                  <tr><td>--plain</td><td>Output stable TSV to stdout</td></tr>
+                  <tr><td>--color &lt;mode&gt;</td><td>Color mode: <code>auto</code>, <code>always</code>, <code>never</code></td></tr>
+                  <tr><td>--version</td><td>Print version information</td></tr>
+                  <tr><td>--help</td><td>Show help for any command</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="callout fade-in">
+              <div class="callout-icon">&#x1f4c4;</div>
+              <div class="callout-body">
+                <h3>Config file</h3>
+                <p>macOS: <code>~/Library/Application Support/gccli/config.json</code><br/>Linux: <code>~/.config/gccli/config.json</code></p>
+                <pre class="code-block">{
+  "keyring_backend": "file",
+  "domain": "garmin.com"
+}</pre>
+              </div>
+            </div>
+
+            <div class="card fade-in" style="margin-top: 16px;">
+              <h3>Date Formats</h3>
+              <table class="env-table">
+                <thead><tr><th>Format</th><th>Example</th><th>Description</th></tr></thead>
+                <tbody>
+                  <tr><td>YYYY-MM-DD</td><td>2024-06-15</td><td>Explicit date</td></tr>
+                  <tr><td>today</td><td></td><td>Today's date</td></tr>
+                  <tr><td>yesterday</td><td></td><td>Yesterday's date</td></tr>
+                  <tr><td>Nd</td><td>3d, 7d</td><td>N days ago</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Examples ── -->
+    <section id="examples" class="section-border" style="padding: 96px 0;">
+      <div class="section">
+        <h2 class="section-title">Examples</h2>
+        <p class="section-desc">Real-world scripts and one-liners you'll use daily.</p>
+        <div class="examples-grid">
+          <div class="example fade-in">
+            <h3>Export all runs from the last month</h3>
+            <p>Fetch running activities and download each as GPX.</p>
+            <pre class="code-block">gc --json activities search \
+  --start-date 2024-05-15 --end-date 2024-06-15 \
+  --limit 100 | \
+  jq -r '.[] | select(.activityType.typeKey == "running") | .activityId' | \
+  while read id; do
+    gc activity download "$id" --format gpx --output "run_${id}.gpx"
+  done</pre>
+          </div>
+          <div class="example fade-in">
+            <h3>Daily health dashboard</h3>
+            <p>Pull today's key metrics into a JSON summary.</p>
+            <pre class="code-block">gc --json health summary | jq '{
+  steps: .totalSteps,
+  calories: .totalKilocalories,
+  distance_km: (.totalDistanceMeters / 1000),
+  active_minutes: .moderateIntensityMinutes + .vigorousIntensityMinutes
+}'</pre>
+          </div>
+          <div class="example fade-in">
+            <h3>Track weight over time</h3>
+            <p>Export weigh-in data as tab-separated values.</p>
+            <pre class="code-block">gc --json body weigh-ins \
+  --start 2024-01-01 --end 2024-06-30 | \
+  jq -r '.dailyWeightSummaries[] | [.summaryDate, .weight.value] | @tsv'</pre>
+          </div>
+          <div class="example fade-in">
+            <h3>Download the latest activity</h3>
+            <p>One-liner to grab your most recent activity.</p>
+            <pre class="code-block">latest=$(gc --json activities list --limit 1 | jq -r '.[0].activityId')
+gc activity download "$latest" --format fit</pre>
+          </div>
+          <div class="example fade-in">
+            <h3>Create a structured running workout</h3>
+            <p>Warmup, pace intervals, and cooldown.</p>
+            <pre class="code-block">gc workouts create "Tempo 30min" --type run \
+  --step "warmup:5m@pace:5:30-6:00" \
+  --step "run:20m@pace:5:00-5:30" \
+  --step "cooldown:5m"</pre>
+          </div>
+          <div class="example fade-in">
+            <h3>Cycling with power targets</h3>
+            <p>FTP interval workout for the bike.</p>
+            <pre class="code-block">gc workouts create "FTP Intervals" --type bike \
+  --step "warmup:10m" \
+  --step "run:5m@power:250-280" \
+  --step "recovery:3m" \
+  --step "run:5m@power:250-280" \
+  --step "cooldown:10m"</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Architecture ── -->
+    <section id="architecture" class="section-border" style="padding: 96px 0;">
+      <div class="section">
+        <h2 class="section-title">Architecture</h2>
+        <p class="section-desc">Clean layered design with function-variable DI and context-based injection.</p>
+
+        <div class="arch-flow fade-in">
+          <span class="layer">cmd/gc/main.go</span>
+          <span class="arrow">&rarr;</span>
+          <span class="layer">internal/cmd/</span>
+          <span class="arrow">&rarr;</span>
+          <span class="layer">internal/garminapi/</span>
+          <span class="arrow">&rarr;</span>
+          <span class="layer">internal/garminauth/</span>
+        </div>
+
+        <div class="arch-grid">
+          <div class="arch-card fade-in"><h4>internal/cmd/</h4><p>Kong-based CLI commands. Each command is a struct with <code>Run(g *Globals) error</code>.</p></div>
+          <div class="arch-card fade-in"><h4>internal/garminapi/</h4><p>HTTP client returning <code>json.RawMessage</code>. RetryTransport + CircuitBreaker.</p></div>
+          <div class="arch-card fade-in"><h4>internal/garminauth/</h4><p>SSO auth: browser + headless login, OAuth1&rarr;OAuth2 exchange, MFA.</p></div>
+          <div class="arch-card fade-in"><h4>internal/secrets/</h4><p>OS keyring abstraction. macOS Keychain, Linux Secret Service, file fallback.</p></div>
+          <div class="arch-card fade-in"><h4>internal/config/</h4><p>Config file paths and environment variable overrides.</p></div>
+          <div class="arch-card fade-in"><h4>internal/outfmt/</h4><p>Output formatting: JSON, Table, and Plain/TSV modes via context.</p></div>
+          <div class="arch-card fade-in"><h4>internal/ui/</h4><p>Terminal UI with colors and prompts via termenv.</p></div>
+          <div class="arch-card fade-in"><h4>internal/fit/</h4><p>FIT file binary encoding for weight and body composition uploads.</p></div>
+        </div>
+
+        <!-- Image placeholder -->
+        <div class="image-placeholder fade-in">
+          <div class="ph-icon">&#x1f5bc;</div>
+          <span>Architecture diagram &mdash; coming soon</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── Footer ── -->
+    <footer>
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <strong>gc</strong>
+          <span>&mdash; Garmin Connect in your terminal.</span>
+        </div>
+        <div class="footer-right">
+          Build by Burkhard Pauli &middot; <a href="https://github.com/bpauli/gccli/blob/main/LICENSE">MIT License</a> &middot; Built with Go
+        </div>
+      </div>
+    </footer>
+
+    <!-- ── JS ── -->
+    <script>
+      // Intersection Observer fade-in
+      document.addEventListener('DOMContentLoaded', function() {
+        var observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('visible'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.fade-in').forEach(function(el) { observer.observe(el); });
+      });
+
+      // Collapsible command groups
+      document.querySelectorAll('.cmd-header').forEach(function(header) {
+        header.addEventListener('click', function() {
+          header.closest('.cmd-group').classList.toggle('is-open');
+        });
+      });
+
+      // Smooth scroll for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+          var target = document.querySelector(link.getAttribute('href'));
+          if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+        });
+      });
+    </script>
+  </body>
+</html>
