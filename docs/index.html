@@ -180,9 +180,12 @@
       .arch-card h4 { font-size: 13px; font-family: 'JetBrains Mono', monospace; font-weight: 600; margin-bottom: 6px; }
       .arch-card p { font-size: 12px; color: var(--fg-muted); line-height: 1.5; }
 
+      /* ── Configuration ── */
+      .config-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; margin-top: 32px; }
+
       /* ── Examples ── */
       .examples-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; margin-top: 32px; }
-      .example { border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; background: linear-gradient(180deg,#171d28 0%,#131820 100%); }
+      .example { border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; background: linear-gradient(180deg,#171d28 0%,#131820 100%); min-width: 0; overflow: hidden; }
       .example h3 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
       .example p { font-size: 13px; color: var(--fg-muted); margin-bottom: 8px; }
 
@@ -215,6 +218,7 @@
         .features-grid { grid-template-columns: 1fr 1fr; }
         .arch-grid { grid-template-columns: 1fr 1fr; }
         .examples-grid { grid-template-columns: 1fr; }
+        .config-grid { grid-template-columns: 1fr; }
       }
       @media (max-width: 640px) {
         .features-grid { grid-template-columns: 1fr; }
@@ -620,66 +624,62 @@ gccli activities list --limit 5</pre>
     <!-- ── Configuration ── -->
     <section id="config" class="section-border" style="padding: 96px 0;">
       <div class="section">
-        <div class="split">
-          <div>
-            <h2 class="section-title">Configuration</h2>
-            <p class="section-desc">Environment variables, config file, and global flags.</p>
+        <h2 class="section-title">Configuration</h2>
+        <p class="section-desc">Environment variables, config file, and global flags.</p>
+        <div class="config-grid">
+          <div class="card fade-in">
+            <h3>Environment Variables</h3>
+            <table class="env-table">
+              <thead><tr><th>Variable</th><th>Description</th></tr></thead>
+              <tbody>
+                <tr><td>GCCLI_ACCOUNT</td><td>Default account email (overrides config file default)</td></tr>
+                <tr><td>GCCLI_DOMAIN</td><td>Garmin domain (<code>garmin.com</code> or <code>garmin.cn</code>)</td></tr>
+                <tr><td>GCCLI_JSON</td><td>Enable JSON output (<code>1</code>, <code>true</code>, <code>yes</code>)</td></tr>
+                <tr><td>GCCLI_PLAIN</td><td>Enable plain/TSV output</td></tr>
+                <tr><td>GCCLI_COLOR</td><td>Color mode: <code>auto</code>, <code>always</code>, <code>never</code></td></tr>
+                <tr><td>GCCLI_KEYRING_BACKEND</td><td>Keyring: <code>keychain</code>, <code>secret-service</code>, <code>file</code></td></tr>
+              </tbody>
+            </table>
           </div>
-          <div>
-            <div class="card fade-in">
-              <h3>Environment Variables</h3>
-              <table class="env-table">
-                <thead><tr><th>Variable</th><th>Description</th></tr></thead>
-                <tbody>
-                  <tr><td>GCCLI_ACCOUNT</td><td>Default account email (overrides config file default)</td></tr>
-                  <tr><td>GCCLI_DOMAIN</td><td>Garmin domain (<code>garmin.com</code> or <code>garmin.cn</code>)</td></tr>
-                  <tr><td>GCCLI_JSON</td><td>Enable JSON output (<code>1</code>, <code>true</code>, <code>yes</code>)</td></tr>
-                  <tr><td>GCCLI_PLAIN</td><td>Enable plain/TSV output</td></tr>
-                  <tr><td>GCCLI_COLOR</td><td>Color mode: <code>auto</code>, <code>always</code>, <code>never</code></td></tr>
-                  <tr><td>GCCLI_KEYRING_BACKEND</td><td>Keyring: <code>keychain</code>, <code>secret-service</code>, <code>file</code></td></tr>
-                </tbody>
-              </table>
-            </div>
 
-            <div class="card fade-in" style="margin-top: 16px;">
-              <h3>Global Flags</h3>
-              <table class="env-table">
-                <thead><tr><th>Flag</th><th>Description</th></tr></thead>
-                <tbody>
-                  <tr><td>--account &lt;email&gt;</td><td>Account to use (overrides <code>GCCLI_ACCOUNT</code> and config default)</td></tr>
-                  <tr><td>--json, -j</td><td>Output JSON to stdout</td></tr>
-                  <tr><td>--plain</td><td>Output stable TSV to stdout</td></tr>
-                  <tr><td>--color &lt;mode&gt;</td><td>Color mode: <code>auto</code>, <code>always</code>, <code>never</code></td></tr>
-                  <tr><td>--version</td><td>Print version information</td></tr>
-                  <tr><td>--help</td><td>Show help for any command</td></tr>
-                </tbody>
-              </table>
-            </div>
+          <div class="card fade-in">
+            <h3>Global Flags</h3>
+            <table class="env-table">
+              <thead><tr><th>Flag</th><th>Description</th></tr></thead>
+              <tbody>
+                <tr><td>--account &lt;email&gt;</td><td>Account to use (overrides <code>GCCLI_ACCOUNT</code> and config default)</td></tr>
+                <tr><td>--json, -j</td><td>Output JSON to stdout</td></tr>
+                <tr><td>--plain</td><td>Output stable TSV to stdout</td></tr>
+                <tr><td>--color &lt;mode&gt;</td><td>Color mode: <code>auto</code>, <code>always</code>, <code>never</code></td></tr>
+                <tr><td>--version</td><td>Print version information</td></tr>
+                <tr><td>--help</td><td>Show help for any command</td></tr>
+              </tbody>
+            </table>
+          </div>
 
-            <div class="callout fade-in">
-              <div class="callout-icon">&#x1f4c4;</div>
-              <div class="callout-body">
-                <h3>Config file</h3>
-                <p>macOS: <code>~/Library/Application Support/gccli/config.json</code><br/>Linux: <code>~/.config/gccli/config.json</code></p>
-                <pre class="code-block">{
+          <div class="callout fade-in">
+            <div class="callout-icon">&#x1f4c4;</div>
+            <div class="callout-body">
+              <h3>Config file</h3>
+              <p>macOS: <code>~/Library/Application Support/gccli/config.json</code><br/>Linux: <code>~/.config/gccli/config.json</code></p>
+              <pre class="code-block">{
   "keyring_backend": "file",
   "domain": "garmin.com"
 }</pre>
-              </div>
             </div>
+          </div>
 
-            <div class="card fade-in" style="margin-top: 16px;">
-              <h3>Date Formats</h3>
-              <table class="env-table">
-                <thead><tr><th>Format</th><th>Example</th><th>Description</th></tr></thead>
-                <tbody>
-                  <tr><td>YYYY-MM-DD</td><td>2024-06-15</td><td>Explicit date</td></tr>
-                  <tr><td>today</td><td></td><td>Today's date</td></tr>
-                  <tr><td>yesterday</td><td></td><td>Yesterday's date</td></tr>
-                  <tr><td>Nd</td><td>3d, 7d</td><td>N days ago</td></tr>
-                </tbody>
-              </table>
-            </div>
+          <div class="card fade-in">
+            <h3>Date Formats</h3>
+            <table class="env-table">
+              <thead><tr><th>Format</th><th>Example</th><th>Description</th></tr></thead>
+              <tbody>
+                <tr><td>YYYY-MM-DD</td><td>2024-06-15</td><td>Explicit date</td></tr>
+                <tr><td>today</td><td></td><td>Today's date</td></tr>
+                <tr><td>yesterday</td><td></td><td>Yesterday's date</td></tr>
+                <tr><td>Nd</td><td>3d, 7d</td><td>N days ago</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
