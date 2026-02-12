@@ -11,7 +11,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Activities** — list, search, view details, download (FIT/GPX/TCX/KML/CSV), upload, create manual entries, rename, retype, delete
 - **Health Data** — daily summaries, steps, heart rate, resting HR, sleep, stress, HRV, SpO2, respiration, body battery, floors, training readiness/status, VO2max, fitness age, race predictions, endurance/hill scores, intensity minutes, lactate threshold, cycling FTP
 - **Body Composition** — weight tracking, body fat, muscle mass, blood pressure, FIT file encoding for composition uploads
-- **Workouts** — list, view, download as FIT, upload from JSON, create with sport types and targets (pace/HR/power/cadence), schedule, delete
+- **Workouts** — list, view, download as FIT, upload from JSON, create with sport types and targets (pace/HR/power/cadence), schedule (add/list/remove), delete
 - **Devices** — list registered devices, view settings, solar data, alarms, primary/last-used device
 - **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities
 - **Goals & Badges** — active goals, earned/available/in-progress badges, challenges, personal records
@@ -351,7 +351,10 @@ gccli workouts list --limit 20
 gccli workouts detail <id>
 gccli workouts download <id> --output workout.fit
 gccli workouts upload ./workout.json   # See JSON structure below
-gccli workouts schedule <id> <YYYY-MM-DD>
+gccli workouts schedule add <id> <YYYY-MM-DD>
+gccli workouts schedule list <YYYY-MM-DD>
+gccli workouts schedule remove <schedule-id>
+gccli workouts schedule remove <schedule-id> --force
 gccli workouts delete <id>
 
 # Create a running workout with pace targets
