@@ -680,3 +680,7 @@ MIT
 ## Credits
 
 Architecture inspired by [gogcli](https://github.com/steipete/gogcli) by Peter Steinberger. API coverage modeled after [python-garminconnect](https://github.com/cyberjunky/python-garminconnect) by Ron Klinkien.
+
+---
+
+<sub>Not affiliated with Garmin. Garmin and Garmin Connect are trademarks of Garmin Ltd. or its subsidiaries.</sub>
