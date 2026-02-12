@@ -8,6 +8,7 @@ import (
 
 // Environment variable names for configuration overrides.
 const (
+	EnvAccount        = "GCCLI_ACCOUNT"
 	EnvDomain         = "GCCLI_DOMAIN"
 	EnvColor          = "GCCLI_COLOR"
 	EnvJSON           = "GCCLI_JSON"
@@ -17,6 +18,7 @@ const (
 
 // File represents the on-disk configuration file.
 type File struct {
+	DefaultAccount  string              `json:"default_account,omitempty"`
 	KeyringBackend  string              `json:"keyring_backend,omitempty"`
 	DomainName      string              `json:"domain,omitempty"`
 	DefaultFormat   string              `json:"default_format,omitempty"`
@@ -92,6 +94,15 @@ func (f *File) KeyringBackendValue() string {
 		return v
 	}
 	return f.KeyringBackend
+}
+
+// Account returns the effective account email, checking the environment variable
+// first, then the config file's default account.
+func (f *File) Account() string {
+	if v := os.Getenv(EnvAccount); v != "" {
+		return v
+	}
+	return f.DefaultAccount
 }
 
 // IsJSON returns true if the GCCLI_JSON environment variable is set to a truthy value.

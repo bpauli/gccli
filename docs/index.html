@@ -234,7 +234,7 @@
               <a href="#install" class="btn-primary">Install</a>
               <a href="https://github.com/bpauli/gccli#readme" class="btn-secondary">Readme</a>
             </div>
-            <p class="hero-tip">Tip: export <code>GCCLI_ACCOUNT=you@example.com</code> once to stop repeating <code>--account</code>.</p>
+            <p class="hero-tip">Tip: <code>gccli auth login</code> saves your email as the default account automatically.</p>
           </div>
 
           <div class="terminal fade-in">
@@ -245,7 +245,6 @@
             </div>
             <div class="terminal-body">
               <div><span class="dim">$</span> gccli auth login you@example.com</div>
-              <div><span class="dim">$</span> export GCCLI_ACCOUNT=you@example.com</div>
               <div style="height:8px"></div>
               <div><span class="dim">$</span> gccli activities list --limit 5</div>
               <div><span class="dim">$</span> gccli health summary today</div>
@@ -326,16 +325,8 @@ gccli auth login you@example.com --headless --mfa-code 123456</pre>
               <div class="step fade-in">
                 <div class="step-num">3</div>
                 <div class="step-content">
-                  <h3>Set default account</h3>
-                  <p>Avoid repeating <code>--account</code> on every command.</p>
-                  <pre class="code-block">export GCCLI_ACCOUNT=you@example.com</pre>
-                </div>
-              </div>
-              <div class="step fade-in">
-                <div class="step-num">4</div>
-                <div class="step-content">
                   <h3>Start using</h3>
-                  <p>Check auth status and fetch your recent activities.</p>
+                  <p>Login saves your default account automatically. Check auth status and fetch your recent activities.</p>
                   <pre class="code-block">gccli auth status
 gccli activities list --limit 5</pre>
                 </div>
@@ -598,7 +589,7 @@ gccli activities list --limit 5</pre>
               <table class="env-table">
                 <thead><tr><th>Variable</th><th>Description</th></tr></thead>
                 <tbody>
-                  <tr><td>GCCLI_ACCOUNT</td><td>Default account email</td></tr>
+                  <tr><td>GCCLI_ACCOUNT</td><td>Default account email (overrides config file default)</td></tr>
                   <tr><td>GCCLI_DOMAIN</td><td>Garmin domain (<code>garmin.com</code> or <code>garmin.cn</code>)</td></tr>
                   <tr><td>GCCLI_JSON</td><td>Enable JSON output (<code>1</code>, <code>true</code>, <code>yes</code>)</td></tr>
                   <tr><td>GCCLI_PLAIN</td><td>Enable plain/TSV output</td></tr>
@@ -613,7 +604,7 @@ gccli activities list --limit 5</pre>
               <table class="env-table">
                 <thead><tr><th>Flag</th><th>Description</th></tr></thead>
                 <tbody>
-                  <tr><td>--account &lt;email&gt;</td><td>Account to use (overrides <code>GCCLI_ACCOUNT</code>)</td></tr>
+                  <tr><td>--account &lt;email&gt;</td><td>Account to use (overrides <code>GCCLI_ACCOUNT</code> and config default)</td></tr>
                   <tr><td>--json, -j</td><td>Output JSON to stdout</td></tr>
                   <tr><td>--plain</td><td>Output stable TSV to stdout</td></tr>
                   <tr><td>--color &lt;mode&gt;</td><td>Color mode: <code>auto</code>, <code>always</code>, <code>never</code></td></tr>

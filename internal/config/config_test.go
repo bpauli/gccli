@@ -143,6 +143,47 @@ func TestFile_KeyringBackendValue(t *testing.T) {
 	}
 }
 
+func TestFile_Account(t *testing.T) {
+	// Empty when nothing is set.
+	t.Setenv(EnvAccount, "")
+	f := &File{}
+	if got := f.Account(); got != "" {
+		t.Errorf("Account() = %q, want empty", got)
+	}
+
+	// Config file value.
+	f.DefaultAccount = "config@example.com"
+	if got := f.Account(); got != "config@example.com" {
+		t.Errorf("Account() = %q, want config@example.com", got)
+	}
+
+	// Env var overrides config.
+	t.Setenv(EnvAccount, "env@example.com")
+	if got := f.Account(); got != "env@example.com" {
+		t.Errorf("Account() = %q, want env@example.com (env override)", got)
+	}
+}
+
+func TestWriteToAndReadFrom_DefaultAccount(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "config.json")
+
+	want := &File{
+		DefaultAccount: "user@example.com",
+		DomainName:     "garmin.com",
+	}
+	if err := WriteTo(want, path); err != nil {
+		t.Fatal(err)
+	}
+	got, err := ReadFrom(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.DefaultAccount != want.DefaultAccount {
+		t.Errorf("DefaultAccount = %q, want %q", got.DefaultAccount, want.DefaultAccount)
+	}
+}
+
 func TestIsJSON(t *testing.T) {
 	t.Setenv(EnvJSON, "")
 	if IsJSON() {

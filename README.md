@@ -81,13 +81,9 @@ You'll be prompted for your password. If your account has two-factor authenticat
 gccli auth login you@example.com --headless --mfa-code 123456
 ```
 
-### 3. Set Your Default Account
+Login automatically saves your email as the default account, so you don't need to pass `--account` or set `GCCLI_ACCOUNT` on every command.
 
-```bash
-export GCCLI_ACCOUNT=you@example.com
-```
-
-### 4. Test Authentication
+### 3. Test Authentication
 
 ```bash
 gccli auth status
@@ -163,7 +159,11 @@ Or in `config.json`:
 
 ### Account Selection
 
-Specify the account using either a flag or environment variable:
+The account is resolved in this order:
+
+1. `--account` flag
+2. `GCCLI_ACCOUNT` environment variable
+3. Default account saved by `gccli auth login` (stored in `config.json`)
 
 ```bash
 # Via flag
@@ -171,6 +171,10 @@ gccli activities list --account you@example.com
 
 # Via environment
 export GCCLI_ACCOUNT=you@example.com
+gccli activities list
+
+# Via login default (no flag or env var needed)
+gccli auth login you@example.com
 gccli activities list
 ```
 
@@ -193,6 +197,7 @@ Example:
 
 ```json
 {
+  "default_account": "you@example.com",
   "keyring_backend": "file",
   "domain": "garmin.com"
 }
@@ -202,7 +207,7 @@ Example:
 
 | Variable | Description |
 | --- | --- |
-| `GCCLI_ACCOUNT` | Default account email |
+| `GCCLI_ACCOUNT` | Default account email (overrides config file default) |
 | `GCCLI_DOMAIN` | Garmin domain (`garmin.com` or `garmin.cn`) |
 | `GCCLI_JSON` | Enable JSON output (`1`, `true`, `yes`) |
 | `GCCLI_PLAIN` | Enable plain/TSV output (`1`, `true`, `yes`) |
@@ -602,7 +607,7 @@ All commands support these flags:
 
 | Flag | Description |
 | --- | --- |
-| `--account <email>` | Account to use (overrides `GCCLI_ACCOUNT`) |
+| `--account <email>` | Account to use (overrides `GCCLI_ACCOUNT` and config default) |
 | `--json`, `-j` | Output JSON to stdout |
 | `--plain` | Output stable TSV to stdout |
 | `--color <mode>` | Color mode: `auto`, `always`, `never` (default: `auto`) |

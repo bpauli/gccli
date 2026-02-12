@@ -113,11 +113,19 @@ func run(parser *kong.Kong, cli *CLI, args []string) (code int) {
 	u := ui.New(colorMode)
 	ctx = ui.NewContext(ctx, u)
 
+	// Resolve account: flag/env → config file default.
+	account := cli.Account
+	if account == "" {
+		if cfg, err := config.Read(); err == nil {
+			account = cfg.Account()
+		}
+	}
+
 	// Inject runtime globals into the command.
 	g := &Globals{
 		Context: ctx,
 		UI:      u,
-		Account: cli.Account,
+		Account: account,
 	}
 
 	if err := kongCtx.Run(g); err != nil {

@@ -38,7 +38,7 @@ type AuthStatusCmd struct{}
 func (c *AuthStatusCmd) Run(g *Globals) error {
 	email := g.Account
 	if email == "" {
-		return fmt.Errorf("no account specified; use --account or set GCCLI_ACCOUNT")
+		return fmt.Errorf("no account specified; use --account, set GCCLI_ACCOUNT, or run gccli auth login")
 	}
 
 	store, err := loadSecretsStore()
@@ -94,7 +94,7 @@ type AuthRemoveCmd struct{}
 func (c *AuthRemoveCmd) Run(g *Globals) error {
 	email := g.Account
 	if email == "" {
-		return fmt.Errorf("no account specified; use --account or set GCCLI_ACCOUNT")
+		return fmt.Errorf("no account specified; use --account, set GCCLI_ACCOUNT, or run gccli auth login")
 	}
 
 	store, err := loadSecretsStore()
@@ -120,7 +120,7 @@ type AuthTokenCmd struct{}
 func (c *AuthTokenCmd) Run(g *Globals) error {
 	email := g.Account
 	if email == "" {
-		return fmt.Errorf("no account specified; use --account or set GCCLI_ACCOUNT")
+		return fmt.Errorf("no account specified; use --account, set GCCLI_ACCOUNT, or run gccli auth login")
 	}
 
 	store, err := loadSecretsStore()

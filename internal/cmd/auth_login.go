@@ -74,6 +74,12 @@ func (c *AuthLoginCmd) Run(g *Globals) error {
 		return fmt.Errorf("store tokens: %w", err)
 	}
 
+	// Save as default account so subsequent commands don't need --account.
+	cfg.DefaultAccount = c.Email
+	if err := config.Write(cfg); err != nil {
+		return fmt.Errorf("save default account: %w", err)
+	}
+
 	g.UI.Successf("Logged in as %s (domain: %s)", c.Email, tokens.Domain)
 	return nil
 }

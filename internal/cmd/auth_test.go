@@ -11,6 +11,7 @@ import (
 
 	"github.com/99designs/keyring"
 
+	"github.com/bpauli/gccli/internal/config"
 	"github.com/bpauli/gccli/internal/garminauth"
 	"github.com/bpauli/gccli/internal/outfmt"
 	"github.com/bpauli/gccli/internal/secrets"
@@ -328,6 +329,7 @@ func TestAuthToken_Expired(t *testing.T) {
 // --- AuthLoginCmd tests ---
 
 func TestAuthLogin_Browser(t *testing.T) {
+	t.Setenv("HOME", t.TempDir())
 	store := newTestSecretsStore(t)
 	overrideLoadSecrets(t, store)
 
@@ -367,7 +369,42 @@ func TestAuthLogin_Browser(t *testing.T) {
 	}
 }
 
+func TestAuthLogin_SavesDefaultAccount(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+
+	origBrowser := loginBrowserFn
+	loginBrowserFn = func(_ context.Context, email string, _ garminauth.LoginOptions) (*garminauth.Tokens, error) {
+		return &garminauth.Tokens{
+			OAuth2AccessToken: "access-token",
+			OAuth2ExpiresAt:   time.Now().Add(time.Hour),
+			Domain:            "garmin.com",
+			Email:             email,
+		}, nil
+	}
+	t.Cleanup(func() { loginBrowserFn = origBrowser })
+
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "")
+	cmd := &AuthLoginCmd{Email: "saved@example.com"}
+	if err := cmd.Run(g); err != nil {
+		t.Fatalf("expected no error, got: %v", err)
+	}
+
+	// Verify default account was saved to config.
+	cfg, err := config.Read()
+	if err != nil {
+		t.Fatalf("read config: %v", err)
+	}
+	if cfg.DefaultAccount != "saved@example.com" {
+		t.Errorf("DefaultAccount = %q, want saved@example.com", cfg.DefaultAccount)
+	}
+}
+
 func TestAuthLogin_Headless(t *testing.T) {
+	t.Setenv("HOME", t.TempDir())
 	store := newTestSecretsStore(t)
 	overrideLoadSecrets(t, store)
 
@@ -417,6 +454,7 @@ func TestAuthLogin_Headless(t *testing.T) {
 }
 
 func TestAuthLogin_HeadlessBadPassword(t *testing.T) {
+	t.Setenv("HOME", t.TempDir())
 	store := newTestSecretsStore(t)
 	overrideLoadSecrets(t, store)
 
@@ -445,6 +483,7 @@ func TestAuthLogin_HeadlessBadPassword(t *testing.T) {
 }
 
 func TestAuthLogin_BrowserError(t *testing.T) {
+	t.Setenv("HOME", t.TempDir())
 	store := newTestSecretsStore(t)
 	overrideLoadSecrets(t, store)
 
