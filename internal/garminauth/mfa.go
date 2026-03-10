@@ -43,17 +43,19 @@ func promptMFAFrom(w io.Writer, r io.Reader) (string, error) {
 
 // submitMFA posts the MFA code to the Garmin SSO MFA verification endpoint
 // and extracts the service ticket from the response.
-func submitMFA(ctx context.Context, client *http.Client, ep Endpoints, csrf, mfaCode string) (string, error) {
+// signinParams are the same query parameters used for the signin flow and must
+// be forwarded to the MFA endpoint as query parameters (matching garth behaviour).
+func submitMFA(ctx context.Context, client *http.Client, ep Endpoints, signinParams url.Values, csrf, mfaCode string) (string, error) {
 	formData := url.Values{
-		"mfa-code":       {mfaCode},
-		"embed":          {"true"},
-		"_csrf":          {csrf},
-		"fromPage":       {"setupEnterMfaCode"},
-		"rememberDevice": {"on"},
+		"mfa-code": {mfaCode},
+		"embed":    {"true"},
+		"_csrf":    {csrf},
+		"fromPage": {"setupEnterMfaCode"},
 	}
 
+	mfaURL := ep.SSOVerifyMFA + "?" + signinParams.Encode()
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost,
-		ep.SSOVerifyMFA, strings.NewReader(formData.Encode()))
+		mfaURL, strings.NewReader(formData.Encode()))
 	if err != nil {
 		return "", fmt.Errorf("create MFA request: %w", err)
 	}

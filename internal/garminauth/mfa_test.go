@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"strings"
 	"testing"
 )
@@ -325,7 +326,7 @@ func TestSubmitMFA(t *testing.T) {
 			SSOSignin:    srv.URL + "/sso/signin",
 		}
 
-		ticket, err := submitMFA(context.Background(), srv.Client(), ep, "csrf-abc", "123456")
+		ticket, err := submitMFA(context.Background(), srv.Client(), ep, url.Values{}, "csrf-abc", "123456")
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
@@ -349,7 +350,7 @@ func TestSubmitMFA(t *testing.T) {
 			SSOSignin:    srv.URL + "/sso/signin",
 		}
 
-		_, err := submitMFA(context.Background(), srv.Client(), ep, "csrf", "wrong-code")
+		_, err := submitMFA(context.Background(), srv.Client(), ep, url.Values{}, "csrf", "wrong-code")
 		if err == nil {
 			t.Fatal("expected error for invalid MFA code")
 		}
@@ -370,7 +371,7 @@ func TestSubmitMFA(t *testing.T) {
 			SSOSignin:    srv.URL + "/sso/signin",
 		}
 
-		_, err := submitMFA(context.Background(), srv.Client(), ep, "csrf", "123456")
+		_, err := submitMFA(context.Background(), srv.Client(), ep, url.Values{}, "csrf", "123456")
 		if err == nil {
 			t.Fatal("expected error for server error response")
 		}

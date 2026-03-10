@@ -154,7 +154,7 @@ func loginHeadless(ctx context.Context, email, password string, opts LoginOption
 		}
 
 		// Submit the MFA code and get the service ticket.
-		ticket, err = submitMFA(ctx, client, ep, mfaCSRF, mfaCode)
+		ticket, err = submitMFA(ctx, client, ep, signinParams, mfaCSRF, mfaCode)
 		if err != nil {
 			return nil, fmt.Errorf("MFA verification: %w", err)
 		}
