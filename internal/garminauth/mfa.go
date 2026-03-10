@@ -72,12 +72,21 @@ func submitMFA(ctx context.Context, client *http.Client, ep Endpoints, signinPar
 		return "", fmt.Errorf("read MFA response: %w", err)
 	}
 
+	if resp.StatusCode == http.StatusTooManyRequests {
+		return "", fmt.Errorf("rate limited by Garmin SSO (429) — wait a few minutes and try again")
+	}
+
 	// Check for MFA error (still on MFA page means code was wrong).
 	if isMFARequired(string(body)) {
 		return "", fmt.Errorf("invalid MFA code")
 	}
 
-	// Extract service ticket from the response.
+	// After following redirects, the ticket may be in the final URL.
+	if ticket := ticketFromURL(resp.Request.URL.String()); ticket != "" {
+		return ticket, nil
+	}
+
+	// Extract service ticket from the response body (JS redirect pattern).
 	ticket, err := getTicket(string(body))
 	if err != nil {
 		title, _ := getTitle(string(body))
@@ -85,6 +94,16 @@ func submitMFA(ctx context.Context, client *http.Client, ep Endpoints, signinPar
 	}
 
 	return ticket, nil
+}
+
+// ticketFromURL extracts a service ticket from a URL string, handling the case
+// where Garmin redirects to e.g. .../sso/embed?ticket=ST-... after MFA success.
+func ticketFromURL(rawURL string) string {
+	u, err := url.Parse(rawURL)
+	if err != nil {
+		return ""
+	}
+	return u.Query().Get("ticket")
 }
 
 // resolveMFACode returns the MFA code from LoginOptions.
