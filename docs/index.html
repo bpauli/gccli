@@ -451,7 +451,7 @@ gccli activities list --limit 5</pre>
           <div class="feature-card fade-in">
             <div class="feature-icon yellow">&#x1f4c5;</div>
             <h3>Events</h3>
-            <p>List and add calendar events — races, group rides, and more. Pass the full Garmin JSON payload for maximum flexibility.</p>
+            <p>List and add calendar events — races, group rides, and more. Set custom goals and training priority. Pass the full Garmin JSON payload for maximum flexibility.</p>
           </div>
           <div class="feature-card fade-in">
             <div class="feature-icon blue">&#x1f4c5;</div>
@@ -652,6 +652,7 @@ gccli activities list --limit 5</pre>
               <div class="cmd-row"><div class="cmd">gccli events list</div><div class="desc">List upcoming calendar events</div></div>
               <div class="cmd-row"><div class="cmd">gccli events list --start 2024-06-01 --limit 50</div><div class="desc">List events from a date</div></div>
               <div class="cmd-row"><div class="cmd">gccli events add --params '{"eventName":"Race","date":"2026-09-27","eventType":"running"}'</div><div class="desc">Add event from JSON payload</div></div>
+              <div class="cmd-row"><div class="cmd">gccli events add --params '{"eventName":"10K","date":"2026-05-10","eventType":"running","eventCustomization":{"customGoal":{"value":2400,"unit":"second","unitType":"time"},"isTrainingEvent":true}}'</div><div class="desc">Add event with goal &amp; training priority</div></div>
             </div>
           </div>
 

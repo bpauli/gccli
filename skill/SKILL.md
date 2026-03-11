@@ -136,6 +136,7 @@ Common commands
 - List events: `gccli events list`
 - List events from date: `gccli events list --start 2024-06-01 --limit 50`
 - Add event (JSON): `gccli events add --params '{"eventName":"Berlin Marathon","date":"2026-09-27","eventType":"running","race":true,"location":"Berlin, Germany","completionTarget":{"value":42.195,"unit":"kilometer","unitType":"distance"}}'`
+- Add event with goal and training priority: `gccli events add --params '{"eventName":"Spring 10K","date":"2026-05-10","eventType":"running","race":true,"completionTarget":{"value":10,"unit":"kilometer","unitType":"distance"},"eventCustomization":{"customGoal":{"value":2400,"unit":"second","unitType":"time"},"isPrimaryEvent":false,"isTrainingEvent":true}}'`
 - Reload data: `gccli reload [date]`
 
 Notes

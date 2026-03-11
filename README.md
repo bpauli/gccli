@@ -20,7 +20,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Training** — browse and view training plans
 - **Profile** — user profile and settings
 - **Hydration** — view and log daily water intake
-- **Events** — list and add calendar events (races, group rides, etc.) with full JSON payload support
+- **Events** — list and add calendar events (races, group rides, etc.) with goals and training priority support
 - **Wellness** — menstrual cycle data, pregnancy summary
 - **Multiple accounts** — manage multiple Garmin accounts via `--account` flag
 - **Secure credential storage** using OS keyring (macOS Keychain, Linux Secret Service, encrypted file fallback)
@@ -540,11 +540,26 @@ gccli events add --params '{
   "location": "Berlin, Germany",
   "completionTarget": {"value": 42.195, "unit": "kilometer", "unitType": "distance"}
 }'
+
+# Add an event with a goal and training priority
+gccli events add --params '{
+  "eventName": "Spring 10K",
+  "date": "2026-05-10",
+  "eventType": "running",
+  "race": true,
+  "completionTarget": {"value": 10, "unit": "kilometer", "unitType": "distance"},
+  "eventCustomization": {
+    "customGoal": {"value": 2400, "unit": "second", "unitType": "time"},
+    "isPrimaryEvent": false,
+    "isTrainingEvent": true
+  }
+}'
 ```
 
 **Event JSON fields:**
 - **Required:** `eventName`, `date` (YYYY-MM-DD), `eventType` (running, trail_running, cycling, gravel_cycling, mountain_biking, swimming, triathlon, multi_sport, hiking, walking, fitness_equipment, motorcycling, winter_sport, other)
 - **Optional:** `eventTimeLocal` ({startTimeHhMm, timeZoneId}), `race` (bool), `location`, `completionTarget` ({value, unit, unitType}), `eventPrivacy` ({label: PRIVATE|PUBLIC}), `note`, `url`
+- **Goal & training priority:** `eventCustomization` ({customGoal: {value, unit, unitType}, isPrimaryEvent: bool, isTrainingEvent: bool}) — goal value in seconds for time goals; training priority: `isPrimaryEvent: true` for primary, `isTrainingEvent: true` for supporting, both false for no priority
 
 ### Wellness
 
