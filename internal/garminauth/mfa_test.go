@@ -297,6 +297,54 @@ func ssoMuxWithMFA(t *testing.T, expectedMFACode string) *http.ServeMux {
 	return mux
 }
 
+func TestTicketFromURL(t *testing.T) {
+	tests := []struct {
+		name   string
+		rawURL string
+		want   string
+	}{
+		{
+			name:   "valid ticket",
+			rawURL: "https://sso.garmin.com/sso/embed?ticket=ST-12345-abc",
+			want:   "ST-12345-abc",
+		},
+		{
+			name:   "no ticket param",
+			rawURL: "https://sso.garmin.com/sso/embed?foo=bar",
+			want:   "",
+		},
+		{
+			name:   "empty ticket param",
+			rawURL: "https://sso.garmin.com/sso/embed?ticket=",
+			want:   "",
+		},
+		{
+			name:   "no query params",
+			rawURL: "https://sso.garmin.com/sso/embed",
+			want:   "",
+		},
+		{
+			name:   "invalid URL",
+			rawURL: "://not-a-url",
+			want:   "",
+		},
+		{
+			name:   "ticket with other params",
+			rawURL: "https://sso.garmin.com/sso/embed?service=connect&ticket=ST-999&lang=en",
+			want:   "ST-999",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := ticketFromURL(tt.rawURL)
+			if got != tt.want {
+				t.Errorf("ticketFromURL(%q) = %q, want %q", tt.rawURL, got, tt.want)
+			}
+		})
+	}
+}
+
 func TestSubmitMFA(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		mux := http.NewServeMux()
@@ -374,6 +422,87 @@ func TestSubmitMFA(t *testing.T) {
 		_, err := submitMFA(context.Background(), srv.Client(), ep, url.Values{}, "csrf", "123456")
 		if err == nil {
 			t.Fatal("expected error for server error response")
+		}
+	})
+
+	t.Run("rate limited 429", func(t *testing.T) {
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+			w.WriteHeader(http.StatusTooManyRequests)
+		}))
+		t.Cleanup(srv.Close)
+
+		ep := Endpoints{
+			SSOVerifyMFA: srv.URL + "/sso/verifyMFA/loginEnterMfaCode",
+			SSOSignin:    srv.URL + "/sso/signin",
+		}
+
+		_, err := submitMFA(context.Background(), srv.Client(), ep, url.Values{}, "csrf", "123456")
+		if err == nil {
+			t.Fatal("expected error for 429 response")
+		}
+		if !strings.Contains(err.Error(), "rate limited") {
+			t.Errorf("error = %q, want to contain %q", err.Error(), "rate limited")
+		}
+	})
+
+	t.Run("ticket from redirect URL", func(t *testing.T) {
+		mux := http.NewServeMux()
+		mux.HandleFunc("POST /sso/verifyMFA/loginEnterMfaCode", func(w http.ResponseWriter, r *http.Request) {
+			// Redirect to a URL containing the ticket (simulating Garmin's redirect flow).
+			http.Redirect(w, r, "/sso/embed?ticket=ST-redirect-ticket", http.StatusFound)
+		})
+		mux.HandleFunc("GET /sso/embed", func(w http.ResponseWriter, _ *http.Request) {
+			// Final page after redirect — no ticket in body.
+			_, _ = w.Write([]byte(`<html><head><title>Success</title></head><body>Logged in</body></html>`))
+		})
+
+		srv := httptest.NewServer(mux)
+		t.Cleanup(srv.Close)
+
+		ep := Endpoints{
+			SSOVerifyMFA: srv.URL + "/sso/verifyMFA/loginEnterMfaCode",
+			SSOSignin:    srv.URL + "/sso/signin",
+		}
+
+		ticket, err := submitMFA(context.Background(), srv.Client(), ep, url.Values{}, "csrf", "123456")
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+		if ticket != "ST-redirect-ticket" {
+			t.Errorf("ticket = %q, want %q", ticket, "ST-redirect-ticket")
+		}
+	})
+
+	t.Run("signin params forwarded", func(t *testing.T) {
+		var receivedQuery url.Values
+		mux := http.NewServeMux()
+		mux.HandleFunc("POST /sso/verifyMFA/loginEnterMfaCode", func(w http.ResponseWriter, r *http.Request) {
+			receivedQuery = r.URL.Query()
+			_, _ = w.Write([]byte(`<html><head><title>Success</title></head>
+<body><script>window.location.replace("https://sso.garmin.com/sso/embed?ticket=ST-params-test")</script></body></html>`))
+		})
+
+		srv := httptest.NewServer(mux)
+		t.Cleanup(srv.Close)
+
+		ep := Endpoints{
+			SSOVerifyMFA: srv.URL + "/sso/verifyMFA/loginEnterMfaCode",
+			SSOSignin:    srv.URL + "/sso/signin",
+		}
+
+		params := url.Values{
+			"id":          {"gauth-widget"},
+			"embedWidget": {"true"},
+		}
+		_, err := submitMFA(context.Background(), srv.Client(), ep, params, "csrf", "123456")
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+		if receivedQuery.Get("id") != "gauth-widget" {
+			t.Errorf("query param id = %q, want %q", receivedQuery.Get("id"), "gauth-widget")
+		}
+		if receivedQuery.Get("embedWidget") != "true" {
+			t.Errorf("query param embedWidget = %q, want %q", receivedQuery.Get("embedWidget"), "true")
 		}
 	})
 }
