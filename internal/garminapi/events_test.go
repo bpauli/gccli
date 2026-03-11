@@ -100,6 +100,36 @@ func TestAddEvent_ServerError(t *testing.T) {
 	}
 }
 
+func TestDeleteEvent_Success(t *testing.T) {
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodDelete {
+			t.Errorf("method = %s, want DELETE", r.Method)
+		}
+		if r.URL.Path != "/calendar-service/event/99999" {
+			t.Errorf("path = %s, want /calendar-service/event/99999", r.URL.Path)
+		}
+		w.WriteHeader(http.StatusNoContent)
+	})
+
+	_, client := testServer(t, handler)
+	err := client.DeleteEvent(context.Background(), "99999")
+	if err != nil {
+		t.Fatalf("DeleteEvent: %v", err)
+	}
+}
+
+func TestDeleteEvent_ServerError(t *testing.T) {
+	handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		http.Error(w, "not found", http.StatusNotFound)
+	})
+
+	_, client := testServer(t, handler)
+	err := client.DeleteEvent(context.Background(), "99999")
+	if err == nil {
+		t.Fatal("expected error")
+	}
+}
+
 func TestGetEvents_ServerError(t *testing.T) {
 	handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)

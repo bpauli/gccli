@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/bpauli/gccli/internal/outfmt"
@@ -38,6 +39,14 @@ func eventsTestServer(t *testing.T) *httptest.Server {
 		}
 		w.Header().Set("Content-Type", "application/json")
 		_, _ = w.Write([]byte(`{"id":99999,"eventName":"` + body["eventName"].(string) + `","date":"` + body["date"].(string) + `"}`))
+	})
+
+	mux.HandleFunc("/calendar-service/event/", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodDelete {
+			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
+		w.WriteHeader(http.StatusNoContent)
 	})
 
 	return httptest.NewServer(mux)
@@ -202,5 +211,88 @@ func TestEventsAdd_NoAccount(t *testing.T) {
 	err := cmd.Run(g)
 	if err == nil {
 		t.Fatal("expected error, got nil")
+	}
+}
+
+// --- EventsDeleteCmd tests ---
+
+func TestEventsDelete_Success(t *testing.T) {
+	server := eventsTestServer(t)
+	defer server.Close()
+
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	overrideNewClient(t, server)
+	storeTestTokens(t, store, "test@example.com", testTokens())
+
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
+	cmd := &EventsDeleteCmd{ID: "99999", Force: true}
+	err := cmd.Run(g)
+	if err != nil {
+		t.Fatalf("expected no error, got: %v", err)
+	}
+	if !strings.Contains(buf.String(), "Deleted event") {
+		t.Fatalf("expected 'Deleted event' message, got: %q", buf.String())
+	}
+}
+
+func TestEventsDelete_Cancelled(t *testing.T) {
+	server := eventsTestServer(t)
+	defer server.Close()
+
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	overrideNewClient(t, server)
+	storeTestTokens(t, store, "test@example.com", testTokens())
+
+	orig := confirmReader
+	confirmReader = strings.NewReader("n\n")
+	t.Cleanup(func() { confirmReader = orig })
+
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
+	cmd := &EventsDeleteCmd{ID: "99999"}
+	err := cmd.Run(g)
+	if err != nil {
+		t.Fatalf("expected no error, got: %v", err)
+	}
+	if !strings.Contains(buf.String(), "Cancelled") {
+		t.Fatalf("expected 'Cancelled' message, got: %q", buf.String())
+	}
+}
+
+func TestEventsDelete_NoAccount(t *testing.T) {
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "")
+	cmd := &EventsDeleteCmd{ID: "99999", Force: true}
+	err := cmd.Run(g)
+	if err == nil {
+		t.Fatal("expected error, got nil")
+	}
+}
+
+func TestEventsDelete_ServerError(t *testing.T) {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/calendar-service/event/", func(w http.ResponseWriter, _ *http.Request) {
+		http.Error(w, "not found", http.StatusNotFound)
+	})
+	server := httptest.NewServer(mux)
+	defer server.Close()
+
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	overrideNewClient(t, server)
+	storeTestTokens(t, store, "test@example.com", testTokens())
+
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
+	cmd := &EventsDeleteCmd{ID: "99999", Force: true}
+	err := cmd.Run(g)
+	if err == nil {
+		t.Fatal("expected error, got nil")
+	}
+	if !strings.Contains(err.Error(), "delete event") {
+		t.Fatalf("unexpected error: %v", err)
 	}
 }

@@ -20,7 +20,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Training** — browse and view training plans
 - **Profile** — user profile and settings
 - **Hydration** — view and log daily water intake
-- **Events** — list and add calendar events (races, group rides, etc.) with goals and training priority support
+- **Events** — list, add, and delete calendar events (races, group rides, etc.) with goals and training priority support
 - **Wellness** — menstrual cycle data, pregnancy summary
 - **Multiple accounts** — manage multiple Garmin accounts via `--account` flag
 - **Secure credential storage** using OS keyring (macOS Keychain, Linux Secret Service, encrypted file fallback)
@@ -529,6 +529,8 @@ gccli training plan <id>
 gccli events list                      # List upcoming events
 gccli events list --start 2024-01-01 --limit 50
 gccli events list --sort eventDate_desc
+gccli events delete <id>               # Delete an event (with confirmation)
+gccli events delete <id> -f            # Delete without confirmation
 
 # Add an event with a JSON payload
 gccli events add --params '{

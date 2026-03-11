@@ -10,8 +10,9 @@ import (
 
 // EventsCmd groups event subcommands.
 type EventsCmd struct {
-	List EventsListCmd `cmd:"" default:"withargs" help:"List calendar events."`
-	Add  EventsAddCmd  `cmd:"" help:"Add a calendar event."`
+	List   EventsListCmd   `cmd:"" default:"withargs" help:"List calendar events."`
+	Add    EventsAddCmd    `cmd:"" help:"Add a calendar event."`
+	Delete EventsDeleteCmd `cmd:"" help:"Delete a calendar event."`
 }
 
 // EventsListCmd lists calendar events from a start date.
@@ -125,5 +126,34 @@ func (c *EventsAddCmd) Run(g *Globals) error {
 	}
 
 	g.UI.Successf("Added event")
+	return nil
+}
+
+// EventsDeleteCmd deletes a calendar event.
+type EventsDeleteCmd struct {
+	ID    string `arg:"" help:"Event ID."`
+	Force bool   `help:"Skip confirmation prompt." short:"f"`
+}
+
+func (c *EventsDeleteCmd) Run(g *Globals) error {
+	client, err := resolveClient(g)
+	if err != nil {
+		return err
+	}
+
+	ok, err := confirm(os.Stderr, fmt.Sprintf("Delete event %s?", c.ID), c.Force)
+	if err != nil {
+		return err
+	}
+	if !ok {
+		g.UI.Infof("Cancelled")
+		return nil
+	}
+
+	if err := client.DeleteEvent(g.Context, c.ID); err != nil {
+		return fmt.Errorf("delete event: %w", err)
+	}
+
+	g.UI.Successf("Deleted event %s", c.ID)
 	return nil
 }
