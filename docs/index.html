@@ -267,6 +267,7 @@
               <span class="badge">Goals</span>
               <span class="badge">Badges</span>
               <span class="badge">Courses</span>
+              <span class="badge">Events</span>
               <span class="badge">Training</span>
               <span class="badge">Hydration</span>
               <span class="badge">Wellness</span>
@@ -446,6 +447,11 @@ gccli activities list --limit 5</pre>
             <div class="feature-icon yellow">&#x1f3af;</div>
             <h3>Goals &amp; Badges</h3>
             <p>Active goals, earned/available/in-progress badges, challenges, and personal records.</p>
+          </div>
+          <div class="feature-card fade-in">
+            <div class="feature-icon yellow">&#x1f4c5;</div>
+            <h3>Events</h3>
+            <p>List and add calendar events — races, group rides, and more. Pass the full Garmin JSON payload for maximum flexibility.</p>
           </div>
           <div class="feature-card fade-in">
             <div class="feature-icon blue">&#x1f4c5;</div>
@@ -636,6 +642,16 @@ gccli activities list --limit 5</pre>
               <div class="cmd-row"><div class="cmd">gccli badges in-progress</div><div class="desc">In-progress badges</div></div>
               <div class="cmd-row"><div class="cmd">gccli challenges list</div><div class="desc">Active challenges</div></div>
               <div class="cmd-row"><div class="cmd">gccli records</div><div class="desc">Personal records</div></div>
+            </div>
+          </div>
+
+          <!-- Events -->
+          <div class="cmd-group fade-in">
+            <div class="cmd-header"><h3>Events</h3><span class="cmd-arrow">&#x25B6;</span></div>
+            <div class="cmd-body">
+              <div class="cmd-row"><div class="cmd">gccli events list</div><div class="desc">List upcoming calendar events</div></div>
+              <div class="cmd-row"><div class="cmd">gccli events list --start 2024-06-01 --limit 50</div><div class="desc">List events from a date</div></div>
+              <div class="cmd-row"><div class="cmd">gccli events add --params '{"eventName":"Race","date":"2026-09-27","eventType":"running"}'</div><div class="desc">Add event from JSON payload</div></div>
             </div>
           </div>
 

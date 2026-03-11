@@ -20,6 +20,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Training** — browse and view training plans
 - **Profile** — user profile and settings
 - **Hydration** — view and log daily water intake
+- **Events** — list and add calendar events (races, group rides, etc.) with full JSON payload support
 - **Wellness** — menstrual cycle data, pregnancy summary
 - **Multiple accounts** — manage multiple Garmin accounts via `--account` flag
 - **Secure credential storage** using OS keyring (macOS Keychain, Linux Secret Service, encrypted file fallback)
@@ -521,6 +522,29 @@ gccli hydration add 500 --date 2024-06-15
 gccli training plans --locale en
 gccli training plan <id>
 ```
+
+### Events
+
+```bash
+gccli events list                      # List upcoming events
+gccli events list --start 2024-01-01 --limit 50
+gccli events list --sort eventDate_desc
+
+# Add an event with a JSON payload
+gccli events add --params '{
+  "eventName": "Berlin Marathon",
+  "date": "2026-09-27",
+  "eventType": "running",
+  "eventTimeLocal": {"startTimeHhMm": "09:15", "timeZoneId": "Europe/Berlin"},
+  "race": true,
+  "location": "Berlin, Germany",
+  "completionTarget": {"value": 42.195, "unit": "kilometer", "unitType": "distance"}
+}'
+```
+
+**Event JSON fields:**
+- **Required:** `eventName`, `date` (YYYY-MM-DD), `eventType` (running, trail_running, cycling, gravel_cycling, mountain_biking, swimming, triathlon, multi_sport, hiking, walking, fitness_equipment, motorcycling, winter_sport, other)
+- **Optional:** `eventTimeLocal` ({startTimeHhMm, timeZoneId}), `race` (bool), `location`, `completionTarget` ({value, unit, unitType}), `eventPrivacy` ({label: PRIVATE|PUBLIC}), `note`, `url`
 
 ### Wellness
 

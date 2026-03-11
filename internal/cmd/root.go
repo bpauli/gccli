@@ -43,6 +43,7 @@ type CLI struct {
 	Profile    ProfileCmd    `cmd:"" help:"View user profile."`
 	Hydration  HydrationCmd  `cmd:"" help:"Track hydration."`
 	Training   TrainingCmd   `cmd:"" help:"View training plans."`
+	Events     EventsCmd     `cmd:"" help:"Manage calendar events."`
 	Wellness   WellnessCmd   `cmd:"" help:"View wellness data."`
 	Reload     ReloadCmd     `cmd:"" help:"Request data reload for a date."`
 	Completion CompletionCmd `cmd:"" help:"Generate shell completion script."`

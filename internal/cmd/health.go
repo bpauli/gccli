@@ -336,10 +336,14 @@ func writeHealthJSON(g *Globals, data json.RawMessage) error {
 // relativeDateRe matches relative date strings like "3d", "7d", "14d".
 var relativeDateRe = regexp.MustCompile(`^(\d+)d$`)
 
+// futureDateRe matches forward-looking date strings like "+7d", "+365d".
+var futureDateRe = regexp.MustCompile(`^\+(\d+)d$`)
+
 // resolveDate parses a date string that can be:
 //   - empty or "today": today's date
 //   - "yesterday": yesterday's date
 //   - "Nd" (e.g. "3d"): N days ago
+//   - "+Nd" (e.g. "+365d"): N days from now
 //   - "YYYY-MM-DD": an explicit date
 func resolveDate(s string) (string, error) {
 	s = strings.TrimSpace(s)
@@ -354,6 +358,11 @@ func resolveDate(s string) (string, error) {
 		return now.AddDate(0, 0, -1).Format("2006-01-02"), nil
 	}
 
+	if m := futureDateRe.FindStringSubmatch(s); m != nil {
+		days, _ := strconv.Atoi(m[1])
+		return now.AddDate(0, 0, days).Format("2006-01-02"), nil
+	}
+
 	if m := relativeDateRe.FindStringSubmatch(s); m != nil {
 		days, _ := strconv.Atoi(m[1])
 		return now.AddDate(0, 0, -days).Format("2006-01-02"), nil
@@ -361,7 +370,7 @@ func resolveDate(s string) (string, error) {
 
 	// Validate YYYY-MM-DD format.
 	if _, err := time.Parse("2006-01-02", s); err != nil {
-		return "", fmt.Errorf("invalid date %q: expected YYYY-MM-DD, today, yesterday, or Nd (e.g. 3d)", s)
+		return "", fmt.Errorf("invalid date %q: expected YYYY-MM-DD, today, yesterday, Nd (e.g. 3d), or +Nd (e.g. +30d)", s)
 	}
 
 	return s, nil

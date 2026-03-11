@@ -133,6 +133,9 @@ Common commands
 - Training plan detail: `gccli training plan <id>`
 - Menstrual cycle: `gccli wellness menstrual-cycle --start-date 2024-01-01 --end-date 2024-03-31`
 - Pregnancy summary: `gccli wellness pregnancy-summary`
+- List events: `gccli events list`
+- List events from date: `gccli events list --start 2024-06-01 --limit 50`
+- Add event (JSON): `gccli events add --params '{"eventName":"Berlin Marathon","date":"2026-09-27","eventType":"running","race":true,"location":"Berlin, Germany","completionTarget":{"value":42.195,"unit":"kilometer","unitType":"distance"}}'`
 - Reload data: `gccli reload [date]`
 
 Notes

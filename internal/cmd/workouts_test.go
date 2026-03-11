@@ -79,7 +79,7 @@ func workoutsTestServer(t *testing.T) *httptest.Server {
 		_, _ = w.Write([]byte(resp))
 	})
 
-	mux.HandleFunc("/calendar-service/year/2026/month/1/day/12/start/0", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/calendar-service/", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {
 			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 			return
@@ -603,6 +603,101 @@ func TestWorkoutScheduleList_NoAccount(t *testing.T) {
 	}
 	if !strings.Contains(err.Error(), "no account specified") {
 		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+// --- WorkoutScheduleListCmd range tests ---
+
+func TestWorkoutScheduleList_Range(t *testing.T) {
+	server := workoutsTestServer(t)
+	defer server.Close()
+
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	overrideNewClient(t, server)
+	storeTestTokens(t, store, "test@example.com", testTokens())
+
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
+	cmd := &WorkoutScheduleListCmd{StartDate: "2026-02-10", EndDate: "2026-02-20"}
+	err := cmd.Run(g)
+	if err != nil {
+		t.Fatalf("expected no error, got: %v", err)
+	}
+}
+
+func TestWorkoutScheduleList_RangeJSON(t *testing.T) {
+	server := workoutsTestServer(t)
+	defer server.Close()
+
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	overrideNewClient(t, server)
+	storeTestTokens(t, store, "test@example.com", testTokens())
+
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
+	cmd := &WorkoutScheduleListCmd{StartDate: "2026-02-10", EndDate: "2026-02-20"}
+	err := cmd.Run(g)
+	if err != nil {
+		t.Fatalf("expected no error, got: %v", err)
+	}
+}
+
+func TestWorkoutScheduleList_RangeMissingEnd(t *testing.T) {
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
+	cmd := &WorkoutScheduleListCmd{StartDate: "2026-02-10"}
+	err := cmd.Run(g)
+	if err == nil {
+		t.Fatal("expected error, got nil")
+	}
+	if !strings.Contains(err.Error(), "both --start and --end are required") {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestWorkoutScheduleList_RangeEndBeforeStart(t *testing.T) {
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
+	cmd := &WorkoutScheduleListCmd{StartDate: "2026-03-01", EndDate: "2026-02-01"}
+	err := cmd.Run(g)
+	if err == nil {
+		t.Fatal("expected error, got nil")
+	}
+	if !strings.Contains(err.Error(), "is before --start") {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+// --- filterCalendarWorkoutsInRange tests ---
+
+func TestFilterCalendarWorkoutsInRange(t *testing.T) {
+	data := []byte(`{"calendarItems":[
+		{"itemType":"workout","date":"2026-02-10","title":"W1"},
+		{"itemType":"workout","date":"2026-02-15","title":"W2"},
+		{"itemType":"workout","date":"2026-02-20","title":"W3"},
+		{"itemType":"workout","date":"2026-02-25","title":"W4"},
+		{"itemType":"activity","date":"2026-02-15","title":"A1"}
+	]}`)
+
+	items, err := filterCalendarWorkoutsInRange(data, "2026-02-10", "2026-02-20")
+	if err != nil {
+		t.Fatalf("filterCalendarWorkoutsInRange: %v", err)
+	}
+	if len(items) != 3 {
+		t.Errorf("got %d items, want 3", len(items))
+	}
+}
+
+func TestFilterCalendarWorkoutsInRange_Empty(t *testing.T) {
+	data := []byte(`{"calendarItems":[]}`)
+	items, err := filterCalendarWorkoutsInRange(data, "2026-02-10", "2026-02-20")
+	if err != nil {
+		t.Fatalf("filterCalendarWorkoutsInRange: %v", err)
+	}
+	if len(items) != 0 {
+		t.Errorf("got %d items, want 0", len(items))
 	}
 }
 

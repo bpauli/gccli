@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/bpauli/gccli/internal/outfmt"
 )
@@ -174,12 +175,18 @@ func (c *WorkoutScheduleAddCmd) Run(g *Globals) error {
 	return nil
 }
 
-// WorkoutScheduleListCmd lists scheduled workouts for a date.
+// WorkoutScheduleListCmd lists scheduled workouts for a date or date range.
 type WorkoutScheduleListCmd struct {
-	Date string `arg:"" help:"Date to list (YYYY-MM-DD, today, yesterday, 3d). Defaults to today." optional:""`
+	Date      string `arg:"" help:"Date to list (YYYY-MM-DD, today, yesterday, 3d). Defaults to today." optional:""`
+	StartDate string `help:"Start date for range (YYYY-MM-DD, today, 3d, +30d)." name:"start"`
+	EndDate   string `help:"End date for range (YYYY-MM-DD, today, 3d, +30d)." name:"end"`
 }
 
 func (c *WorkoutScheduleListCmd) Run(g *Globals) error {
+	if c.StartDate != "" || c.EndDate != "" {
+		return c.runRange(g)
+	}
+
 	date, err := resolveDate(c.Date)
 	if err != nil {
 		return err
@@ -200,6 +207,62 @@ func (c *WorkoutScheduleListCmd) Run(g *Globals) error {
 		return err
 	}
 
+	return writeScheduledWorkouts(g, items)
+}
+
+func (c *WorkoutScheduleListCmd) runRange(g *Globals) error {
+	if c.StartDate == "" || c.EndDate == "" {
+		return fmt.Errorf("both --start and --end are required for range queries")
+	}
+
+	startStr, err := resolveDate(c.StartDate)
+	if err != nil {
+		return err
+	}
+	endStr, err := resolveDate(c.EndDate)
+	if err != nil {
+		return err
+	}
+
+	start, _ := time.Parse("2006-01-02", startStr)
+	end, _ := time.Parse("2006-01-02", endStr)
+	if end.Before(start) {
+		return fmt.Errorf("--end %s is before --start %s", endStr, startStr)
+	}
+
+	client, err := resolveClient(g)
+	if err != nil {
+		return err
+	}
+
+	var allWorkouts []map[string]any
+	seen := make(map[string]bool)
+
+	for cursor := start; !cursor.After(end); cursor = cursor.AddDate(0, 0, 7) {
+		date := cursor.Format("2006-01-02")
+		data, err := client.GetCalendarWeek(g.Context, date)
+		if err != nil {
+			return fmt.Errorf("list scheduled workouts: %w", err)
+		}
+
+		items, err := filterCalendarWorkoutsInRange(data, startStr, endStr)
+		if err != nil {
+			return err
+		}
+
+		for _, item := range items {
+			key := jsonString(item, "id") + ":" + jsonString(item, "date")
+			if !seen[key] {
+				seen[key] = true
+				allWorkouts = append(allWorkouts, item)
+			}
+		}
+	}
+
+	return writeScheduledWorkouts(g, allWorkouts)
+}
+
+func writeScheduledWorkouts(g *Globals, items []map[string]any) error {
 	if outfmt.IsJSON(g.Context) {
 		out, err := json.Marshal(items)
 		if err != nil {
@@ -244,6 +307,41 @@ func filterCalendarWorkouts(data json.RawMessage, date string) ([]map[string]any
 			continue
 		}
 		if jsonString(m, "date") != date {
+			continue
+		}
+		workouts = append(workouts, m)
+	}
+	return workouts, nil
+}
+
+// filterCalendarWorkoutsInRange extracts workout items within a date range from calendar data.
+func filterCalendarWorkoutsInRange(data json.RawMessage, startDate, endDate string) ([]map[string]any, error) {
+	var calendar map[string]any
+	if err := json.Unmarshal(data, &calendar); err != nil {
+		return nil, fmt.Errorf("parse calendar: %w", err)
+	}
+
+	rawItems, ok := calendar["calendarItems"]
+	if !ok {
+		return nil, nil
+	}
+
+	items, ok := rawItems.([]any)
+	if !ok {
+		return nil, nil
+	}
+
+	var workouts []map[string]any
+	for _, item := range items {
+		m, ok := item.(map[string]any)
+		if !ok {
+			continue
+		}
+		if jsonString(m, "itemType") != "workout" {
+			continue
+		}
+		date := jsonString(m, "date")
+		if date < startDate || date > endDate {
 			continue
 		}
 		workouts = append(workouts, m)
