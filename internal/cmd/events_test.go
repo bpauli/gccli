@@ -166,7 +166,41 @@ func TestEventsAdd_Success(t *testing.T) {
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
 	cmd := &EventsAddCmd{
-		Params: `{"eventName":"Spring Race","date":"2026-04-01","eventType":"running"}`,
+		Name: "Spring Race",
+		Date: "2026-04-01",
+		Type: "running",
+	}
+	err := cmd.Run(g)
+	if err != nil {
+		t.Fatalf("expected no error, got: %v", err)
+	}
+}
+
+func TestEventsAdd_AllFlags(t *testing.T) {
+	server := eventsTestServer(t)
+	defer server.Close()
+
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	overrideNewClient(t, server)
+	storeTestTokens(t, store, "test@example.com", testTokens())
+
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
+	cmd := &EventsAddCmd{
+		Name:     "Berlin Marathon",
+		Date:     "2026-09-27",
+		Type:     "running",
+		Race:     true,
+		Location: "Berlin, Germany",
+		Time:     "09:15",
+		Timezone: "Europe/Berlin",
+		Distance: "42.195km",
+		Goal:     "3h30m",
+		Training: true,
+		Private:  true,
+		Note:     "My first marathon",
+		URL:      "https://example.com",
 	}
 	err := cmd.Run(g)
 	if err != nil {
@@ -186,7 +220,9 @@ func TestEventsAdd_JSON(t *testing.T) {
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
 	cmd := &EventsAddCmd{
-		Params: `{"eventName":"Spring Race","date":"2026-04-01","eventType":"running"}`,
+		Name: "Spring Race",
+		Date: "2026-04-01",
+		Type: "running",
 	}
 	err := cmd.Run(g)
 	if err != nil {
@@ -194,10 +230,36 @@ func TestEventsAdd_JSON(t *testing.T) {
 	}
 }
 
-func TestEventsAdd_InvalidJSON(t *testing.T) {
+func TestEventsAdd_InvalidDistance(t *testing.T) {
+	server := eventsTestServer(t)
+	defer server.Close()
+
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	overrideNewClient(t, server)
+	storeTestTokens(t, store, "test@example.com", testTokens())
+
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &EventsAddCmd{Params: `not json`}
+	cmd := &EventsAddCmd{Name: "Race", Date: "2026-04-01", Type: "running", Distance: "abc"}
+	err := cmd.Run(g)
+	if err == nil {
+		t.Fatal("expected error, got nil")
+	}
+}
+
+func TestEventsAdd_InvalidGoal(t *testing.T) {
+	server := eventsTestServer(t)
+	defer server.Close()
+
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	overrideNewClient(t, server)
+	storeTestTokens(t, store, "test@example.com", testTokens())
+
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
+	cmd := &EventsAddCmd{Name: "Race", Date: "2026-04-01", Type: "running", Goal: "notaduration"}
 	err := cmd.Run(g)
 	if err == nil {
 		t.Fatal("expected error, got nil")
@@ -207,10 +269,61 @@ func TestEventsAdd_InvalidJSON(t *testing.T) {
 func TestEventsAdd_NoAccount(t *testing.T) {
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &EventsAddCmd{Params: `{"eventName":"Race","date":"2026-04-01"}`}
+	cmd := &EventsAddCmd{Name: "Race", Date: "2026-04-01", Type: "running"}
 	err := cmd.Run(g)
 	if err == nil {
 		t.Fatal("expected error, got nil")
+	}
+}
+
+func TestParseDistance(t *testing.T) {
+	tests := []struct {
+		input    string
+		wantVal  float64
+		wantUnit string
+		wantErr  bool
+	}{
+		{"10km", 10, "kilometer", false},
+		{"42.195km", 42.195, "kilometer", false},
+		{"26.2mi", 26.2, "mile", false},
+		{"400m", 400, "meter", false},
+		{"abc", 0, "", true},
+		{"10", 0, "", true},
+		{"km", 0, "", true},
+	}
+	for _, tt := range tests {
+		val, unit, err := parseDistance(tt.input)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("parseDistance(%q) error = %v, wantErr %v", tt.input, err, tt.wantErr)
+			continue
+		}
+		if val != tt.wantVal || unit != tt.wantUnit {
+			t.Errorf("parseDistance(%q) = (%v, %q), want (%v, %q)", tt.input, val, unit, tt.wantVal, tt.wantUnit)
+		}
+	}
+}
+
+func TestParseGoalDuration(t *testing.T) {
+	tests := []struct {
+		input   string
+		want    int
+		wantErr bool
+	}{
+		{"50m", 3000, false},
+		{"1h30m", 5400, false},
+		{"2400s", 2400, false},
+		{"3h30m0s", 12600, false},
+		{"notaduration", 0, true},
+	}
+	for _, tt := range tests {
+		got, err := parseGoalDuration(tt.input)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("parseGoalDuration(%q) error = %v, wantErr %v", tt.input, err, tt.wantErr)
+			continue
+		}
+		if got != tt.want {
+			t.Errorf("parseGoalDuration(%q) = %d, want %d", tt.input, got, tt.want)
+		}
 	}
 }
 

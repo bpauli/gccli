@@ -135,8 +135,8 @@ Common commands
 - Pregnancy summary: `gccli wellness pregnancy-summary`
 - List events: `gccli events list`
 - List events from date: `gccli events list --start 2024-06-01 --limit 50`
-- Add event (JSON): `gccli events add --params '{"eventName":"Berlin Marathon","date":"2026-09-27","eventType":"running","race":true,"location":"Berlin, Germany","completionTarget":{"value":42.195,"unit":"kilometer","unitType":"distance"}}'`
-- Add event with goal and training priority: `gccli events add --params '{"eventName":"Spring 10K","date":"2026-05-10","eventType":"running","race":true,"completionTarget":{"value":10,"unit":"kilometer","unitType":"distance"},"eventCustomization":{"customGoal":{"value":2400,"unit":"second","unitType":"time"},"isPrimaryEvent":false,"isTrainingEvent":true}}'`
+- Add event: `gccli events add --name "Berlin Marathon" --date 2026-09-27 --type running --race --location "Berlin, Germany" --distance 42.195km --time 09:15 --timezone Europe/Berlin`
+- Add event with goal and training priority: `gccli events add --name "Spring 10K" --date 2026-05-10 --type running --race --distance 10km --goal 40m --training`
 - Delete event: `gccli events delete <id>` (use `-f` to skip confirmation)
 - Reload data: `gccli reload [date]`
 

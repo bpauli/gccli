@@ -532,36 +532,20 @@ gccli events list --sort eventDate_desc
 gccli events delete <id>               # Delete an event (with confirmation)
 gccli events delete <id> -f            # Delete without confirmation
 
-# Add an event with a JSON payload
-gccli events add --params '{
-  "eventName": "Berlin Marathon",
-  "date": "2026-09-27",
-  "eventType": "running",
-  "eventTimeLocal": {"startTimeHhMm": "09:15", "timeZoneId": "Europe/Berlin"},
-  "race": true,
-  "location": "Berlin, Germany",
-  "completionTarget": {"value": 42.195, "unit": "kilometer", "unitType": "distance"}
-}'
+# Add a race event
+gccli events add --name "Berlin Marathon" --date 2026-09-27 --type running \
+  --race --location "Berlin, Germany" --distance 42.195km \
+  --time 09:15 --timezone Europe/Berlin
 
 # Add an event with a goal and training priority
-gccli events add --params '{
-  "eventName": "Spring 10K",
-  "date": "2026-05-10",
-  "eventType": "running",
-  "race": true,
-  "completionTarget": {"value": 10, "unit": "kilometer", "unitType": "distance"},
-  "eventCustomization": {
-    "customGoal": {"value": 2400, "unit": "second", "unitType": "time"},
-    "isPrimaryEvent": false,
-    "isTrainingEvent": true
-  }
-}'
+gccli events add --name "Spring 10K" --date 2026-05-10 --type running \
+  --race --distance 10km --goal 40m --training
 ```
 
-**Event JSON fields:**
-- **Required:** `eventName`, `date` (YYYY-MM-DD), `eventType` (running, trail_running, cycling, gravel_cycling, mountain_biking, swimming, triathlon, multi_sport, hiking, walking, fitness_equipment, motorcycling, winter_sport, other)
-- **Optional:** `eventTimeLocal` ({startTimeHhMm, timeZoneId}), `race` (bool), `location`, `completionTarget` ({value, unit, unitType}), `eventPrivacy` ({label: PRIVATE|PUBLIC}), `note`, `url`
-- **Goal & training priority:** `eventCustomization` ({customGoal: {value, unit, unitType}, isPrimaryEvent: bool, isTrainingEvent: bool}) — goal value in seconds for time goals; training priority: `isPrimaryEvent: true` for primary, `isTrainingEvent: true` for supporting, both false for no priority
+**Event flags:**
+- **Required:** `--name`, `--date` (YYYY-MM-DD, today, +30d), `--type` (running, trail_running, cycling, gravel_cycling, mountain_biking, swimming, triathlon, multi_sport, hiking, walking, fitness_equipment, motorcycling, winter_sport, other)
+- **Optional:** `--race`, `--location`, `--time` (HH:MM), `--timezone`, `--distance` (e.g. 10km, 26.2mi, 400m), `--private`, `--note`, `--url`
+- **Goal & training priority:** `--goal` (duration, e.g. 50m, 1h30m, 2400s), `--primary` or `--training` (mutually exclusive)
 
 ### Wellness
 

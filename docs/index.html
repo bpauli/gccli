@@ -651,8 +651,8 @@ gccli activities list --limit 5</pre>
             <div class="cmd-body">
               <div class="cmd-row"><div class="cmd">gccli events list</div><div class="desc">List upcoming calendar events</div></div>
               <div class="cmd-row"><div class="cmd">gccli events list --start 2024-06-01 --limit 50</div><div class="desc">List events from a date</div></div>
-              <div class="cmd-row"><div class="cmd">gccli events add --params '{"eventName":"Race","date":"2026-09-27","eventType":"running"}'</div><div class="desc">Add event from JSON payload</div></div>
-              <div class="cmd-row"><div class="cmd">gccli events add --params '{"eventName":"10K","date":"2026-05-10","eventType":"running","eventCustomization":{"customGoal":{"value":2400,"unit":"second","unitType":"time"},"isTrainingEvent":true}}'</div><div class="desc">Add event with goal &amp; training priority</div></div>
+              <div class="cmd-row"><div class="cmd">gccli events add --name "Race" --date 2026-09-27 --type running --race</div><div class="desc">Add a race event</div></div>
+              <div class="cmd-row"><div class="cmd">gccli events add --name "10K" --date 2026-05-10 --type running --distance 10km --goal 40m --training</div><div class="desc">Add event with goal &amp; training priority</div></div>
               <div class="cmd-row"><div class="cmd">gccli events delete &lt;id&gt;</div><div class="desc">Delete an event (with confirmation)</div></div>
             </div>
           </div>
