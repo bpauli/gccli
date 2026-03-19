@@ -49,7 +49,7 @@ func TestCollectCommands_IncludesSubcommands(t *testing.T) {
 		}
 	}
 
-	for _, want := range []string{"login", "status", "remove", "token"} {
+	for _, want := range []string{"login", "status", "remove", "token", "export", "import"} {
 		if !subCmds[want] {
 			t.Errorf("expected auth subcommand %q", want)
 		}

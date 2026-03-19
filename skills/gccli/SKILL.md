@@ -31,6 +31,8 @@ Common commands
 
 - Auth status: `gccli auth status`
 - Auth token (for scripting): `gccli auth token`
+- Export credentials: `gccli auth export` (pipe to file or copy to another machine)
+- Import credentials: `gccli auth import <token>` (from `auth export` output)
 - Remove credentials: `gccli auth remove`
 - List activities: `gccli activities list --limit 20`
 - List activities by type: `gccli activities list --type running`

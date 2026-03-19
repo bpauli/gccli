@@ -30,6 +30,8 @@ type AuthCmd struct {
 	Status AuthStatusCmd `cmd:"" help:"Show authentication status."`
 	Remove AuthRemoveCmd `cmd:"" help:"Remove stored credentials."`
 	Token  AuthTokenCmd  `cmd:"" help:"Print current access token."`
+	Export AuthExportCmd `cmd:"" help:"Export credentials for transfer to another machine."`
+	Import AuthImportCmd `cmd:"" help:"Import credentials from another machine."`
 }
 
 // AuthStatusCmd shows the current authentication state.

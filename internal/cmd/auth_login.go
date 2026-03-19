@@ -2,11 +2,14 @@ package cmd
 
 import (
 	"fmt"
+	"net/http"
+	"net/http/cookiejar"
 	"os"
 
 	"golang.org/x/term"
 
 	"github.com/bpauli/gccli/internal/config"
+	"github.com/bpauli/gccli/internal/garminapi"
 	"github.com/bpauli/gccli/internal/garminauth"
 )
 
@@ -30,9 +33,21 @@ func (c *AuthLoginCmd) Run(g *Globals) error {
 		return fmt.Errorf("read config: %w", err)
 	}
 
+	// Build an HTTP client with retry transport so auth requests
+	// automatically retry on 429 (rate limit) and 5xx responses.
+	jar, err := cookiejar.New(nil)
+	if err != nil {
+		return fmt.Errorf("create cookie jar: %w", err)
+	}
+	httpClient := &http.Client{
+		Jar:       jar,
+		Transport: garminapi.NewRetryTransport(nil),
+	}
+
 	opts := garminauth.LoginOptions{
-		Domain:  cfg.Domain(),
-		MFACode: c.MFACode,
+		Domain:     cfg.Domain(),
+		MFACode:    c.MFACode,
+		HTTPClient: httpClient,
 	}
 
 	var tokens *garminauth.Tokens

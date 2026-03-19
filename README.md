@@ -242,6 +242,8 @@ gccli auth login <email> --headless    # Log in via email/password
 gccli auth login <email> --headless --mfa-code <code>  # With MFA
 gccli auth status                      # Show auth state and token expiry
 gccli auth token                       # Print OAuth2 access token
+gccli auth export                      # Export credentials (for transfer to another machine)
+gccli auth import <token>              # Import credentials from another machine
 gccli auth remove                      # Remove stored credentials
 ```
 
