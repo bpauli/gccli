@@ -302,6 +302,14 @@ func (c *Client) RetypeActivity(ctx context.Context, activityID string, typeID i
 	return c.ConnectAPI(ctx, http.MethodPut, "/activity-service/activity/"+activityID, bytes.NewReader(body))
 }
 
+// SetExerciseSets sets exercise sets for a strength training activity.
+func (c *Client) SetExerciseSets(ctx context.Context, activityID string, payload json.RawMessage) error {
+	_, err := c.ConnectAPI(ctx, http.MethodPut,
+		"/activity-service/activity/"+activityID+"/exerciseSets",
+		bytes.NewReader(payload))
+	return err
+}
+
 // DeleteActivity deletes an activity by ID.
 func (c *Client) DeleteActivity(ctx context.Context, activityID string) error {
 	_, err := c.ConnectAPI(ctx, http.MethodDelete, "/activity-service/activity/"+activityID, nil)

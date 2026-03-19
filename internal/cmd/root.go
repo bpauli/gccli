@@ -45,6 +45,7 @@ type CLI struct {
 	Training   TrainingCmd   `cmd:"" help:"View training plans."`
 	Events     EventsCmd     `cmd:"" help:"Manage calendar events."`
 	Wellness   WellnessCmd   `cmd:"" help:"View wellness data."`
+	Exercises  ExercisesCmd  `cmd:"" help:"Browse the exercise catalog."`
 	Reload     ReloadCmd     `cmd:"" help:"Request data reload for a date."`
 	Completion CompletionCmd `cmd:"" help:"Generate shell completion script."`
 }

@@ -9,7 +9,8 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 
 ## Features
 
-- **Activities** — list, search, view details, download (FIT/GPX/TCX/KML/CSV), upload, create manual entries, rename, retype, delete
+- **Activities** — list, search, view details, download (FIT/GPX/TCX/KML/CSV), upload, create manual entries (with date), rename, retype, delete, set exercise sets for strength training
+- **Exercise Catalog** — browse Garmin's exercise categories and exercises for strength training
 - **Health Data** — daily summaries, steps, heart rate, resting HR, sleep, stress, HRV, SpO2, respiration, body battery, floors, training readiness/status, VO2max, fitness age, race predictions, endurance/hill scores, intensity minutes, lactate threshold, cycling FTP
 - **Body Composition** — weight tracking, body fat, muscle mass, blood pressure, FIT file encoding for composition uploads
 - **Workouts** — list, view, download as FIT, upload from JSON, create with sport types and targets (pace/HR/power/cadence), schedule (add/list/remove), delete
@@ -264,6 +265,7 @@ gccli activity weather <id>
 gccli activity hr-zones <id>
 gccli activity power-zones <id>
 gccli activity exercise-sets <id>
+gccli activity exercise-sets set <id> -e "BENCH_PRESS/BARBELL_BENCH_PRESS:12@20" -e "BENCH_PRESS/BARBELL_BENCH_PRESS:10@25" --rest 60
 gccli activity gear <id>
 
 # Download and upload
@@ -273,6 +275,7 @@ gccli activity upload ./activity.fit
 
 # Create and modify
 gccli activity create --name "Morning Run" --type running --duration 30m --distance 5000
+gccli activity create --name "Upper Body" --type strength_training --duration 34m --date 2026-03-13T19:01:00
 gccli activity rename <id> "New Name"
 gccli activity retype <id> --type-id 1 --type-key running
 gccli activity delete <id>
@@ -451,6 +454,19 @@ Key reference values:
 - **Target types**: no.target (1), power.zone (2), cadence (3), heart.rate.zone (4), pace.zone (6)
 - **End condition**: time (2) — value in seconds
 - **Pace values**: in m/s (e.g., 5:00/km = 1000/300 = 3.333 m/s)
+
+### Exercise Catalog
+
+```bash
+# List all exercise categories
+gccli exercises list
+
+# List exercises in a category
+gccli exercises list -c BENCH_PRESS
+
+# Full catalog as JSON
+gccli exercises list --json
+```
 
 ### Courses
 

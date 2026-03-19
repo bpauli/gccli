@@ -19,7 +19,7 @@ type ActivityCmd struct {
 	Weather        ActivityWeatherCmd        `cmd:"" help:"Show weather conditions."`
 	HRZones        ActivityHRZonesCmd        `cmd:"" name:"hr-zones" help:"Show heart rate time in zones."`
 	PowerZones     ActivityPowerZonesCmd     `cmd:"" name:"power-zones" help:"Show power time in zones."`
-	ExerciseSets   ActivityExerciseSetsCmd   `cmd:"" name:"exercise-sets" help:"Show exercise sets."`
+	ExerciseSets   ActivityExerciseSetsGroup `cmd:"" name:"exercise-sets" help:"Manage exercise sets."`
 	Gear           ActivityGearCmd           `cmd:"" help:"Show linked gear."`
 	Download       ActivityDownloadCmd       `cmd:"" help:"Download activity file."`
 	Upload         ActivityUploadCmd         `cmd:"" help:"Upload an activity file (FIT/GPX/TCX)."`
@@ -253,12 +253,18 @@ func (c *ActivityPowerZonesCmd) Run(g *Globals) error {
 	return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
 }
 
-// ActivityExerciseSetsCmd shows exercise set data for strength training activities.
-type ActivityExerciseSetsCmd struct {
+// ActivityExerciseSetsGroup groups exercise-sets subcommands.
+type ActivityExerciseSetsGroup struct {
+	Show ActivityExerciseSetsShowCmd `cmd:"" default:"withargs" help:"Show exercise sets."`
+	Set  ActivityExerciseSetsSetCmd  `cmd:"" help:"Set exercise sets for a strength training activity."`
+}
+
+// ActivityExerciseSetsShowCmd shows exercise set data for strength training activities.
+type ActivityExerciseSetsShowCmd struct {
 	ID string `arg:"" help:"Activity ID."`
 }
 
-func (c *ActivityExerciseSetsCmd) Run(g *Globals) error {
+func (c *ActivityExerciseSetsShowCmd) Run(g *Globals) error {
 	client, err := resolveClient(g)
 	if err != nil {
 		return err

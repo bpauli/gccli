@@ -411,7 +411,7 @@ gccli activities list --limit 5</pre>
           <div class="feature-card fade-in">
             <div class="feature-icon">&#x1f3c3;</div>
             <h3>Activities</h3>
-            <p>List, search, view details, splits, weather, HR/power zones. Download FIT/GPX/TCX/KML/CSV. Upload, create, rename, retype, delete.</p>
+            <p>List, search, view details, splits, weather, HR/power zones. Download FIT/GPX/TCX/KML/CSV. Upload, create (with date), rename, retype, delete. Set exercise sets for strength training.</p>
           </div>
           <div class="feature-card fade-in">
             <div class="feature-icon blue">&#x2764;</div>
@@ -524,6 +524,10 @@ gccli activities list --limit 5</pre>
               <div class="cmd-row"><div class="cmd">gccli activity download &lt;id&gt; --format fit</div><div class="desc">Download as FIT/GPX/TCX/KML/CSV</div></div>
               <div class="cmd-row"><div class="cmd">gccli activity upload ./activity.fit</div><div class="desc">Upload a FIT file</div></div>
               <div class="cmd-row"><div class="cmd">gccli activity create --name "Run" --type running --duration 30m</div><div class="desc">Create manual activity entry</div></div>
+              <div class="cmd-row"><div class="cmd">gccli activity create --name "Workout" --type strength_training --duration 34m --date 2026-03-13T19:01:00</div><div class="desc">Create activity with date</div></div>
+              <div class="cmd-row"><div class="cmd">gccli activity exercise-sets set &lt;id&gt; -e "BENCH_PRESS/BARBELL:12@20"</div><div class="desc">Set exercise sets for strength training</div></div>
+              <div class="cmd-row"><div class="cmd">gccli exercises list</div><div class="desc">Browse exercise categories</div></div>
+              <div class="cmd-row"><div class="cmd">gccli exercises list -c BENCH_PRESS</div><div class="desc">List exercises in a category</div></div>
               <div class="cmd-row"><div class="cmd">gccli activity rename &lt;id&gt; "New Name"</div><div class="desc">Rename an activity</div></div>
               <div class="cmd-row"><div class="cmd">gccli activity delete &lt;id&gt; --force</div><div class="desc">Delete an activity</div></div>
             </div>

@@ -30,7 +30,7 @@ func TestCollectCommands(t *testing.T) {
 		found[cmd.Path[0]] = true
 	}
 
-	for _, want := range []string{"auth", "activities", "activity", "workouts", "health", "body", "devices", "gear", "goals", "badges", "challenges", "records", "profile", "hydration", "training", "wellness", "events", "courses", "reload", "completion"} {
+	for _, want := range []string{"auth", "activities", "activity", "workouts", "health", "body", "devices", "gear", "goals", "badges", "challenges", "records", "profile", "hydration", "training", "wellness", "events", "courses", "exercises", "reload", "completion"} {
 		if !found[want] {
 			t.Errorf("expected command %q in collectCommands output", want)
 		}
