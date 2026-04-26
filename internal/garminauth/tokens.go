@@ -17,6 +17,9 @@ type Tokens struct {
 	OAuth2RefreshToken string    `json:"oauth2_refresh_token"`
 	OAuth2ExpiresAt    time.Time `json:"oauth2_expires_at"`
 
+	// DIClientID is the Garmin DI OAuth client id used for refresh_token grants.
+	DIClientID string `json:"di_client_id,omitempty"`
+
 	// MFA token returned during MFA-enabled login.
 	MFAToken string `json:"mfa_token,omitempty"`
 
@@ -43,6 +46,12 @@ func (t *Tokens) IsExpired() bool {
 // that can be used to refresh the OAuth2 token.
 func (t *Tokens) HasOAuth1() bool {
 	return t.OAuth1Token != "" && t.OAuth1Secret != ""
+}
+
+// CanRefresh reports whether the tokens contain credentials that can refresh
+// the OAuth2 access token.
+func (t *Tokens) CanRefresh() bool {
+	return t.OAuth2RefreshToken != "" || t.HasOAuth1()
 }
 
 // Marshal serializes the tokens to JSON for keyring storage.

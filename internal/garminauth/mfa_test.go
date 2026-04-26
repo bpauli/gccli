@@ -294,6 +294,33 @@ func ssoMuxWithMFA(t *testing.T, expectedMFACode string) *http.ServeMux {
 		})
 	})
 
+	mux.HandleFunc("POST /di-oauth2-service/oauth/token", func(w http.ResponseWriter, r *http.Request) {
+		if !strings.HasPrefix(r.Header.Get("Authorization"), "Basic ") {
+			http.Error(w, "missing basic auth", http.StatusUnauthorized)
+			return
+		}
+		if err := r.ParseForm(); err != nil {
+			http.Error(w, "bad form", http.StatusBadRequest)
+			return
+		}
+		if r.Form.Get("grant_type") != diGrantType {
+			http.Error(w, "bad grant", http.StatusBadRequest)
+			return
+		}
+		if r.Form.Get("service_ticket") != "ST-mfa-ticket-999" {
+			http.Error(w, "bad ticket", http.StatusBadRequest)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		_ = json.NewEncoder(w).Encode(map[string]any{
+			"token_type":               "Bearer",
+			"access_token":             "mock-mfa-access-token",
+			"refresh_token":            "mock-mfa-refresh-token",
+			"expires_in":               3600,
+			"refresh_token_expires_in": 7776000,
+		})
+	})
+
 	return mux
 }
 
@@ -510,10 +537,7 @@ func TestSubmitMFA(t *testing.T) {
 func TestLoginHeadless_MFAWithCode(t *testing.T) {
 	mux := ssoMuxWithMFA(t, "123456")
 	srv, ep := mockSSO(t, mux)
-
-	origURL := oauthConsumerURL
-	oauthConsumerURL = srv.URL + "/oauth_consumer.json"
-	t.Cleanup(func() { oauthConsumerURL = origURL })
+	useMockDI(t, srv)
 
 	tokens, err := loginHeadless(context.Background(), "test@example.com", "correctpass",
 		LoginOptions{MFACode: "123456"}, ep)
@@ -527,9 +551,6 @@ func TestLoginHeadless_MFAWithCode(t *testing.T) {
 	if tokens.OAuth2AccessToken != "mock-mfa-access-token" {
 		t.Errorf("access_token = %q, want %q", tokens.OAuth2AccessToken, "mock-mfa-access-token")
 	}
-	if tokens.MFAToken != "mock-mfa-token" {
-		t.Errorf("mfa_token = %q, want %q", tokens.MFAToken, "mock-mfa-token")
-	}
 	if tokens.IsExpired() {
 		t.Error("token should not be expired")
 	}
@@ -538,10 +559,7 @@ func TestLoginHeadless_MFAWithCode(t *testing.T) {
 func TestLoginHeadless_MFAWithPrompt(t *testing.T) {
 	mux := ssoMuxWithMFA(t, "654321")
 	srv, ep := mockSSO(t, mux)
-
-	origURL := oauthConsumerURL
-	oauthConsumerURL = srv.URL + "/oauth_consumer.json"
-	t.Cleanup(func() { oauthConsumerURL = origURL })
+	useMockDI(t, srv)
 
 	promptCalled := false
 	tokens, err := loginHeadless(context.Background(), "test@example.com", "correctpass",
@@ -580,10 +598,7 @@ func TestLoginHeadless_MFANoCodeOrPrompt(t *testing.T) {
 func TestLoginHeadless_MFAWrongCode(t *testing.T) {
 	mux := ssoMuxWithMFA(t, "123456")
 	srv, ep := mockSSO(t, mux)
-
-	origURL := oauthConsumerURL
-	oauthConsumerURL = srv.URL + "/oauth_consumer.json"
-	t.Cleanup(func() { oauthConsumerURL = origURL })
+	useMockDI(t, srv)
 
 	_, err := loginHeadless(context.Background(), "test@example.com", "correctpass",
 		LoginOptions{MFACode: "wrong-code"}, ep)

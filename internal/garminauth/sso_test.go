@@ -13,10 +13,7 @@ import (
 func TestLoginBrowser_Success(t *testing.T) {
 	mux := ssoMux(t)
 	srv, ep := mockSSO(t, mux)
-
-	origURL := oauthConsumerURL
-	oauthConsumerURL = srv.URL + "/oauth_consumer.json"
-	t.Cleanup(func() { oauthConsumerURL = origURL })
+	useMockDI(t, srv)
 
 	origOpen := openBrowserFn
 	openBrowserFn = func(ssoURL string) error {
@@ -52,11 +49,8 @@ func TestLoginBrowser_Success(t *testing.T) {
 	if tokens.Domain != DomainGlobal {
 		t.Errorf("domain = %q, want %q", tokens.Domain, DomainGlobal)
 	}
-	if tokens.OAuth1Token != "mock-oauth1-token" {
-		t.Errorf("oauth1_token = %q, want %q", tokens.OAuth1Token, "mock-oauth1-token")
-	}
-	if tokens.OAuth1Secret != "mock-oauth1-secret" {
-		t.Errorf("oauth1_secret = %q, want %q", tokens.OAuth1Secret, "mock-oauth1-secret")
+	if tokens.OAuth1Token != "" || tokens.OAuth1Secret != "" {
+		t.Errorf("OAuth1 credentials should not be set for DI auth")
 	}
 	if tokens.OAuth2AccessToken != "mock-access-token" {
 		t.Errorf("access_token = %q, want %q", tokens.OAuth2AccessToken, "mock-access-token")

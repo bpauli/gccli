@@ -10,8 +10,8 @@ import (
 	"github.com/bpauli/gccli/internal/garminauth"
 )
 
-// TestHeadlessLogin verifies that headless SSO login returns valid tokens
-// with all expected fields populated.
+// TestHeadlessLogin verifies that headless SSO login returns valid DI OAuth
+// tokens with all expected fields populated.
 func TestHeadlessLogin(t *testing.T) {
 	email, password := LoadEnv(t)
 
@@ -35,12 +35,9 @@ func TestHeadlessLogin(t *testing.T) {
 		t.Error("expected non-empty OAuth2RefreshToken")
 	}
 
-	// Verify OAuth1 credentials are present (needed for token refresh).
-	if tokens.OAuth1Token == "" {
-		t.Error("expected non-empty OAuth1Token")
-	}
-	if tokens.OAuth1Secret == "" {
-		t.Error("expected non-empty OAuth1Secret")
+	// Verify the DI client id is present (needed for refresh_token grants).
+	if tokens.DIClientID == "" {
+		t.Error("expected non-empty DIClientID")
 	}
 }
 

@@ -28,6 +28,13 @@ func mockSSO(t *testing.T, handler http.Handler) (*httptest.Server, Endpoints) {
 	}
 }
 
+func useMockDI(t *testing.T, srv *httptest.Server) {
+	t.Helper()
+	origURL := diTokenURL
+	diTokenURL = srv.URL + "/di-oauth2-service/oauth/token"
+	t.Cleanup(func() { diTokenURL = origURL })
+}
+
 // ssoMux returns an http.ServeMux that simulates the full Garmin SSO flow.
 func ssoMux(t *testing.T) *http.ServeMux {
 	t.Helper()
@@ -113,16 +120,40 @@ func ssoMux(t *testing.T) *http.ServeMux {
 		})
 	})
 
+	mux.HandleFunc("POST /di-oauth2-service/oauth/token", func(w http.ResponseWriter, r *http.Request) {
+		if !strings.HasPrefix(r.Header.Get("Authorization"), "Basic ") {
+			http.Error(w, "missing basic auth", http.StatusUnauthorized)
+			return
+		}
+		if err := r.ParseForm(); err != nil {
+			http.Error(w, "bad form", http.StatusBadRequest)
+			return
+		}
+		if r.Form.Get("grant_type") != diGrantType {
+			http.Error(w, "bad grant", http.StatusBadRequest)
+			return
+		}
+		if r.Form.Get("service_ticket") != "ST-mock-ticket-456" {
+			http.Error(w, "bad ticket", http.StatusBadRequest)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		_ = json.NewEncoder(w).Encode(map[string]any{
+			"token_type":               "Bearer",
+			"access_token":             "mock-access-token",
+			"refresh_token":            "mock-refresh-token",
+			"expires_in":               3600,
+			"refresh_token_expires_in": 7776000,
+		})
+	})
+
 	return mux
 }
 
 func TestLoginHeadless_Success(t *testing.T) {
 	mux := ssoMux(t)
 	srv, ep := mockSSO(t, mux)
-
-	origURL := oauthConsumerURL
-	oauthConsumerURL = srv.URL + "/oauth_consumer.json"
-	t.Cleanup(func() { oauthConsumerURL = origURL })
+	useMockDI(t, srv)
 
 	tokens, err := loginHeadless(context.Background(), "test@example.com", "correctpass", LoginOptions{}, ep)
 	if err != nil {
@@ -135,11 +166,8 @@ func TestLoginHeadless_Success(t *testing.T) {
 	if tokens.Domain != DomainGlobal {
 		t.Errorf("domain = %q, want %q", tokens.Domain, DomainGlobal)
 	}
-	if tokens.OAuth1Token != "mock-oauth1-token" {
-		t.Errorf("oauth1_token = %q, want %q", tokens.OAuth1Token, "mock-oauth1-token")
-	}
-	if tokens.OAuth1Secret != "mock-oauth1-secret" {
-		t.Errorf("oauth1_secret = %q, want %q", tokens.OAuth1Secret, "mock-oauth1-secret")
+	if tokens.OAuth1Token != "" || tokens.OAuth1Secret != "" {
+		t.Errorf("OAuth1 credentials should not be set for DI auth")
 	}
 	if tokens.OAuth2AccessToken != "mock-access-token" {
 		t.Errorf("access_token = %q, want %q", tokens.OAuth2AccessToken, "mock-access-token")
@@ -158,10 +186,7 @@ func TestLoginHeadless_Success(t *testing.T) {
 func TestLoginHeadless_BadCredentials(t *testing.T) {
 	mux := ssoMux(t)
 	srv, ep := mockSSO(t, mux)
-
-	origURL := oauthConsumerURL
-	oauthConsumerURL = srv.URL + "/oauth_consumer.json"
-	t.Cleanup(func() { oauthConsumerURL = origURL })
+	useMockDI(t, srv)
 
 	_, err := loginHeadless(context.Background(), "test@example.com", "wrongpass", LoginOptions{}, ep)
 	if err == nil {
@@ -222,10 +247,7 @@ func TestLoginHeadless_AccountLocked(t *testing.T) {
 func TestLoginHeadless_CustomHTTPClient(t *testing.T) {
 	mux := ssoMux(t)
 	srv, ep := mockSSO(t, mux)
-
-	origURL := oauthConsumerURL
-	oauthConsumerURL = srv.URL + "/oauth_consumer.json"
-	t.Cleanup(func() { oauthConsumerURL = origURL })
+	useMockDI(t, srv)
 
 	jar, err := cookiejar.New(nil)
 	if err != nil {

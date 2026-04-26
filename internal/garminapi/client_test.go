@@ -646,18 +646,19 @@ func TestInvalidFileFormatError(t *testing.T) {
 
 // --- RefreshToken tests ---
 
-func TestRefreshToken_NoOAuth1(t *testing.T) {
+func TestRefreshToken_NoRefreshCredentials(t *testing.T) {
 	tokens := testTokens()
 	tokens.OAuth1Token = ""
 	tokens.OAuth1Secret = ""
+	tokens.OAuth2RefreshToken = ""
 	client := NewClient(tokens)
 
 	err := client.refreshToken(context.Background())
 	if err == nil {
-		t.Fatal("expected error when no OAuth1 credentials")
+		t.Fatal("expected error when no refresh credentials")
 	}
-	if !strings.Contains(err.Error(), "no OAuth1 credentials") {
-		t.Errorf("error = %q, want to contain 'no OAuth1 credentials'", err.Error())
+	if !strings.Contains(err.Error(), "no refresh credentials") {
+		t.Errorf("error = %q, want to contain 'no refresh credentials'", err.Error())
 	}
 }
 

@@ -71,7 +71,7 @@ Help:
 gccli auth login you@example.com
 ```
 
-This opens your browser for Garmin SSO authentication. The OAuth tokens are stored securely in your system keyring.
+This opens your browser for Garmin SSO authentication. The DI OAuth tokens are stored securely in your system keyring.
 
 ### 2. Log In (Headless)
 
