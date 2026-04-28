@@ -851,3 +851,55 @@ func TestDeleteActivity_ServerError(t *testing.T) {
 		t.Errorf("StatusCode = %d, want 404", apiErr.StatusCode)
 	}
 }
+
+// --- GetActivityTypes tests ---
+
+func TestGetActivityTypes_Success(t *testing.T) {
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/activity-service/activity/activityTypes" {
+			t.Errorf("path = %s, want /activity-service/activity/activityTypes", r.URL.Path)
+		}
+		if r.Method != http.MethodGet {
+			t.Errorf("method = %s, want GET", r.Method)
+		}
+		_, _ = w.Write([]byte(`[
+			{"typeId":1,"typeKey":"running","parentTypeId":17,"isHidden":false,"restricted":false,"trimmable":true},
+			{"typeId":2,"typeKey":"cycling","parentTypeId":17,"isHidden":false,"restricted":false,"trimmable":true}
+		]`))
+	})
+
+	_, client := testServer(t, handler)
+	data, err := client.GetActivityTypes(context.Background())
+	if err != nil {
+		t.Fatalf("GetActivityTypes: %v", err)
+	}
+
+	var types []map[string]any
+	if err := json.Unmarshal(data, &types); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+	if len(types) != 2 {
+		t.Errorf("len = %d, want 2", len(types))
+	}
+	if types[0]["typeKey"] != "running" {
+		t.Errorf("typeKey = %v, want running", types[0]["typeKey"])
+	}
+}
+
+func TestGetActivityTypes_ServerError(t *testing.T) {
+	handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = w.Write([]byte("error"))
+	})
+
+	_, client := testServer(t, handler)
+	_, err := client.GetActivityTypes(context.Background())
+	if err == nil {
+		t.Fatal("expected error")
+	}
+
+	var apiErr *GarminAPIError
+	if !errors.As(err, &apiErr) {
+		t.Fatalf("expected GarminAPIError, got %T: %v", err, err)
+	}
+}

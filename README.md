@@ -9,7 +9,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 
 ## Features
 
-- **Activities** — list, search, view details, download (FIT/GPX/TCX/KML/CSV), upload, create manual entries (with date), rename, retype, delete, set exercise sets for strength training
+- **Activities** — list, search, view details, download (FIT/GPX/TCX/KML/CSV), upload, create manual entries (with date), rename, retype, delete, set exercise sets for strength training, list activity types
 - **Exercise Catalog** — browse Garmin's exercise categories and exercises for strength training
 - **Health Data** — daily summaries, steps, heart rate, resting HR, sleep, stress, HRV, SpO2, respiration, body battery, floors, training readiness/status, VO2max, fitness age, race predictions, endurance/hill scores, intensity minutes, lactate threshold, cycling FTP
 - **Body Composition** — weight tracking, body fat, muscle mass, blood pressure, FIT file encoding for composition uploads
@@ -283,6 +283,9 @@ gccli activity rename <id> "New Name"
 gccli activity retype <id> --type-id 1 --type-key running
 gccli activity delete <id>
 gccli activity delete <id> --force
+
+# Activity types
+gccli activities types                   # List all Garmin activity types
 ```
 
 ### Health Data
