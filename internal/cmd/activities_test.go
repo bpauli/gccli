@@ -634,6 +634,96 @@ func TestActivitiesTypes_JSON(t *testing.T) {
 	// JSON output goes to stdout; just verify no error.
 }
 
+func TestParseActivityTypes_SortsByTypeID(t *testing.T) {
+	data := []byte(`[
+		{"typeId":181,"typeKey":"ultra_run"},
+		{"typeId":1,"typeKey":"running"},
+		{"typeId":17,"typeKey":"other"}
+	]`)
+	types, err := parseActivityTypes(data)
+	if err != nil {
+		t.Fatalf("parseActivityTypes: %v", err)
+	}
+	want := []string{"running", "other", "ultra_run"}
+	for i, w := range want {
+		if got := jsonString(types[i], "typeKey"); got != w {
+			t.Errorf("types[%d].typeKey = %q, want %q", i, got, w)
+		}
+	}
+}
+
+func TestParseActivityTypes_InvalidJSON(t *testing.T) {
+	_, err := parseActivityTypes([]byte("not-json"))
+	if err == nil {
+		t.Fatal("expected error for invalid JSON")
+	}
+}
+
+func TestFormatActivityTypeRows(t *testing.T) {
+	types := []map[string]any{
+		{
+			"typeId":       float64(1),
+			"typeKey":      "running",
+			"parentTypeId": float64(17),
+			"trimmable":    true,
+			"isHidden":     false,
+			"restricted":   false,
+		},
+		{
+			// parentTypeId null, trimmable missing, hidden true.
+			"typeId":       float64(17),
+			"typeKey":      "other",
+			"parentTypeId": nil,
+			"isHidden":     true,
+			"restricted":   false,
+		},
+	}
+	rows := formatActivityTypeRows(types)
+	if len(rows) != 2 {
+		t.Fatalf("len(rows) = %d, want 2", len(rows))
+	}
+	want := [][]string{
+		{"1", "running", "17", "yes", "no", "no"},
+		{"17", "other", "-", "-", "yes", "no"},
+	}
+	for i, row := range rows {
+		if len(row) != len(want[i]) {
+			t.Fatalf("row[%d] has %d cols, want %d", i, len(row), len(want[i]))
+		}
+		for j, cell := range row {
+			if cell != want[i][j] {
+				t.Errorf("row[%d][%d] = %q, want %q", i, j, cell, want[i][j])
+			}
+		}
+	}
+}
+
+func TestJsonBool(t *testing.T) {
+	m := map[string]any{
+		"yes":     true,
+		"no":      false,
+		"null":    nil,
+		"notbool": "true",
+	}
+	cases := []struct {
+		key     string
+		wantVal bool
+		wantOK  bool
+	}{
+		{"yes", true, true},
+		{"no", false, true},
+		{"null", false, false},
+		{"missing", false, false},
+		{"notbool", false, false},
+	}
+	for _, tc := range cases {
+		v, ok := jsonBool(m, tc.key)
+		if v != tc.wantVal || ok != tc.wantOK {
+			t.Errorf("jsonBool(%q) = (%v, %v), want (%v, %v)", tc.key, v, ok, tc.wantVal, tc.wantOK)
+		}
+	}
+}
+
 func TestActivitiesTypes_NoAccount(t *testing.T) {
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "")
