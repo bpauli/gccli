@@ -54,6 +54,7 @@ Common commands
 - Rename activity: `gccli activity rename <id> "New Name"`
 - Retype activity: `gccli activity retype <id> running`
 - Delete activity: `gccli activity delete <id> --force`
+- Activity types: `gccli activities types`
 - Health summary: `gccli health summary [date]`
 - Steps chart: `gccli health steps [date]`
 - Daily steps range: `gccli health steps daily --start 2024-01-01 --end 2024-01-31`

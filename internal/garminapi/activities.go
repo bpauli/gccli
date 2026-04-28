@@ -315,3 +315,8 @@ func (c *Client) DeleteActivity(ctx context.Context, activityID string) error {
 	_, err := c.ConnectAPI(ctx, http.MethodDelete, "/activity-service/activity/"+activityID, nil)
 	return err
 }
+
+// GetActivityTypes returns all activity types from Garmin Connect.
+func (c *Client) GetActivityTypes(ctx context.Context) (json.RawMessage, error) {
+	return c.ConnectAPI(ctx, http.MethodGet, "/activity-service/activity/activityTypes", nil)
+}

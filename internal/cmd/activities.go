@@ -14,6 +14,7 @@ type ActivitiesCmd struct {
 	List   ActivitiesListCmd   `cmd:"" default:"withargs" help:"List recent activities."`
 	Count  ActivitiesCountCmd  `cmd:"" help:"Show total activity count."`
 	Search ActivitiesSearchCmd `cmd:"" help:"Search activities by date range."`
+	Types  ActivitiesTypesCmd  `cmd:"" help:"List all activity types supported by Garmin."`
 }
 
 // ActivitiesListCmd lists recent activities.
@@ -223,4 +224,71 @@ func formatCalories(cal float64) string {
 		return "-"
 	}
 	return fmt.Sprintf("%d", int(cal))
+}
+
+// ActivitiesTypesCmd lists all activity types supported by Garmin.
+type ActivitiesTypesCmd struct{}
+
+func (c *ActivitiesTypesCmd) Run(g *Globals) error {
+	client, err := resolveClient(g)
+	if err != nil {
+		return err
+	}
+
+	data, err := client.GetActivityTypes(g.Context)
+	if err != nil {
+		return fmt.Errorf("get activity types: %w", err)
+	}
+
+	if outfmt.IsJSON(g.Context) {
+		return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+	}
+
+	var types []map[string]any
+	if err := json.Unmarshal(data, &types); err != nil {
+		return fmt.Errorf("parse activity types: %w", err)
+	}
+
+	header := []string{"ID", "TYPE KEY", "PARENT ID", "TRIMMABLE"}
+	rows := make([][]string, 0, len(types))
+	for _, t := range types {
+		rows = append(rows, []string{
+			fmt.Sprintf("%d", int(jsonFloat(t, "typeId"))),
+			jsonString(t, "typeKey"),
+			formatParentID(t),
+			formatTrimmable(t),
+		})
+	}
+
+	if outfmt.IsPlain(g.Context) {
+		return outfmt.WritePlain(os.Stdout, rows)
+	}
+	return outfmt.WriteTable(os.Stdout, header, rows)
+}
+
+// formatParentID formats parentTypeId (handles null as "-").
+func formatParentID(t map[string]any) string {
+	v, ok := t["parentTypeId"]
+	if !ok || v == nil {
+		return "-"
+	}
+	if f, ok := v.(float64); ok {
+		return fmt.Sprintf("%d", int(f))
+	}
+	return "-"
+}
+
+// formatTrimmable formats trimmable as "yes"/"no".
+func formatTrimmable(t map[string]any) string {
+	v, ok := t["trimmable"]
+	if !ok || v == nil {
+		return "-"
+	}
+	if b, ok := v.(bool); ok {
+		if b {
+			return "yes"
+		}
+		return "no"
+	}
+	return "-"
 }

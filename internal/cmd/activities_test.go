@@ -51,6 +51,15 @@ func activitiesTestServer(t *testing.T) *httptest.Server {
 		_, _ = w.Write([]byte(`{"totalCount":42}`))
 	})
 
+	mux.HandleFunc("/activity-service/activity/activityTypes", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`[
+			{"typeId":1,"typeKey":"running","parentTypeId":17,"isHidden":false,"restricted":false,"trimmable":true},
+			{"typeId":2,"typeKey":"cycling","parentTypeId":17,"isHidden":false,"restricted":false,"trimmable":true},
+			{"typeId":181,"typeKey":"ultra_run","parentTypeId":1,"isHidden":false,"restricted":false,"trimmable":true}
+		]`))
+	})
+
 	return httptest.NewServer(mux)
 }
 
@@ -576,5 +585,64 @@ func TestJsonFloat(t *testing.T) {
 				t.Errorf("jsonFloat() = %v, want %v", got, tt.want)
 			}
 		})
+	}
+}
+
+// --- ActivitiesTypesCmd tests ---
+
+func TestExecute_ActivitiesTypesHelp(t *testing.T) {
+	code := Execute([]string{"activities", "types", "--help"}, "1.0.0", "abc123", "2024-01-01")
+	if code != 0 {
+		t.Fatalf("expected exit code 0, got %d", code)
+	}
+}
+
+func TestActivitiesTypes_Table(t *testing.T) {
+	server := activitiesTestServer(t)
+	defer server.Close()
+
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	overrideNewClient(t, server)
+	storeTestTokens(t, store, "test@example.com", testTokens())
+
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
+	cmd := &ActivitiesTypesCmd{}
+	err := cmd.Run(g)
+	if err != nil {
+		t.Fatalf("expected no error, got: %v", err)
+	}
+}
+
+func TestActivitiesTypes_JSON(t *testing.T) {
+	server := activitiesTestServer(t)
+	defer server.Close()
+
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	overrideNewClient(t, server)
+	storeTestTokens(t, store, "test@example.com", testTokens())
+
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
+	cmd := &ActivitiesTypesCmd{}
+	err := cmd.Run(g)
+	if err != nil {
+		t.Fatalf("expected no error, got: %v", err)
+	}
+	// JSON output goes to stdout; just verify no error.
+}
+
+func TestActivitiesTypes_NoAccount(t *testing.T) {
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "")
+	cmd := &ActivitiesTypesCmd{}
+	err := cmd.Run(g)
+	if err == nil {
+		t.Fatal("expected error, got nil")
+	}
+	if !strings.Contains(err.Error(), "no account specified") {
+		t.Fatalf("unexpected error: %v", err)
 	}
 }
