@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 
 	"github.com/bpauli/gccli/internal/outfmt"
@@ -173,6 +174,18 @@ func jsonFloat(m map[string]any, key string) float64 {
 	return 0
 }
 
+// jsonBool extracts a bool from a JSON map. The second return value reports
+// whether the key was present and held a bool, distinguishing "false" from
+// "missing" or "null" (which both render as "-" in tables).
+func jsonBool(m map[string]any, key string) (bool, bool) {
+	v, ok := m[key]
+	if !ok || v == nil {
+		return false, false
+	}
+	b, ok := v.(bool)
+	return b, ok
+}
+
 // activityTypeKey extracts the activity type key from nested activityType.typeKey.
 func activityTypeKey(a map[string]any) string {
 	at, ok := a["activityType"]
@@ -244,26 +257,51 @@ func (c *ActivitiesTypesCmd) Run(g *Globals) error {
 		return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
 	}
 
-	var types []map[string]any
-	if err := json.Unmarshal(data, &types); err != nil {
-		return fmt.Errorf("parse activity types: %w", err)
+	types, err := parseActivityTypes(data)
+	if err != nil {
+		return err
 	}
 
-	header := []string{"ID", "TYPE KEY", "PARENT ID", "TRIMMABLE"}
+	rows := formatActivityTypeRows(types)
+	header := activityTypesHeader()
+
+	if outfmt.IsPlain(g.Context) {
+		return outfmt.WritePlain(os.Stdout, rows)
+	}
+	return outfmt.WriteTable(os.Stdout, header, rows)
+}
+
+func activityTypesHeader() []string {
+	return []string{"ID", "TYPE KEY", "PARENT ID", "TRIMMABLE", "HIDDEN", "RESTRICTED"}
+}
+
+// parseActivityTypes unmarshals the activity types payload and sorts by typeId
+// so table/plain output is stable across runs.
+func parseActivityTypes(data json.RawMessage) ([]map[string]any, error) {
+	var types []map[string]any
+	if err := json.Unmarshal(data, &types); err != nil {
+		return nil, fmt.Errorf("parse activity types: %w", err)
+	}
+	sort.SliceStable(types, func(i, j int) bool {
+		return jsonFloat(types[i], "typeId") < jsonFloat(types[j], "typeId")
+	})
+	return types, nil
+}
+
+// formatActivityTypeRows extracts table rows from activity-type data.
+func formatActivityTypeRows(types []map[string]any) [][]string {
 	rows := make([][]string, 0, len(types))
 	for _, t := range types {
 		rows = append(rows, []string{
 			fmt.Sprintf("%d", int(jsonFloat(t, "typeId"))),
 			jsonString(t, "typeKey"),
 			formatParentID(t),
-			formatTrimmable(t),
+			formatYesNo(t, "trimmable"),
+			formatYesNo(t, "isHidden"),
+			formatYesNo(t, "restricted"),
 		})
 	}
-
-	if outfmt.IsPlain(g.Context) {
-		return outfmt.WritePlain(os.Stdout, rows)
-	}
-	return outfmt.WriteTable(os.Stdout, header, rows)
+	return rows
 }
 
 // formatParentID formats parentTypeId (handles null as "-").
@@ -278,17 +316,14 @@ func formatParentID(t map[string]any) string {
 	return "-"
 }
 
-// formatTrimmable formats trimmable as "yes"/"no".
-func formatTrimmable(t map[string]any) string {
-	v, ok := t["trimmable"]
-	if !ok || v == nil {
+// formatYesNo renders a bool field as "yes"/"no", or "-" when missing.
+func formatYesNo(m map[string]any, key string) string {
+	b, ok := jsonBool(m, key)
+	if !ok {
 		return "-"
 	}
-	if b, ok := v.(bool); ok {
-		if b {
-			return "yes"
-		}
-		return "no"
+	if b {
+		return "yes"
 	}
-	return "-"
+	return "no"
 }
