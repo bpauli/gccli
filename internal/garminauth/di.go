@@ -39,44 +39,47 @@ type diTokenResponse struct {
 
 // exchangeServiceTicket exchanges a Garmin CAS service ticket for DI OAuth
 // Bearer tokens. serviceURL must match the service URL used to issue ticket.
+//
+// Service tickets are single-use, so we don't iterate over fallback client_ids
+// — a failed attempt would burn the ticket. The newest client_id is used; if
+// Garmin rotates the constant, the diClientIDs list must be updated.
 func exchangeServiceTicket(ctx context.Context, client *http.Client, ticket, serviceURL string) (*Tokens, error) {
-	var failures []string
-
-	for _, clientID := range diClientIDs {
-		values := url.Values{
-			"client_id":      {clientID},
-			"service_ticket": {ticket},
-			"grant_type":     {diGrantType},
-			"service_url":    {serviceURL},
-		}
-
-		resp, err := postDIForm(ctx, client, clientID, values)
-		if err != nil {
-			failures = append(failures, fmt.Sprintf("%s: %v", clientID, err))
-			continue
-		}
-
-		tokens := tokensFromDIResponse(resp, clientID)
-		tokens.DIClientID = extractClientIDFromJWT(tokens.OAuth2AccessToken, clientID)
-		return tokens, nil
+	clientID := diClientIDs[0]
+	values := url.Values{
+		"client_id":      {clientID},
+		"service_ticket": {ticket},
+		"grant_type":     {diGrantType},
+		"service_url":    {serviceURL},
 	}
 
-	return nil, fmt.Errorf("DI token exchange failed for all client ids: %s", strings.Join(failures, "; "))
+	resp, err := postDIForm(ctx, client, clientID, values)
+	if err != nil {
+		return nil, fmt.Errorf("DI token exchange (%s): %w", clientID, err)
+	}
+
+	tokens := tokensFromDIResponse(resp, clientID)
+	tokens.DIClientID = extractClientIDFromJWT(tokens.OAuth2AccessToken, clientID)
+	return tokens, nil
 }
 
 // refreshDI refreshes DI OAuth Bearer tokens using a stored refresh token.
+// Refresh tokens are bound to the client_id that issued them, so when we know
+// the issuing client_id we only attempt that one; iterating fallbacks is
+// reserved for legacy imports where DIClientID is unset.
 func refreshDI(ctx context.Context, client *http.Client, tokens *Tokens) (*Tokens, error) {
 	if tokens.OAuth2RefreshToken == "" {
 		return nil, fmt.Errorf("no DI refresh token available")
 	}
 
-	clientIDs := diClientIDs
+	var clientIDs []string
 	if tokens.DIClientID != "" {
-		clientIDs = append([]string{tokens.DIClientID}, diClientIDs...)
+		clientIDs = []string{tokens.DIClientID}
+	} else {
+		clientIDs = diClientIDs
 	}
 
 	var failures []string
-	for _, clientID := range dedupeStrings(clientIDs) {
+	for _, clientID := range clientIDs {
 		values := url.Values{
 			"grant_type":    {"refresh_token"},
 			"client_id":     {clientID},
@@ -103,7 +106,7 @@ func refreshDI(ctx context.Context, client *http.Client, tokens *Tokens) (*Token
 		return refreshed, nil
 	}
 
-	return nil, fmt.Errorf("DI token refresh failed for all client ids: %s", strings.Join(failures, "; "))
+	return nil, fmt.Errorf("DI token refresh failed: %s", strings.Join(failures, "; "))
 }
 
 func postDIForm(ctx context.Context, client *http.Client, clientID string, values url.Values) (*diTokenResponse, error) {
@@ -140,6 +143,9 @@ func postDIForm(ctx context.Context, client *http.Client, clientID string, value
 	if parsed.AccessToken == "" {
 		return nil, fmt.Errorf("response missing access_token")
 	}
+	if parsed.ExpiresIn <= 0 {
+		return nil, fmt.Errorf("response has invalid expires_in: %d", parsed.ExpiresIn)
+	}
 	return &parsed, nil
 }
 
@@ -169,6 +175,9 @@ func basicAuth(clientID string) string {
 	return "Basic " + base64.StdEncoding.EncodeToString([]byte(clientID+":"))
 }
 
+// extractClientIDFromJWT decodes the JWT payload to read the client_id claim.
+// The signature is NOT verified — the value is informational only and is used
+// solely as a hint for which client_id to send on subsequent refresh.
 func extractClientIDFromJWT(token, fallback string) string {
 	parts := strings.Split(token, ".")
 	if len(parts) < 2 {
@@ -187,17 +196,4 @@ func extractClientIDFromJWT(token, fallback string) string {
 		return fallback
 	}
 	return claims.ClientID
-}
-
-func dedupeStrings(values []string) []string {
-	seen := make(map[string]struct{}, len(values))
-	out := make([]string, 0, len(values))
-	for _, value := range values {
-		if _, ok := seen[value]; ok {
-			continue
-		}
-		seen[value] = struct{}{}
-		out = append(out, value)
-	}
-	return out
 }
