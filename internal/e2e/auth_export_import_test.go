@@ -35,6 +35,7 @@ func TestAuthExportImport(t *testing.T) {
 		original.OAuth1Secret,
 		original.OAuth2AccessToken,
 		original.OAuth2RefreshToken,
+		original.DIClientID,
 	} {
 		if secret == "" {
 			continue
@@ -58,10 +59,9 @@ func TestAuthExportImport(t *testing.T) {
 	// Verify all fields round-trip correctly without logging actual values.
 	assertFieldEqual(t, "Email", imported.Email, original.Email)
 	assertFieldEqual(t, "Domain", imported.Domain, original.Domain)
-	assertFieldNonEmpty(t, "OAuth1Token", imported.OAuth1Token)
-	assertFieldNonEmpty(t, "OAuth1Secret", imported.OAuth1Secret)
 	assertFieldNonEmpty(t, "OAuth2AccessToken", imported.OAuth2AccessToken)
 	assertFieldNonEmpty(t, "OAuth2RefreshToken", imported.OAuth2RefreshToken)
+	assertFieldNonEmpty(t, "DIClientID", imported.DIClientID)
 
 	if !imported.OAuth2ExpiresAt.Equal(original.OAuth2ExpiresAt) {
 		t.Error("OAuth2ExpiresAt mismatch after round-trip")

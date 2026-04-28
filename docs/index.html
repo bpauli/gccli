@@ -842,7 +842,7 @@ gccli activity download "$latest" --format fit</pre>
         <div class="arch-grid">
           <div class="arch-card fade-in"><h4>internal/cmd/</h4><p>Kong-based CLI commands. Each command is a struct with <code>Run(g *Globals) error</code>.</p></div>
           <div class="arch-card fade-in"><h4>internal/garminapi/</h4><p>HTTP client returning <code>json.RawMessage</code>. RetryTransport + CircuitBreaker.</p></div>
-          <div class="arch-card fade-in"><h4>internal/garminauth/</h4><p>SSO auth: browser + headless login, OAuth1&rarr;OAuth2 exchange, MFA.</p></div>
+          <div class="arch-card fade-in"><h4>internal/garminauth/</h4><p>SSO auth: browser + headless login, DI OAuth exchange, MFA.</p></div>
           <div class="arch-card fade-in"><h4>internal/secrets/</h4><p>OS keyring abstraction. macOS Keychain, Linux Secret Service, file fallback.</p></div>
           <div class="arch-card fade-in"><h4>internal/config/</h4><p>Config file paths and environment variable overrides.</p></div>
           <div class="arch-card fade-in"><h4>internal/outfmt/</h4><p>Output formatting: JSON, Table, and Plain/TSV modes via context.</p></div>

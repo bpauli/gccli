@@ -15,6 +15,7 @@ func TestTokens() *garminauth.Tokens {
 		OAuth2AccessToken:  "test-access-token",
 		OAuth2RefreshToken: "test-refresh-token",
 		OAuth2ExpiresAt:    time.Now().Add(time.Hour),
+		DIClientID:         "test-di-client-id",
 		Domain:             garminauth.DomainGlobal,
 		Email:              "test@example.com",
 		DisplayName:        "Test User",

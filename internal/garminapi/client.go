@@ -185,10 +185,10 @@ func (c *Client) doDownload(ctx context.Context, path string, canRetry bool) ([]
 	return data, nil
 }
 
-// refreshToken attempts to refresh the OAuth2 token using stored OAuth1 credentials.
+// refreshToken attempts to refresh the OAuth2 token using stored refresh credentials.
 func (c *Client) refreshToken(ctx context.Context) error {
-	if !c.tokens.HasOAuth1() {
-		return fmt.Errorf("no OAuth1 credentials for refresh")
+	if !c.tokens.CanRefresh() {
+		return fmt.Errorf("no refresh credentials available")
 	}
 
 	newTokens, err := refreshTokensFn(ctx, c.tokens, garminauth.LoginOptions{

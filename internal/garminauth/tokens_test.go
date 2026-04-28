@@ -86,6 +86,7 @@ func TestTokens_MarshalRoundtrip(t *testing.T) {
 		OAuth2AccessToken:  "access-tok",
 		OAuth2RefreshToken: "refresh-tok",
 		OAuth2ExpiresAt:    expiry,
+		DIClientID:         "di-client-id",
 		MFAToken:           "mfa-tok",
 		Domain:             DomainGlobal,
 		DisplayName:        "Test User",
@@ -114,6 +115,9 @@ func TestTokens_MarshalRoundtrip(t *testing.T) {
 	if restored.OAuth2RefreshToken != original.OAuth2RefreshToken {
 		t.Errorf("OAuth2RefreshToken = %q, want %q", restored.OAuth2RefreshToken, original.OAuth2RefreshToken)
 	}
+	if restored.DIClientID != original.DIClientID {
+		t.Errorf("DIClientID = %q, want %q", restored.DIClientID, original.DIClientID)
+	}
 	if !restored.OAuth2ExpiresAt.Equal(original.OAuth2ExpiresAt) {
 		t.Errorf("OAuth2ExpiresAt = %v, want %v", restored.OAuth2ExpiresAt, original.OAuth2ExpiresAt)
 	}
@@ -128,6 +132,41 @@ func TestTokens_MarshalRoundtrip(t *testing.T) {
 	}
 	if restored.Email != original.Email {
 		t.Errorf("Email = %q, want %q", restored.Email, original.Email)
+	}
+}
+
+func TestTokens_CanRefresh(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		tokens Tokens
+		want   bool
+	}{
+		{
+			name:   "DI refresh token",
+			tokens: Tokens{OAuth2RefreshToken: "refresh"},
+			want:   true,
+		},
+		{
+			name:   "legacy OAuth1 credentials",
+			tokens: Tokens{OAuth1Token: "token", OAuth1Secret: "secret"},
+			want:   true,
+		},
+		{
+			name: "none",
+			want: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			if got := tt.tokens.CanRefresh(); got != tt.want {
+				t.Errorf("CanRefresh() = %v, want %v", got, tt.want)
+			}
+		})
 	}
 }
 

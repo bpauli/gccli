@@ -21,7 +21,7 @@ func defaultNewClient(tokens *garminauth.Tokens) *garminapi.Client {
 var proactiveRefreshFn = garminauth.RefreshOAuth2
 
 // resolveClient loads stored tokens for the account and returns an API client.
-// If the stored token is already expired and OAuth1 credentials are available,
+// If the stored token is already expired and refresh credentials are available,
 // it proactively refreshes the token before creating the client to avoid
 // a wasted 401 round-trip. Refreshed tokens are persisted back to the keyring.
 func resolveClient(g *Globals) (*garminapi.Client, error) {
@@ -50,7 +50,7 @@ func resolveClient(g *Globals) (*garminapi.Client, error) {
 
 	// Proactive refresh: if the token is already expired, refresh before
 	// creating the client to avoid a wasted 401 round-trip.
-	if tokens.IsExpired() && tokens.HasOAuth1() {
+	if tokens.IsExpired() && tokens.CanRefresh() {
 		newTokens, refreshErr := proactiveRefreshFn(g.Context, tokens, garminauth.LoginOptions{
 			Domain: tokens.Domain,
 		})

@@ -69,31 +69,14 @@ func loginBrowser(ctx context.Context, email string, opts LoginOptions, ep Endpo
 		return nil, fmt.Errorf("browser login timed out: %w", ctx.Err())
 	}
 
-	// Exchange ticket for tokens (reuse exchange logic from headless flow).
-	consumer, err := fetchOAuthConsumer(ctx, client)
+	// Exchange the callback service ticket for DI OAuth Bearer tokens.
+	tokens, err := exchangeServiceTicket(ctx, client, ticket, callbackURL)
 	if err != nil {
-		return nil, fmt.Errorf("fetch oauth consumer: %w", err)
-	}
-
-	oauth1Token, oauth1Secret, mfaToken, err := exchangePreauthorized(
-		ctx, client, ep, consumer, ticket, callbackURL)
-	if err != nil {
-		return nil, fmt.Errorf("oauth1 exchange: %w", err)
-	}
-
-	tokens, err := exchangeOAuth2(
-		ctx, client, ep, consumer, oauth1Token, oauth1Secret, mfaToken)
-	if err != nil {
-		return nil, fmt.Errorf("oauth2 exchange: %w", err)
+		return nil, fmt.Errorf("DI OAuth exchange: %w", err)
 	}
 
 	tokens.Domain = ep.domain()
 	tokens.Email = email
-	tokens.OAuth1Token = oauth1Token
-	tokens.OAuth1Secret = oauth1Secret
-	if mfaToken != "" {
-		tokens.MFAToken = mfaToken
-	}
 
 	return tokens, nil
 }

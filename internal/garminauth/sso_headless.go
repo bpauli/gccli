@@ -44,7 +44,7 @@ type oauth2Response struct {
 var oauthConsumerURL = OAuthConsumerURL
 
 // LoginHeadless performs a headless SSO login using email and password.
-// It follows the Garmin SSO flow: embed -> signin -> credentials -> ticket -> OAuth1 -> OAuth2.
+// It follows the Garmin SSO flow: embed -> signin -> credentials -> ticket -> DI OAuth.
 func LoginHeadless(ctx context.Context, email, password string, opts LoginOptions) (*Tokens, error) {
 	ep := NewEndpoints(opts.domain())
 	return loginHeadless(ctx, email, password, opts, ep)
@@ -158,33 +158,14 @@ func loginHeadless(ctx context.Context, email, password string, opts LoginOption
 		}
 	}
 
-	// Step 4: Fetch OAuth consumer credentials.
-	consumer, err := fetchOAuthConsumer(ctx, client)
+	// Step 4: Exchange the service ticket for DI OAuth Bearer tokens.
+	tokens, err := exchangeServiceTicket(ctx, client, ticket, ep.SSOEmbed)
 	if err != nil {
-		return nil, fmt.Errorf("fetch oauth consumer: %w", err)
-	}
-
-	// Step 5: Exchange ticket for OAuth1 token.
-	oauth1Token, oauth1Secret, mfaToken, err := exchangePreauthorized(
-		ctx, client, ep, consumer, ticket, ep.SSOEmbed)
-	if err != nil {
-		return nil, fmt.Errorf("oauth1 exchange: %w", err)
-	}
-
-	// Step 6: Exchange OAuth1 for OAuth2 tokens.
-	tokens, err := exchangeOAuth2(
-		ctx, client, ep, consumer, oauth1Token, oauth1Secret, mfaToken)
-	if err != nil {
-		return nil, fmt.Errorf("oauth2 exchange: %w", err)
+		return nil, fmt.Errorf("DI OAuth exchange: %w", err)
 	}
 
 	tokens.Domain = ep.domain()
 	tokens.Email = email
-	tokens.OAuth1Token = oauth1Token
-	tokens.OAuth1Secret = oauth1Secret
-	if mfaToken != "" {
-		tokens.MFAToken = mfaToken
-	}
 
 	return tokens, nil
 }
