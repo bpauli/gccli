@@ -9,6 +9,10 @@ import (
 // RefreshOAuth2 refreshes stored Garmin API credentials.
 // DI OAuth refresh tokens are preferred; legacy OAuth1 refresh remains for
 // older exported credentials.
+//
+// When DI credentials are present the refresh is terminal — failures do not
+// fall through to the OAuth1 path, since the DI refresh_token has been
+// consumed or revoked and OAuth1 fallback would yield stale state.
 func RefreshOAuth2(ctx context.Context, tokens *Tokens, opts LoginOptions) (*Tokens, error) {
 	client := opts.HTTPClient
 	if client == nil {
