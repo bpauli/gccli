@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.0] - 2026-04-28
+
+### Added
+
+- **Activity types** — New `gccli activities types` command lists every activity type Garmin exposes via `/activity-service/activity/activityTypes`. Output is sorted by `typeId` and includes `TRIMMABLE`, `HIDDEN`, and `RESTRICTED` flags. (#46, #48)
+
+### Fixed
+
+- **DI OAuth login** — Headless authentication on Garmin's Digital Identity (DI) tenant now exchanges SSO tickets for OAuth tokens correctly, fixing login failures on DI accounts. The OAuth `client_id` is also validated more strictly to fail fast on misconfiguration. (#45, #47)
+
 ## [1.7.3] - 2026-04-21
 
 ### Changed
@@ -218,6 +228,7 @@ Initial release of gccli — a fast, script-friendly CLI for Garmin Connect.
 - **CI pipeline** — GitHub Actions for fmt-check, lint, and test
 - **Cross-platform builds** — macOS (amd64/arm64) and Linux (amd64/arm64) via goreleaser
 
+[1.8.0]: https://github.com/bpauli/gccli/releases/tag/v1.8.0
 [1.7.3]: https://github.com/bpauli/gccli/releases/tag/v1.7.3
 [1.7.2]: https://github.com/bpauli/gccli/releases/tag/v1.7.2
 [1.7.1]: https://github.com/bpauli/gccli/releases/tag/v1.7.1
