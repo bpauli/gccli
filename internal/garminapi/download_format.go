@@ -1,6 +1,6 @@
 package garminapi
 
-// DownloadFormat represents a supported activity export format.
+// DownloadFormat represents a supported export format.
 type DownloadFormat string
 
 const (
