@@ -29,6 +29,27 @@ func (c *Client) GetCourseFavorites(ctx context.Context) (json.RawMessage, error
 	return c.ConnectAPI(ctx, http.MethodGet, "/course-service/course/favorites", nil)
 }
 
+// downloadPath returns the API path for downloading a course in the given format.
+func downloadCoursePath(courseID string, format ActivityDownloadFormat) (string, error) {
+	switch format {
+	case FormatFIT:
+		return "/course-service/course/fit/" + courseID + "/0?elevation=true", nil
+	case FormatGPX:
+		return "/course-service/course/gpx/" + courseID, nil
+	default:
+		return "", &InvalidFileFormatError{Format: string(format)}
+	}
+}
+
+// DownloadCourse downloads a course in the specified format.
+func (c *Client) DownloadCourse(ctx context.Context, courseID string, format ActivityDownloadFormat) ([]byte, error) {
+	path, err := downloadCoursePath(courseID, format)
+	if err != nil {
+		return nil, err
+	}
+	return c.Download(ctx, path)
+}
+
 // ImportCourseGPX uploads a GPX file and returns parsed course data.
 func (c *Client) ImportCourseGPX(ctx context.Context, filePath string) (json.RawMessage, error) {
 	ext := strings.ToLower(strings.TrimPrefix(filepath.Ext(filePath), "."))
