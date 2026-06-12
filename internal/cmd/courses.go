@@ -118,7 +118,7 @@ func (c *CourseDownloadCmd) Run(g *Globals) error {
 		return err
 	}
 
-	format := garminapi.ActivityDownloadFormat(strings.ToLower(c.Format))
+	format := garminapi.DownloadFormat(strings.ToLower(c.Format))
 
 	data, err := client.DownloadCourse(g.Context, c.ID, format)
 	if err != nil {

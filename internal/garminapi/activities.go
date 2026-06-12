@@ -14,17 +14,6 @@ import (
 	"strings"
 )
 
-// ActivityDownloadFormat represents a supported activity export format.
-type ActivityDownloadFormat string
-
-const (
-	FormatFIT ActivityDownloadFormat = "fit"
-	FormatTCX ActivityDownloadFormat = "tcx"
-	FormatGPX ActivityDownloadFormat = "gpx"
-	FormatKML ActivityDownloadFormat = "kml"
-	FormatCSV ActivityDownloadFormat = "csv"
-)
-
 // CountActivities returns the total number of activities for the authenticated user.
 func (c *Client) CountActivities(ctx context.Context) (int, error) {
 	data, err := c.ConnectAPI(ctx, http.MethodGet, "/activitylist-service/activities/count", nil)
@@ -113,7 +102,7 @@ func (c *Client) SearchActivities(ctx context.Context, start, limit int, startDa
 }
 
 // downloadPath returns the API path for downloading an activity in the given format.
-func downloadPath(activityID string, format ActivityDownloadFormat) (string, error) {
+func downloadPath(activityID string, format DownloadFormat) (string, error) {
 	switch format {
 	case FormatFIT:
 		return "/download-service/files/activity/" + activityID, nil
@@ -131,7 +120,7 @@ func downloadPath(activityID string, format ActivityDownloadFormat) (string, err
 }
 
 // DownloadActivity downloads an activity in the specified format.
-func (c *Client) DownloadActivity(ctx context.Context, activityID string, format ActivityDownloadFormat) ([]byte, error) {
+func (c *Client) DownloadActivity(ctx context.Context, activityID string, format DownloadFormat) ([]byte, error) {
 	path, err := downloadPath(activityID, format)
 	if err != nil {
 		return nil, err

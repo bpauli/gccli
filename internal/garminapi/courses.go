@@ -30,7 +30,7 @@ func (c *Client) GetCourseFavorites(ctx context.Context) (json.RawMessage, error
 }
 
 // downloadPath returns the API path for downloading a course in the given format.
-func downloadCoursePath(courseID string, format ActivityDownloadFormat) (string, error) {
+func downloadCoursePath(courseID string, format DownloadFormat) (string, error) {
 	switch format {
 	case FormatFIT:
 		return "/course-service/course/fit/" + courseID + "/0?elevation=true", nil
@@ -42,7 +42,7 @@ func downloadCoursePath(courseID string, format ActivityDownloadFormat) (string,
 }
 
 // DownloadCourse downloads a course in the specified format.
-func (c *Client) DownloadCourse(ctx context.Context, courseID string, format ActivityDownloadFormat) ([]byte, error) {
+func (c *Client) DownloadCourse(ctx context.Context, courseID string, format DownloadFormat) ([]byte, error) {
 	path, err := downloadCoursePath(courseID, format)
 	if err != nil {
 		return nil, err

@@ -448,7 +448,7 @@ func TestDownloadActivity_InvalidFormat(t *testing.T) {
 
 func TestDownloadPath(t *testing.T) {
 	tests := []struct {
-		format ActivityDownloadFormat
+		format DownloadFormat
 		want   string
 	}{
 		{FormatFIT, "/download-service/files/activity/123"},
