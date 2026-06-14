@@ -268,24 +268,89 @@ func TestFormatCount(t *testing.T) {
 	}
 }
 
+func TestFormatDecimal(t *testing.T) {
+	tests := []struct {
+		n    float64
+		want string
+	}{
+		{0, "-"},
+		{3.0999999046325684, "3.1"},
+		{4, "4.0"},
+	}
+	for _, tt := range tests {
+		got := formatDecimal(tt.n)
+		if got != tt.want {
+			t.Errorf("formatDecimal(%v) = %q, want %q", tt.n, got, tt.want)
+		}
+	}
+}
+
+func TestFormatRPE(t *testing.T) {
+	tests := []struct {
+		n    float64
+		want string
+	}{
+		{0, "-"},
+		{30, "3.0"},
+		{75, "7.5"},
+		{100, "10.0"},
+	}
+	for _, tt := range tests {
+		got := formatRPE(tt.n)
+		if got != tt.want {
+			t.Errorf("formatRPE(%v) = %q, want %q", tt.n, got, tt.want)
+		}
+	}
+}
+
+func TestFormatWorkoutFeel(t *testing.T) {
+	tests := []struct {
+		name    string
+		summary map[string]any
+		want    string
+	}{
+		{"missing", map[string]any{}, "-"},
+		{"null", map[string]any{"directWorkoutFeel": nil}, "-"},
+		{"very weak", map[string]any{"directWorkoutFeel": float64(0)}, "VERY WEAK"},
+		{"weak", map[string]any{"directWorkoutFeel": float64(25)}, "WEAK"},
+		{"normal", map[string]any{"directWorkoutFeel": float64(50)}, "NORMAL"},
+		{"strong", map[string]any{"directWorkoutFeel": float64(75)}, "STRONG"},
+		{"very strong", map[string]any{"directWorkoutFeel": float64(100)}, "VERY STRONG"},
+		{"unknown", map[string]any{"directWorkoutFeel": float64(60)}, "60"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := formatWorkoutFeel(tt.summary)
+			if got != tt.want {
+				t.Errorf("formatWorkoutFeel() = %q, want %q", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestFormatActivitySummary_CyclingCategory(t *testing.T) {
 	activity := map[string]any{
 		"activityName":    "Afternoon Ride",
 		"activityTypeDTO": map[string]any{"typeKey": "road_biking", "parentTypeId": float64(2)},
 		"summaryDTO": map[string]any{
-			"startTimeLocal": "2024-06-15 14:00:00",
-			"distance":       float64(40000),
-			"duration":       float64(3600),
-			"averageSpeed":   float64(11.111),
-			"elevationGain":  float64(320),
-			"averagePower":   float64(200),
+			"startTimeLocal":          "2024-06-15 14:00:00",
+			"distance":                float64(40000),
+			"duration":                float64(3600),
+			"averageSpeed":            float64(11.111),
+			"elevationGain":           float64(320),
+			"elevationLoss":           float64(305),
+			"averagePower":            float64(200),
+			"trainingEffect":          float64(3.4),
+			"anaerobicTrainingEffect": float64(1.2),
+			"directWorkoutFeel":       float64(75),
+			"directWorkoutRpe":        float64(30),
 		},
 	}
 
 	rows := formatActivitySummary(activity, nil)
-	// 3 fixed + 5 cycling fields
-	if len(rows) != 8 {
-		t.Fatalf("expected 8 rows, got %d", len(rows))
+	// 3 fixed + 10 cycling fields
+	if len(rows) != 13 {
+		t.Fatalf("expected 13 rows, got %d", len(rows))
 	}
 
 	expected := []struct {
@@ -299,7 +364,12 @@ func TestFormatActivitySummary_CyclingCategory(t *testing.T) {
 		{"DURATION", "1:00:00"},
 		{"AVG SPEED", "40.0 km/h"},
 		{"ELEVATION", "320 m"},
+		{"ELEVATION LOSS", "305 m"},
 		{"AVG POWER", "200 W"},
+		{"AEROBIC TRAINING EFFECT", "3.4"},
+		{"ANAEROBIC TRAINING EFFECT", "1.2"},
+		{"FEEL", "STRONG"},
+		{"RPE", "3.0"},
 	}
 
 	for i, exp := range expected {
@@ -317,19 +387,23 @@ func TestFormatActivitySummary_StrengthCategory(t *testing.T) {
 		"activityName":    "Chest Day",
 		"activityTypeDTO": map[string]any{"typeKey": "strength_training", "parentTypeId": float64(29)},
 		"summaryDTO": map[string]any{
-			"startTimeLocal":    "2024-06-15 10:00:00",
-			"duration":          float64(2700),
-			"activeSets":        float64(12),
-			"totalExerciseReps": float64(96),
-			"averageHR":         float64(120),
-			"calories":          float64(280),
+			"startTimeLocal":          "2024-06-15 10:00:00",
+			"duration":                float64(2700),
+			"activeSets":              float64(12),
+			"totalExerciseReps":       float64(96),
+			"averageHR":               float64(120),
+			"calories":                float64(280),
+			"trainingEffect":          float64(2.5),
+			"anaerobicTrainingEffect": float64(1.8),
+			"directWorkoutFeel":       float64(50),
+			"directWorkoutRpe":        float64(40),
 		},
 	}
 
 	rows := formatActivitySummary(activity, nil)
-	// 3 fixed + 5 fitness_equipment fields
-	if len(rows) != 8 {
-		t.Fatalf("expected 8 rows, got %d", len(rows))
+	// 3 fixed + 9 fitness_equipment fields
+	if len(rows) != 12 {
+		t.Fatalf("expected 12 rows, got %d", len(rows))
 	}
 
 	expected := []struct {
@@ -344,6 +418,10 @@ func TestFormatActivitySummary_StrengthCategory(t *testing.T) {
 		{"REPS", "96"},
 		{"AVG HR", "120 bpm"},
 		{"CALORIES", "280"},
+		{"AEROBIC TRAINING EFFECT", "2.5"},
+		{"ANAEROBIC TRAINING EFFECT", "1.8"},
+		{"FEEL", "NORMAL"},
+		{"RPE", "4.0"},
 	}
 
 	for i, exp := range expected {
@@ -384,6 +462,51 @@ func TestFormatActivitySummary_ConfigOverride(t *testing.T) {
 	}
 	if rows[5][0] != "CALORIES" {
 		t.Errorf("row 5 label = %q, want CALORIES", rows[5][0])
+	}
+}
+
+func TestFormatActivitySummary_NewFieldConfigOverride(t *testing.T) {
+	activity := map[string]any{
+		"activityName":    "Morning Run",
+		"activityTypeDTO": map[string]any{"typeKey": "running", "parentTypeId": float64(17)},
+		"summaryDTO": map[string]any{
+			"startTimeLocal":          "2024-06-15 07:30:00",
+			"elevationLoss":           float64(117.55),
+			"trainingEffect":          float64(3.1),
+			"anaerobicTrainingEffect": float64(0.8),
+			"directWorkoutFeel":       float64(75),
+			"directWorkoutRpe":        float64(30),
+		},
+	}
+
+	overrides := map[string][]string{
+		"running": {
+			"elevation_loss",
+			"aerobic_training_effect",
+			"anaerobic_training_effect",
+			"feel",
+			"rpe",
+		},
+	}
+	rows := formatActivitySummary(activity, overrides)
+
+	expected := [][]string{
+		{"NAME", "Morning Run"},
+		{"TYPE", "running"},
+		{"DATE", "2024-06-15"},
+		{"ELEVATION LOSS", "117 m"},
+		{"AEROBIC TRAINING EFFECT", "3.1"},
+		{"ANAEROBIC TRAINING EFFECT", "0.8"},
+		{"FEEL", "STRONG"},
+		{"RPE", "3.0"},
+	}
+	if len(rows) != len(expected) {
+		t.Fatalf("expected %d rows, got %d", len(expected), len(rows))
+	}
+	for i := range expected {
+		if rows[i][0] != expected[i][0] || rows[i][1] != expected[i][1] {
+			t.Errorf("row %d = %v, want %v", i, rows[i], expected[i])
+		}
 	}
 }
 

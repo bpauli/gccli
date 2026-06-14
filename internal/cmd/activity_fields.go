@@ -31,6 +31,10 @@ var fieldRegistry = map[string]summaryField{
 		Key: "elevation_gain", Label: "ELEVATION",
 		Format: func(s, _ map[string]any) string { return formatElevation(jsonFloat(s, "elevationGain")) },
 	},
+	"elevation_loss": {
+		Key: "elevation_loss", Label: "ELEVATION LOSS",
+		Format: func(s, _ map[string]any) string { return formatElevation(jsonFloat(s, "elevationLoss")) },
+	},
 	"avg_power": {
 		Key: "avg_power", Label: "AVG POWER",
 		Format: func(s, _ map[string]any) string { return formatPower(jsonFloat(s, "averagePower")) },
@@ -55,19 +59,35 @@ var fieldRegistry = map[string]summaryField{
 		Key: "reps", Label: "REPS",
 		Format: func(s, _ map[string]any) string { return formatCount(jsonFloat(s, "totalExerciseReps")) },
 	},
+	"aerobic_training_effect": {
+		Key: "aerobic_training_effect", Label: "AEROBIC TRAINING EFFECT",
+		Format: func(s, _ map[string]any) string { return formatDecimal(jsonFloat(s, "trainingEffect")) },
+	},
+	"anaerobic_training_effect": {
+		Key: "anaerobic_training_effect", Label: "ANAEROBIC TRAINING EFFECT",
+		Format: func(s, _ map[string]any) string { return formatDecimal(jsonFloat(s, "anaerobicTrainingEffect")) },
+	},
+	"feel": {
+		Key: "feel", Label: "FEEL",
+		Format: func(s, _ map[string]any) string { return formatWorkoutFeel(s) },
+	},
+	"rpe": {
+		Key: "rpe", Label: "RPE",
+		Format: func(s, _ map[string]any) string { return formatRPE(jsonFloat(s, "directWorkoutRpe")) },
+	},
 }
 
 // categoryDefaults maps activity category names to their default field keys.
 var categoryDefaults = map[string][]string{
-	"cycling":           {"distance", "duration", "avg_speed", "elevation_gain", "avg_power"},
-	"running":           {"distance", "duration", "avg_pace", "elevation_gain", "avg_hr"},
-	"fitness_equipment": {"duration", "sets", "reps", "avg_hr", "calories"},
-	"swimming":          {"distance", "duration", "avg_pace", "calories", "avg_hr"},
-	"hiking":            {"distance", "duration", "avg_pace", "elevation_gain", "calories"},
-	"multi_sport":       {"duration", "distance", "calories", "elevation_gain", "avg_speed"},
-	"winter_sports":     {"distance", "duration", "avg_speed", "elevation_gain", "calories"},
-	"water_sports":      {"distance", "duration", "avg_speed", "avg_hr", "calories"},
-	"other":             {"distance", "duration", "avg_speed", "avg_hr", "calories"},
+	"cycling":           {"distance", "duration", "avg_speed", "elevation_gain", "elevation_loss", "avg_power", "aerobic_training_effect", "anaerobic_training_effect", "feel", "rpe"},
+	"running":           {"distance", "duration", "avg_pace", "elevation_gain", "elevation_loss", "avg_hr", "aerobic_training_effect", "anaerobic_training_effect", "feel", "rpe"},
+	"fitness_equipment": {"duration", "sets", "reps", "avg_hr", "calories", "aerobic_training_effect", "anaerobic_training_effect", "feel", "rpe"},
+	"swimming":          {"distance", "duration", "avg_pace", "calories", "avg_hr", "aerobic_training_effect", "anaerobic_training_effect", "feel", "rpe"},
+	"hiking":            {"distance", "duration", "avg_pace", "elevation_gain", "elevation_loss", "calories", "aerobic_training_effect", "anaerobic_training_effect", "feel", "rpe"},
+	"multi_sport":       {"duration", "distance", "calories", "elevation_gain", "elevation_loss", "avg_speed", "aerobic_training_effect", "anaerobic_training_effect", "feel", "rpe"},
+	"winter_sports":     {"distance", "duration", "avg_speed", "elevation_gain", "elevation_loss", "calories", "aerobic_training_effect", "anaerobic_training_effect", "feel", "rpe"},
+	"water_sports":      {"distance", "duration", "avg_speed", "avg_hr", "calories", "aerobic_training_effect", "anaerobic_training_effect", "feel", "rpe"},
+	"other":             {"distance", "duration", "avg_speed", "avg_hr", "calories", "aerobic_training_effect", "anaerobic_training_effect", "feel", "rpe"},
 }
 
 // parentTypeCategories maps Garmin parentTypeId to category name.
@@ -180,4 +200,47 @@ func formatCount(n float64) string {
 		return "-"
 	}
 	return fmt.Sprintf("%d", int(n))
+}
+
+// formatDecimal formats a decimal value to one fractional digit.
+func formatDecimal(n float64) string {
+	if n == 0 {
+		return "-"
+	}
+	return fmt.Sprintf("%.1f", n)
+}
+
+// formatRPE converts Garmin's 0-100 workout RPE to a 0-10 scale.
+func formatRPE(n float64) string {
+	if n == 0 {
+		return "-"
+	}
+	return fmt.Sprintf("%.1f", n/10)
+}
+
+// formatWorkoutFeel maps Garmin's five-level workout feel scale to labels.
+func formatWorkoutFeel(summary map[string]any) string {
+	value, ok := summary["directWorkoutFeel"]
+	if !ok || value == nil {
+		return "-"
+	}
+	n, ok := value.(float64)
+	if !ok {
+		return "-"
+	}
+
+	switch n {
+	case 0:
+		return "VERY WEAK"
+	case 25:
+		return "WEAK"
+	case 50:
+		return "NORMAL"
+	case 75:
+		return "STRONG"
+	case 100:
+		return "VERY STRONG"
+	default:
+		return fmt.Sprintf("%g", n)
+	}
 }
