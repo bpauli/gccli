@@ -46,6 +46,7 @@ node_modules/
 .claude/
 .agents/
 CLAUDE.md
+CLAUDE.local.md
 activity.md
 prd.md
 PROMPT.md
