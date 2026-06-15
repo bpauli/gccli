@@ -516,3 +516,120 @@ func TestSendCourseToDevice_ServerError(t *testing.T) {
 		t.Fatalf("expected GarminAPIError, got %T: %v", err, err)
 	}
 }
+
+// --- DownloadCourse tests ---
+
+func TestDownloadCourse_FIT(t *testing.T) {
+	want := []byte("raw-fit-bytes")
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/course-service/course/fit/12345/0" {
+			t.Errorf("path = %s, want /course-service/course/fit/12345/0", r.URL.Path)
+		}
+		if r.URL.Query().Get("elevation") != "true" {
+			t.Errorf("elevation = %q, want true", r.URL.Query().Get("elevation"))
+		}
+		if r.Method != http.MethodGet {
+			t.Errorf("method = %s, want GET", r.Method)
+		}
+		_, _ = w.Write(want)
+	})
+
+	_, client := testServer(t, handler)
+	got, err := client.DownloadCourse(context.Background(), "12345", FormatFIT)
+	if err != nil {
+		t.Fatalf("DownloadCourse: %v", err)
+	}
+	if string(got) != string(want) {
+		t.Errorf("body = %q, want %q", got, want)
+	}
+}
+
+func TestDownloadCourse_GPX(t *testing.T) {
+	want := []byte("<gpx/>")
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/course-service/course/gpx/12345" {
+			t.Errorf("path = %s, want /course-service/course/gpx/12345", r.URL.Path)
+		}
+		if r.Method != http.MethodGet {
+			t.Errorf("method = %s, want GET", r.Method)
+		}
+		_, _ = w.Write(want)
+	})
+
+	_, client := testServer(t, handler)
+	got, err := client.DownloadCourse(context.Background(), "12345", FormatGPX)
+	if err != nil {
+		t.Fatalf("DownloadCourse: %v", err)
+	}
+	if string(got) != string(want) {
+		t.Errorf("body = %q, want %q", got, want)
+	}
+}
+
+func TestDownloadCourse_InvalidFormat(t *testing.T) {
+	_, client := testServer(t, http.HandlerFunc(func(http.ResponseWriter, *http.Request) {}))
+	_, err := client.DownloadCourse(context.Background(), "12345", FormatTCX)
+	if err == nil {
+		t.Fatal("expected error for unsupported course format")
+	}
+
+	var fmtErr *InvalidFileFormatError
+	if !errors.As(err, &fmtErr) {
+		t.Fatalf("expected InvalidFileFormatError, got %T: %v", err, err)
+	}
+	if fmtErr.Format != "tcx" {
+		t.Errorf("Format = %q, want tcx", fmtErr.Format)
+	}
+}
+
+func TestDownloadCourse_ServerError(t *testing.T) {
+	handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = w.Write([]byte("boom"))
+	})
+
+	_, client := testServer(t, handler)
+	_, err := client.DownloadCourse(context.Background(), "12345", FormatGPX)
+	if err == nil {
+		t.Fatal("expected error")
+	}
+}
+
+// --- downloadCoursePath tests ---
+
+func TestDownloadCoursePath(t *testing.T) {
+	tests := []struct {
+		format DownloadFormat
+		want   string
+	}{
+		{FormatFIT, "/course-service/course/fit/777/0?elevation=true"},
+		{FormatGPX, "/course-service/course/gpx/777"},
+	}
+
+	for _, tt := range tests {
+		t.Run(string(tt.format), func(t *testing.T) {
+			got, err := downloadCoursePath("777", tt.format)
+			if err != nil {
+				t.Fatalf("downloadCoursePath: %v", err)
+			}
+			if got != tt.want {
+				t.Errorf("downloadCoursePath = %q, want %q", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestDownloadCoursePath_Invalid(t *testing.T) {
+	for _, format := range []DownloadFormat{FormatTCX, FormatKML, FormatCSV, "xyz"} {
+		t.Run(string(format), func(t *testing.T) {
+			_, err := downloadCoursePath("777", format)
+			if err == nil {
+				t.Fatalf("expected error for format %q", format)
+			}
+			var fmtErr *InvalidFileFormatError
+			if !errors.As(err, &fmtErr) {
+				t.Fatalf("expected InvalidFileFormatError, got %T: %v", err, err)
+			}
+		})
+	}
+}

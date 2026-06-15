@@ -105,6 +105,8 @@ Common commands
 - List courses: `gccli courses list`
 - Favorite courses: `gccli courses favorites`
 - Course detail: `gccli courses detail <id>`
+- Download course (FIT): `gccli courses download <id> --format fit`
+- Download course (GPX): `gccli courses download <id> --format gpx --output route.gpx`
 - Import course from GPX (default: cycling, private): `gccli courses import route.gpx`
 - Import course with name: `gccli courses import route.gpx --name "Sunday Ride"`
 - Import course with type: `gccli courses import route.gpx --type gravel_cycling`

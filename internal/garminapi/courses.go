@@ -29,7 +29,7 @@ func (c *Client) GetCourseFavorites(ctx context.Context) (json.RawMessage, error
 	return c.ConnectAPI(ctx, http.MethodGet, "/course-service/course/favorites", nil)
 }
 
-// downloadPath returns the API path for downloading a course in the given format.
+// downloadCoursePath returns the API path for downloading a course in the given format.
 func downloadCoursePath(courseID string, format DownloadFormat) (string, error) {
 	switch format {
 	case FormatFIT:
