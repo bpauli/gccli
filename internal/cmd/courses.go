@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/bpauli/gccli/internal/garminapi"
 	"github.com/bpauli/gccli/internal/outfmt"
 )
 
@@ -15,6 +16,7 @@ type CoursesCmd struct {
 	List      CoursesListCmd      `cmd:"" default:"withargs" help:"List courses."`
 	Favorites CoursesFavoritesCmd `cmd:"" help:"List favorite courses."`
 	Detail    CourseDetailCmd     `cmd:"" help:"View course details."`
+	Download  CourseDownloadCmd   `cmd:"" help:"Download course file."`
 	Import    CourseImportCmd     `cmd:"" help:"Import a GPX file as a new course."`
 	Send      CourseSendCmd       `cmd:"" help:"Send a course to a device."`
 	Delete    CourseDeleteCmd     `cmd:"" help:"Delete a course."`
@@ -101,6 +103,39 @@ func (c *CourseDetailCmd) Run(g *Globals) error {
 	}
 
 	return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+}
+
+// CourseDownloadCmd downloads a course in a specified format.
+type CourseDownloadCmd struct {
+	ID     string `arg:"" help:"Course ID."`
+	Format string `help:"Download format: fit, gpx." default:"fit" enum:"fit,gpx"`
+	Output string `help:"Output file path (default: course_{id}.{format})." short:"o"`
+}
+
+func (c *CourseDownloadCmd) Run(g *Globals) error {
+	client, err := resolveClient(g)
+	if err != nil {
+		return err
+	}
+
+	format := garminapi.DownloadFormat(strings.ToLower(c.Format))
+
+	data, err := client.DownloadCourse(g.Context, c.ID, format)
+	if err != nil {
+		return fmt.Errorf("download course: %w", err)
+	}
+
+	outPath := c.Output
+	if outPath == "" {
+		outPath = fmt.Sprintf("course_%s.%s", c.ID, c.Format)
+	}
+
+	if err := os.WriteFile(outPath, data, 0o644); err != nil {
+		return fmt.Errorf("write file: %w", err)
+	}
+
+	g.UI.Successf("Downloaded %s (%d bytes)", outPath, len(data))
+	return nil
 }
 
 // CourseImportCmd imports a GPX file as a new course.
