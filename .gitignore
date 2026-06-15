@@ -45,7 +45,6 @@ node_modules/
 # AI Coding agent
 .claude/
 .agents/
-CLAUDE.md
 CLAUDE.local.md
 activity.md
 prd.md
