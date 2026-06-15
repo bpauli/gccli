@@ -501,21 +501,26 @@ func TestFormatActivitySummary(t *testing.T) {
 		"activityName":    "Morning Run",
 		"activityTypeDTO": map[string]any{"typeKey": "running", "parentTypeId": float64(17)},
 		"summaryDTO": map[string]any{
-			"startTimeLocal": "2024-06-15 07:30:00",
-			"distance":       float64(5123.45),
-			"duration":       float64(1800),
-			"averageSpeed":   float64(2.847),
-			"elevationGain":  float64(85),
-			"averageHR":      float64(145),
-			"maxHR":          float64(172),
-			"calories":       float64(350),
+			"startTimeLocal":          "2024-06-15 07:30:00",
+			"distance":                float64(5123.45),
+			"duration":                float64(1800),
+			"averageSpeed":            float64(2.847),
+			"elevationGain":           float64(85),
+			"elevationLoss":           float64(79),
+			"averageHR":               float64(145),
+			"maxHR":                   float64(172),
+			"calories":                float64(350),
+			"trainingEffect":          float64(3.1),
+			"anaerobicTrainingEffect": float64(0.8),
+			"directWorkoutFeel":       float64(75),
+			"directWorkoutRpe":        float64(30),
 		},
 	}
 
-	// Running category default fields: distance, duration, avg_pace, elevation_gain, avg_hr
+	// Running category includes performance and subjective effort fields.
 	rows := formatActivitySummary(activity, nil)
-	if len(rows) != 8 {
-		t.Fatalf("expected 8 rows (3 fixed + 5 fields), got %d", len(rows))
+	if len(rows) != 13 {
+		t.Fatalf("expected 13 rows (3 fixed + 10 fields), got %d", len(rows))
 	}
 
 	expected := []struct {
@@ -529,7 +534,12 @@ func TestFormatActivitySummary(t *testing.T) {
 		{"DURATION", "30:00"},
 		{"AVG PACE", "5:51 /km"},
 		{"ELEVATION", "85 m"},
+		{"ELEVATION LOSS", "79 m"},
 		{"AVG HR", "145 bpm"},
+		{"AEROBIC TRAINING EFFECT", "3.1"},
+		{"ANAEROBIC TRAINING EFFECT", "0.8"},
+		{"FEEL", "STRONG"},
+		{"RPE", "3.0"},
 	}
 
 	for i, exp := range expected {
@@ -547,14 +557,14 @@ func TestFormatActivitySummary_MissingFields(t *testing.T) {
 		"activityName": "Strength Training",
 	}
 
-	// Falls back to "other" category: distance, duration, avg_speed, avg_hr, calories
+	// Falls back to the "other" category.
 	rows := formatActivitySummary(activity, nil)
-	if len(rows) != 8 {
-		t.Fatalf("expected 8 rows (3 fixed + 5 fields), got %d", len(rows))
+	if len(rows) != 12 {
+		t.Fatalf("expected 12 rows (3 fixed + 9 fields), got %d", len(rows))
 	}
 
 	// Missing numeric fields should show "-".
-	for _, idx := range []int{3, 4, 5, 6, 7} {
+	for _, idx := range []int{3, 4, 5, 6, 7, 8, 9, 10, 11} {
 		if rows[idx][1] != "-" {
 			t.Errorf("row %d (%s): expected '-', got %q", idx, rows[idx][0], rows[idx][1])
 		}
