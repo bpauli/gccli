@@ -241,6 +241,7 @@
           <a href="#install">Install</a>
           <a href="#quickstart">Quickstart</a>
           <a href="#features">Features</a>
+          <a href="#agents">Agents</a>
           <a href="#commands">Commands</a>
           <a href="#examples">Examples</a>
           <a href="#architecture">Architecture</a>
@@ -488,6 +489,72 @@ gccli activities list --limit 5</pre>
             <div class="feature-icon yellow">&#x2328;</div>
             <h3>Shell Completion</h3>
             <p>Generated completion scripts for bash, zsh, fish, and PowerShell. Commands, subcommands, flags, and enum values.</p>
+          </div>
+          <div class="feature-card fade-in">
+            <div class="feature-icon blue">&#x1f916;</div>
+            <h3>Agent-Ready</h3>
+            <p>Ships a bundled agent skill that plugs into AI assistants like Claude Code, Codex, Hermes, and OpenClaw - drive Garmin Connect in plain language.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Agents ── -->
+    <section id="agents" class="section-border" style="padding: 96px 0;">
+      <div class="section">
+        <h2 class="section-title">Agent &amp; AI Assistant Integration</h2>
+        <p class="section-desc">gccli ships a bundled <strong>agent skill</strong> that teaches an AI assistant its full command surface. Ask in plain language and let the agent drive the CLI.</p>
+
+        <div class="split" style="margin-top: 40px;">
+          <div>
+            <div class="terminal fade-in">
+              <div class="terminal-bar">
+                <div class="terminal-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+                <span class="terminal-title">agent - chat</span>
+                <div style="width:56px"></div>
+              </div>
+              <div class="terminal-body">
+                <div><span class="green">you&gt;</span> How did I sleep last week?</div>
+                <div><span class="green">you&gt;</span> Download my last three runs as GPX.</div>
+                <div><span class="green">you&gt;</span> Log today's session: bench 3x12@20kg,</div>
+                <div style="padding-left: 40px;">lat pulldowns 3x12@41kg.</div>
+                <div><span class="green">you&gt;</span> Build a tempo run, schedule it Saturday.</div>
+                <div style="height:8px"></div>
+                <div class="muted-t"><span class="cyan">agent</span> runs <span class="yellow">gccli</span> --json&hellip;</div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="features-grid" style="grid-template-columns: 1fr 1fr; margin-top: 0;">
+              <div class="feature-card fade-in">
+                <div class="feature-icon blue">&#x1f916;</div>
+                <h3>Claude Code</h3>
+                <p>Anthropic's terminal-native coding agent. Point it at the bundled skill and drive Garmin Connect conversationally.</p>
+              </div>
+              <div class="feature-card fade-in">
+                <div class="feature-icon">&#x2699;</div>
+                <h3>Codex</h3>
+                <p>OpenAI's coding agent. The portable <code style="padding:2px 6px;border-radius:6px;background:var(--surface);font-size:11px;border:1px solid var(--border);">SKILL.md</code> format works out of the box.</p>
+              </div>
+              <div class="feature-card fade-in">
+                <div class="feature-icon orange">&#x1f9ed;</div>
+                <h3>Hermes</h3>
+                <p>Agent runtime with skill support - drop in the gccli skill and go.</p>
+              </div>
+              <div class="feature-card fade-in">
+                <div class="feature-icon violet">&#x1f43e;</div>
+                <h3>OpenClaw</h3>
+                <p>The skill's frontmatter carries install metadata, so OpenClaw can provision the <code style="padding:2px 6px;border-radius:6px;background:var(--surface);font-size:11px;border:1px solid var(--border);">gccli</code> binary automatically.</p>
+              </div>
+            </div>
+
+            <div class="callout fade-in">
+              <div class="callout-icon">&#x1f4e6;</div>
+              <div class="callout-body">
+                <h3>Setup</h3>
+                <p>Clone the repo and point your agent at <code>skills/gccli</code> (copy or symlink it into wherever your agent discovers skills). Authenticate once with <code>gccli auth login</code> and set <code>GCCLI_ACCOUNT</code>. The skill instructs the agent to use <code>--json</code> output and to confirm before destructive actions.</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -26,6 +26,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Nutrition** — view daily food logs, meals, and nutrition settings
 - **Events** — list, add, and delete calendar events (races, group rides, etc.) with goals and training priority support
 - **Wellness** — menstrual cycle data, pregnancy summary
+- **Agent-ready** - ships a bundled agent skill (`skills/gccli/`) that plugs into AI assistants like Claude Code, Codex, Hermes, and OpenClaw so you can drive Garmin Connect in plain language
 - **Multiple accounts** — manage multiple Garmin accounts via `--account` flag
 - **Secure credential storage** using OS keyring (macOS Keychain, Linux Secret Service, encrypted file fallback)
 - **Auto-refreshing tokens** — authenticate once, tokens refresh automatically on 401
@@ -97,6 +98,37 @@ Login automatically saves your email as the default account, so you don't need t
 gccli auth status
 gccli activities list --limit 5
 ```
+
+## Agent & AI Assistant Integration
+
+`gccli` ships a ready-to-use **agent skill** at [`skills/gccli/SKILL.md`](skills/gccli/SKILL.md). It teaches an AI assistant the full command surface - auth, activities, health, body composition, workouts, courses, devices, gear, goals, events, and more - so you can ask in plain language and let the agent drive the CLI:
+
+- "How did I sleep last week?"
+- "Download my last three runs as GPX."
+- "Log today's strength session: bench press 3x12@20kg, lat pulldowns 3x12@41kg."
+- "Build me a tempo run and schedule it for Saturday."
+
+The skill uses the portable `SKILL.md` format (frontmatter + Markdown) and works with any agent runtime that supports skills, including:
+
+- **[Claude Code](https://claude.com/claude-code)** - Anthropic's terminal-native coding agent
+- **Codex** - OpenAI's coding agent
+- **Hermes** - agent runtime
+- **OpenClaw** - the skill's frontmatter carries install metadata (Homebrew / build-from-source) so OpenClaw can provision the `gccli` binary automatically
+
+### Setup
+
+Clone the repo and point your agent at the bundled skill directory (copy or symlink it into wherever your agent discovers skills):
+
+```bash
+git clone https://github.com/bpauli/gccli.git
+# then copy or symlink gccli/skills/gccli into your agent's skills directory
+```
+
+Make sure the `gccli` binary is installed (see [Installation](#installation)) and you have authenticated once with `gccli auth login`. Set `GCCLI_ACCOUNT` so the agent doesn't need to pass `--account` on every call. The skill instructs the agent to use `--json` output when parsing results and to confirm before destructive actions.
+
+### Strength-training workflow (LLM-assisted)
+
+The skill includes a guided workflow for logging free-text strength sessions: the agent fetches Garmin's exercise catalog (`gccli exercises list --json`), maps your described exercises to Garmin's `CATEGORY/EXERCISE_NAME` pairs, confirms the mapping with you, creates the activity, and records each set via `gccli activity exercise-sets set`.
 
 ## Authentication & Secrets
 
