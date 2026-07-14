@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.1] - 2026-07-14
+
+### Changed
+
+- Bump dependencies in the minor-and-patch group: `golang.org/x/net` (0.56.0 → 0.57.0) and `golang.org/x/term` (0.44.0 → 0.45.0). (#56)
+- Bump `actions/checkout` from 6 to 7 in GitHub Actions workflows. (#55)
+
+### Docs
+
+- Replace the retired Go Report Card badge with Go version, release, and license badges.
+
 ## [1.9.0] - 2026-06-15
 
 ### Added
@@ -239,6 +250,7 @@ Initial release of gccli — a fast, script-friendly CLI for Garmin Connect.
 - **CI pipeline** — GitHub Actions for fmt-check, lint, and test
 - **Cross-platform builds** — macOS (amd64/arm64) and Linux (amd64/arm64) via goreleaser
 
+[1.9.1]: https://github.com/bpauli/gccli/releases/tag/v1.9.1
 [1.9.0]: https://github.com/bpauli/gccli/releases/tag/v1.9.0
 [1.8.0]: https://github.com/bpauli/gccli/releases/tag/v1.8.0
 [1.7.3]: https://github.com/bpauli/gccli/releases/tag/v1.7.3
