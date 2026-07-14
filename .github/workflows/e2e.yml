@@ -22,7 +22,7 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/proxy_key
           chmod 600 ~/.ssh/proxy_key
-          ssh -o StrictHostKeyChecking=no -D 1080 -f -N -i ~/.ssh/proxy_key clawdbot@46.225.30.1
+          ssh -o StrictHostKeyChecking=no -D 1080 -f -N -i ~/.ssh/proxy_key gccli@46.225.30.1
       - name: Run E2E tests
         env:
           GARMIN_EMAIL: ${{ secrets.GARMIN_EMAIL }}
