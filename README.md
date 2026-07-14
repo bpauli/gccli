@@ -1,7 +1,9 @@
 # gccli — Garmin Connect in your terminal.
 
 [![ci](https://github.com/bpauli/gccli/actions/workflows/ci.yml/badge.svg)](https://github.com/bpauli/gccli/actions/workflows/ci.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/bpauli/gccli)](https://goreportcard.com/report/github.com/bpauli/gccli)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/bpauli/gccli)](go.mod)
+[![Release](https://img.shields.io/github/v/release/bpauli/gccli)](https://github.com/bpauli/gccli/releases)
+[![License](https://img.shields.io/github/license/bpauli/gccli)](LICENSE)
 [![Docs](https://img.shields.io/badge/docs-gccli.sh-blue)](https://gccli.sh)
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-support-yellow?logo=buymeacoffee)](https://buymeacoffee.com/mail7j)
 
