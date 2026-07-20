@@ -4,7 +4,7 @@ go 1.25.0
 
 require (
 	github.com/99designs/keyring v1.2.2
-	github.com/alecthomas/kong v1.15.0
+	github.com/alecthomas/kong v1.16.0
 	github.com/joho/godotenv v1.5.1
 	github.com/muesli/termenv v0.16.0
 	golang.org/x/net v0.57.0
