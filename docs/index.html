@@ -56,6 +56,7 @@
         --cyan: #38bdf8; --yellow: #fbbf24; --red: #f87171;
         --orange: #fb923c; --violet: #a78bfa; --rose: #fb7185;
         --border: #1e2633; --surface: #1a2130; --radius: 12px;
+        --gutter: 24px;
       }
       html { scroll-behavior: smooth; }
       body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; -webkit-font-smoothing: antialiased; }
@@ -64,7 +65,7 @@
 
       /* ── Nav ── */
       nav { position: sticky; top: 0; z-index: 50; background: rgba(13,16,23,0.82); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
-      .nav-inner { max-width: 1120px; margin: 0 auto; padding: 0 24px; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+      .nav-inner { max-width: 1120px; margin: 0 auto; padding: 0 var(--gutter); height: 56px; display: flex; align-items: center; justify-content: space-between; }
       .nav-brand { display: flex; align-items: center; gap: 8px; }
       .nav-brand strong { font-size: 18px; }
       .nav-brand .tag { font-size: 12px; color: var(--fg-muted); font-family: 'JetBrains Mono', monospace; padding: 2px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); }
@@ -75,7 +76,8 @@
       .btn-nav:hover { background: var(--border); }
 
       /* ── Shared ── */
-      .section { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+      .section { max-width: 1120px; margin: 0 auto; padding: 0 var(--gutter); }
+      .section-pad { padding: 96px 0; }
       .section-border { border-top: 1px solid var(--border); }
       .section-title { font-size: 30px; font-weight: 700; background: linear-gradient(180deg,#fff 20%,#8899aa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
       .section-desc { margin-top: 12px; color: var(--fg-muted); font-size: 15px; }
@@ -83,7 +85,22 @@
       .card { border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; background: linear-gradient(180deg,#171d28 0%,#131820 100%); }
       .card h3 { font-size: 15px; font-weight: 600; margin-bottom: 12px; }
       .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-      pre.code-block { background: var(--bg-terminal); border: 1px solid var(--border); border-radius: 10px; padding: 16px; font-size: 13px; overflow-x: auto; line-height: 1.7; color: var(--fg); margin-top: 8px; }
+      pre.code-block { background: var(--bg-terminal); border: 1px solid var(--border); border-radius: 10px; padding: 16px; font-size: 13px; overflow-x: auto; overscroll-behavior-x: contain; line-height: 1.7; color: var(--fg); margin-top: 8px; }
+
+      /* ── Intrinsic sizing ──
+         Flex and grid children default to min-width:auto, which floors them at
+         their content's min-content width. One long line in a pre.code-block
+         therefore widened its whole grid track — and with it the page — instead
+         of scrolling inside its own box. Opting the layout children out of that
+         floor lets tracks shrink to the viewport and keeps overflow local. */
+      .hero-grid > *, .split > *, .card-grid > *, .features-grid > *,
+      .arch-grid > *, .examples-grid > *, .config-grid > *, .terminal-meta > *,
+      .cmd-row > *, .steps > *, .footer-inner > *,
+      .step-content, .callout-body, .cmd-header h3 { min-width: 0; }
+
+      /* Long unbreakable tokens (URLs, flags, paths) must be able to break
+         rather than push their container wider than the viewport. */
+      .cmd-row .cmd, code { overflow-wrap: anywhere; }
 
       /* ── Hero ── */
       .hero { padding: 80px 0 96px; }
@@ -95,7 +112,7 @@
       .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
       .badge { padding: 4px 14px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); font-size: 12px; font-weight: 500; color: var(--fg-muted); transition: border-color 0.2s; }
       .badge:hover { border-color: rgba(52,211,153,0.3); color: var(--fg); }
-      .hero-actions { display: flex; gap: 12px; margin-top: 24px; }
+      .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
       .btn-primary { display: inline-block; padding: 10px 24px; border-radius: 10px; background: var(--green); color: var(--bg); font-weight: 600; font-size: 14px; transition: opacity 0.2s; }
       .btn-primary:hover { opacity: 0.88; }
       .btn-secondary { display: inline-block; padding: 10px 24px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); color: var(--fg); font-weight: 500; font-size: 14px; transition: background 0.2s; }
@@ -130,6 +147,7 @@
 
       /* ── Features ── */
       .features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-top: 48px; }
+      .agents-grid { grid-template-columns: repeat(2,1fr); }
       .feature-card { border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; background: linear-gradient(180deg,#171d28 0%,#131820 100%); transition: border-color 0.2s, transform 0.2s; }
       .feature-card:hover { border-color: rgba(52,211,153,0.25); transform: translateY(-2px); }
       .feature-icon { font-size: 20px; margin-bottom: 10px; display: inline-flex; width: 36px; height: 36px; align-items: center; justify-content: center; border-radius: 10px; background: var(--green-dim); border: 1px solid rgba(52,211,153,0.18); }
@@ -191,7 +209,7 @@
 
       /* ── Footer ── */
       footer { border-top: 1px solid var(--border); padding: 40px 0; }
-      .footer-inner { max-width: 1120px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
+      .footer-inner { max-width: 1120px; margin: 0 auto; padding: 0 var(--gutter); display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
       .footer-brand { display: flex; align-items: center; gap: 10px; }
       .footer-brand strong { color: var(--green); font-family: 'JetBrains Mono', monospace; }
       .footer-brand span { font-size: 14px; color: var(--fg-muted); }
@@ -214,17 +232,40 @@
         .arch-grid { grid-template-columns: 1fr 1fr; }
         .examples-grid { grid-template-columns: 1fr; }
         .config-grid { grid-template-columns: 1fr; }
+        .section-pad { padding: 72px 0; }
+        .hero { padding: 56px 0 64px; }
+      }
+      /* Nav sizing is content-driven: the brand plus seven links and the GitHub
+         button need ~840px before the row runs out of space. Tighten the gap
+         first, then drop the links entirely — both above the width where they
+         would otherwise push the page wider than the viewport. */
+      @media (max-width: 1000px) {
+        .nav-links { gap: 18px; }
+      }
+      @media (max-width: 900px) {
+        .nav-links { display: none; }
       }
       @media (max-width: 640px) {
+        :root { --gutter: 20px; }
         .features-grid { grid-template-columns: 1fr; }
+        .agents-grid { grid-template-columns: 1fr; }
         .arch-grid { grid-template-columns: 1fr; }
         .terminal-meta { grid-template-columns: 1fr; }
         .terminal-meta-item:not(:last-child) { border-right: none; border-bottom: 1px solid var(--border); }
-        .nav-links { display: none; }
         .footer-inner { flex-direction: column; gap: 12px; text-align: center; }
-        .cmd-row { grid-template-columns: 1fr; gap: 4px; }
+        .cmd-row { grid-template-columns: 1fr; gap: 4px; padding: 9px 14px; }
+        .cmd-header { padding: 12px 14px; }
+        .arch-flow { padding: 16px; }
         .arch-flow .layer { display: block; margin: 4px auto; }
         .arch-flow .arrow { display: block; }
+        .section-pad { padding: 56px 0; }
+        .hero { padding: 40px 0 48px; }
+        .card, .feature-card, .example { padding: 16px; }
+        .callout { padding: 16px; gap: 12px; }
+        .step { gap: 14px; }
+        /* Env-table keys are the widest fixed strings on the page; let them wrap
+           instead of forcing the table past the viewport. */
+        .env-table td:first-child { white-space: normal; overflow-wrap: anywhere; padding-right: 12px; }
       }
     </style>
   </head>
@@ -308,7 +349,7 @@
     </section>
 
     <!-- ── Install ── -->
-    <section id="install" class="section-border" style="padding: 96px 0;">
+    <section id="install" class="section-border section-pad">
       <div class="section">
         <div class="split">
           <div>
@@ -355,7 +396,7 @@ make ci       <span class="dim"># Full CI gate</span></pre>
     </section>
 
     <!-- ── Quickstart ── -->
-    <section id="quickstart" class="section-border" style="padding: 96px 0;">
+    <section id="quickstart" class="section-border section-pad">
       <div class="section">
         <div class="split">
           <div>
@@ -405,7 +446,7 @@ gccli activities list --limit 5</pre>
     </section>
 
     <!-- ── Features ── -->
-    <section id="features" class="section-border" style="padding: 96px 0;">
+    <section id="features" class="section-border section-pad">
       <div class="section">
         <h2 class="section-title">Features</h2>
         <p class="section-desc">Comprehensive Garmin Connect coverage with consistent CLI patterns and clean output.</p>
@@ -500,7 +541,7 @@ gccli activities list --limit 5</pre>
     </section>
 
     <!-- ── Agents ── -->
-    <section id="agents" class="section-border" style="padding: 96px 0;">
+    <section id="agents" class="section-border section-pad">
       <div class="section">
         <h2 class="section-title">Agent &amp; AI Assistant Integration</h2>
         <p class="section-desc">gccli ships a bundled <strong>agent skill</strong> that teaches an AI assistant its full command surface. Ask in plain language and let the agent drive the CLI.</p>
@@ -525,7 +566,7 @@ gccli activities list --limit 5</pre>
             </div>
           </div>
           <div>
-            <div class="features-grid" style="grid-template-columns: 1fr 1fr; margin-top: 0;">
+            <div class="features-grid agents-grid" style="margin-top: 0;">
               <div class="feature-card fade-in">
                 <div class="feature-icon blue">&#x1f916;</div>
                 <h3>Claude Code</h3>
@@ -561,7 +602,7 @@ gccli activities list --limit 5</pre>
     </section>
 
     <!-- ── Commands ── -->
-    <section id="commands" class="section-border" style="padding: 96px 0;">
+    <section id="commands" class="section-border section-pad">
       <div class="section">
         <h2 class="section-title">Commands</h2>
         <p class="section-desc">Click a group to expand. Every command supports <code style="padding:2px 6px;border-radius:6px;background:var(--surface);font-size:12px;color:var(--fg);border:1px solid var(--border);">--json</code>, <code style="padding:2px 6px;border-radius:6px;background:var(--surface);font-size:12px;color:var(--fg);border:1px solid var(--border);">--plain</code>, and <code style="padding:2px 6px;border-radius:6px;background:var(--surface);font-size:12px;color:var(--fg);border:1px solid var(--border);">--help</code>.</p>
@@ -767,7 +808,7 @@ gccli activities list --limit 5</pre>
     </section>
 
     <!-- ── Configuration ── -->
-    <section id="config" class="section-border" style="padding: 96px 0;">
+    <section id="config" class="section-border section-pad">
       <div class="section">
         <h2 class="section-title">Configuration</h2>
         <p class="section-desc">Environment variables, config file, and global flags.</p>
@@ -831,7 +872,7 @@ gccli activities list --limit 5</pre>
     </section>
 
     <!-- ── Examples ── -->
-    <section id="examples" class="section-border" style="padding: 96px 0;">
+    <section id="examples" class="section-border section-pad">
       <div class="section">
         <h2 class="section-title">Examples</h2>
         <p class="section-desc">Real-world scripts and one-liners you'll use daily.</p>
@@ -893,7 +934,7 @@ gccli activity download "$latest" --format fit</pre>
     </section>
 
     <!-- ── Architecture ── -->
-    <section id="architecture" class="section-border" style="padding: 96px 0;">
+    <section id="architecture" class="section-border section-pad">
       <div class="section">
         <h2 class="section-title">Architecture</h2>
         <p class="section-desc">Clean layered design with function-variable DI and context-based injection.</p>
@@ -937,7 +978,7 @@ gccli activity download "$latest" --format fit</pre>
           Built by <a href="https://github.com/bpauli">Burkhard Pauli</a> &middot; <a href="https://github.com/bpauli/gccli/blob/main/LICENSE">MIT License</a> &middot; Built with Go
         </div>
       </div>
-      <div style="max-width: 1120px; margin: 16px auto 0; padding: 0 24px; font-size: 12px; color: var(--fg-muted);">
+      <div style="max-width: 1120px; margin: 16px auto 0; padding: 0 var(--gutter); font-size: 12px; color: var(--fg-muted);">
         Not affiliated with Garmin. Garmin and Garmin Connect are trademarks of Garmin Ltd. or its subsidiaries.
       </div>
     </footer>
