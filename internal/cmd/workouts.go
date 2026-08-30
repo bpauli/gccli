@@ -15,6 +15,7 @@ type WorkoutsCmd struct {
 	Detail   WorkoutDetailCmd   `cmd:"" help:"View workout details."`
 	Download WorkoutDownloadCmd `cmd:"" help:"Download workout as FIT file."`
 	Upload   WorkoutUploadCmd   `cmd:"" help:"Upload workout from JSON file."`
+	Update   WorkoutUpdateCmd   `cmd:"" help:"Update an existing workout from a JSON file."`
 	Create   WorkoutCreateCmd   `cmd:"" help:"Create a workout with sport type and optional targets."`
 	Schedule WorkoutScheduleCmd `cmd:"" help:"Manage scheduled workouts."`
 	Delete   WorkoutDeleteCmd   `cmd:"" help:"Delete a workout."`
@@ -135,6 +136,41 @@ func (c *WorkoutUploadCmd) Run(g *Globals) error {
 	}
 
 	g.UI.Successf("Uploaded workout from %s", c.File)
+	return nil
+}
+
+// WorkoutUpdateCmd updates an existing workout from a JSON file.
+type WorkoutUpdateCmd struct {
+	ID   string `arg:"" help:"Workout ID to update."`
+	File string `arg:"" help:"Path to workout JSON file." type:"existingfile"`
+}
+
+func (c *WorkoutUpdateCmd) Run(g *Globals) error {
+	client, err := resolveClient(g)
+	if err != nil {
+		return err
+	}
+
+	jsonData, err := os.ReadFile(c.File)
+	if err != nil {
+		return fmt.Errorf("read file: %w", err)
+	}
+
+	// Validate that the file contains valid JSON.
+	if !json.Valid(jsonData) {
+		return fmt.Errorf("invalid JSON in %s", c.File)
+	}
+
+	data, err := client.UpdateWorkout(g.Context, c.ID, jsonData)
+	if err != nil {
+		return fmt.Errorf("update workout: %w", err)
+	}
+
+	if outfmt.IsJSON(g.Context) {
+		return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+	}
+
+	g.UI.Successf("Updated workout %s from %s", c.ID, c.File)
 	return nil
 }
 
