@@ -442,23 +442,22 @@ func TestUpdateWorkout_Success(t *testing.T) {
 		if payload["workoutName"] != "Updated Workout" {
 			t.Errorf("workoutName = %v, want Updated Workout", payload["workoutName"])
 		}
+		// The body must name the same workout as the path.
+		if payload["workoutId"] != float64(42) {
+			t.Errorf("workoutId = %v, want 42", payload["workoutId"])
+		}
 
-		_, _ = w.Write([]byte(`{"workoutId":42,"workoutName":"Updated Workout"}`))
+		// Garmin answers an update with 204 and no body.
+		w.WriteHeader(http.StatusNoContent)
 	})
 
 	_, client := testServer(t, handler)
-	data, err := client.UpdateWorkout(context.Background(), "42", json.RawMessage(`{"workoutName":"Updated Workout"}`))
+	data, err := client.UpdateWorkout(context.Background(), "42", json.RawMessage(`{"workoutId":42,"workoutName":"Updated Workout"}`))
 	if err != nil {
 		t.Fatalf("UpdateWorkout: %v", err)
 	}
-
-	var got map[string]any
-	if err := json.Unmarshal(data, &got); err != nil {
-		t.Fatalf("unmarshal response: %v", err)
-	}
-	// The workout must keep its original ID so schedules stay intact.
-	if got["workoutId"] != float64(42) {
-		t.Errorf("workoutId = %v, want 42", got["workoutId"])
+	if len(data) != 0 {
+		t.Errorf("data = %s, want empty response", data)
 	}
 }
 
