@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/bpauli/gccli/internal/outfmt"
@@ -146,6 +148,10 @@ type WorkoutUpdateCmd struct {
 }
 
 func (c *WorkoutUpdateCmd) Run(g *Globals) error {
+	if _, err := strconv.ParseInt(c.ID, 10, 64); err != nil {
+		return fmt.Errorf("invalid workout ID: %w", err)
+	}
+
 	client, err := resolveClient(g)
 	if err != nil {
 		return err
@@ -156,12 +162,15 @@ func (c *WorkoutUpdateCmd) Run(g *Globals) error {
 		return fmt.Errorf("read file: %w", err)
 	}
 
-	// Validate that the file contains valid JSON.
-	if !json.Valid(jsonData) {
-		return fmt.Errorf("invalid JSON in %s", c.File)
+	payload, replaced, err := setWorkoutID(jsonData, c.ID)
+	if err != nil {
+		return fmt.Errorf("%s: %w", c.File, err)
+	}
+	if replaced != "" {
+		g.UI.Warnf("Workout JSON has workoutId %s, updating workout %s instead", replaced, c.ID)
 	}
 
-	data, err := client.UpdateWorkout(g.Context, c.ID, jsonData)
+	data, err := client.UpdateWorkout(g.Context, c.ID, payload)
 	if err != nil {
 		return fmt.Errorf("update workout: %w", err)
 	}
@@ -172,6 +181,32 @@ func (c *WorkoutUpdateCmd) Run(g *Globals) error {
 
 	g.UI.Successf("Updated workout %s from %s", c.ID, c.File)
 	return nil
+}
+
+// setWorkoutID returns the payload with workoutId set to workoutID. Garmin
+// resolves the update by the ID in the request path, so the body must carry the
+// same one. A payload written for "workouts upload" has no workoutId at all.
+// The second return value holds the ID that was in the payload when it differed
+// from workoutID, so the caller can warn about the mismatch.
+func setWorkoutID(payload []byte, workoutID string) (json.RawMessage, string, error) {
+	var fields map[string]json.RawMessage
+	if err := json.Unmarshal(payload, &fields); err != nil {
+		return nil, "", fmt.Errorf("invalid JSON workout object: %w", err)
+	}
+
+	var replaced string
+	if existing, ok := fields["workoutId"]; ok {
+		if id := strings.TrimSpace(strings.Trim(string(existing), `"`)); id != workoutID && id != "null" {
+			replaced = id
+		}
+	}
+
+	fields["workoutId"] = json.RawMessage(workoutID)
+	updated, err := json.Marshal(fields)
+	if err != nil {
+		return nil, "", fmt.Errorf("marshal workout: %w", err)
+	}
+	return updated, replaced, nil
 }
 
 // WorkoutScheduleCmd groups schedule subcommands.

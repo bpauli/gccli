@@ -1253,3 +1253,182 @@ func TestWorkoutUpdate_ReadFileError(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 }
+
+// updateCaptureServer records the body of a PUT to /workout-service/workout/{id}.
+func updateCaptureServer(t *testing.T, captured *[]byte) *httptest.Server {
+	t.Helper()
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPut {
+			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			http.Error(w, "read body", http.StatusInternalServerError)
+			return
+		}
+		*captured = body
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write(body)
+	}))
+	t.Cleanup(server.Close)
+	return server
+}
+
+func TestWorkoutUpdate_SetsWorkoutIDFromArgument(t *testing.T) {
+	var captured []byte
+	server := updateCaptureServer(t, &captured)
+
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	overrideNewClient(t, server)
+	storeTestTokens(t, store, "test@example.com", testTokens())
+
+	tmpFile := filepath.Join(t.TempDir(), "workout.json")
+	// A payload written for "workouts upload" carries no workoutId.
+	workoutJSON := `{"workoutName":"Tempo Run v2","sportType":{"sportTypeKey":"running"}}`
+	if err := os.WriteFile(tmpFile, []byte(workoutJSON), 0o644); err != nil {
+		t.Fatalf("write temp file: %v", err)
+	}
+
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
+	cmd := &WorkoutUpdateCmd{ID: "42", File: tmpFile}
+	if err := cmd.Run(g); err != nil {
+		t.Fatalf("expected no error, got: %v", err)
+	}
+
+	var sent map[string]any
+	if err := json.Unmarshal(captured, &sent); err != nil {
+		t.Fatalf("unmarshal sent payload: %v", err)
+	}
+	if sent["workoutId"] != float64(42) {
+		t.Errorf("sent workoutId = %v, want 42", sent["workoutId"])
+	}
+	if sent["workoutName"] != "Tempo Run v2" {
+		t.Errorf("sent workoutName = %v, want Tempo Run v2", sent["workoutName"])
+	}
+	if strings.Contains(buf.String(), "instead") {
+		t.Errorf("expected no mismatch warning, got: %q", buf.String())
+	}
+}
+
+func TestWorkoutUpdate_WarnsOnMismatchedWorkoutID(t *testing.T) {
+	var captured []byte
+	server := updateCaptureServer(t, &captured)
+
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	overrideNewClient(t, server)
+	storeTestTokens(t, store, "test@example.com", testTokens())
+
+	tmpFile := filepath.Join(t.TempDir(), "workout.json")
+	workoutJSON := `{"workoutId":99,"workoutName":"Tempo Run v2"}`
+	if err := os.WriteFile(tmpFile, []byte(workoutJSON), 0o644); err != nil {
+		t.Fatalf("write temp file: %v", err)
+	}
+
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
+	cmd := &WorkoutUpdateCmd{ID: "42", File: tmpFile}
+	if err := cmd.Run(g); err != nil {
+		t.Fatalf("expected no error, got: %v", err)
+	}
+
+	if !strings.Contains(buf.String(), "workoutId 99") {
+		t.Errorf("expected mismatch warning, got: %q", buf.String())
+	}
+
+	// The ID argument wins: the request must target workout 42.
+	var sent map[string]any
+	if err := json.Unmarshal(captured, &sent); err != nil {
+		t.Fatalf("unmarshal sent payload: %v", err)
+	}
+	if sent["workoutId"] != float64(42) {
+		t.Errorf("sent workoutId = %v, want 42", sent["workoutId"])
+	}
+}
+
+func TestWorkoutUpdate_NonNumericID(t *testing.T) {
+	tmpFile := filepath.Join(t.TempDir(), "workout.json")
+	if err := os.WriteFile(tmpFile, []byte(`{}`), 0o644); err != nil {
+		t.Fatalf("write temp file: %v", err)
+	}
+
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
+	cmd := &WorkoutUpdateCmd{ID: "not-an-id", File: tmpFile}
+	err := cmd.Run(g)
+	if err == nil {
+		t.Fatal("expected error, got nil")
+	}
+	if !strings.Contains(err.Error(), "invalid workout ID") {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestWorkoutUpdate_NonObjectJSON(t *testing.T) {
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	storeTestTokens(t, store, "test@example.com", testTokens())
+
+	tmpFile := filepath.Join(t.TempDir(), "workout.json")
+	if err := os.WriteFile(tmpFile, []byte(`[1,2,3]`), 0o644); err != nil {
+		t.Fatalf("write temp file: %v", err)
+	}
+
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
+	cmd := &WorkoutUpdateCmd{ID: "42", File: tmpFile}
+	err := cmd.Run(g)
+	if err == nil {
+		t.Fatal("expected error, got nil")
+	}
+	if !strings.Contains(err.Error(), "invalid JSON") {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestSetWorkoutID(t *testing.T) {
+	tests := []struct {
+		name         string
+		payload      string
+		workoutID    string
+		wantReplaced string
+		wantErr      bool
+	}{
+		{name: "adds missing id", payload: `{"workoutName":"Run"}`, workoutID: "42"},
+		{name: "keeps matching id", payload: `{"workoutId":42}`, workoutID: "42"},
+		{name: "reports different id", payload: `{"workoutId":99}`, workoutID: "42", wantReplaced: "99"},
+		{name: "reports string id", payload: `{"workoutId":"99"}`, workoutID: "42", wantReplaced: "99"},
+		{name: "ignores null id", payload: `{"workoutId":null}`, workoutID: "42"},
+		{name: "rejects array", payload: `[1,2]`, workoutID: "42", wantErr: true},
+		{name: "rejects garbage", payload: `not json`, workoutID: "42", wantErr: true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, replaced, err := setWorkoutID([]byte(tt.payload), tt.workoutID)
+			if tt.wantErr {
+				if err == nil {
+					t.Fatal("expected error, got nil")
+				}
+				return
+			}
+			if err != nil {
+				t.Fatalf("setWorkoutID: %v", err)
+			}
+			if replaced != tt.wantReplaced {
+				t.Errorf("replaced = %q, want %q", replaced, tt.wantReplaced)
+			}
+
+			var fields map[string]any
+			if err := json.Unmarshal(got, &fields); err != nil {
+				t.Fatalf("unmarshal result: %v", err)
+			}
+			if fields["workoutId"] != float64(42) {
+				t.Errorf("workoutId = %v, want 42", fields["workoutId"])
+			}
+		})
+	}
+}
