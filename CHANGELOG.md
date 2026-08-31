@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.0] - 2026-08-31
+
+### Added
+
+- **Workout updates** - `gccli workouts update <id> <file>` replaces an existing workout through `PUT /workout-service/workout/{id}`. The workout keeps its ID and its calendar schedule, so editing no longer means delete plus upload plus re-schedule. (#60)
+
+### Fixed
+
+- `workouts update` writes the ID argument into the payload before sending it. A file written for `workouts upload` carries no `workoutId` and used to reach the server unchanged; a file copied from another workout named that other workout in the body. The ID on the command line now wins, and gccli warns when the file disagrees. A non-numeric ID fails up front instead of returning a 404 from Garmin, and a payload that is not a JSON object is rejected with the file name. (#61)
+- Prevent horizontal overflow on the docs site on mobile.
+
+### Changed
+
+- Bump dependencies in the minor-and-patch group: `github.com/alecthomas/kong` (1.16.0 -> 1.16.1) and `golang.org/x/net` (0.57.0 -> 0.58.0). (#59)
+
+### Docs
+
+- The README, the `gccli` skill and the docs site say that an update is a full replace, not a patch, and point at `gccli workouts detail <id>` for a complete payload. (#61)
+
+### Tests
+
+- E2E coverage for `workouts update` against the live API: the changed payload lands under the original ID, and a scheduled workout keeps its calendar entry across an update. (#61)
+- The mock servers for `PUT /workout-service/workout/{id}` answer 204 with no body, which is what Garmin does. They used to echo the payload back. (#62)
+
 ## [1.9.2] - 2026-08-03
 
 ### Changed
@@ -261,6 +285,7 @@ Initial release of gccli — a fast, script-friendly CLI for Garmin Connect.
 - **CI pipeline** — GitHub Actions for fmt-check, lint, and test
 - **Cross-platform builds** — macOS (amd64/arm64) and Linux (amd64/arm64) via goreleaser
 
+[1.10.0]: https://github.com/bpauli/gccli/releases/tag/v1.10.0
 [1.9.2]: https://github.com/bpauli/gccli/releases/tag/v1.9.2
 [1.9.1]: https://github.com/bpauli/gccli/releases/tag/v1.9.1
 [1.9.0]: https://github.com/bpauli/gccli/releases/tag/v1.9.0
