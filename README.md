@@ -15,7 +15,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Exercise Catalog** — browse Garmin's exercise categories and exercises for strength training
 - **Health Data** — daily summaries, steps, heart rate, resting HR, sleep, stress, HRV, SpO2, respiration, body battery, floors, training readiness/status, VO2max, fitness age, race predictions, endurance/hill scores, intensity minutes, lactate threshold, cycling FTP
 - **Body Composition** — weight tracking, body fat, muscle mass, blood pressure, FIT file encoding for composition uploads
-- **Workouts** — list, view, download as FIT, upload from JSON, create with sport types and targets (pace/HR/power/cadence), schedule (add/list/remove), delete
+- **Workouts** — list, view, download as FIT, upload from JSON, update in place from JSON, create with sport types and targets (pace/HR/power/cadence), schedule (add/list/remove), delete
 - **Courses** — list courses, view favorites, get full course detail, download as FIT/GPX, import GPX files as new courses, send courses directly to a device, delete courses
 - **Devices** — list registered devices, view settings, solar data, alarms, primary/last-used device
 - **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities
@@ -439,6 +439,16 @@ gccli workouts create "Full Body" --type strength \
   --step "run:30m" \
   --step "cooldown:5m"
 ```
+
+**Updating a workout in place.** `gccli workouts update` sends a full replacement, not a patch: whatever the file leaves out is gone from the workout. Start from the current server copy rather than from a hand-written fragment:
+
+```bash
+gccli workouts detail 123456 > workout.json
+# edit workout.json
+gccli workouts update 123456 workout.json
+```
+
+The workout keeps its ID and any calendar entries that point at it. `workoutId` in the file is set from the ID argument before the request goes out, so a payload written for `upload` works as-is; if the file already names a different workout, gccli warns and still updates the one given on the command line.
 
 **Workout JSON structure** for `gccli workouts upload`:
 
