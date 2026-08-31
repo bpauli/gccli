@@ -40,11 +40,8 @@ func workoutsTestServer(t *testing.T) *httptest.Server {
 				http.Error(w, "bad json", http.StatusBadRequest)
 				return
 			}
-			// The workout keeps its original ID on update.
-			payload["workoutId"] = float64(42)
-			resp, _ := json.Marshal(payload)
-			w.Header().Set("Content-Type", "application/json")
-			_, _ = w.Write(resp)
+			// Garmin answers an update with 204 and no body.
+			w.WriteHeader(http.StatusNoContent)
 		case http.MethodDelete:
 			w.WriteHeader(http.StatusNoContent)
 		default:
@@ -1268,8 +1265,7 @@ func updateCaptureServer(t *testing.T, captured *[]byte) *httptest.Server {
 			return
 		}
 		*captured = body
-		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write(body)
+		w.WriteHeader(http.StatusNoContent)
 	}))
 	t.Cleanup(server.Close)
 	return server
