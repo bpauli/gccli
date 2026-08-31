@@ -30,6 +30,12 @@ func (c *Client) UploadWorkout(ctx context.Context, workoutJSON json.RawMessage)
 	return c.ConnectAPI(ctx, http.MethodPost, "/workout-service/workout", bytes.NewReader(workoutJSON))
 }
 
+// UpdateWorkout replaces an existing workout with the given JSON payload.
+// The workout keeps its ID, so any calendar schedule referencing it stays intact.
+func (c *Client) UpdateWorkout(ctx context.Context, workoutID string, workoutJSON json.RawMessage) (json.RawMessage, error) {
+	return c.ConnectAPI(ctx, http.MethodPut, "/workout-service/workout/"+workoutID, bytes.NewReader(workoutJSON))
+}
+
 // ScheduleWorkout schedules a workout on a calendar date.
 func (c *Client) ScheduleWorkout(ctx context.Context, workoutID, date string) (json.RawMessage, error) {
 	body, err := json.Marshal(map[string]string{"date": date})

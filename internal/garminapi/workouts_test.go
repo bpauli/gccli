@@ -418,3 +418,72 @@ func TestDownloadWorkout_401WithRefresh(t *testing.T) {
 		t.Errorf("expected 2 calls, got %d", calls)
 	}
 }
+
+// --- UpdateWorkout tests ---
+
+func TestUpdateWorkout_Success(t *testing.T) {
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/workout-service/workout/42" {
+			t.Errorf("path = %s, want /workout-service/workout/42", r.URL.Path)
+		}
+		if r.Method != http.MethodPut {
+			t.Errorf("method = %s, want PUT", r.Method)
+		}
+
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			t.Fatalf("read body: %v", err)
+		}
+
+		var payload map[string]any
+		if err := json.Unmarshal(body, &payload); err != nil {
+			t.Fatalf("unmarshal body: %v", err)
+		}
+		if payload["workoutName"] != "Updated Workout" {
+			t.Errorf("workoutName = %v, want Updated Workout", payload["workoutName"])
+		}
+
+		_, _ = w.Write([]byte(`{"workoutId":42,"workoutName":"Updated Workout"}`))
+	})
+
+	_, client := testServer(t, handler)
+	data, err := client.UpdateWorkout(context.Background(), "42", json.RawMessage(`{"workoutName":"Updated Workout"}`))
+	if err != nil {
+		t.Fatalf("UpdateWorkout: %v", err)
+	}
+
+	var got map[string]any
+	if err := json.Unmarshal(data, &got); err != nil {
+		t.Fatalf("unmarshal response: %v", err)
+	}
+	// The workout must keep its original ID so schedules stay intact.
+	if got["workoutId"] != float64(42) {
+		t.Errorf("workoutId = %v, want 42", got["workoutId"])
+	}
+}
+
+func TestUpdateWorkout_ServerError(t *testing.T) {
+	handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = w.Write([]byte("error"))
+	})
+
+	_, client := testServer(t, handler)
+	_, err := client.UpdateWorkout(context.Background(), "42", json.RawMessage(`{}`))
+	if err == nil {
+		t.Fatal("expected error")
+	}
+}
+
+func TestUpdateWorkout_NotFound(t *testing.T) {
+	handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusNotFound)
+		_, _ = w.Write([]byte(`{"message":"workout not found"}`))
+	})
+
+	_, client := testServer(t, handler)
+	_, err := client.UpdateWorkout(context.Background(), "999", json.RawMessage(`{}`))
+	if err == nil {
+		t.Fatal("expected error for unknown workout")
+	}
+}

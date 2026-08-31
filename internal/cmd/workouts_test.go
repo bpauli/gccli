@@ -33,6 +33,18 @@ func workoutsTestServer(t *testing.T) *httptest.Server {
 		case http.MethodGet:
 			w.Header().Set("Content-Type", "application/json")
 			_, _ = w.Write([]byte(`{"workoutId":42,"workoutName":"Tempo Run","sportType":{"sportTypeKey":"running"}}`))
+		case http.MethodPut:
+			body, _ := io.ReadAll(r.Body)
+			var payload map[string]any
+			if err := json.Unmarshal(body, &payload); err != nil {
+				http.Error(w, "bad json", http.StatusBadRequest)
+				return
+			}
+			// The workout keeps its original ID on update.
+			payload["workoutId"] = float64(42)
+			resp, _ := json.Marshal(payload)
+			w.Header().Set("Content-Type", "application/json")
+			_, _ = w.Write(resp)
 		case http.MethodDelete:
 			w.WriteHeader(http.StatusNoContent)
 		default:
@@ -131,6 +143,13 @@ func TestExecute_WorkoutsDownloadHelp(t *testing.T) {
 
 func TestExecute_WorkoutsUploadHelp(t *testing.T) {
 	code := Execute([]string{"workouts", "upload", "--help"}, "1.0.0", "abc123", "2024-01-01")
+	if code != 0 {
+		t.Fatalf("expected exit code 0, got %d", code)
+	}
+}
+
+func TestExecute_WorkoutsUpdateHelp(t *testing.T) {
+	code := Execute([]string{"workouts", "update", "--help"}, "1.0.0", "abc123", "2024-01-01")
 	if code != 0 {
 		t.Fatalf("expected exit code 0, got %d", code)
 	}
@@ -1120,5 +1139,117 @@ func TestWorkoutOwner(t *testing.T) {
 				t.Errorf("workoutOwner() = %q, want %q", got, tt.want)
 			}
 		})
+	}
+}
+
+// --- WorkoutUpdateCmd tests ---
+
+func TestWorkoutUpdate_NoAccount(t *testing.T) {
+	tmpFile := filepath.Join(t.TempDir(), "workout.json")
+	if err := os.WriteFile(tmpFile, []byte(`{}`), 0o644); err != nil {
+		t.Fatalf("write temp file: %v", err)
+	}
+
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "")
+	cmd := &WorkoutUpdateCmd{ID: "42", File: tmpFile}
+	err := cmd.Run(g)
+	if err == nil {
+		t.Fatal("expected error, got nil")
+	}
+	if !strings.Contains(err.Error(), "no account specified") {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestWorkoutUpdate_Success(t *testing.T) {
+	server := workoutsTestServer(t)
+	defer server.Close()
+
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	overrideNewClient(t, server)
+	storeTestTokens(t, store, "test@example.com", testTokens())
+
+	tmpFile := filepath.Join(t.TempDir(), "workout.json")
+	workoutJSON := `{"workoutName":"Tempo Run v2","sportType":{"sportTypeKey":"running"}}`
+	if err := os.WriteFile(tmpFile, []byte(workoutJSON), 0o644); err != nil {
+		t.Fatalf("write temp file: %v", err)
+	}
+
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
+	cmd := &WorkoutUpdateCmd{ID: "42", File: tmpFile}
+	if err := cmd.Run(g); err != nil {
+		t.Fatalf("expected no error, got: %v", err)
+	}
+	if !strings.Contains(buf.String(), "Updated workout 42") {
+		t.Fatalf("expected 'Updated workout 42' message, got: %q", buf.String())
+	}
+}
+
+func TestWorkoutUpdate_JSON(t *testing.T) {
+	server := workoutsTestServer(t)
+	defer server.Close()
+
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	overrideNewClient(t, server)
+	storeTestTokens(t, store, "test@example.com", testTokens())
+
+	tmpFile := filepath.Join(t.TempDir(), "workout.json")
+	workoutJSON := `{"workoutName":"Tempo Run v2","sportType":{"sportTypeKey":"running"}}`
+	if err := os.WriteFile(tmpFile, []byte(workoutJSON), 0o644); err != nil {
+		t.Fatalf("write temp file: %v", err)
+	}
+
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
+	cmd := &WorkoutUpdateCmd{ID: "42", File: tmpFile}
+	if err := cmd.Run(g); err != nil {
+		t.Fatalf("expected no error, got: %v", err)
+	}
+}
+
+func TestWorkoutUpdate_InvalidJSON(t *testing.T) {
+	server := workoutsTestServer(t)
+	defer server.Close()
+
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	overrideNewClient(t, server)
+	storeTestTokens(t, store, "test@example.com", testTokens())
+
+	tmpFile := filepath.Join(t.TempDir(), "workout.json")
+	if err := os.WriteFile(tmpFile, []byte("not json at all"), 0o644); err != nil {
+		t.Fatalf("write temp file: %v", err)
+	}
+
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
+	cmd := &WorkoutUpdateCmd{ID: "42", File: tmpFile}
+	err := cmd.Run(g)
+	if err == nil {
+		t.Fatal("expected error, got nil")
+	}
+	if !strings.Contains(err.Error(), "invalid JSON") {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestWorkoutUpdate_ReadFileError(t *testing.T) {
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	storeTestTokens(t, store, "test@example.com", testTokens())
+
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
+	cmd := &WorkoutUpdateCmd{ID: "42", File: filepath.Join(t.TempDir(), "missing.json")}
+	err := cmd.Run(g)
+	if err == nil {
+		t.Fatal("expected error, got nil")
+	}
+	if !strings.Contains(err.Error(), "read file") {
+		t.Fatalf("unexpected error: %v", err)
 	}
 }

@@ -398,6 +398,7 @@ gccli workouts list --limit 20
 gccli workouts detail <id>
 gccli workouts download <id> --output workout.fit
 gccli workouts upload ./workout.json   # See JSON structure below
+gccli workouts update <id> ./workout.json   # Replace an existing workout, keeping its ID
 gccli workouts schedule add <id> <YYYY-MM-DD>
 gccli workouts schedule list <YYYY-MM-DD>
 gccli workouts schedule list --start 2024-06-01 --end 2024-06-30

@@ -94,6 +94,7 @@ Common commands
 - Workout detail: `gccli workouts detail <id>`
 - Download workout (FIT): `gccli workouts download <id> --output workout.fit`
 - Upload workout (JSON): `gccli workouts upload ./workout.json`
+- Update workout (JSON): `gccli workouts update <id> ./workout.json` — replaces the workout in place, keeping its ID and any existing schedule
 - Schedule workout: `gccli workouts schedule add <id> 2024-06-20`
 - List scheduled workouts: `gccli workouts schedule list 2024-06-20`
 - List scheduled workouts in range: `gccli workouts schedule list --start 2024-06-01 --end 2024-06-30`
