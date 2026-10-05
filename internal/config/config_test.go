@@ -243,8 +243,11 @@ func TestRead_ReturnsFileOrZeroValue(t *testing.T) {
 }
 
 func TestWrite_AndRead_RoundTrip(t *testing.T) {
-	// Set HOME to a temp dir so Write() doesn't pollute the real config.
-	t.Setenv("HOME", t.TempDir())
+	// Point both HOME (macOS) and XDG_CONFIG_HOME (Linux, wins over HOME)
+	// at a temp dir so Write() doesn't pollute the real config.
+	tmp := t.TempDir()
+	t.Setenv("HOME", tmp)
+	t.Setenv("XDG_CONFIG_HOME", tmp)
 
 	want := &File{
 		KeyringBackend: "file",
