@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.11.0] - 2026-10-05
+
+### Added
+
+- **Unit system** - Tables and `--plain` output show distance, speed, pace and elevation in the unit system from your Garmin Connect profile. `metric` shows km, km/h, /km and m. `statute_us` shows mi, mph, /mi and ft. `statute_uk` shows mi, mph and /mi, with elevation in m. This applies to `activities list`, `activities search`, `activity <id>` and the `courses` tables. The new global flag `--units`, the env var `GCCLI_UNITS` and the config key `units` pin a system and skip the profile lookup. JSON output does not change. (#65)
+
+### Changed
+
+- Elevation in tables rounds to the nearest metre or foot, as Garmin Connect does. Before, gccli truncated it, so some values go up by 1. (#65)
+- Bump dependencies in the minor-and-patch group: `golang.org/x/net` (0.58.0 -> 0.59.0) and `golang.org/x/term` (0.45.0 -> 0.46.0). Building from source now needs Go 1.26. (#63)
+
+### Docs
+
+- The README, the `gccli` skill and the docs site describe `--units`, `GCCLI_UNITS`, the precedence order, and why scripts that parse `--plain` output should pin a system. (#65)
+
+### Tests
+
+- E2E coverage for `GetMeasurementSystem` against the live API. (#65)
+- Tests isolate the config dir through both `HOME` and `XDG_CONFIG_HOME`. Before, `make test` on Linux with `XDG_CONFIG_HOME` set overwrote the developer's real `~/.config/gccli/config.json`. (#64, #66)
+
 ## [1.10.0] - 2026-08-31
 
 ### Added
@@ -285,6 +305,7 @@ Initial release of gccli — a fast, script-friendly CLI for Garmin Connect.
 - **CI pipeline** — GitHub Actions for fmt-check, lint, and test
 - **Cross-platform builds** — macOS (amd64/arm64) and Linux (amd64/arm64) via goreleaser
 
+[1.11.0]: https://github.com/bpauli/gccli/releases/tag/v1.11.0
 [1.10.0]: https://github.com/bpauli/gccli/releases/tag/v1.10.0
 [1.9.2]: https://github.com/bpauli/gccli/releases/tag/v1.9.2
 [1.9.1]: https://github.com/bpauli/gccli/releases/tag/v1.9.1
