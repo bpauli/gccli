@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/bpauli/gccli/internal/units"
 )
 
 // GetProfile returns the authenticated user's profile settings.
@@ -34,4 +36,26 @@ func (c *Client) GetDisplayName(ctx context.Context) (string, error) {
 		return "", fmt.Errorf("profile settings missing displayName")
 	}
 	return settings.DisplayName, nil
+}
+
+// GetMeasurementSystem returns the unit system from userData.measurementSystem
+// in the user settings. A missing or unknown value is an error.
+func (c *Client) GetMeasurementSystem(ctx context.Context) (units.System, error) {
+	data, err := c.GetUserSettings(ctx)
+	if err != nil {
+		return units.Metric, err
+	}
+
+	var settings struct {
+		UserData struct {
+			MeasurementSystem string `json:"measurementSystem"`
+		} `json:"userData"`
+	}
+	if err := json.Unmarshal(data, &settings); err != nil {
+		return units.Metric, fmt.Errorf("parse user settings: %w", err)
+	}
+	if settings.UserData.MeasurementSystem == "" {
+		return units.Metric, fmt.Errorf("user settings missing userData.measurementSystem")
+	}
+	return units.ParseSystem(settings.UserData.MeasurementSystem)
 }
