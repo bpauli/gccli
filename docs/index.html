@@ -522,6 +522,11 @@ gccli activities list --limit 5</pre>
             <p>View user profile information and account settings.</p>
           </div>
           <div class="feature-card fade-in">
+            <div class="feature-icon orange">&#x1f4cf;</div>
+            <h3>Your Unit System</h3>
+            <p>Tables show km or miles, pace per km or per mile, and elevation in metres or feet, as set in your Garmin Connect profile. Pin one with <code>--units</code>. JSON is never converted.</p>
+          </div>
+          <div class="feature-card fade-in">
             <div class="feature-icon">&#x1f504;</div>
             <h3>Resilient Networking</h3>
             <p>Auto-retry on 429/5xx with exponential backoff, circuit breaker, and automatic OAuth2 token refresh on 401.</p>
@@ -824,6 +829,7 @@ gccli activities list --limit 5</pre>
                 <tr><td>GCCLI_JSON</td><td>Enable JSON output (<code>1</code>, <code>true</code>, <code>yes</code>)</td></tr>
                 <tr><td>GCCLI_PLAIN</td><td>Enable plain/TSV output</td></tr>
                 <tr><td>GCCLI_COLOR</td><td>Color mode: <code>auto</code>, <code>always</code>, <code>never</code></td></tr>
+                <tr><td>GCCLI_UNITS</td><td>Unit system: <code>auto</code>, <code>metric</code>, <code>statute_us</code>, <code>statute_uk</code></td></tr>
                 <tr><td>GCCLI_KEYRING_BACKEND</td><td>Keyring: <code>keychain</code>, <code>secret-service</code>, <code>file</code></td></tr>
               </tbody>
             </table>
@@ -838,6 +844,7 @@ gccli activities list --limit 5</pre>
                 <tr><td>--json, -j</td><td>Output JSON to stdout</td></tr>
                 <tr><td>--plain</td><td>Output stable TSV to stdout</td></tr>
                 <tr><td>--color &lt;mode&gt;</td><td>Color mode: <code>auto</code>, <code>always</code>, <code>never</code></td></tr>
+                <tr><td>--units &lt;system&gt;</td><td>Unit system for table and plain output: <code>auto</code> (default, from the Garmin profile), <code>metric</code> (km, m), <code>statute_us</code> (mi, ft), <code>statute_uk</code> (mi, m). Precedence: flag, <code>GCCLI_UNITS</code>, config <code>"units"</code>, Garmin profile, metric. Pin it for scripts that parse <code>--plain</code>.</td></tr>
                 <tr><td>--version</td><td>Print version information</td></tr>
                 <tr><td>--help</td><td>Show help for any command</td></tr>
               </tbody>
