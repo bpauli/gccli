@@ -9,12 +9,10 @@ import (
 	"strings"
 
 	"github.com/bpauli/gccli/internal/outfmt"
+	"github.com/bpauli/gccli/internal/units"
 )
 
-const (
-	metersPerKm   = 1000.0
-	metersPerMile = 1609.344
-)
+const metersPerKm = 1000.0
 
 // WorkoutCreateCmd creates a workout with configurable sport type and targets.
 type WorkoutCreateCmd struct {
@@ -293,7 +291,7 @@ func parsePaceToMPS(s string, unit string) (float64, error) {
 
 	dist := metersPerKm
 	if unit == "mi" {
-		dist = metersPerMile
+		dist = units.MetersPerMile
 	}
 
 	return dist / totalSecs, nil

@@ -11,6 +11,7 @@ import (
 	"github.com/bpauli/gccli/internal/garminapi"
 	"github.com/bpauli/gccli/internal/garminauth"
 	"github.com/bpauli/gccli/internal/outfmt"
+	"github.com/bpauli/gccli/internal/units"
 )
 
 // sampleActivitiesJSON returns a JSON array of sample activities for testing.
@@ -411,7 +412,7 @@ func TestFormatActivityRows(t *testing.T) {
 		t.Fatalf("parse: %v", err)
 	}
 
-	rows := formatActivityRows(activities)
+	rows := formatActivityRows(units.Metric, activities)
 	if len(rows) != 2 {
 		t.Fatalf("expected 2 rows, got %d", len(rows))
 	}
@@ -447,24 +448,6 @@ func TestFormatActivityRows(t *testing.T) {
 	}
 	if row[5] != "1:01:01" {
 		t.Errorf("expected duration '1:01:01', got %q", row[5])
-	}
-}
-
-func TestFormatDistance(t *testing.T) {
-	tests := []struct {
-		meters float64
-		want   string
-	}{
-		{0, "-"},
-		{1000, "1.00 km"},
-		{5123.45, "5.12 km"},
-		{42195.0, "42.20 km"},
-	}
-	for _, tt := range tests {
-		got := formatDistance(tt.meters)
-		if got != tt.want {
-			t.Errorf("formatDistance(%v) = %q, want %q", tt.meters, got, tt.want)
-		}
 	}
 }
 

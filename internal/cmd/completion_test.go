@@ -5,6 +5,8 @@ import (
 	"testing"
 
 	"github.com/alecthomas/kong"
+
+	"github.com/bpauli/gccli/internal/units"
 )
 
 func newTestParser(t *testing.T) *kong.Kong {
@@ -13,6 +15,7 @@ func newTestParser(t *testing.T) *kong.Kong {
 	parser, err := kong.New(&cli,
 		kong.Name("gccli"),
 		kong.Description("Garmin Connect CLI"),
+		kong.Vars{"units": strings.Join(units.PreferenceNames(), ",")},
 	)
 	if err != nil {
 		t.Fatalf("failed to create parser: %v", err)
@@ -65,7 +68,7 @@ func TestCollectFlags(t *testing.T) {
 		found[f.Long] = true
 	}
 
-	for _, want := range []string{"json", "plain", "color", "account"} {
+	for _, want := range []string{"json", "plain", "color", "account", "units"} {
 		if !found[want] {
 			t.Errorf("expected flag --%s in root flags", want)
 		}
@@ -76,24 +79,31 @@ func TestCollectFlags_EnumValues(t *testing.T) {
 	parser := newTestParser(t)
 	flags := collectFlags(parser.Model.Node)
 
-	for _, f := range flags {
-		if f.Long == "color" {
-			if len(f.Enum) == 0 {
-				t.Fatal("expected enum values for --color flag")
+	wantEnums := map[string][]string{
+		"color": {"auto", "always", "never"},
+		"units": {"auto", "metric", "statute_us", "statute_uk"},
+	}
+	for name, wantValues := range wantEnums {
+		found := false
+		for _, f := range flags {
+			if f.Long != name {
+				continue
 			}
+			found = true
 			enumSet := map[string]bool{}
 			for _, v := range f.Enum {
 				enumSet[v] = true
 			}
-			for _, want := range []string{"auto", "always", "never"} {
+			for _, want := range wantValues {
 				if !enumSet[want] {
-					t.Errorf("expected enum value %q for --color flag", want)
+					t.Errorf("expected enum value %q for --%s flag", want, name)
 				}
 			}
-			return
+		}
+		if !found {
+			t.Errorf("--%s flag not found", name)
 		}
 	}
-	t.Fatal("--color flag not found")
 }
 
 func TestCollectFlags_ShortFlags(t *testing.T) {

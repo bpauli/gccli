@@ -7,6 +7,7 @@ import (
 
 	"github.com/bpauli/gccli/internal/config"
 	"github.com/bpauli/gccli/internal/outfmt"
+	"github.com/bpauli/gccli/internal/units"
 )
 
 // ActivityCmd groups activity detail subcommands.
@@ -59,7 +60,7 @@ func (c *ActivitySummaryCmd) Run(g *Globals) error {
 		return fmt.Errorf("read config: %w", err)
 	}
 
-	rows := formatActivitySummary(activity, cfg.ActivitySummary)
+	rows := formatActivitySummary(resolveUnits(g, client), activity, cfg.ActivitySummary)
 
 	if outfmt.IsPlain(g.Context) {
 		return outfmt.WritePlain(os.Stdout, rows)
@@ -74,7 +75,7 @@ var readConfigFn = config.Read
 // The first 3 rows (NAME, TYPE, DATE) are always shown, followed by
 // type-specific fields resolved from the activity category.
 // Optional overrides allow per-category field customization via config.
-func formatActivitySummary(a map[string]any, overrides map[string][]string) [][]string {
+func formatActivitySummary(sys units.System, a map[string]any, overrides map[string][]string) [][]string {
 	s := summaryDTO(a)
 	category := resolveCategory(a)
 	fields := resolveFields(category, overrides)
@@ -85,7 +86,7 @@ func formatActivitySummary(a map[string]any, overrides map[string][]string) [][]
 		{"DATE", formatDate(jsonString(s, "startTimeLocal"))},
 	}
 	for _, f := range fields {
-		rows = append(rows, []string{f.Label, f.Format(s, a)})
+		rows = append(rows, []string{f.Label, f.Format(s, sys)})
 	}
 	return rows
 }

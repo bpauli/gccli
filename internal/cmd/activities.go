@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/bpauli/gccli/internal/outfmt"
+	"github.com/bpauli/gccli/internal/units"
 )
 
 // ActivitiesCmd groups activity listing and search subcommands.
@@ -45,7 +46,7 @@ func (c *ActivitiesListCmd) Run(g *Globals) error {
 		return err
 	}
 
-	rows := formatActivityRows(activities)
+	rows := formatActivityRows(resolveUnits(g, client), activities)
 	header := activityHeader()
 
 	if outfmt.IsPlain(g.Context) {
@@ -104,7 +105,7 @@ func (c *ActivitiesSearchCmd) Run(g *Globals) error {
 		return err
 	}
 
-	rows := formatActivityRows(activities)
+	rows := formatActivityRows(resolveUnits(g, client), activities)
 	header := activityHeader()
 
 	if outfmt.IsPlain(g.Context) {
@@ -127,7 +128,7 @@ func parseActivities(data json.RawMessage) ([]map[string]any, error) {
 }
 
 // formatActivityRows extracts table rows from activity data.
-func formatActivityRows(activities []map[string]any) [][]string {
+func formatActivityRows(sys units.System, activities []map[string]any) [][]string {
 	rows := make([][]string, 0, len(activities))
 	for _, a := range activities {
 		rows = append(rows, []string{
@@ -135,7 +136,7 @@ func formatActivityRows(activities []map[string]any) [][]string {
 			formatDate(jsonString(a, "startTimeLocal")),
 			activityTypeKey(a),
 			jsonString(a, "activityName"),
-			formatDistance(jsonFloat(a, "distance")),
+			sys.Distance(jsonFloat(a, "distance")),
 			formatDuration(jsonFloat(a, "duration")),
 			formatCalories(jsonFloat(a, "calories")),
 		})
@@ -205,15 +206,6 @@ func formatDate(s string) string {
 	}
 	parts := strings.SplitN(s, " ", 2)
 	return parts[0]
-}
-
-// formatDistance converts meters to km with 2 decimal places.
-func formatDistance(meters float64) string {
-	if meters == 0 {
-		return "-"
-	}
-	km := meters / 1000.0
-	return fmt.Sprintf("%.2f km", km)
 }
 
 // formatDuration converts seconds to HH:MM:SS.

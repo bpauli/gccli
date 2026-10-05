@@ -17,6 +17,7 @@ import (
 	"github.com/bpauli/gccli/internal/secrets"
 	"github.com/bpauli/gccli/internal/testutil"
 	"github.com/bpauli/gccli/internal/ui"
+	"github.com/bpauli/gccli/internal/units"
 )
 
 // memKeyring is a simple in-memory keyring implementation for testing.
@@ -69,7 +70,7 @@ func testGlobals(t *testing.T, buf *bytes.Buffer, mode outfmt.Mode, account stri
 	ctx := context.Background()
 	ctx = outfmt.NewContext(ctx, mode)
 	ctx = ui.NewContext(ctx, u)
-	return &Globals{Context: ctx, UI: u, Account: account}
+	return &Globals{Context: ctx, UI: u, Account: account, Units: units.Pin(units.Metric)}
 }
 
 func overrideLoadSecrets(t *testing.T, store *secrets.Store) {
