@@ -15,6 +15,7 @@ import (
 	"github.com/bpauli/gccli/internal/garminauth"
 	"github.com/bpauli/gccli/internal/outfmt"
 	"github.com/bpauli/gccli/internal/secrets"
+	"github.com/bpauli/gccli/internal/testutil"
 	"github.com/bpauli/gccli/internal/ui"
 )
 
@@ -329,7 +330,7 @@ func TestAuthToken_Expired(t *testing.T) {
 // --- AuthLoginCmd tests ---
 
 func TestAuthLogin_Browser(t *testing.T) {
-	t.Setenv("HOME", t.TempDir())
+	testutil.TempConfigDir(t)
 	store := newTestSecretsStore(t)
 	overrideLoadSecrets(t, store)
 
@@ -370,8 +371,7 @@ func TestAuthLogin_Browser(t *testing.T) {
 }
 
 func TestAuthLogin_SavesDefaultAccount(t *testing.T) {
-	home := t.TempDir()
-	t.Setenv("HOME", home)
+	testutil.TempConfigDir(t)
 	store := newTestSecretsStore(t)
 	overrideLoadSecrets(t, store)
 
@@ -404,7 +404,7 @@ func TestAuthLogin_SavesDefaultAccount(t *testing.T) {
 }
 
 func TestAuthLogin_Headless(t *testing.T) {
-	t.Setenv("HOME", t.TempDir())
+	testutil.TempConfigDir(t)
 	store := newTestSecretsStore(t)
 	overrideLoadSecrets(t, store)
 
@@ -454,7 +454,7 @@ func TestAuthLogin_Headless(t *testing.T) {
 }
 
 func TestAuthLogin_HeadlessBadPassword(t *testing.T) {
-	t.Setenv("HOME", t.TempDir())
+	testutil.TempConfigDir(t)
 	store := newTestSecretsStore(t)
 	overrideLoadSecrets(t, store)
 
@@ -483,7 +483,7 @@ func TestAuthLogin_HeadlessBadPassword(t *testing.T) {
 }
 
 func TestAuthLogin_BrowserError(t *testing.T) {
-	t.Setenv("HOME", t.TempDir())
+	testutil.TempConfigDir(t)
 	store := newTestSecretsStore(t)
 	overrideLoadSecrets(t, store)
 

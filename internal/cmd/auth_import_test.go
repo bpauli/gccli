@@ -9,6 +9,7 @@ import (
 
 	"github.com/bpauli/gccli/internal/garminauth"
 	"github.com/bpauli/gccli/internal/outfmt"
+	"github.com/bpauli/gccli/internal/testutil"
 )
 
 func TestAuthImport_NoInput(t *testing.T) {
@@ -76,7 +77,7 @@ func TestAuthImport_MissingEmail(t *testing.T) {
 }
 
 func TestAuthImport_Success(t *testing.T) {
-	t.Setenv("HOME", t.TempDir())
+	testutil.TempConfigDir(t)
 	store := newTestSecretsStore(t)
 	overrideLoadSecrets(t, store)
 
@@ -110,7 +111,7 @@ func TestAuthImport_Success(t *testing.T) {
 }
 
 func TestAuthImport_FromStdin(t *testing.T) {
-	t.Setenv("HOME", t.TempDir())
+	testutil.TempConfigDir(t)
 	store := newTestSecretsStore(t)
 	overrideLoadSecrets(t, store)
 
@@ -135,7 +136,7 @@ func TestAuthImport_FromStdin(t *testing.T) {
 }
 
 func TestAuthImport_ExpiredWarning(t *testing.T) {
-	t.Setenv("HOME", t.TempDir())
+	testutil.TempConfigDir(t)
 	store := newTestSecretsStore(t)
 	overrideLoadSecrets(t, store)
 
