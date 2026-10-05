@@ -9,6 +9,7 @@ import (
 
 	"github.com/bpauli/gccli/internal/garminapi"
 	"github.com/bpauli/gccli/internal/outfmt"
+	"github.com/bpauli/gccli/internal/units"
 )
 
 // CoursesCmd groups course subcommands.
@@ -45,7 +46,7 @@ func (c *CoursesListCmd) Run(g *Globals) error {
 		return err
 	}
 
-	rows := formatCourseRows(courses)
+	rows := formatCourseRows(resolveUnits(g, client), courses)
 	header := []string{"ID", "NAME", "TYPE", "DISTANCE", "CREATED"}
 
 	if outfmt.IsPlain(g.Context) {
@@ -77,7 +78,7 @@ func (c *CoursesFavoritesCmd) Run(g *Globals) error {
 		return fmt.Errorf("parse favorite courses: %w", err)
 	}
 
-	rows := formatCourseRows(courses)
+	rows := formatCourseRows(resolveUnits(g, client), courses)
 	header := []string{"ID", "NAME", "TYPE", "DISTANCE", "CREATED"}
 
 	if outfmt.IsPlain(g.Context) {
@@ -266,12 +267,13 @@ func (c *CourseImportCmd) Run(g *Globals) error {
 		return fmt.Errorf("parse saved course: %w", err)
 	}
 
+	sys := resolveUnits(g, client)
 	rows := [][]string{{
 		jsonString(result, "courseId"),
 		jsonString(result, "courseName"),
-		formatDistance(jsonFloat(result, "distanceMeter")),
-		formatElevation(jsonFloat(result, "elevationGainMeter")),
-		formatElevation(jsonFloat(result, "elevationLossMeter")),
+		sys.Distance(jsonFloat(result, "distanceMeter")),
+		sys.Elevation(jsonFloat(result, "elevationGainMeter")),
+		sys.Elevation(jsonFloat(result, "elevationLossMeter")),
 	}}
 	header := []string{"ID", "NAME", "DISTANCE", "ELEV GAIN", "ELEV LOSS"}
 
@@ -384,14 +386,14 @@ func parseCourses(data json.RawMessage) ([]map[string]any, error) {
 }
 
 // formatCourseRows extracts table rows from course data.
-func formatCourseRows(courses []map[string]any) [][]string {
+func formatCourseRows(sys units.System, courses []map[string]any) [][]string {
 	rows := make([][]string, 0, len(courses))
 	for _, c := range courses {
 		rows = append(rows, []string{
 			jsonString(c, "courseId"),
 			jsonString(c, "courseName"),
 			courseTypeKey(c),
-			formatDistance(jsonFloat(c, "distanceInMeters")),
+			sys.Distance(jsonFloat(c, "distanceInMeters")),
 			formatDate(jsonString(c, "createdDate")),
 		})
 	}

@@ -29,3 +29,14 @@ func TestGetProfile(t *testing.T) {
 
 	t.Logf("GetProfile returned profile for: %v", profile["displayName"])
 }
+
+func TestGetMeasurementSystem(t *testing.T) {
+	client := AuthenticatedClient(t)
+
+	sys, err := client.GetMeasurementSystem(context.Background())
+	if err != nil {
+		t.Fatalf("GetMeasurementSystem failed: %v", err)
+	}
+
+	t.Logf("GetMeasurementSystem returned %s", sys)
+}

@@ -1,6 +1,10 @@
 package cmd
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/bpauli/gccli/internal/units"
+)
 
 func TestResolveCategory_ParentTypeId(t *testing.T) {
 	tests := []struct {
@@ -182,58 +186,6 @@ func TestResolveFields_UnknownCategoryFallsBackToOther(t *testing.T) {
 	}
 }
 
-func TestFormatSpeed(t *testing.T) {
-	tests := []struct {
-		mps  float64
-		want string
-	}{
-		{0, "-"},
-		{2.778, "10.0 km/h"},
-		{5.556, "20.0 km/h"},
-	}
-	for _, tt := range tests {
-		got := formatSpeed(tt.mps)
-		if got != tt.want {
-			t.Errorf("formatSpeed(%v) = %q, want %q", tt.mps, got, tt.want)
-		}
-	}
-}
-
-func TestFormatPace(t *testing.T) {
-	tests := []struct {
-		mps  float64
-		want string
-	}{
-		{0, "-"},
-		{2.847, "5:51 /km"}, // ~10.25 km/h
-		{4.167, "3:59 /km"}, // ~15 km/h
-		{3.333, "5:00 /km"}, // 12 km/h
-	}
-	for _, tt := range tests {
-		got := formatPace(tt.mps)
-		if got != tt.want {
-			t.Errorf("formatPace(%v) = %q, want %q", tt.mps, got, tt.want)
-		}
-	}
-}
-
-func TestFormatElevation(t *testing.T) {
-	tests := []struct {
-		meters float64
-		want   string
-	}{
-		{0, "-"},
-		{85, "85 m"},
-		{1234.5, "1234 m"},
-	}
-	for _, tt := range tests {
-		got := formatElevation(tt.meters)
-		if got != tt.want {
-			t.Errorf("formatElevation(%v) = %q, want %q", tt.meters, got, tt.want)
-		}
-	}
-}
-
 func TestFormatPower(t *testing.T) {
 	tests := []struct {
 		watts float64
@@ -347,7 +299,7 @@ func TestFormatActivitySummary_CyclingCategory(t *testing.T) {
 		},
 	}
 
-	rows := formatActivitySummary(activity, nil)
+	rows := formatActivitySummary(units.Metric, activity, nil)
 	// 3 fixed + 10 cycling fields
 	if len(rows) != 13 {
 		t.Fatalf("expected 13 rows, got %d", len(rows))
@@ -400,7 +352,7 @@ func TestFormatActivitySummary_StrengthCategory(t *testing.T) {
 		},
 	}
 
-	rows := formatActivitySummary(activity, nil)
+	rows := formatActivitySummary(units.Metric, activity, nil)
 	// 3 fixed + 9 fitness_equipment fields
 	if len(rows) != 12 {
 		t.Fatalf("expected 12 rows, got %d", len(rows))
@@ -449,7 +401,7 @@ func TestFormatActivitySummary_ConfigOverride(t *testing.T) {
 	overrides := map[string][]string{
 		"running": {"distance", "duration", "calories"},
 	}
-	rows := formatActivitySummary(activity, overrides)
+	rows := formatActivitySummary(units.Metric, activity, overrides)
 	// 3 fixed + 3 overridden fields
 	if len(rows) != 6 {
 		t.Fatalf("expected 6 rows, got %d", len(rows))
@@ -488,13 +440,13 @@ func TestFormatActivitySummary_NewFieldConfigOverride(t *testing.T) {
 			"rpe",
 		},
 	}
-	rows := formatActivitySummary(activity, overrides)
+	rows := formatActivitySummary(units.Metric, activity, overrides)
 
 	expected := [][]string{
 		{"NAME", "Morning Run"},
 		{"TYPE", "running"},
 		{"DATE", "2024-06-15"},
-		{"ELEVATION LOSS", "117 m"},
+		{"ELEVATION LOSS", "118 m"},
 		{"AEROBIC TRAINING EFFECT", "3.1"},
 		{"ANAEROBIC TRAINING EFFECT", "0.8"},
 		{"FEEL", "STRONG"},
@@ -517,5 +469,54 @@ func TestFieldRegistry_AllCategoryDefaultKeysExist(t *testing.T) {
 				t.Errorf("category %q references unknown field key %q", cat, k)
 			}
 		}
+	}
+}
+
+func TestFormatActivitySummary_Statute(t *testing.T) {
+	ride := map[string]any{
+		"activityTypeDTO": map[string]any{"typeKey": "road_biking", "parentTypeId": float64(2)},
+		"summaryDTO": map[string]any{
+			"distance":      float64(40000),
+			"averageSpeed":  float64(11.111),
+			"elevationGain": float64(320),
+			"elevationLoss": float64(305),
+		},
+	}
+	run := map[string]any{
+		"activityTypeDTO": map[string]any{"typeKey": "running", "parentTypeId": float64(17)},
+		"summaryDTO": map[string]any{
+			"distance":     float64(5123.45),
+			"averageSpeed": float64(2.847),
+		},
+	}
+
+	tests := []struct {
+		name     string
+		activity map[string]any
+		want     map[string]string
+	}{
+		{"cycling", ride, map[string]string{
+			"DISTANCE":       "24.85 mi",
+			"AVG SPEED":      "24.9 mph",
+			"ELEVATION":      "1050 ft",
+			"ELEVATION LOSS": "1001 ft",
+		}},
+		{"running", run, map[string]string{
+			"DISTANCE": "3.18 mi",
+			"AVG PACE": "9:25 /mi",
+		}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := map[string]string{}
+			for _, row := range formatActivitySummary(units.StatuteUS, tt.activity, nil) {
+				got[row[0]] = row[1]
+			}
+			for label, want := range tt.want {
+				if got[label] != want {
+					t.Errorf("%s = %q, want %q", label, got[label], want)
+				}
+			}
+		})
 	}
 }

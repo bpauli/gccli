@@ -33,6 +33,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Resilient networking** — automatic retry on 429/5xx with exponential backoff, circuit breaker for fault tolerance
 - **Shell completion** — generated scripts for bash, zsh, fish, and PowerShell
 - **Parseable output** — JSON and plain/TSV modes for scripting and automation
+- **Your unit system** - tables show km or miles, pace per km or per mile, and elevation in metres or feet, as set in your Garmin Connect profile; pin one with `--units`
 
 ## Installation
 
@@ -226,6 +227,36 @@ gccli activities list
 - Human-facing messages (errors, warnings, info) go to stderr.
 - Colors are enabled by default in TTY mode and disabled for `--json` and `--plain`.
 
+### Units
+
+Table and plain output show distances, speeds, paces and elevations in the unit system from your Garmin Connect profile. To read it, gccli makes one extra request per command.
+
+| Value | Distance | Speed | Pace | Elevation |
+| --- | --- | --- | --- | --- |
+| `metric` | km | km/h | /km | m |
+| `statute_us` | mi | mph | /mi | ft |
+| `statute_uk` | mi | mph | /mi | m |
+| `auto` (default) | from the Garmin profile | | | |
+
+The unit system is resolved in this order:
+
+1. `--units` flag
+2. `GCCLI_UNITS` environment variable
+3. `"units"` in `config.json`
+4. Garmin profile setting
+5. `metric`
+
+A pinned system (steps 1 to 3) skips the Garmin request. If gccli cannot read the profile setting, it prints a warning and uses metric.
+
+JSON output is never converted. It is the raw Garmin data in meters and meters per second.
+
+Pin a system in scripts that parse `--plain` output. Otherwise the output changes when the Garmin profile setting changes:
+
+```bash
+gccli --units statute_us activities list
+GCCLI_UNITS=metric gccli --plain activities list
+```
+
 ### Config File
 
 Config path:
@@ -239,9 +270,12 @@ Example:
 {
   "default_account": "you@example.com",
   "keyring_backend": "file",
-  "domain": "garmin.com"
+  "domain": "garmin.com",
+  "units": "statute_us"
 }
 ```
+
+`units` is optional. Leave it out (or set `auto`) to use the Garmin profile setting.
 
 ### Environment Variables
 
@@ -252,6 +286,7 @@ Example:
 | `GCCLI_JSON` | Enable JSON output (`1`, `true`, `yes`) |
 | `GCCLI_PLAIN` | Enable plain/TSV output (`1`, `true`, `yes`) |
 | `GCCLI_COLOR` | Color mode: `auto`, `always`, `never` |
+| `GCCLI_UNITS` | Unit system: `auto`, `metric`, `statute_us`, `statute_uk` (see [Units](#units)) |
 | `GCCLI_KEYRING_BACKEND` | Keyring backend: `keychain`, `secret-service`, `file` |
 
 ## Security
@@ -771,6 +806,7 @@ All commands support these flags:
 | `--json`, `-j` | Output JSON to stdout |
 | `--plain` | Output stable TSV to stdout |
 | `--color <mode>` | Color mode: `auto`, `always`, `never` (default: `auto`) |
+| `--units <system>` | Unit system for table and plain output: `auto`, `metric`, `statute_us`, `statute_uk` (default: `auto`, from the Garmin profile) |
 | `--version` | Print version information |
 | `--help` | Show help for any command |
 

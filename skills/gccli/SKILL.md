@@ -21,6 +21,7 @@ Output
 - Default: human-friendly tables. Use `--json` / `-j` for JSON, `--plain` for TSV.
 - Data goes to stdout, messages/errors to stderr.
 - Always use `--json` when parsing output programmatically.
+- Tables show distance, speed, pace and elevation in the user's Garmin unit system (`metric`, `statute_us`, or `statute_uk`, which is miles with elevation in metres). Override with `--units <system>` or `GCCLI_UNITS`. JSON is never converted (meters, m/s).
 
 Date shortcuts
 
@@ -194,7 +195,7 @@ gccli activity exercise-sets set <id> \
 Notes
 
 - Set `GCCLI_ACCOUNT=you@example.com` to avoid repeating `--account`.
-- For scripting, use `--json` for JSON output or `--plain` for TSV.
+- For scripting, use `--json` for JSON output or `--plain` for TSV. Pin `--units` when parsing `--plain` output so it does not follow the Garmin profile.
 - Dates support `today`, `yesterday`, `3d`, or `YYYY-MM-DD`.
 - Tokens are stored securely in the OS keyring (macOS Keychain, Linux Secret Service, file fallback).
 - Tokens auto-refresh on 401; automatic retry on 429/5xx with exponential backoff.

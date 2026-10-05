@@ -9,6 +9,7 @@ import (
 
 	"github.com/bpauli/gccli/internal/config"
 	"github.com/bpauli/gccli/internal/outfmt"
+	"github.com/bpauli/gccli/internal/units"
 )
 
 // sampleActivityJSON returns a JSON object for a single activity.
@@ -518,7 +519,7 @@ func TestFormatActivitySummary(t *testing.T) {
 	}
 
 	// Running category includes performance and subjective effort fields.
-	rows := formatActivitySummary(activity, nil)
+	rows := formatActivitySummary(units.Metric, activity, nil)
 	if len(rows) != 13 {
 		t.Fatalf("expected 13 rows (3 fixed + 10 fields), got %d", len(rows))
 	}
@@ -558,7 +559,7 @@ func TestFormatActivitySummary_MissingFields(t *testing.T) {
 	}
 
 	// Falls back to the "other" category.
-	rows := formatActivitySummary(activity, nil)
+	rows := formatActivitySummary(units.Metric, activity, nil)
 	if len(rows) != 12 {
 		t.Fatalf("expected 12 rows (3 fixed + 9 fields), got %d", len(rows))
 	}

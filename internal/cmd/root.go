@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/alecthomas/kong"
 
@@ -11,6 +12,7 @@ import (
 	"github.com/bpauli/gccli/internal/errfmt"
 	"github.com/bpauli/gccli/internal/outfmt"
 	"github.com/bpauli/gccli/internal/ui"
+	"github.com/bpauli/gccli/internal/units"
 )
 
 // Globals holds runtime state injected into command Run methods.
@@ -19,6 +21,7 @@ type Globals struct {
 	UI      *ui.UI
 	Account string
 	Parser  *kong.Kong
+	Units   units.Preference
 }
 
 // CLI is the top-level command structure parsed by Kong.
@@ -66,7 +69,10 @@ func Execute(args []string, version, commit, date string) int {
 			Compact: true,
 		}),
 		kong.Help(colorHelpPrinter),
-		kong.Vars{"version": versionStr},
+		kong.Vars{
+			"version": versionStr,
+			"units":   strings.Join(units.PreferenceNames(), ","),
+		},
 	)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "gccli: %s\n", err)
@@ -119,12 +125,15 @@ func run(parser *kong.Kong, cli *CLI, args []string) (code int) {
 	u := ui.New(colorMode)
 	ctx = ui.NewContext(ctx, u)
 
+	cfg, err := config.Read()
+	if err != nil {
+		cfg = &config.File{}
+	}
+
 	// Resolve account: flag/env → config file default.
 	account := cli.Account
 	if account == "" {
-		if cfg, err := config.Read(); err == nil {
-			account = cfg.Account()
-		}
+		account = cfg.Account()
 	}
 
 	// Inject runtime globals into the command.
@@ -133,6 +142,7 @@ func run(parser *kong.Kong, cli *CLI, args []string) (code int) {
 		UI:      u,
 		Account: account,
 		Parser:  parser,
+		Units:   unitsPreference(cli.Units, cfg, u),
 	}
 
 	if err := kongCtx.Run(g); err != nil {
@@ -141,4 +151,18 @@ func run(parser *kong.Kong, cli *CLI, args []string) (code int) {
 	}
 
 	return 0
+}
+
+func unitsPreference(flag string, cfg *config.File, u *ui.UI) units.Preference {
+	if p, err := units.ParsePreference(flag); err == nil {
+		if _, pinned := p.Pinned(); pinned {
+			return p
+		}
+	}
+	p, err := units.ParsePreference(cfg.Units)
+	if err != nil {
+		u.Warnf("config: ignoring invalid \"units\" value: %v", err)
+		return units.Auto
+	}
+	return p
 }

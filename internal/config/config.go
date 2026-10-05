@@ -23,6 +23,7 @@ type File struct {
 	DomainName      string              `json:"domain,omitempty"`
 	DefaultFormat   string              `json:"default_format,omitempty"`
 	ActivitySummary map[string][]string `json:"activity_summary,omitempty"`
+	Units           string              `json:"units,omitempty"`
 }
 
 // Read loads the configuration from the default config file path.

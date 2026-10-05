@@ -1,79 +1,85 @@
 package cmd
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/bpauli/gccli/internal/units"
+)
 
 // summaryField describes a single field that can appear in an activity summary.
 type summaryField struct {
 	Key    string
 	Label  string
-	Format func(summary, activity map[string]any) string
+	Format func(summary map[string]any, sys units.System) string
 }
 
 // fieldRegistry maps field keys to their definitions.
 var fieldRegistry = map[string]summaryField{
 	"distance": {
 		Key: "distance", Label: "DISTANCE",
-		Format: func(s, _ map[string]any) string { return formatDistance(jsonFloat(s, "distance")) },
+		Format: func(s map[string]any, sys units.System) string { return sys.Distance(jsonFloat(s, "distance")) },
 	},
 	"duration": {
 		Key: "duration", Label: "DURATION",
-		Format: func(s, _ map[string]any) string { return formatDuration(jsonFloat(s, "duration")) },
+		Format: func(s map[string]any, _ units.System) string { return formatDuration(jsonFloat(s, "duration")) },
 	},
 	"avg_speed": {
 		Key: "avg_speed", Label: "AVG SPEED",
-		Format: func(s, _ map[string]any) string { return formatSpeed(jsonFloat(s, "averageSpeed")) },
+		Format: func(s map[string]any, sys units.System) string { return sys.Speed(jsonFloat(s, "averageSpeed")) },
 	},
 	"avg_pace": {
 		Key: "avg_pace", Label: "AVG PACE",
-		Format: func(s, _ map[string]any) string { return formatPace(jsonFloat(s, "averageSpeed")) },
+		Format: func(s map[string]any, sys units.System) string { return sys.Pace(jsonFloat(s, "averageSpeed")) },
 	},
 	"elevation_gain": {
 		Key: "elevation_gain", Label: "ELEVATION",
-		Format: func(s, _ map[string]any) string { return formatElevation(jsonFloat(s, "elevationGain")) },
+		Format: func(s map[string]any, sys units.System) string { return sys.Elevation(jsonFloat(s, "elevationGain")) },
 	},
 	"elevation_loss": {
 		Key: "elevation_loss", Label: "ELEVATION LOSS",
-		Format: func(s, _ map[string]any) string { return formatElevation(jsonFloat(s, "elevationLoss")) },
+		Format: func(s map[string]any, sys units.System) string { return sys.Elevation(jsonFloat(s, "elevationLoss")) },
 	},
 	"avg_power": {
 		Key: "avg_power", Label: "AVG POWER",
-		Format: func(s, _ map[string]any) string { return formatPower(jsonFloat(s, "averagePower")) },
+		Format: func(s map[string]any, _ units.System) string { return formatPower(jsonFloat(s, "averagePower")) },
 	},
 	"avg_hr": {
 		Key: "avg_hr", Label: "AVG HR",
-		Format: func(s, _ map[string]any) string { return formatHeartRate(jsonFloat(s, "averageHR")) },
+		Format: func(s map[string]any, _ units.System) string { return formatHeartRate(jsonFloat(s, "averageHR")) },
 	},
 	"max_hr": {
 		Key: "max_hr", Label: "MAX HR",
-		Format: func(s, _ map[string]any) string { return formatHeartRate(jsonFloat(s, "maxHR")) },
+		Format: func(s map[string]any, _ units.System) string { return formatHeartRate(jsonFloat(s, "maxHR")) },
 	},
 	"calories": {
 		Key: "calories", Label: "CALORIES",
-		Format: func(s, _ map[string]any) string { return formatCalories(jsonFloat(s, "calories")) },
+		Format: func(s map[string]any, _ units.System) string { return formatCalories(jsonFloat(s, "calories")) },
 	},
 	"sets": {
 		Key: "sets", Label: "SETS",
-		Format: func(s, _ map[string]any) string { return formatCount(jsonFloat(s, "activeSets")) },
+		Format: func(s map[string]any, _ units.System) string { return formatCount(jsonFloat(s, "activeSets")) },
 	},
 	"reps": {
 		Key: "reps", Label: "REPS",
-		Format: func(s, _ map[string]any) string { return formatCount(jsonFloat(s, "totalExerciseReps")) },
+		Format: func(s map[string]any, _ units.System) string { return formatCount(jsonFloat(s, "totalExerciseReps")) },
 	},
 	"aerobic_training_effect": {
 		Key: "aerobic_training_effect", Label: "AEROBIC TRAINING EFFECT",
-		Format: func(s, _ map[string]any) string { return formatDecimal(jsonFloat(s, "trainingEffect")) },
+		Format: func(s map[string]any, _ units.System) string { return formatDecimal(jsonFloat(s, "trainingEffect")) },
 	},
 	"anaerobic_training_effect": {
 		Key: "anaerobic_training_effect", Label: "ANAEROBIC TRAINING EFFECT",
-		Format: func(s, _ map[string]any) string { return formatDecimal(jsonFloat(s, "anaerobicTrainingEffect")) },
+		Format: func(s map[string]any, _ units.System) string {
+			return formatDecimal(jsonFloat(s, "anaerobicTrainingEffect"))
+		},
 	},
 	"feel": {
 		Key: "feel", Label: "FEEL",
-		Format: func(s, _ map[string]any) string { return formatWorkoutFeel(s) },
+		Format: func(s map[string]any, _ units.System) string { return formatWorkoutFeel(s) },
 	},
 	"rpe": {
 		Key: "rpe", Label: "RPE",
-		Format: func(s, _ map[string]any) string { return formatRPE(jsonFloat(s, "directWorkoutRpe")) },
+		Format: func(s map[string]any, _ units.System) string { return formatRPE(jsonFloat(s, "directWorkoutRpe")) },
 	},
 }
 
@@ -157,33 +163,6 @@ func resolveFields(category string, overrides map[string][]string) []summaryFiel
 		}
 	}
 	return fields
-}
-
-// formatSpeed converts m/s to km/h.
-func formatSpeed(mps float64) string {
-	if mps == 0 {
-		return "-"
-	}
-	return fmt.Sprintf("%.1f km/h", mps*3.6)
-}
-
-// formatPace converts m/s to min:sec /km.
-func formatPace(mps float64) string {
-	if mps == 0 {
-		return "-"
-	}
-	paceSeconds := 1000.0 / mps
-	mins := int(paceSeconds) / 60
-	secs := int(paceSeconds) % 60
-	return fmt.Sprintf("%d:%02d /km", mins, secs)
-}
-
-// formatElevation formats elevation gain in meters.
-func formatElevation(meters float64) string {
-	if meters == 0 {
-		return "-"
-	}
-	return fmt.Sprintf("%d m", int(meters))
 }
 
 // formatPower formats power in watts.

@@ -3,6 +3,7 @@ package config
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -372,5 +373,27 @@ func TestWriteTo_MarshalError(t *testing.T) {
 	}
 	if got.DomainName != "garmin.com" {
 		t.Errorf("DomainName = %q, want garmin.com", got.DomainName)
+	}
+}
+
+func TestWriteToAndReadFrom_Units(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "config.json")
+
+	if err := WriteTo(&File{Units: "statute_us"}, path); err != nil {
+		t.Fatal(err)
+	}
+	data, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(data), `"units": "statute_us"`) {
+		t.Errorf("config file missing units key:\n%s", data)
+	}
+	got, err := ReadFrom(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.Units != "statute_us" {
+		t.Errorf("Units = %q, want statute_us", got.Units)
 	}
 }
