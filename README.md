@@ -225,6 +225,7 @@ gccli activities list
 - `--plain`: stable TSV on stdout (best for piping).
 - `--json` / `-j`: JSON on stdout (best for scripting).
 - Human-facing messages (errors, warnings, info) go to stderr.
+- Delete commands ask for confirmation in a terminal. Without a terminal (scripts, pipes, agents), they exit with an error unless you pass `--force`.
 - Colors are enabled by default in TTY mode and disabled for `--json` and `--plain`.
 
 ### Units
