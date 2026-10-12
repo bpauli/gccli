@@ -104,21 +104,46 @@ func TestNewClient_DefaultClientRetries5xxForGET(t *testing.T) {
 	}
 }
 
-func TestNewClient_DefaultClientDoesNotRetryPOSTOn5xx(t *testing.T) {
-	srv, calls := scriptedServer(t, "", http.StatusBadGateway, http.StatusOK)
+func TestNewClient_DefaultClientDoesNotRetryWritesOn5xx(t *testing.T) {
+	// AddHydration is a PUT that adds to the day's total, and a DELETE that
+	// worked behind a 502 answers the retry with 404. Only reads are resent.
+	for _, method := range []string{http.MethodPost, http.MethodPatch, http.MethodPut, http.MethodDelete} {
+		t.Run(method, func(t *testing.T) {
+			srv, calls := scriptedServer(t, "", http.StatusBadGateway, http.StatusOK)
+			client := NewClient(testTokens(), WithBaseURL(srv.URL))
+			hookSleep(client, func(_ context.Context, d time.Duration) error {
+				t.Errorf("slept %v, want no sleep", d)
+				return nil
+			})
+
+			_, err := client.ConnectAPI(context.Background(), method, "/api/path", nil)
+			var apiErr *GarminAPIError
+			if !errors.As(err, &apiErr) {
+				t.Fatalf("error = %T (%v), want *GarminAPIError", err, err)
+			}
+			if apiErr.StatusCode != http.StatusBadGateway {
+				t.Errorf("StatusCode = %d, want 502", apiErr.StatusCode)
+			}
+			if got := atomic.LoadInt32(calls); got != 1 {
+				t.Errorf("requests = %d, want 1", got)
+			}
+		})
+	}
+}
+
+func TestNewClient_LongRetryAfterDateIsNotRetried(t *testing.T) {
+	date := time.Now().Add(2 * time.Minute).UTC().Format(http.TimeFormat)
+	srv, calls := scriptedServer(t, date, http.StatusTooManyRequests, http.StatusOK)
 	client := NewClient(testTokens(), WithBaseURL(srv.URL))
 	hookSleep(client, func(_ context.Context, d time.Duration) error {
 		t.Errorf("slept %v, want no sleep", d)
 		return nil
 	})
 
-	_, err := client.ConnectAPI(context.Background(), http.MethodPost, "/api/path", nil)
-	var apiErr *GarminAPIError
-	if !errors.As(err, &apiErr) {
-		t.Fatalf("error = %T (%v), want *GarminAPIError", err, err)
-	}
-	if apiErr.StatusCode != http.StatusBadGateway {
-		t.Errorf("StatusCode = %d, want 502", apiErr.StatusCode)
+	_, err := client.ConnectAPI(context.Background(), http.MethodGet, "/api/path", nil)
+	var rlErr *RateLimitError
+	if !errors.As(err, &rlErr) {
+		t.Fatalf("error = %T (%v), want *RateLimitError", err, err)
 	}
 	if got := atomic.LoadInt32(calls); got != 1 {
 		t.Errorf("requests = %d, want 1", got)
