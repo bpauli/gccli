@@ -11,7 +11,7 @@ type GoalsCmd struct {
 
 // GoalsListCmd lists user goals.
 type GoalsListCmd struct {
-	Status string `help:"Filter by goal status (e.g. active, completed)." default:""`
+	Status string `help:"Goal status: active, future, past." default:"active" enum:"active,future,past"`
 }
 
 func (c *GoalsListCmd) Run(g *Globals) error {

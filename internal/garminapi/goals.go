@@ -7,14 +7,10 @@ import (
 	"net/http"
 )
 
-// GetGoals returns the user's active goals.
-// If status is non-empty, it filters by goal status (e.g. "active", "completed").
+// GetGoals returns the user's goals with the given status ("active", "future" or "past").
+// The goal-service requires a status.
 func (c *Client) GetGoals(ctx context.Context, status string) (json.RawMessage, error) {
-	path := "/goal-service/goal/goals"
-	if status != "" {
-		path += "?status=" + status
-	}
-	return c.ConnectAPI(ctx, http.MethodGet, path, nil)
+	return c.ConnectAPI(ctx, http.MethodGet, "/goal-service/goal/goals?status="+status, nil)
 }
 
 // GetBadgesEarned returns all badges earned by the user.

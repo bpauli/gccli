@@ -127,7 +127,7 @@ Common commands
 - Gear defaults: `gccli gear defaults`
 - Link gear: `gccli gear link <uuid> <activity-id>`
 - Unlink gear: `gccli gear unlink <uuid> <activity-id>`
-- Goals: `gccli goals list --status active`
+- Goals: `gccli goals list` (active by default, `--status active|future|past`)
 - Earned badges: `gccli badges earned`
 - Available badges: `gccli badges available`
 - In-progress badges: `gccli badges in-progress`

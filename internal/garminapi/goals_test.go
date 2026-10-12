@@ -15,11 +15,14 @@ func TestGetGoals_Success(t *testing.T) {
 		if r.URL.Path != "/goal-service/goal/goals" {
 			t.Errorf("path = %s, want /goal-service/goal/goals", r.URL.Path)
 		}
+		if r.URL.Query().Get("status") != "active" {
+			t.Errorf("status = %s, want active", r.URL.Query().Get("status"))
+		}
 		_, _ = w.Write([]byte(`[{"id":1,"goalType":"steps","targetValue":10000}]`))
 	})
 
 	_, client := testServer(t, handler)
-	data, err := client.GetGoals(context.Background(), "")
+	data, err := client.GetGoals(context.Background(), "active")
 	if err != nil {
 		t.Fatalf("GetGoals: %v", err)
 	}
@@ -36,32 +39,6 @@ func TestGetGoals_Success(t *testing.T) {
 	}
 }
 
-func TestGetGoals_WithStatus(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/goal-service/goal/goals" {
-			t.Errorf("path = %s, want /goal-service/goal/goals", r.URL.Path)
-		}
-		if r.URL.Query().Get("status") != "active" {
-			t.Errorf("status = %s, want active", r.URL.Query().Get("status"))
-		}
-		_, _ = w.Write([]byte(`[{"id":1,"goalType":"steps","status":"active"}]`))
-	})
-
-	_, client := testServer(t, handler)
-	data, err := client.GetGoals(context.Background(), "active")
-	if err != nil {
-		t.Fatalf("GetGoals: %v", err)
-	}
-
-	var result []map[string]any
-	if err := json.Unmarshal(data, &result); err != nil {
-		t.Fatalf("unmarshal: %v", err)
-	}
-	if len(result) != 1 {
-		t.Fatalf("expected 1 goal, got %d", len(result))
-	}
-}
-
 func TestGetGoals_ServerError(t *testing.T) {
 	handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -69,7 +46,7 @@ func TestGetGoals_ServerError(t *testing.T) {
 	})
 
 	_, client := testServer(t, handler)
-	_, err := client.GetGoals(context.Background(), "")
+	_, err := client.GetGoals(context.Background(), "active")
 	if err == nil {
 		t.Fatal("expected error")
 	}
