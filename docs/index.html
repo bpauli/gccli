@@ -341,7 +341,7 @@
               <div class="terminal-meta-item"><div class="terminal-meta-label">Output</div><div class="terminal-meta-value">tables / <code>--json</code></div></div>
               <div class="terminal-meta-item"><div class="terminal-meta-label">Accounts</div><div class="terminal-meta-value">multi-account</div></div>
               <div class="terminal-meta-item"><div class="terminal-meta-label">Secrets</div><div class="terminal-meta-value">OS keyring</div></div>
-              <div class="terminal-meta-item"><div class="terminal-meta-label">Resilience</div><div class="terminal-meta-value">retry</div></div>
+              <div class="terminal-meta-item"><div class="terminal-meta-label">Resilience</div><div class="terminal-meta-value">retry + timeout</div></div>
             </div>
           </div>
         </div>
@@ -529,7 +529,7 @@ gccli activities list --limit 5</pre>
           <div class="feature-card fade-in">
             <div class="feature-icon">&#x1f504;</div>
             <h3>Resilient Networking</h3>
-            <p>Auto-retry on 429/5xx with exponential backoff, and automatic OAuth2 token refresh on 401.</p>
+            <p>Retries 429 up to 3 times within Retry-After, retries 5xx up to 2 times for idempotent calls with exponential backoff, times out after 60 s without response headers, and refreshes OAuth2 tokens on 401.</p>
           </div>
           <div class="feature-card fade-in">
             <div class="feature-icon yellow">&#x2328;</div>

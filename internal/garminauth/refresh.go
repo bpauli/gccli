@@ -4,7 +4,12 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"time"
 )
+
+// refreshTimeout bounds a token refresh made with the default client. The
+// responses are small, so one limit for the whole exchange is enough.
+const refreshTimeout = 60 * time.Second
 
 // RefreshOAuth2 refreshes stored Garmin API credentials.
 // DI OAuth refresh tokens are preferred; legacy OAuth1 refresh remains for
@@ -16,7 +21,7 @@ import (
 func RefreshOAuth2(ctx context.Context, tokens *Tokens, opts LoginOptions) (*Tokens, error) {
 	client := opts.HTTPClient
 	if client == nil {
-		client = &http.Client{}
+		client = &http.Client{Timeout: refreshTimeout}
 	}
 
 	if tokens.DIClientID != "" && tokens.OAuth2RefreshToken != "" {

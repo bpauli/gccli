@@ -39,9 +39,11 @@ func (c *AuthLoginCmd) Run(g *Globals) error {
 	if err != nil {
 		return fmt.Errorf("create cookie jar: %w", err)
 	}
+	retry := garminapi.NewRetryTransport(nil)
+	retry.Retry5xxAnyMethod = true
 	httpClient := &http.Client{
 		Jar:       jar,
-		Transport: garminapi.NewRetryTransport(nil),
+		Transport: retry,
 	}
 
 	opts := garminauth.LoginOptions{

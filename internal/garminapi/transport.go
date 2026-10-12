@@ -11,8 +11,27 @@ import (
 	"time"
 )
 
+// maxRetryAfter is the longest Retry-After wait the transport sits through.
+// A 429 with a longer wait goes back to the caller, which tells the user
+// how long to wait instead of blocking the command silently.
+const maxRetryAfter = 30 * time.Second
+
+// idempotentMethods lists the methods that are safe to send twice. A 5xx
+// after the backend saved a POST or PATCH would otherwise create a duplicate.
+var idempotentMethods = map[string]bool{
+	http.MethodGet:     true,
+	http.MethodHead:    true,
+	http.MethodPut:     true,
+	http.MethodDelete:  true,
+	http.MethodOptions: true,
+}
+
 // RetryTransport wraps an http.RoundTripper and retries requests on
 // 429 (Too Many Requests) and 5xx responses with backoff.
+//
+// A 429 is retried for every method, waiting for the Retry-After header,
+// unless that wait is longer than maxRetryAfter. A 5xx is retried only for
+// idempotent methods unless Retry5xxAnyMethod is set.
 type RetryTransport struct {
 	// Base is the underlying RoundTripper. If nil, http.DefaultTransport is used.
 	Base http.RoundTripper
@@ -23,8 +42,18 @@ type RetryTransport struct {
 	// MaxRetries5xx is the maximum number of retries for 5xx responses. Default: 2.
 	MaxRetries5xx int
 
+	// Retry5xxAnyMethod also retries POST and PATCH on 5xx. Set it only for
+	// requests that are safe to send twice.
+	Retry5xxAnyMethod bool
+
 	// sleepFn is used for testing to override time.Sleep behavior.
 	sleepFn func(ctx context.Context, d time.Duration) error
+}
+
+// retryCount tracks the retries already spent on one request.
+type retryCount struct {
+	on429 int
+	on5xx int
 }
 
 // NewRetryTransport creates a RetryTransport with sensible defaults.
@@ -52,47 +81,49 @@ func (t *RetryTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 		req.Body = io.NopCloser(bytes.NewReader(bodyBytes))
 	}
 
-	var (
-		resp       *http.Response
-		err        error
-		retries429 int
-		retries5xx int
-	)
-
+	var spent retryCount
 	for {
 		if bodyBytes != nil {
 			req.Body = io.NopCloser(bytes.NewReader(bodyBytes))
 		}
 
-		resp, err = t.base().RoundTrip(req)
+		resp, err := t.base().RoundTrip(req)
 		if err != nil {
 			return nil, err
 		}
 
-		if resp.StatusCode == http.StatusTooManyRequests && retries429 < t.maxRetries429() {
-			retries429++
-			delay := parseRetryAfter(resp.Header.Get("Retry-After"))
-			_, _ = io.Copy(io.Discard, resp.Body)
-			_ = resp.Body.Close()
-			if err := t.sleep(req.Context(), delay); err != nil {
-				return nil, err
-			}
-			continue
+		delay, retry := t.retryDelay(req.Method, resp, &spent)
+		if !retry {
+			return resp, nil
 		}
-
-		if resp.StatusCode >= 500 && retries5xx < t.maxRetries5xx() {
-			retries5xx++
-			delay := exponentialBackoff(retries5xx)
-			_, _ = io.Copy(io.Discard, resp.Body)
-			_ = resp.Body.Close()
-			if err := t.sleep(req.Context(), delay); err != nil {
-				return nil, err
-			}
-			continue
+		_, _ = io.Copy(io.Discard, resp.Body)
+		_ = resp.Body.Close()
+		if err := t.sleep(req.Context(), delay); err != nil {
+			return nil, err
 		}
-
-		return resp, nil
 	}
+}
+
+// retryDelay decides whether to send the request again after resp and how
+// long to wait first. It counts the retry in spent when it says yes.
+func (t *RetryTransport) retryDelay(method string, resp *http.Response, spent *retryCount) (time.Duration, bool) {
+	switch {
+	case resp.StatusCode == http.StatusTooManyRequests:
+		delay := parseRetryAfter(resp.Header.Get("Retry-After"))
+		if spent.on429 >= t.maxRetries429() || delay > maxRetryAfter {
+			return 0, false
+		}
+		spent.on429++
+		return delay, true
+	case resp.StatusCode >= 500:
+		safeToResend := t.Retry5xxAnyMethod || idempotentMethods[method]
+		if spent.on5xx >= t.maxRetries5xx() || !safeToResend {
+			return 0, false
+		}
+		spent.on5xx++
+		return exponentialBackoff(spent.on5xx), true
+	}
+	return 0, false
 }
 
 func (t *RetryTransport) base() http.RoundTripper {

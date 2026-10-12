@@ -38,7 +38,7 @@ All three checks (`make fmt`, `make lint`, `make test`) must pass before committ
 ### Key packages
 
 - **`internal/cmd/`** — Kong-based CLI commands. Each command is a struct with `Run(g *Globals) error`. `Globals` holds context, UI, and account info. `resolveClient()` loads tokens from the OS keyring and creates an API client.
-- **`internal/garminapi/`** — HTTP client for Garmin Connect. Returns `json.RawMessage` from API calls (no Go structs for every endpoint). Includes `RetryTransport` (429/5xx retry with backoff). Auto-refreshes OAuth2 tokens on 401.
+- **`internal/garminapi/`** — HTTP client for Garmin Connect. Returns `json.RawMessage` from API calls (no Go structs for every endpoint). All requests go through `RetryTransport` (429 retried for every method within `Retry-After`, 5xx retried for idempotent methods with backoff) over a clone of `http.DefaultTransport` with a 60 s `ResponseHeaderTimeout`. Auto-refreshes OAuth2 tokens on 401.
 - **`internal/garminauth/`** — Garmin SSO authentication. Supports browser-based SSO (local callback server) and headless email/password login with MFA. OAuth1 → OAuth2 exchange flow.
 - **`internal/secrets/`** — OS keyring storage (macOS Keychain, Linux Secret Service, file fallback). Tokens keyed by `gccli:token:{email}`.
 - **`internal/config/`** — Config file paths and env var overrides.
