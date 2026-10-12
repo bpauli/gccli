@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"testing"
+
+	"github.com/bpauli/gccli/internal/garminapi"
 )
 
 func TestAuthRequiredError(t *testing.T) {
@@ -87,69 +89,34 @@ func TestFormat(t *testing.T) {
 		want string
 	}{
 		{
-			name: "auth required with email",
-			err:  &AuthRequiredError{Email: "user@example.com"},
-			want: "No auth found. Run: gccli auth login user@example.com",
-		},
-		{
-			name: "auth required without email",
-			err:  &AuthRequiredError{},
-			want: "No auth found. Run: gccli auth login <email>",
-		},
-		{
 			name: "token expired with email",
-			err:  &TokenExpiredError{Email: "user@example.com"},
+			err:  fmt.Errorf("get goals: %w", &garminapi.TokenExpiredError{Email: "user@example.com"}),
 			want: "Token expired. Run: gccli auth login user@example.com",
 		},
 		{
 			name: "token expired without email",
-			err:  &TokenExpiredError{},
+			err:  &garminapi.TokenExpiredError{},
 			want: "Token expired. Run: gccli auth login <email>",
 		},
 		{
 			name: "rate limited with retry-after",
-			err:  &RateLimitError{RetryAfter: "60s"},
-			want: "Rate limited. Wait 60s and retry.",
+			err:  fmt.Errorf("get goals: %w", &garminapi.RateLimitError{RetryAfter: "60"}),
+			want: "Rate limited. Wait 60 and retry.",
 		},
 		{
 			name: "rate limited without retry-after",
-			err:  &RateLimitError{},
+			err:  &garminapi.RateLimitError{},
 			want: "Rate limited. Wait and retry.",
 		},
 		{
-			name: "api error with message",
-			err:  &GarminAPIError{StatusCode: 404, Message: "activity not found"},
-			want: "Garmin API error (404 Not Found): activity not found",
-		},
-		{
-			name: "api error without message",
-			err:  &GarminAPIError{StatusCode: 503},
-			want: "Garmin API error (503 Service Unavailable)",
+			name: "api error keeps the operation context",
+			err:  fmt.Errorf("get goals: %w", &garminapi.GarminAPIError{StatusCode: 404, Message: "not found"}),
+			want: "get goals: garmin api: 404 Not Found: not found",
 		},
 		{
 			name: "unknown error",
 			err:  errors.New("something went wrong"),
 			want: "something went wrong",
-		},
-		{
-			name: "wrapped auth error",
-			err:  fmt.Errorf("login failed: %w", &AuthRequiredError{Email: "a@b.com"}),
-			want: "No auth found. Run: gccli auth login a@b.com",
-		},
-		{
-			name: "wrapped token error",
-			err:  fmt.Errorf("refresh failed: %w", &TokenExpiredError{Email: "a@b.com"}),
-			want: "Token expired. Run: gccli auth login a@b.com",
-		},
-		{
-			name: "wrapped rate limit error",
-			err:  fmt.Errorf("request failed: %w", &RateLimitError{RetryAfter: "10s"}),
-			want: "Rate limited. Wait 10s and retry.",
-		},
-		{
-			name: "wrapped api error",
-			err:  fmt.Errorf("api call failed: %w", &GarminAPIError{StatusCode: 500, Message: "internal"}),
-			want: "Garmin API error (500 Internal Server Error): internal",
 		},
 	}
 
