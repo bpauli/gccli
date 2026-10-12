@@ -200,7 +200,7 @@ Notes
 - Tokens are stored securely in the OS keyring (macOS Keychain, Linux Secret Service, file fallback).
 - Tokens auto-refresh on 401; automatic retry on 429/5xx with exponential backoff.
 - For Garmin China accounts: `export GCCLI_DOMAIN=garmin.cn`.
-- Confirm before deleting activities/workouts (or use `--force`).
+- Delete commands fail without a terminal unless `--force` is set. Confirm with the user first, then pass `--force`.
 - Download formats: FIT (default), GPX, TCX, KML, CSV.
 - Workout step format: `type:duration[@target:low-high]` — types: warmup, run, recovery, cooldown; targets: pace (min:sec), hr (bpm), power (watts), cadence.
 - `workouts update` replaces the whole workout, so build the file from `gccli workouts detail <id>` and edit it. `workoutId` is set from the ID argument, so an `upload` payload works unchanged.
