@@ -329,7 +329,7 @@ Tokens are keyed by email (`gccli:token:<email>`) and never stored in plaintext 
 gccli auth login <email>               # Log in via browser SSO
 gccli auth login <email> --headless    # Log in via email/password
 gccli auth login <email> --headless --mfa-code <code>  # With MFA
-gccli auth status                      # Show auth state and token expiry
+gccli auth status                      # Show auth state and token expiry (exit 3 if not logged in)
 gccli auth token                       # Print OAuth2 access token
 gccli auth export                      # Export credentials (for transfer to another machine)
 gccli auth import <token>              # Import credentials from another machine

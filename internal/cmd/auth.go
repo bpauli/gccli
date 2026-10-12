@@ -51,8 +51,7 @@ func (c *AuthStatusCmd) Run(g *Globals) error {
 	data, err := store.Get(email)
 	if err != nil {
 		if errors.Is(err, secrets.ErrNotFound) {
-			g.UI.Warnf("No credentials stored for %s", email)
-			return nil
+			return errNoCredentials(email)
 		}
 		return fmt.Errorf("read credentials: %w", err)
 	}
