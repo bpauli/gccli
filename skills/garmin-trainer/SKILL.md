@@ -2,7 +2,7 @@
 name: garmin-trainer
 description: Adaptive 12-week training plan generator using Garmin Connect data. Creates structured workouts and schedules them on your Garmin calendar. Use this skill whenever the user asks about training plans, workout scheduling, race preparation, building fitness for upcoming events, or wants to generate/update their training calendar. Also triggers when the user mentions Garmin training, weekly workouts, taper plans, base building, interval sessions, or periodization.
 homepage: https://github.com/bpauli/gccli
-metadata: {"clawdbot":{"emoji":"🏋️","os":["darwin","linux"],"requires":{"bins":["gccli"]},"install":[{"id":"homebrew","kind":"brew","formula":"bpauli/tap/gccli","bins":["gccli"],"label":"Homebrew (recommended)"},{"id":"source","kind":"source","url":"https://github.com/bpauli/gccli","bins":["gccli"],"label":"Build from source (Go 1.24+)"}]}}
+metadata: {"clawdbot":{"emoji":"🏋️","os":["darwin","linux"],"requires":{"bins":["gccli"]},"install":[{"id":"homebrew","kind":"brew","formula":"bpauli/tap/gccli","bins":["gccli"],"label":"Homebrew (recommended)"},{"id":"source","kind":"source","url":"https://github.com/bpauli/gccli","bins":["gccli"],"label":"Build from source (Go 1.26+)"}]}}
 ---
 
 # Garmin Trainer

@@ -2,7 +2,7 @@
 name: garmin-connect
 description: Garmin Connect CLI for activities, health, body composition, workouts, devices, gear, goals, and more.
 homepage: https://github.com/bpauli/gccli
-metadata: {"clawdbot":{"emoji":"⌚","os":["darwin","linux"],"requires":{"bins":["gccli"]},"install":[{"id":"homebrew","kind":"brew","formula":"bpauli/tap/gccli","bins":["gccli"],"label":"Homebrew (recommended)"},{"id":"source","kind":"source","url":"https://github.com/bpauli/gccli","bins":["gccli"],"label":"Build from source (Go 1.24+)"}]}}
+metadata: {"clawdbot":{"emoji":"⌚","os":["darwin","linux"],"requires":{"bins":["gccli"]},"install":[{"id":"homebrew","kind":"brew","formula":"bpauli/tap/gccli","bins":["gccli"],"label":"Homebrew (recommended)"},{"id":"source","kind":"source","url":"https://github.com/bpauli/gccli","bins":["gccli"],"label":"Build from source (Go 1.26+)"}]}}
 ---
 
 # gccli
@@ -18,7 +18,8 @@ Setup (once)
 
 Output
 
-- Default: human-friendly tables. Use `--json` / `-j` for JSON, `--plain` for TSV.
+- Default: human-friendly tables. Use `--json` / `-j` for JSON.
+- `--plain` prints TSV with no header row, but only for `activities list`, `activities search`, `activities types`, `activity summary`, `courses list`, `courses favorites`, `courses import`, `events list`, `workouts list`, `workouts schedule list` and `exercises list` (without `-c`). Most other commands print JSON in all modes.
 - Data goes to stdout, messages/errors to stderr.
 - Always use `--json` when parsing output programmatically.
 - Tables show distance, speed, pace and elevation in the user's Garmin unit system (`metric`, `statute_us`, or `statute_uk`, which is miles with elevation in metres). Override with `--units <system>` or `GCCLI_UNITS`. JSON is never converted (meters, m/s).
@@ -26,7 +27,9 @@ Output
 Date shortcuts
 
 - `today`, `yesterday`, `3d` (N days ago), `YYYY-MM-DD` (specific date).
-- Use `--start`/`--end` flags for date ranges.
+- Most range commands use `--start`/`--end`.
+- `activities search`, `wellness menstrual-cycle` and `wellness menstrual-summary` use `--start-date`/`--end-date`.
+- In `activities list`, `activities search` and `workouts list`, `--start` is a pagination index, not a date.
 
 Common commands
 
@@ -42,6 +45,8 @@ Common commands
 - Activity summary: `gccli activity summary <id>`
 - Activity details: `gccli activity details <id>`
 - Activity splits: `gccli activity splits <id>`
+- Activity typed splits: `gccli activity typed-splits <id>`
+- Activity split summaries: `gccli activity split-summaries <id>`
 - Activity weather: `gccli activity weather <id>`
 - Activity HR zones: `gccli activity hr-zones <id>`
 - Activity power zones: `gccli activity power-zones <id>`
@@ -51,9 +56,9 @@ Common commands
 - Download activity (FIT): `gccli activity download <id> --format fit`
 - Download activity (GPX): `gccli activity download <id> --format gpx --output track.gpx`
 - Upload activity: `gccli activity upload ./activity.fit`
-- Create manual activity: `gccli activity create --name "Morning Run" --type running --date 2024-06-15T07:30:00 --duration 1800 --distance 5000`
+- Create manual activity: `gccli activity create --name "Morning Run" --type running --date 2024-06-15T07:30:00 --duration 30m --distance 5000`
 - Rename activity: `gccli activity rename <id> "New Name"`
-- Retype activity: `gccli activity retype <id> running`
+- Retype activity: `gccli activity retype <id> --type-id 1 --type-key running`
 - Delete activity: `gccli activity delete <id> --force`
 - Activity types: `gccli activities types`
 - Health summary: `gccli health summary [date]`
@@ -84,13 +89,17 @@ Common commands
 - Intensity minutes: `gccli health intensity-minutes [date]`
 - Weekly intensity minutes: `gccli health intensity-minutes weekly --start 2024-01-01 --end 2024-01-31`
 - Wellness events: `gccli health events [date]`
+- Lifestyle logging: `gccli health lifestyle [date]`
 - Body composition: `gccli body composition [date]`
 - Body composition range: `gccli body composition --start 2024-01-01 --end 2024-01-31`
 - Weigh-ins: `gccli body weigh-ins --start 2024-01-01 --end 2024-01-31`
+- Daily weigh-ins: `gccli body daily-weigh-ins [date]`
 - Add weight: `gccli body add-weight 75.5 --unit kg`
 - Add composition: `gccli body add-composition 75.5 --body-fat 15.2 --muscle-mass 35.0`
+- Delete weigh-in: `gccli body delete-weight <pk> --date 2024-01-15 --force`
 - Blood pressure: `gccli body blood-pressure --start 2024-01-01 --end 2024-01-31`
 - Add blood pressure: `gccli body add-blood-pressure --systolic 120 --diastolic 80 --pulse 65`
+- Delete blood pressure: `gccli body delete-blood-pressure <version> --date 2024-01-15 --force`
 - List workouts: `gccli workouts list --limit 20`
 - Workout detail: `gccli workouts detail <id>`
 - Download workout (FIT): `gccli workouts download <id> --output workout.fit`
@@ -144,6 +153,7 @@ Common commands
 - Training plans: `gccli training plans --locale en`
 - Training plan detail: `gccli training plan <id>`
 - Menstrual cycle: `gccli wellness menstrual-cycle --start-date 2024-01-01 --end-date 2024-03-31`
+- Menstrual summary: `gccli wellness menstrual-summary --start-date 2024-01-01 --end-date 2024-03-31`
 - Pregnancy summary: `gccli wellness pregnancy-summary`
 - List events: `gccli events list`
 - List events from date: `gccli events list --start 2024-06-01 --limit 50`
@@ -154,6 +164,7 @@ Common commands
 - List exercise categories: `gccli exercises list`
 - List exercises in category: `gccli exercises list -c BENCH_PRESS`
 - List exercises (JSON): `gccli exercises list --json`
+- Shell completion: `gccli completion bash` (or `zsh`, `fish`, `powershell`)
 
 Strength training workflow (LLM-assisted exercise matching)
 
@@ -195,9 +206,9 @@ gccli activity exercise-sets set <id> \
 Notes
 
 - Set `GCCLI_ACCOUNT=you@example.com` to avoid repeating `--account`.
-- For scripting, use `--json` for JSON output or `--plain` for TSV. Pin `--units` when parsing `--plain` output so it does not follow the Garmin profile.
+- For scripting, use `--json`. `--plain` gives TSV only for the commands listed under Output. Pin `--units` when parsing `--plain` output so it does not follow the Garmin profile.
 - Dates support `today`, `yesterday`, `3d`, or `YYYY-MM-DD`.
-- Tokens are stored securely in the OS keyring (macOS Keychain, Linux Secret Service, file fallback).
+- Tokens are stored in the OS keyring (macOS Keychain, Linux Secret Service). The file fallback encrypts tokens with a fixed passphrase built into gccli, so anyone who can read the files can read the tokens.
 - Tokens auto-refresh on 401. A 429 is retried up to 3 times when `Retry-After` is 30 s or less; a longer wait is reported as exit code 5. A 5xx is retried up to 2 times for read requests (GET) only, with exponential backoff. A write that gets a 5xx fails at once; check the state before you run it again. Each API request times out after 60 s without response headers.
 - For Garmin China accounts: `export GCCLI_DOMAIN=garmin.cn`.
 - Exit codes: 1 other error, 2 usage error, 3 login needed (ask the user to run `gccli auth login`), 4 not found, 5 rate limited (wait, then retry). With `--json`, errors are a JSON object on stderr: `{"error":{"code":"...","status":429,"message":"..."}}`.

@@ -7,7 +7,7 @@
 [![Docs](https://img.shields.io/badge/docs-gccli.sh-blue)](https://gccli.sh)
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-support-yellow?logo=buymeacoffee)](https://buymeacoffee.com/mail7j)
 
-Fast, script-friendly CLI for Garmin Connect. Access activities, health data, body composition, workouts, courses, devices, gear, goals, badges, and more. JSON-first output, multiple accounts, and secure credential storage built in.
+Fast, script-friendly CLI for Garmin Connect. Access activities, health data, body composition, workouts, courses, devices, gear, goals, badges, and more. JSON-first output, multiple accounts, and credential storage in the OS keyring.
 
 ## Features
 
@@ -28,7 +28,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Wellness** — menstrual cycle data, pregnancy summary
 - **Agent-ready** - ships a bundled agent skill (`skills/gccli/`) that plugs into AI assistants like Claude Code, Codex, Hermes, and OpenClaw so you can drive Garmin Connect in plain language
 - **Multiple accounts** — manage multiple Garmin accounts via `--account` flag
-- **Secure credential storage** using OS keyring (macOS Keychain, Linux Secret Service, encrypted file fallback)
+- **Credential storage** in the OS keyring (macOS Keychain, Linux Secret Service), with a file fallback (see [Credential Storage](#credential-storage))
 - **Auto-refreshing tokens** — authenticate once, tokens refresh automatically on 401
 - **Resilient networking** - API calls retry on 429 (waits for `Retry-After` up to 30 s, 3 retries max) and read requests (GET) retry on 5xx (2 retries max, exponential backoff); writes are not resent on 5xx; every API request waits at most 60 s for response headers
 - **Shell completion** — generated scripts for bash, zsh, fish, and PowerShell
@@ -45,7 +45,7 @@ brew install bpauli/tap/gccli
 
 ### Build from Source
 
-Requires Go 1.24+.
+Requires Go 1.26 or later.
 
 ```bash
 git clone https://github.com/bpauli/gccli.git
@@ -75,7 +75,7 @@ Help:
 gccli auth login you@example.com
 ```
 
-This opens your browser for Garmin SSO authentication. The DI OAuth tokens are stored securely in your system keyring.
+This opens your browser for Garmin SSO authentication. The DI OAuth tokens are stored in your system keyring.
 
 ### 2. Log In (Headless)
 
@@ -162,7 +162,7 @@ Backends:
 - **auto** (default) — picks the best backend for the platform
 - **keychain** — macOS Keychain
 - **secret-service** — Linux D-Bus (GNOME Keyring, KWallet)
-- **file** — encrypted on-disk keyring (fallback)
+- **file** - on-disk files, encrypted with a fixed passphrase that is built into gccli (see [Credential Storage](#credential-storage))
 
 Set backend via environment variable:
 
@@ -222,11 +222,12 @@ gccli activities list
 ### Output
 
 - Default: human-friendly tables on stdout.
-- `--plain`: stable TSV on stdout (best for piping).
 - `--json` / `-j`: JSON on stdout (best for scripting).
+- `--plain`: tab-separated values on stdout, with no header row. Only these commands print TSV: `activities list`, `activities search`, `activities types`, `activity summary`, `courses list`, `courses favorites`, `courses import`, `events list`, `workouts list`, `workouts schedule list` and `exercises list` (without `--category`). Most other commands that return data print the same JSON in all modes, also without `--json`. `activities count` prints a single number. Use `--json` when a script parses the output.
 - Human-facing messages (errors, warnings, info) go to stderr.
 - Delete commands ask for confirmation in a terminal. Without a terminal (scripts, pipes, agents), they exit with an error unless you pass `--force`.
-- Colors are enabled by default in TTY mode and disabled for `--json` and `--plain`.
+- Tables, TSV and JSON on stdout have no colors. The messages on stderr use colors. The `--help` text uses bold and faint text when stdout is a terminal, and `--color` does not change this.
+- With `--color auto` (the default), gccli uses colors when stderr is a color terminal and neither `NO_COLOR` nor `CI` is set. `--color always` and `--color never` override this detection. `GCCLI_COLOR` sets the mode when you do not give `--color`. `--json` and `--plain` do not change the colors.
 
 ### Exit Codes
 
@@ -247,7 +248,7 @@ With `--json`, a runtime error goes to stderr as one JSON line. Usage errors sta
 
 ### Units
 
-Table and plain output show distances, speeds, paces and elevations in the unit system from your Garmin Connect profile. To read it, gccli makes one extra request per command.
+Six commands convert units in table and plain output: `activities list`, `activities search`, `activity summary`, `courses list`, `courses favorites` and `courses import`. They show distances, speeds, paces and elevations in the unit system from your Garmin Connect profile. To read the profile, each of these commands makes one extra request. It does this only in table or plain mode, and only when the unit system is `auto`.
 
 | Value | Distance | Speed | Pace | Elevation |
 | --- | --- | --- | --- | --- |
@@ -311,15 +312,15 @@ Example:
 
 ### Credential Storage
 
-OAuth tokens are stored securely in your system's keyring:
+OAuth tokens are stored in a keyring backend:
 
 - **macOS**: Keychain Access
 - **Linux**: Secret Service (GNOME Keyring, KWallet)
-- **Fallback**: Encrypted on-disk file store
+- **Fallback**: on-disk file store, encrypted with a fixed passphrase
 
-The CLI uses [github.com/99designs/keyring](https://github.com/99designs/keyring) for secure storage.
+The CLI uses [github.com/99designs/keyring](https://github.com/99designs/keyring) for storage. Tokens are keyed by email (`gccli:token:<email>`).
 
-Tokens are keyed by email (`gccli:token:<email>`) and never stored in plaintext files.
+**The file backend does not protect your tokens.** gccli encrypts each token file with a fixed passphrase that is part of the gccli source code. You cannot set your own passphrase. Anyone who can read the file can decrypt the token. The files are in the `credentials` directory next to `config.json`, with file mode `0600`. Use the macOS Keychain or the Linux Secret Service when you can. If you must use the file backend, protect the `credentials` directory as you would protect a plaintext password file.
 
 ## Commands
 
@@ -733,14 +734,14 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 
 ### Table (default)
 
-Human-readable output with colors:
+Human-readable aligned columns:
 
 ```bash
 $ gccli activities list --limit 3
-ID          NAME                TYPE       DATE
-123456789   Morning Run         running    2024-06-15
-123456780   Evening Walk        walking    2024-06-14
-123456771   Cycling Workout     cycling    2024-06-13
+ID         DATE        TYPE     NAME             DISTANCE  DURATION  CALORIES
+123456789  2024-06-15  running  Morning Run      10.02 km  52:31     712
+123456780  2024-06-14  walking  Evening Walk     3.10 km   38:05     180
+123456771  2024-06-13  cycling  Cycling Workout  42.50 km  1:25:10   950
 ```
 
 ### JSON
@@ -768,13 +769,13 @@ gccli --json activities list --limit 100 | jq '.[] | select(.activityType.typeKe
 
 ### Plain (TSV)
 
-Stable, tab-separated output for scripting:
+Tab-separated values with no header row. Only the commands listed under [Output](#output) print TSV. Most other commands print JSON, also with `--plain`.
 
 ```bash
 $ gccli --plain activities list --limit 3
-123456789	Morning Run	running	2024-06-15
-123456780	Evening Walk	walking	2024-06-14
-123456771	Cycling Workout	cycling	2024-06-13
+123456789	2024-06-15	running	Morning Run	10.02 km	52:31	712
+123456780	2024-06-14	walking	Evening Walk	3.10 km	38:05	180
+123456771	2024-06-13	cycling	Cycling Workout	42.50 km	1:25:10	950
 ```
 
 ## Examples
@@ -822,7 +823,7 @@ All commands support these flags:
 | --- | --- |
 | `--account <email>` | Account to use (overrides `GCCLI_ACCOUNT` and config default) |
 | `--json`, `-j` | Output JSON to stdout |
-| `--plain` | Output stable TSV to stdout |
+| `--plain` | Output TSV to stdout (only some commands, see [Output](#output)) |
 | `--color <mode>` | Color mode: `auto`, `always`, `never` (default: `auto`) |
 | `--units <system>` | Unit system for table and plain output: `auto`, `metric`, `statute_us`, `statute_uk` (default: `auto`, from the Garmin profile) |
 | `--version` | Print version information |

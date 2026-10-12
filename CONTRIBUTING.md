@@ -4,7 +4,7 @@ Thank you for your interest in contributing to gccli! This guide will help you g
 
 ## Prerequisites
 
-- [Go](https://go.dev/dl/) 1.23 or later
+- [Go](https://go.dev/dl/) 1.26 or later
 - [Make](https://www.gnu.org/software/make/)
 - Git
 
