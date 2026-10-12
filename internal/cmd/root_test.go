@@ -2,6 +2,10 @@ package cmd
 
 import (
 	"bytes"
+	"io"
+	"net/http"
+	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 
@@ -106,5 +110,54 @@ func TestTableWriter(t *testing.T) {
 	tw := TableWriter()
 	if tw == nil {
 		t.Fatal("expected non-nil tabwriter")
+	}
+}
+
+func captureStderr(t *testing.T, fn func()) string {
+	t.Helper()
+	r, w, err := os.Pipe()
+	if err != nil {
+		t.Fatal(err)
+	}
+	orig := os.Stderr
+	os.Stderr = w
+	t.Cleanup(func() { os.Stderr = orig })
+
+	done := make(chan string)
+	go func() {
+		b, _ := io.ReadAll(r)
+		done <- string(b)
+	}()
+	fn()
+	_ = w.Close()
+	os.Stderr = orig
+	return <-done
+}
+
+func TestExecute_RateLimitShowsHint(t *testing.T) {
+	tmp := t.TempDir()
+	t.Setenv("HOME", tmp)
+	t.Setenv("XDG_CONFIG_HOME", tmp)
+
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Retry-After", "30")
+		w.WriteHeader(http.StatusTooManyRequests)
+	}))
+	defer server.Close()
+
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	overrideNewClient(t, server)
+	storeTestTokens(t, store, "test@example.com", testTokens())
+
+	var code int
+	stderr := captureStderr(t, func() {
+		code = Execute([]string{"--color", "never", "--account", "test@example.com", "badges", "earned"}, "1.0.0", "abc123", "2024-01-01")
+	})
+	if code == 0 {
+		t.Fatal("exit code = 0, want non-zero")
+	}
+	if want := "Rate limited. Wait 30 and retry."; !strings.Contains(stderr, want) {
+		t.Fatalf("stderr = %q, want it to contain %q", stderr, want)
 	}
 }

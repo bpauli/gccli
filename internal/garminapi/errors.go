@@ -5,18 +5,6 @@ import (
 	"net/http"
 )
 
-// AuthRequiredError indicates no authentication credentials were found.
-type AuthRequiredError struct {
-	Email string
-}
-
-func (e *AuthRequiredError) Error() string {
-	if e.Email != "" {
-		return fmt.Sprintf("no auth found for %s", e.Email)
-	}
-	return "no auth found"
-}
-
 // TokenExpiredError indicates the stored token has expired and could not be refreshed.
 type TokenExpiredError struct {
 	Email string

@@ -54,7 +54,7 @@ All three checks (`make fmt`, `make lint`, `make test`) must pass before committ
 - **Context-based DI:** Output mode and UI are injected via `context.Context` using `outfmt.NewContext()`/`ui.NewContext()` and retrieved with `outfmt.IsJSON(ctx)`/`ui.FromContext(ctx)`.
 - **Function variable mocking:** External dependencies are stored as package-level function variables (e.g., `newClientFn`, `loginHeadlessFn`, `refreshTokensFn`) that tests override. No interface-heavy DI.
 - **Output convention:** Parseable output (JSON, TSV) goes to stdout. Human messages (errors, info, warnings) go to stderr via `UI`.
-- **Typed errors:** `AuthRequiredError`, `TokenExpiredError`, `RateLimitError`, `GarminAPIError` — formatted by `errfmt.Format()`.
+- **Typed errors:** `garminapi` defines `TokenExpiredError`, `RateLimitError` and `GarminAPIError`. `errfmt.Format()` adds hints for the first two.
 
 ## Code Style
 
