@@ -3,36 +3,52 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"net/http"
+
+	"github.com/bpauli/gccli/internal/garminapi"
 )
 
-// ExitError wraps an error with a specific process exit code.
-type ExitError struct {
-	Code int
-	Err  error
+// Process exit codes. README.md documents them for scripts.
+const (
+	exitError     = 1
+	exitUsage     = 2
+	exitAuth      = 3
+	exitNotFound  = 4
+	exitRateLimit = 5
+)
+
+// authRequiredError means the account has no usable credentials.
+type authRequiredError struct {
+	msg string
 }
 
-func (e *ExitError) Error() string {
-	if e.Err != nil {
-		return e.Err.Error()
-	}
-	return fmt.Sprintf("exit code %d", e.Code)
+func (e *authRequiredError) Error() string { return e.msg }
+
+func errNoAccount() error {
+	return &authRequiredError{msg: "no account specified; use --account, set GCCLI_ACCOUNT, or run gccli auth login"}
 }
 
-func (e *ExitError) Unwrap() error {
-	return e.Err
+func errNoCredentials(email string) error {
+	return &authRequiredError{msg: fmt.Sprintf("no credentials stored for %s; run: gccli auth login %s", email, email)}
 }
 
-// exitCode returns the appropriate exit code for the given error.
-// Returns 0 for nil, the ExitError code if present, or 1 for all other errors.
+// exitCode returns the process exit code for the given error.
 func exitCode(err error) int {
-	if err == nil {
+	var authErr *authRequiredError
+	var tokenErr *garminapi.TokenExpiredError
+	var rateErr *garminapi.RateLimitError
+	var apiErr *garminapi.GarminAPIError
+	switch {
+	case err == nil:
 		return 0
+	case errors.As(err, &authErr), errors.As(err, &tokenErr):
+		return exitAuth
+	case errors.As(err, &rateErr):
+		return exitRateLimit
+	case errors.As(err, &apiErr) && apiErr.StatusCode == http.StatusNotFound:
+		return exitNotFound
 	}
-	var exitErr *ExitError
-	if errors.As(err, &exitErr) {
-		return exitErr.Code
-	}
-	return 1
+	return exitError
 }
 
 // exitSignal is used internally to intercept Kong's help/version exit calls

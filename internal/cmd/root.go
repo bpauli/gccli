@@ -101,8 +101,10 @@ func run(parser *kong.Kong, cli *CLI, args []string) (code int) {
 
 	kongCtx, err := parser.Parse(args)
 	if err != nil {
+		parser.Stdout = os.Stderr
+		parser.Exit = func(int) { panic(exitSignal{code: exitUsage}) }
 		parser.FatalIfErrorf(err)
-		return 1 // unreachable: FatalIfErrorf panics via exitSignal
+		return exitUsage // unreachable: FatalIfErrorf panics via exitSignal
 	}
 
 	// Determine output mode from flags and env vars.

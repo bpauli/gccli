@@ -16,7 +16,7 @@ type AuthExportCmd struct{}
 func (c *AuthExportCmd) Run(g *Globals) error {
 	email := g.Account
 	if email == "" {
-		return fmt.Errorf("no account specified; use --account, set GCCLI_ACCOUNT, or run gccli auth login")
+		return errNoAccount()
 	}
 
 	store, err := loadSecretsStore()
@@ -27,7 +27,7 @@ func (c *AuthExportCmd) Run(g *Globals) error {
 	data, err := store.Get(email)
 	if err != nil {
 		if errors.Is(err, secrets.ErrNotFound) {
-			return fmt.Errorf("no credentials stored for %s", email)
+			return errNoCredentials(email)
 		}
 		return fmt.Errorf("read credentials: %w", err)
 	}

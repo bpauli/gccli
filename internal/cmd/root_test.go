@@ -62,35 +62,6 @@ func TestExitCode_Nil(t *testing.T) {
 	}
 }
 
-func TestExitCode_ExitError(t *testing.T) {
-	err := &ExitError{Code: 42}
-	if got := exitCode(err); got != 42 {
-		t.Fatalf("expected 42, got %d", got)
-	}
-}
-
-func TestExitCode_GenericError(t *testing.T) {
-	err := &ExitError{Code: 2, Err: nil}
-	if got := exitCode(err); got != 2 {
-		t.Fatalf("expected 2, got %d", got)
-	}
-}
-
-func TestExitError_Error(t *testing.T) {
-	err := &ExitError{Code: 1, Err: nil}
-	if !strings.Contains(err.Error(), "exit code 1") {
-		t.Fatalf("unexpected error message: %s", err.Error())
-	}
-}
-
-func TestExitError_Unwrap(t *testing.T) {
-	inner := &ExitError{Code: 0}
-	outer := &ExitError{Code: 1, Err: inner}
-	if outer.Unwrap() != inner {
-		t.Fatal("Unwrap did not return inner error")
-	}
-}
-
 func TestPrintNextPageHint(t *testing.T) {
 	var buf bytes.Buffer
 	u := ui.NewWithWriter(&buf, "never")

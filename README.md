@@ -228,6 +228,17 @@ gccli activities list
 - Delete commands ask for confirmation in a terminal. Without a terminal (scripts, pipes, agents), they exit with an error unless you pass `--force`.
 - Colors are enabled by default in TTY mode and disabled for `--json` and `--plain`.
 
+### Exit Codes
+
+| Code | Meaning |
+|---|---|
+| 0 | Success |
+| 1 | Other error |
+| 2 | Usage error (unknown command, flag or value). The usage text goes to stderr. |
+| 3 | Login needed: no account, no stored credentials, or the token expired and could not be refreshed |
+| 4 | Garmin returned 404 Not Found |
+| 5 | Garmin rate limit (HTTP 429) |
+
 ### Units
 
 Table and plain output show distances, speeds, paces and elevations in the unit system from your Garmin Connect profile. To read it, gccli makes one extra request per command.
