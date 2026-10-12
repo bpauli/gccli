@@ -316,6 +316,8 @@ func TestParseRetryAfter(t *testing.T) {
 		{"1", time.Second},
 		{"5", 5 * time.Second},
 		{"60", 60 * time.Second},
+		{"Wed, 21 Oct 2015 07:28:00 GMT", time.Second},
+		{"Wed, 99 Foo 2015 07:28:00 GMT", time.Second},
 	}
 
 	for _, tt := range tests {
@@ -371,5 +373,12 @@ func TestContextSleep_Cancelled(t *testing.T) {
 	err := contextSleep(ctx, time.Hour)
 	if err != context.Canceled {
 		t.Errorf("error = %v, want context.Canceled", err)
+	}
+}
+
+func TestParseRetryAfter_FutureDate(t *testing.T) {
+	got := parseRetryAfter(time.Now().Add(10 * time.Second).UTC().Format(http.TimeFormat))
+	if got < 8*time.Second || got > 10*time.Second {
+		t.Errorf("parseRetryAfter(date in 10s) = %v, want about 10s", got)
 	}
 }

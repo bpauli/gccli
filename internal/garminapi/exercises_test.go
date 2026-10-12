@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 )
 
 func TestFetchExerciseCatalog_Success(t *testing.T) {
@@ -40,5 +41,40 @@ func TestFetchExerciseCatalog_ServerError(t *testing.T) {
 	_, err := FetchExerciseCatalog(context.Background())
 	if err == nil {
 		t.Fatal("expected error")
+	}
+}
+
+func TestFetchExerciseCatalog_TimesOutWaitingForHeaders(t *testing.T) {
+	origTimeout := responseHeaderTimeout
+	t.Cleanup(func() { responseHeaderTimeout = origTimeout })
+	responseHeaderTimeout = 200 * time.Millisecond
+
+	stop := make(chan struct{})
+	server := httptest.NewServer(http.HandlerFunc(func(_ http.ResponseWriter, r *http.Request) {
+		select {
+		case <-r.Context().Done():
+		case <-stop:
+		}
+	}))
+	t.Cleanup(server.Close)
+	t.Cleanup(func() { close(stop) })
+
+	origURL := fetchExercisesURL
+	fetchExercisesURL = server.URL
+	t.Cleanup(func() { fetchExercisesURL = origURL })
+
+	done := make(chan error, 1)
+	go func() {
+		_, err := FetchExerciseCatalog(context.Background())
+		done <- err
+	}()
+
+	select {
+	case err := <-done:
+		if err == nil {
+			t.Fatal("FetchExerciseCatalog returned nil error, want a timeout error")
+		}
+	case <-time.After(3 * time.Second):
+		t.Fatal("FetchExerciseCatalog still waiting after 3s, want a timeout error")
 	}
 }
