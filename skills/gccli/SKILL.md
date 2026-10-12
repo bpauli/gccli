@@ -198,7 +198,7 @@ Notes
 - For scripting, use `--json` for JSON output or `--plain` for TSV. Pin `--units` when parsing `--plain` output so it does not follow the Garmin profile.
 - Dates support `today`, `yesterday`, `3d`, or `YYYY-MM-DD`.
 - Tokens are stored securely in the OS keyring (macOS Keychain, Linux Secret Service, file fallback).
-- Tokens auto-refresh on 401. A 429 is retried up to 3 times when `Retry-After` is 30 s or less; a longer wait is reported as exit code 5. A 5xx is retried up to 2 times for GET, PUT and DELETE only, with exponential backoff. Each request times out after 60 s without response headers.
+- Tokens auto-refresh on 401. A 429 is retried up to 3 times when `Retry-After` is 30 s or less; a longer wait is reported as exit code 5. A 5xx is retried up to 2 times for read requests (GET) only, with exponential backoff. A write that gets a 5xx fails at once; check the state before you run it again. Each API request times out after 60 s without response headers.
 - For Garmin China accounts: `export GCCLI_DOMAIN=garmin.cn`.
 - Exit codes: 1 other error, 2 usage error, 3 login needed (ask the user to run `gccli auth login`), 4 not found, 5 rate limited (wait, then retry). With `--json`, errors are a JSON object on stderr: `{"error":{"code":"...","status":429,"message":"..."}}`.
 - Delete commands fail without a terminal unless `--force` is set. Confirm with the user first, then pass `--force`.

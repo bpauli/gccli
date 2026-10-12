@@ -16,14 +16,12 @@ import (
 // how long to wait instead of blocking the command silently.
 const maxRetryAfter = 30 * time.Second
 
-// idempotentMethods lists the methods that are safe to send twice. A 5xx
-// after the backend saved a POST or PATCH would otherwise create a duplicate.
-var idempotentMethods = map[string]bool{
-	http.MethodGet:     true,
-	http.MethodHead:    true,
-	http.MethodPut:     true,
-	http.MethodDelete:  true,
-	http.MethodOptions: true,
+// readMethods lists the methods that are resent after a 5xx. Writes are not:
+// a 5xx can come after the backend saved the change, and Garmin's PUT is not
+// always idempotent (AddHydration adds to the day's total).
+var readMethods = map[string]bool{
+	http.MethodGet:  true,
+	http.MethodHead: true,
 }
 
 // RetryTransport wraps an http.RoundTripper and retries requests on
@@ -31,7 +29,7 @@ var idempotentMethods = map[string]bool{
 //
 // A 429 is retried for every method, waiting for the Retry-After header,
 // unless that wait is longer than maxRetryAfter. A 5xx is retried only for
-// idempotent methods unless Retry5xxAnyMethod is set.
+// GET and HEAD unless Retry5xxAnyMethod is set.
 type RetryTransport struct {
 	// Base is the underlying RoundTripper. If nil, http.DefaultTransport is used.
 	Base http.RoundTripper
@@ -42,7 +40,7 @@ type RetryTransport struct {
 	// MaxRetries5xx is the maximum number of retries for 5xx responses. Default: 2.
 	MaxRetries5xx int
 
-	// Retry5xxAnyMethod also retries POST and PATCH on 5xx. Set it only for
+	// Retry5xxAnyMethod also retries writes on 5xx. Set it only for
 	// requests that are safe to send twice.
 	Retry5xxAnyMethod bool
 
@@ -116,7 +114,7 @@ func (t *RetryTransport) retryDelay(method string, resp *http.Response, spent *r
 		spent.on429++
 		return delay, true
 	case resp.StatusCode >= 500:
-		safeToResend := t.Retry5xxAnyMethod || idempotentMethods[method]
+		safeToResend := t.Retry5xxAnyMethod || readMethods[method]
 		if spent.on5xx >= t.maxRetries5xx() || !safeToResend {
 			return 0, false
 		}
@@ -166,17 +164,19 @@ func contextSleep(ctx context.Context, d time.Duration) error {
 	}
 }
 
-// parseRetryAfter parses the Retry-After header value as seconds.
-// Returns a minimum of 1 second if the header is missing or unparseable.
+// parseRetryAfter parses the Retry-After header value as seconds or as an
+// HTTP date. Returns a minimum of 1 second if the header is missing,
+// unparseable or in the past.
 func parseRetryAfter(val string) time.Duration {
-	if val == "" {
-		return time.Second
+	if secs, err := strconv.Atoi(val); err == nil && secs > 0 {
+		return time.Duration(secs) * time.Second
 	}
-	secs, err := strconv.Atoi(val)
-	if err != nil || secs <= 0 {
-		return time.Second
+	if at, err := http.ParseTime(val); err == nil {
+		if d := time.Until(at); d > time.Second {
+			return d
+		}
 	}
-	return time.Duration(secs) * time.Second
+	return time.Second
 }
 
 // exponentialBackoff returns a backoff duration with jitter for retry attempt n (1-based).
