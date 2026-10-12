@@ -239,6 +239,12 @@ gccli activities list
 | 4 | Garmin returned 404 Not Found |
 | 5 | Garmin rate limit (HTTP 429) |
 
+With `--json`, a runtime error goes to stderr as one JSON line. Usage errors stay plain text, because they happen before the flags are parsed. `code` is `error`, `auth_required`, `not_found` or `rate_limited`. `status` is the HTTP status, when there is one:
+
+```json
+{"error":{"code":"rate_limited","status":429,"message":"Rate limited. Wait 30 and retry."}}
+```
+
 ### Units
 
 Table and plain output show distances, speeds, paces and elevations in the unit system from your Garmin Connect profile. To read it, gccli makes one extra request per command.

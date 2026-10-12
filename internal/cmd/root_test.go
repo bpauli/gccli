@@ -233,3 +233,55 @@ func TestExecute_AuthCommandsNeedLogin(t *testing.T) {
 		})
 	}
 }
+
+func TestExecute_JSONModePrintsErrorObject(t *testing.T) {
+	tests := []struct {
+		name   string
+		status int
+		want   string
+	}{
+		{
+			name:   "rate limited",
+			status: http.StatusTooManyRequests,
+			want:   `{"error":{"code":"rate_limited","status":429,"message":"Rate limited. Wait 30 and retry."}}`,
+		},
+		{
+			name:   "not found",
+			status: http.StatusNotFound,
+			want:   `{"error":{"code":"not_found","status":404,"message":"get earned badges: garmin api: 404 Not Found: gone"}}`,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tmp := t.TempDir()
+			t.Setenv("HOME", tmp)
+			t.Setenv("XDG_CONFIG_HOME", tmp)
+
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+				w.Header().Set("Retry-After", "30")
+				w.WriteHeader(tt.status)
+				_, _ = w.Write([]byte("gone"))
+			}))
+			defer server.Close()
+
+			store := newTestSecretsStore(t)
+			overrideLoadSecrets(t, store)
+			overrideNewClient(t, server)
+			storeTestTokens(t, store, "test@example.com", testTokens())
+
+			var code int
+			stdout, stderr := captureOutput(t, func() {
+				code = Execute([]string{"--json", "--account", "test@example.com", "badges", "earned"}, "1.0.0", "abc123", "2024-01-01")
+			})
+			if code == 0 {
+				t.Fatal("exit code = 0, want non-zero")
+			}
+			if stdout != "" {
+				t.Fatalf("stdout = %q, want empty", stdout)
+			}
+			if got := strings.TrimSpace(stderr); got != tt.want {
+				t.Fatalf("stderr = %s\nwant     %s", got, tt.want)
+			}
+		})
+	}
+}

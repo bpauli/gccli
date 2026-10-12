@@ -102,9 +102,9 @@ func run(parser *kong.Kong, cli *CLI, args []string) (code int) {
 	kongCtx, err := parser.Parse(args)
 	if err != nil {
 		parser.Stdout = os.Stderr
-		parser.Exit = func(int) { panic(exitSignal{code: exitUsage}) }
+		parser.Exit = func(int) { panic(exitSignal{code: kindUsage.exit}) }
 		parser.FatalIfErrorf(err)
-		return exitUsage // unreachable: FatalIfErrorf panics via exitSignal
+		return kindUsage.exit // unreachable: FatalIfErrorf panics via exitSignal
 	}
 
 	// Determine output mode from flags and env vars.
@@ -148,7 +148,11 @@ func run(parser *kong.Kong, cli *CLI, args []string) (code int) {
 	}
 
 	if err := kongCtx.Run(g); err != nil {
-		u.Error(fmt.Errorf("%s", errfmt.Format(err)))
+		if mode == outfmt.JSON {
+			writeJSONError(os.Stderr, err)
+		} else {
+			u.Error(fmt.Errorf("%s", errfmt.Format(err)))
+		}
 		return exitCode(err)
 	}
 
