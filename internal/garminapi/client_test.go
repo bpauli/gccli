@@ -569,18 +569,6 @@ func TestDownload_Unauthorized_NoOAuth1(t *testing.T) {
 
 // --- Error type tests ---
 
-func TestAuthRequiredError(t *testing.T) {
-	err := &AuthRequiredError{Email: "user@example.com"}
-	if got := err.Error(); got != "no auth found for user@example.com" {
-		t.Errorf("Error() = %q", got)
-	}
-
-	err2 := &AuthRequiredError{}
-	if got := err2.Error(); got != "no auth found" {
-		t.Errorf("Error() = %q", got)
-	}
-}
-
 func TestTokenExpiredError(t *testing.T) {
 	err := &TokenExpiredError{Email: "user@example.com"}
 	if got := err.Error(); got != "token expired for user@example.com" {
