@@ -27,7 +27,7 @@ var proactiveRefreshFn = garminauth.RefreshOAuth2
 func resolveClient(g *Globals) (*garminapi.Client, error) {
 	email := g.Account
 	if email == "" {
-		return nil, fmt.Errorf("no account specified; use --account, set GCCLI_ACCOUNT, or run gccli auth login")
+		return nil, errNoAccount()
 	}
 
 	store, err := loadSecretsStore()
@@ -38,7 +38,7 @@ func resolveClient(g *Globals) (*garminapi.Client, error) {
 	data, err := store.Get(email)
 	if err != nil {
 		if err == secrets.ErrNotFound {
-			return nil, fmt.Errorf("no credentials stored for %s; run: gccli auth login %s", email, email)
+			return nil, errNoCredentials(email)
 		}
 		return nil, fmt.Errorf("read credentials: %w", err)
 	}
