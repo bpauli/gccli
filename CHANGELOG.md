@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.13.0] - 2026-10-12
+
+### Changed
+
+- **API requests retry and time out** - All API calls now go through a retry transport. Before, only `auth login` retried, and a request had no timeout. (#95, #109)
+  - A 429 is retried up to 3 times when `Retry-After` is 30 s or less. A longer wait fails at once with the "Rate limited" hint and exit code 5. `Retry-After` can be seconds or an HTTP date.
+  - A 5xx is retried up to 2 times with exponential backoff, but only for read requests (GET). A write that gets a 5xx fails at once, because the backend may already have saved it. For example, `hydration add` is a PUT that adds to the day's total, so a retry would log the water twice.
+  - Each request waits at most 60 s for the response headers. Before, a server that accepted the connection and never answered kept the command waiting forever. The body read has no limit, so large downloads still finish.
+  - `exercises list` also gets the retry and the timeout.
+  - A token refresh times out after 60 s.
+- `auth status` now exits with 3 when no credentials are stored for the account. In `--json` mode it prints the JSON error object on stderr. Before, it printed a warning and exited with 0, so a script saw success. A logged-in account still exits with 0, also when the token has expired. (#105, #106)
+
+### Removed
+
+- The unused circuit breaker in `internal/garminapi`. Nothing called it, and in a one-shot CLI its state reset on every run. (#109)
+
+### Docs
+
+- **Token storage** - The docs said tokens are "never stored in plaintext files". The file backend encrypts tokens with a fixed passphrase that is in the gccli source, so anyone who can read the files can read the tokens. The README now says this and recommends the macOS Keychain or the Linux Secret Service. (#98, #108)
+- `--plain` prints TSV in only 11 commands, with no header row. The docs list them. Most other commands print JSON in all modes. (#98, #108)
+- The colors, units, date-flag and Go version (1.26) text now matches the code. Two skill examples that the parser rejected are fixed. 25 commands that were missing from the skill and the docs site are added. (#98, #108)
+- The README, the skill and the docs site describe the retry rules and the timeout, and say that `auth status` exits with 3 when no credentials are stored. (#106, #109)
+
 ## [1.12.0] - 2026-10-12
 
 ### Changed
@@ -323,6 +346,7 @@ Initial release of gccli — a fast, script-friendly CLI for Garmin Connect.
 - **CI pipeline** — GitHub Actions for fmt-check, lint, and test
 - **Cross-platform builds** — macOS (amd64/arm64) and Linux (amd64/arm64) via goreleaser
 
+[1.13.0]: https://github.com/bpauli/gccli/releases/tag/v1.13.0
 [1.12.0]: https://github.com/bpauli/gccli/releases/tag/v1.12.0
 [1.11.0]: https://github.com/bpauli/gccli/releases/tag/v1.11.0
 [1.10.0]: https://github.com/bpauli/gccli/releases/tag/v1.10.0
