@@ -30,7 +30,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Multiple accounts** — manage multiple Garmin accounts via `--account` flag
 - **Secure credential storage** using OS keyring (macOS Keychain, Linux Secret Service, encrypted file fallback)
 - **Auto-refreshing tokens** — authenticate once, tokens refresh automatically on 401
-- **Resilient networking** — automatic retry on 429/5xx with exponential backoff, circuit breaker for fault tolerance
+- **Resilient networking** — automatic retry on 429/5xx with exponential backoff
 - **Shell completion** — generated scripts for bash, zsh, fish, and PowerShell
 - **Parseable output** — JSON and plain/TSV modes for scripting and automation
 - **Your unit system** - tables show km or miles, pace per km or per mile, and elevation in metres or feet, as set in your Garmin Connect profile; pin one with `--units`
