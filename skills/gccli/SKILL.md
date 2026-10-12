@@ -14,7 +14,7 @@ Setup (once)
 - `gccli auth login you@example.com` (opens browser for Garmin SSO)
 - Headless: `gccli auth login you@example.com --headless` (with `--mfa-code <code>` for MFA)
 - Set default account: `export GCCLI_ACCOUNT=you@example.com`
-- Verify: `gccli auth status` (exits 3 when you must log in)
+- Verify: `gccli auth status` (exits 3 when no credentials are stored)
 
 Output
 
