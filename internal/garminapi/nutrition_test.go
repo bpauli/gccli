@@ -21,7 +21,7 @@ func TestGetNutritionDailyFoodLog_Success(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := NewClient(testTokens(), WithBaseURL(server.URL))
+	client := NewClient(testTokens(), WithHTTPClient(server.Client()), WithBaseURL(server.URL))
 	data, err := client.GetNutritionDailyFoodLog(context.Background(), "2024-01-15")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -48,7 +48,7 @@ func TestGetNutritionDailyMeals_Success(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := NewClient(testTokens(), WithBaseURL(server.URL))
+	client := NewClient(testTokens(), WithHTTPClient(server.Client()), WithBaseURL(server.URL))
 	data, err := client.GetNutritionDailyMeals(context.Background(), "2024-01-15")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -75,7 +75,7 @@ func TestGetNutritionDailySettings_Success(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := NewClient(testTokens(), WithBaseURL(server.URL))
+	client := NewClient(testTokens(), WithHTTPClient(server.Client()), WithBaseURL(server.URL))
 	data, err := client.GetNutritionDailySettings(context.Background(), "2024-01-15")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -97,7 +97,7 @@ func TestGetNutritionDailyFoodLog_ServerError(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := NewClient(testTokens(), WithBaseURL(server.URL))
+	client := NewClient(testTokens(), WithHTTPClient(server.Client()), WithBaseURL(server.URL))
 	_, err := client.GetNutritionDailyFoodLog(context.Background(), "2024-01-15")
 	if err == nil {
 		t.Fatal("expected error, got nil")

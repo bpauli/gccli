@@ -25,7 +25,7 @@ func TestGetMenstrualCycleData_Success(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := NewClient(testTokens(), WithBaseURL(server.URL))
+	client := NewClient(testTokens(), WithHTTPClient(server.Client()), WithBaseURL(server.URL))
 	data, err := client.GetMenstrualCycleData(context.Background(), "2024-01-01", "2024-01-31")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -47,7 +47,7 @@ func TestGetMenstrualCycleData_ServerError(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := NewClient(testTokens(), WithBaseURL(server.URL))
+	client := NewClient(testTokens(), WithHTTPClient(server.Client()), WithBaseURL(server.URL))
 	_, err := client.GetMenstrualCycleData(context.Background(), "2024-01-01", "2024-01-31")
 	if err == nil {
 		t.Fatal("expected error, got nil")
@@ -71,7 +71,7 @@ func TestGetMenstrualCycleSummary_Success(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := NewClient(testTokens(), WithBaseURL(server.URL))
+	client := NewClient(testTokens(), WithHTTPClient(server.Client()), WithBaseURL(server.URL))
 	data, err := client.GetMenstrualCycleSummary(context.Background(), "2024-01-01", "2024-01-31")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -98,7 +98,7 @@ func TestGetPregnancySummary_Success(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := NewClient(testTokens(), WithBaseURL(server.URL))
+	client := NewClient(testTokens(), WithHTTPClient(server.Client()), WithBaseURL(server.URL))
 	data, err := client.GetPregnancySummary(context.Background())
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -120,7 +120,7 @@ func TestGetPregnancySummary_ServerError(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := NewClient(testTokens(), WithBaseURL(server.URL))
+	client := NewClient(testTokens(), WithHTTPClient(server.Client()), WithBaseURL(server.URL))
 	_, err := client.GetPregnancySummary(context.Background())
 	if err == nil {
 		t.Fatal("expected error, got nil")
@@ -144,7 +144,7 @@ func TestRequestReload_Success(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := NewClient(testTokens(), WithBaseURL(server.URL))
+	client := NewClient(testTokens(), WithHTTPClient(server.Client()), WithBaseURL(server.URL))
 	data, err := client.RequestReload(context.Background(), "2024-01-15")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -166,7 +166,7 @@ func TestRequestReload_ServerError(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := NewClient(testTokens(), WithBaseURL(server.URL))
+	client := NewClient(testTokens(), WithHTTPClient(server.Client()), WithBaseURL(server.URL))
 	_, err := client.RequestReload(context.Background(), "2024-01-15")
 	if err == nil {
 		t.Fatal("expected error, got nil")

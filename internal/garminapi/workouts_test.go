@@ -406,7 +406,7 @@ func TestDownloadWorkout_401WithRefresh(t *testing.T) {
 	defer func() { refreshTokensFn = orig }()
 
 	tokens := testTokens()
-	client := NewClient(tokens, WithBaseURL(ts.URL))
+	client := NewClient(tokens, WithHTTPClient(ts.Client()), WithBaseURL(ts.URL))
 	data, err := client.DownloadWorkout(context.Background(), "42")
 	if err != nil {
 		t.Fatalf("expected success after refresh, got: %v", err)

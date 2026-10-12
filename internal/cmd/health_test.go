@@ -242,7 +242,7 @@ func TestHealthSummary_DisplayNameInPath(t *testing.T) {
 
 	orig := newClientFn
 	newClientFn = func(tokens *garminauth.Tokens) *garminapi.Client {
-		return garminapi.NewClient(tokens, garminapi.WithBaseURL(server.URL))
+		return garminapi.NewClient(tokens, garminapi.WithHTTPClient(server.Client()), garminapi.WithBaseURL(server.URL))
 	}
 	t.Cleanup(func() { newClientFn = orig })
 

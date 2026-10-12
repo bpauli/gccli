@@ -27,7 +27,7 @@ func TestGetHydration_Success(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := NewClient(testTokens(), WithBaseURL(server.URL))
+	client := NewClient(testTokens(), WithHTTPClient(server.Client()), WithBaseURL(server.URL))
 	data, err := client.GetHydration(context.Background(), "2024-01-15")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -49,7 +49,7 @@ func TestGetHydration_ServerError(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := NewClient(testTokens(), WithBaseURL(server.URL))
+	client := NewClient(testTokens(), WithHTTPClient(server.Client()), WithBaseURL(server.URL))
 	_, err := client.GetHydration(context.Background(), "2024-01-15")
 	if err == nil {
 		t.Fatal("expected error, got nil")
@@ -81,7 +81,7 @@ func TestAddHydration_Success(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := NewClient(testTokens(), WithBaseURL(server.URL))
+	client := NewClient(testTokens(), WithHTTPClient(server.Client()), WithBaseURL(server.URL))
 	data, err := client.AddHydration(context.Background(), "2024-01-15", 500.0)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -103,7 +103,7 @@ func TestAddHydration_ServerError(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := NewClient(testTokens(), WithBaseURL(server.URL))
+	client := NewClient(testTokens(), WithHTTPClient(server.Client()), WithBaseURL(server.URL))
 	_, err := client.AddHydration(context.Background(), "2024-01-15", 500.0)
 	if err == nil {
 		t.Fatal("expected error, got nil")

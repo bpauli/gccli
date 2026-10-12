@@ -179,7 +179,7 @@ func TestRetryTransport_NoRetryOn4xx(t *testing.T) {
 	}
 }
 
-func TestRetryTransport_PreservesBody(t *testing.T) {
+func TestRetryTransport_Retry5xxAnyMethod_RetriesPOSTAndPreservesBody(t *testing.T) {
 	var bodies []string
 	base := roundTripFunc(func(req *http.Request) (*http.Response, error) {
 		b, _ := io.ReadAll(req.Body)
@@ -192,6 +192,7 @@ func TestRetryTransport_PreservesBody(t *testing.T) {
 
 	rt := NewRetryTransport(base)
 	rt.MaxRetries5xx = 1
+	rt.Retry5xxAnyMethod = true
 	rt.sleepFn = func(_ context.Context, _ time.Duration) error { return nil }
 
 	body := strings.NewReader(`{"data":"test"}`)
