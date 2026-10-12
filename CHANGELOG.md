@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.12.0] - 2026-10-12
+
+### Changed
+
+- **Exit codes by error kind** - gccli now exits with 2 for a usage error, 3 when you must log in (no account, no stored credentials or an expired token), 4 when Garmin returns 404, 5 when Garmin returns 429, and 1 for all other errors. Before, every runtime error exited with 1 and every usage error exited with 80. A script that checks for a non-zero exit code keeps working. A script that checks for exactly 1 or 80 must change. (#96, #103)
+- Usage errors, such as an unknown flag, now print the usage text to stderr, not stdout. `--help` still prints to stdout and exits with 0. (#96, #103)
+- In `--json` mode, a runtime error now prints one JSON line on stderr, such as `{"error":{"code":"rate_limited","status":429,"message":"Rate limited. Wait 30 and retry."}}`. `code` is one of `error`, `usage`, `auth_required`, `not_found` or `rate_limited`, and it agrees with the exit code. `status` is the HTTP status, when there is one. Usage errors stay plain text. (#96, #104)
+- Delete commands without `--force` now fail with exit code 1 when stdin is not a terminal. Before, they read EOF, printed "Cancelled" and exited with 0, so a script saw success but nothing was deleted. If you answer "n" at the prompt, gccli still exits with 0. (#97, #101)
+
+### Fixed
+
+- `goals list` without `--status` failed with HTTP 400, because the goal-service now requires a status. `--status` now defaults to `active` and accepts only `active`, `future` and `past`. (#67, #100)
+- The hints for an expired token ("Token expired. Run: gccli auth login <email>") and for a rate limit ("Rate limited. Wait 30 and retry.") never appeared. gccli checked for its own copies of these error types, not the ones the API client returns. (#96, #102)
+
+### Docs
+
+- The README, the `gccli` skill and the docs site list the exit codes, describe the JSON error line and the default goal status, and say that delete commands need `--force` in scripts. (#100, #101, #103, #104)
+
 ## [1.11.0] - 2026-10-05
 
 ### Added
@@ -305,6 +323,7 @@ Initial release of gccli — a fast, script-friendly CLI for Garmin Connect.
 - **CI pipeline** — GitHub Actions for fmt-check, lint, and test
 - **Cross-platform builds** — macOS (amd64/arm64) and Linux (amd64/arm64) via goreleaser
 
+[1.12.0]: https://github.com/bpauli/gccli/releases/tag/v1.12.0
 [1.11.0]: https://github.com/bpauli/gccli/releases/tag/v1.11.0
 [1.10.0]: https://github.com/bpauli/gccli/releases/tag/v1.10.0
 [1.9.2]: https://github.com/bpauli/gccli/releases/tag/v1.9.2
