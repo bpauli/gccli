@@ -25,7 +25,7 @@ func TestGetTrainingPlans_Success(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := NewClient(testTokens(), WithBaseURL(server.URL))
+	client := NewClient(testTokens(), WithHTTPClient(server.Client()), WithBaseURL(server.URL))
 	data, err := client.GetTrainingPlans(context.Background(), "en")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -50,7 +50,7 @@ func TestGetTrainingPlans_DefaultLocale(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := NewClient(testTokens(), WithBaseURL(server.URL))
+	client := NewClient(testTokens(), WithHTTPClient(server.Client()), WithBaseURL(server.URL))
 	_, err := client.GetTrainingPlans(context.Background(), "")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -69,7 +69,7 @@ func TestGetTrainingPlans_CustomLocale(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := NewClient(testTokens(), WithBaseURL(server.URL))
+	client := NewClient(testTokens(), WithHTTPClient(server.Client()), WithBaseURL(server.URL))
 	_, err := client.GetTrainingPlans(context.Background(), "de")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -85,7 +85,7 @@ func TestGetTrainingPlans_ServerError(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := NewClient(testTokens(), WithBaseURL(server.URL))
+	client := NewClient(testTokens(), WithHTTPClient(server.Client()), WithBaseURL(server.URL))
 	_, err := client.GetTrainingPlans(context.Background(), "en")
 	if err == nil {
 		t.Fatal("expected error, got nil")
@@ -109,7 +109,7 @@ func TestGetTrainingPlan_Success(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := NewClient(testTokens(), WithBaseURL(server.URL))
+	client := NewClient(testTokens(), WithHTTPClient(server.Client()), WithBaseURL(server.URL))
 	data, err := client.GetTrainingPlan(context.Background(), "plan-123")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -131,7 +131,7 @@ func TestGetTrainingPlan_NotFound(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := NewClient(testTokens(), WithBaseURL(server.URL))
+	client := NewClient(testTokens(), WithHTTPClient(server.Client()), WithBaseURL(server.URL))
 	_, err := client.GetTrainingPlan(context.Background(), "nonexistent")
 	if err == nil {
 		t.Fatal("expected error, got nil")

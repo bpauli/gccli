@@ -24,7 +24,7 @@ func TestGetProfile_Success(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := NewClient(testTokens(), WithBaseURL(server.URL))
+	client := NewClient(testTokens(), WithHTTPClient(server.Client()), WithBaseURL(server.URL))
 	data, err := client.GetProfile(context.Background())
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -46,7 +46,7 @@ func TestGetProfile_ServerError(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := NewClient(testTokens(), WithBaseURL(server.URL))
+	client := NewClient(testTokens(), WithHTTPClient(server.Client()), WithBaseURL(server.URL))
 	_, err := client.GetProfile(context.Background())
 	if err == nil {
 		t.Fatal("expected error, got nil")
@@ -62,7 +62,7 @@ func TestGetDisplayName_Success(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := NewClient(testTokens(), WithBaseURL(server.URL))
+	client := NewClient(testTokens(), WithHTTPClient(server.Client()), WithBaseURL(server.URL))
 	name, err := client.GetDisplayName(context.Background())
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -81,7 +81,7 @@ func TestGetDisplayName_MissingField(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := NewClient(testTokens(), WithBaseURL(server.URL))
+	client := NewClient(testTokens(), WithHTTPClient(server.Client()), WithBaseURL(server.URL))
 	_, err := client.GetDisplayName(context.Background())
 	if err == nil {
 		t.Fatal("expected error, got nil")
@@ -102,7 +102,7 @@ func TestGetUserSettings_Success(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := NewClient(testTokens(), WithBaseURL(server.URL))
+	client := NewClient(testTokens(), WithHTTPClient(server.Client()), WithBaseURL(server.URL))
 	data, err := client.GetUserSettings(context.Background())
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -124,7 +124,7 @@ func TestGetUserSettings_ServerError(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
-	client := NewClient(testTokens(), WithBaseURL(server.URL))
+	client := NewClient(testTokens(), WithHTTPClient(server.Client()), WithBaseURL(server.URL))
 	_, err := client.GetUserSettings(context.Background())
 	if err == nil {
 		t.Fatal("expected error, got nil")
@@ -144,7 +144,7 @@ func userSettingsServer(t *testing.T, status int, body string) *Client {
 	})
 	server := httptest.NewServer(mux)
 	t.Cleanup(server.Close)
-	return NewClient(testTokens(), WithBaseURL(server.URL))
+	return NewClient(testTokens(), WithHTTPClient(server.Client()), WithBaseURL(server.URL))
 }
 
 func TestGetMeasurementSystem(t *testing.T) {
