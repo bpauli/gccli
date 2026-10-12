@@ -1,7 +1,9 @@
 package secrets
 
 import (
+	"errors"
 	"fmt"
+	"io/fs"
 	"runtime"
 
 	"github.com/99designs/keyring"
@@ -101,7 +103,7 @@ func (s *Store) Set(email string, data []byte) error {
 func (s *Store) Delete(email string) error {
 	err := s.ring.Remove(keyFor(email))
 	if err != nil {
-		if err == keyring.ErrKeyNotFound {
+		if errors.Is(err, keyring.ErrKeyNotFound) || errors.Is(err, fs.ErrNotExist) {
 			return ErrNotFound
 		}
 		return fmt.Errorf("keyring remove: %w", err)
