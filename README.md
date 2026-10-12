@@ -597,8 +597,8 @@ gccli gear unlink <uuid> <activity-id>
 ### Goals, Badges & Challenges
 
 ```bash
-gccli goals list
-gccli goals list --status active
+gccli goals list                  # active goals (default)
+gccli goals list --status past    # active, future or past
 gccli badges earned
 gccli badges available
 gccli badges in-progress
