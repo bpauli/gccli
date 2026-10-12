@@ -212,6 +212,7 @@ func TestExecute_AuthCommandsNeedLogin(t *testing.T) {
 		{"auth", "status"},
 		{"auth", "token"},
 		{"auth", "export"},
+		{"--account", "nobody@example.com", "auth", "status"},
 		{"--account", "nobody@example.com", "auth", "token"},
 		{"--account", "nobody@example.com", "auth", "export"},
 	}
@@ -231,6 +232,28 @@ func TestExecute_AuthCommandsNeedLogin(t *testing.T) {
 				t.Fatalf("exit code = %d, want 3", code)
 			}
 		})
+	}
+}
+
+func TestExecute_AuthStatusWithoutCredentialsPrintsJSONError(t *testing.T) {
+	tmp := t.TempDir()
+	t.Setenv("HOME", tmp)
+	t.Setenv("XDG_CONFIG_HOME", tmp)
+	overrideLoadSecrets(t, newTestSecretsStore(t))
+
+	var code int
+	stdout, stderr := captureOutput(t, func() {
+		code = Execute([]string{"--json", "--account", "nobody@example.com", "auth", "status"}, "1.0.0", "abc123", "2024-01-01")
+	})
+	if code != 3 {
+		t.Fatalf("exit code = %d, want 3", code)
+	}
+	if stdout != "" {
+		t.Fatalf("stdout = %q, want empty", stdout)
+	}
+	want := `{"error":{"code":"auth_required","message":"no credentials stored for nobody@example.com; run: gccli auth login nobody@example.com"}}` + "\n"
+	if stderr != want {
+		t.Fatalf("stderr = %q, want %q", stderr, want)
 	}
 }
 

@@ -157,11 +157,8 @@ func TestAuthStatus_NotFound(t *testing.T) {
 	g := testGlobals(t, &buf, outfmt.Table, "nobody@example.com")
 	cmd := &AuthStatusCmd{}
 	err := cmd.Run(g)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
-	}
-	if !strings.Contains(buf.String(), "No credentials stored") {
-		t.Fatalf("expected 'No credentials stored' warning, got: %q", buf.String())
+	if err == nil || !strings.Contains(err.Error(), "no credentials stored for nobody@example.com") {
+		t.Fatalf("expected no-credentials error, got: %v", err)
 	}
 }
 
