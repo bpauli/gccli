@@ -200,7 +200,7 @@ Notes
 - Tokens are stored securely in the OS keyring (macOS Keychain, Linux Secret Service, file fallback).
 - Tokens auto-refresh on 401; automatic retry on 429/5xx with exponential backoff.
 - For Garmin China accounts: `export GCCLI_DOMAIN=garmin.cn`.
-- Exit codes: 1 other error, 2 usage error, 3 login needed (ask the user to run `gccli auth login`), 4 not found, 5 rate limited (wait, then retry).
+- Exit codes: 1 other error, 2 usage error, 3 login needed (ask the user to run `gccli auth login`), 4 not found, 5 rate limited (wait, then retry). With `--json`, errors are a JSON object on stderr: `{"error":{"code":"...","status":429,"message":"..."}}`.
 - Delete commands fail without a terminal unless `--force` is set. Confirm with the user first, then pass `--force`.
 - Download formats: FIT (default), GPX, TCX, KML, CSV.
 - Workout step format: `type:duration[@target:low-high]` — types: warmup, run, recovery, cooldown; targets: pace (min:sec), hr (bpm), power (watts), cadence.
