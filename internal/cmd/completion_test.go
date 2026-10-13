@@ -1,6 +1,10 @@
 package cmd
 
 import (
+	"fmt"
+	"os"
+	"os/exec"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -271,6 +275,92 @@ func TestEscapeShellString(t *testing.T) {
 		got := escapeShellString(tt.input)
 		if got != tt.want {
 			t.Errorf("escapeShellString(%q) = %q, want %q", tt.input, got, tt.want)
+		}
+	}
+}
+
+func TestGenerateBash_CompletesAfterFlagValue(t *testing.T) {
+	bashPath, err := exec.LookPath("bash")
+	if err != nil {
+		t.Skip("bash not on PATH")
+	}
+
+	dir := t.TempDir()
+	script := filepath.Join(dir, "gccli.bash")
+	if err := os.WriteFile(script, []byte(generateBash(newTestParser(t))), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	driver := filepath.Join(dir, "driver.sh")
+	driverSrc := `source "$1"; shift
+COMP_WORDS=("$@")
+COMP_CWORD=$(( ${#COMP_WORDS[@]} - 1 ))
+COMPREPLY=()
+_gccli_completions
+printf '%s\n' "${COMPREPLY[*]}"
+`
+	if err := os.WriteFile(driver, []byte(driverSrc), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	const activitiesSubcommands = "list count search types"
+	tests := []struct {
+		name  string
+		words []string
+		want  string
+	}{
+		{"no flag", []string{"gccli", "activities", ""}, activitiesSubcommands},
+		{"global value flag", []string{"gccli", "--account", "x@example.com", "activities", ""}, activitiesSubcommands},
+		{"global value flag with equals", []string{"gccli", "--account=x@example.com", "activities", ""}, activitiesSubcommands},
+		{"global enum flag", []string{"gccli", "--units", "metric", "activities", ""}, activitiesSubcommands},
+		{"global bool flag", []string{"gccli", "--json", "activities", ""}, activitiesSubcommands},
+		{"command value flag", []string{"gccli", "activities", "list", "--limit", "5", "--t"}, "--type"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			args := append([]string{"--norc", "--noprofile", driver, script}, tt.words...)
+			out, err := exec.Command(bashPath, args...).CombinedOutput()
+			if err != nil {
+				t.Fatalf("bash failed: %v\n%s", err, out)
+			}
+			got := strings.TrimSpace(string(out))
+			if got != tt.want {
+				t.Errorf("words %q: COMPREPLY = %q, want %q", tt.words, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestCollectFlags_ValueTakingIsConsistentAcrossCommands(t *testing.T) {
+	parser := newTestParser(t)
+	root := parser.Model.Node
+
+	type seenAt struct {
+		isBool bool
+		path   string
+	}
+	first := map[string]seenAt{}
+	check := func(path string, node *kong.Node) {
+		for _, f := range collectFlags(node) {
+			words := []string{"--" + f.Long}
+			if f.Short != 0 {
+				words = append(words, fmt.Sprintf("-%c", f.Short))
+			}
+			for _, w := range words {
+				prev, ok := first[w]
+				if !ok {
+					first[w] = seenAt{isBool: f.IsBool, path: path}
+					continue
+				}
+				if prev.isBool != f.IsBool {
+					t.Errorf("flag %s is boolean in one command (%q or %q) and takes a value in the other; generateBash uses one flat set of value-taking flags, which would skip or keep the wrong word", w, prev.path, path)
+				}
+			}
+		}
+	}
+	check("(root)", root)
+	for _, cmd := range collectCommands(root, nil) {
+		if node := findNode(root, cmd.Path); node != nil {
+			check(strings.Join(cmd.Path, " "), node)
 		}
 	}
 }
