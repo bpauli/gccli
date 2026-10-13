@@ -38,7 +38,7 @@ All three checks (`make fmt`, `make lint`, `make test`) must pass before committ
 ### Key packages
 
 - **`internal/cmd/`** — Kong-based CLI commands. Each command is a struct with `Run(g *Globals) error`. `Globals` holds context, UI, and account info. `resolveClient()` loads tokens from the OS keyring and creates an API client.
-- **`internal/garminapi/`** - HTTP client for Garmin Connect. Returns `json.RawMessage` from API calls (no Go structs for every endpoint). All API client requests and the exercise catalog fetch go through `RetryTransport` (429 retried for every method within `Retry-After`, 5xx retried only for GET and HEAD with backoff, because writes may already be saved) over a clone of `http.DefaultTransport` with a 60 s `ResponseHeaderTimeout`. Auto-refreshes OAuth2 tokens on 401.
+- **`internal/garminapi/`** - HTTP client for Garmin Connect. Returns `json.RawMessage` from API calls (no Go structs for every endpoint). All API client requests and the exercise catalog fetch go through `RetryTransport` (429 retried for every method within `Retry-After`, 5xx retried only for GET and HEAD with backoff, because writes may already be saved) over a stall watch per attempt (`stallTransport`: a request fails with `StallError` when no data moves for 60 s; a transfer that keeps moving has no time limit) over a clone of `http.DefaultTransport`. Auto-refreshes OAuth2 tokens on 401.
 - **`internal/garminauth/`** — Garmin SSO authentication. Supports browser-based SSO (local callback server) and headless email/password login with MFA. OAuth1 → OAuth2 exchange flow.
 - **`internal/secrets/`** — OS keyring storage (macOS Keychain, Linux Secret Service, file fallback). Tokens keyed by `gccli:token:{email}`.
 - **`internal/config/`** — Config file paths and env var overrides.
@@ -54,7 +54,7 @@ All three checks (`make fmt`, `make lint`, `make test`) must pass before committ
 - **Context-based DI:** Output mode and UI are injected via `context.Context` using `outfmt.NewContext()`/`ui.NewContext()` and retrieved with `outfmt.IsJSON(ctx)`/`ui.FromContext(ctx)`.
 - **Function variable mocking:** External dependencies are stored as package-level function variables (e.g., `newClientFn`, `loginHeadlessFn`, `refreshTokensFn`) that tests override. No interface-heavy DI.
 - **Output convention:** Parseable output (JSON, TSV) goes to stdout. Human messages (errors, info, warnings) go to stderr via `UI`.
-- **Typed errors:** `garminapi` defines `TokenExpiredError`, `RateLimitError` and `GarminAPIError`. `errfmt.Format()` adds hints for the first two.
+- **Typed errors:** `garminapi` defines `TokenExpiredError`, `RateLimitError`, `GarminAPIError` and `StallError`. `errfmt.Format()` adds hints for the first two.
 
 ## Code Style
 
