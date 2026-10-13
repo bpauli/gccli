@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/alecthomas/kong"
@@ -44,6 +45,7 @@ _gccli_completions() {
 	b.WriteString("    local cmd_path=\"\"\n")
 	b.WriteString("    for ((i=1; i < cword; i++)); do\n")
 	b.WriteString("        case \"${words[i]}\" in\n")
+	fmt.Fprintf(&b, "            %s) ((i++));;\n", strings.Join(collectValueFlags(parser.Model.Node), "|"))
 	b.WriteString("            -*) ;;\n")
 	b.WriteString("            *) cmd_path=\"${cmd_path} ${words[i]}\";;\n")
 	b.WriteString("        esac\n")
@@ -127,6 +129,33 @@ func bashWriteCommandCase(b *strings.Builder, path string, node *kong.Node) {
 	}
 	fmt.Fprintf(b, "            return\n")
 	fmt.Fprintf(b, "            ;;\n")
+}
+
+func collectValueFlags(root *kong.Node) []string {
+	seen := map[string]bool{}
+	add := func(node *kong.Node) {
+		for _, f := range collectFlags(node) {
+			if f.IsBool {
+				continue
+			}
+			seen["--"+f.Long] = true
+			if f.Short != 0 {
+				seen[fmt.Sprintf("-%c", f.Short)] = true
+			}
+		}
+	}
+	add(root)
+	for _, cmd := range collectCommands(root, nil) {
+		if node := findNode(root, cmd.Path); node != nil {
+			add(node)
+		}
+	}
+	words := make([]string, 0, len(seen))
+	for w := range seen {
+		words = append(words, w)
+	}
+	sort.Strings(words)
+	return words
 }
 
 // findNode walks the model tree to find the node at the given command path.

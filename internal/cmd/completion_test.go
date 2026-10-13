@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -326,5 +327,40 @@ printf '%s\n' "${COMPREPLY[*]}"
 				t.Errorf("words %q: COMPREPLY = %q, want %q", tt.words, got, tt.want)
 			}
 		})
+	}
+}
+
+func TestCollectFlags_ValueTakingIsConsistentAcrossCommands(t *testing.T) {
+	parser := newTestParser(t)
+	root := parser.Model.Node
+
+	type seenAt struct {
+		isBool bool
+		path   string
+	}
+	first := map[string]seenAt{}
+	check := func(path string, node *kong.Node) {
+		for _, f := range collectFlags(node) {
+			words := []string{"--" + f.Long}
+			if f.Short != 0 {
+				words = append(words, fmt.Sprintf("-%c", f.Short))
+			}
+			for _, w := range words {
+				prev, ok := first[w]
+				if !ok {
+					first[w] = seenAt{isBool: f.IsBool, path: path}
+					continue
+				}
+				if prev.isBool != f.IsBool {
+					t.Errorf("flag %s is boolean in one command (%q or %q) and takes a value in the other; generateBash uses one flat set of value-taking flags, which would skip or keep the wrong word", w, prev.path, path)
+				}
+			}
+		}
+	}
+	check("(root)", root)
+	for _, cmd := range collectCommands(root, nil) {
+		if node := findNode(root, cmd.Path); node != nil {
+			check(strings.Join(cmd.Path, " "), node)
+		}
 	}
 }
