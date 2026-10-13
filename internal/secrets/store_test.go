@@ -68,6 +68,37 @@ func TestDeleteNotFound(t *testing.T) {
 	}
 }
 
+func newFileStore(t *testing.T) *Store {
+	t.Helper()
+	ring, err := keyring.Open(keyring.Config{
+		ServiceName:      serviceName,
+		AllowedBackends:  []keyring.BackendType{keyring.FileBackend},
+		FileDir:          t.TempDir(),
+		FilePasswordFunc: keyring.FixedStringPrompt("test"),
+	})
+	if err != nil {
+		t.Fatalf("open file keyring: %v", err)
+	}
+	return OpenWithKeyring(ring)
+}
+
+func TestDeleteTwiceFileBackend(t *testing.T) {
+	s := newFileStore(t)
+	email := "twice@example.com"
+
+	if err := s.Set(email, []byte(`{"token":"xyz"}`)); err != nil {
+		t.Fatalf("Set: %v", err)
+	}
+	if err := s.Delete(email); err != nil {
+		t.Fatalf("first Delete: %v", err)
+	}
+
+	err := s.Delete(email)
+	if !errors.Is(err, ErrNotFound) {
+		t.Errorf("second Delete = %v, want ErrNotFound", err)
+	}
+}
+
 func TestOverwrite(t *testing.T) {
 	s := newTestStore(t)
 	email := "overwrite@example.com"
