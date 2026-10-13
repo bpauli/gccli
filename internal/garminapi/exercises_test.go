@@ -45,9 +45,9 @@ func TestFetchExerciseCatalog_ServerError(t *testing.T) {
 }
 
 func TestFetchExerciseCatalog_TimesOutWaitingForHeaders(t *testing.T) {
-	origTimeout := responseHeaderTimeout
-	t.Cleanup(func() { responseHeaderTimeout = origTimeout })
-	responseHeaderTimeout = 200 * time.Millisecond
+	origTimeout := stallTimeout
+	t.Cleanup(func() { stallTimeout = origTimeout })
+	stallTimeout = 200 * time.Millisecond
 
 	stop := make(chan struct{})
 	server := httptest.NewServer(http.HandlerFunc(func(_ http.ResponseWriter, r *http.Request) {

@@ -41,17 +41,11 @@ func WithBaseURL(u string) ClientOption {
 	return func(cl *Client) { cl.baseURL = u }
 }
 
-// responseHeaderTimeout bounds the wait for the response headers of one
-// attempt. It does not cap the body read, so large downloads still finish.
-var responseHeaderTimeout = 60 * time.Second
+var stallTimeout = 60 * time.Second
 
-// newHTTPClient builds the default HTTP client: a clone of
-// http.DefaultTransport, which keeps proxy support and the dial and TLS
-// timeouts, with a response header timeout, behind a RetryTransport.
 func newHTTPClient() *http.Client {
 	base := http.DefaultTransport.(*http.Transport).Clone()
-	base.ResponseHeaderTimeout = responseHeaderTimeout
-	return &http.Client{Transport: NewRetryTransport(base)}
+	return &http.Client{Transport: NewRetryTransport(&stallTransport{base: base, idle: stallTimeout})}
 }
 
 // NewClient creates a new Garmin Connect API client.

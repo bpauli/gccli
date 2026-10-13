@@ -151,9 +151,9 @@ func TestNewClient_LongRetryAfterDateIsNotRetried(t *testing.T) {
 }
 
 func TestNewClient_DefaultClientTimesOutWaitingForHeaders(t *testing.T) {
-	orig := responseHeaderTimeout
-	t.Cleanup(func() { responseHeaderTimeout = orig })
-	responseHeaderTimeout = 200 * time.Millisecond
+	orig := stallTimeout
+	t.Cleanup(func() { stallTimeout = orig })
+	stallTimeout = 200 * time.Millisecond
 
 	stop := make(chan struct{})
 	srv := httptest.NewServer(http.HandlerFunc(func(_ http.ResponseWriter, r *http.Request) {

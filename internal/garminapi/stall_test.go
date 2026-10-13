@@ -3,21 +3,18 @@ package garminapi
 import (
 	"bytes"
 	"context"
+	"errors"
 	"io"
 	"net"
 	"net/http"
 	"net/http/httptest"
+	"net/http/httptrace"
 	"net/url"
 	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
 )
-
-// These tests drive the production client built by newHTTPClient against
-// servers that stop moving bytes at one point of the exchange. Each stalled
-// call must fail within a short deadline; a hang fails the test through the
-// deadline in callWithin.
 
 type protoMode string
 
@@ -33,9 +30,9 @@ const testStallTimeout = 300 * time.Millisecond
 
 func stallServer(t *testing.T, mode protoMode, h http.HandlerFunc) (*Client, *atomic.Int32) {
 	t.Helper()
-	orig := responseHeaderTimeout
-	t.Cleanup(func() { responseHeaderTimeout = orig })
-	responseHeaderTimeout = testStallTimeout
+	orig := stallTimeout
+	t.Cleanup(func() { stallTimeout = orig })
+	stallTimeout = testStallTimeout
 
 	stop := make(chan struct{})
 	var stopOnce sync.Once
@@ -80,9 +77,12 @@ func stallServer(t *testing.T, mode protoMode, h http.HandlerFunc) (*Client, *at
 	return c, &conns
 }
 
-// baseTransport returns the http.Transport under the client's retry layer.
+func stallLayer(c *Client) *stallTransport {
+	return c.httpClient.Transport.(*RetryTransport).Base.(*stallTransport)
+}
+
 func baseTransport(c *Client) *http.Transport {
-	return c.httpClient.Transport.(*RetryTransport).Base.(*http.Transport)
+	return stallLayer(c).base.(*http.Transport)
 }
 
 const (
@@ -155,8 +155,12 @@ func callWithin(t *testing.T, limit time.Duration, call func() error) (time.Dura
 
 func wantStall(t *testing.T, err error, elapsed time.Duration) {
 	t.Helper()
-	if err == nil {
-		t.Fatalf("err = nil after %s, want an error", elapsed.Round(time.Millisecond))
+	var stall *StallError
+	if !errors.As(err, &stall) {
+		t.Fatalf("err = %v (%T) after %s, want *StallError", err, err, elapsed.Round(time.Millisecond))
+	}
+	if stall.Idle != testStallTimeout {
+		t.Fatalf("Idle = %s, want %s", stall.Idle, testStallTimeout)
 	}
 	t.Logf("failed after %s: %v", elapsed.Round(time.Millisecond), err)
 }
@@ -261,6 +265,183 @@ func TestStall_DrainBeforeRetryThenRetrySucceeds(t *testing.T) {
 				t.Fatalf("calls = %d, want 2", n)
 			}
 			t.Logf("drain stalled, retry succeeded after %s", d.Round(time.Millisecond))
+		})
+	}
+}
+
+func TestStall_HeadersThenSlowBodySucceeds(t *testing.T) {
+	for _, mode := range bothProtos {
+		t.Run(string(mode), func(t *testing.T) {
+			const overHalfLimit = testStallTimeout/2 + testStallTimeout/5
+			c, _ := stallServer(t, mode, func(w http.ResponseWriter, _ *http.Request) {
+				time.Sleep(overHalfLimit)
+				w.WriteHeader(http.StatusOK)
+				w.(http.Flusher).Flush()
+				time.Sleep(overHalfLimit)
+				_, _ = io.WriteString(w, `{"ok":true}`)
+			})
+			var data []byte
+			d, err := callWithin(t, 3*time.Second, func() error {
+				var err error
+				data, err = c.ConnectAPI(context.Background(), http.MethodGet, "/x", nil)
+				return err
+			})
+			if err != nil {
+				t.Fatalf("err = %v after %s, want success", err, d.Round(time.Millisecond))
+			}
+			if string(data) != `{"ok":true}` {
+				t.Fatalf("data = %q, want the full body", data)
+			}
+		})
+	}
+}
+
+func TestStall_SlowDownloadSucceeds(t *testing.T) {
+	for _, mode := range bothProtos {
+		t.Run(string(mode), func(t *testing.T) {
+			const chunks = 10
+			c, _ := stallServer(t, mode, func(w http.ResponseWriter, _ *http.Request) {
+				w.Header().Set("Content-Length", "10")
+				for range chunks {
+					time.Sleep(100 * time.Millisecond)
+					_, _ = w.Write([]byte("x"))
+					w.(http.Flusher).Flush()
+				}
+			})
+			var data []byte
+			d, err := callWithin(t, 5*time.Second, func() error {
+				var err error
+				data, err = c.Download(context.Background(), "/x")
+				return err
+			})
+			if err != nil {
+				t.Fatalf("slow download failed: %v", err)
+			}
+			if string(data) != "xxxxxxxxxx" {
+				t.Fatalf("data = %q, want 10 bytes", data)
+			}
+			if d < 3*testStallTimeout {
+				t.Fatalf("download took %s, want longer than %s to prove the limit is not total time", d, 3*testStallTimeout)
+			}
+		})
+	}
+}
+
+func TestStall_SlowUploadSucceeds(t *testing.T) {
+	for _, mode := range bothProtos {
+		t.Run(string(mode), func(t *testing.T) {
+			const (
+				size            = 8 << 20
+				readStep        = 64 << 10
+				h2StreamWindow  = 1 << 20
+				idleTail        = h2StreamWindow + clientWriteBuffer + serverReadBuffer
+				tailDrainBudget = testStallTimeout / 2
+				pausePerStep    = tailDrainBudget * readStep / idleTail
+			)
+			var total atomic.Int64
+			c, _ := stallServer(t, mode, func(w http.ResponseWriter, r *http.Request) {
+				buf := make([]byte, readStep)
+				sinceSleep := 0
+				for {
+					n, err := r.Body.Read(buf)
+					total.Add(int64(n))
+					sinceSleep += n
+					for sinceSleep >= readStep {
+						time.Sleep(pausePerStep)
+						sinceSleep -= readStep
+					}
+					if err != nil {
+						break
+					}
+				}
+				_, _ = io.WriteString(w, `{"read":true}`)
+			})
+			d, err := callWithin(t, 10*time.Second, func() error {
+				_, err := c.ConnectAPI(context.Background(), http.MethodPost, "/x", bytes.NewReader(make([]byte, size)))
+				return err
+			})
+			if err != nil {
+				t.Fatalf("slow upload failed: %v", err)
+			}
+			if got := total.Load(); got != size {
+				t.Fatalf("server read %d bytes, want %d", got, size)
+			}
+			if d < 3*testStallTimeout {
+				t.Fatalf("upload took %s, want longer than %s", d, 3*testStallTimeout)
+			}
+		})
+	}
+}
+
+func TestStall_RetryAfterWaitNotIdle(t *testing.T) {
+	var calls atomic.Int32
+	c, _ := stallServer(t, modeH1, func(w http.ResponseWriter, _ *http.Request) {
+		if calls.Add(1) == 1 {
+			w.Header().Set("Retry-After", "1")
+			w.WriteHeader(http.StatusTooManyRequests)
+			return
+		}
+		_, _ = io.WriteString(w, `{"ok":true}`)
+	})
+	d, err := callWithin(t, 5*time.Second, func() error {
+		_, err := c.ConnectAPI(context.Background(), http.MethodGet, "/x", nil)
+		return err
+	})
+	if err != nil {
+		t.Fatalf("err = %v, want success after the Retry-After wait", err)
+	}
+	if n := calls.Load(); n != 2 {
+		t.Fatalf("calls = %d, want 2", n)
+	}
+	if d < time.Second {
+		t.Fatalf("succeeded after %s, want the 1 s Retry-After wait", d)
+	}
+}
+
+func TestStall_CancelDuringStall(t *testing.T) {
+	for _, mode := range bothProtos {
+		t.Run(string(mode), func(t *testing.T) {
+			c, _ := stallServer(t, mode, partialBodyThenBlock)
+			stallLayer(c).idle = time.Minute
+			ctx, cancel := context.WithCancel(context.Background())
+			time.AfterFunc(100*time.Millisecond, cancel)
+			_, err := callWithin(t, 3*time.Second, func() error {
+				_, err := c.ConnectAPI(ctx, http.MethodGet, "/x", nil)
+				return err
+			})
+			if !errors.Is(err, context.Canceled) {
+				t.Fatalf("err = %v, want context.Canceled", err)
+			}
+			var stall *StallError
+			if errors.As(err, &stall) {
+				t.Fatalf("err = %v, want no StallError", err)
+			}
+		})
+	}
+}
+
+func TestStall_ConnectionReuse(t *testing.T) {
+	for _, mode := range bothProtos {
+		t.Run(string(mode), func(t *testing.T) {
+			c, conns := stallServer(t, mode, func(w http.ResponseWriter, _ *http.Request) {
+				_, _ = io.WriteString(w, `{"ok":true}`)
+			})
+			var reused []bool
+			get := func(step string) {
+				ctx := httptrace.WithClientTrace(context.Background(), &httptrace.ClientTrace{
+					GotConn: func(info httptrace.GotConnInfo) { reused = append(reused, info.Reused) },
+				})
+				if _, err := c.ConnectAPI(ctx, http.MethodGet, "/x", nil); err != nil {
+					t.Fatalf("%s: %v", step, err)
+				}
+			}
+			get("first request")
+			get("request after the watch ended at EOF")
+			time.Sleep(2 * testStallTimeout)
+			get("request after the pooled connection idled past the limit")
+			if len(reused) != 3 || reused[0] || !reused[1] || !reused[2] || conns.Load() != 1 {
+				t.Fatalf("reused = %v, server conns = %d, want [false true true] on one connection", reused, conns.Load())
+			}
 		})
 	}
 }
