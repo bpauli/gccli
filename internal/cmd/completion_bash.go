@@ -40,24 +40,38 @@ _gccli_completions() {
     (( n > 0 )) || return
 
     # bash replaces only its own current word: the text after an open quote,
-    # or else the text between the last break character and the cursor.
-    # Replies must match that word. bash 3.2 does not split COMP_WORDS at
-    # break characters, so take it from the line.
-    local c quote=""
-    cur=$line
-    for ((i = 0; i < ${#line}; i++)); do
-        c=${line:i:1}
+    # or else the text after the last break character that is not quoted
+    # and not escaped. Replies must match that word. bash 3.2 does not split
+    # COMP_WORDS at break characters, so take it from the line.
+    # The scan jumps from one quote or backslash to the next, because an
+    # index lookup per character is slow on a long line. masked is the line
+    # with each quoted or escaped character replaced by 0, so the break
+    # character cut on it cannot stop inside a quote or after a backslash.
+    local c quote="" rest=$line seg masked="" tail re='^([^"'\''\\]*)(["'\''\\]?)'
+    while [[ $rest =~ $re ]]; do
+        seg=${BASH_REMATCH[1]} c=${BASH_REMATCH[2]}
+        rest=${rest:${#BASH_REMATCH[0]}}
+        [[ -n $quote ]] && printf -v seg '%.*d' "${#seg}" 0
+        masked+=$seg
+        if [[ -z $c && -n $rest ]]; then
+            # The regex stops at a byte that is not a character in the locale.
+            c=${rest:0:1} rest=${rest:1}
+        fi
+        [[ -n $c ]] || break
         case $quote$c in
-            \\|\"\\) ((i++)) ;;
-            \"|\') quote=$c cur=${line:i+1} ;;
-            \"\"|\'\') quote="" cur=$line ;;
+            \\|\"\\) seg=${rest:0:1}; rest=${rest:1}; masked+=${seg:+0} ;;
+            \"|\') quote=$c cur=$rest ;;
+            \"\"|\'\') quote="" ;;
         esac
+        masked+=0
     done
     if [[ -z $quote ]]; then
+        tail=$masked
         for ((i = 0; i < ${#COMP_WORDBREAKS}; i++)); do
             c=${COMP_WORDBREAKS:i:1}
-            cur=${cur##*"$c"}
+            tail=${tail##*"$c"}
         done
+        cur=${line:${#line}-${#tail}}
     fi
 
     # A positional at a command with a default subcommand that takes

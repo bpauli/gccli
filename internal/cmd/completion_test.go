@@ -417,6 +417,10 @@ printf '%s\n' "${COMPREPLY[*]}"
 		{"open quote with a space before the cursor in an enum value", `gccli activity download 123 "--format g`, "", ""},
 		{"open quote in a value with a space", `gccli --account "Jane Doe au`, "", ""},
 		{"apostrophe in a value", `gccli --account o'neil activities li`, "", ""},
+		// bash keeps an escaped break character in the word it replaces, so
+		// the word is Jane\ au and a reply for au would delete Jane\ .
+		{"escaped space in a value", `gccli --account Jane\ au`, "", ""},
+		{"escaped space in a positional", `gccli Jane\ au`, "", ""},
 	}
 	// bash 3.2 exports the plain set but splits at whitespace only.
 	setups := []struct{ name, wordbreaks, splitAt string }{
