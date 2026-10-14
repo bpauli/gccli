@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -279,7 +280,66 @@ func TestEscapeShellString(t *testing.T) {
 	}
 }
 
-func TestGenerateBash_CompletesAfterFlagValue(t *testing.T) {
+// Word-break sets of a real interactive bash. bash-completion removes "@".
+const (
+	plainBashWordbreaks      = " \t\n\"'@><=;|&(:"
+	bashCompletionWordbreaks = " \t\n\"'><=;|&(:"
+	whitespaceOnly           = ""
+)
+
+func bashCompWords(line, wordbreaks string) []string {
+	var words []string
+	var cur strings.Builder
+	flush := func() {
+		if cur.Len() > 0 {
+			words = append(words, cur.String())
+			cur.Reset()
+		}
+	}
+	for _, r := range line {
+		switch {
+		case r == ' ' || r == '\t':
+			flush()
+		case strings.ContainsRune(wordbreaks, r):
+			flush()
+			words = append(words, string(r))
+		default:
+			cur.WriteRune(r)
+		}
+	}
+	flush()
+	if strings.HasSuffix(line, " ") {
+		words = append(words, "")
+	}
+	return words
+}
+
+func TestBashCompWords(t *testing.T) {
+	recordedCompWords := []struct {
+		line       string
+		wordbreaks string
+		want       []string
+	}{
+		{"gccli activities ", plainBashWordbreaks, []string{"gccli", "activities", ""}},
+		{"gccli activity download 123 --f", plainBashWordbreaks, []string{"gccli", "activity", "download", "123", "--f"}},
+		{"gccli --account=x@example.com activities ", plainBashWordbreaks, []string{"gccli", "--account", "=", "x", "@", "example.com", "activities", ""}},
+		{"gccli --account=x@example.com activities ", bashCompletionWordbreaks, []string{"gccli", "--account", "=", "x@example.com", "activities", ""}},
+		{"gccli --units=", plainBashWordbreaks, []string{"gccli", "--units", "="}},
+		{"gccli --units=m", plainBashWordbreaks, []string{"gccli", "--units", "=", "m"}},
+		{"gccli --account x@example.com activities ", plainBashWordbreaks, []string{"gccli", "--account", "x", "@", "example.com", "activities", ""}},
+		{"gccli --account x@example.com activities ", bashCompletionWordbreaks, []string{"gccli", "--account", "x@example.com", "activities", ""}},
+		{"gccli --account=x@example.com activities ", whitespaceOnly, []string{"gccli", "--account=x@example.com", "activities", ""}},
+		{"gccli --units=m", whitespaceOnly, []string{"gccli", "--units=m"}},
+	}
+	for _, tt := range recordedCompWords {
+		got := bashCompWords(tt.line, tt.wordbreaks)
+		if strings.Join(got, "\x00") != strings.Join(tt.want, "\x00") {
+			t.Errorf("bashCompWords(%q) = %q, want %q", tt.line, got, tt.want)
+		}
+	}
+}
+
+func TestGenerateBash_Completions(t *testing.T) {
 	bashPath, err := exec.LookPath("bash")
 	if err != nil {
 		t.Skip("bash not on PATH")
@@ -292,8 +352,12 @@ func TestGenerateBash_CompletesAfterFlagValue(t *testing.T) {
 	}
 	driver := filepath.Join(dir, "driver.sh")
 	driverSrc := `source "$1"; shift
+COMP_WORDBREAKS=$1
+COMP_LINE=$2$3
+COMP_POINT=${#2}
+COMP_CWORD=$4
+shift 4
 COMP_WORDS=("$@")
-COMP_CWORD=$(( ${#COMP_WORDS[@]} - 1 ))
 COMPREPLY=()
 _gccli_completions
 printf '%s\n' "${COMPREPLY[*]}"
@@ -302,31 +366,59 @@ printf '%s\n' "${COMPREPLY[*]}"
 		t.Fatal(err)
 	}
 
-	const activitiesSubcommands = "list count search types"
+	const (
+		activitiesSubcommands = "list count search types"
+		unitValues            = "auto metric statute_us statute_uk"
+	)
 	tests := []struct {
-		name  string
-		words []string
-		want  string
+		name                      string
+		beforeCursor, afterCursor string
+		want                      string
 	}{
-		{"no flag", []string{"gccli", "activities", ""}, activitiesSubcommands},
-		{"global value flag", []string{"gccli", "--account", "x@example.com", "activities", ""}, activitiesSubcommands},
-		{"global value flag with equals", []string{"gccli", "--account=x@example.com", "activities", ""}, activitiesSubcommands},
-		{"global enum flag", []string{"gccli", "--units", "metric", "activities", ""}, activitiesSubcommands},
-		{"global bool flag", []string{"gccli", "--json", "activities", ""}, activitiesSubcommands},
-		{"command value flag", []string{"gccli", "activities", "list", "--limit", "5", "--t"}, "--type"},
+		{"subcommands", "gccli activities ", "", activitiesSubcommands},
+		{"flag after positional", "gccli activity download 123 --f", "", "--format"},
+		{"flag without positional", "gccli activity download --f", "", "--format"},
+		{"positional goes to the default subcommand", "gccli activities 5 --t", "", "--type"},
+		{"global value flag", "gccli --account x@example.com activities ", "", activitiesSubcommands},
+		{"global value flag with equals", "gccli --account=x@example.com activities ", "", activitiesSubcommands},
+		{"value with colon", "gccli --account=user:x activities ", "", activitiesSubcommands},
+		{"global enum flag", "gccli --units metric activities ", "", activitiesSubcommands},
+		{"global bool flag", "gccli --json activities ", "", activitiesSubcommands},
+		{"enum values", "gccli --units ", "", unitValues},
+		{"enum values after equals", "gccli --units=", "", unitValues},
+		{"enum value prefix after equals", "gccli --units=m", "", "metric"},
+		{"enum values of the command, not of a flag with the same name", "gccli body add-weight --unit ", "", "kg lbs"},
+		{"enum value prefix after equals and positional", "gccli activity download 123 --format=g", "", "gpx"},
+		{"enum values of the command after a positional", "gccli courses download 1 --format ", "", "fit gpx"},
+		{"value flag wants a value", "gccli --account ", "", ""},
+		{"split inside a value", "gccli --account=x@", "", ""},
+		{"command value flag", "gccli activities list --limit 5 --t", "", "--type"},
+		{"cursor before a word", "gccli activit", " list", "activities activity"},
+		{"cursor inside a word", "gccli acti", "vit", "activities activity"},
+		{"cursor before a flag after positional", "gccli activity download 123 --f", " --json", "--format"},
 	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			args := append([]string{"--norc", "--noprofile", driver, script}, tt.words...)
-			out, err := exec.Command(bashPath, args...).CombinedOutput()
-			if err != nil {
-				t.Fatalf("bash failed: %v\n%s", err, out)
-			}
-			got := strings.TrimSpace(string(out))
-			if got != tt.want {
-				t.Errorf("words %q: COMPREPLY = %q, want %q", tt.words, got, tt.want)
-			}
-		})
+	// bash 3.2 exports the plain set but splits at whitespace only.
+	setups := []struct{ name, wordbreaks, splitAt string }{
+		{"plain bash", plainBashWordbreaks, plainBashWordbreaks},
+		{"bash-completion", bashCompletionWordbreaks, bashCompletionWordbreaks},
+		{"bash 3.2", plainBashWordbreaks, whitespaceOnly},
+	}
+	for _, setup := range setups {
+		for _, tt := range tests {
+			t.Run(setup.name+"/"+tt.name, func(t *testing.T) {
+				cword := len(bashCompWords(tt.beforeCursor, setup.splitAt)) - 1
+				args := []string{"--norc", "--noprofile", driver, script, setup.wordbreaks, tt.beforeCursor, tt.afterCursor, strconv.Itoa(cword)}
+				args = append(args, bashCompWords(tt.beforeCursor+tt.afterCursor, setup.splitAt)...)
+				out, err := exec.Command(bashPath, args...).CombinedOutput()
+				if err != nil {
+					t.Fatalf("bash failed: %v\n%s", err, out)
+				}
+				got := strings.TrimSpace(string(out))
+				if got != tt.want {
+					t.Errorf("line %q: COMPREPLY = %q, want %q", tt.beforeCursor+"<TAB>"+tt.afterCursor, got, tt.want)
+				}
+			})
+		}
 	}
 }
 
