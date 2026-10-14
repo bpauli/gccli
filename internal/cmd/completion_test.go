@@ -285,6 +285,7 @@ const (
 	plainBashWordbreaks      = " \t\n\"'@><=;|&(:"
 	bashCompletionWordbreaks = " \t\n\"'><=;|&(:"
 	whitespaceOnly           = ""
+	noQuoteWordbreaks        = " \t\n@><=;|&(:"
 )
 
 func bashCompWords(line, wordbreaks string) []string {
@@ -355,6 +356,10 @@ func TestGenerateBash_Completions(t *testing.T) {
 COMP_WORDBREAKS=$1
 COMP_LINE=$2$3
 COMP_POINT=${#2}
+# bash before 4.3 reports COMP_POINT in bytes.
+if (( BASH_VERSINFO[0] < 4 || BASH_VERSINFO[0] == 4 && BASH_VERSINFO[1] < 3 )); then
+    COMP_POINT=$(LC_ALL=C; echo ${#2})
+fi
 COMP_CWORD=$4
 shift 4
 COMP_WORDS=("$@")
@@ -368,6 +373,7 @@ printf '%s\n' "${COMPREPLY[*]}"
 
 	const (
 		activitiesSubcommands = "list count search types"
+		authSubcommands       = "login status remove token export import"
 		unitValues            = "auto metric statute_us statute_uk"
 	)
 	tests := []struct {
@@ -396,12 +402,28 @@ printf '%s\n' "${COMPREPLY[*]}"
 		{"cursor before a word", "gccli activit", " list", "activities activity"},
 		{"cursor inside a word", "gccli acti", "vit", "activities activity"},
 		{"cursor before a flag after positional", "gccli activity download 123 --f", " --json", "--format"},
+		{"open double quote", `gccli "au`, "", "auth"},
+		{"open single quote", `gccli 'au`, "", "auth"},
+		{"open quote in a subcommand", `gccli auth "st`, "", "status"},
+		{"open quote in an enum value", `gccli activity download 123 --format "g`, "", "gpx"},
+		{"open quote after equals", `gccli --units="m`, "", "metric"},
+		{"quoted command before the cursor", `gccli "auth" `, "", authSubcommands},
+		{"single-quoted command before a word", `gccli 'auth' st`, "", "status"},
+		{"non-ASCII value before the cursor inside the line", "gccli --account Jürgen au", " status", "auth"},
+		// bash replaces all text after an open quote, so a reply that does
+		// not start with that text would delete what the user typed.
+		{"open quote with a space before the cursor", `gccli "auth st`, "", ""},
+		{"open quote with equals before the cursor", `gccli '--units=m`, "", ""},
+		{"open quote with a space before the cursor in an enum value", `gccli activity download 123 "--format g`, "", ""},
+		{"open quote in a value with a space", `gccli --account "Jane Doe au`, "", ""},
+		{"apostrophe in a value", `gccli --account o'neil activities li`, "", ""},
 	}
 	// bash 3.2 exports the plain set but splits at whitespace only.
 	setups := []struct{ name, wordbreaks, splitAt string }{
 		{"plain bash", plainBashWordbreaks, plainBashWordbreaks},
 		{"bash-completion", bashCompletionWordbreaks, bashCompletionWordbreaks},
 		{"bash 3.2", plainBashWordbreaks, whitespaceOnly},
+		{"quotes removed from COMP_WORDBREAKS", noQuoteWordbreaks, noQuoteWordbreaks},
 	}
 	for _, setup := range setups {
 		for _, tt := range tests {
