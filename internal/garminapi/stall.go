@@ -51,21 +51,22 @@ func (t *stallTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 }
 
 type stallWatch struct {
-	ctx    context.Context
-	cancel context.CancelCauseFunc
-	idle   time.Duration
-	last   atomic.Int64
+	ctx        context.Context
+	cancel     context.CancelCauseFunc
+	idle       time.Duration
+	start      time.Time
+	sinceStart atomic.Int64
 }
 
 func watchStall(parent context.Context, idle time.Duration) *stallWatch {
 	ctx, cancel := context.WithCancelCause(parent)
-	w := &stallWatch{ctx: ctx, cancel: cancel, idle: idle}
+	w := &stallWatch{ctx: ctx, cancel: cancel, idle: idle, start: time.Now()}
 	w.touch()
 	go w.run()
 	return w
 }
 
-func (w *stallWatch) touch() { w.last.Store(time.Now().UnixNano()) }
+func (w *stallWatch) touch() { w.sinceStart.Store(int64(time.Since(w.start))) }
 
 func (w *stallWatch) run() {
 	timer := time.NewTimer(w.idle)
@@ -75,7 +76,7 @@ func (w *stallWatch) run() {
 		case <-w.ctx.Done():
 			return
 		case <-timer.C:
-			quiet := time.Since(time.Unix(0, w.last.Load()))
+			quiet := time.Since(w.start) - time.Duration(w.sinceStart.Load())
 			if quiet >= w.idle {
 				w.cancel(&StallError{Idle: w.idle})
 				return
