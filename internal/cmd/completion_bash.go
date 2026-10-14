@@ -26,21 +26,39 @@ _gccli_completions() {
     fi
     # Words come from the line up to the cursor, split at whitespace only, so
     # they are the same with and without bash-completion and on bash 3.2.
-    local line=${COMP_LINE:0:COMP_POINT} i w n
-    IFS=$' \t\n' read -ra words <<< "$line"
+    # bash before 4.3 counts COMP_POINT in bytes, and ${s:0:n} counts
+    # characters unless the locale is C.
+    local line unquoted i w n
+    if (( BASH_VERSINFO[0] < 4 || BASH_VERSINFO[0] == 4 && BASH_VERSINFO[1] < 3 )); then
+        local LC_ALL=C
+    fi
+    line=${COMP_LINE:0:COMP_POINT}
+    unquoted=${line//[\"\']/}
+    IFS=$' \t\n' read -ra words <<< "$unquoted"
     [[ -z $line || $line == *[[:space:]] ]] && words+=("")
     n=$(( ${#words[@]} - 1 ))
     (( n > 0 )) || return
 
-    # bash replaces only its own current word: the text between the last
-    # break character and the cursor. Replies must match that word. bash 3.2
-    # does not split COMP_WORDS at break characters, so take it from the line.
-    local c
+    # bash replaces only its own current word: the text after an open quote,
+    # or else the text between the last break character and the cursor.
+    # Replies must match that word. bash 3.2 does not split COMP_WORDS at
+    # break characters, so take it from the line.
+    local c quote=""
     cur=$line
-    for ((i = 0; i < ${#COMP_WORDBREAKS}; i++)); do
-        c=${COMP_WORDBREAKS:i:1}
-        cur=${cur##*"$c"}
+    for ((i = 0; i < ${#line}; i++)); do
+        c=${line:i:1}
+        case $quote$c in
+            \\|\"\\) ((i++)) ;;
+            \"|\') quote=$c cur=${line:i+1} ;;
+            \"\"|\'\') quote="" cur=$line ;;
+        esac
     done
+    if [[ -z $quote ]]; then
+        for ((i = 0; i < ${#COMP_WORDBREAKS}; i++)); do
+            c=${COMP_WORDBREAKS:i:1}
+            cur=${cur##*"$c"}
+        done
+    fi
 
     # A positional at a command with a default subcommand that takes
     # arguments belongs to that subcommand.
