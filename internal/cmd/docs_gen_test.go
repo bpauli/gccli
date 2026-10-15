@@ -34,7 +34,7 @@ type refTestGetCmd struct {
 	Secret bool   `hidden:"" help:"Not shown."`
 }
 
-var refTestGroups = []referenceGroup{{"Things & Stuff", []string{"things"}}}
+var refTestGroups = []groupSpec{{"Things & Stuff", []string{"things"}}}
 
 func refTestRoot(t *testing.T) *kong.Node {
 	t.Helper()
@@ -99,7 +99,7 @@ func TestBuildReferenceGroupErrors(t *testing.T) {
 	if _, err := buildReference(root, nil); err == nil || !strings.Contains(err.Error(), `"things"`) {
 		t.Errorf("ungrouped command: got %v, want an error naming \"things\"", err)
 	}
-	groups := append([]referenceGroup{{"Extra", []string{"nope"}}}, refTestGroups...)
+	groups := append([]groupSpec{{"Extra", []string{"nope"}}}, refTestGroups...)
 	if _, err := buildReference(root, groups); err == nil || !strings.Contains(err.Error(), `"nope"`) {
 		t.Errorf("unknown command: got %v, want an error naming \"nope\"", err)
 	}

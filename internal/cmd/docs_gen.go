@@ -10,13 +10,12 @@ import (
 	"github.com/alecthomas/kong"
 )
 
-// referenceGroup is one card on the docs site and one ### section in Markdown.
-type referenceGroup struct {
+type groupSpec struct {
 	Title    string
 	Commands []string
 }
 
-var referenceGroups = []referenceGroup{
+var referenceGroups = []groupSpec{
 	{"Authentication", []string{"auth"}},
 	{"Activities", []string{"activities", "activity", "exercises"}},
 	{"Health Data", []string{"health"}},
@@ -53,7 +52,7 @@ const (
 	referenceComment = "<!-- Generated from the command tree. Do not edit. Run: go test ./internal/cmd -run TestDocsUpToDate -update -->"
 )
 
-func buildReference(root *kong.Node, groups []referenceGroup) ([]refGroup, error) {
+func buildReference(root *kong.Node, groups []groupSpec) ([]refGroup, error) {
 	leaves := map[string][]refCommand{}
 	var topLevel []string
 	for _, info := range collectCommands(root, nil) {
@@ -119,7 +118,7 @@ func referenceCommand(node *kong.Node, path []string) refCommand {
 	}
 	cmd.Synopsis = synopsis(path)
 	cmd.Help = node.Help
-	if node.Parent != nil && node.Parent.DefaultCmd == node {
+	if node.Parent.DefaultCmd == node {
 		cmd.Alias = synopsis(path[:len(path)-1])
 	}
 	return cmd
