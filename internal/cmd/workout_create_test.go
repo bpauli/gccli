@@ -367,3 +367,8 @@ func TestWorkoutCreateCmd_BadStepFailsBeforeCredentials(t *testing.T) {
 	runBadInput(t, []string{"workouts", "create", "--type", "run", "--step", "bad", "Foo"},
 		"invalid step \"bad\": expected type:duration[@target:values]\n")
 }
+
+func TestWorkoutCreateCmd_NaNTargetKeepsBuildPrefix(t *testing.T) {
+	runBadInput(t, []string{"workouts", "create", "--type", "run", "--step", "run:5m@hr:nan-160", "Foo"},
+		"build workout: json: unsupported value: NaN\n")
+}

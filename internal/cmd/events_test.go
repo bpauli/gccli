@@ -244,6 +244,11 @@ func TestEventsAdd_InvalidGoal(t *testing.T) {
 	}
 }
 
+func TestEventsAdd_InfiniteDistanceKeepsBuildPrefix(t *testing.T) {
+	runBadInput(t, []string{"events", "add", "--name", "x", "--date", "2026-11-01", "--type", "running", "--distance", "1" + strings.Repeat("0", 400) + "km"},
+		"build event payload: json: unsupported value: +Inf\n")
+}
+
 func TestEventsAdd_NoAccount(t *testing.T) {
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "")

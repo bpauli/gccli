@@ -196,6 +196,11 @@ func TestActivityExerciseSetsSet_BadInputFailsBeforeCredentials(t *testing.T) {
 			args:       []string{"activity", "exercise-sets", "set", "--exercise", "nope", "abc"},
 			wantStderr: "invalid activity ID: strconv.ParseInt: parsing \"abc\": invalid syntax\n",
 		},
+		{
+			name:       "NaN weight",
+			args:       []string{"activity", "exercise-sets", "set", "--exercise", "A/B:12@nan", "111"},
+			wantStderr: "marshal exercise sets: json: unsupported value: NaN\n",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
