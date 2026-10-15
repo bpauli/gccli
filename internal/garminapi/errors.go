@@ -5,17 +5,25 @@ import (
 	"net/http"
 )
 
-// TokenExpiredError indicates the stored token has expired and could not be refreshed.
+// TokenExpiredError indicates the stored token has expired and could not be
+// refreshed. Err is the refresh failure, or nil when no refresh was tried.
 type TokenExpiredError struct {
 	Email string
+	Err   error
 }
 
 func (e *TokenExpiredError) Error() string {
+	msg := "token expired"
 	if e.Email != "" {
-		return fmt.Sprintf("token expired for %s", e.Email)
+		msg += " for " + e.Email
 	}
-	return "token expired"
+	if e.Err != nil {
+		msg += ": " + e.Err.Error()
+	}
+	return msg
 }
+
+func (e *TokenExpiredError) Unwrap() error { return e.Err }
 
 // RateLimitError indicates the API returned a 429 Too Many Requests response.
 type RateLimitError struct {

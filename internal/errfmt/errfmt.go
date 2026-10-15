@@ -1,6 +1,7 @@
 package errfmt
 
 import (
+	"cmp"
 	"errors"
 	"fmt"
 
@@ -13,10 +14,11 @@ import (
 func Format(err error) string {
 	var tokenErr *garminapi.TokenExpiredError
 	if errors.As(err, &tokenErr) {
-		if tokenErr.Email != "" {
-			return fmt.Sprintf("Token expired. Run: gccli auth login %s", tokenErr.Email)
+		email := cmp.Or(tokenErr.Email, "<email>")
+		if tokenErr.Err != nil {
+			return fmt.Sprintf("Token expired: %v. Run: gccli auth login %s", tokenErr.Err, email)
 		}
-		return "Token expired. Run: gccli auth login <email>"
+		return fmt.Sprintf("Token expired. Run: gccli auth login %s", email)
 	}
 
 	var rateErr *garminapi.RateLimitError

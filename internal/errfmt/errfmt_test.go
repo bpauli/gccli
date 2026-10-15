@@ -25,6 +25,11 @@ func TestFormat(t *testing.T) {
 			want: "Token expired. Run: gccli auth login <email>",
 		},
 		{
+			name: "token expired after a failed refresh",
+			err:  fmt.Errorf("get goals: %w", &garminapi.TokenExpiredError{Email: "user@example.com", Err: errors.New("HTTP 400: invalid_grant")}),
+			want: "Token expired: HTTP 400: invalid_grant. Run: gccli auth login user@example.com",
+		},
+		{
 			name: "rate limited with retry-after",
 			err:  fmt.Errorf("get goals: %w", &garminapi.RateLimitError{RetryAfter: "60"}),
 			want: "Rate limited. Wait 60 and retry.",

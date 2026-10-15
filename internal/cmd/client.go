@@ -4,13 +4,16 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
+	"syscall"
 
 	"github.com/bpauli/gccli/internal/config"
 	"github.com/bpauli/gccli/internal/garminapi"
 	"github.com/bpauli/gccli/internal/garminauth"
 	"github.com/bpauli/gccli/internal/secrets"
+	"github.com/bpauli/gccli/internal/ui"
 )
 
 // newClientFn creates a garminapi.Client from tokens.
@@ -44,7 +47,7 @@ func resolveClient(g *Globals) (*garminapi.Client, error) {
 		return nil, err
 	}
 
-	r := &tokenRefresher{store: store, email: email}
+	r := &tokenRefresher{store: store, email: email, ui: g.UI}
 	if tokens.IsExpired() && tokens.CanRefresh() {
 		fresh, err := r.refresh(g.Context, tokens)
 		var expired *garminapi.TokenExpiredError
@@ -76,38 +79,30 @@ func loadTokens(store *secrets.Store, email string) (*garminauth.Tokens, error) 
 	if err != nil {
 		return nil, fmt.Errorf("parse tokens: %w", err)
 	}
-	if err := checkStoredDomain(email, tokens); err != nil {
+	if tokens.Domain, err = tokenDomain(email, tokens); err != nil {
 		return nil, err
-	}
-	if tokens.Domain == "" {
-		cfg, err := config.Read()
-		if err != nil {
-			return nil, fmt.Errorf("read config: %w", err)
-		}
-		if tokens.Domain, err = garminauth.ParseDomain(cfg.Domain()); err != nil {
-			return nil, err
-		}
 	}
 	return tokens, nil
 }
 
-func checkStoredDomain(email string, tokens *garminauth.Tokens) error {
+func tokenDomain(email string, tokens *garminauth.Tokens) (string, error) {
 	if tokens.Domain == "" {
-		return nil
+		return loginDomain()
 	}
 	if _, err := garminauth.ParseDomain(tokens.Domain); err != nil {
-		return fmt.Errorf("stored token for %s has unknown Garmin domain %q; run: gccli auth login %s", email, tokens.Domain, email)
+		return "", fmt.Errorf("stored token for %s has unknown Garmin domain %q; run: gccli auth login %s", email, tokens.Domain, email)
 	}
-	return nil
+	return tokens.Domain, nil
 }
 
 type tokenRefresher struct {
 	store *secrets.Store
 	email string
+	ui    *ui.UI
 }
 
 func (r *tokenRefresher) refresh(ctx context.Context, sent *garminauth.Tokens) (*garminauth.Tokens, error) {
-	unlock, err := lockTokens()
+	unlock, err := lockTokens(r.ui)
 	if err != nil {
 		return nil, err
 	}
@@ -125,28 +120,34 @@ func (r *tokenRefresher) refresh(ctx context.Context, sent *garminauth.Tokens) (
 	}
 	fresh, err := refreshFn(ctx, stored, garminauth.LoginOptions{Domain: stored.Domain})
 	if err != nil {
-		return nil, &garminapi.TokenExpiredError{Email: r.email}
+		return nil, &garminapi.TokenExpiredError{Email: r.email, Err: err}
 	}
 	if err := persistTokens(r.store, r.email, fresh); err != nil {
-		return nil, fmt.Errorf("save refreshed token: %w", err)
+		r.ui.Warnf("Could not save the refreshed token: %v", err)
 	}
 	return fresh, nil
 }
 
-func lockTokens() (unlock func(), err error) {
+func lockTokens(u *ui.UI) (unlock func(), err error) {
 	dir, err := config.ConfigDir()
 	if err != nil {
 		return nil, err
 	}
-	if err := os.MkdirAll(dir, 0o700); err != nil {
-		return nil, fmt.Errorf("lock token refresh: %w", err)
+	if err = os.MkdirAll(dir, 0o700); err == nil {
+		unlock, err = config.LockFile(filepath.Join(dir, "token.lock"), func() {
+			u.Infof("Waiting for another gccli process to refresh the token")
+		})
 	}
-	unlock, err = config.LockFile(filepath.Join(dir, "token.lock"))
-	if err != nil {
-		return nil, fmt.Errorf("lock token refresh: %w", err)
+	switch {
+	case err == nil:
+		return unlock, nil
+	case errors.Is(err, fs.ErrPermission), errors.Is(err, syscall.EROFS):
+		return refreshWithoutLock, nil
 	}
-	return unlock, nil
+	return nil, fmt.Errorf("lock token refresh: %w", err)
 }
+
+func refreshWithoutLock() {}
 
 func persistTokens(store *secrets.Store, email string, tokens *garminauth.Tokens) error {
 	data, err := tokens.Marshal()

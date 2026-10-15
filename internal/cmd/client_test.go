@@ -306,6 +306,109 @@ func TestResolveClient_LockFails(t *testing.T) {
 	}
 }
 
+func TestRefreshFailureKeepsCause(t *testing.T) {
+	const cause = "refresh DI token: dial tcp 127.0.0.1:1: connect: connection refused"
+	const msg = "Token expired: " + cause + ". Run: gccli auth login test@example.com"
+	tests := []struct {
+		name   string
+		args   []string
+		stderr string
+	}{
+		{"text", []string{"auth", "token"}, msg + "\n"},
+		{"json", []string{"--json", "auth", "token"}, `{"error":{"code":"auth_required","status":401,"message":"` + msg + `"}}` + "\n"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			testutil.TempConfigDir(t)
+			store := newTestSecretsStore(t)
+			overrideLoadSecrets(t, store)
+			expired := testTokens()
+			expired.OAuth2ExpiresAt = time.Now().Add(-time.Hour)
+			storeTestTokens(t, store, "test@example.com", expired)
+			stub(t, &refreshFn, func(context.Context, *garminauth.Tokens, garminauth.LoginOptions) (*garminauth.Tokens, error) {
+				return nil, errors.New(cause)
+			})
+
+			var stdout, stderr bytes.Buffer
+			args := append([]string{"--account", "test@example.com", "--color", "never"}, tt.args...)
+			code := execute(args, "test", "none", "never", &stdout, &stderr)
+			if code != 3 {
+				t.Errorf("exit code = %d, want 3", code)
+			}
+			if stderr.String() != tt.stderr {
+				t.Errorf("stderr = %q, want %q", stderr.String(), tt.stderr)
+			}
+		})
+	}
+}
+
+func TestRefreshLockWaitMessage(t *testing.T) {
+	dir := testutil.TempConfigDir(t)
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	expired := testTokens()
+	expired.OAuth2ExpiresAt = time.Now().Add(-time.Hour)
+	storeTestTokens(t, store, "test@example.com", expired)
+	stub(t, &refreshFn, func(_ context.Context, tokens *garminauth.Tokens, _ garminauth.LoginOptions) (*garminauth.Tokens, error) {
+		fresh := *tokens
+		fresh.OAuth2AccessToken = "refreshed"
+		fresh.OAuth2ExpiresAt = time.Now().Add(time.Hour)
+		return &fresh, nil
+	})
+
+	unlock, err := config.LockFile(filepath.Join(dir, "token.lock"), nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	time.AfterFunc(1500*time.Millisecond, unlock)
+
+	var stdout, stderr bytes.Buffer
+	code := execute([]string{"--account", "test@example.com", "--color", "never", "auth", "token"}, "test", "none", "never", &stdout, &stderr)
+	if code != 0 {
+		t.Fatalf("exit code = %d, stderr = %q", code, stderr.String())
+	}
+	if want := "Waiting for another gccli process to refresh the token\n"; stderr.String() != want {
+		t.Errorf("stderr = %q, want %q", stderr.String(), want)
+	}
+	if stdout.String() != "refreshed\n" {
+		t.Errorf("stdout = %q, want refreshed", stdout.String())
+	}
+}
+
+func TestResolveClient_ReadOnlyConfigDirRefreshesUnlocked(t *testing.T) {
+	if os.Geteuid() == 0 {
+		t.Skip("root ignores directory permissions")
+	}
+	dir := testutil.TempConfigDir(t)
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	expired := testTokens()
+	expired.OAuth2ExpiresAt = time.Now().Add(-time.Hour)
+	storeTestTokens(t, store, "test@example.com", expired)
+	if err := os.Chmod(dir, 0o500); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = os.Chmod(dir, 0o700) })
+	stub(t, &refreshFn, func(_ context.Context, tokens *garminauth.Tokens, _ garminauth.LoginOptions) (*garminauth.Tokens, error) {
+		fresh := *tokens
+		fresh.OAuth2AccessToken = "refreshed"
+		fresh.OAuth2ExpiresAt = time.Now().Add(time.Hour)
+		return &fresh, nil
+	})
+
+	var buf bytes.Buffer
+	client, err := resolveClient(testGlobals(t, &buf, outfmt.Table, "test@example.com"))
+	if err != nil {
+		t.Fatalf("resolveClient: %v", err)
+	}
+	if got := client.Tokens().OAuth2AccessToken; got != "refreshed" {
+		t.Errorf("client token = %q, want refreshed", got)
+	}
+	if got := storedAccessToken(t, store); got != "refreshed" {
+		t.Errorf("stored token = %q, want refreshed", got)
+	}
+}
+
 type failSetKeyring struct{ *memKeyring }
 
 func (failSetKeyring) Set(keyring.Item) error { return fmt.Errorf("keyring is read-only") }
@@ -328,9 +431,15 @@ func TestResolveClient_SaveFails(t *testing.T) {
 	}
 
 	var buf bytes.Buffer
-	_, err := resolveClient(testGlobals(t, &buf, outfmt.Table, "test@example.com"))
-	if err == nil || !strings.Contains(err.Error(), "save refreshed token") {
-		t.Fatalf("err = %v, want a save error", err)
+	client, err := resolveClient(testGlobals(t, &buf, outfmt.Table, "test@example.com"))
+	if err != nil {
+		t.Fatalf("resolveClient: %v", err)
+	}
+	if got := client.Tokens().OAuth2AccessToken; got != "unsaved" {
+		t.Errorf("client token = %q, want the refreshed token unsaved", got)
+	}
+	if want := "Could not save the refreshed token: keyring set: keyring is read-only\n"; buf.String() != want {
+		t.Errorf("stderr = %q, want %q", buf.String(), want)
 	}
 }
 
@@ -422,6 +531,7 @@ func TestUnknownStoredDomain(t *testing.T) {
 		{"auth status json", false, []string{"--json", "auth", "status"}, `{"error":{"code":"error","message":"stored token for test@example.com has unknown Garmin domain \"foo.example\"; run: gccli auth login test@example.com"}}` + "\n"},
 		{"api command", false, []string{"devices", "list"}, msg + "\n"},
 		{"expired api command", true, []string{"devices", "list"}, msg + "\n"},
+		{"auth token", false, []string{"auth", "token"}, msg + "\n"},
 		{"expired auth token", true, []string{"auth", "token"}, msg + "\n"},
 	}
 	for _, tt := range tests {
@@ -442,6 +552,48 @@ func TestUnknownStoredDomain(t *testing.T) {
 			stub(t, &refreshFn, func(context.Context, *garminauth.Tokens, garminauth.LoginOptions) (*garminauth.Tokens, error) {
 				t.Error("refreshed a token with an unknown domain")
 				return nil, errors.New("no refresh")
+			})
+
+			var stdout, stderr bytes.Buffer
+			args := append([]string{"--account", "test@example.com", "--color", "never"}, tt.args...)
+			code := execute(args, "test", "none", "never", &stdout, &stderr)
+			if code != 1 {
+				t.Errorf("exit code = %d, want 1", code)
+			}
+			if stdout.Len() != 0 {
+				t.Errorf("stdout = %q, want empty", stdout.String())
+			}
+			if stderr.String() != tt.stderr {
+				t.Errorf("stderr = %q, want %q", stderr.String(), tt.stderr)
+			}
+		})
+	}
+}
+
+func TestUnknownDomainForEmptyStoredDomain(t *testing.T) {
+	const msg = `unknown Garmin domain "foo.example"; use garmin.com or garmin.cn`
+	tests := []struct {
+		name   string
+		args   []string
+		stderr string
+	}{
+		{"auth status", []string{"auth", "status"}, msg + "\n"},
+		{"auth status json", []string{"--json", "auth", "status"}, `{"error":{"code":"error","message":"unknown Garmin domain \"foo.example\"; use garmin.com or garmin.cn"}}` + "\n"},
+		{"auth token", []string{"auth", "token"}, msg + "\n"},
+		{"api command", []string{"devices", "list"}, msg + "\n"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			testutil.TempConfigDir(t)
+			t.Setenv(config.EnvDomain, "foo.example")
+			store := newTestSecretsStore(t)
+			overrideLoadSecrets(t, store)
+			tokens := testTokens()
+			tokens.Domain = ""
+			storeTestTokens(t, store, "test@example.com", tokens)
+			stub(t, &newClientFn, func(*garminauth.Tokens) *garminapi.Client {
+				t.Fatal("created an API client for an unknown domain")
+				return nil
 			})
 
 			var stdout, stderr bytes.Buffer

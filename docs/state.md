@@ -56,6 +56,10 @@ Both lock files are in the config directory. gccli creates each one with mode `0
 | `config.lock` | `config.Update` reads, changes and writes `config.json`. |
 | `token.lock` | gccli reads the stored token again, refreshes it with Garmin, and stores the result. A second process that waits on the lock then reads the new token. It does not refresh a second time. |
 
+When a process waits for `token.lock` for more than one second, it writes `Waiting for another gccli process to refresh the token` to stderr.
+
+When gccli cannot create `token.lock` because the config directory is read-only or does not give write permission, it refreshes the token without the lock. Any other lock failure stops the command with an error.
+
 On systems that are not Unix, such as Windows, `LockFile` does nothing. Writes to `config.json` are atomic but not locked there, and token refreshes are not locked.
 
 ## Keyring
@@ -76,11 +80,13 @@ gccli picks the backend in this order. The first one that is set wins.
 2. `keyring_backend` in `config.json`
 3. Automatic selection by the keyring library
 
-On Linux, when neither `GCCLI_KEYRING_BACKEND` nor `keyring_backend` has a value and automatic selection cannot open a keyring, gccli uses the `file` backend. A value that selects the backend automatically, such as `auto`, gets no `file` fallback. On macOS, the Keychain item is not synchronized, it is readable only when the Keychain is unlocked, and it trusts the gccli binary.
+When neither `GCCLI_KEYRING_BACKEND` nor `keyring_backend` names a backend (no value, `auto`, or any other value), gccli tries the backends that the keyring library offers on that system, in the library's order, and uses the first one that opens. The `file` backend is always last, so it is the fallback on every system. On macOS, the Keychain item is not synchronized, it is readable only when the Keychain is unlocked, and it trusts the gccli binary.
 
 ### File backend
 
 The `file` backend writes one file per item in `credentials/` in the config directory. The file name is the item key, for example `gccli:token:you@example.com`. The file has mode `0600`. The directory has mode `0700`.
+
+gccli writes the new file in a temporary directory in `credentials/` and then renames it over the old file. A process that reads the file at the same time gets the old or the new token, never a partly written file. A temporary directory that a crash leaves behind has a name that starts with `.set-`. You can delete it.
 
 Each file is a JWE (PBES2-HS256+A128KW key wrap, A256GCM content encryption) of the keyring item. The passphrase is the fixed string `gccli-file-store`, built into gccli. You cannot change it. Anyone who can read the file can decrypt the token.
 
@@ -125,7 +131,7 @@ gccli drops unknown keys each time it writes a token. A key that must survive a 
 
 The login writes that domain into the token. API calls and token refresh use the `domain` of the token. When the token has an empty `domain`, they use the same order as `auth login`. gccli accepts only `garmin.com` and `garmin.cn`. Any other value fails with an error before gccli sends a request.
 
-When the `domain` of the stored token has another value, the error names the stored token and tells you to run `gccli auth login <email>`. `auth status` fails with the same error and exit code 1.
+When the `domain` of the stored token has another value, the error names the stored token and tells you to run `gccli auth login <email>`. `auth status` and `auth token` check the domain in the same way as API calls. They fail with the same errors and exit code 1.
 
 ## Account
 
