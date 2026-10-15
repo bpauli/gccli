@@ -78,15 +78,16 @@ All three checks (`make fmt`, `make lint`, `make test`) must pass before committ
 
 ## Documentation Updates
 
-For every feature enhancement (new command, new flag, new subcommand), you MUST update all three documentation sources:
+The command reference in `README.md`, `skills/gccli/SKILL.md` and `docs/index.html` is generated from the Kong command tree. It is between the `<!-- gccli:commands:begin -->` and `<!-- gccli:commands:end -->` lines. Do not edit it by hand.
 
-- **`README.md`** — features list and command examples section
-- **`skills/gccli/SKILL.md`** — command reference for the skill
-- **`docs/index.html`** — feature cards and command reference on the docs site
+- After you add or change a command, a flag or a `help:` tag, run `go test ./internal/cmd -run TestDocsUpToDate -update`.
+- `make test` fails while a block is stale.
+- A new top-level command also needs a place in `referenceGroups` in `internal/cmd/docs_gen.go`. If it has no place, `TestDocsUpToDate` fails.
+- Text outside the markers is hand-written: the features list and examples in `README.md`, and the feature cards in `docs/index.html`. Update it by hand when a feature needs it.
 
 ## Shell Completion
 
-Shell completions are **auto-generated** from the Kong parser tree (`internal/cmd/completion*.go`). When you add a new command or subcommand to the `CLI` struct in `root.go`, it is automatically included in all completion scripts (bash, zsh, fish, powershell). However, you MUST verify that the new command appears in `TestCollectCommands` in `completion_test.go` — update the expected top-level commands list if you add a new top-level command group.
+Shell completions are **auto-generated** from the Kong parser tree (`internal/cmd/completion*.go`). When you add a new command or subcommand to the `CLI` struct in `root.go`, it is automatically included in all completion scripts (bash, zsh, fish, powershell). However, you MUST verify that the new command appears in `TestCollectCommands` in `completion_test.go`. Update the expected top-level commands list if you add a new top-level command group. The same tree also generates the command reference in the docs (see Documentation Updates).
 
 ## Releases
 
