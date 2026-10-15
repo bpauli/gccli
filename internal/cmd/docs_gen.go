@@ -172,10 +172,10 @@ func renderHTMLReference(groups []refGroup) string {
 		for _, c := range g.Commands {
 			desc := html.EscapeString(c.Help)
 			if c.Alias != "" {
-				desc += " Also runs as <code>" + html.EscapeString(c.Alias) + "</code>."
+				desc += ` Also runs as <span class="whole">` + chipHTML(c.Alias) + ".</span>"
 			}
 			for _, p := range c.Params {
-				desc += "<br><code>" + html.EscapeString(p.Name) + "</code> " + html.EscapeString(p.Help)
+				desc += "<br>" + chipHTML(p.Name) + " " + html.EscapeString(p.Help)
 			}
 			fmt.Fprintf(&b, "%s    <div class=\"cmd-row\"><div class=\"cmd\">%s</div><div class=\"desc\">%s</div></div>\n", indent, synopsisHTML(c.Synopsis), desc)
 		}
@@ -184,17 +184,33 @@ func renderHTMLReference(groups []refGroup) string {
 	return b.String()
 }
 
-// A browser may break a line after a hyphen and split --name=STRING into
-// -- and name=STRING.
 func synopsisHTML(synopsis string) string {
 	words := strings.Fields(synopsis)
 	for i, w := range words {
-		words[i] = html.EscapeString(w)
-		if strings.Contains(w, "-") {
-			words[i] = `<span class="nowrap">` + words[i] + "</span>"
-		}
+		words[i] = nowrapHTML(w)
 	}
 	return strings.Join(words, " ")
+}
+
+func chipHTML(s string) string {
+	words := strings.Fields(s)
+	for i, w := range words {
+		if name, value, ok := strings.Cut(w, "="); ok {
+			words[i] = nowrapHTML(name+"=") + "<wbr>" + nowrapHTML(value)
+		} else {
+			words[i] = nowrapHTML(w)
+		}
+	}
+	return "<code>" + strings.Join(words, " ") + "</code>"
+}
+
+// A browser may break a line after a hyphen and split --name=STRING into
+// -- and name=STRING.
+func nowrapHTML(s string) string {
+	if strings.Contains(s, "-") {
+		return `<span class="nowrap">` + html.EscapeString(s) + "</span>"
+	}
+	return html.EscapeString(s)
 }
 
 func spliceReference(doc, block string) (string, error) {
