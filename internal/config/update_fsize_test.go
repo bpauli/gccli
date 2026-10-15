@@ -35,6 +35,9 @@ func TestUpdate_InterruptedWriteKeepsOldFile(t *testing.T) {
 	if !strings.Contains(string(out), "file too large") {
 		t.Fatalf("helper write failed for another reason:\n%s", out)
 	}
+	if !strings.Contains(string(out), filepath.Dir(path)) {
+		t.Fatalf("helper did not write to %s:\n%s", filepath.Dir(path), out)
+	}
 
 	data, err := os.ReadFile(path)
 	if err != nil {
