@@ -513,3 +513,50 @@ func TestAuthLogin_BrowserError(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 }
+
+func TestExecute_AuthLoginUnknownDomain(t *testing.T) {
+	tests := []struct {
+		name   string
+		env    string
+		config string
+	}{
+		{name: "env", env: "foo.example"},
+		{name: "config", config: "foo.example"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			testutil.TempConfigDir(t)
+			t.Setenv(config.EnvDomain, tt.env)
+			if tt.config != "" {
+				if err := config.Update(func(f *config.File) { f.DomainName = tt.config }); err != nil {
+					t.Fatal(err)
+				}
+			}
+
+			origHeadless := loginHeadlessFn
+			loginHeadlessFn = func(context.Context, string, string, garminauth.LoginOptions) (*garminauth.Tokens, error) {
+				t.Error("login ran for an unknown domain")
+				return nil, errors.New("unexpected login")
+			}
+			t.Cleanup(func() { loginHeadlessFn = origHeadless })
+			origPw := readPasswordFn
+			readPasswordFn = func(int) ([]byte, error) {
+				t.Error("password prompt ran for an unknown domain")
+				return nil, errors.New("unexpected prompt")
+			}
+			t.Cleanup(func() { readPasswordFn = origPw })
+
+			var stdout, stderr bytes.Buffer
+			code := execute([]string{"auth", "login", "x@example.com", "--headless"}, "test", "", "", &stdout, &stderr)
+			if code != 2 {
+				t.Errorf("exit code = %d, want 2", code)
+			}
+			if !strings.Contains(stderr.String(), "foo.example") {
+				t.Errorf("stderr does not name the domain: %q", stderr.String())
+			}
+			if strings.Contains(stderr.String(), "Password:") {
+				t.Errorf("stderr has a password prompt: %q", stderr.String())
+			}
+		})
+	}
+}

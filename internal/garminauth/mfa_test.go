@@ -525,8 +525,7 @@ func TestSubmitMFA(t *testing.T) {
 
 func TestLoginHeadless_MFAWithCode(t *testing.T) {
 	mux := ssoMuxWithMFA(t, "123456")
-	srv, ep := mockSSO(t, mux)
-	useMockDI(t, srv)
+	_, ep := mockSSO(t, mux)
 
 	tokens, err := loginHeadless(context.Background(), "test@example.com", "correctpass",
 		LoginOptions{MFACode: "123456"}, ep)
@@ -547,8 +546,7 @@ func TestLoginHeadless_MFAWithCode(t *testing.T) {
 
 func TestLoginHeadless_MFAWithPrompt(t *testing.T) {
 	mux := ssoMuxWithMFA(t, "654321")
-	srv, ep := mockSSO(t, mux)
-	useMockDI(t, srv)
+	_, ep := mockSSO(t, mux)
 
 	promptCalled := false
 	tokens, err := loginHeadless(context.Background(), "test@example.com", "correctpass",
@@ -586,8 +584,7 @@ func TestLoginHeadless_MFANoCodeOrPrompt(t *testing.T) {
 
 func TestLoginHeadless_MFAWrongCode(t *testing.T) {
 	mux := ssoMuxWithMFA(t, "123456")
-	srv, ep := mockSSO(t, mux)
-	useMockDI(t, srv)
+	_, ep := mockSSO(t, mux)
 
 	_, err := loginHeadless(context.Background(), "test@example.com", "correctpass",
 		LoginOptions{MFACode: "wrong-code"}, ep)

@@ -6,7 +6,10 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
+	"slices"
 	"strings"
+	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -42,12 +45,7 @@ func TestRefreshOAuth2_DIRefresh(t *testing.T) {
 		})
 	})
 
-	srv := httptest.NewServer(mux)
-	t.Cleanup(srv.Close)
-
-	origURL := diTokenURL
-	diTokenURL = srv.URL + "/di-oauth2-service/oauth/token"
-	t.Cleanup(func() { diTokenURL = origURL })
+	rec := newReroutingRecorder(t, mux)
 
 	tokens := &Tokens{
 		OAuth2AccessToken:  "old-access",
@@ -58,7 +56,7 @@ func TestRefreshOAuth2_DIRefresh(t *testing.T) {
 		DisplayName:        "Test User",
 	}
 
-	refreshed, err := RefreshOAuth2(context.Background(), tokens, LoginOptions{})
+	refreshed, err := RefreshOAuth2(context.Background(), tokens, LoginOptions{HTTPClient: rec.client()})
 	if err != nil {
 		t.Fatalf("RefreshOAuth2() error: %v", err)
 	}
@@ -91,19 +89,14 @@ func TestRefreshOAuth2_DIRefreshPreservesRefreshTokenWhenOmitted(t *testing.T) {
 		})
 	})
 
-	srv := httptest.NewServer(mux)
-	t.Cleanup(srv.Close)
-
-	origURL := diTokenURL
-	diTokenURL = srv.URL + "/di-oauth2-service/oauth/token"
-	t.Cleanup(func() { diTokenURL = origURL })
+	rec := newReroutingRecorder(t, mux)
 
 	tokens := &Tokens{
 		OAuth2RefreshToken: "old-refresh",
 		DIClientID:         "test-di-client",
 	}
 
-	refreshed, err := RefreshOAuth2(context.Background(), tokens, LoginOptions{})
+	refreshed, err := RefreshOAuth2(context.Background(), tokens, LoginOptions{HTTPClient: rec.client()})
 	if err != nil {
 		t.Fatalf("RefreshOAuth2() error: %v", err)
 	}
@@ -129,19 +122,14 @@ func TestRefreshDI_OnlyTriesStoredClientID(t *testing.T) {
 		http.Error(w, `{"error":"invalid_grant"}`, http.StatusBadRequest)
 	})
 
-	srv := httptest.NewServer(mux)
-	t.Cleanup(srv.Close)
-
-	origURL := diTokenURL
-	diTokenURL = srv.URL + "/di-oauth2-service/oauth/token"
-	t.Cleanup(func() { diTokenURL = origURL })
+	rec := newReroutingRecorder(t, mux)
 
 	tokens := &Tokens{
 		OAuth2RefreshToken: "old-refresh",
 		DIClientID:         "test-di-client",
 	}
 
-	_, err := RefreshOAuth2(context.Background(), tokens, LoginOptions{})
+	_, err := RefreshOAuth2(context.Background(), tokens, LoginOptions{HTTPClient: rec.client()})
 	if err == nil {
 		t.Fatal("expected error from refresh")
 	}
@@ -161,16 +149,11 @@ func TestRefreshDI_IteratesWhenClientIDUnknown(t *testing.T) {
 		http.Error(w, `{"error":"invalid_grant"}`, http.StatusBadRequest)
 	})
 
-	srv := httptest.NewServer(mux)
-	t.Cleanup(srv.Close)
-
-	origURL := diTokenURL
-	diTokenURL = srv.URL + "/di-oauth2-service/oauth/token"
-	t.Cleanup(func() { diTokenURL = origURL })
+	rec := newReroutingRecorder(t, mux)
 
 	tokens := &Tokens{OAuth2RefreshToken: "old-refresh"}
 
-	_, err := RefreshOAuth2(context.Background(), tokens, LoginOptions{})
+	_, err := RefreshOAuth2(context.Background(), tokens, LoginOptions{HTTPClient: rec.client()})
 	if err == nil {
 		t.Fatal("expected error from refresh")
 	}
@@ -215,11 +198,7 @@ func TestExchangeServiceTicket_Success(t *testing.T) {
 	srv := httptest.NewServer(mux)
 	t.Cleanup(srv.Close)
 
-	origURL := diTokenURL
-	diTokenURL = srv.URL + "/di-oauth2-service/oauth/token"
-	t.Cleanup(func() { diTokenURL = origURL })
-
-	tokens, err := exchangeServiceTicket(context.Background(), srv.Client(), "ST-test-ticket", "https://example.com/cb")
+	tokens, err := exchangeServiceTicket(context.Background(), srv.Client(), Endpoints{DIToken: srv.URL + diTokenPath}, "ST-test-ticket", "https://example.com/cb")
 	if err != nil {
 		t.Fatalf("exchangeServiceTicket() error: %v", err)
 	}
@@ -248,11 +227,7 @@ func TestExchangeServiceTicket_DoesNotIterate(t *testing.T) {
 	srv := httptest.NewServer(mux)
 	t.Cleanup(srv.Close)
 
-	origURL := diTokenURL
-	diTokenURL = srv.URL + "/di-oauth2-service/oauth/token"
-	t.Cleanup(func() { diTokenURL = origURL })
-
-	_, err := exchangeServiceTicket(context.Background(), srv.Client(), "ST-bad", "https://example.com/cb")
+	_, err := exchangeServiceTicket(context.Background(), srv.Client(), Endpoints{DIToken: srv.URL + diTokenPath}, "ST-bad", "https://example.com/cb")
 	if err == nil {
 		t.Fatal("expected error")
 	}
@@ -286,11 +261,7 @@ func TestPostDIForm_RejectsInvalidExpiresIn(t *testing.T) {
 			srv := httptest.NewServer(mux)
 			t.Cleanup(srv.Close)
 
-			origURL := diTokenURL
-			diTokenURL = srv.URL + "/di-oauth2-service/oauth/token"
-			t.Cleanup(func() { diTokenURL = origURL })
-
-			_, err := exchangeServiceTicket(context.Background(), srv.Client(), "ST-ok", "https://example.com/cb")
+			_, err := exchangeServiceTicket(context.Background(), srv.Client(), Endpoints{DIToken: srv.URL + diTokenPath}, "ST-ok", "https://example.com/cb")
 			if err == nil {
 				t.Fatal("expected error for non-positive expires_in")
 			}
@@ -363,6 +334,72 @@ func TestExtractClientIDFromJWT(t *testing.T) {
 			got := extractClientIDFromJWT(tc.token, tc.fallback)
 			if got != tc.want {
 				t.Errorf("extractClientIDFromJWT() = %q, want %q", got, tc.want)
+			}
+		})
+	}
+}
+
+type reroutingRecorder struct {
+	target *url.URL
+	mu     sync.Mutex
+	reqs   []string
+}
+
+func newReroutingRecorder(t *testing.T, handler http.Handler) *reroutingRecorder {
+	t.Helper()
+	srv := httptest.NewServer(handler)
+	t.Cleanup(srv.Close)
+	target, err := url.Parse(srv.URL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return &reroutingRecorder{target: target}
+}
+
+func (h *reroutingRecorder) RoundTrip(r *http.Request) (*http.Response, error) {
+	h.mu.Lock()
+	h.reqs = append(h.reqs, r.Method+" "+r.URL.Host+r.URL.Path)
+	h.mu.Unlock()
+	r = r.Clone(r.Context())
+	r.URL.Scheme, r.URL.Host = h.target.Scheme, h.target.Host
+	return http.DefaultTransport.RoundTrip(r)
+}
+
+func (h *reroutingRecorder) client() *http.Client { return &http.Client{Transport: h} }
+
+func (h *reroutingRecorder) requests() []string {
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	return slices.Clone(h.reqs)
+}
+
+func TestRefreshOAuth2_DIHostFollowsTokenDomain(t *testing.T) {
+	tests := []struct {
+		domain string
+		want   string
+	}{
+		{DomainGlobal, "POST diauth.garmin.com/di-oauth2-service/oauth/token"},
+		{DomainChina, "POST diauth.garmin.cn/di-oauth2-service/oauth/token"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.domain, func(t *testing.T) {
+			mux := http.NewServeMux()
+			mux.HandleFunc("POST /di-oauth2-service/oauth/token", func(w http.ResponseWriter, _ *http.Request) {
+				w.Header().Set("Content-Type", "application/json")
+				_, _ = w.Write([]byte(`{"access_token":"new-access","refresh_token":"new-refresh","expires_in":3600}`))
+			})
+			rec := newReroutingRecorder(t, mux)
+			tokens := &Tokens{OAuth2RefreshToken: "old-refresh", DIClientID: "test-di-client", Domain: tt.domain}
+
+			refreshed, err := RefreshOAuth2(context.Background(), tokens, LoginOptions{Domain: tt.domain, HTTPClient: rec.client()})
+			if err != nil {
+				t.Fatalf("RefreshOAuth2() error: %v", err)
+			}
+			if got := rec.requests(); !slices.Equal(got, []string{tt.want}) {
+				t.Errorf("requests = %q, want %q", got, tt.want)
+			}
+			if refreshed.Domain != tt.domain {
+				t.Errorf("Domain = %q, want %q", refreshed.Domain, tt.domain)
 			}
 		})
 	}

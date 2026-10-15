@@ -14,6 +14,7 @@ const (
 	ssoSigninPath     = "/sso/signin"
 	ssoVerifyMFAPath  = "/sso/verifyMFA/loginEnterMfaCode"
 	oauthExchangePath = "/oauth-service/oauth/exchange/user/2.0"
+	diTokenPath       = "/di-oauth2-service/oauth/token"
 )
 
 // OAuth consumer credentials URL (public, hosted by Garmin/Garth).
@@ -22,8 +23,17 @@ const OAuthConsumerURL = "https://thegarth.s3.amazonaws.com/oauth_consumer.json"
 // User-Agent used for OAuth exchange requests (matches Garmin mobile app).
 const UserAgent = "com.garmin.android.apps.connectmobile"
 
+func ParseDomain(s string) (string, error) {
+	switch s {
+	case DomainGlobal, DomainChina:
+		return s, nil
+	}
+	return "", fmt.Errorf("unknown Garmin domain %q; use %s or %s", s, DomainGlobal, DomainChina)
+}
+
 // Endpoints holds the resolved URLs for a given Garmin domain.
 type Endpoints struct {
+	Domain string
 	// SSOBase is the base URL for SSO operations (e.g. "https://sso.garmin.com").
 	SSOBase string
 	// SSOEmbed is the SSO embed URL used for cookie setup.
@@ -36,6 +46,7 @@ type Endpoints struct {
 	OAuthBase string
 	// ConnectAPI is the base URL for the Connect API (e.g. "https://connectapi.garmin.com").
 	ConnectAPI string
+	DIToken    string
 }
 
 // NewEndpoints builds the full endpoint URLs for the given domain.
@@ -45,12 +56,14 @@ func NewEndpoints(domain string) Endpoints {
 	oauthBase := fmt.Sprintf("https://connectapi.%s", domain)
 
 	return Endpoints{
+		Domain:       domain,
 		SSOBase:      ssoBase,
 		SSOEmbed:     ssoBase + ssoEmbedPath,
 		SSOSignin:    ssoBase + ssoSigninPath,
 		SSOVerifyMFA: ssoBase + ssoVerifyMFAPath,
 		OAuthBase:    oauthBase,
 		ConnectAPI:   oauthBase,
+		DIToken:      fmt.Sprintf("https://diauth.%s%s", domain, diTokenPath),
 	}
 }
 

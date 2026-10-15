@@ -27,10 +27,23 @@ type AuthLoginCmd struct {
 	MFACode  string `help:"MFA code for two-factor authentication." name:"mfa-code"`
 }
 
-func (c *AuthLoginCmd) Run(g *Globals) error {
+func (c *AuthLoginCmd) Validate() error {
+	_, err := loginDomain()
+	return err
+}
+
+func loginDomain() (string, error) {
 	cfg, err := config.Read()
 	if err != nil {
-		return fmt.Errorf("read config: %w", err)
+		return "", fmt.Errorf("read config: %w", err)
+	}
+	return garminauth.ParseDomain(cfg.Domain())
+}
+
+func (c *AuthLoginCmd) Run(g *Globals) error {
+	domain, err := loginDomain()
+	if err != nil {
+		return err
 	}
 
 	// Build an HTTP client with retry transport so auth requests
@@ -47,7 +60,7 @@ func (c *AuthLoginCmd) Run(g *Globals) error {
 	}
 
 	opts := garminauth.LoginOptions{
-		Domain:     cfg.Domain(),
+		Domain:     domain,
 		MFACode:    c.MFACode,
 		HTTPClient: httpClient,
 	}

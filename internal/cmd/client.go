@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/bpauli/gccli/internal/config"
 	"github.com/bpauli/gccli/internal/garminapi"
 	"github.com/bpauli/gccli/internal/garminauth"
 	"github.com/bpauli/gccli/internal/secrets"
@@ -46,6 +47,16 @@ func resolveClient(g *Globals) (*garminapi.Client, error) {
 	tokens, err := garminauth.UnmarshalTokens(data)
 	if err != nil {
 		return nil, fmt.Errorf("parse tokens: %w", err)
+	}
+	if tokens.Domain == "" {
+		cfg, err := config.Read()
+		if err != nil {
+			return nil, fmt.Errorf("read config: %w", err)
+		}
+		tokens.Domain = cfg.Domain()
+	}
+	if tokens.Domain, err = garminauth.ParseDomain(tokens.Domain); err != nil {
+		return nil, err
 	}
 
 	// Proactive refresh: if the token is already expired, refresh before

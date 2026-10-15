@@ -12,8 +12,7 @@ import (
 
 func TestLoginBrowser_Success(t *testing.T) {
 	mux := ssoMux(t)
-	srv, ep := mockSSO(t, mux)
-	useMockDI(t, srv)
+	_, ep := mockSSO(t, mux)
 
 	origOpen := openBrowserFn
 	openBrowserFn = func(ssoURL string) error {

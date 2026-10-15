@@ -7,6 +7,7 @@ import (
 	"net/http/cookiejar"
 	"net/http/httptest"
 	"net/url"
+	"slices"
 	"strings"
 	"testing"
 	"time"
@@ -19,20 +20,15 @@ func mockSSO(t *testing.T, handler http.Handler) (*httptest.Server, Endpoints) {
 	srv := httptest.NewServer(handler)
 	t.Cleanup(srv.Close)
 	return srv, Endpoints{
+		Domain:       DomainGlobal,
 		SSOBase:      srv.URL,
 		SSOEmbed:     srv.URL + "/sso/embed",
 		SSOSignin:    srv.URL + "/sso/signin",
 		SSOVerifyMFA: srv.URL + "/sso/verifyMFA/loginEnterMfaCode",
 		OAuthBase:    srv.URL,
 		ConnectAPI:   srv.URL,
+		DIToken:      srv.URL + diTokenPath,
 	}
-}
-
-func useMockDI(t *testing.T, srv *httptest.Server) {
-	t.Helper()
-	origURL := diTokenURL
-	diTokenURL = srv.URL + "/di-oauth2-service/oauth/token"
-	t.Cleanup(func() { diTokenURL = origURL })
 }
 
 // ssoMux returns an http.ServeMux that simulates the full Garmin SSO flow.
@@ -131,8 +127,7 @@ func ssoMux(t *testing.T) *http.ServeMux {
 
 func TestLoginHeadless_Success(t *testing.T) {
 	mux := ssoMux(t)
-	srv, ep := mockSSO(t, mux)
-	useMockDI(t, srv)
+	_, ep := mockSSO(t, mux)
 
 	tokens, err := loginHeadless(context.Background(), "test@example.com", "correctpass", LoginOptions{}, ep)
 	if err != nil {
@@ -164,8 +159,7 @@ func TestLoginHeadless_Success(t *testing.T) {
 
 func TestLoginHeadless_BadCredentials(t *testing.T) {
 	mux := ssoMux(t)
-	srv, ep := mockSSO(t, mux)
-	useMockDI(t, srv)
+	_, ep := mockSSO(t, mux)
 
 	_, err := loginHeadless(context.Background(), "test@example.com", "wrongpass", LoginOptions{}, ep)
 	if err == nil {
@@ -225,8 +219,7 @@ func TestLoginHeadless_AccountLocked(t *testing.T) {
 
 func TestLoginHeadless_CustomHTTPClient(t *testing.T) {
 	mux := ssoMux(t)
-	srv, ep := mockSSO(t, mux)
-	useMockDI(t, srv)
+	_, ep := mockSSO(t, mux)
 
 	jar, err := cookiejar.New(nil)
 	if err != nil {
@@ -729,19 +722,24 @@ func TestPostSigninWithRetry_ContextCancelled(t *testing.T) {
 	}
 }
 
-func TestEndpointsDomain(t *testing.T) {
-	tests := []struct {
-		ssoBase string
-		want    string
-	}{
-		{"https://sso.garmin.com", DomainGlobal},
-		{"https://sso.garmin.cn", DomainChina},
-		{"https://localhost:8080", DomainGlobal},
+func TestLoginHeadless_ChinaDomainUsesChinaHosts(t *testing.T) {
+	rec := newReroutingRecorder(t, ssoMux(t))
+
+	tokens, err := LoginHeadless(context.Background(), "test@example.com", "correctpass",
+		LoginOptions{Domain: DomainChina, HTTPClient: rec.client()})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
 	}
-	for _, tt := range tests {
-		ep := Endpoints{SSOBase: tt.ssoBase}
-		if got := ep.domain(); got != tt.want {
-			t.Errorf("Endpoints{SSOBase: %q}.domain() = %q, want %q", tt.ssoBase, got, tt.want)
+	if tokens.Domain != DomainChina {
+		t.Errorf("domain = %q, want %q", tokens.Domain, DomainChina)
+	}
+	reqs := rec.requests()
+	if !slices.Contains(reqs, "POST diauth.garmin.cn/di-oauth2-service/oauth/token") {
+		t.Errorf("no DI token request to diauth.garmin.cn in %q", reqs)
+	}
+	for _, r := range reqs {
+		if addr := strings.Fields(r)[1]; !strings.Contains(addr, ".garmin.cn/") {
+			t.Errorf("request %q left garmin.cn", r)
 		}
 	}
 }

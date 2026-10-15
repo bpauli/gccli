@@ -4,12 +4,15 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"strings"
 	"testing"
 	"time"
 
+	"github.com/bpauli/gccli/internal/config"
 	"github.com/bpauli/gccli/internal/garminapi"
 	"github.com/bpauli/gccli/internal/garminauth"
 	"github.com/bpauli/gccli/internal/outfmt"
+	"github.com/bpauli/gccli/internal/testutil"
 )
 
 func TestResolveClient_ProactiveRefresh(t *testing.T) {
@@ -177,5 +180,68 @@ func TestResolveClient_OnTokenRefreshPersistsTokens(t *testing.T) {
 	}
 	if persisted.OAuth2AccessToken != "401-refreshed-token" {
 		t.Errorf("persisted token = %q, want 401-refreshed-token", persisted.OAuth2AccessToken)
+	}
+}
+
+func TestResolveClient_Domain(t *testing.T) {
+	tests := []struct {
+		name        string
+		tokenDomain string
+		env         string
+		config      string
+		want        string
+	}{
+		{name: "token wins", tokenDomain: "garmin.com", env: "garmin.cn", want: "garmin.com"},
+		{name: "empty token, env", env: "garmin.cn", want: "garmin.cn"},
+		{name: "empty token, config", config: "garmin.cn", want: "garmin.cn"},
+		{name: "empty token, default", want: "garmin.com"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			testutil.TempConfigDir(t)
+			t.Setenv(config.EnvDomain, tt.env)
+			if tt.config != "" {
+				if err := config.Update(func(f *config.File) { f.DomainName = tt.config }); err != nil {
+					t.Fatal(err)
+				}
+			}
+			store := newTestSecretsStore(t)
+			overrideLoadSecrets(t, store)
+			tokens := testTokens()
+			tokens.Domain = tt.tokenDomain
+			storeTestTokens(t, store, "test@example.com", tokens)
+
+			origClient := newClientFn
+			t.Cleanup(func() { newClientFn = origClient })
+			var got string
+			newClientFn = func(tokens *garminauth.Tokens) *garminapi.Client {
+				got = tokens.Domain
+				return garminapi.NewClient(tokens)
+			}
+
+			var buf bytes.Buffer
+			if _, err := resolveClient(testGlobals(t, &buf, outfmt.Table, "test@example.com")); err != nil {
+				t.Fatalf("resolveClient: %v", err)
+			}
+			if got != tt.want {
+				t.Errorf("client domain = %q, want %q", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestResolveClient_UnknownDomain(t *testing.T) {
+	testutil.TempConfigDir(t)
+	t.Setenv(config.EnvDomain, "foo.example")
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	tokens := testTokens()
+	tokens.Domain = ""
+	storeTestTokens(t, store, "test@example.com", tokens)
+
+	var buf bytes.Buffer
+	_, err := resolveClient(testGlobals(t, &buf, outfmt.Table, "test@example.com"))
+	if err == nil || !strings.Contains(err.Error(), "foo.example") {
+		t.Fatalf("error = %v, want one that names foo.example", err)
 	}
 }
