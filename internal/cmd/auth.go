@@ -59,6 +59,9 @@ func (c *AuthStatusCmd) Run(g *Globals) error {
 	if err != nil {
 		return fmt.Errorf("parse tokens: %w", err)
 	}
+	if err := checkStoredDomain(email, tokens); err != nil {
+		return err
+	}
 
 	if outfmt.IsJSON(g.Context) {
 		status := map[string]any{
