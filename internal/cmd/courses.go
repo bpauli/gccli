@@ -169,7 +169,7 @@ func (c *CourseImportCmd) Run(g *Globals) error {
 	}
 
 	header := []string{"ID", "NAME", "DISTANCE", "ELEV GAIN", "ELEV LOSS"}
-	return reportWriteTable(g, saved, header, func() ([][]string, error) {
+	return reportWriteTable(g, saved, "Imported course from "+filepath.Base(c.File), header, func() ([][]string, error) {
 		var result map[string]any
 		if err := json.Unmarshal(saved, &result); err != nil {
 			return nil, fmt.Errorf("parse saved course: %w", err)
