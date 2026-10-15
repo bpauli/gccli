@@ -342,6 +342,39 @@ func TestRefreshFailureKeepsCause(t *testing.T) {
 	}
 }
 
+func TestRefreshLockWaitMessage(t *testing.T) {
+	dir := testutil.TempConfigDir(t)
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	expired := testTokens()
+	expired.OAuth2ExpiresAt = time.Now().Add(-time.Hour)
+	storeTestTokens(t, store, "test@example.com", expired)
+	stub(t, &refreshFn, func(_ context.Context, tokens *garminauth.Tokens, _ garminauth.LoginOptions) (*garminauth.Tokens, error) {
+		fresh := *tokens
+		fresh.OAuth2AccessToken = "refreshed"
+		fresh.OAuth2ExpiresAt = time.Now().Add(time.Hour)
+		return &fresh, nil
+	})
+
+	unlock, err := config.LockFile(filepath.Join(dir, "token.lock"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	time.AfterFunc(1500*time.Millisecond, unlock)
+
+	var stdout, stderr bytes.Buffer
+	code := execute([]string{"--account", "test@example.com", "--color", "never", "auth", "token"}, "test", "none", "never", &stdout, &stderr)
+	if code != 0 {
+		t.Fatalf("exit code = %d, stderr = %q", code, stderr.String())
+	}
+	if want := "Waiting for another gccli process to refresh the token\n"; stderr.String() != want {
+		t.Errorf("stderr = %q, want %q", stderr.String(), want)
+	}
+	if stdout.String() != "refreshed\n" {
+		t.Errorf("stdout = %q, want refreshed", stdout.String())
+	}
+}
+
 type failSetKeyring struct{ *memKeyring }
 
 func (failSetKeyring) Set(keyring.Item) error { return fmt.Errorf("keyring is read-only") }
