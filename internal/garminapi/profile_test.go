@@ -204,6 +204,7 @@ func TestGetMeasurementSystem_HTTPError(t *testing.T) {
 }
 
 func TestGetProfilePK(t *testing.T) {
+	const invalidPK = "user profile profileId field is not an unsigned integer"
 	tests := []struct {
 		name    string
 		profile string
@@ -211,7 +212,18 @@ func TestGetProfilePK(t *testing.T) {
 		wantErr string
 	}{
 		{"number", `{"profileId":12345678901234567,"displayName":"tester"}`, "12345678901234567", ""},
+		{"30-digit number", `{"profileId":123456789012345678901234567890}`, "123456789012345678901234567890", ""},
+		{"digit string", `{"profileId":"12345678"}`, "12345678", ""},
 		{"missing profileId", `{"displayName":"tester"}`, "", "user profile missing profileId field"},
+		{"null", `{"profileId":null}`, "", invalidPK},
+		{"object", `{"profileId":{"a":1}}`, "", invalidPK},
+		{"array", `{"profileId":[1]}`, "", invalidPK},
+		{"bool", `{"profileId":true}`, "", invalidPK},
+		{"empty string", `{"profileId":""}`, "", invalidPK},
+		{"non-digit string", `{"profileId":"12a"}`, "", invalidPK},
+		{"float", `{"profileId":1.5}`, "", invalidPK},
+		{"exponent", `{"profileId":1e3}`, "", invalidPK},
+		{"negative", `{"profileId":-5}`, "", invalidPK},
 		{"bad JSON", `{"profileId":`, "", "parse user profile: unexpected EOF"},
 	}
 	for _, tt := range tests {
