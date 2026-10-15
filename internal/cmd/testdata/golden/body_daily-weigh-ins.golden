@@ -1,0 +1,27 @@
+-- args --
+body
+daily-weigh-ins
+2026-10-15
+-- route GET /weight-service/weight/dayview/2026-10-15?includeAll=true --
+{"value":1}
+-- table stdout --
+{
+  "value": 1
+}
+-- table stderr --
+-- table exit --
+0
+-- plain stdout --
+{
+  "value": 1
+}
+-- plain stderr --
+-- plain exit --
+0
+-- json stdout --
+{
+  "value": 1
+}
+-- json stderr --
+-- json exit --
+0

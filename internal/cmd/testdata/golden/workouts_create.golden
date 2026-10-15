@@ -1,0 +1,27 @@
+-- args --
+workouts
+create
+Tempo
+--type
+run
+--step
+warmup:10m
+-- route POST /workout-service/workout --
+{"workoutId":9}
+-- table stdout --
+-- table stderr --
+Created workout "Tempo" (ID: 9)
+-- table exit --
+0
+-- plain stdout --
+-- plain stderr --
+Created workout "Tempo" (ID: 9)
+-- plain exit --
+0
+-- json stdout --
+{
+  "workoutId": 9
+}
+-- json stderr --
+-- json exit --
+0

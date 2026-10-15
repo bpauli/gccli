@@ -1,0 +1,25 @@
+-- args --
+workouts
+schedule
+add
+111
+2026-10-15
+-- route POST /workout-service/schedule/111 --
+{"ok":true}
+-- table stdout --
+-- table stderr --
+Scheduled workout 111 on 2026-10-15
+-- table exit --
+0
+-- plain stdout --
+-- plain stderr --
+Scheduled workout 111 on 2026-10-15
+-- plain exit --
+0
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0

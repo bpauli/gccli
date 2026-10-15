@@ -1,0 +1,22 @@
+Error case: Garmin answers 404, so the exit code is 4 (not_found).
+-- args --
+devices
+settings
+3333
+-- route GET /device-service/deviceservice/device-info/settings/3333 404 noeol --
+{"message":"Device not found"}
+-- table stdout --
+-- table stderr --
+get device settings: garmin api: 404 Not Found: {"message":"Device not found"}
+-- table exit --
+4
+-- plain stdout --
+-- plain stderr --
+get device settings: garmin api: 404 Not Found: {"message":"Device not found"}
+-- plain exit --
+4
+-- json stdout --
+-- json stderr --
+{"error":{"code":"not_found","status":404,"message":"get device settings: garmin api: 404 Not Found: {\"message\":\"Device not found\"}"}}
+-- json exit --
+4

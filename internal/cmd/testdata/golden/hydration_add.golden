@@ -1,0 +1,25 @@
+-- args --
+hydration
+add
+250
+--date
+2026-10-15
+-- route PUT /usersummary-service/usersummary/hydration/log --
+{"ok":true}
+-- table stdout --
+-- table stderr --
+Added 250 ml of water on 2026-10-15
+-- table exit --
+0
+-- plain stdout --
+-- plain stderr --
+Added 250 ml of water on 2026-10-15
+-- plain exit --
+0
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0

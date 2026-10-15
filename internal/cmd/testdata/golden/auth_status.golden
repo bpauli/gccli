@@ -1,0 +1,27 @@
+-- args --
+auth
+status
+-- table stdout --
+Domain:       garmin.com
+Expires at:   2099-01-01T00:00:00Z
+-- table stderr --
+Authenticated as test@example.com
+-- table exit --
+0
+-- plain stdout --
+Domain:       garmin.com
+Expires at:   2099-01-01T00:00:00Z
+-- plain stderr --
+Authenticated as test@example.com
+-- plain exit --
+0
+-- json stdout --
+{
+  "domain": "garmin.com",
+  "email": "test@example.com",
+  "expired": false,
+  "expires_at": "2099-01-01T00:00:00Z"
+}
+-- json stderr --
+-- json exit --
+0

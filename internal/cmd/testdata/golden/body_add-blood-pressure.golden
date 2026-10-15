@@ -1,0 +1,28 @@
+-- args --
+body
+add-blood-pressure
+--systolic
+120
+--diastolic
+80
+--pulse
+60
+-- route POST /bloodpressure-service/bloodpressure --
+{"ok":true}
+-- table stdout --
+-- table stderr --
+Added blood pressure: 120/80 mmHg, pulse 60 bpm
+-- table exit --
+0
+-- plain stdout --
+-- plain stderr --
+Added blood pressure: 120/80 mmHg, pulse 60 bpm
+-- plain exit --
+0
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0

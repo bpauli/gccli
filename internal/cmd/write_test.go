@@ -2,10 +2,15 @@ package cmd
 
 import (
 	"bytes"
+	"cmp"
+	"context"
+	"encoding/json"
+	"errors"
 	"go/ast"
 	"go/parser"
 	"go/token"
 	"go/types"
+	"io"
 	"maps"
 	"net/http"
 	"net/http/httptest"
@@ -16,8 +21,12 @@ import (
 	"strings"
 	"sync"
 	"testing"
+	"time"
 
 	"github.com/alecthomas/kong"
+
+	"github.com/bpauli/gccli/internal/garminapi"
+	"github.com/bpauli/gccli/internal/garminauth"
 )
 
 type writeCase struct {
@@ -162,9 +171,9 @@ var writeCases = map[string]writeCase{
 		args:  []string{"route.gpx"},
 		files: map[string]string{"route.gpx": "<gpx/>"},
 		routes: map[string]string{
-			"POST /course-service/course/import":    `{"courseName":"Loop","geoPoints":[{"latitude":1,"longitude":2}]}`,
-			"POST /course-service/course/elevation": `[[1,2,100]]`,
-			"POST /course-service/course":           `{"courseId":42,"courseName":"Loop","distanceMeter":10000,"elevationGainMeter":100,"elevationLossMeter":90}`,
+			"POST /course-service/course/import":                          `{"courseName":"Loop","geoPoints":[{"latitude":1,"longitude":2}]}`,
+			"POST /course-service/course/elevation?smoothingEnabled=true": `[[1,2,100]]`,
+			"POST /course-service/course":                                 `{"courseId":42,"courseName":"Loop","distanceMeter":10000,"elevationGainMeter":100,"elevationLossMeter":90}`,
 		},
 		result: "POST /course-service/course",
 		json:   "{\n  \"courseId\": 42,\n  \"courseName\": \"Loop\",\n  \"distanceMeter\": 10000,\n  \"elevationGainMeter\": 100,\n  \"elevationLossMeter\": 90\n}\n",
@@ -266,7 +275,7 @@ func TestWriteCommandOutput(t *testing.T) {
 					tc.routes = maps.Clone(tc.routes)
 					tc.routes[tc.resultRoute()] = noContent
 				}
-				h := newWriteHarness(t, tc)
+				h := newHarness(t, tc.input())
 				args := append(strings.Fields(path), tc.args...)
 				if tc.prompt != "" {
 					args = append(args, "--force")
@@ -296,10 +305,9 @@ func TestWriteCommandDeclined(t *testing.T) {
 				continue
 			}
 			t.Run(path+"/"+m.name, func(t *testing.T) {
-				h := newWriteHarness(t, tc)
-				orig := confirmReader
-				confirmReader = strings.NewReader("n\n")
-				t.Cleanup(func() { confirmReader = orig })
+				in := tc.input()
+				in.stdin = "n\n"
+				h := newHarness(t, in)
 
 				stdout, stderr, code := h.run(m.flags, append(strings.Fields(path), tc.args...))
 				want := tc.prompt + " [y/N]: Cancelled\n"
@@ -326,7 +334,7 @@ func TestWriteCommandNotInteractive(t *testing.T) {
 				continue
 			}
 			t.Run(path+"/"+m.name, func(t *testing.T) {
-				h := newWriteHarness(t, tc)
+				h := newHarness(t, tc.input())
 				useNonTerminalStdin(t)
 
 				stdout, stderr, code := h.run(m.flags, append(strings.Fields(path), tc.args...))
@@ -348,7 +356,7 @@ func TestWriteCommandNotInteractive(t *testing.T) {
 func TestWriteCommandNotJSON(t *testing.T) {
 	tc := writeCases["activity rename"]
 	tc.routes = map[string]string{tc.resultRoute(): "<html>saved</html>"}
-	h := newWriteHarness(t, tc)
+	h := newHarness(t, tc.input())
 
 	stdout, stderr, code := h.run([]string{"--json"}, append([]string{"activity", "rename"}, tc.args...))
 	want := `{"error":{"code":"error","message":"garmin saved the change, but its response is not JSON: \"<html>saved</html>\""}}` + "\n"
@@ -367,13 +375,50 @@ func (tc writeCase) resultRoute() string {
 	return ""
 }
 
-type writeHarness struct {
+type mockReply struct {
+	status int
+	body   string
+}
+
+type harnessInput struct {
+	files  map[string]string
+	routes map[string]mockReply
+	stdin  string
+}
+
+func (tc writeCase) input() harnessInput {
+	routes := map[string]mockReply{}
+	for route, body := range tc.routes {
+		reply := mockReply{body: body}
+		if body == noContent {
+			reply.status = http.StatusNoContent
+		}
+		routes[route] = reply
+	}
+	return harnessInput{files: tc.files, routes: routes}
+}
+
+var harnessNow = time.Date(2026, 10, 15, 9, 30, 0, 0, time.UTC)
+
+const harnessAccount = "test@example.com"
+
+func harnessTokens(email string) *garminauth.Tokens {
+	return &garminauth.Tokens{
+		OAuth2AccessToken: "test-access-token",
+		OAuth2ExpiresAt:   time.Date(2099, 1, 1, 0, 0, 0, 0, time.UTC),
+		Domain:            "garmin.com",
+		Email:             email,
+	}
+}
+
+type harness struct {
 	dir  string
+	home string
 	mu   sync.Mutex
 	sent []string
 }
 
-func newWriteHarness(t *testing.T, tc writeCase) *writeHarness {
+func newHarness(t *testing.T, in harnessInput) *harness {
 	t.Helper()
 	home := t.TempDir()
 	t.Setenv("HOME", home)
@@ -386,30 +431,31 @@ func newWriteHarness(t *testing.T, tc writeCase) *writeHarness {
 	}
 	dir := t.TempDir()
 	t.Chdir(dir)
-	for name, content := range tc.files {
+	for name, content := range in.files {
 		if err := os.WriteFile(filepath.Join(dir, name), []byte(content), 0o600); err != nil {
 			t.Fatal(err)
 		}
 	}
 
-	h := &writeHarness{dir: dir}
+	h := &harness{dir: dir, home: home}
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		route := r.Method + " " + r.URL.Path
 		if r.Method != http.MethodGet {
 			h.mu.Lock()
-			h.sent = append(h.sent, route)
+			h.sent = append(h.sent, r.Method+" "+r.URL.Path)
 			h.mu.Unlock()
 		}
-		body, ok := tc.routes[route]
+		route := r.Method + " " + r.URL.RequestURI()
+		reply, ok := in.routes[route]
 		switch {
 		case !ok:
 			t.Errorf("unexpected request %s", route)
-			w.WriteHeader(http.StatusInternalServerError)
-		case body == noContent:
-			w.WriteHeader(http.StatusNoContent)
+			w.WriteHeader(http.StatusNotFound)
 		default:
-			w.Header().Set("Content-Type", "application/json")
-			_, _ = w.Write([]byte(body))
+			if reply.body != "" {
+				w.Header().Set("Content-Type", "application/json")
+			}
+			w.WriteHeader(cmp.Or(reply.status, http.StatusOK))
+			_, _ = w.Write([]byte(reply.body))
 		}
 	}))
 	t.Cleanup(server.Close)
@@ -417,18 +463,42 @@ func newWriteHarness(t *testing.T, tc writeCase) *writeHarness {
 	store := newTestSecretsStore(t)
 	overrideLoadSecrets(t, store)
 	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
+	storeTestTokens(t, store, harnessAccount, harnessTokens(harnessAccount))
+
+	stub(t, &nowFn, func() time.Time { return harnessNow })
+	stub(t, &confirmReader, io.Reader(strings.NewReader(in.stdin)))
+	stub(t, &readStdinFn, func() ([]byte, error) { return []byte(in.stdin), nil })
+	stub(t, &readPasswordFn, func(int) ([]byte, error) { return []byte("secret"), nil })
+	stub(t, &loginBrowserFn, func(_ context.Context, email string, _ garminauth.LoginOptions) (*garminauth.Tokens, error) {
+		return harnessTokens(email), nil
+	})
+	stub(t, &loginHeadlessFn, func(_ context.Context, email, _ string, _ garminauth.LoginOptions) (*garminauth.Tokens, error) {
+		return harnessTokens(email), nil
+	})
+	stub(t, &refreshFn, func(context.Context, *garminauth.Tokens, garminauth.LoginOptions) (*garminauth.Tokens, error) {
+		return nil, errors.New("the test harness does not refresh tokens")
+	})
+	stub(t, &fetchExerciseCatalogFn, func(ctx context.Context) (json.RawMessage, error) {
+		return garminapi.NewClient(harnessTokens(harnessAccount), garminapi.WithHTTPClient(server.Client()), garminapi.WithBaseURL(server.URL)).
+			ConnectAPI(ctx, http.MethodGet, "/web-data/exercises/Exercises.json", nil)
+	})
 	return h
 }
 
-func (h *writeHarness) run(mode, args []string) (stdout, stderr string, code int) {
+func stub[T any](t *testing.T, v *T, fake T) {
+	orig := *v
+	*v = fake
+	t.Cleanup(func() { *v = orig })
+}
+
+func (h *harness) run(mode, args []string) (stdout, stderr string, code int) {
 	var out, errOut bytes.Buffer
-	global := append([]string{"--account", "test@example.com", "--color", "never", "--units", "metric"}, mode...)
+	global := append([]string{"--account", harnessAccount, "--color", "never", "--units", "metric"}, mode...)
 	code = execute(append(global, args...), "test", "none", "never", &out, &errOut)
 	return out.String(), errOut.String(), code
 }
 
-func (h *writeHarness) writes() []string {
+func (h *harness) writes() []string {
 	h.mu.Lock()
 	defer h.mu.Unlock()
 	return slices.Clone(h.sent)

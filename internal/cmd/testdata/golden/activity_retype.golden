@@ -1,0 +1,25 @@
+-- args --
+activity
+retype
+--type-id=1
+--type-key=running
+111
+-- route PUT /activity-service/activity/111 --
+{"ok":true}
+-- table stdout --
+-- table stderr --
+Changed activity 111 type to running
+-- table exit --
+0
+-- plain stdout --
+-- plain stderr --
+Changed activity 111 type to running
+-- plain exit --
+0
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0

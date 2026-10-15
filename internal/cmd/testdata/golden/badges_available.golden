@@ -1,0 +1,21 @@
+Error case: Garmin answers 401 and the token cannot refresh, so the exit code is 3 (auth_required).
+-- args --
+badges
+available
+-- route GET /badge-service/badge/available 401 --
+
+-- table stdout --
+-- table stderr --
+Token expired. Run: gccli auth login test@example.com
+-- table exit --
+3
+-- plain stdout --
+-- plain stderr --
+Token expired. Run: gccli auth login test@example.com
+-- plain exit --
+3
+-- json stdout --
+-- json stderr --
+{"error":{"code":"auth_required","status":401,"message":"Token expired. Run: gccli auth login test@example.com"}}
+-- json exit --
+3

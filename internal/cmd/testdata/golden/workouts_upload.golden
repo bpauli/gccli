@@ -1,0 +1,26 @@
+-- args --
+workouts
+upload
+workout.json
+-- file workout.json --
+{"workoutName":"Intervals","sportType":{"sportTypeId":1,"sportTypeKey":"running"}}
+-- route POST /workout-service/workout --
+{"workoutId":902,"workoutName":"Intervals"}
+-- table stdout --
+-- table stderr --
+Uploaded workout from $DIR/workout.json
+-- table exit --
+0
+-- plain stdout --
+-- plain stderr --
+Uploaded workout from $DIR/workout.json
+-- plain exit --
+0
+-- json stdout --
+{
+  "workoutId": 902,
+  "workoutName": "Intervals"
+}
+-- json stderr --
+-- json exit --
+0

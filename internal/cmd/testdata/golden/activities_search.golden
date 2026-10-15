@@ -1,0 +1,34 @@
+-- args --
+activities
+search
+--start=2026-10-01
+-- route GET /activitylist-service/activities/search/activities?start=0&limit=20&startDate=2026-10-01 --
+[{"activityId":111,"activityName":"Morning Run","startTimeLocal":"2026-10-14 07:30:00","activityType":{"typeKey":"running"},"distance":10012.5,"duration":3005.2,"calories":712}]
+-- table stdout --
+ID   DATE        TYPE     NAME         DISTANCE  DURATION  CALORIES
+111  2026-10-14  running  Morning Run  10.01 km  50:05     712
+-- table stderr --
+-- table exit --
+0
+-- plain stdout --
+111	2026-10-14	running	Morning Run	10.01 km	50:05	712
+-- plain stderr --
+-- plain exit --
+0
+-- json stdout --
+[
+  {
+    "activityId": 111,
+    "activityName": "Morning Run",
+    "startTimeLocal": "2026-10-14 07:30:00",
+    "activityType": {
+      "typeKey": "running"
+    },
+    "distance": 10012.5,
+    "duration": 3005.2,
+    "calories": 712
+  }
+]
+-- json stderr --
+-- json exit --
+0

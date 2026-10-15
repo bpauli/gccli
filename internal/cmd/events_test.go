@@ -432,7 +432,7 @@ func TestEventsListPageIndexRejectsLimitBelowOne(t *testing.T) {
 }
 
 func TestEventsList_LimitZeroIsUsageError(t *testing.T) {
-	h := newWriteHarness(t, writeCase{})
+	h := newHarness(t, harnessInput{})
 	stdout, stderr, code := h.run([]string{"--json"}, []string{"events", "list", "--limit", "0"})
 	if code != 2 || stdout != "" || !strings.Contains(stderr, "--limit must be at least 1, got 0") {
 		t.Errorf("exit %d, want 2\nstdout %q, want empty\nstderr %q, want a --limit error", code, stdout, stderr)

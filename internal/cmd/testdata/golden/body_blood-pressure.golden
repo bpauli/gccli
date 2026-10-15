@@ -1,0 +1,28 @@
+-- args --
+body
+blood-pressure
+--start=2026-10-01
+--end=2026-10-01
+-- route GET /bloodpressure-service/bloodpressure/range/2026-10-01/2026-10-01?includeAll=true --
+{"value":1}
+-- table stdout --
+{
+  "value": 1
+}
+-- table stderr --
+-- table exit --
+0
+-- plain stdout --
+{
+  "value": 1
+}
+-- plain stderr --
+-- plain exit --
+0
+-- json stdout --
+{
+  "value": 1
+}
+-- json stderr --
+-- json exit --
+0

@@ -1,0 +1,31 @@
+-- args --
+courses
+favorites
+-- route GET /course-service/course/favorites --
+[{"courseId":111,"courseName":"Morning Loop","courseType":{"typeKey":"running"},"distanceInMeters":8200,"createdDate":"2026-09-01T10:00:00.0"}]
+-- table stdout --
+ID   NAME          TYPE     DISTANCE  CREATED
+111  Morning Loop  running  8.20 km   2026-09-01T10:00:00.0
+-- table stderr --
+-- table exit --
+0
+-- plain stdout --
+111	Morning Loop	running	8.20 km	2026-09-01T10:00:00.0
+-- plain stderr --
+-- plain exit --
+0
+-- json stdout --
+[
+  {
+    "courseId": 111,
+    "courseName": "Morning Loop",
+    "courseType": {
+      "typeKey": "running"
+    },
+    "distanceInMeters": 8200,
+    "createdDate": "2026-09-01T10:00:00.0"
+  }
+]
+-- json stderr --
+-- json exit --
+0

@@ -1,0 +1,23 @@
+-- args --
+body
+add-weight
+80.5
+-- route POST /weight-service/user-weight --
+{"ok":true}
+-- table stdout --
+-- table stderr --
+Added weight: 80.5 kg
+-- table exit --
+0
+-- plain stdout --
+-- plain stderr --
+Added weight: 80.5 kg
+-- plain exit --
+0
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0

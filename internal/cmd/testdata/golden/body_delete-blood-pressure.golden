@@ -1,0 +1,28 @@
+-- args --
+body
+delete-blood-pressure
+4
+--date
+2026-10-15
+-- stdin --
+y
+-- route DELETE /bloodpressure-service/bloodpressure/2026-10-15/4 --
+{"deleted":true}
+-- table stdout --
+-- table stderr --
+Delete blood pressure entry 4 on 2026-10-15? [y/N]: Deleted blood pressure entry 4
+-- table exit --
+0
+-- plain stdout --
+-- plain stderr --
+Delete blood pressure entry 4 on 2026-10-15? [y/N]: Deleted blood pressure entry 4
+-- plain exit --
+0
+-- json stdout --
+{
+  "deleted": true
+}
+-- json stderr noeol --
+Delete blood pressure entry 4 on 2026-10-15? [y/N]: 
+-- json exit --
+0

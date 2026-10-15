@@ -1,0 +1,76 @@
+Error case: the plan ID is missing, so the exit code is 2 (usage).
+-- args --
+training
+plan
+-- table stdout --
+-- table stderr --
+Usage: gccli training plan <id>
+
+Show a specific training plan.
+
+Arguments:
+  <id>    Training plan ID.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+gccli: error: expected "<id>"
+-- table exit --
+2
+-- plain stdout --
+-- plain stderr --
+Usage: gccli training plan <id>
+
+Show a specific training plan.
+
+Arguments:
+  <id>    Training plan ID.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+gccli: error: expected "<id>"
+-- plain exit --
+2
+-- json stdout --
+-- json stderr --
+Usage: gccli training plan <id>
+
+Show a specific training plan.
+
+Arguments:
+  <id>    Training plan ID.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+gccli: error: expected "<id>"
+-- json exit --
+2

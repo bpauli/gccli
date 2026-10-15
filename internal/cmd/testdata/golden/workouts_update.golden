@@ -1,0 +1,26 @@
+-- args --
+workouts
+update
+111
+workout.json
+-- file workout.json --
+{"workoutId":111,"workoutName":"Intervals","sportType":{"sportTypeId":1,"sportTypeKey":"running"}}
+-- route PUT /workout-service/workout/111 --
+{"ok":true}
+-- table stdout --
+-- table stderr --
+Updated workout 111 from $DIR/workout.json
+-- table exit --
+0
+-- plain stdout --
+-- plain stderr --
+Updated workout 111 from $DIR/workout.json
+-- plain exit --
+0
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0

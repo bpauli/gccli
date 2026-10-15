@@ -1,0 +1,23 @@
+-- args --
+activity
+download
+--format
+gpx
+111
+-- route GET /download-service/export/gpx/activity/111 --
+<?xml version="1.0"?><gpx version="1.1"><trk><name>Morning Run</name></trk></gpx>
+-- table stdout --
+-- table stderr --
+Downloaded activity_111.gpx (82 bytes)
+-- table exit --
+0
+-- plain stdout --
+-- plain stderr --
+Downloaded activity_111.gpx (82 bytes)
+-- plain exit --
+0
+-- json stdout --
+-- json stderr --
+Downloaded activity_111.gpx (82 bytes)
+-- json exit --
+0
