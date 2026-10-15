@@ -438,3 +438,123 @@ func TestEventsList_LimitZeroIsUsageError(t *testing.T) {
 		t.Errorf("exit %d, want 2\nstdout %q, want empty\nstderr %q, want a --limit error", code, stdout, stderr)
 	}
 }
+
+func TestEventsAdd_SentBody(t *testing.T) {
+	tests := []struct {
+		name string
+		cmd  EventsAddCmd
+		want string
+	}{
+		{
+			name: "required flags only",
+			cmd:  EventsAddCmd{Name: "Spring Race", Date: "2026-04-01", Type: "running"},
+			want: `{
+				"date": "2026-04-01",
+				"eventName": "Spring Race",
+				"eventType": "running",
+				"race": false
+			}`,
+		},
+		{
+			name: "every flag",
+			cmd: EventsAddCmd{
+				Name:     "Berlin Marathon",
+				Date:     "2026-09-27",
+				Type:     "running",
+				Race:     true,
+				Location: "Berlin, Germany",
+				Time:     "09:15",
+				Timezone: "Europe/Berlin",
+				Distance: "42.195km",
+				Goal:     "3h30m",
+				Training: true,
+				Private:  true,
+				Note:     "My first marathon",
+				URL:      "https://example.com",
+			},
+			want: `{
+				"completionTarget": {
+					"unit": "kilometer",
+					"unitType": "distance",
+					"value": 42.195
+				},
+				"date": "2026-09-27",
+				"eventCustomization": {
+					"customGoal": {
+						"unit": "second",
+						"unitType": "time",
+						"value": 12600
+					},
+					"isPrimaryEvent": false,
+					"isTrainingEvent": true
+				},
+				"eventName": "Berlin Marathon",
+				"eventPrivacy": {
+					"label": "PRIVATE"
+				},
+				"eventTimeLocal": {
+					"startTimeHhMm": "09:15",
+					"timeZoneId": "Europe/Berlin"
+				},
+				"eventType": "running",
+				"location": "Berlin, Germany",
+				"note": "My first marathon",
+				"race": true,
+				"url": "https://example.com"
+			}`,
+		},
+		{
+			name: "primary without goal, time without zone, miles",
+			cmd:  EventsAddCmd{Name: "Ten", Date: "2026-05-02", Type: "trail_running", Time: "07:00", Distance: "10mi", Primary: true},
+			want: `{
+				"completionTarget": {
+					"unit": "mile",
+					"unitType": "distance",
+					"value": 10
+				},
+				"date": "2026-05-02",
+				"eventCustomization": {
+					"isPrimaryEvent": true,
+					"isTrainingEvent": false
+				},
+				"eventName": "Ten",
+				"eventTimeLocal": {
+					"startTimeHhMm": "07:00"
+				},
+				"eventType": "trail_running",
+				"race": false
+			}`,
+		},
+		{
+			name: "goal without priority, meters",
+			cmd:  EventsAddCmd{Name: "Track", Date: "2026-06-03", Type: "running", Distance: "400 m", Goal: "75s"},
+			want: `{
+				"completionTarget": {
+					"unit": "meter",
+					"unitType": "distance",
+					"value": 400
+				},
+				"date": "2026-06-03",
+				"eventCustomization": {
+					"customGoal": {
+						"unit": "second",
+						"unitType": "time",
+						"value": 75
+					},
+					"isPrimaryEvent": false,
+					"isTrainingEvent": false
+				},
+				"eventName": "Track",
+				"eventType": "running",
+				"race": false
+			}`,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := sentBody(t, "POST /calendar-service/event", &tt.cmd); got != compactJSON(t, tt.want) {
+				t.Errorf("body\n got %s\nwant %s", got, tt.want)
+			}
+		})
+	}
+}

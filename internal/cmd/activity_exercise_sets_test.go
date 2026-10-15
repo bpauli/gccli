@@ -335,3 +335,103 @@ func TestActivityExerciseSetsSet_NoAccount(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 }
+
+func TestActivityExerciseSetsSet_SentBody(t *testing.T) {
+	cmd := &ActivityExerciseSetsSetCmd{
+		ID: "111",
+		Exercise: []string{
+			"bench_press/barbell_bench_press:12@20.5kg:d30:r60",
+			"SQUAT/BARBELL_BACK_SQUAT:8",
+			"ROW/DUMBBELL_ROW:10@15:r",
+			"PLANK/PLANK:1@0:d:r0",
+		},
+	}
+	want := `{
+		"activityId": 111,
+		"exerciseSets": [
+			{
+				"exercises": [
+					{
+						"probability": 100,
+						"category": "BENCH_PRESS",
+						"name": "BARBELL_BENCH_PRESS"
+					}
+				],
+				"repetitionCount": 12,
+				"duration": 30,
+				"weight": 20500,
+				"setType": "ACTIVE",
+				"startTime": null
+			},
+			{
+				"exercises": [],
+				"repetitionCount": null,
+				"duration": 60,
+				"weight": -1,
+				"setType": "REST",
+				"startTime": null
+			},
+			{
+				"exercises": [
+					{
+						"probability": 100,
+						"category": "SQUAT",
+						"name": "BARBELL_BACK_SQUAT"
+					}
+				],
+				"repetitionCount": 8,
+				"duration": null,
+				"weight": 0,
+				"setType": "ACTIVE",
+				"startTime": null
+			},
+			{
+				"exercises": [
+					{
+						"probability": 100,
+						"category": "ROW",
+						"name": "DUMBBELL_ROW"
+					}
+				],
+				"repetitionCount": 10,
+				"duration": 0,
+				"weight": 15000,
+				"setType": "ACTIVE",
+				"startTime": null
+			},
+			{
+				"exercises": [],
+				"repetitionCount": null,
+				"duration": 0,
+				"weight": -1,
+				"setType": "REST",
+				"startTime": null
+			},
+			{
+				"exercises": [
+					{
+						"probability": 100,
+						"category": "PLANK",
+						"name": "PLANK"
+					}
+				],
+				"repetitionCount": 1,
+				"duration": 0,
+				"weight": 0,
+				"setType": "ACTIVE",
+				"startTime": null
+			},
+			{
+				"exercises": [],
+				"repetitionCount": null,
+				"duration": 0,
+				"weight": -1,
+				"setType": "REST",
+				"startTime": null
+			}
+		]
+	}`
+	if got := sentBody(t, "PUT /activity-service/activity/111/exerciseSets", cmd); got != compactJSON(t, want) {
+		t.Errorf("body\n got %s\nwant %s", got, want)
+	}
+}
