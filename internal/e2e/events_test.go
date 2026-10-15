@@ -74,7 +74,7 @@ func TestCreateListDeleteEvent(t *testing.T) {
 
 	// Register cleanup to delete the event — runs even on test failure.
 	RegisterCleanup(t, func() {
-		if delErr := client.DeleteEvent(context.Background(), eventID); delErr != nil {
+		if _, delErr := client.DeleteEvent(context.Background(), eventID); delErr != nil {
 			t.Logf("WARNING: failed to clean up event %s: %v", eventID, delErr)
 		} else {
 			t.Logf("Cleaned up event %s", eventID)
@@ -94,7 +94,7 @@ func TestCreateListDeleteEvent(t *testing.T) {
 	time.Sleep(2 * time.Second)
 
 	// Step 3: Delete the event explicitly (cleanup is the safety net).
-	if err := client.DeleteEvent(ctx, eventID); err != nil {
+	if _, err := client.DeleteEvent(ctx, eventID); err != nil {
 		t.Fatalf("DeleteEvent(%s) failed: %v", eventID, err)
 	}
 	t.Logf("Deleted event %s", eventID)
@@ -153,7 +153,7 @@ func cleanupOrphanEvents(t *testing.T, client *garminapi.Client) {
 		name, _ := e["eventName"].(string)
 		if strings.HasPrefix(name, e2eEventPrefix) {
 			id := formatID(e["id"])
-			if delErr := client.DeleteEvent(ctx, id); delErr != nil {
+			if _, delErr := client.DeleteEvent(ctx, id); delErr != nil {
 				t.Logf("WARNING: failed to delete orphaned event %s (%s): %v", id, name, delErr)
 			} else {
 				t.Logf("Cleaned up orphaned event %s (%s)", id, name)

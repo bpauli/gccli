@@ -21,7 +21,6 @@ func (c *Client) AddEvent(ctx context.Context, payload json.RawMessage) (json.Ra
 }
 
 // DeleteEvent deletes a calendar event by ID.
-func (c *Client) DeleteEvent(ctx context.Context, eventID string) error {
-	_, err := c.ConnectAPI(ctx, http.MethodDelete, "/calendar-service/event/"+eventID, nil)
-	return err
+func (c *Client) DeleteEvent(ctx context.Context, eventID string) (json.RawMessage, error) {
+	return c.ConnectAPI(ctx, http.MethodDelete, "/calendar-service/event/"+eventID, nil)
 }

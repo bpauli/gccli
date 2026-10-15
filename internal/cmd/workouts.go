@@ -455,7 +455,7 @@ func (c *WorkoutScheduleRemoveCmd) Run(g *Globals) error {
 		return nil
 	}
 
-	if err := client.UnscheduleWorkout(g.Context, c.ID); err != nil {
+	if _, err := client.UnscheduleWorkout(g.Context, c.ID); err != nil {
 		return fmt.Errorf("remove scheduled workout: %w", err)
 	}
 
@@ -484,7 +484,7 @@ func (c *WorkoutDeleteCmd) Run(g *Globals) error {
 		return nil
 	}
 
-	if err := client.DeleteWorkout(g.Context, c.ID); err != nil {
+	if _, err := client.DeleteWorkout(g.Context, c.ID); err != nil {
 		return fmt.Errorf("delete workout: %w", err)
 	}
 

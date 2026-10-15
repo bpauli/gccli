@@ -376,7 +376,7 @@ func TestDeleteCourse_Success(t *testing.T) {
 	})
 
 	_, client := testServer(t, handler)
-	err := client.DeleteCourse(context.Background(), "12345")
+	_, err := client.DeleteCourse(context.Background(), "12345")
 	if err != nil {
 		t.Fatalf("DeleteCourse: %v", err)
 	}
@@ -389,7 +389,7 @@ func TestDeleteCourse_NotFound(t *testing.T) {
 	})
 
 	_, client := testServer(t, handler)
-	err := client.DeleteCourse(context.Background(), "99999")
+	_, err := client.DeleteCourse(context.Background(), "99999")
 	if err == nil {
 		t.Fatal("expected error")
 	}
@@ -410,7 +410,7 @@ func TestDeleteCourse_ServerError(t *testing.T) {
 	})
 
 	_, client := testServer(t, handler)
-	err := client.DeleteCourse(context.Background(), "12345")
+	_, err := client.DeleteCourse(context.Background(), "12345")
 	if err == nil {
 		t.Fatal("expected error")
 	}

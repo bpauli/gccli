@@ -203,7 +203,7 @@ func (c *BodyDeleteWeightCmd) Run(g *Globals) error {
 		return nil
 	}
 
-	if err := client.DeleteWeight(g.Context, c.Date, c.PK); err != nil {
+	if _, err := client.DeleteWeight(g.Context, c.Date, c.PK); err != nil {
 		return fmt.Errorf("delete weight: %w", err)
 	}
 
@@ -283,7 +283,7 @@ func (c *BodyDeleteBPCmd) Run(g *Globals) error {
 		return nil
 	}
 
-	if err := client.DeleteBloodPressure(g.Context, c.Date, c.Version); err != nil {
+	if _, err := client.DeleteBloodPressure(g.Context, c.Date, c.Version); err != nil {
 		return fmt.Errorf("delete blood pressure: %w", err)
 	}
 

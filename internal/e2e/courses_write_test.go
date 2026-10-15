@@ -134,7 +134,7 @@ func TestImportAndDeleteCourse(t *testing.T) {
 
 	// Register cleanup to delete the course — runs even on test failure.
 	RegisterCleanup(t, func() {
-		if delErr := client.DeleteCourse(context.Background(), courseID); delErr != nil {
+		if _, delErr := client.DeleteCourse(context.Background(), courseID); delErr != nil {
 			t.Logf("WARNING: failed to clean up course %s: %v", courseID, delErr)
 		} else {
 			t.Logf("Cleaned up course %s", courseID)
@@ -168,7 +168,7 @@ func TestImportAndDeleteCourse(t *testing.T) {
 	time.Sleep(2 * time.Second)
 
 	// Delete the course explicitly (cleanup is the safety net).
-	if err := client.DeleteCourse(ctx, courseID); err != nil {
+	if _, err := client.DeleteCourse(ctx, courseID); err != nil {
 		t.Fatalf("DeleteCourse(%s) failed: %v", courseID, err)
 	}
 	t.Logf("Deleted course %s", courseID)
@@ -215,7 +215,7 @@ func findCourseByID(t *testing.T, client interface {
 // left over from prior failed runs.
 func cleanupOrphanCourses(t *testing.T, client interface {
 	GetCourses(ctx context.Context) (json.RawMessage, error)
-	DeleteCourse(ctx context.Context, courseID string) error
+	DeleteCourse(ctx context.Context, courseID string) (json.RawMessage, error)
 },
 ) {
 	t.Helper()
@@ -246,7 +246,7 @@ func cleanupOrphanCourses(t *testing.T, client interface {
 		name, _ := c["courseName"].(string)
 		if strings.HasPrefix(name, e2eCoursePrefix) {
 			id := formatID(c["courseId"])
-			if delErr := client.DeleteCourse(ctx, id); delErr != nil {
+			if _, delErr := client.DeleteCourse(ctx, id); delErr != nil {
 				t.Logf("WARNING: failed to delete orphaned course %s (%s): %v", id, name, delErr)
 			} else {
 				t.Logf("Cleaned up orphaned course %s (%s)", id, name)

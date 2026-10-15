@@ -56,7 +56,7 @@ func (c *ActivityExerciseSetsSetCmd) Run(g *Globals) error {
 		return fmt.Errorf("marshal exercise sets: %w", err)
 	}
 
-	if err := client.SetExerciseSets(g.Context, c.ID, body); err != nil {
+	if _, err := client.SetExerciseSets(g.Context, c.ID, body); err != nil {
 		return fmt.Errorf("set exercise sets: %w", err)
 	}
 

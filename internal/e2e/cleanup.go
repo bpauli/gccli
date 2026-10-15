@@ -8,12 +8,6 @@ import "testing"
 // finishes, even on failure or panic. This is a thin wrapper around
 // t.Cleanup() to provide a consistent naming convention and make the
 // intent explicit in E2E tests.
-//
-// Usage:
-//
-//	e2e.RegisterCleanup(t, func() {
-//	    _ = client.DeleteActivity(ctx, activityID)
-//	})
 func RegisterCleanup(t *testing.T, fn func()) {
 	t.Helper()
 	t.Cleanup(fn)

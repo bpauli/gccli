@@ -80,7 +80,7 @@ func (c *ActivityDeleteCmd) Run(g *Globals) error {
 		return nil
 	}
 
-	if err := client.DeleteActivity(g.Context, c.ID); err != nil {
+	if _, err := client.DeleteActivity(g.Context, c.ID); err != nil {
 		return fmt.Errorf("delete activity: %w", err)
 	}
 

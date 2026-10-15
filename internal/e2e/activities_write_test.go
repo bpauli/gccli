@@ -49,7 +49,7 @@ func TestCreateManualActivity(t *testing.T) {
 
 	// Register cleanup to delete the activity — runs even on test failure.
 	RegisterCleanup(t, func() {
-		if delErr := client.DeleteActivity(context.Background(), activityID); delErr != nil {
+		if _, delErr := client.DeleteActivity(context.Background(), activityID); delErr != nil {
 			t.Logf("WARNING: failed to clean up activity %s: %v", activityID, delErr)
 		} else {
 			t.Logf("Cleaned up activity %s", activityID)
@@ -134,7 +134,7 @@ func cleanupOrphanActivities(t *testing.T, client *garminapi.Client) {
 		name, _ := a["activityName"].(string)
 		if strings.HasPrefix(name, e2eActivityPrefix) {
 			id := formatID(a["activityId"])
-			if delErr := client.DeleteActivity(ctx, id); delErr != nil {
+			if _, delErr := client.DeleteActivity(ctx, id); delErr != nil {
 				t.Logf("WARNING: failed to delete orphaned activity %s (%s): %v", id, name, delErr)
 			} else {
 				t.Logf("Cleaned up orphaned activity %s (%s)", id, name)

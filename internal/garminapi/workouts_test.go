@@ -316,7 +316,7 @@ func TestUnscheduleWorkout_Success(t *testing.T) {
 	})
 
 	_, client := testServer(t, handler)
-	err := client.UnscheduleWorkout(context.Background(), "456")
+	_, err := client.UnscheduleWorkout(context.Background(), "456")
 	if err != nil {
 		t.Fatalf("UnscheduleWorkout: %v", err)
 	}
@@ -329,7 +329,7 @@ func TestUnscheduleWorkout_NotFound(t *testing.T) {
 	})
 
 	_, client := testServer(t, handler)
-	err := client.UnscheduleWorkout(context.Background(), "999")
+	_, err := client.UnscheduleWorkout(context.Background(), "999")
 	if err == nil {
 		t.Fatal("expected error")
 	}
@@ -357,7 +357,7 @@ func TestDeleteWorkout_Success(t *testing.T) {
 	})
 
 	_, client := testServer(t, handler)
-	err := client.DeleteWorkout(context.Background(), "42")
+	_, err := client.DeleteWorkout(context.Background(), "42")
 	if err != nil {
 		t.Fatalf("DeleteWorkout: %v", err)
 	}
@@ -370,7 +370,7 @@ func TestDeleteWorkout_NotFound(t *testing.T) {
 	})
 
 	_, client := testServer(t, handler)
-	err := client.DeleteWorkout(context.Background(), "999")
+	_, err := client.DeleteWorkout(context.Background(), "999")
 	if err == nil {
 		t.Fatal("expected error")
 	}

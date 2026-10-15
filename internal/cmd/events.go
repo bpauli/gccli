@@ -278,7 +278,7 @@ func (c *EventsDeleteCmd) Run(g *Globals) error {
 		return nil
 	}
 
-	if err := client.DeleteEvent(g.Context, c.ID); err != nil {
+	if _, err := client.DeleteEvent(g.Context, c.ID); err != nil {
 		return fmt.Errorf("delete event: %w", err)
 	}
 

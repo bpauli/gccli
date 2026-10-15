@@ -350,7 +350,7 @@ func (c *CourseDeleteCmd) Run(g *Globals) error {
 		return nil
 	}
 
-	if err := client.DeleteCourse(g.Context, c.ID); err != nil {
+	if _, err := client.DeleteCourse(g.Context, c.ID); err != nil {
 		return fmt.Errorf("delete course: %w", err)
 	}
 

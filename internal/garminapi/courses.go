@@ -92,9 +92,8 @@ func (c *Client) SaveCourse(ctx context.Context, course json.RawMessage) (json.R
 }
 
 // DeleteCourse deletes a course by ID.
-func (c *Client) DeleteCourse(ctx context.Context, courseID string) error {
-	_, err := c.ConnectAPI(ctx, http.MethodDelete, "/course-service/course/"+courseID, nil)
-	return err
+func (c *Client) DeleteCourse(ctx context.Context, courseID string) (json.RawMessage, error) {
+	return c.ConnectAPI(ctx, http.MethodDelete, "/course-service/course/"+courseID, nil)
 }
 
 // SendCourseToDevice sends a course to a device via the device message API.
