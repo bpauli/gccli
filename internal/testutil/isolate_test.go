@@ -2,6 +2,7 @@ package testutil
 
 import (
 	"flag"
+	"go/ast"
 	"go/parser"
 	"go/token"
 	"io/fs"
@@ -80,11 +81,12 @@ func TestIsolatedMain_RunsInEveryPackageThatLinksConfig(t *testing.T) {
 		if !strings.HasSuffix(path, ".go") {
 			return nil
 		}
-		src, err := os.ReadFile(path)
-		if err != nil {
-			return err
+		isTest := strings.HasSuffix(path, "_test.go")
+		mode := parser.ImportsOnly
+		if isTest {
+			mode = parser.SkipObjectResolution
 		}
-		f, err := parser.ParseFile(token.NewFileSet(), path, src, parser.ImportsOnly)
+		f, err := parser.ParseFile(token.NewFileSet(), path, nil, mode)
 		if err != nil {
 			return err
 		}
@@ -94,12 +96,12 @@ func TestIsolatedMain_RunsInEveryPackageThatLinksConfig(t *testing.T) {
 		}
 		dir = filepath.ToSlash(dir)
 		imports := prodImports
-		if strings.HasSuffix(path, "_test.go") {
+		if isTest {
 			imports = testImports
 			if _, ok := testImports[dir]; !ok {
 				testImports[dir] = nil
 			}
-			if strings.Contains(string(src), "IsolatedMain(m)") {
+			if testMainCallsIsolatedMain(f, dir == "internal/testutil") {
 				isolated[dir] = true
 			}
 		}
@@ -134,4 +136,33 @@ func TestIsolatedMain_RunsInEveryPackageThatLinksConfig(t *testing.T) {
 			t.Errorf("the walk found no tests in %s", dir)
 		}
 	}
+}
+
+func testMainCallsIsolatedMain(f *ast.File, inTestutil bool) bool {
+	for _, decl := range f.Decls {
+		fn, ok := decl.(*ast.FuncDecl)
+		if !ok || fn.Recv != nil || fn.Name.Name != "TestMain" {
+			continue
+		}
+		found := false
+		ast.Inspect(fn.Body, func(n ast.Node) bool {
+			if call, ok := n.(*ast.CallExpr); ok && isIsolatedMain(call.Fun, inTestutil) {
+				found = true
+			}
+			return !found
+		})
+		return found
+	}
+	return false
+}
+
+func isIsolatedMain(fun ast.Expr, inTestutil bool) bool {
+	switch fun := fun.(type) {
+	case *ast.Ident:
+		return inTestutil && fun.Name == "IsolatedMain"
+	case *ast.SelectorExpr:
+		x, ok := fun.X.(*ast.Ident)
+		return ok && x.Name == "testutil" && fun.Sel.Name == "IsolatedMain"
+	}
+	return false
 }
