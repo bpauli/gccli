@@ -31,6 +31,7 @@ type refTestGetCmd struct {
 	Output string `default:"out.txt" help:"Output file."`
 	Kind   string `enum:"plain,fancy" default:"plain" help:"Thing kind."`
 	Mode   string `enum:"on,off" default:"on" help:"Turn it on or off."`
+	MaxAge int    `placeholder:"MAX-AGE" help:"Oldest age."`
 	Secret bool   `hidden:"" help:"Not shown."`
 }
 
@@ -67,6 +68,7 @@ func TestRenderReference(t *testing.T) {
   - ` + "`--output=\"out.txt\"`: Output file." + `
   - ` + "`--kind=\"plain\"`: Thing kind. One of: plain, fancy." + `
   - ` + "`--mode=\"on\"`: Turn it on or off." + `
+  - ` + "`--max-age=MAX-AGE`: Oldest age." + `
 `
 	if got := renderMarkdownReference(groups); got != wantMarkdown {
 		t.Errorf("markdown:\n%s\nwant:\n%s", got, wantMarkdown)
@@ -77,8 +79,8 @@ func TestRenderReference(t *testing.T) {
           <div class="cmd-group is-open fade-in">
             <div class="cmd-header"><h3>Things &amp; Stuff</h3><span class="cmd-arrow">&#x25B6;</span></div>
             <div class="cmd-body">
-              <div class="cmd-row"><div class="cmd">gccli things list [&lt;date&gt;]</div><div class="desc">List things. Also runs as <code>gccli things [&lt;date&gt;]</code>.<br><code>[&lt;date&gt;]</code> Day to list.</div></div>
-              <div class="cmd-row"><div class="cmd">gccli things get <span class="nowrap">--since=DATE</span> &lt;id&gt; [flags]</div><div class="desc">Show one thing&#39;s &lt;parts&gt; &amp; more.<br><code>&lt;id&gt;</code> Thing ID.<br><code>--since=DATE</code> Start date.<br><code>-f, --force</code> Skip the check.<br><code>--output=&#34;out.txt&#34;</code> Output file.<br><code>--kind=&#34;plain&#34;</code> Thing kind. One of: plain, fancy.<br><code>--mode=&#34;on&#34;</code> Turn it on or off.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli things list [&lt;date&gt;]</div><div class="desc">List things. Also runs as <span class="whole"><code>gccli things [&lt;date&gt;]</code>.</span><br><code>[&lt;date&gt;]</code> Day to list.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli things get <span class="nowrap">--since=DATE</span> &lt;id&gt; [flags]</div><div class="desc">Show one thing&#39;s &lt;parts&gt; &amp; more.<br><code>&lt;id&gt;</code> Thing ID.<br><code><span class="nowrap">--since=</span><wbr>DATE</code> Start date.<br><code><span class="nowrap">-f,</span> <span class="nowrap">--force</span></code> Skip the check.<br><code><span class="nowrap">--output=</span><wbr>&#34;out.txt&#34;</code> Output file.<br><code><span class="nowrap">--kind=</span><wbr>&#34;plain&#34;</code> Thing kind. One of: plain, fancy.<br><code><span class="nowrap">--mode=</span><wbr>&#34;on&#34;</code> Turn it on or off.<br><code><span class="nowrap">--max-age=</span><wbr><span class="nowrap">MAX-AGE</span></code> Oldest age.</div></div>
             </div>
           </div>
 `
