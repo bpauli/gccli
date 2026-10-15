@@ -50,6 +50,9 @@ func (e Event) JSON() (json.RawMessage, error) {
 	}
 
 	if e.Time != "" {
+		if !timeRe.MatchString(e.Time) {
+			return nil, fmt.Errorf("invalid time %q (use HH:MM, e.g. 07:30)", e.Time)
+		}
 		tl := map[string]string{"startTimeHhMm": e.Time}
 		if e.Timezone != "" {
 			tl["timeZoneId"] = e.Timezone
@@ -95,7 +98,10 @@ func (e Event) JSON() (json.RawMessage, error) {
 	return raw, nil
 }
 
-var distanceRe = regexp.MustCompile(`^([0-9]+(?:\.[0-9]+)?)\s*(km|mi|m)$`)
+var (
+	distanceRe = regexp.MustCompile(`^([0-9]+(?:\.[0-9]+)?)\s*(km|mi|m)$`)
+	timeRe     = regexp.MustCompile(`^([01]?[0-9]|2[0-3]):[0-5][0-9]$`)
+)
 
 func parseDistance(s string) (float64, string, error) {
 	m := distanceRe.FindStringSubmatch(s)
@@ -103,6 +109,9 @@ func parseDistance(s string) (float64, string, error) {
 		return 0, "", fmt.Errorf("invalid distance %q (use e.g. 10km, 26.2mi, 400m)", s)
 	}
 	val, _ := strconv.ParseFloat(m[1], 64)
+	if !finite(val) {
+		return 0, "", fmt.Errorf("invalid distance %q: out of range", s)
+	}
 	units := map[string]string{"km": "kilometer", "mi": "mile", "m": "meter"}
 	return val, units[m[2]], nil
 }

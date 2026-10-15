@@ -87,7 +87,7 @@ func parseOneExercise(s string) (parsedExercise, error) {
 
 	// Parse category/name.
 	exParts := strings.SplitN(parts[0], "/", 2)
-	if len(exParts) != 2 {
+	if len(exParts) != 2 || exParts[0] == "" || exParts[1] == "" {
 		return parsedExercise{}, fmt.Errorf("expected CATEGORY/NAME before ':'")
 	}
 	category := strings.ToUpper(exParts[0])
@@ -102,12 +102,18 @@ func parseOneExercise(s string) (parsedExercise, error) {
 	if err != nil {
 		return parsedExercise{}, fmt.Errorf("invalid rep count %q", atParts[0])
 	}
+	if reps < 0 {
+		return parsedExercise{}, fmt.Errorf("invalid rep count %q: must not be negative", atParts[0])
+	}
 
 	if len(atParts) == 2 {
 		weightStr := strings.TrimSuffix(atParts[1], "kg")
 		weightKg, err = strconv.ParseFloat(weightStr, 64)
 		if err != nil {
 			return parsedExercise{}, fmt.Errorf("invalid weight %q", atParts[1])
+		}
+		if !finite(weightKg * 1000) {
+			return parsedExercise{}, fmt.Errorf("invalid weight %q: out of range", atParts[1])
 		}
 	}
 
