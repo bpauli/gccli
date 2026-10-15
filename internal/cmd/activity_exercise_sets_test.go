@@ -199,7 +199,27 @@ func TestActivityExerciseSetsSet_BadInputFailsBeforeCredentials(t *testing.T) {
 		{
 			name:       "NaN weight",
 			args:       []string{"activity", "exercise-sets", "set", "--exercise", "A/B:12@nan", "111"},
-			wantStderr: "marshal exercise sets: json: unsupported value: NaN\n",
+			wantStderr: "exercise 1 (\"A/B:12@nan\"): invalid weight \"nan\": out of range\n",
+		},
+		{
+			name:       "Inf weight",
+			args:       []string{"activity", "exercise-sets", "set", "--exercise", "A/B:12@inf", "111"},
+			wantStderr: "exercise 1 (\"A/B:12@inf\"): invalid weight \"inf\": out of range\n",
+		},
+		{
+			name:       "weight overflows in milligrams",
+			args:       []string{"activity", "exercise-sets", "set", "--exercise", "A/B:12@1.7976931348623157e308", "111"},
+			wantStderr: "exercise 1 (\"A/B:12@1.7976931348623157e308\"): invalid weight \"1.7976931348623157e308\": out of range\n",
+		},
+		{
+			name:       "negative reps",
+			args:       []string{"activity", "exercise-sets", "set", "--exercise", "A/B:-1", "111"},
+			wantStderr: "exercise 1 (\"A/B:-1\"): invalid rep count \"-1\": must not be negative\n",
+		},
+		{
+			name:       "empty exercise name",
+			args:       []string{"activity", "exercise-sets", "set", "--exercise", "A/:1", "111"},
+			wantStderr: "exercise 1 (\"A/:1\"): expected CATEGORY/NAME before ':'\n",
 		},
 	}
 	for _, tt := range tests {
