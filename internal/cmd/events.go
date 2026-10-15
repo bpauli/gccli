@@ -3,11 +3,9 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"regexp"
-	"strconv"
-	"time"
 
 	"github.com/bpauli/gccli/internal/outfmt"
+	"github.com/bpauli/gccli/internal/payload"
 )
 
 // EventsCmd groups event subcommands.
@@ -138,68 +136,24 @@ func (c *EventsAddCmd) Run(g *Globals) error {
 		return fmt.Errorf("invalid date: %w", err)
 	}
 
-	payload := map[string]any{
-		"eventName": c.Name,
-		"date":      date,
-		"eventType": c.Type,
-		"race":      c.Race,
-	}
-
-	if c.Location != "" {
-		payload["location"] = c.Location
-	}
-	if c.Note != "" {
-		payload["note"] = c.Note
-	}
-	if c.URL != "" {
-		payload["url"] = c.URL
-	}
-	if c.Private {
-		payload["eventPrivacy"] = map[string]string{"label": "PRIVATE"}
-	}
-
-	if c.Time != "" {
-		tl := map[string]string{"startTimeHhMm": c.Time}
-		if c.Timezone != "" {
-			tl["timeZoneId"] = c.Timezone
-		}
-		payload["eventTimeLocal"] = tl
-	}
-
-	if c.Distance != "" {
-		val, unit, err := parseDistance(c.Distance)
-		if err != nil {
-			return err
-		}
-		payload["completionTarget"] = map[string]any{
-			"value":    val,
-			"unit":     unit,
-			"unitType": "distance",
-		}
-	}
-
-	if c.Goal != "" || c.Primary || c.Training {
-		cust := map[string]any{
-			"isPrimaryEvent":  c.Primary,
-			"isTrainingEvent": c.Training,
-		}
-		if c.Goal != "" {
-			secs, err := parseGoalDuration(c.Goal)
-			if err != nil {
-				return err
-			}
-			cust["customGoal"] = map[string]any{
-				"value":    secs,
-				"unit":     "second",
-				"unitType": "time",
-			}
-		}
-		payload["eventCustomization"] = cust
-	}
-
-	raw, err := json.Marshal(payload)
+	body, err := payload.Event{
+		Name:     c.Name,
+		Date:     date,
+		Type:     c.Type,
+		Race:     c.Race,
+		Location: c.Location,
+		Time:     c.Time,
+		Timezone: c.Timezone,
+		Distance: c.Distance,
+		Goal:     c.Goal,
+		Primary:  c.Primary,
+		Training: c.Training,
+		Private:  c.Private,
+		Note:     c.Note,
+		URL:      c.URL,
+	}.JSON()
 	if err != nil {
-		return fmt.Errorf("build event payload: %w", err)
+		return err
 	}
 
 	client, err := resolveClient(g)
@@ -207,7 +161,7 @@ func (c *EventsAddCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.AddEvent(g.Context, json.RawMessage(raw))
+	data, err := client.AddEvent(g.Context, body)
 	if err != nil {
 		return fmt.Errorf("add event: %w", err)
 	}
@@ -218,30 +172,6 @@ func (c *EventsAddCmd) Run(g *Globals) error {
 		return reportWrite(g, data, "Added event %q on %s (ID: %s)", jsonString(resp, "eventName"), jsonString(resp, "date"), id)
 	}
 	return reportWrite(g, data, "Added event")
-}
-
-var distanceRe = regexp.MustCompile(`^([0-9]+(?:\.[0-9]+)?)\s*(km|mi|m)$`)
-
-func parseDistance(s string) (float64, string, error) {
-	m := distanceRe.FindStringSubmatch(s)
-	if m == nil {
-		return 0, "", fmt.Errorf("invalid distance %q (use e.g. 10km, 26.2mi, 400m)", s)
-	}
-	val, _ := strconv.ParseFloat(m[1], 64)
-	units := map[string]string{"km": "kilometer", "mi": "mile", "m": "meter"}
-	return val, units[m[2]], nil
-}
-
-func parseGoalDuration(s string) (int, error) {
-	d, err := time.ParseDuration(s)
-	if err != nil {
-		return 0, fmt.Errorf("invalid goal duration %q (use e.g. 50m, 1h30m, 2400s)", s)
-	}
-	secs := int(d.Seconds())
-	if secs <= 0 {
-		return 0, fmt.Errorf("goal duration must be positive")
-	}
-	return secs, nil
 }
 
 // EventsDeleteCmd deletes a calendar event.
