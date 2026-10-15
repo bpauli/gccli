@@ -237,3 +237,53 @@ func TestAuthImport_EmptyDomainStoredAsIs(t *testing.T) {
 		t.Errorf("stored = %s, want %s", stored, data)
 	}
 }
+
+func TestAuthImport_UnsupportedVersion(t *testing.T) {
+	dir := testutil.TempConfigDir(t)
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+
+	data := `{"version":2,"oauth2_access_token":"at","domain":"garmin.com","email":"test@example.com"}`
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "")
+	err := (&AuthImportCmd{Token: base64.StdEncoding.EncodeToString([]byte(data))}).Run(g)
+	if err == nil || !strings.Contains(err.Error(), "token version 2 is not supported") {
+		t.Fatalf("error = %v, want the token version error", err)
+	}
+	if _, getErr := store.Get("test@example.com"); getErr == nil {
+		t.Error("token with version 2 was stored")
+	}
+	written, readErr := os.ReadFile(filepath.Join(dir, "config.json"))
+	if readErr != nil && !os.IsNotExist(readErr) {
+		t.Fatal(readErr)
+	}
+	if bytes.Contains(written, []byte("default_account")) {
+		t.Errorf("config.json = %s, want no default_account", written)
+	}
+}
+
+func TestAuthImport_StoresCurrentFormat(t *testing.T) {
+	testutil.TempConfigDir(t)
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+
+	data := `{"oauth1_token":"","oauth1_secret":"","oauth2_access_token":"at","oauth2_refresh_token":"rt",` +
+		`"oauth2_expires_at":"2099-01-01T00:00:00Z","domain":"garmin.com","display_name":"Old Name",` +
+		`"email":"test@example.com","future_key":{"a":1}}`
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "")
+	if err := (&AuthImportCmd{Token: base64.StdEncoding.EncodeToString([]byte(data))}).Run(g); err != nil {
+		t.Fatalf("Run: %v", err)
+	}
+
+	stored, err := store.Get("test@example.com")
+	if err != nil {
+		t.Fatalf("store.Get: %v", err)
+	}
+	want := `{"version":1,"oauth1_token":"","oauth1_secret":"","oauth2_access_token":"at",` +
+		`"oauth2_refresh_token":"rt","oauth2_expires_at":"2099-01-01T00:00:00Z","domain":"garmin.com",` +
+		`"email":"test@example.com"}`
+	if string(stored) != want {
+		t.Errorf("stored =\n%s\nwant\n%s", stored, want)
+	}
+}

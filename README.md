@@ -325,6 +325,8 @@ The CLI uses [github.com/99designs/keyring](https://github.com/99designs/keyring
 
 **The file backend does not protect your tokens.** gccli encrypts each token file with a fixed passphrase that is part of the gccli source code. You cannot set your own passphrase. Anyone who can read the file can decrypt the token. The files are in the `credentials` directory next to `config.json`, with file mode `0600`. Use the macOS Keychain or the Linux Secret Service when you can. If you must use the file backend, protect the `credentials` directory as you would protect a plaintext password file.
 
+[docs/state.md](docs/state.md) describes every file and keyring item that gccli stores: the `config.json` keys, the lock files, the token fields and the token version.
+
 ## Commands
 
 ### Authentication

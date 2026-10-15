@@ -2,6 +2,7 @@ package garminauth
 
 import (
 	"encoding/json"
+	"strings"
 	"testing"
 	"time"
 )
@@ -89,7 +90,6 @@ func TestTokens_MarshalRoundtrip(t *testing.T) {
 		DIClientID:         "di-client-id",
 		MFAToken:           "mfa-tok",
 		Domain:             DomainGlobal,
-		DisplayName:        "Test User",
 		Email:              "test@example.com",
 	}
 
@@ -127,11 +127,111 @@ func TestTokens_MarshalRoundtrip(t *testing.T) {
 	if restored.Domain != original.Domain {
 		t.Errorf("Domain = %q, want %q", restored.Domain, original.Domain)
 	}
-	if restored.DisplayName != original.DisplayName {
-		t.Errorf("DisplayName = %q, want %q", restored.DisplayName, original.DisplayName)
-	}
 	if restored.Email != original.Email {
 		t.Errorf("Email = %q, want %q", restored.Email, original.Email)
+	}
+	if *restored != *original {
+		t.Errorf("restored = %+v, want %+v", *restored, *original)
+	}
+}
+
+func TestTokens_MarshalWritesVersionFirst(t *testing.T) {
+	t.Parallel()
+
+	tok := &Tokens{
+		OAuth1Token:        "o1",
+		OAuth1Secret:       "s1",
+		OAuth2AccessToken:  "at",
+		OAuth2RefreshToken: "rt",
+		OAuth2ExpiresAt:    time.Date(2026, 3, 15, 12, 0, 0, 0, time.UTC),
+		DIClientID:         "di",
+		MFAToken:           "mfa",
+		Domain:             DomainGlobal,
+		Email:              "test@example.com",
+	}
+
+	data, err := tok.Marshal()
+	if err != nil {
+		t.Fatalf("Marshal() error: %v", err)
+	}
+
+	want := `{"version":1,"oauth1_token":"o1","oauth1_secret":"s1","oauth2_access_token":"at",` +
+		`"oauth2_refresh_token":"rt","oauth2_expires_at":"2026-03-15T12:00:00Z","di_client_id":"di",` +
+		`"mfa_token":"mfa","domain":"garmin.com","email":"test@example.com"}`
+	if string(data) != want {
+		t.Errorf("Marshal() =\n%s\nwant\n%s", data, want)
+	}
+}
+
+func TestUnmarshalTokens_SupportedVersions(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name string
+		data string
+	}{
+		{"missing version", `{"email":"test@example.com","domain":"garmin.com"}`},
+		{"version 1", `{"version":1,"email":"test@example.com","domain":"garmin.com"}`},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			tok, err := UnmarshalTokens([]byte(tt.data))
+			if err != nil {
+				t.Fatalf("UnmarshalTokens() error: %v", err)
+			}
+			if tok.Email != "test@example.com" || tok.Domain != DomainGlobal {
+				t.Errorf("tokens = %+v, want email test@example.com and domain garmin.com", *tok)
+			}
+		})
+	}
+}
+
+func TestUnmarshalTokens_UnsupportedVersion(t *testing.T) {
+	t.Parallel()
+
+	for _, version := range []string{"2", "0", "-1"} {
+		t.Run(version, func(t *testing.T) {
+			t.Parallel()
+
+			data := `{"version":` + version + `,"email":"test@example.com","domain":"garmin.com"}`
+			tok, err := UnmarshalTokens([]byte(data))
+			if err == nil {
+				t.Fatalf("UnmarshalTokens() = %+v, want error", tok)
+			}
+			if !strings.Contains(err.Error(), "token version "+version+" ") {
+				t.Errorf("error = %q, want it to name token version %s", err, version)
+			}
+			if !strings.Contains(err.Error(), "reads token version 1") {
+				t.Errorf("error = %q, want it to name token version 1", err)
+			}
+		})
+	}
+}
+
+func TestUnmarshalTokens_V200Token(t *testing.T) {
+	t.Parallel()
+
+	data := `{"oauth1_token":"","oauth1_secret":"","oauth2_access_token":"at","oauth2_refresh_token":"rt",` +
+		`"oauth2_expires_at":"2026-03-15T12:00:00Z","di_client_id":"di","domain":"garmin.com",` +
+		`"display_name":"Old Name","email":"test@example.com","future_key":{"a":1}}`
+
+	tok, err := UnmarshalTokens([]byte(data))
+	if err != nil {
+		t.Fatalf("UnmarshalTokens() error: %v", err)
+	}
+	want := Tokens{
+		OAuth2AccessToken:  "at",
+		OAuth2RefreshToken: "rt",
+		OAuth2ExpiresAt:    time.Date(2026, 3, 15, 12, 0, 0, 0, time.UTC),
+		DIClientID:         "di",
+		Domain:             DomainGlobal,
+		Email:              "test@example.com",
+	}
+	if *tok != want {
+		t.Errorf("tokens = %+v, want %+v", *tok, want)
 	}
 }
 
@@ -194,9 +294,6 @@ func TestTokens_MarshalJSON_OmitsEmptyMFA(t *testing.T) {
 
 	if _, ok := raw["mfa_token"]; ok {
 		t.Error("mfa_token should be omitted when empty")
-	}
-	if _, ok := raw["display_name"]; ok {
-		t.Error("display_name should be omitted when empty")
 	}
 }
 

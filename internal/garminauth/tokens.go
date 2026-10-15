@@ -2,8 +2,11 @@ package garminauth
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 )
+
+const tokenVersion = 1
 
 // Tokens holds the OAuth1 and OAuth2 credentials obtained from Garmin SSO.
 // Tokens are serialized to JSON for storage in the OS keyring.
@@ -25,9 +28,6 @@ type Tokens struct {
 
 	// Domain is the Garmin domain used for authentication (e.g. "garmin.com").
 	Domain string `json:"domain"`
-
-	// DisplayName is the user's display name from Garmin Connect.
-	DisplayName string `json:"display_name,omitempty"`
 
 	// Email is the account email address.
 	Email string `json:"email"`
@@ -56,14 +56,23 @@ func (t *Tokens) CanRefresh() bool {
 
 // Marshal serializes the tokens to JSON for keyring storage.
 func (t *Tokens) Marshal() ([]byte, error) {
-	return json.Marshal(t)
+	return json.Marshal(struct {
+		Version int `json:"version"`
+		*Tokens
+	}{tokenVersion, t})
 }
 
 // UnmarshalTokens deserializes tokens from JSON keyring data.
 func UnmarshalTokens(data []byte) (*Tokens, error) {
-	var t Tokens
-	if err := json.Unmarshal(data, &t); err != nil {
+	var v struct {
+		Version *int `json:"version"`
+		Tokens
+	}
+	if err := json.Unmarshal(data, &v); err != nil {
 		return nil, err
 	}
-	return &t, nil
+	if v.Version != nil && *v.Version != tokenVersion {
+		return nil, fmt.Errorf("token version %d is not supported; this gccli reads token version %d", *v.Version, tokenVersion)
+	}
+	return &v.Tokens, nil
 }
