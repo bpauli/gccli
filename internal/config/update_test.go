@@ -228,6 +228,9 @@ func TestUpdate_Symlinks(t *testing.T) {
 		if err := os.MkdirAll(real, 0o700); err != nil {
 			t.Fatal(err)
 		}
+		if err := os.MkdirAll(filepath.Dir(filepath.Dir(path)), 0o700); err != nil {
+			t.Fatal(err)
+		}
 		if err := os.Symlink(real, filepath.Dir(path)); err != nil {
 			t.Fatal(err)
 		}
