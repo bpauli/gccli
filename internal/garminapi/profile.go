@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/bpauli/gccli/internal/units"
 )
@@ -60,7 +61,17 @@ func (c *Client) GetProfilePK(ctx context.Context) (string, error) {
 		return "", fmt.Errorf("user profile missing profileId field")
 	}
 
-	return fmt.Sprintf("%v", pk), nil
+	var s string
+	switch v := pk.(type) {
+	case json.Number:
+		s = v.String()
+	case string:
+		s = v
+	}
+	if s == "" || strings.Trim(s, "0123456789") != "" {
+		return "", fmt.Errorf("user profile profileId field is not an unsigned integer")
+	}
+	return s, nil
 }
 
 // GetMeasurementSystem returns the unit system from userData.measurementSystem
