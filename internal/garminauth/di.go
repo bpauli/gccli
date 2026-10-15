@@ -1,6 +1,7 @@
 package garminauth
 
 import (
+	"cmp"
 	"context"
 	"encoding/base64"
 	"encoding/json"
@@ -13,8 +14,7 @@ import (
 )
 
 const (
-	defaultDITokenURL = "https://diauth.garmin.com/di-oauth2-service/oauth/token"
-	diGrantType       = "https://connectapi.garmin.com/di-oauth2-service/oauth/grant/service_ticket"
+	diGrantType = "https://connectapi.garmin.com/di-oauth2-service/oauth/grant/service_ticket"
 
 	nativeAPIUserAgent = "GCM-Android-5.23"
 	nativeGarminUA     = "com.garmin.android.apps.connectmobile/5.23; ; Google/sdk_gphone64_arm64/google; Android/33; Dalvik/2.1.0"
@@ -26,8 +26,6 @@ var diClientIDs = []string{
 	"GARMIN_CONNECT_MOBILE_ANDROID_DI",
 	"GARMIN_CONNECT_MOBILE_IOS_DI",
 }
-
-var diTokenURL = defaultDITokenURL
 
 type diTokenResponse struct {
 	TokenType             string `json:"token_type"`
@@ -43,7 +41,7 @@ type diTokenResponse struct {
 // Service tickets are single-use, so we don't iterate over fallback client_ids
 // — a failed attempt would burn the ticket. The newest client_id is used; if
 // Garmin rotates the constant, the diClientIDs list must be updated.
-func exchangeServiceTicket(ctx context.Context, client *http.Client, ticket, serviceURL string) (*Tokens, error) {
+func exchangeServiceTicket(ctx context.Context, client *http.Client, ep Endpoints, ticket, serviceURL string) (*Tokens, error) {
 	clientID := diClientIDs[0]
 	values := url.Values{
 		"client_id":      {clientID},
@@ -52,7 +50,7 @@ func exchangeServiceTicket(ctx context.Context, client *http.Client, ticket, ser
 		"service_url":    {serviceURL},
 	}
 
-	resp, err := postDIForm(ctx, client, clientID, values)
+	resp, err := postDIForm(ctx, client, ep.DIToken, clientID, values)
 	if err != nil {
 		return nil, fmt.Errorf("DI token exchange (%s): %w", clientID, err)
 	}
@@ -71,6 +69,7 @@ func refreshDI(ctx context.Context, client *http.Client, tokens *Tokens) (*Token
 		return nil, fmt.Errorf("no DI refresh token available")
 	}
 
+	tokenURL := NewEndpoints(cmp.Or(tokens.Domain, DomainGlobal)).DIToken
 	var clientIDs []string
 	if tokens.DIClientID != "" {
 		clientIDs = []string{tokens.DIClientID}
@@ -86,7 +85,7 @@ func refreshDI(ctx context.Context, client *http.Client, tokens *Tokens) (*Token
 			"refresh_token": {tokens.OAuth2RefreshToken},
 		}
 
-		resp, err := postDIForm(ctx, client, clientID, values)
+		resp, err := postDIForm(ctx, client, tokenURL, clientID, values)
 		if err != nil {
 			failures = append(failures, fmt.Sprintf("%s: %v", clientID, err))
 			continue
@@ -109,8 +108,8 @@ func refreshDI(ctx context.Context, client *http.Client, tokens *Tokens) (*Token
 	return nil, fmt.Errorf("DI token refresh failed: %s", strings.Join(failures, "; "))
 }
 
-func postDIForm(ctx context.Context, client *http.Client, clientID string, values url.Values) (*diTokenResponse, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, diTokenURL, strings.NewReader(values.Encode()))
+func postDIForm(ctx context.Context, client *http.Client, tokenURL, clientID string, values url.Values) (*diTokenResponse, error) {
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, tokenURL, strings.NewReader(values.Encode()))
 	if err != nil {
 		return nil, err
 	}

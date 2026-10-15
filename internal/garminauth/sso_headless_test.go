@@ -20,20 +20,15 @@ func mockSSO(t *testing.T, handler http.Handler) (*httptest.Server, Endpoints) {
 	srv := httptest.NewServer(handler)
 	t.Cleanup(srv.Close)
 	return srv, Endpoints{
+		Domain:       DomainGlobal,
 		SSOBase:      srv.URL,
 		SSOEmbed:     srv.URL + "/sso/embed",
 		SSOSignin:    srv.URL + "/sso/signin",
 		SSOVerifyMFA: srv.URL + "/sso/verifyMFA/loginEnterMfaCode",
 		OAuthBase:    srv.URL,
 		ConnectAPI:   srv.URL,
+		DIToken:      srv.URL + diTokenPath,
 	}
-}
-
-func useMockDI(t *testing.T, srv *httptest.Server) {
-	t.Helper()
-	origURL := diTokenURL
-	diTokenURL = srv.URL + "/di-oauth2-service/oauth/token"
-	t.Cleanup(func() { diTokenURL = origURL })
 }
 
 // ssoMux returns an http.ServeMux that simulates the full Garmin SSO flow.
@@ -132,8 +127,7 @@ func ssoMux(t *testing.T) *http.ServeMux {
 
 func TestLoginHeadless_Success(t *testing.T) {
 	mux := ssoMux(t)
-	srv, ep := mockSSO(t, mux)
-	useMockDI(t, srv)
+	_, ep := mockSSO(t, mux)
 
 	tokens, err := loginHeadless(context.Background(), "test@example.com", "correctpass", LoginOptions{}, ep)
 	if err != nil {
@@ -165,8 +159,7 @@ func TestLoginHeadless_Success(t *testing.T) {
 
 func TestLoginHeadless_BadCredentials(t *testing.T) {
 	mux := ssoMux(t)
-	srv, ep := mockSSO(t, mux)
-	useMockDI(t, srv)
+	_, ep := mockSSO(t, mux)
 
 	_, err := loginHeadless(context.Background(), "test@example.com", "wrongpass", LoginOptions{}, ep)
 	if err == nil {
@@ -226,8 +219,7 @@ func TestLoginHeadless_AccountLocked(t *testing.T) {
 
 func TestLoginHeadless_CustomHTTPClient(t *testing.T) {
 	mux := ssoMux(t)
-	srv, ep := mockSSO(t, mux)
-	useMockDI(t, srv)
+	_, ep := mockSSO(t, mux)
 
 	jar, err := cookiejar.New(nil)
 	if err != nil {
@@ -727,23 +719,6 @@ func TestPostSigninWithRetry_ContextCancelled(t *testing.T) {
 	_, err := postSigninWithRetry(ctx, srv.Client(), srv.URL, formData, srv.URL)
 	if err == nil {
 		t.Fatal("expected error for cancelled context")
-	}
-}
-
-func TestEndpointsDomain(t *testing.T) {
-	tests := []struct {
-		ssoBase string
-		want    string
-	}{
-		{"https://sso.garmin.com", DomainGlobal},
-		{"https://sso.garmin.cn", DomainChina},
-		{"https://localhost:8080", DomainGlobal},
-	}
-	for _, tt := range tests {
-		ep := Endpoints{SSOBase: tt.ssoBase}
-		if got := ep.domain(); got != tt.want {
-			t.Errorf("Endpoints{SSOBase: %q}.domain() = %q, want %q", tt.ssoBase, got, tt.want)
-		}
 	}
 }
 

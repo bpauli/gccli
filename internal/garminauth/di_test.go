@@ -45,12 +45,7 @@ func TestRefreshOAuth2_DIRefresh(t *testing.T) {
 		})
 	})
 
-	srv := httptest.NewServer(mux)
-	t.Cleanup(srv.Close)
-
-	origURL := diTokenURL
-	diTokenURL = srv.URL + "/di-oauth2-service/oauth/token"
-	t.Cleanup(func() { diTokenURL = origURL })
+	rec := newHostRecorder(t, mux)
 
 	tokens := &Tokens{
 		OAuth2AccessToken:  "old-access",
@@ -61,7 +56,7 @@ func TestRefreshOAuth2_DIRefresh(t *testing.T) {
 		DisplayName:        "Test User",
 	}
 
-	refreshed, err := RefreshOAuth2(context.Background(), tokens, LoginOptions{})
+	refreshed, err := RefreshOAuth2(context.Background(), tokens, LoginOptions{HTTPClient: rec.client()})
 	if err != nil {
 		t.Fatalf("RefreshOAuth2() error: %v", err)
 	}
@@ -94,19 +89,14 @@ func TestRefreshOAuth2_DIRefreshPreservesRefreshTokenWhenOmitted(t *testing.T) {
 		})
 	})
 
-	srv := httptest.NewServer(mux)
-	t.Cleanup(srv.Close)
-
-	origURL := diTokenURL
-	diTokenURL = srv.URL + "/di-oauth2-service/oauth/token"
-	t.Cleanup(func() { diTokenURL = origURL })
+	rec := newHostRecorder(t, mux)
 
 	tokens := &Tokens{
 		OAuth2RefreshToken: "old-refresh",
 		DIClientID:         "test-di-client",
 	}
 
-	refreshed, err := RefreshOAuth2(context.Background(), tokens, LoginOptions{})
+	refreshed, err := RefreshOAuth2(context.Background(), tokens, LoginOptions{HTTPClient: rec.client()})
 	if err != nil {
 		t.Fatalf("RefreshOAuth2() error: %v", err)
 	}
@@ -132,19 +122,14 @@ func TestRefreshDI_OnlyTriesStoredClientID(t *testing.T) {
 		http.Error(w, `{"error":"invalid_grant"}`, http.StatusBadRequest)
 	})
 
-	srv := httptest.NewServer(mux)
-	t.Cleanup(srv.Close)
-
-	origURL := diTokenURL
-	diTokenURL = srv.URL + "/di-oauth2-service/oauth/token"
-	t.Cleanup(func() { diTokenURL = origURL })
+	rec := newHostRecorder(t, mux)
 
 	tokens := &Tokens{
 		OAuth2RefreshToken: "old-refresh",
 		DIClientID:         "test-di-client",
 	}
 
-	_, err := RefreshOAuth2(context.Background(), tokens, LoginOptions{})
+	_, err := RefreshOAuth2(context.Background(), tokens, LoginOptions{HTTPClient: rec.client()})
 	if err == nil {
 		t.Fatal("expected error from refresh")
 	}
@@ -164,16 +149,11 @@ func TestRefreshDI_IteratesWhenClientIDUnknown(t *testing.T) {
 		http.Error(w, `{"error":"invalid_grant"}`, http.StatusBadRequest)
 	})
 
-	srv := httptest.NewServer(mux)
-	t.Cleanup(srv.Close)
-
-	origURL := diTokenURL
-	diTokenURL = srv.URL + "/di-oauth2-service/oauth/token"
-	t.Cleanup(func() { diTokenURL = origURL })
+	rec := newHostRecorder(t, mux)
 
 	tokens := &Tokens{OAuth2RefreshToken: "old-refresh"}
 
-	_, err := RefreshOAuth2(context.Background(), tokens, LoginOptions{})
+	_, err := RefreshOAuth2(context.Background(), tokens, LoginOptions{HTTPClient: rec.client()})
 	if err == nil {
 		t.Fatal("expected error from refresh")
 	}
@@ -218,11 +198,7 @@ func TestExchangeServiceTicket_Success(t *testing.T) {
 	srv := httptest.NewServer(mux)
 	t.Cleanup(srv.Close)
 
-	origURL := diTokenURL
-	diTokenURL = srv.URL + "/di-oauth2-service/oauth/token"
-	t.Cleanup(func() { diTokenURL = origURL })
-
-	tokens, err := exchangeServiceTicket(context.Background(), srv.Client(), "ST-test-ticket", "https://example.com/cb")
+	tokens, err := exchangeServiceTicket(context.Background(), srv.Client(), Endpoints{DIToken: srv.URL + diTokenPath}, "ST-test-ticket", "https://example.com/cb")
 	if err != nil {
 		t.Fatalf("exchangeServiceTicket() error: %v", err)
 	}
@@ -251,11 +227,7 @@ func TestExchangeServiceTicket_DoesNotIterate(t *testing.T) {
 	srv := httptest.NewServer(mux)
 	t.Cleanup(srv.Close)
 
-	origURL := diTokenURL
-	diTokenURL = srv.URL + "/di-oauth2-service/oauth/token"
-	t.Cleanup(func() { diTokenURL = origURL })
-
-	_, err := exchangeServiceTicket(context.Background(), srv.Client(), "ST-bad", "https://example.com/cb")
+	_, err := exchangeServiceTicket(context.Background(), srv.Client(), Endpoints{DIToken: srv.URL + diTokenPath}, "ST-bad", "https://example.com/cb")
 	if err == nil {
 		t.Fatal("expected error")
 	}
@@ -289,11 +261,7 @@ func TestPostDIForm_RejectsInvalidExpiresIn(t *testing.T) {
 			srv := httptest.NewServer(mux)
 			t.Cleanup(srv.Close)
 
-			origURL := diTokenURL
-			diTokenURL = srv.URL + "/di-oauth2-service/oauth/token"
-			t.Cleanup(func() { diTokenURL = origURL })
-
-			_, err := exchangeServiceTicket(context.Background(), srv.Client(), "ST-ok", "https://example.com/cb")
+			_, err := exchangeServiceTicket(context.Background(), srv.Client(), Endpoints{DIToken: srv.URL + diTokenPath}, "ST-ok", "https://example.com/cb")
 			if err == nil {
 				t.Fatal("expected error for non-positive expires_in")
 			}

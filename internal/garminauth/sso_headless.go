@@ -159,23 +159,15 @@ func loginHeadless(ctx context.Context, email, password string, opts LoginOption
 	}
 
 	// Step 4: Exchange the service ticket for DI OAuth Bearer tokens.
-	tokens, err := exchangeServiceTicket(ctx, client, ticket, ep.SSOEmbed)
+	tokens, err := exchangeServiceTicket(ctx, client, ep, ticket, ep.SSOEmbed)
 	if err != nil {
 		return nil, fmt.Errorf("DI OAuth exchange: %w", err)
 	}
 
-	tokens.Domain = ep.domain()
+	tokens.Domain = ep.Domain
 	tokens.Email = email
 
 	return tokens, nil
-}
-
-// domain returns the domain from the endpoint's SSOBase URL.
-func (e Endpoints) domain() string {
-	if strings.Contains(e.SSOBase, DomainChina) {
-		return DomainChina
-	}
-	return DomainGlobal
 }
 
 // fetchOAuthConsumer retrieves the OAuth1 consumer key and secret.

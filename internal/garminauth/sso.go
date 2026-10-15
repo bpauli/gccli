@@ -70,12 +70,12 @@ func loginBrowser(ctx context.Context, email string, opts LoginOptions, ep Endpo
 	}
 
 	// Exchange the callback service ticket for DI OAuth Bearer tokens.
-	tokens, err := exchangeServiceTicket(ctx, client, ticket, callbackURL)
+	tokens, err := exchangeServiceTicket(ctx, client, ep, ticket, callbackURL)
 	if err != nil {
 		return nil, fmt.Errorf("DI OAuth exchange: %w", err)
 	}
 
-	tokens.Domain = ep.domain()
+	tokens.Domain = ep.Domain
 	tokens.Email = email
 
 	return tokens, nil
