@@ -59,7 +59,7 @@ func (c *AuthStatusCmd) Run(g *Globals) error {
 	if err != nil {
 		return fmt.Errorf("parse tokens: %w", err)
 	}
-	if err := checkStoredDomain(email, tokens); err != nil {
+	if _, err := tokenDomain(email, tokens); err != nil {
 		return err
 	}
 
@@ -125,17 +125,9 @@ func (c *AuthTokenCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := store.Get(email)
+	tokens, err := loadTokens(store, email)
 	if err != nil {
-		if errors.Is(err, secrets.ErrNotFound) {
-			return errNoCredentials(email)
-		}
-		return fmt.Errorf("read credentials: %w", err)
-	}
-
-	tokens, err := garminauth.UnmarshalTokens(data)
-	if err != nil {
-		return fmt.Errorf("parse tokens: %w", err)
+		return err
 	}
 
 	if tokens.IsExpired() {

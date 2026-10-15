@@ -129,7 +129,7 @@ gccli drops unknown keys each time it writes a token. A key that must survive a 
 
 The login writes that domain into the token. API calls and token refresh use the `domain` of the token. When the token has an empty `domain`, they use the same order as `auth login`. gccli accepts only `garmin.com` and `garmin.cn`. Any other value fails with an error before gccli sends a request.
 
-When the `domain` of the stored token has another value, the error names the stored token and tells you to run `gccli auth login <email>`. `auth status` fails with the same error and exit code 1.
+When the `domain` of the stored token has another value, the error names the stored token and tells you to run `gccli auth login <email>`. `auth status` and `auth token` check the domain in the same way as API calls. They fail with the same errors and exit code 1.
 
 ## Account
 

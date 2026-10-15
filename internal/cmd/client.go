@@ -77,29 +77,22 @@ func loadTokens(store *secrets.Store, email string) (*garminauth.Tokens, error) 
 	if err != nil {
 		return nil, fmt.Errorf("parse tokens: %w", err)
 	}
-	if err := checkStoredDomain(email, tokens); err != nil {
+	if tokens.Domain, err = tokenDomain(email, tokens); err != nil {
 		return nil, err
-	}
-	if tokens.Domain == "" {
-		cfg, err := config.Read()
-		if err != nil {
-			return nil, fmt.Errorf("read config: %w", err)
-		}
-		if tokens.Domain, err = garminauth.ParseDomain(cfg.Domain()); err != nil {
-			return nil, err
-		}
 	}
 	return tokens, nil
 }
 
-func checkStoredDomain(email string, tokens *garminauth.Tokens) error {
+// tokenDomain returns the Garmin domain that requests with tokens use: the
+// stored domain, or the login domain when the token has none.
+func tokenDomain(email string, tokens *garminauth.Tokens) (string, error) {
 	if tokens.Domain == "" {
-		return nil
+		return loginDomain()
 	}
 	if _, err := garminauth.ParseDomain(tokens.Domain); err != nil {
-		return fmt.Errorf("stored token for %s has unknown Garmin domain %q; run: gccli auth login %s", email, tokens.Domain, email)
+		return "", fmt.Errorf("stored token for %s has unknown Garmin domain %q; run: gccli auth login %s", email, tokens.Domain, email)
 	}
-	return nil
+	return tokens.Domain, nil
 }
 
 type tokenRefresher struct {
