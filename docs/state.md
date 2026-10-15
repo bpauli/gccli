@@ -86,7 +86,14 @@ When neither `GCCLI_KEYRING_BACKEND` nor `keyring_backend` names a backend (no v
 
 The `file` backend writes one file per item in `credentials/` in the config directory. The file name is the item key, for example `gccli:token:you@example.com`. The file has mode `0600`. The directory has mode `0700`.
 
-gccli writes the new file in a temporary directory in `credentials/` and then renames it over the old file. A process that reads the file at the same time gets the old or the new token, never a partly written file. A temporary directory that a crash leaves behind has a name that starts with `.set-`. You can delete it.
+gccli writes the new file in a temporary directory in `credentials/` and then renames it over the old file. A process that reads the file at the same time gets the old or the new token, never a partly written file. The temporary directory has a name that starts with `.set-`.
+
+A write that is killed before the rename leaves its temporary directory behind, sometimes with an encrypted copy of the token. gccli removes these directories when it next writes a token and in `auth remove`. To tell them from the directory of a write in flight, gccli uses the lock file `credentials/.set.lock`:
+
+- Each write holds a shared `flock` on `.set.lock` from before it creates its temporary directory until it has removed it.
+- Before a write, and in `auth remove`, gccli tries to get an exclusive lock on `.set.lock` without waiting. When it gets the lock, no write is in flight, so gccli removes every directory in `credentials/` whose name starts with `.set-`. When another process holds the lock, gccli removes nothing and continues.
+
+gccli creates `.set.lock` with mode `0600` and never deletes it. On systems that are not Unix, such as Windows, gccli does not lock `.set.lock` and never removes a temporary directory. You can delete a `.set-` directory there when no gccli process runs.
 
 Each file is a JWE (PBES2-HS256+A128KW key wrap, A256GCM content encryption) of the keyring item. The passphrase is the fixed string `gccli-file-store`, built into gccli. You cannot change it. Anyone who can read the file can decrypt the token.
 
