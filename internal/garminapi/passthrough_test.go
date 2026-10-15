@@ -12,14 +12,12 @@ import (
 )
 
 var passthroughMethods = []string{
-	"AddEvent", "DeleteBloodPressure", "DeleteCourse", "DeleteEvent", "DeleteWeight", "DeleteWorkout",
-	"GetBloodPressure", "GetBodyComposition", "GetCourse", "GetCourseElevation", "GetCourseFavorites",
-	"GetCourses", "GetDailyWeighIns", "GetDeviceSettings", "GetDeviceSolar", "GetDevices", "GetEvents",
+	"AddEvent", "DeleteBloodPressure", "DeleteEvent", "DeleteWeight", "DeleteWorkout", "GetBloodPressure",
+	"GetBodyComposition", "GetDailyWeighIns", "GetDeviceSettings", "GetDeviceSolar", "GetDevices", "GetEvents",
 	"GetGear", "GetGearActivities", "GetGearDefaults", "GetGearStats", "GetHydration", "GetLastUsedDevice",
 	"GetNutritionDailyFoodLog", "GetNutritionDailyMeals", "GetNutritionDailySettings",
 	"GetPrimaryTrainingDevice", "GetProfile", "GetUserSettings", "GetWeighIns", "GetWorkout", "GetWorkouts",
-	"LinkGear", "SaveCourse", "ScheduleWorkout", "UnlinkGear", "UnscheduleWorkout", "UpdateWorkout",
-	"UploadWorkout",
+	"LinkGear", "ScheduleWorkout", "UnlinkGear", "UnscheduleWorkout", "UpdateWorkout", "UploadWorkout",
 }
 
 func TestNoNewPassthroughMethods(t *testing.T) {

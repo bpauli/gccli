@@ -11,6 +11,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/bpauli/gccli/internal/garminapi"
 )
 
 const e2eCoursePrefix = "E2E_TEST_"
@@ -69,7 +71,7 @@ func TestImportAndDeleteCourse(t *testing.T) {
 		t.Fatalf("marshal elevation input: %v", err)
 	}
 
-	elevData, err := client.GetCourseElevation(ctx, elevJSON)
+	elevData, err := client.Call(ctx, "courses.elevation", nil, elevJSON)
 	if err != nil {
 		t.Fatalf("GetCourseElevation failed: %v", err)
 	}
@@ -116,7 +118,7 @@ func TestImportAndDeleteCourse(t *testing.T) {
 	}
 
 	// Step 3: Save course.
-	saved, err := client.SaveCourse(ctx, payload)
+	saved, err := client.Call(ctx, "courses.save", nil, payload)
 	if err != nil {
 		t.Fatalf("SaveCourse failed: %v", err)
 	}
@@ -134,7 +136,7 @@ func TestImportAndDeleteCourse(t *testing.T) {
 
 	// Register cleanup to delete the course — runs even on test failure.
 	RegisterCleanup(t, func() {
-		if _, delErr := client.DeleteCourse(context.Background(), courseID); delErr != nil {
+		if _, delErr := client.Call(context.Background(), "courses.delete", map[string]string{"courseID": courseID}, nil); delErr != nil {
 			t.Logf("WARNING: failed to clean up course %s: %v", courseID, delErr)
 		} else {
 			t.Logf("Cleaned up course %s", courseID)
@@ -151,7 +153,7 @@ func TestImportAndDeleteCourse(t *testing.T) {
 	}
 
 	// Verify detail endpoint returns the course.
-	detail, err := client.GetCourse(ctx, courseID)
+	detail, err := client.Call(ctx, "courses.get", map[string]string{"courseID": courseID}, nil)
 	if err != nil {
 		t.Fatalf("GetCourse(%s) failed: %v", courseID, err)
 	}
@@ -168,7 +170,7 @@ func TestImportAndDeleteCourse(t *testing.T) {
 	time.Sleep(2 * time.Second)
 
 	// Delete the course explicitly (cleanup is the safety net).
-	if _, err := client.DeleteCourse(ctx, courseID); err != nil {
+	if _, err := client.Call(ctx, "courses.delete", map[string]string{"courseID": courseID}, nil); err != nil {
 		t.Fatalf("DeleteCourse(%s) failed: %v", courseID, err)
 	}
 	t.Logf("Deleted course %s", courseID)
@@ -180,13 +182,10 @@ func TestImportAndDeleteCourse(t *testing.T) {
 }
 
 // findCourseByID searches courses for one with the given ID.
-func findCourseByID(t *testing.T, client interface {
-	GetCourses(ctx context.Context) (json.RawMessage, error)
-}, courseID string,
-) bool {
+func findCourseByID(t *testing.T, client *garminapi.Client, courseID string) bool {
 	t.Helper()
 
-	data, err := client.GetCourses(context.Background())
+	data, err := client.Call(context.Background(), "courses.list", nil, nil)
 	if err != nil {
 		t.Fatalf("GetCourses failed while searching for course %s: %v", courseID, err)
 	}
@@ -213,15 +212,11 @@ func findCourseByID(t *testing.T, client interface {
 
 // cleanupOrphanCourses deletes any courses with the E2E_TEST_ prefix
 // left over from prior failed runs.
-func cleanupOrphanCourses(t *testing.T, client interface {
-	GetCourses(ctx context.Context) (json.RawMessage, error)
-	DeleteCourse(ctx context.Context, courseID string) (json.RawMessage, error)
-},
-) {
+func cleanupOrphanCourses(t *testing.T, client *garminapi.Client) {
 	t.Helper()
 	ctx := context.Background()
 
-	data, err := client.GetCourses(ctx)
+	data, err := client.Call(ctx, "courses.list", nil, nil)
 	if err != nil {
 		t.Logf("WARNING: could not list courses for orphan cleanup: %v", err)
 		return
@@ -246,7 +241,7 @@ func cleanupOrphanCourses(t *testing.T, client interface {
 		name, _ := c["courseName"].(string)
 		if strings.HasPrefix(name, e2eCoursePrefix) {
 			id := formatID(c["courseId"])
-			if _, delErr := client.DeleteCourse(ctx, id); delErr != nil {
+			if _, delErr := client.Call(ctx, "courses.delete", map[string]string{"courseID": id}, nil); delErr != nil {
 				t.Logf("WARNING: failed to delete orphaned course %s (%s): %v", id, name, delErr)
 			} else {
 				t.Logf("Cleaned up orphaned course %s (%s)", id, name)

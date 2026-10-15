@@ -14,7 +14,7 @@ func TestGetCourses(t *testing.T) {
 	client := AuthenticatedClient(t)
 	ctx := context.Background()
 
-	data, err := client.GetCourses(ctx)
+	data, err := client.Call(ctx, "courses.list", nil, nil)
 	if err != nil {
 		t.Fatalf("GetCourses failed: %v", err)
 	}
@@ -42,7 +42,7 @@ func TestGetCourseFavorites(t *testing.T) {
 	client := AuthenticatedClient(t)
 	ctx := context.Background()
 
-	data, err := client.GetCourseFavorites(ctx)
+	data, err := client.Call(ctx, "courses.favorites", nil, nil)
 	if err != nil {
 		t.Fatalf("GetCourseFavorites failed: %v", err)
 	}
@@ -62,7 +62,7 @@ func TestGetCourseDetail(t *testing.T) {
 	ctx := context.Background()
 
 	// Fetch courses to get an ID.
-	data, err := client.GetCourses(ctx)
+	data, err := client.Call(ctx, "courses.list", nil, nil)
 	if err != nil {
 		t.Fatalf("GetCourses failed: %v", err)
 	}
@@ -88,7 +88,7 @@ func TestGetCourseDetail(t *testing.T) {
 	}
 
 	// Fetch the course detail.
-	detail, err := client.GetCourse(ctx, courseID)
+	detail, err := client.Call(ctx, "courses.get", map[string]string{"courseID": courseID}, nil)
 	if err != nil {
 		t.Fatalf("GetCourse(%s) failed: %v", courseID, err)
 	}

@@ -32,7 +32,7 @@ func (c *CoursesListCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetCourses(g.Context)
+	data, err := client.Call(g.Context, "courses.list", nil, nil)
 	if err != nil {
 		return fmt.Errorf("list courses: %w", err)
 	}
@@ -64,7 +64,7 @@ func (c *CoursesFavoritesCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetCourseFavorites(g.Context)
+	data, err := client.Call(g.Context, "courses.favorites", nil, nil)
 	if err != nil {
 		return fmt.Errorf("list favorite courses: %w", err)
 	}
@@ -98,7 +98,7 @@ func (c *CourseDetailCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetCourse(g.Context, c.ID)
+	data, err := client.Call(g.Context, "courses.get", map[string]string{"courseID": c.ID}, nil)
 	if err != nil {
 		return fmt.Errorf("get course: %w", err)
 	}
@@ -198,7 +198,7 @@ func (c *CourseSendCmd) Run(g *Globals) error {
 	}
 
 	// Fetch course detail to get the course name.
-	courseData, err := client.GetCourse(g.Context, c.CourseID)
+	courseData, err := client.Call(g.Context, "courses.get", map[string]string{"courseID": c.CourseID}, nil)
 	if err != nil {
 		return fmt.Errorf("get course: %w", err)
 	}
@@ -244,7 +244,7 @@ func (c *CourseDeleteCmd) Run(g *Globals) error {
 		return nil
 	}
 
-	data, err := client.DeleteCourse(g.Context, c.ID)
+	data, err := client.Call(g.Context, "courses.delete", map[string]string{"courseID": c.ID}, nil)
 	if err != nil {
 		return fmt.Errorf("delete course: %w", err)
 	}
