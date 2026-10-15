@@ -425,12 +425,6 @@ func newHarness(t *testing.T, in harnessInput) *harness {
 	home := t.TempDir()
 	t.Setenv("HOME", home)
 	t.Setenv("XDG_CONFIG_HOME", home)
-	for _, env := range []string{"ACCOUNT", "COLOR", "DOMAIN", "JSON", "KEYRING_BACKEND", "PLAIN", "UNITS"} {
-		t.Setenv("GCCLI_"+env, "")
-		if err := os.Unsetenv("GCCLI_" + env); err != nil {
-			t.Fatal(err)
-		}
-	}
 	dir := t.TempDir()
 	t.Chdir(dir)
 	for name, content := range in.files {
