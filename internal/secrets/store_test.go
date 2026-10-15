@@ -3,6 +3,9 @@ package secrets
 import (
 	"errors"
 	"fmt"
+	"io/fs"
+	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -10,6 +13,7 @@ import (
 
 	"github.com/99designs/keyring"
 
+	"github.com/bpauli/gccli/internal/config"
 	"github.com/bpauli/gccli/internal/testutil"
 )
 
@@ -147,6 +151,121 @@ func TestFileBackendReadDuringWrite(t *testing.T) {
 	close(errs)
 	for err := range errs {
 		t.Errorf("Get during a write: %v", err)
+	}
+}
+
+// leaveTempDirs creates what a write killed before its rename leaves in
+// credentials/: an empty temp dir and one that holds a copy of the token.
+func leaveTempDirs(t *testing.T) (credDir string, left []string) {
+	t.Helper()
+	credDir, err := config.CredentialsDir()
+	if err != nil {
+		t.Fatalf("CredentialsDir: %v", err)
+	}
+	left = []string{filepath.Join(credDir, ".set-111"), filepath.Join(credDir, ".set-222")}
+	for _, dir := range left {
+		if err := os.MkdirAll(dir, 0o700); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := os.WriteFile(filepath.Join(left[1], "gccli:token:left@example.com"), []byte("copy"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	return credDir, left
+}
+
+func assertGone(t *testing.T, paths ...string) {
+	t.Helper()
+	for _, p := range paths {
+		if _, err := os.Lstat(p); !errors.Is(err, fs.ErrNotExist) {
+			t.Errorf("%s: Lstat = %v, want not exist", filepath.Base(p), err)
+		}
+	}
+}
+
+func TestFileBackendSetRemovesLeftTempDirs(t *testing.T) {
+	testutil.TempConfigDir(t)
+	credDir, left := leaveTempDirs(t)
+	userFile := filepath.Join(credDir, ".set-notmine")
+	if err := os.WriteFile(userFile, []byte("x"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	s, err := Open("file")
+	if err != nil {
+		t.Fatalf("Open: %v", err)
+	}
+
+	if err := s.Set("t@example.com", []byte("data")); err != nil {
+		t.Fatalf("Set: %v", err)
+	}
+
+	assertGone(t, left...)
+	if _, err := os.Stat(userFile); err != nil {
+		t.Errorf("Set removed a file that gccli did not create: %v", err)
+	}
+	if got, err := s.Get("t@example.com"); err != nil || string(got) != "data" {
+		t.Errorf("Get = %q, %v, want %q", got, err, "data")
+	}
+}
+
+func TestFileBackendDeleteRemovesLeftTempDirs(t *testing.T) {
+	for _, stored := range []bool{true, false} {
+		t.Run(fmt.Sprintf("stored=%v", stored), func(t *testing.T) {
+			testutil.TempConfigDir(t)
+			s, err := Open("file")
+			if err != nil {
+				t.Fatalf("Open: %v", err)
+			}
+			want := error(nil)
+			if stored {
+				if err := s.Set("t@example.com", []byte("data")); err != nil {
+					t.Fatalf("Set: %v", err)
+				}
+			} else {
+				want = ErrNotFound
+			}
+			_, left := leaveTempDirs(t)
+
+			if err := s.Delete("t@example.com"); !errors.Is(err, want) {
+				t.Fatalf("Delete = %v, want %v", err, want)
+			}
+			assertGone(t, left...)
+		})
+	}
+}
+
+func TestFileBackendParallelWriters(t *testing.T) {
+	testutil.TempConfigDir(t)
+	email := "parallel@example.com"
+	data := []byte(`{"oauth2_access_token":"` + strings.Repeat("a", 1<<12) + `"}`)
+	var wg sync.WaitGroup
+	errs := make(chan error, 8)
+	for range 8 {
+		s, err := Open("file")
+		if err != nil {
+			t.Fatalf("Open: %v", err)
+		}
+		wg.Go(func() {
+			for range 40 {
+				if err := s.Set(email, data); err != nil {
+					errs <- err
+					return
+				}
+				if got, err := s.Get(email); err != nil || string(got) != string(data) {
+					errs <- fmt.Errorf("Get = %d bytes, %v", len(got), err)
+					return
+				}
+			}
+		})
+	}
+	wg.Wait()
+	close(errs)
+	for err := range errs {
+		t.Errorf("parallel write: %v", err)
+	}
+	credDir, _ := config.CredentialsDir()
+	if left, _ := filepath.Glob(filepath.Join(credDir, ".set-*")); len(left) != 0 {
+		t.Errorf("temp dirs left after the writes: %v", left)
 	}
 }
 
