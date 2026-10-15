@@ -26,8 +26,8 @@ type BodyCmd struct {
 // BodyCompositionCmd shows body composition data for a date or range.
 type BodyCompositionCmd struct {
 	Date      string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
-	StartDate string `help:"Start date for range query (YYYY-MM-DD)." name:"start"`
-	EndDate   string `help:"End date for range query (YYYY-MM-DD)." name:"end"`
+	StartDate Date   `help:"Start date for range query (YYYY-MM-DD, today, yesterday, 3d, +30d)." name:"start"`
+	EndDate   Date   `help:"End date for range query (YYYY-MM-DD, today, yesterday, 3d, +30d)." name:"end"`
 }
 
 func (c *BodyCompositionCmd) Run(g *Globals) error {
@@ -38,8 +38,8 @@ func (c *BodyCompositionCmd) Run(g *Globals) error {
 
 	var startDate, endDate string
 	if c.StartDate != "" && c.EndDate != "" {
-		startDate = c.StartDate
-		endDate = c.EndDate
+		startDate = string(c.StartDate)
+		endDate = string(c.EndDate)
 	} else {
 		date, err := resolveDate(c.Date)
 		if err != nil {
@@ -59,8 +59,8 @@ func (c *BodyCompositionCmd) Run(g *Globals) error {
 
 // BodyWeighInsCmd shows weigh-in data for a date range.
 type BodyWeighInsCmd struct {
-	StartDate string `help:"Start date (YYYY-MM-DD)." required:"" name:"start"`
-	EndDate   string `help:"End date (YYYY-MM-DD)." required:"" name:"end"`
+	StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+	EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
 }
 
 func (c *BodyWeighInsCmd) Run(g *Globals) error {
@@ -69,7 +69,7 @@ func (c *BodyWeighInsCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetWeighIns(g.Context, c.StartDate, c.EndDate)
+	data, err := client.GetWeighIns(g.Context, string(c.StartDate), string(c.EndDate))
 	if err != nil {
 		return fmt.Errorf("get weigh-ins: %w", err)
 	}
@@ -214,8 +214,8 @@ func (c *BodyDeleteWeightCmd) Run(g *Globals) error {
 
 // BodyBloodPressureCmd shows blood pressure data for a date range.
 type BodyBloodPressureCmd struct {
-	StartDate string `help:"Start date (YYYY-MM-DD)." required:"" name:"start"`
-	EndDate   string `help:"End date (YYYY-MM-DD)." required:"" name:"end"`
+	StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+	EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
 }
 
 func (c *BodyBloodPressureCmd) Run(g *Globals) error {
@@ -224,7 +224,7 @@ func (c *BodyBloodPressureCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetBloodPressure(g.Context, c.StartDate, c.EndDate)
+	data, err := client.GetBloodPressure(g.Context, string(c.StartDate), string(c.EndDate))
 	if err != nil {
 		return fmt.Errorf("get blood pressure: %w", err)
 	}

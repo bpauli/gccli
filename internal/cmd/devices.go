@@ -70,8 +70,8 @@ func (c *DevicePrimaryCmd) Run(g *Globals) error {
 // DeviceSolarCmd shows solar charging data for a device.
 type DeviceSolarCmd struct {
 	DeviceID  string `arg:"" help:"Device ID."`
-	StartDate string `help:"Start date (YYYY-MM-DD). Defaults to today." name:"start"`
-	EndDate   string `help:"End date (YYYY-MM-DD). Defaults to start date." name:"end"`
+	StartDate Date   `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"start"`
+	EndDate   Date   `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to start date." name:"end"`
 }
 
 func (c *DeviceSolarCmd) Run(g *Globals) error {
@@ -80,7 +80,7 @@ func (c *DeviceSolarCmd) Run(g *Globals) error {
 		return err
 	}
 
-	startDate := c.StartDate
+	startDate := string(c.StartDate)
 	if startDate == "" {
 		startDate, err = resolveDate("")
 		if err != nil {
@@ -88,7 +88,7 @@ func (c *DeviceSolarCmd) Run(g *Globals) error {
 		}
 	}
 
-	endDate := c.EndDate
+	endDate := string(c.EndDate)
 	if endDate == "" {
 		endDate = startDate
 	}

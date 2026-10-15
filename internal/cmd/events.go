@@ -21,7 +21,7 @@ type EventsCmd struct {
 
 // EventsListCmd lists calendar events from a start date.
 type EventsListCmd struct {
-	StartDate  string `help:"Start date (YYYY-MM-DD, today, 3d, +30d). Defaults to today." name:"start"`
+	StartDate  Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"start"`
 	Pagination `embed:"" set:"items=events"`
 	Sort       string `help:"Sort order." default:"eventDate_asc" enum:"eventDate_asc,eventDate_desc" short:"s"`
 }
@@ -51,7 +51,7 @@ func (c *EventsListCmd) Run(g *Globals) error {
 		return err
 	}
 
-	startDate := c.StartDate
+	startDate := string(c.StartDate)
 	if startDate == "" {
 		startDate = "today"
 	}

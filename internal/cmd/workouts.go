@@ -248,8 +248,8 @@ func (c *WorkoutScheduleAddCmd) Run(g *Globals) error {
 // WorkoutScheduleListCmd lists scheduled workouts for a date or date range.
 type WorkoutScheduleListCmd struct {
 	Date      string `arg:"" help:"Date to list (YYYY-MM-DD, today, yesterday, 3d). Defaults to today." optional:""`
-	StartDate string `help:"Start date for range (YYYY-MM-DD, today, 3d, +30d)." name:"start"`
-	EndDate   string `help:"End date for range (YYYY-MM-DD, today, 3d, +30d)." name:"end"`
+	StartDate Date   `help:"Start date for range (YYYY-MM-DD, today, yesterday, 3d, +30d)." name:"start"`
+	EndDate   Date   `help:"End date for range (YYYY-MM-DD, today, yesterday, 3d, +30d)." name:"end"`
 }
 
 func (c *WorkoutScheduleListCmd) Run(g *Globals) error {
@@ -285,11 +285,11 @@ func (c *WorkoutScheduleListCmd) runRange(g *Globals) error {
 		return fmt.Errorf("both --start and --end are required for range queries")
 	}
 
-	startStr, err := resolveDate(c.StartDate)
+	startStr, err := resolveDate(string(c.StartDate))
 	if err != nil {
 		return err
 	}
-	endStr, err := resolveDate(c.EndDate)
+	endStr, err := resolveDate(string(c.EndDate))
 	if err != nil {
 		return err
 	}
