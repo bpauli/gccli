@@ -46,7 +46,7 @@ All three checks (`make fmt`, `make lint`, `make test`) must pass before committ
 - **`internal/ui/`** - Terminal UI (colors, prompts) via termenv. Passed to commands in `Globals.UI`.
 - **`internal/errfmt/`** — Maps typed errors to user-friendly messages.
 - **`internal/fit/`** — FIT file binary encoding for weight data uploads.
-- **`internal/testutil/`** - Test helpers: test token fixtures and an in-memory keyring.
+- **`internal/testutil/`** - Test helpers. `TempConfigDir` points the config directory at a temp directory.
 - **`internal/e2e/`** — End-to-end tests (build tag `e2e`) against real Garmin Connect API.
 
 ### Patterns
