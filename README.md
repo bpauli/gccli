@@ -884,8 +884,6 @@ make test-e2e
 
 ## Architecture
 
-Inspired by [gogcli](https://github.com/steipete/gogcli). API coverage based on [python-garminconnect](https://github.com/cyberjunky/python-garminconnect) (113 API methods).
-
 Platforms: macOS (amd64, arm64), Linux (amd64, arm64). macOS builds with CGO enabled for Keychain access.
 
 ## License
@@ -895,12 +893,6 @@ MIT
 ## Links
 
 - [Garmin Connect](https://connect.garmin.com)
-- [python-garminconnect](https://github.com/cyberjunky/python-garminconnect) — API reference
-- [gogcli](https://github.com/steipete/gogcli) — architecture inspiration
-
-## Credits
-
-Architecture inspired by [gogcli](https://github.com/steipete/gogcli) by Peter Steinberger. API coverage modeled after [python-garminconnect](https://github.com/cyberjunky/python-garminconnect) by Ron Klinkien.
 
 ---
 
