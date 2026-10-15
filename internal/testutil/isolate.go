@@ -7,11 +7,6 @@ import (
 	"testing"
 )
 
-// IsolatedMain runs the tests of a package with HOME and XDG_CONFIG_HOME on a
-// new empty directory and with every GCCLI_* variable unset, then exits. Call
-// it from TestMain in each package whose tests link internal/config, so that
-// a test can reach the real config, keyring file or environment of the person
-// who runs it only when it sets them on purpose.
 func IsolatedMain(m *testing.M) {
 	os.Exit(runIsolated(m))
 }
