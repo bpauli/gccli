@@ -8,7 +8,9 @@ import (
 	"syscall"
 )
 
-func lockFile(path string) (unlock func(), err error) {
+// LockFile blocks until it holds an exclusive advisory lock on path. Call
+// unlock to release it.
+func LockFile(path string) (unlock func(), err error) {
 	f, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE, 0o600)
 	if err != nil {
 		return nil, err
