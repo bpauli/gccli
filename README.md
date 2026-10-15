@@ -341,10 +341,10 @@ gccli auth remove                      # Remove stored credentials
 
 ```bash
 # List and search
-gccli activities list --limit 20 --start 0
+gccli activities list --limit 20 --offset 20
 gccli activities list --type running
 gccli activities count
-gccli activities search --start-date 2024-01-01 --end-date 2024-12-31
+gccli activities search --start 2024-01-01 --end 2024-12-31
 
 # View details
 gccli activity summary <id>
@@ -661,6 +661,7 @@ gccli training plan <id>
 ```bash
 gccli events list                      # List upcoming events
 gccli events list --start 2024-01-01 --limit 50
+gccli events list --limit 50 --offset 50  # Next page (--offset must be a multiple of --limit)
 gccli events list --sort eventDate_desc
 gccli events delete <id>               # Delete an event (with confirmation)
 gccli events delete <id> -f            # Delete without confirmation
@@ -683,8 +684,8 @@ gccli events add --name "Spring 10K" --date 2026-05-10 --type running \
 ### Wellness
 
 ```bash
-gccli wellness menstrual-cycle --start-date 2024-01-01 --end-date 2024-03-31
-gccli wellness menstrual-summary --start-date 2024-01-01 --end-date 2024-03-31
+gccli wellness menstrual-cycle --start 2024-01-01 --end 2024-03-31
+gccli wellness menstrual-summary --start 2024-01-01 --end 2024-03-31
 gccli wellness pregnancy-summary
 ```
 
@@ -783,7 +784,7 @@ $ gccli --plain activities list --limit 3
 ### Export all runs from the last month
 
 ```bash
-gccli --json activities search --start-date 2024-05-15 --end-date 2024-06-15 --limit 100 | \
+gccli --json activities search --start 2024-05-15 --end 2024-06-15 --limit 100 | \
   jq -r '.[] | select(.activityType.typeKey == "running") | .activityId' | \
   while read id; do
     gccli activity download "$id" --format gpx --output "run_${id}.gpx"
@@ -831,7 +832,7 @@ All commands support these flags:
 
 ## Date Format Reference
 
-Many commands accept flexible date formats:
+Many commands accept flexible date formats. Every `--start` and `--end` flag accepts all of them. A bad date in one of these flags is a usage error (exit code 2).
 
 | Format | Example | Description |
 | --- | --- | --- |
@@ -839,6 +840,7 @@ Many commands accept flexible date formats:
 | `today` | | Today's date |
 | `yesterday` | | Yesterday's date |
 | `Nd` | `3d`, `7d` | N days ago |
+| `+Nd` | `+30d` | N days ahead |
 
 ## Development
 

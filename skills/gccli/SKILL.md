@@ -26,10 +26,9 @@ Output
 
 Date shortcuts
 
-- `today`, `yesterday`, `3d` (N days ago), `YYYY-MM-DD` (specific date).
-- Most range commands use `--start`/`--end`.
-- `activities search`, `wellness menstrual-cycle` and `wellness menstrual-summary` use `--start-date`/`--end-date`.
-- In `activities list`, `activities search` and `workouts list`, `--start` is a pagination index, not a date.
+- `today`, `yesterday`, `3d` (N days ago), `+30d` (N days ahead), `YYYY-MM-DD` (specific date).
+- All date range commands use `--start`/`--end`, and these flags accept every form above. A bad date is a usage error (exit code 2).
+- `activities list`, `activities search`, `workouts list` and `events list` page with `--limit`/`-l` and `--offset` (number of items to skip). In `events list`, `--offset` must be 0 or a multiple of `--limit`.
 
 Common commands
 
@@ -39,9 +38,10 @@ Common commands
 - Import credentials: `gccli auth import <token>` (from `auth export` output)
 - Remove credentials: `gccli auth remove`
 - List activities: `gccli activities list --limit 20`
+- Next page of activities: `gccli activities list --limit 20 --offset 20`
 - List activities by type: `gccli activities list --type running`
 - Activity count: `gccli activities count`
-- Search activities: `gccli activities search --start-date 2024-01-01 --end-date 2024-12-31`
+- Search activities: `gccli activities search --start 2024-01-01 --end 2024-12-31`
 - Activity summary: `gccli activity summary <id>`
 - Activity details: `gccli activity details <id>`
 - Activity splits: `gccli activity splits <id>`
@@ -152,11 +152,12 @@ Common commands
 - Nutrition settings: `gccli nutrition settings [date]`
 - Training plans: `gccli training plans --locale en`
 - Training plan detail: `gccli training plan <id>`
-- Menstrual cycle: `gccli wellness menstrual-cycle --start-date 2024-01-01 --end-date 2024-03-31`
-- Menstrual summary: `gccli wellness menstrual-summary --start-date 2024-01-01 --end-date 2024-03-31`
+- Menstrual cycle: `gccli wellness menstrual-cycle --start 2024-01-01 --end 2024-03-31`
+- Menstrual summary: `gccli wellness menstrual-summary --start 2024-01-01 --end 2024-03-31`
 - Pregnancy summary: `gccli wellness pregnancy-summary`
 - List events: `gccli events list`
 - List events from date: `gccli events list --start 2024-06-01 --limit 50`
+- Next page of events: `gccli events list --limit 50 --offset 50`
 - Add event: `gccli events add --name "Berlin Marathon" --date 2026-09-27 --type running --race --location "Berlin, Germany" --distance 42.195km --time 09:15 --timezone Europe/Berlin`
 - Add event with goal and training priority: `gccli events add --name "Spring 10K" --date 2026-05-10 --type running --race --distance 10km --goal 40m --training`
 - Delete event: `gccli events delete <id>` (use `-f` to skip confirmation)
@@ -207,7 +208,7 @@ Notes
 
 - Set `GCCLI_ACCOUNT=you@example.com` to avoid repeating `--account`.
 - For scripting, use `--json`. `--plain` gives TSV only for the commands listed under Output. Pin `--units` when parsing `--plain` output so it does not follow the Garmin profile.
-- Dates support `today`, `yesterday`, `3d`, or `YYYY-MM-DD`.
+- Dates support `today`, `yesterday`, `3d`, `+30d`, or `YYYY-MM-DD`.
 - Tokens are stored in the OS keyring (macOS Keychain, Linux Secret Service). The file fallback encrypts tokens with a fixed passphrase built into gccli, so anyone who can read the files can read the tokens.
 - Tokens auto-refresh on 401. A 429 is retried up to 3 times when `Retry-After` is 30 s or less; a longer wait is reported as exit code 5. A 5xx is retried up to 2 times for read requests (GET) only, with exponential backoff. A write that gets a 5xx fails at once; check the state before you run it again. An API request fails when no data moves for 60 s; a transfer that keeps moving has no time limit.
 - For Garmin China accounts: `export GCCLI_DOMAIN=garmin.cn`.
