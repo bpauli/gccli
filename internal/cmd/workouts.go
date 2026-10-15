@@ -285,15 +285,7 @@ func (c *WorkoutScheduleListCmd) runRange(g *Globals) error {
 		return fmt.Errorf("both --start and --end are required for range queries")
 	}
 
-	startStr, err := resolveDate(string(c.StartDate))
-	if err != nil {
-		return err
-	}
-	endStr, err := resolveDate(string(c.EndDate))
-	if err != nil {
-		return err
-	}
-
+	startStr, endStr := string(c.StartDate), string(c.EndDate)
 	start, _ := time.Parse("2006-01-02", startStr)
 	end, _ := time.Parse("2006-01-02", endStr)
 	if end.Before(start) {

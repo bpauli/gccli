@@ -30,6 +30,9 @@ func TestDateDecode(t *testing.T) {
 		{args: []string{"--r", "2024-01-02", "--d=+30d"}, want: "2026-11-14"},
 		{args: []string{"--r", "2024-01-02", "--d", "bad"}, wantErr: `--d: invalid date "bad"`},
 		{args: []string{"--r", "2024-01-02", "--d", "20"}, wantErr: `--d: invalid date "20"`},
+		{args: []string{"--r", "2024-01-02", "--d", ""}, wantErr: "--d: empty date"},
+		{args: []string{"--r", "2024-01-02", "--d", " "}, wantErr: "--d: empty date"},
+		{args: []string{"--r", ""}, wantErr: "--r: empty date"},
 		{args: []string{"--d", "today"}, wantErr: "missing flags: --r=DATE"},
 	}
 	for _, tt := range tests {
@@ -207,6 +210,10 @@ func TestFlagArgv(t *testing.T) {
 		{args: []string{"devices", "solar", "123", "--start", "bad"}},
 		{args: []string{"events", "list", "--start", "bad"}},
 		{args: []string{"workouts", "schedule", "list", "--start", "bad", "--end", "today"}},
+		{args: []string{"activities", "search", "--start", ""}},
+		{args: []string{"workouts", "schedule", "list", "--start", "", "--end", "today"}},
+		{args: []string{"events", "list", "--start", ""}},
+		{args: []string{"health", "steps", "daily", "--start", "", "--end", "today"}},
 		{
 			args:      []string{"events", "list", "--sort", "eventDate_desc"},
 			wantPath:  "/calendar-service/events",
@@ -215,6 +222,13 @@ func TestFlagArgv(t *testing.T) {
 		{args: []string{"events", "list", "-s", "eventDate_desc"}},
 		{args: []string{"events", "list", "--offset", "3", "--limit", "2"}},
 		{args: []string{"events", "list", "--offset", "-20"}},
+		{args: []string{"events", "list", "--limit", "0"}},
+		{args: []string{"activities", "list", "--offset=-5"}},
+		{args: []string{"activities", "list", "--limit=-1"}},
+		{args: []string{"activities", "list", "--limit", "0"}},
+		{args: []string{"activities", "search", "--start", "2024-01-01", "--offset=-1"}},
+		{args: []string{"workouts", "list", "--offset=-5"}},
+		{args: []string{"workouts", "list", "--limit", "0"}},
 		{args: []string{"events", "list", "--page", "2"}},
 		{args: []string{"events", "list", "-p", "2"}},
 		{args: []string{"activities", "list", "--start", "10"}},
@@ -280,12 +294,14 @@ func walkFlags(t *testing.T, fn func(path string, f *kong.Flag)) {
 func TestNoLegacyFlagNames(t *testing.T) {
 	dateType := reflect.TypeOf(Date(""))
 	walkFlags(t, func(path string, f *kong.Flag) {
-		switch f.Name {
-		case "start-date", "end-date", "page":
-			t.Errorf("%s: legacy flag --%s", path, f.Name)
-		case "start", "end":
-			if f.Target.Type() != dateType {
-				t.Errorf("%s: --%s has type %s, want Date", path, f.Name, f.Target.Type())
+		for _, name := range append([]string{f.Name}, f.Aliases...) {
+			switch name {
+			case "start-date", "end-date", "page":
+				t.Errorf("%s: legacy flag --%s", path, name)
+			case "start", "end":
+				if f.Target.Type() != dateType {
+					t.Errorf("%s: --%s has type %s, want Date", path, name, f.Target.Type())
+				}
 			}
 		}
 	})

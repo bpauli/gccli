@@ -27,8 +27,8 @@ Output
 Date shortcuts
 
 - `today`, `yesterday`, `3d` (N days ago), `+30d` (N days ahead), `YYYY-MM-DD` (specific date).
-- All date range commands use `--start`/`--end`, and these flags accept every form above. A bad date is a usage error (exit code 2).
-- `activities list`, `activities search`, `workouts list` and `events list` page with `--limit`/`-l` and `--offset` (number of items to skip). In `events list`, `--offset` must be 0 or a multiple of `--limit`.
+- All date range commands use `--start`/`--end`, and these flags accept every form above. A bad or empty date is a usage error (exit code 2).
+- `activities list`, `activities search`, `workouts list` and `events list` page with `--limit`/`-l` and `--offset` (number of items to skip). `--limit` must be at least 1 and `--offset` must not be negative; other values are a usage error (exit code 2). In `events list`, `--offset` must be 0 or a multiple of `--limit`.
 
 Common commands
 

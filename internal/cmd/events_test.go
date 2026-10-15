@@ -420,13 +420,18 @@ func TestEventsListPageIndex(t *testing.T) {
 		{offset: 4, limit: 2, want: 3},
 		{offset: 3, limit: 1, want: 4},
 		{offset: 3, limit: 3, want: 2},
-		{offset: 0, limit: 0, want: 1},
 		{offset: 3, limit: 2, wantErr: "--offset 3 is not a multiple of --limit 2"},
-		{offset: -20, limit: 20, wantErr: "--offset must not be negative"},
-		{offset: 5, limit: 0, wantErr: "--offset needs --limit greater than 0"},
+		{offset: -20, limit: 20, wantErr: "--offset must not be negative, got -20"},
+		{offset: 0, limit: 0, wantErr: "--limit must be at least 1, got 0"},
+		{offset: 5, limit: 0, wantErr: "--limit must be at least 1, got 0"},
 	}
 	for _, tt := range tests {
-		got, err := (&EventsListCmd{Pagination: Pagination{Limit: tt.limit, Offset: tt.offset}}).pageIndex()
+		cmd := &EventsListCmd{Pagination: Pagination{Limit: tt.limit, Offset: tt.offset}}
+		var got int
+		err := cmd.Validate()
+		if err == nil {
+			got, err = cmd.pageIndex()
+		}
 		if tt.wantErr != "" {
 			if err == nil || !strings.Contains(err.Error(), tt.wantErr) {
 				t.Errorf("offset %d limit %d: err = %v, want %q", tt.offset, tt.limit, err, tt.wantErr)
