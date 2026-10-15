@@ -5,6 +5,65 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-10-15
+
+v2.0 gives each flag one name and each write command one output rule. Scripts that use the old flag names or parse write output must change. A command with an old flag name fails with exit code 2 and names the flag, so a broken script fails loudly. The tables below list every change.
+
+### Changed (breaking)
+
+- **One name for each date and pagination flag** - Date ranges use `--start` and `--end` in every command. Paginated commands use `--limit` (`-l`) and `--offset`. The old names are removed, with no aliases. (#99, #133)
+
+  | Command | Old flag | New flag |
+  |---|---|---|
+  | `activities list`, `activities search`, `workouts list` | `--start N`, `-s N` | `--offset N` |
+  | `events list` | `--page P`, `-p P` | `--offset (P-1)*LIMIT` |
+  | `events list` | `-s ORDER` | `--sort ORDER` |
+  | `activities search`, `wellness menstrual-cycle`, `wellness menstrual-summary` | `--start-date`, `--end-date` | `--start`, `--end` |
+
+  - `--offset` counts items from 0, as `--start` did. In `events list`, `--offset` must be 0 or a multiple of `--limit`, because Garmin returns events in pages of `--limit`.
+  - Each short flag has one meaning. `-s` means only `--step` (`workouts create`), and `-p` means only `--privacy` (`courses import`). `--offset`, `--sort` and the date flags have no short flag.
+- **One `--json` output rule for write commands** - With `--json`, every write command prints the Garmin response on stdout, or `{"ok": true}` when the response is empty. Without `--json`, it prints one message on stderr and nothing on stdout. `courses import` keeps its table and TSV row on stdout. (#99, #135, #138)
+
+  | Command | Mode | Before | After |
+  |---|---|---|---|
+  | `activity rename`, `activity retype`, `workouts update`, `body add-weight`, and any write that gets an empty response | `--json` | `null` | `{"ok": true}` |
+  | `activity delete`, `body delete-weight`, `body delete-blood-pressure`, `workouts delete`, `workouts schedule remove`, `courses delete`, `events delete` | `--json` | nothing on stdout, a message on stderr | the Garmin response on stdout, nothing on stderr |
+  | `activity exercise-sets set`, `gear link`, `gear unlink` | `--json` | nothing on stdout, a message on stderr | the Garmin response on stdout, nothing on stderr |
+  | `hydration add` | table, `--plain` | the Garmin response as JSON on stdout | `Added <ml> ml of water on <date>` on stderr, nothing on stdout |
+  | every write command | `--json`, a 2xx response that is not JSON | exit 1 with `json: error calling MarshalJSON ...` | exit 1 with `garmin saved the change, but its response is not JSON: ...` |
+
+  A script that reads the result of a write command should pass `--json` and read stdout. The delete prompt, a declined prompt and a delete without a terminal and without `--force` do not change.
+- **Bad flag values are usage errors** - These inputs now exit with code 2 before gccli sends a request. (#133, #134, #136)
+  - A bad date in any `--start` or `--end` flag. Before, most range commands sent the value to Garmin, and `events list` and `workouts schedule list` exited with 1.
+  - An empty date value, required or optional, such as `--start ""`. Before, it was sent as today. A positional date with no value, such as `health summary`, still means today.
+  - `--offset` below 0 or `--limit` below 1 in any paginated command. Before, only `events list` checked `--offset`.
+
+### Added
+
+- Every `--start` and `--end` flag accepts `today`, `yesterday`, `3d` (3 days ago) and `+30d` (30 days from today). Before, only `events list` and `workouts schedule list` did. (#133)
+
+### Fixed
+
+- `health rhr` failed with 404 and `records` failed with 403. No login stored the Garmin display name, so the commands sent an empty name or the email. The six commands that need it (`health summary`, `steps`, `hr`, `rhr`, `sleep` and `records`) now get it from the profile. (#129, #137)
+- An API request now fails when no data moves for 60 s, also while it reads the response body or sends an upload. Before, a body that stalled after the headers kept the command waiting forever. A transfer that keeps moving has no time limit. The idle time uses the monotonic clock, so a change of the system clock cannot fail a transfer or hide a stall. (#110, #114, #117, #121)
+- `auth remove` on the file keyring exited with 1 when no credentials were stored, so a script that ran it twice failed. It now acts as it does on the other keyrings. (#107, #112)
+- `activity create` printed a large activity ID as `2.123456789e+10`. It now prints the digits. (#138)
+- Bash completion: (#113, #115, #116, #118, #119, #120, #122, #123, #124, #125)
+  - It completes after a flag value and after a positional argument.
+  - `--flag=value` completes, and values with `@` or `=` no longer break it.
+  - Each flag offers the values of its own command.
+  - Quoted words complete, and non-ASCII text works on bash 3.2.
+  - An escaped space no longer deletes typed text.
+  - TAB stays fast on long lines.
+
+### Removed
+
+- Unused code: `outfmt.Write`, `ui.FromContext`, the table helpers in `internal/cmd`, most of `internal/testutil` and the unused OAuth1 preauthorized exchange. (#99, #130)
+
+### Docs
+
+- README, the skill and the docs site use the new flag names and state the output rule for write commands. (#133, #138, #140)
+
 ## [1.13.0] - 2026-10-12
 
 ### Changed
@@ -346,6 +405,7 @@ Initial release of gccli — a fast, script-friendly CLI for Garmin Connect.
 - **CI pipeline** — GitHub Actions for fmt-check, lint, and test
 - **Cross-platform builds** — macOS (amd64/arm64) and Linux (amd64/arm64) via goreleaser
 
+[2.0.0]: https://github.com/bpauli/gccli/releases/tag/v2.0.0
 [1.13.0]: https://github.com/bpauli/gccli/releases/tag/v1.13.0
 [1.12.0]: https://github.com/bpauli/gccli/releases/tag/v1.12.0
 [1.11.0]: https://github.com/bpauli/gccli/releases/tag/v1.11.0
