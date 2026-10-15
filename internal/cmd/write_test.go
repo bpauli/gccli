@@ -39,6 +39,11 @@ const noContent = ""
 
 const okOut = "{\n  \"ok\": true\n}\n"
 
+const (
+	deletedBody = `{"deleted":true}`
+	deletedOut  = "{\n  \"deleted\": true\n}\n"
+)
+
 var writeCases = map[string]writeCase{
 	"activity upload": {
 		args:   []string{"run.fit"},
@@ -68,9 +73,9 @@ var writeCases = map[string]writeCase{
 	},
 	"activity delete": {
 		args:   []string{"1"},
-		routes: map[string]string{"DELETE /activity-service/activity/1": noContent},
+		routes: map[string]string{"DELETE /activity-service/activity/1": deletedBody},
 		prompt: "Delete activity 1?",
-		json:   okOut,
+		json:   deletedOut,
 		human:  "Deleted activity 1\n",
 	},
 	"activity exercise-sets set": {
@@ -93,9 +98,9 @@ var writeCases = map[string]writeCase{
 	},
 	"body delete-weight": {
 		args:   []string{"3", "--date", "2024-01-15"},
-		routes: map[string]string{"DELETE /weight-service/weight/2024-01-15/byversion/3": noContent},
+		routes: map[string]string{"DELETE /weight-service/weight/2024-01-15/byversion/3": deletedBody},
 		prompt: "Delete weigh-in 3 on 2024-01-15?",
-		json:   okOut,
+		json:   deletedOut,
 		human:  "Deleted weigh-in 3\n",
 	},
 	"body add-blood-pressure": {
@@ -106,9 +111,9 @@ var writeCases = map[string]writeCase{
 	},
 	"body delete-blood-pressure": {
 		args:   []string{"4", "--date", "2024-01-15"},
-		routes: map[string]string{"DELETE /bloodpressure-service/bloodpressure/2024-01-15/4": noContent},
+		routes: map[string]string{"DELETE /bloodpressure-service/bloodpressure/2024-01-15/4": deletedBody},
 		prompt: "Delete blood pressure entry 4 on 2024-01-15?",
-		json:   okOut,
+		json:   deletedOut,
 		human:  "Deleted blood pressure entry 4\n",
 	},
 	"workouts upload": {
@@ -141,16 +146,16 @@ var writeCases = map[string]writeCase{
 	},
 	"workouts schedule remove": {
 		args:   []string{"10"},
-		routes: map[string]string{"DELETE /workout-service/schedule/10": noContent},
+		routes: map[string]string{"DELETE /workout-service/schedule/10": deletedBody},
 		prompt: "Remove scheduled workout 10?",
-		json:   okOut,
+		json:   deletedOut,
 		human:  "Removed scheduled workout 10\n",
 	},
 	"workouts delete": {
 		args:   []string{"9"},
-		routes: map[string]string{"DELETE /workout-service/workout/9": noContent},
+		routes: map[string]string{"DELETE /workout-service/workout/9": deletedBody},
 		prompt: "Delete workout 9?",
-		json:   okOut,
+		json:   deletedOut,
 		human:  "Deleted workout 9\n",
 	},
 	"courses import": {
@@ -180,9 +185,9 @@ var writeCases = map[string]writeCase{
 	},
 	"courses delete": {
 		args:   []string{"42"},
-		routes: map[string]string{"DELETE /course-service/course/42": noContent},
+		routes: map[string]string{"DELETE /course-service/course/42": deletedBody},
 		prompt: "Delete course 42?",
-		json:   okOut,
+		json:   deletedOut,
 		human:  "Deleted course 42\n",
 	},
 	"events add": {
@@ -194,9 +199,9 @@ var writeCases = map[string]writeCase{
 	},
 	"events delete": {
 		args:   []string{"11"},
-		routes: map[string]string{"DELETE /calendar-service/event/11": noContent},
+		routes: map[string]string{"DELETE /calendar-service/event/11": deletedBody},
 		prompt: "Delete event 11?",
-		json:   okOut,
+		json:   deletedOut,
 		human:  "Deleted event 11\n",
 	},
 	"gear link": {
