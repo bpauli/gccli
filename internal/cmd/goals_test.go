@@ -189,7 +189,7 @@ func TestExecute_GoalsListRejectsUnknownStatus(t *testing.T) {
 func TestGoalsList_NoAccount(t *testing.T) {
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &GoalsListCmd{}
+	cmd := &GoalsListCmd{Status: "active"}
 	err := cmd.Run(g)
 	if err == nil {
 		t.Fatal("expected error, got nil")
@@ -210,7 +210,7 @@ func TestGoalsList_Success(t *testing.T) {
 
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &GoalsListCmd{}
+	cmd := &GoalsListCmd{Status: "active"}
 	err := cmd.Run(g)
 	if err != nil {
 		t.Fatalf("expected no error, got: %v", err)
@@ -264,7 +264,7 @@ func TestGoalsList_ServerError(t *testing.T) {
 
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &GoalsListCmd{}
+	cmd := &GoalsListCmd{Status: "active"}
 	err := cmd.Run(g)
 	if err == nil {
 		t.Fatal("expected error, got nil")

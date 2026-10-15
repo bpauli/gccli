@@ -18,6 +18,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"slices"
+	"strconv"
 	"strings"
 	"sync"
 	"testing"
@@ -507,10 +508,14 @@ func (h *harness) writes() []string {
 
 func TestWriteCensus(t *testing.T) {
 	fset := token.NewFileSet()
+	cli := parseFuncs(t, fset, ".")
 	methods := clientMethods(parseFuncs(t, fset, "../garminapi"))
-	apiWrites := apiWriteMethods(methods)
+	apiWrites := apiWriteMethods(methods, tableWrites(garminapi.EndpointMethod, cli, slices.Collect(maps.Values(methods))))
 	for name := range apiWrites {
-		fn := methods[name]
+		fn, ok := methods[name]
+		if !ok {
+			continue
+		}
 		if res := fn.Type.Results; ast.IsExported(name) && (res == nil || len(res.List) != 2 ||
 			types.ExprString(res.List[0].Type) != "json.RawMessage" || types.ExprString(res.List[1].Type) != "error") {
 			t.Errorf("%s: Client.%s sends a write: return (json.RawMessage, error) so the command can print the response", fset.Position(fn.Pos()), name)
@@ -521,7 +526,7 @@ func TestWriteCensus(t *testing.T) {
 	commandPaths(newTestParser(t).Model.Node, "", paths)
 	banned := []string{"IsJSON", "IsPlain", "ModeFromContext", "WriteJSON", "WriteTable", "WritePlain", "writeHealthJSON", "Stdout", "Successf"}
 	found := map[string]bool{}
-	for fn, method := range runWrites(parseFuncs(t, fset, "."), apiWrites) {
+	for fn, method := range runWrites(cli, apiWrites) {
 		pos := fset.Position(fn.Pos())
 		recv := recvName(fn)
 		if len(paths[recv]) == 0 {
@@ -579,10 +584,48 @@ func (c *ReadCmd) Run(g *Globals) error {
 }`)
 
 	got := map[string]string{}
-	for fn, method := range runWrites(cli, apiWriteMethods(clientMethods(api))) {
+	for fn, method := range runWrites(cli, apiWriteMethods(clientMethods(api), nil)) {
 		got[recvName(fn)] = method
 	}
 	want := map[string]string{"LiteralVerbCmd": "PatchNote", "HelperCmd": "SaveNote"}
+	if !maps.Equal(got, want) {
+		t.Errorf("runWrites = %v, want %v", got, want)
+	}
+}
+
+func TestWriteCensusFindsCallWrites(t *testing.T) {
+	fset := token.NewFileSet()
+	api := parseSource(t, fset, `package garminapi
+func (c *Client) RenameNote(ctx context.Context, id string) (json.RawMessage, error) {
+	body, err := json.Marshal(id)
+	if err != nil {
+		return nil, err
+	}
+	return c.Call(ctx, "notes.update", map[string]string{"id": id}, body)
+}`)
+	cli := parseSource(t, fset, `package cmd
+func (c *DeleteCmd) Run(g *Globals) error {
+	_, err := client.Call(g.Context, "notes.delete", map[string]string{"id": c.ID}, nil)
+	return err
+}
+func (c *HelperCmd) Run(g *Globals) error { return c.rename(g) }
+func (c *HelperCmd) rename(g *Globals) error {
+	_, err := client.RenameNote(g.Context, c.ID)
+	return err
+}
+func (c *ReadCmd) Run(g *Globals) error {
+	_, err := client.Call(g.Context, "notes.get", map[string]string{"id": c.ID}, nil)
+	return err
+}`)
+	table := map[string]string{"notes.delete": http.MethodDelete, "notes.update": http.MethodPut, "notes.get": http.MethodGet}
+	lookup := func(name string) (string, bool) { m, ok := table[name]; return m, ok }
+
+	got := map[string]string{}
+	methods := clientMethods(api)
+	for fn, method := range runWrites(cli, apiWriteMethods(methods, tableWrites(lookup, cli, api))) {
+		got[recvName(fn)] = method
+	}
+	want := map[string]string{"DeleteCmd": `Call("notes.delete")`, "HelperCmd": "RenameNote"}
 	if !maps.Equal(got, want) {
 		t.Errorf("runWrites = %v, want %v", got, want)
 	}
@@ -600,8 +643,9 @@ func clientMethods(fns []*ast.FuncDecl) map[string]*ast.FuncDecl {
 
 type clientMethod = string
 
-func apiWriteMethods(methods map[string]*ast.FuncDecl) map[string]clientMethod {
+func apiWriteMethods(methods map[string]*ast.FuncDecl, table map[string]clientMethod) map[string]clientMethod {
 	writes := map[string]clientMethod{}
+	maps.Copy(writes, table)
 	for name, fn := range methods {
 		if namesWriteVerb(fn.Body) {
 			writes[name] = name
@@ -742,11 +786,52 @@ func calls(n ast.Node) map[string]bool {
 				out[fun.Name] = true
 			case *ast.SelectorExpr:
 				out[fun.Sel.Name] = true
+				if name, ok := endpointName(call); ok {
+					out[callKey(name)] = true
+				}
 			}
 		}
 		return true
 	})
 	return out
+}
+
+func callKey(endpoint string) string { return `Call("` + endpoint + `")` }
+
+func endpointName(call *ast.CallExpr) (string, bool) {
+	sel, ok := call.Fun.(*ast.SelectorExpr)
+	if !ok || sel.Sel.Name != "Call" || len(call.Args) != 4 {
+		return "", false
+	}
+	lit, ok := call.Args[1].(*ast.BasicLit)
+	if !ok || lit.Kind != token.STRING {
+		return "", false
+	}
+	name, err := strconv.Unquote(lit.Value)
+	return name, err == nil
+}
+
+func tableWrites(lookup func(string) (string, bool), fnSets ...[]*ast.FuncDecl) map[string]clientMethod {
+	writes := map[string]clientMethod{}
+	for _, fns := range fnSets {
+		for _, fn := range fns {
+			ast.Inspect(fn.Body, func(n ast.Node) bool {
+				call, ok := n.(*ast.CallExpr)
+				if !ok {
+					return true
+				}
+				name, ok := endpointName(call)
+				if !ok {
+					return true
+				}
+				if method, known := lookup(name); known && method != http.MethodGet {
+					writes[callKey(name)] = callKey(name)
+				}
+				return true
+			})
+		}
+	}
+	return writes
 }
 
 func commandPaths(n *kong.Node, prefix string, out map[string][]string) {
