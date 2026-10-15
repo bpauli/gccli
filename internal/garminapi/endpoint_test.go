@@ -29,6 +29,34 @@ func mustRoute(t *testing.T, e Endpoint) *route {
 	return r
 }
 
+type endpointCase struct {
+	name string
+	args map[string]string
+	want string
+}
+
+func testEndpoints(t *testing.T, table []Endpoint, cases []endpointCase) {
+	t.Helper()
+	for _, e := range table {
+		if !slices.ContainsFunc(cases, func(c endpointCase) bool { return c.name == e.Name }) {
+			t.Errorf("row %s has no case", e.Name)
+		}
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			var got string
+			_, client := testServer(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				got = r.Method + " " + r.URL.RequestURI()
+				_, _ = w.Write([]byte(`[{"id":1}]`))
+			}))
+			data, err := client.Call(context.Background(), tc.name, tc.args, nil)
+			if err != nil || got != tc.want || string(data) != `[{"id":1}]` {
+				t.Errorf("Call = %q, %v; sent %q, want %q", data, err, got, tc.want)
+			}
+		})
+	}
+}
+
 type sent struct {
 	line, accept, contentType, body string
 }
