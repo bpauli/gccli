@@ -73,7 +73,8 @@ All three checks (`make fmt`, `make lint`, `make test`) must pass before committ
 - `garminapi` tests call `testServer(t, handler)`. It starts an `httptest` server and returns a client that points at it.
 - `cmd` tests call `overrideNewClient(t, server)`. It replaces `newClientFn`, so the command under test calls the test server.
 - `TestGolden` runs every leaf command in table, plain and json mode. Each command has one file in `internal/cmd/testdata/golden/` with its args, the mock routes it calls, and the expected stdout, stderr and exit code per mode. A new leaf command fails the test until it has a file. Write the input sections by hand: `args` (one argument per line), `stdin`, `file <name>` and `route <METHOD> <uri> [status]` (status 200 by default). A section name that ends in `noeol` marks data without a final newline. Then write the outputs with `go test ./internal/cmd -run TestGolden -update` and review the diff.
-- E2E tests use build tag `e2e` and require `.env` with credentials. Created resources are prefixed `E2E_TEST_` and cleaned up via `t.Cleanup()`.
+- E2E tests use build tag `e2e` and require `.env` with credentials or `GARMIN_TOKEN`. Created resources are prefixed `E2E_TEST_` and cleaned up via `t.Cleanup()`.
+- `GARMIN_TOKEN` replaces the SSO login of the E2E suite. It holds the base64 output of `gccli auth export`. When its access token has expired, the suite refreshes it once before the first test and all tests share the new token. Use a fresh export. The export and your keyring hold the same refresh token, and Garmin may reject a refresh token that was used before. So a refresh in the suite can break the stored login.
 
 ## Documentation Updates
 
