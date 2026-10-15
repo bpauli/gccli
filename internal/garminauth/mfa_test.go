@@ -266,17 +266,6 @@ func ssoMuxWithMFA(t *testing.T, expectedMFACode string) *http.ServeMux {
 		})
 	})
 
-	// OAuth1 preauthorized exchange.
-	mux.HandleFunc("GET /oauth-service/oauth/preauthorized", func(w http.ResponseWriter, r *http.Request) {
-		auth := r.Header.Get("Authorization")
-		if !strings.HasPrefix(auth, "OAuth ") {
-			http.Error(w, "missing OAuth header", http.StatusUnauthorized)
-			return
-		}
-		w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
-		_, _ = w.Write([]byte("oauth_token=mock-oauth1-token&oauth_token_secret=mock-oauth1-secret&mfa_token=mock-mfa-token"))
-	})
-
 	// OAuth2 token exchange.
 	mux.HandleFunc("POST /oauth-service/oauth/exchange/user/2.0", func(w http.ResponseWriter, r *http.Request) {
 		auth := r.Header.Get("Authorization")

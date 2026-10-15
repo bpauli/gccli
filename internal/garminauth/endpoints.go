@@ -10,11 +10,10 @@ const (
 
 // SSO and OAuth endpoint path fragments.
 const (
-	ssoEmbedPath          = "/sso/embed"
-	ssoSigninPath         = "/sso/signin"
-	ssoVerifyMFAPath      = "/sso/verifyMFA/loginEnterMfaCode"
-	oauthPreauthorizedFmt = "/oauth-service/oauth/preauthorized?ticket=%s&login-url=%s&accepts-mfa-tokens=true"
-	oauthExchangePath     = "/oauth-service/oauth/exchange/user/2.0"
+	ssoEmbedPath      = "/sso/embed"
+	ssoSigninPath     = "/sso/signin"
+	ssoVerifyMFAPath  = "/sso/verifyMFA/loginEnterMfaCode"
+	oauthExchangePath = "/oauth-service/oauth/exchange/user/2.0"
 )
 
 // OAuth consumer credentials URL (public, hosted by Garmin/Garth).
@@ -53,12 +52,6 @@ func NewEndpoints(domain string) Endpoints {
 		OAuthBase:    oauthBase,
 		ConnectAPI:   oauthBase,
 	}
-}
-
-// PreauthorizedURL returns the full OAuth1 preauthorized exchange URL
-// for the given ticket and login URL.
-func (e Endpoints) PreauthorizedURL(ticket, loginURL string) string {
-	return e.OAuthBase + fmt.Sprintf(oauthPreauthorizedFmt, ticket, loginURL)
 }
 
 // ExchangeURL returns the full OAuth1-to-OAuth2 token exchange URL.

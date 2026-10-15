@@ -82,27 +82,6 @@ func ssoMux(t *testing.T) *http.ServeMux {
 		})
 	})
 
-	// OAuth1 preauthorized exchange.
-	mux.HandleFunc("GET /oauth-service/oauth/preauthorized", func(w http.ResponseWriter, r *http.Request) {
-		auth := r.Header.Get("Authorization")
-		if !strings.HasPrefix(auth, "OAuth ") {
-			http.Error(w, "missing OAuth header", http.StatusUnauthorized)
-			return
-		}
-		ticket := r.URL.Query().Get("ticket")
-		if ticket == "" {
-			http.Error(w, "missing ticket", http.StatusBadRequest)
-			return
-		}
-		loginURL := r.URL.Query().Get("login-url")
-		if loginURL == "" {
-			http.Error(w, "missing login-url", http.StatusBadRequest)
-			return
-		}
-		w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
-		_, _ = w.Write([]byte("oauth_token=mock-oauth1-token&oauth_token_secret=mock-oauth1-secret"))
-	})
-
 	// OAuth2 token exchange.
 	mux.HandleFunc("POST /oauth-service/oauth/exchange/user/2.0", func(w http.ResponseWriter, r *http.Request) {
 		auth := r.Header.Get("Authorization")
@@ -463,109 +442,6 @@ func TestFetchOAuthConsumer(t *testing.T) {
 		_, err := fetchOAuthConsumer(context.Background(), srv.Client())
 		if err == nil {
 			t.Fatal("expected error")
-		}
-	})
-}
-
-func TestExchangePreauthorized(t *testing.T) {
-	t.Run("success", func(t *testing.T) {
-		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.URL.Path != "/oauth-service/oauth/preauthorized" {
-				http.Error(w, "wrong path", http.StatusNotFound)
-				return
-			}
-			if !strings.HasPrefix(r.Header.Get("Authorization"), "OAuth ") {
-				http.Error(w, "no auth", http.StatusUnauthorized)
-				return
-			}
-			if r.Header.Get("User-Agent") != UserAgent {
-				http.Error(w, "wrong user-agent", http.StatusBadRequest)
-				return
-			}
-			loginURL := r.URL.Query().Get("login-url")
-			if loginURL == "" {
-				http.Error(w, "missing login-url", http.StatusBadRequest)
-				return
-			}
-			_, _ = w.Write([]byte("oauth_token=t1&oauth_token_secret=s1&mfa_token=mfa1"))
-		}))
-		t.Cleanup(srv.Close)
-
-		ep := Endpoints{
-			SSOBase:   srv.URL,
-			SSOEmbed:  srv.URL + "/sso/embed",
-			OAuthBase: srv.URL,
-		}
-		consumer := &oauthConsumer{ConsumerKey: "ck", ConsumerSecret: "cs"}
-
-		token, secret, mfa, err := exchangePreauthorized(
-			context.Background(), srv.Client(), ep, consumer, "test-ticket", ep.SSOEmbed)
-		if err != nil {
-			t.Fatalf("unexpected error: %v", err)
-		}
-		if token != "t1" {
-			t.Errorf("token = %q, want %q", token, "t1")
-		}
-		if secret != "s1" {
-			t.Errorf("secret = %q, want %q", secret, "s1")
-		}
-		if mfa != "mfa1" {
-			t.Errorf("mfa = %q, want %q", mfa, "mfa1")
-		}
-	})
-
-	t.Run("no mfa token", func(t *testing.T) {
-		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-			_, _ = w.Write([]byte("oauth_token=t1&oauth_token_secret=s1"))
-		}))
-		t.Cleanup(srv.Close)
-
-		ep := Endpoints{SSOEmbed: srv.URL + "/sso/embed", OAuthBase: srv.URL}
-		consumer := &oauthConsumer{ConsumerKey: "ck", ConsumerSecret: "cs"}
-
-		token, secret, mfa, err := exchangePreauthorized(
-			context.Background(), srv.Client(), ep, consumer, "ticket", ep.SSOEmbed)
-		if err != nil {
-			t.Fatalf("unexpected error: %v", err)
-		}
-		if token != "t1" || secret != "s1" {
-			t.Errorf("got token=%q secret=%q", token, secret)
-		}
-		if mfa != "" {
-			t.Errorf("mfa = %q, want empty", mfa)
-		}
-	})
-
-	t.Run("missing token", func(t *testing.T) {
-		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-			_, _ = w.Write([]byte("oauth_token=&oauth_token_secret="))
-		}))
-		t.Cleanup(srv.Close)
-
-		ep := Endpoints{SSOEmbed: srv.URL + "/sso/embed", OAuthBase: srv.URL}
-		consumer := &oauthConsumer{ConsumerKey: "ck", ConsumerSecret: "cs"}
-
-		_, _, _, err := exchangePreauthorized(
-			context.Background(), srv.Client(), ep, consumer, "ticket", ep.SSOEmbed)
-		if err == nil {
-			t.Fatal("expected error for missing token")
-		}
-	})
-
-	t.Run("server error", func(t *testing.T) {
-		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-			w.WriteHeader(http.StatusInternalServerError)
-			_, _ = w.Write([]byte("server error"))
-		}))
-		t.Cleanup(srv.Close)
-
-		ep := Endpoints{SSOEmbed: srv.URL + "/sso/embed", OAuthBase: srv.URL}
-		consumer := &oauthConsumer{ConsumerKey: "ck", ConsumerSecret: "cs"}
-
-		_, _, _, err := exchangePreauthorized(
-			context.Background(), srv.Client(), ep, consumer, "ticket", ep.SSOEmbed)
-		if err == nil {
-			t.Fatal("expected error for server error")
 		}
 	})
 }

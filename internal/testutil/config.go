@@ -1,9 +1,7 @@
 package testutil
 
 import (
-	"encoding/json"
 	"os"
-	"path/filepath"
 	"testing"
 
 	"github.com/bpauli/gccli/internal/config"
@@ -30,22 +28,4 @@ func TempConfigDir(t *testing.T) string {
 		t.Fatalf("mkdir config dir: %v", err)
 	}
 	return dir
-}
-
-// TempConfigFile creates a temporary config file with the given File contents
-// and returns the file path. Isolates the config dir via TempConfigDir so
-// config.Read() finds it.
-func TempConfigFile(t *testing.T, f *config.File) string {
-	t.Helper()
-	dir := TempConfigDir(t)
-	path := filepath.Join(dir, "config.json")
-	data, err := json.MarshalIndent(f, "", "  ")
-	if err != nil {
-		t.Fatalf("marshal config: %v", err)
-	}
-	data = append(data, '\n')
-	if err := os.WriteFile(path, data, 0o600); err != nil {
-		t.Fatalf("write config: %v", err)
-	}
-	return path
 }

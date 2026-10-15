@@ -113,7 +113,7 @@ See `CLAUDE.md` for a detailed architecture overview.
 
 - Unit tests use the standard `testing` package and `httptest` for HTTP mocking.
 - Test files are co-located with source files (`*_test.go`).
-- Use `testutil.NewClientWithServer(t, handler)` for mock API client tests.
+- For mock API client tests, use `testServer(t, handler)` in `internal/garminapi` and `overrideNewClient(t, server)` in `internal/cmd`.
 - Run tests: `make test`
 - Run a single test: `go test -run TestFuncName ./internal/pkg/...`
 

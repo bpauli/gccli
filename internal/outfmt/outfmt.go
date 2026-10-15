@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"os"
 	"text/tabwriter"
 )
 
@@ -116,20 +115,4 @@ func WritePlain(w io.Writer, rows [][]string) error {
 		}
 	}
 	return nil
-}
-
-// Write writes data in the format specified by the context mode.
-// For JSON mode, v is written as pretty-printed JSON.
-// For Plain mode, rows are written as TSV.
-// For Table mode, header and rows are written as aligned columns.
-func Write(ctx context.Context, v any, header []string, rows [][]string) error {
-	w := os.Stdout
-	switch ModeFromContext(ctx) {
-	case JSON:
-		return WriteJSON(w, v)
-	case Plain:
-		return WritePlain(w, rows)
-	default:
-		return WriteTable(w, header, rows)
-	}
 }

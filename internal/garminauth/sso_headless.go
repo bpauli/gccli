@@ -201,54 +201,6 @@ func fetchOAuthConsumer(ctx context.Context, client *http.Client) (*oauthConsume
 	return &consumer, nil
 }
 
-// exchangePreauthorized exchanges a service ticket for OAuth1 tokens.
-// loginURL must match the service URL the ticket was originally issued for.
-func exchangePreauthorized(ctx context.Context, client *http.Client,
-	ep Endpoints, consumer *oauthConsumer, ticket, loginURL string,
-) (token, secret, mfaToken string, err error) {
-	preAuthURL := ep.PreauthorizedURL(ticket, loginURL)
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, preAuthURL, nil)
-	if err != nil {
-		return "", "", "", err
-	}
-
-	authHeader := signOAuth1(http.MethodGet, preAuthURL,
-		consumer.ConsumerKey, consumer.ConsumerSecret, "", "", nil)
-	req.Header.Set("Authorization", authHeader)
-	req.Header.Set("User-Agent", UserAgent)
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return "", "", "", err
-	}
-	defer func() { _ = resp.Body.Close() }()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return "", "", "", err
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		return "", "", "", fmt.Errorf("HTTP %d: %s", resp.StatusCode, body)
-	}
-
-	values, err := url.ParseQuery(string(body))
-	if err != nil {
-		return "", "", "", fmt.Errorf("parse response: %w", err)
-	}
-
-	token = values.Get("oauth_token")
-	secret = values.Get("oauth_token_secret")
-	mfaToken = values.Get("mfa_token")
-
-	if token == "" || secret == "" {
-		return "", "", "", fmt.Errorf("response missing oauth_token or oauth_token_secret")
-	}
-
-	return token, secret, mfaToken, nil
-}
-
 // exchangeOAuth2 exchanges OAuth1 credentials for OAuth2 access and refresh tokens.
 func exchangeOAuth2(ctx context.Context, client *http.Client,
 	ep Endpoints, consumer *oauthConsumer,
