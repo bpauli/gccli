@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"strings"
 	"testing"
 	"time"
@@ -62,6 +63,58 @@ func TestLoginBrowser_Success(t *testing.T) {
 	}
 	if tokens.IsExpired() {
 		t.Error("token should not be expired")
+	}
+}
+
+func TestLoginBrowser_StoresDomain(t *testing.T) {
+	tests := []struct {
+		domain  string
+		ssoHost string
+		diReq   string
+	}{
+		{DomainGlobal, "sso.garmin.com", "POST diauth.garmin.com/di-oauth2-service/oauth/token"},
+		{DomainChina, "sso.garmin.cn", "POST diauth.garmin.cn/di-oauth2-service/oauth/token"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.domain, func(t *testing.T) {
+			rec := newReroutingRecorder(t, ssoMux(t))
+			var opened string
+			origOpen := openBrowserFn
+			openBrowserFn = func(ssoURL string) error {
+				opened = ssoURL
+				parsed, err := url.Parse(ssoURL)
+				if err != nil {
+					return err
+				}
+				go func() {
+					resp, err := http.Get(parsed.Query().Get("service") + "?ticket=ST-mock-ticket-456")
+					if err != nil {
+						t.Errorf("callback request failed: %v", err)
+						return
+					}
+					_ = resp.Body.Close()
+				}()
+				return nil
+			}
+			t.Cleanup(func() { openBrowserFn = origOpen })
+
+			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+			defer cancel()
+
+			tokens, err := LoginBrowser(ctx, "test@example.com", LoginOptions{Domain: tt.domain, HTTPClient: rec.client()})
+			if err != nil {
+				t.Fatalf("LoginBrowser() error: %v", err)
+			}
+			if tokens.Domain != tt.domain {
+				t.Errorf("stored domain = %q, want %q", tokens.Domain, tt.domain)
+			}
+			if u, err := url.Parse(opened); err != nil || u.Host != tt.ssoHost {
+				t.Errorf("browser opened %q, want host %s", opened, tt.ssoHost)
+			}
+			if got := rec.requests(); !slices.Equal(got, []string{tt.diReq}) {
+				t.Errorf("requests = %q, want %q", got, tt.diReq)
+			}
+		})
 	}
 }
 
