@@ -76,6 +76,16 @@ func WriteTo(f *File, path string) error {
 	return os.WriteFile(path, data, 0o600)
 }
 
+// Update applies fn to the configuration in the default config file path.
+func Update(fn func(*File)) error {
+	f, err := Read()
+	if err != nil {
+		return err
+	}
+	fn(f)
+	return Write(f)
+}
+
 // Domain returns the effective domain, checking the environment variable first,
 // then the config file, then falling back to the default.
 func (f *File) Domain() string {

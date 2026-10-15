@@ -3,6 +3,9 @@ package cmd
 import (
 	"bytes"
 	"encoding/base64"
+	"encoding/json"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 	"time"
@@ -107,6 +110,41 @@ func TestAuthImport_Success(t *testing.T) {
 	}
 	if roundTrip.OAuth2AccessToken != "test-access-token" {
 		t.Errorf("access_token = %q, want %q", roundTrip.OAuth2AccessToken, "test-access-token")
+	}
+}
+
+func TestAuthImport_KeepsOtherConfigKeys(t *testing.T) {
+	dir := testutil.TempConfigDir(t)
+	path := filepath.Join(dir, "config.json")
+	if err := os.WriteFile(path, []byte(`{"future_key": {"a": 1}, "units": "metric", "default_account": "old@example.com"}`), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+
+	data, _ := testTokens().Marshal()
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "")
+	if err := (&AuthImportCmd{Token: base64.StdEncoding.EncodeToString(data)}).Run(g); err != nil {
+		t.Fatalf("expected no error, got: %v", err)
+	}
+
+	written, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var got map[string]any
+	if err := json.Unmarshal(written, &got); err != nil {
+		t.Fatalf("config is not JSON: %v\n%s", err, written)
+	}
+	if got["default_account"] != "test@example.com" {
+		t.Errorf("default_account = %v, want test@example.com", got["default_account"])
+	}
+	if got["units"] != "metric" {
+		t.Errorf("units = %v, want metric", got["units"])
+	}
+	if fk, ok := got["future_key"].(map[string]any); !ok || fk["a"] != 1.0 {
+		t.Errorf("future_key = %v, want {\"a\": 1}\n%s", got["future_key"], written)
 	}
 }
 
