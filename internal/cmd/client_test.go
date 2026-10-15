@@ -497,6 +497,7 @@ func TestUnknownStoredDomain(t *testing.T) {
 		{"auth status json", false, []string{"--json", "auth", "status"}, `{"error":{"code":"error","message":"stored token for test@example.com has unknown Garmin domain \"foo.example\"; run: gccli auth login test@example.com"}}` + "\n"},
 		{"api command", false, []string{"devices", "list"}, msg + "\n"},
 		{"expired api command", true, []string{"devices", "list"}, msg + "\n"},
+		{"auth token", false, []string{"auth", "token"}, msg + "\n"},
 		{"expired auth token", true, []string{"auth", "token"}, msg + "\n"},
 	}
 	for _, tt := range tests {
@@ -517,6 +518,48 @@ func TestUnknownStoredDomain(t *testing.T) {
 			stub(t, &refreshFn, func(context.Context, *garminauth.Tokens, garminauth.LoginOptions) (*garminauth.Tokens, error) {
 				t.Error("refreshed a token with an unknown domain")
 				return nil, errors.New("no refresh")
+			})
+
+			var stdout, stderr bytes.Buffer
+			args := append([]string{"--account", "test@example.com", "--color", "never"}, tt.args...)
+			code := execute(args, "test", "none", "never", &stdout, &stderr)
+			if code != 1 {
+				t.Errorf("exit code = %d, want 1", code)
+			}
+			if stdout.Len() != 0 {
+				t.Errorf("stdout = %q, want empty", stdout.String())
+			}
+			if stderr.String() != tt.stderr {
+				t.Errorf("stderr = %q, want %q", stderr.String(), tt.stderr)
+			}
+		})
+	}
+}
+
+func TestUnknownDomainForEmptyStoredDomain(t *testing.T) {
+	const msg = `unknown Garmin domain "foo.example"; use garmin.com or garmin.cn`
+	tests := []struct {
+		name   string
+		args   []string
+		stderr string
+	}{
+		{"auth status", []string{"auth", "status"}, msg + "\n"},
+		{"auth status json", []string{"--json", "auth", "status"}, `{"error":{"code":"error","message":"unknown Garmin domain \"foo.example\"; use garmin.com or garmin.cn"}}` + "\n"},
+		{"auth token", []string{"auth", "token"}, msg + "\n"},
+		{"api command", []string{"devices", "list"}, msg + "\n"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			testutil.TempConfigDir(t)
+			t.Setenv(config.EnvDomain, "foo.example")
+			store := newTestSecretsStore(t)
+			overrideLoadSecrets(t, store)
+			tokens := testTokens()
+			tokens.Domain = ""
+			storeTestTokens(t, store, "test@example.com", tokens)
+			stub(t, &newClientFn, func(*garminauth.Tokens) *garminapi.Client {
+				t.Fatal("created an API client for an unknown domain")
+				return nil
 			})
 
 			var stdout, stderr bytes.Buffer
