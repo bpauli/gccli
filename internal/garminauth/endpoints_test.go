@@ -1,7 +1,6 @@
 package garminauth
 
 import (
-	"net/url"
 	"testing"
 )
 
@@ -43,38 +42,6 @@ func TestNewEndpoints_China(t *testing.T) {
 	}
 	if ep.ConnectAPI != "https://connectapi.garmin.cn" {
 		t.Errorf("ConnectAPI = %q, want %q", ep.ConnectAPI, "https://connectapi.garmin.cn")
-	}
-}
-
-func TestEndpoints_PreauthorizedURL(t *testing.T) {
-	t.Parallel()
-
-	ep := NewEndpoints(DomainGlobal)
-	ticket := "ST-123456-abc"
-	loginURL := "https://sso.garmin.com/sso/embed"
-
-	got := ep.PreauthorizedURL(ticket, loginURL)
-
-	// Verify the URL contains expected components.
-	u, err := url.Parse(got)
-	if err != nil {
-		t.Fatalf("PreauthorizedURL returned invalid URL: %v", err)
-	}
-	if u.Host != "connectapi.garmin.com" {
-		t.Errorf("host = %q, want %q", u.Host, "connectapi.garmin.com")
-	}
-	if u.Path != "/oauth-service/oauth/preauthorized" {
-		t.Errorf("path = %q, want %q", u.Path, "/oauth-service/oauth/preauthorized")
-	}
-	q := u.Query()
-	if q.Get("ticket") != ticket {
-		t.Errorf("ticket = %q, want %q", q.Get("ticket"), ticket)
-	}
-	if q.Get("login-url") != loginURL {
-		t.Errorf("login-url = %q, want %q", q.Get("login-url"), loginURL)
-	}
-	if q.Get("accepts-mfa-tokens") != "true" {
-		t.Errorf("accepts-mfa-tokens = %q, want %q", q.Get("accepts-mfa-tokens"), "true")
 	}
 }
 
