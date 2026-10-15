@@ -13,8 +13,8 @@ type WellnessCmd struct {
 
 // WellnessMenstrualCycleCmd shows menstrual cycle data.
 type WellnessMenstrualCycleCmd struct {
-	StartDate string `help:"Start date (YYYY-MM-DD)." required:""`
-	EndDate   string `help:"End date (YYYY-MM-DD)." required:""`
+	StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+	EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
 }
 
 func (c *WellnessMenstrualCycleCmd) Run(g *Globals) error {
@@ -23,7 +23,7 @@ func (c *WellnessMenstrualCycleCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetMenstrualCycleData(g.Context, c.StartDate, c.EndDate)
+	data, err := client.GetMenstrualCycleData(g.Context, string(c.StartDate), string(c.EndDate))
 	if err != nil {
 		return fmt.Errorf("get menstrual cycle data: %w", err)
 	}
@@ -33,8 +33,8 @@ func (c *WellnessMenstrualCycleCmd) Run(g *Globals) error {
 
 // WellnessMenstrualSummaryCmd shows menstrual cycle summary.
 type WellnessMenstrualSummaryCmd struct {
-	StartDate string `help:"Start date (YYYY-MM-DD)." required:""`
-	EndDate   string `help:"End date (YYYY-MM-DD)." required:""`
+	StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+	EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
 }
 
 func (c *WellnessMenstrualSummaryCmd) Run(g *Globals) error {
@@ -43,7 +43,7 @@ func (c *WellnessMenstrualSummaryCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetMenstrualCycleSummary(g.Context, c.StartDate, c.EndDate)
+	data, err := client.GetMenstrualCycleSummary(g.Context, string(c.StartDate), string(c.EndDate))
 	if err != nil {
 		return fmt.Errorf("get menstrual cycle summary: %w", err)
 	}

@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"reflect"
 	"strings"
 	"sync"
 	"testing"
@@ -111,9 +112,22 @@ func TestFlagArgv(t *testing.T) {
 			wantQuery: map[string]string{"start": "0", "limit": "5"},
 		},
 		{
-			args:      []string{"activities", "search", "--start-date", "2024-01-01", "--limit", "5", "--offset", "10"},
+			args:      []string{"activities", "search", "--start", "2024-01-01", "--limit", "5", "--offset", "10"},
 			wantPath:  "/activitylist-service/activities/search/activities",
 			wantQuery: map[string]string{"start": "10", "limit": "5", "startDate": "2024-01-01"},
+		},
+		{
+			args:      []string{"activities", "search", "--start", "3d", "--end", "today"},
+			wantPath:  "/activitylist-service/activities/search/activities",
+			wantQuery: map[string]string{"startDate": "2026-10-12", "endDate": "2026-10-15", "start": "0", "limit": "20"},
+		},
+		{
+			args:     []string{"wellness", "menstrual-cycle", "--start", "3d", "--end", "today"},
+			wantPath: "/periodichealth-service/menstrualcycle/dayview/2026-10-12/2026-10-15",
+		},
+		{
+			args:     []string{"wellness", "menstrual-summary", "--start", "2024-01-01", "--end", "yesterday"},
+			wantPath: "/periodichealth-service/menstrualcycle/summary/2024-01-01/2026-10-14",
 		},
 		{
 			args:      []string{"workouts", "list", "--limit", "5", "--offset", "10"},
@@ -199,7 +213,14 @@ func TestFlagArgv(t *testing.T) {
 		{args: []string{"events", "list", "-p", "2"}},
 		{args: []string{"activities", "list", "--start", "10"}},
 		{args: []string{"activities", "list", "-s", "10"}},
-		{args: []string{"activities", "search", "--start-date", "2024-01-01", "-s", "10"}},
+		{args: []string{"activities", "search", "--start", "2024-01-01", "-s", "10"}},
+		{args: []string{"activities", "search", "--start", "20"}},
+		{args: []string{"activities", "search", "--start-date", "2024-01-01"}},
+		{args: []string{"activities", "search", "--start", "2024-01-01", "--end-date", "2024-01-31"}},
+		{args: []string{"wellness", "menstrual-cycle", "--start-date", "2024-01-01", "--end-date", "2024-01-31"}},
+		{args: []string{"wellness", "menstrual-cycle", "--start", "2024-01-01"}},
+		{args: []string{"wellness", "menstrual-summary", "--start-date", "2024-01-01", "--end-date", "2024-01-31"}},
+		{args: []string{"wellness", "menstrual-summary", "--start", "bad", "--end", "today"}},
 		{args: []string{"workouts", "list", "--start", "10"}},
 		{args: []string{"workouts", "list", "-s", "10"}},
 	}
@@ -232,4 +253,34 @@ func TestFlagArgv(t *testing.T) {
 			}
 		})
 	}
+}
+
+func walkFlags(t *testing.T, fn func(path string, f *kong.Flag)) {
+	t.Helper()
+	var walk func(path string, node *kong.Node)
+	walk = func(path string, node *kong.Node) {
+		for _, f := range node.Flags {
+			fn(path, f)
+		}
+		for _, child := range node.Children {
+			if child.Type == kong.CommandNode {
+				walk(strings.TrimSpace(path+" "+child.Name), child)
+			}
+		}
+	}
+	walk("", newTestParser(t).Model.Node)
+}
+
+func TestNoLegacyFlagNames(t *testing.T) {
+	dateType := reflect.TypeOf(Date(""))
+	walkFlags(t, func(path string, f *kong.Flag) {
+		switch f.Name {
+		case "start-date", "end-date", "page":
+			t.Errorf("%s: legacy flag --%s", path, f.Name)
+		case "start", "end":
+			if f.Target.Type() != dateType {
+				t.Errorf("%s: --%s has type %s, want Date", path, f.Name, f.Target.Type())
+			}
+		}
+	})
 }

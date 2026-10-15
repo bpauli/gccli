@@ -79,8 +79,8 @@ func (c *ActivitiesCountCmd) Run(g *Globals) error {
 // ActivitiesSearchCmd searches activities by date range.
 type ActivitiesSearchCmd struct {
 	Pagination `embed:"" set:"items=activities"`
-	StartDate  string `help:"Start date (YYYY-MM-DD)." required:"" name:"start-date"`
-	EndDate    string `help:"End date (YYYY-MM-DD)." name:"end-date"`
+	StartDate  Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+	EndDate    Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." name:"end"`
 }
 
 func (c *ActivitiesSearchCmd) Run(g *Globals) error {
@@ -89,7 +89,7 @@ func (c *ActivitiesSearchCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.SearchActivities(g.Context, c.Offset, c.Limit, c.StartDate, c.EndDate)
+	data, err := client.SearchActivities(g.Context, c.Offset, c.Limit, string(c.StartDate), string(c.EndDate))
 	if err != nil {
 		return fmt.Errorf("search activities: %w", err)
 	}
