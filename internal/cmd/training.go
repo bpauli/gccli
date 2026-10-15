@@ -21,7 +21,7 @@ func (c *TrainingPlansCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetTrainingPlans(g.Context, c.Locale)
+	data, err := client.Call(g.Context, "training.plans", map[string]string{"locale": c.Locale}, nil)
 	if err != nil {
 		return fmt.Errorf("get training plans: %w", err)
 	}
@@ -40,7 +40,7 @@ func (c *TrainingPlanCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetTrainingPlan(g.Context, c.ID)
+	data, err := client.Call(g.Context, "training.plan", map[string]string{"planID": c.ID}, nil)
 	if err != nil {
 		return fmt.Errorf("get training plan: %w", err)
 	}
