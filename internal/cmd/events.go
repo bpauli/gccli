@@ -33,6 +33,9 @@ func (c *EventsListCmd) Validate() error {
 }
 
 func (c *EventsListCmd) pageIndex() (int, error) {
+	if c.Limit < 1 {
+		return 0, fmt.Errorf("--limit must be at least 1, got %d", c.Limit)
+	}
 	if c.Offset%c.Limit != 0 {
 		return 0, fmt.Errorf("--offset %d is not a multiple of --limit %d; events are fetched in pages of --limit", c.Offset, c.Limit)
 	}
