@@ -244,6 +244,11 @@ func TestEventsAdd_InvalidGoal(t *testing.T) {
 	}
 }
 
+func TestEventsAdd_InfiniteDistanceKeepsBuildPrefix(t *testing.T) {
+	runBadInput(t, []string{"events", "add", "--name", "x", "--date", "2026-11-01", "--type", "running", "--distance", "1" + strings.Repeat("0", 400) + "km"},
+		"build event payload: json: unsupported value: +Inf\n")
+}
+
 func TestEventsAdd_NoAccount(t *testing.T) {
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "")
@@ -251,57 +256,6 @@ func TestEventsAdd_NoAccount(t *testing.T) {
 	err := cmd.Run(g)
 	if err == nil {
 		t.Fatal("expected error, got nil")
-	}
-}
-
-func TestParseDistance(t *testing.T) {
-	tests := []struct {
-		input    string
-		wantVal  float64
-		wantUnit string
-		wantErr  bool
-	}{
-		{"10km", 10, "kilometer", false},
-		{"42.195km", 42.195, "kilometer", false},
-		{"26.2mi", 26.2, "mile", false},
-		{"400m", 400, "meter", false},
-		{"abc", 0, "", true},
-		{"10", 0, "", true},
-		{"km", 0, "", true},
-	}
-	for _, tt := range tests {
-		val, unit, err := parseDistance(tt.input)
-		if (err != nil) != tt.wantErr {
-			t.Errorf("parseDistance(%q) error = %v, wantErr %v", tt.input, err, tt.wantErr)
-			continue
-		}
-		if val != tt.wantVal || unit != tt.wantUnit {
-			t.Errorf("parseDistance(%q) = (%v, %q), want (%v, %q)", tt.input, val, unit, tt.wantVal, tt.wantUnit)
-		}
-	}
-}
-
-func TestParseGoalDuration(t *testing.T) {
-	tests := []struct {
-		input   string
-		want    int
-		wantErr bool
-	}{
-		{"50m", 3000, false},
-		{"1h30m", 5400, false},
-		{"2400s", 2400, false},
-		{"3h30m0s", 12600, false},
-		{"notaduration", 0, true},
-	}
-	for _, tt := range tests {
-		got, err := parseGoalDuration(tt.input)
-		if (err != nil) != tt.wantErr {
-			t.Errorf("parseGoalDuration(%q) error = %v, wantErr %v", tt.input, err, tt.wantErr)
-			continue
-		}
-		if got != tt.want {
-			t.Errorf("parseGoalDuration(%q) = %d, want %d", tt.input, got, tt.want)
-		}
 	}
 }
 
@@ -436,5 +390,125 @@ func TestEventsList_LimitZeroIsUsageError(t *testing.T) {
 	stdout, stderr, code := h.run([]string{"--json"}, []string{"events", "list", "--limit", "0"})
 	if code != 2 || stdout != "" || !strings.Contains(stderr, "--limit must be at least 1, got 0") {
 		t.Errorf("exit %d, want 2\nstdout %q, want empty\nstderr %q, want a --limit error", code, stdout, stderr)
+	}
+}
+
+func TestEventsAdd_SentBody(t *testing.T) {
+	tests := []struct {
+		name string
+		cmd  EventsAddCmd
+		want string
+	}{
+		{
+			name: "required flags only",
+			cmd:  EventsAddCmd{Name: "Spring Race", Date: "2026-04-01", Type: "running"},
+			want: `{
+				"date": "2026-04-01",
+				"eventName": "Spring Race",
+				"eventType": "running",
+				"race": false
+			}`,
+		},
+		{
+			name: "every flag",
+			cmd: EventsAddCmd{
+				Name:     "Berlin Marathon",
+				Date:     "2026-09-27",
+				Type:     "running",
+				Race:     true,
+				Location: "Berlin, Germany",
+				Time:     "09:15",
+				Timezone: "Europe/Berlin",
+				Distance: "42.195km",
+				Goal:     "3h30m",
+				Training: true,
+				Private:  true,
+				Note:     "My first marathon",
+				URL:      "https://example.com",
+			},
+			want: `{
+				"completionTarget": {
+					"unit": "kilometer",
+					"unitType": "distance",
+					"value": 42.195
+				},
+				"date": "2026-09-27",
+				"eventCustomization": {
+					"customGoal": {
+						"unit": "second",
+						"unitType": "time",
+						"value": 12600
+					},
+					"isPrimaryEvent": false,
+					"isTrainingEvent": true
+				},
+				"eventName": "Berlin Marathon",
+				"eventPrivacy": {
+					"label": "PRIVATE"
+				},
+				"eventTimeLocal": {
+					"startTimeHhMm": "09:15",
+					"timeZoneId": "Europe/Berlin"
+				},
+				"eventType": "running",
+				"location": "Berlin, Germany",
+				"note": "My first marathon",
+				"race": true,
+				"url": "https://example.com"
+			}`,
+		},
+		{
+			name: "primary without goal, time without zone, miles",
+			cmd:  EventsAddCmd{Name: "Ten", Date: "2026-05-02", Type: "trail_running", Time: "07:00", Distance: "10mi", Primary: true},
+			want: `{
+				"completionTarget": {
+					"unit": "mile",
+					"unitType": "distance",
+					"value": 10
+				},
+				"date": "2026-05-02",
+				"eventCustomization": {
+					"isPrimaryEvent": true,
+					"isTrainingEvent": false
+				},
+				"eventName": "Ten",
+				"eventTimeLocal": {
+					"startTimeHhMm": "07:00"
+				},
+				"eventType": "trail_running",
+				"race": false
+			}`,
+		},
+		{
+			name: "goal without priority, meters",
+			cmd:  EventsAddCmd{Name: "Track", Date: "2026-06-03", Type: "running", Distance: "400 m", Goal: "75s"},
+			want: `{
+				"completionTarget": {
+					"unit": "meter",
+					"unitType": "distance",
+					"value": 400
+				},
+				"date": "2026-06-03",
+				"eventCustomization": {
+					"customGoal": {
+						"unit": "second",
+						"unitType": "time",
+						"value": 75
+					},
+					"isPrimaryEvent": false,
+					"isTrainingEvent": false
+				},
+				"eventName": "Track",
+				"eventType": "running",
+				"race": false
+			}`,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := sentBody(t, "POST /calendar-service/event", &tt.cmd); got != compactJSON(t, tt.want) {
+				t.Errorf("body\n got %s\nwant %s", got, tt.want)
+			}
+		})
 	}
 }
