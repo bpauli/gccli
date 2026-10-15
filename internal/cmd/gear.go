@@ -1,12 +1,6 @@
 package cmd
 
-import (
-	"bytes"
-	"encoding/json"
-	"fmt"
-
-	"github.com/bpauli/gccli/internal/garminapi"
-)
+import "fmt"
 
 // GearCmd groups gear subcommands.
 type GearCmd struct {
@@ -27,7 +21,7 @@ func (c *GearListCmd) Run(g *Globals) error {
 		return err
 	}
 
-	profilePK, err := getUserProfilePK(g, client)
+	profilePK, err := client.GetProfilePK(g.Context)
 	if err != nil {
 		return err
 	}
@@ -88,7 +82,7 @@ func (c *GearDefaultsCmd) Run(g *Globals) error {
 		return err
 	}
 
-	profilePK, err := getUserProfilePK(g, client)
+	profilePK, err := client.GetProfilePK(g.Context)
 	if err != nil {
 		return err
 	}
@@ -137,29 +131,4 @@ func (c *GearUnlinkCmd) Run(g *Globals) error {
 		return fmt.Errorf("unlink gear: %w", err)
 	}
 	return reportWrite(g, data, "Unlinked gear %s from activity %s", c.UUID, c.ActivityID)
-}
-
-// getUserProfilePK fetches the authenticated user's social profile and extracts
-// the userProfileNumber needed by gear API calls.
-func getUserProfilePK(g *Globals, client *garminapi.Client) (string, error) {
-	data, err := client.GetSocialProfile(g.Context)
-	if err != nil {
-		return "", fmt.Errorf("get user profile: %w", err)
-	}
-
-	// Use json.Decoder with UseNumber to preserve numeric precision.
-	dec := json.NewDecoder(bytes.NewReader(data))
-	dec.UseNumber()
-
-	var profile map[string]any
-	if err := dec.Decode(&profile); err != nil {
-		return "", fmt.Errorf("parse user profile: %w", err)
-	}
-
-	pk, ok := profile["profileId"]
-	if !ok {
-		return "", fmt.Errorf("user profile missing profileId field")
-	}
-
-	return fmt.Sprintf("%v", pk), nil
 }

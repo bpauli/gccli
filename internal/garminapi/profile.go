@@ -1,6 +1,7 @@
 package garminapi
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -36,6 +37,30 @@ func (c *Client) GetDisplayName(ctx context.Context) (string, error) {
 		return "", fmt.Errorf("profile settings missing displayName")
 	}
 	return settings.DisplayName, nil
+}
+
+// GetProfilePK returns the profileId of the authenticated user's social
+// profile, which the gear endpoints take as the user profile PK.
+func (c *Client) GetProfilePK(ctx context.Context) (string, error) {
+	data, err := c.GetSocialProfile(ctx)
+	if err != nil {
+		return "", fmt.Errorf("get user profile: %w", err)
+	}
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.UseNumber()
+
+	var profile map[string]any
+	if err := dec.Decode(&profile); err != nil {
+		return "", fmt.Errorf("parse user profile: %w", err)
+	}
+
+	pk, ok := profile["profileId"]
+	if !ok {
+		return "", fmt.Errorf("user profile missing profileId field")
+	}
+
+	return fmt.Sprintf("%v", pk), nil
 }
 
 // GetMeasurementSystem returns the unit system from userData.measurementSystem
