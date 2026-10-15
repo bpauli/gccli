@@ -70,7 +70,7 @@ func Update(fn func(*File)) error {
 	if err := os.MkdirAll(dir, 0o700); err != nil {
 		return err
 	}
-	unlock, err := lockFile(filepath.Join(dir, "config.lock"))
+	unlock, err := LockFile(filepath.Join(dir, "config.lock"))
 	if err != nil {
 		return err
 	}
