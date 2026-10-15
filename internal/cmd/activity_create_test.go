@@ -42,7 +42,7 @@ func createTestServer(t *testing.T) *httptest.Server {
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(`{"activityId":99999,"activityName":"Test Run"}`))
+		_, _ = w.Write([]byte(`{"activityId":21234567890,"activityName":"Test Run"}`))
 	})
 
 	return httptest.NewServer(mux)
@@ -93,8 +93,8 @@ func TestActivityCreate_Success(t *testing.T) {
 	if err != nil {
 		t.Fatalf("expected no error, got: %v", err)
 	}
-	if !strings.Contains(buf.String(), "Created activity") {
-		t.Fatalf("expected 'Created activity' message, got: %q", buf.String())
+	if got, want := buf.String(), "Created activity 21234567890\n"; got != want {
+		t.Fatalf("message = %q, want %q", got, want)
 	}
 }
 

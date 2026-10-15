@@ -58,8 +58,8 @@ func (c *ActivityCreateCmd) Run(g *Globals) error {
 	// Try to extract the created activity ID for user feedback.
 	var result map[string]any
 	if err := json.Unmarshal(data, &result); err == nil {
-		if id, ok := result["activityId"]; ok {
-			g.UI.Successf("Created activity %v", id)
+		if id := jsonString(result, "activityId"); id != "" {
+			g.UI.Successf("Created activity %s", id)
 			return nil
 		}
 	}
