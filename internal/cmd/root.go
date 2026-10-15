@@ -60,6 +60,10 @@ type CLI struct {
 // Execute runs the CLI with the given arguments and version info.
 // It returns the process exit code.
 func Execute(args []string, version, commit, date string) int {
+	return execute(args, version, commit, date, os.Stdout, os.Stderr)
+}
+
+func execute(args []string, version, commit, date string, stdout, stderr io.Writer) int {
 	versionStr := fmt.Sprintf("gccli %s (%s) built %s", version, commit, date)
 
 	var cli CLI
@@ -68,6 +72,7 @@ func Execute(args []string, version, commit, date string) int {
 		kong.Name("gccli"),
 		kong.Description("Garmin Connect CLI"),
 		kong.UsageOnError(),
+		kong.Writers(stdout, stderr),
 		kong.ConfigureHelp(kong.HelpOptions{
 			Compact: true,
 		}),
@@ -78,7 +83,7 @@ func Execute(args []string, version, commit, date string) int {
 		},
 	)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "gccli: %s\n", err)
+		_, _ = fmt.Fprintf(stderr, "gccli: %s\n", err)
 		return 1
 	}
 
@@ -87,10 +92,10 @@ func Execute(args []string, version, commit, date string) int {
 		panic(exitSignal{code: code})
 	}
 
-	return run(parser, &cli, args)
+	return run(parser, &cli, args, stdout, stderr)
 }
 
-func run(parser *kong.Kong, cli *CLI, args []string) (code int) {
+func run(parser *kong.Kong, cli *CLI, args []string, stdout, stderr io.Writer) (code int) {
 	// Catch exit signals from Kong's --help and --version handlers.
 	defer func() {
 		if r := recover(); r != nil {
@@ -104,7 +109,7 @@ func run(parser *kong.Kong, cli *CLI, args []string) (code int) {
 
 	kongCtx, err := parser.Parse(args)
 	if err != nil {
-		parser.Stdout = os.Stderr
+		parser.Stdout = stderr
 		parser.Exit = func(int) { panic(exitSignal{code: kindUsage.exit}) }
 		parser.FatalIfErrorf(err)
 		return kindUsage.exit // unreachable: FatalIfErrorf panics via exitSignal
@@ -127,7 +132,6 @@ func run(parser *kong.Kong, cli *CLI, args []string) (code int) {
 	// Build context with output mode and UI.
 	ctx := context.Background()
 	ctx = outfmt.NewContext(ctx, mode)
-	stderr := os.Stderr
 	u := ui.NewWithWriter(stderr, colorMode)
 	ctx = ui.NewContext(ctx, u)
 
@@ -146,7 +150,7 @@ func run(parser *kong.Kong, cli *CLI, args []string) (code int) {
 	g := &Globals{
 		Context: ctx,
 		UI:      u,
-		Stdout:  os.Stdout,
+		Stdout:  stdout,
 		Stderr:  stderr,
 		Account: account,
 		Parser:  parser,
