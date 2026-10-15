@@ -48,7 +48,6 @@ func RefreshOAuth2(ctx context.Context, tokens *Tokens, opts LoginOptions) (*Tok
 		newTokens.OAuth1Token = tokens.OAuth1Token
 		newTokens.OAuth1Secret = tokens.OAuth1Secret
 		newTokens.MFAToken = tokens.MFAToken
-		newTokens.DisplayName = tokens.DisplayName
 
 		return newTokens, nil
 	}

@@ -69,16 +69,10 @@ func (c *AuthStatusCmd) Run(g *Globals) error {
 		if !tokens.OAuth2ExpiresAt.IsZero() {
 			status["expires_at"] = tokens.OAuth2ExpiresAt.Format(time.RFC3339)
 		}
-		if tokens.DisplayName != "" {
-			status["display_name"] = tokens.DisplayName
-		}
 		return outfmt.WriteJSON(g.Stdout, status)
 	}
 
 	g.UI.Successf("Authenticated as %s", email)
-	if tokens.DisplayName != "" {
-		_, _ = fmt.Fprintf(g.Stdout, "Display name: %s\n", tokens.DisplayName)
-	}
 	_, _ = fmt.Fprintf(g.Stdout, "Domain:       %s\n", tokens.Domain)
 	if tokens.IsExpired() {
 		g.UI.Warnf("Token expired (at %s)", tokens.OAuth2ExpiresAt.Format(time.RFC3339))

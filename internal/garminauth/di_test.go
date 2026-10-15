@@ -53,7 +53,6 @@ func TestRefreshOAuth2_DIRefresh(t *testing.T) {
 		DIClientID:         "test-di-client",
 		Domain:             DomainGlobal,
 		Email:              "test@example.com",
-		DisplayName:        "Test User",
 	}
 
 	refreshed, err := RefreshOAuth2(context.Background(), tokens, LoginOptions{HTTPClient: rec.client()})
@@ -70,7 +69,7 @@ func TestRefreshOAuth2_DIRefresh(t *testing.T) {
 	if refreshed.DIClientID != "test-di-client" {
 		t.Errorf("DIClientID = %q, want test-di-client", refreshed.DIClientID)
 	}
-	if refreshed.Email != tokens.Email || refreshed.Domain != tokens.Domain || refreshed.DisplayName != tokens.DisplayName {
+	if refreshed.Email != tokens.Email || refreshed.Domain != tokens.Domain {
 		t.Error("metadata was not preserved")
 	}
 	if !refreshed.OAuth2ExpiresAt.After(time.Now()) {

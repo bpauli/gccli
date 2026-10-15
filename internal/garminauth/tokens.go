@@ -29,9 +29,6 @@ type Tokens struct {
 	// Domain is the Garmin domain used for authentication (e.g. "garmin.com").
 	Domain string `json:"domain"`
 
-	// DisplayName is the user's display name from Garmin Connect.
-	DisplayName string `json:"display_name,omitempty"`
-
 	// Email is the account email address.
 	Email string `json:"email"`
 }

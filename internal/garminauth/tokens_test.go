@@ -90,7 +90,6 @@ func TestTokens_MarshalRoundtrip(t *testing.T) {
 		DIClientID:         "di-client-id",
 		MFAToken:           "mfa-tok",
 		Domain:             DomainGlobal,
-		DisplayName:        "Test User",
 		Email:              "test@example.com",
 	}
 
@@ -127,9 +126,6 @@ func TestTokens_MarshalRoundtrip(t *testing.T) {
 	}
 	if restored.Domain != original.Domain {
 		t.Errorf("Domain = %q, want %q", restored.Domain, original.Domain)
-	}
-	if restored.DisplayName != original.DisplayName {
-		t.Errorf("DisplayName = %q, want %q", restored.DisplayName, original.DisplayName)
 	}
 	if restored.Email != original.Email {
 		t.Errorf("Email = %q, want %q", restored.Email, original.Email)
@@ -234,9 +230,7 @@ func TestUnmarshalTokens_V200Token(t *testing.T) {
 		Domain:             DomainGlobal,
 		Email:              "test@example.com",
 	}
-	if tok.OAuth2AccessToken != want.OAuth2AccessToken || tok.OAuth2RefreshToken != want.OAuth2RefreshToken ||
-		!tok.OAuth2ExpiresAt.Equal(want.OAuth2ExpiresAt) || tok.DIClientID != want.DIClientID ||
-		tok.Domain != want.Domain || tok.Email != want.Email || tok.HasOAuth1() {
+	if *tok != want {
 		t.Errorf("tokens = %+v, want %+v", *tok, want)
 	}
 }
@@ -300,9 +294,6 @@ func TestTokens_MarshalJSON_OmitsEmptyMFA(t *testing.T) {
 
 	if _, ok := raw["mfa_token"]; ok {
 		t.Error("mfa_token should be omitted when empty")
-	}
-	if _, ok := raw["display_name"]; ok {
-		t.Error("display_name should be omitted when empty")
 	}
 }
 

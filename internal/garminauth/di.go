@@ -94,7 +94,6 @@ func refreshDI(ctx context.Context, client *http.Client, tokens *Tokens) (*Token
 		refreshed := tokensFromDIResponse(resp, clientID)
 		refreshed.Domain = tokens.Domain
 		refreshed.Email = tokens.Email
-		refreshed.DisplayName = tokens.DisplayName
 		refreshed.MFAToken = tokens.MFAToken
 		refreshed.OAuth1Token = tokens.OAuth1Token
 		refreshed.OAuth1Secret = tokens.OAuth1Secret
