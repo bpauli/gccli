@@ -26,7 +26,7 @@ func (c *ActivityRenameCmd) Run(g *Globals) error {
 	}
 
 	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 	}
 
 	g.UI.Successf("Renamed activity %s to %q", c.ID, c.Name)
@@ -53,7 +53,7 @@ func (c *ActivityRetypeCmd) Run(g *Globals) error {
 	}
 
 	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 	}
 
 	g.UI.Successf("Changed activity %s type to %s", c.ID, c.TypeKey)

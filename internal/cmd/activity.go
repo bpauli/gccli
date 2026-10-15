@@ -3,7 +3,6 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"os"
 
 	"github.com/bpauli/gccli/internal/config"
 	"github.com/bpauli/gccli/internal/outfmt"
@@ -47,7 +46,7 @@ func (c *ActivitySummaryCmd) Run(g *Globals) error {
 	}
 
 	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 	}
 
 	var activity map[string]any
@@ -63,9 +62,9 @@ func (c *ActivitySummaryCmd) Run(g *Globals) error {
 	rows := formatActivitySummary(resolveUnits(g, client), activity, cfg.ActivitySummary)
 
 	if outfmt.IsPlain(g.Context) {
-		return outfmt.WritePlain(os.Stdout, rows)
+		return outfmt.WritePlain(g.Stdout, rows)
 	}
-	return outfmt.WriteTable(os.Stdout, nil, rows)
+	return outfmt.WriteTable(g.Stdout, nil, rows)
 }
 
 // readConfigFn is the function used to read config; overridable in tests.
@@ -137,7 +136,7 @@ func (c *ActivityDetailsCmd) Run(g *Globals) error {
 		return fmt.Errorf("get activity details: %w", err)
 	}
 
-	return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 }
 
 // ActivitySplitsCmd shows activity splits.
@@ -156,7 +155,7 @@ func (c *ActivitySplitsCmd) Run(g *Globals) error {
 		return fmt.Errorf("get activity splits: %w", err)
 	}
 
-	return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 }
 
 // ActivityTypedSplitsCmd shows typed splits for an activity.
@@ -175,7 +174,7 @@ func (c *ActivityTypedSplitsCmd) Run(g *Globals) error {
 		return fmt.Errorf("get activity typed splits: %w", err)
 	}
 
-	return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 }
 
 // ActivitySplitSummariesCmd shows split summaries for an activity.
@@ -194,7 +193,7 @@ func (c *ActivitySplitSummariesCmd) Run(g *Globals) error {
 		return fmt.Errorf("get activity split summaries: %w", err)
 	}
 
-	return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 }
 
 // ActivityWeatherCmd shows weather conditions for an activity.
@@ -213,7 +212,7 @@ func (c *ActivityWeatherCmd) Run(g *Globals) error {
 		return fmt.Errorf("get activity weather: %w", err)
 	}
 
-	return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 }
 
 // ActivityHRZonesCmd shows heart rate time-in-zone data for an activity.
@@ -232,7 +231,7 @@ func (c *ActivityHRZonesCmd) Run(g *Globals) error {
 		return fmt.Errorf("get activity HR zones: %w", err)
 	}
 
-	return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 }
 
 // ActivityPowerZonesCmd shows power time-in-zone data for an activity.
@@ -251,7 +250,7 @@ func (c *ActivityPowerZonesCmd) Run(g *Globals) error {
 		return fmt.Errorf("get activity power zones: %w", err)
 	}
 
-	return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 }
 
 // ActivityExerciseSetsGroup groups exercise-sets subcommands.
@@ -276,7 +275,7 @@ func (c *ActivityExerciseSetsShowCmd) Run(g *Globals) error {
 		return fmt.Errorf("get activity exercise sets: %w", err)
 	}
 
-	return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 }
 
 // ActivityGearCmd shows gear linked to an activity.
@@ -295,5 +294,5 @@ func (c *ActivityGearCmd) Run(g *Globals) error {
 		return fmt.Errorf("get activity gear: %w", err)
 	}
 
-	return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 }

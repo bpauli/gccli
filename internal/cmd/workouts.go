@@ -41,7 +41,7 @@ func (c *WorkoutsListCmd) Run(g *Globals) error {
 	}
 
 	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 	}
 
 	workouts, err := parseWorkouts(data)
@@ -53,9 +53,9 @@ func (c *WorkoutsListCmd) Run(g *Globals) error {
 	header := []string{"ID", "NAME", "TYPE", "OWNER"}
 
 	if outfmt.IsPlain(g.Context) {
-		return outfmt.WritePlain(os.Stdout, rows)
+		return outfmt.WritePlain(g.Stdout, rows)
 	}
-	return outfmt.WriteTable(os.Stdout, header, rows)
+	return outfmt.WriteTable(g.Stdout, header, rows)
 }
 
 // WorkoutDetailCmd shows workout details.
@@ -74,7 +74,7 @@ func (c *WorkoutDetailCmd) Run(g *Globals) error {
 		return fmt.Errorf("get workout: %w", err)
 	}
 
-	return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 }
 
 // WorkoutDownloadCmd downloads a workout as FIT.
@@ -134,7 +134,7 @@ func (c *WorkoutUploadCmd) Run(g *Globals) error {
 	}
 
 	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 	}
 
 	g.UI.Successf("Uploaded workout from %s", c.File)
@@ -176,7 +176,7 @@ func (c *WorkoutUpdateCmd) Run(g *Globals) error {
 	}
 
 	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 	}
 
 	g.UI.Successf("Updated workout %s from %s", c.ID, c.File)
@@ -239,7 +239,7 @@ func (c *WorkoutScheduleAddCmd) Run(g *Globals) error {
 	}
 
 	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 	}
 
 	g.UI.Successf("Scheduled workout %s on %s", c.ID, date)
@@ -339,16 +339,16 @@ func writeScheduledWorkouts(g *Globals, items []map[string]any) error {
 		if err != nil {
 			return fmt.Errorf("marshal calendar items: %w", err)
 		}
-		return outfmt.WriteJSON(os.Stdout, json.RawMessage(out))
+		return outfmt.WriteJSON(g.Stdout, json.RawMessage(out))
 	}
 
 	rows := formatCalendarWorkoutRows(items)
 	header := []string{"SCHEDULE ID", "WORKOUT ID", "TITLE", "SPORT", "DATE"}
 
 	if outfmt.IsPlain(g.Context) {
-		return outfmt.WritePlain(os.Stdout, rows)
+		return outfmt.WritePlain(g.Stdout, rows)
 	}
-	return outfmt.WriteTable(os.Stdout, header, rows)
+	return outfmt.WriteTable(g.Stdout, header, rows)
 }
 
 // filterCalendarWorkouts extracts workout items matching the given date from calendar data.

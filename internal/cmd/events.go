@@ -48,7 +48,7 @@ func (c *EventsListCmd) Run(g *Globals) error {
 	}
 
 	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 	}
 
 	events, err := parseEvents(data)
@@ -60,9 +60,9 @@ func (c *EventsListCmd) Run(g *Globals) error {
 	header := []string{"ID", "DATE", "NAME", "TYPE", "LOCATION"}
 
 	if outfmt.IsPlain(g.Context) {
-		return outfmt.WritePlain(os.Stdout, rows)
+		return outfmt.WritePlain(g.Stdout, rows)
 	}
-	return outfmt.WriteTable(os.Stdout, header, rows)
+	return outfmt.WriteTable(g.Stdout, header, rows)
 }
 
 // parseEvents unmarshals the events list response.
@@ -192,7 +192,7 @@ func (c *EventsAddCmd) Run(g *Globals) error {
 	}
 
 	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 	}
 
 	var resp map[string]any

@@ -3,7 +3,6 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/bpauli/gccli/internal/config"
@@ -73,18 +72,18 @@ func (c *AuthStatusCmd) Run(g *Globals) error {
 		if tokens.DisplayName != "" {
 			status["display_name"] = tokens.DisplayName
 		}
-		return outfmt.WriteJSON(os.Stdout, status)
+		return outfmt.WriteJSON(g.Stdout, status)
 	}
 
 	g.UI.Successf("Authenticated as %s", email)
 	if tokens.DisplayName != "" {
-		_, _ = fmt.Fprintf(os.Stdout, "Display name: %s\n", tokens.DisplayName)
+		_, _ = fmt.Fprintf(g.Stdout, "Display name: %s\n", tokens.DisplayName)
 	}
-	_, _ = fmt.Fprintf(os.Stdout, "Domain:       %s\n", tokens.Domain)
+	_, _ = fmt.Fprintf(g.Stdout, "Domain:       %s\n", tokens.Domain)
 	if tokens.IsExpired() {
 		g.UI.Warnf("Token expired (at %s)", tokens.OAuth2ExpiresAt.Format(time.RFC3339))
 	} else {
-		_, _ = fmt.Fprintf(os.Stdout, "Expires at:   %s\n", tokens.OAuth2ExpiresAt.Format(time.RFC3339))
+		_, _ = fmt.Fprintf(g.Stdout, "Expires at:   %s\n", tokens.OAuth2ExpiresAt.Format(time.RFC3339))
 	}
 	return nil
 }
@@ -146,6 +145,6 @@ func (c *AuthTokenCmd) Run(g *Globals) error {
 		g.UI.Warnf("Warning: token is expired")
 	}
 
-	_, _ = fmt.Fprintln(os.Stdout, tokens.OAuth2AccessToken)
+	_, _ = fmt.Fprintln(g.Stdout, tokens.OAuth2AccessToken)
 	return nil
 }

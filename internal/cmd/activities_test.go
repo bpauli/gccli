@@ -248,6 +248,39 @@ func TestActivitiesCount_JSON(t *testing.T) {
 	}
 }
 
+func TestActivitiesCount_WritesToGlobalsStdout(t *testing.T) {
+	server := activitiesTestServer(t)
+	defer server.Close()
+
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	overrideNewClient(t, server)
+	storeTestTokens(t, store, "test@example.com", testTokens())
+
+	for _, tc := range []struct {
+		mode outfmt.Mode
+		want string
+	}{
+		{outfmt.Table, "42\n"},
+		{outfmt.JSON, "{\n  \"count\": 42\n}\n"},
+	} {
+		var uiBuf, out bytes.Buffer
+		g := testGlobals(t, &uiBuf, tc.mode, "test@example.com")
+		g.Stdout = &out
+		var err error
+		leaked := captureStdout(t, func() { err = (&ActivitiesCountCmd{}).Run(g) })
+		if err != nil {
+			t.Fatalf("mode %v: unexpected error: %v", tc.mode, err)
+		}
+		if out.String() != tc.want {
+			t.Errorf("mode %v: g.Stdout = %q, want %q", tc.mode, out.String(), tc.want)
+		}
+		if leaked != "" {
+			t.Errorf("mode %v: os.Stdout got %q, want nothing", tc.mode, leaked)
+		}
+	}
+}
+
 // --- ActivitiesSearchCmd tests ---
 
 func TestActivitiesSearch_NoAccount(t *testing.T) {

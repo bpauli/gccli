@@ -3,7 +3,6 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -327,10 +326,10 @@ func (c *HealthRespirationCmd) Run(g *Globals) error {
 // regardless of output mode.
 func writeHealthJSON(g *Globals, data json.RawMessage) error {
 	if data == nil {
-		_, _ = fmt.Fprintln(os.Stdout, "{}")
+		_, _ = fmt.Fprintln(g.Stdout, "{}")
 		return nil
 	}
-	return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 }
 
 // relativeDateRe matches relative date strings like "3d", "7d", "14d".

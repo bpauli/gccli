@@ -3,7 +3,6 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"os"
 	"sort"
 	"strings"
 
@@ -32,7 +31,7 @@ func (c *ExercisesListCmd) Run(g *Globals) error {
 
 	if outfmt.IsJSON(g.Context) {
 		if c.Category == "" {
-			return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+			return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 		}
 		// Filter to a single category in JSON mode.
 		var catalog exerciseCatalog
@@ -42,7 +41,7 @@ func (c *ExercisesListCmd) Run(g *Globals) error {
 		cat := strings.ToUpper(c.Category)
 		if exercises, ok := catalog.Categories[cat]; ok {
 			filtered := map[string]any{cat: exercises}
-			return outfmt.WriteJSON(os.Stdout, filtered)
+			return outfmt.WriteJSON(g.Stdout, filtered)
 		}
 		return fmt.Errorf("unknown category %q", c.Category)
 	}
@@ -73,12 +72,12 @@ func (c *ExercisesListCmd) printAllCategories(g *Globals, catalog exerciseCatalo
 	}
 
 	if outfmt.IsPlain(g.Context) {
-		return outfmt.WritePlain(os.Stdout, rows)
+		return outfmt.WritePlain(g.Stdout, rows)
 	}
-	return outfmt.WriteTable(os.Stdout, []string{"CATEGORY", "COUNT"}, rows)
+	return outfmt.WriteTable(g.Stdout, []string{"CATEGORY", "COUNT"}, rows)
 }
 
-func (c *ExercisesListCmd) printCategory(_ *Globals, catalog exerciseCatalog, category string) error {
+func (c *ExercisesListCmd) printCategory(g *Globals, catalog exerciseCatalog, category string) error {
 	cat, ok := catalog.Categories[category]
 	if !ok {
 		return fmt.Errorf("unknown category %q", category)
@@ -93,7 +92,7 @@ func (c *ExercisesListCmd) printCategory(_ *Globals, catalog exerciseCatalog, ca
 	for _, name := range names {
 		ex := cat.Exercises[name]
 		muscles := append(ex.PrimaryMuscles, ex.SecondaryMuscles...)
-		_, _ = fmt.Fprintf(os.Stdout, "%s/%s  %s\n", category, name, strings.Join(muscles, ", "))
+		_, _ = fmt.Fprintf(g.Stdout, "%s/%s  %s\n", category, name, strings.Join(muscles, ", "))
 	}
 	return nil
 }

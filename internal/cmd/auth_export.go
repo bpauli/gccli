@@ -4,7 +4,6 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"os"
 
 	"github.com/bpauli/gccli/internal/garminauth"
 	"github.com/bpauli/gccli/internal/secrets"
@@ -38,6 +37,6 @@ func (c *AuthExportCmd) Run(g *Globals) error {
 	}
 
 	encoded := base64.StdEncoding.EncodeToString(data)
-	_, _ = fmt.Fprintln(os.Stdout, encoded)
+	_, _ = fmt.Fprintln(g.Stdout, encoded)
 	return nil
 }
