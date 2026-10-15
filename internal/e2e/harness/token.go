@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/bpauli/gccli/internal/garminauth"
 )
@@ -33,12 +34,18 @@ func LoadToken(ctx context.Context, raw string, base http.RoundTripper) (*garmin
 	if !tokens.IsExpired() {
 		return tokens, nil
 	}
-	refreshed, err := garminauth.RefreshOAuth2(ctx, tokens, garminauth.LoginOptions{
-		Domain:     tokens.Domain,
-		HTTPClient: &http.Client{Transport: base},
-	})
+	refreshed, err := refresh(ctx, tokens, base)
 	if err != nil {
 		return nil, fmt.Errorf("GARMIN_TOKEN refresh: %w", err)
 	}
 	return refreshed, nil
+}
+
+var refreshTimeout = 60 * time.Second
+
+func refresh(ctx context.Context, tokens *garminauth.Tokens, base http.RoundTripper) (*garminauth.Tokens, error) {
+	return garminauth.RefreshOAuth2(ctx, tokens, garminauth.LoginOptions{
+		Domain:     tokens.Domain,
+		HTTPClient: &http.Client{Transport: base, Timeout: refreshTimeout},
+	})
 }

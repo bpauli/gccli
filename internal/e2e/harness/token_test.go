@@ -119,3 +119,29 @@ func TestLoadTokenNamesFailedRefresh(t *testing.T) {
 		t.Errorf("err = %v, want no refresh token in the message", err)
 	}
 }
+
+func TestLoadTokenStopsHangingRefresh(t *testing.T) {
+	old := refreshTimeout
+	refreshTimeout = 50 * time.Millisecond
+	t.Cleanup(func() { refreshTimeout = old })
+	var hanging hangingTransport
+	start := time.Now()
+	_, err := LoadToken(context.Background(), encodeToken(t, expiredToken()), hanging)
+	if err == nil || !strings.Contains(err.Error(), "context deadline exceeded") {
+		t.Fatalf("err = %v, want a client timeout", err)
+	}
+	if elapsed := time.Since(start); elapsed > time.Second {
+		t.Errorf("LoadToken took %v, want it to stop at the refresh timeout", elapsed)
+	}
+}
+
+type hangingTransport struct{}
+
+func (hangingTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	select {
+	case <-req.Context().Done():
+		return nil, req.Context().Err()
+	case <-time.After(2 * time.Second):
+		return page(req, http.StatusOK, `{"access_token":"AT-new","refresh_token":"RT-new","expires_in":3600}`), nil
+	}
+}
