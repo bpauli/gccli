@@ -3,7 +3,6 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"os"
 	"sort"
 	"strings"
 
@@ -38,7 +37,7 @@ func (c *ActivitiesListCmd) Run(g *Globals) error {
 	}
 
 	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 	}
 
 	activities, err := parseActivities(data)
@@ -50,9 +49,9 @@ func (c *ActivitiesListCmd) Run(g *Globals) error {
 	header := activityHeader()
 
 	if outfmt.IsPlain(g.Context) {
-		return outfmt.WritePlain(os.Stdout, rows)
+		return outfmt.WritePlain(g.Stdout, rows)
 	}
-	return outfmt.WriteTable(os.Stdout, header, rows)
+	return outfmt.WriteTable(g.Stdout, header, rows)
 }
 
 // ActivitiesCountCmd shows the total activity count.
@@ -70,10 +69,10 @@ func (c *ActivitiesCountCmd) Run(g *Globals) error {
 	}
 
 	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(os.Stdout, map[string]int{"count": count})
+		return outfmt.WriteJSON(g.Stdout, map[string]int{"count": count})
 	}
 
-	_, _ = fmt.Fprintf(os.Stdout, "%d\n", count)
+	_, _ = fmt.Fprintf(g.Stdout, "%d\n", count)
 	return nil
 }
 
@@ -97,7 +96,7 @@ func (c *ActivitiesSearchCmd) Run(g *Globals) error {
 	}
 
 	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 	}
 
 	activities, err := parseActivities(data)
@@ -109,9 +108,9 @@ func (c *ActivitiesSearchCmd) Run(g *Globals) error {
 	header := activityHeader()
 
 	if outfmt.IsPlain(g.Context) {
-		return outfmt.WritePlain(os.Stdout, rows)
+		return outfmt.WritePlain(g.Stdout, rows)
 	}
-	return outfmt.WriteTable(os.Stdout, header, rows)
+	return outfmt.WriteTable(g.Stdout, header, rows)
 }
 
 func activityHeader() []string {
@@ -246,7 +245,7 @@ func (c *ActivitiesTypesCmd) Run(g *Globals) error {
 	}
 
 	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 	}
 
 	types, err := parseActivityTypes(data)
@@ -258,9 +257,9 @@ func (c *ActivitiesTypesCmd) Run(g *Globals) error {
 	header := activityTypesHeader()
 
 	if outfmt.IsPlain(g.Context) {
-		return outfmt.WritePlain(os.Stdout, rows)
+		return outfmt.WritePlain(g.Stdout, rows)
 	}
-	return outfmt.WriteTable(os.Stdout, header, rows)
+	return outfmt.WriteTable(g.Stdout, header, rows)
 }
 
 func activityTypesHeader() []string {

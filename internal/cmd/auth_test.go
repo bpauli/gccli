@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"os"
 	"strings"
 	"testing"
 	"time"
@@ -70,8 +71,19 @@ func testGlobals(t *testing.T, buf *bytes.Buffer, mode outfmt.Mode, account stri
 	ctx := context.Background()
 	ctx = outfmt.NewContext(ctx, mode)
 	ctx = ui.NewContext(ctx, u)
-	return &Globals{Context: ctx, UI: u, Account: account, Units: units.Pin(units.Metric)}
+	return &Globals{
+		Context: ctx,
+		UI:      u,
+		Stdout:  liveOSFile{&os.Stdout},
+		Stderr:  liveOSFile{&os.Stderr},
+		Account: account,
+		Units:   units.Pin(units.Metric),
+	}
 }
+
+type liveOSFile struct{ f **os.File }
+
+func (o liveOSFile) Write(p []byte) (int, error) { return (*o.f).Write(p) }
 
 func overrideLoadSecrets(t *testing.T, store *secrets.Store) {
 	t.Helper()

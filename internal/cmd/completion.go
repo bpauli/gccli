@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/alecthomas/kong"
@@ -27,7 +26,7 @@ func (c *CompletionCmd) Run(g *Globals) error {
 	default:
 		return fmt.Errorf("unsupported shell: %s", c.Shell)
 	}
-	_, err := fmt.Fprint(os.Stdout, script)
+	_, err := fmt.Fprint(g.Stdout, script)
 	return err
 }
 

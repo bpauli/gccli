@@ -3,6 +3,7 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 
@@ -19,6 +20,8 @@ import (
 type Globals struct {
 	Context context.Context
 	UI      *ui.UI
+	Stdout  io.Writer
+	Stderr  io.Writer
 	Account string
 	Parser  *kong.Kong
 	Units   units.Preference
@@ -124,7 +127,8 @@ func run(parser *kong.Kong, cli *CLI, args []string) (code int) {
 	// Build context with output mode and UI.
 	ctx := context.Background()
 	ctx = outfmt.NewContext(ctx, mode)
-	u := ui.New(colorMode)
+	stderr := os.Stderr
+	u := ui.NewWithWriter(stderr, colorMode)
 	ctx = ui.NewContext(ctx, u)
 
 	cfg, err := config.Read()
@@ -142,6 +146,8 @@ func run(parser *kong.Kong, cli *CLI, args []string) (code int) {
 	g := &Globals{
 		Context: ctx,
 		UI:      u,
+		Stdout:  os.Stdout,
+		Stderr:  stderr,
 		Account: account,
 		Parser:  parser,
 		Units:   unitsPreference(cli.Units, cfg, u),
@@ -149,7 +155,7 @@ func run(parser *kong.Kong, cli *CLI, args []string) (code int) {
 
 	if err := kongCtx.Run(g); err != nil {
 		if mode == outfmt.JSON {
-			writeJSONError(os.Stderr, err)
+			writeJSONError(g.Stderr, err)
 		} else {
 			u.Error(fmt.Errorf("%s", errfmt.Format(err)))
 		}

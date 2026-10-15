@@ -56,9 +56,9 @@ func (c *AuthLoginCmd) Run(g *Globals) error {
 
 	if c.Headless {
 		g.UI.Infof("Logging in as %s (headless)...", c.Email)
-		_, _ = fmt.Fprint(os.Stderr, "Password: ")
+		_, _ = fmt.Fprint(g.Stderr, "Password: ")
 		pw, pwErr := readPasswordFn(int(os.Stdin.Fd()))
-		_, _ = fmt.Fprintln(os.Stderr)
+		_, _ = fmt.Fprintln(g.Stderr)
 		if pwErr != nil {
 			return fmt.Errorf("read password: %w", pwErr)
 		}

@@ -3,7 +3,6 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"os"
 
 	"github.com/bpauli/gccli/internal/outfmt"
 )
@@ -26,7 +25,7 @@ func (c *ActivityRenameCmd) Run(g *Globals) error {
 	}
 
 	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 	}
 
 	g.UI.Successf("Renamed activity %s to %q", c.ID, c.Name)
@@ -53,7 +52,7 @@ func (c *ActivityRetypeCmd) Run(g *Globals) error {
 	}
 
 	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 	}
 
 	g.UI.Successf("Changed activity %s type to %s", c.ID, c.TypeKey)
@@ -72,7 +71,7 @@ func (c *ActivityDeleteCmd) Run(g *Globals) error {
 		return err
 	}
 
-	ok, err := confirm(os.Stderr, fmt.Sprintf("Delete activity %s?", c.ID), c.Force)
+	ok, err := confirm(g.Stderr, fmt.Sprintf("Delete activity %s?", c.ID), c.Force)
 	if err != nil {
 		return err
 	}

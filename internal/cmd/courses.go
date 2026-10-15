@@ -38,7 +38,7 @@ func (c *CoursesListCmd) Run(g *Globals) error {
 	}
 
 	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 	}
 
 	courses, err := parseCourses(data)
@@ -50,9 +50,9 @@ func (c *CoursesListCmd) Run(g *Globals) error {
 	header := []string{"ID", "NAME", "TYPE", "DISTANCE", "CREATED"}
 
 	if outfmt.IsPlain(g.Context) {
-		return outfmt.WritePlain(os.Stdout, rows)
+		return outfmt.WritePlain(g.Stdout, rows)
 	}
-	return outfmt.WriteTable(os.Stdout, header, rows)
+	return outfmt.WriteTable(g.Stdout, header, rows)
 }
 
 // CoursesFavoritesCmd lists favorite courses.
@@ -70,7 +70,7 @@ func (c *CoursesFavoritesCmd) Run(g *Globals) error {
 	}
 
 	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 	}
 
 	var courses []map[string]any
@@ -82,9 +82,9 @@ func (c *CoursesFavoritesCmd) Run(g *Globals) error {
 	header := []string{"ID", "NAME", "TYPE", "DISTANCE", "CREATED"}
 
 	if outfmt.IsPlain(g.Context) {
-		return outfmt.WritePlain(os.Stdout, rows)
+		return outfmt.WritePlain(g.Stdout, rows)
 	}
-	return outfmt.WriteTable(os.Stdout, header, rows)
+	return outfmt.WriteTable(g.Stdout, header, rows)
 }
 
 // CourseDetailCmd shows details for a course.
@@ -103,7 +103,7 @@ func (c *CourseDetailCmd) Run(g *Globals) error {
 		return fmt.Errorf("get course: %w", err)
 	}
 
-	return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 }
 
 // CourseDownloadCmd downloads a course in a specified format.
@@ -259,7 +259,7 @@ func (c *CourseImportCmd) Run(g *Globals) error {
 	}
 
 	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(os.Stdout, json.RawMessage(saved))
+		return outfmt.WriteJSON(g.Stdout, json.RawMessage(saved))
 	}
 
 	var result map[string]any
@@ -278,9 +278,9 @@ func (c *CourseImportCmd) Run(g *Globals) error {
 	header := []string{"ID", "NAME", "DISTANCE", "ELEV GAIN", "ELEV LOSS"}
 
 	if outfmt.IsPlain(g.Context) {
-		return outfmt.WritePlain(os.Stdout, rows)
+		return outfmt.WritePlain(g.Stdout, rows)
 	}
-	return outfmt.WriteTable(os.Stdout, header, rows)
+	return outfmt.WriteTable(g.Stdout, header, rows)
 }
 
 // CourseSendCmd sends a course to a device.
@@ -313,7 +313,7 @@ func (c *CourseSendCmd) Run(g *Globals) error {
 	}
 
 	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 	}
 
 	// Extract response details for success message.
@@ -341,7 +341,7 @@ func (c *CourseDeleteCmd) Run(g *Globals) error {
 		return err
 	}
 
-	ok, err := confirm(os.Stderr, fmt.Sprintf("Delete course %s?", c.ID), c.Force)
+	ok, err := confirm(g.Stderr, fmt.Sprintf("Delete course %s?", c.ID), c.Force)
 	if err != nil {
 		return err
 	}

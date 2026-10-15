@@ -3,7 +3,6 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/bpauli/gccli/internal/fit"
@@ -123,7 +122,7 @@ func (c *BodyAddWeightCmd) Run(g *Globals) error {
 	}
 
 	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 	}
 
 	g.UI.Successf("Added weight: %.1f %s", c.Value, c.Unit)
@@ -175,7 +174,7 @@ func (c *BodyAddCompositionCmd) Run(g *Globals) error {
 	}
 
 	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 	}
 
 	g.UI.Successf("Added body composition: %.1f kg", c.Weight)
@@ -195,7 +194,7 @@ func (c *BodyDeleteWeightCmd) Run(g *Globals) error {
 		return err
 	}
 
-	ok, err := confirm(os.Stderr, fmt.Sprintf("Delete weigh-in %s on %s?", c.PK, c.Date), c.Force)
+	ok, err := confirm(g.Stderr, fmt.Sprintf("Delete weigh-in %s on %s?", c.PK, c.Date), c.Force)
 	if err != nil {
 		return err
 	}
@@ -255,7 +254,7 @@ func (c *BodyAddBPCmd) Run(g *Globals) error {
 	}
 
 	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 	}
 
 	g.UI.Successf("Added blood pressure: %d/%d mmHg, pulse %d bpm", c.Systolic, c.Diastolic, c.Pulse)
@@ -275,7 +274,7 @@ func (c *BodyDeleteBPCmd) Run(g *Globals) error {
 		return err
 	}
 
-	ok, err := confirm(os.Stderr, fmt.Sprintf("Delete blood pressure entry %s on %s?", c.Version, c.Date), c.Force)
+	ok, err := confirm(g.Stderr, fmt.Sprintf("Delete blood pressure entry %s on %s?", c.Version, c.Date), c.Force)
 	if err != nil {
 		return err
 	}

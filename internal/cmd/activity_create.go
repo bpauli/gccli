@@ -3,7 +3,6 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/bpauli/gccli/internal/outfmt"
@@ -53,7 +52,7 @@ func (c *ActivityCreateCmd) Run(g *Globals) error {
 	}
 
 	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(os.Stdout, json.RawMessage(data))
+		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 	}
 
 	// Try to extract the created activity ID for user feedback.

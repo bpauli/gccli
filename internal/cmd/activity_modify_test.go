@@ -297,6 +297,35 @@ func TestActivityDelete_Cancelled(t *testing.T) {
 	}
 }
 
+func TestActivityDelete_PromptGoesToGlobalsStderr(t *testing.T) {
+	server := modifyTestServer(t)
+	defer server.Close()
+
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	overrideNewClient(t, server)
+	storeTestTokens(t, store, "test@example.com", testTokens())
+
+	orig := confirmReader
+	confirmReader = strings.NewReader("n\n")
+	t.Cleanup(func() { confirmReader = orig })
+
+	var uiBuf, errBuf bytes.Buffer
+	g := testGlobals(t, &uiBuf, outfmt.Table, "test@example.com")
+	g.Stderr = &errBuf
+	var err error
+	leakedOut, leakedErr := captureOutput(t, func() { err = (&ActivityDeleteCmd{ID: "12345678"}).Run(g) })
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if want := "Delete activity 12345678? [y/N]: "; errBuf.String() != want {
+		t.Errorf("g.Stderr = %q, want %q", errBuf.String(), want)
+	}
+	if leakedOut != "" || leakedErr != "" {
+		t.Errorf("os.Stdout got %q and os.Stderr got %q, want nothing", leakedOut, leakedErr)
+	}
+}
+
 func TestActivityDelete_ConfirmYes(t *testing.T) {
 	server := modifyTestServer(t)
 	defer server.Close()
