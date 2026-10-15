@@ -32,7 +32,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Auto-refreshing tokens** — authenticate once, tokens refresh automatically on 401
 - **Resilient networking** - API calls retry on 429 (waits for `Retry-After` up to 30 s, 3 retries max) and read requests (GET) retry on 5xx (2 retries max, exponential backoff); writes are not resent on 5xx; an API request fails when no data moves for 60 s, and a transfer that keeps moving has no time limit
 - **Shell completion** — generated scripts for bash, zsh, fish, and PowerShell
-- **Parseable output** — JSON and plain/TSV modes for scripting and automation
+- **Parseable output** - JSON and plain/TSV modes for scripting and automation. `--json` output stays stable within a major version. Table and `--plain` output may change in a minor release
 - **Your unit system** - tables show km or miles, pace per km or per mile, and elevation in metres or feet, as set in your Garmin Connect profile; pin one with `--units`
 
 ## Installation
