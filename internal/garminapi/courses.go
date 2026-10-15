@@ -91,6 +91,132 @@ func (c *Client) SaveCourse(ctx context.Context, course json.RawMessage) (json.R
 	return c.ConnectAPI(ctx, http.MethodPost, "/course-service/course", bytes.NewReader(course))
 }
 
+// CourseImportOptions are the course fields that ImportCourse sets on the
+// imported course before it saves it.
+type CourseImportOptions struct {
+	// Name replaces the course name from the GPX file. When Name and the
+	// GPX name are both empty, the file name without its extension is used.
+	Name           string
+	ActivityTypePK int
+	// Privacy is 1 (public), 2 (private) or 4 (group).
+	Privacy int
+}
+
+// ImportCourse creates a course from a GPX file. It imports the file,
+// adds the elevation of each geo point, and saves the course. It returns
+// the save response.
+func (c *Client) ImportCourse(ctx context.Context, path string, opts CourseImportOptions) (json.RawMessage, error) {
+	parsed, err := c.ImportCourseGPX(ctx, path)
+	if err != nil {
+		return nil, fmt.Errorf("import GPX: %w", err)
+	}
+
+	var course map[string]any
+	if err := json.Unmarshal(parsed, &course); err != nil {
+		return nil, fmt.Errorf("parse imported course: %w", err)
+	}
+
+	geoPoints, ok := course["geoPoints"].([]any)
+	if !ok || len(geoPoints) == 0 {
+		return nil, fmt.Errorf("imported course has no geo points")
+	}
+
+	elevInput := make([][]any, 0, len(geoPoints))
+	for _, p := range geoPoints {
+		pt, ok := p.(map[string]any)
+		if !ok {
+			continue
+		}
+		lat := pt["latitude"]
+		lon := pt["longitude"]
+		if lat == nil || lon == nil {
+			lat = pt["lat"]
+			lon = pt["lon"]
+		}
+		if lat == nil || lon == nil {
+			continue
+		}
+		elevInput = append(elevInput, []any{lat, lon, nil})
+	}
+
+	elevJSON, err := json.Marshal(elevInput)
+	if err != nil {
+		return nil, fmt.Errorf("marshal elevation input: %w", err)
+	}
+
+	elevData, err := c.GetCourseElevation(ctx, elevJSON)
+	if err != nil {
+		return nil, fmt.Errorf("get elevation: %w", err)
+	}
+
+	var elevPoints [][]any
+	if err := json.Unmarshal(elevData, &elevPoints); err != nil {
+		return nil, fmt.Errorf("parse elevation: %w", err)
+	}
+
+	for i, ep := range elevPoints {
+		if i >= len(geoPoints) {
+			break
+		}
+		if pt, ok := geoPoints[i].(map[string]any); ok && len(ep) >= 3 {
+			pt["elevation"] = ep[2]
+		}
+	}
+
+	if opts.Name != "" {
+		course["courseName"] = opts.Name
+	} else if name := course["courseName"]; name == nil || name == "" {
+		course["courseName"] = strings.TrimSuffix(filepath.Base(path), filepath.Ext(path))
+	}
+
+	course["activityTypePk"] = opts.ActivityTypePK
+	if course["coordinateSystem"] == nil {
+		course["coordinateSystem"] = "WGS84"
+	}
+	if course["sourceTypeId"] == nil {
+		course["sourceTypeId"] = 3
+	}
+	if course["startPoint"] == nil {
+		course["startPoint"] = geoPoints[0]
+	}
+
+	save := filterCourseFields(course)
+	save["coursePrivacy"] = opts.Privacy
+	if save["rulePK"] == nil {
+		save["rulePK"] = 2
+	}
+
+	payload, err := json.Marshal(save)
+	if err != nil {
+		return nil, fmt.Errorf("marshal course: %w", err)
+	}
+
+	saved, err := c.SaveCourse(ctx, payload)
+	if err != nil {
+		return nil, fmt.Errorf("save course: %w", err)
+	}
+	return saved, nil
+}
+
+var courseSaveFields = []string{
+	"activityTypePk", "boundingBox", "coordinateSystem", "courseLines",
+	"courseName", "coursePoints", "distanceMeter", "elapsedSeconds",
+	"elevationGainMeter", "elevationLossMeter", "favorite", "geoPoints",
+	"hasPaceBand", "hasPowerGuide", "hasTurnDetectionDisabled", "includeLaps",
+	"matchedToSegments", "openStreetMap", "rulePK", "sourceTypeId",
+	"speedMeterPerSecond", "startPoint", "userProfilePk",
+}
+
+func filterCourseFields(course map[string]any) map[string]any {
+	save := make(map[string]any, len(courseSaveFields))
+	for _, key := range courseSaveFields {
+		if v, ok := course[key]; ok && v != nil {
+			save[key] = v
+		}
+	}
+	return save
+}
+
 // DeleteCourse deletes a course by ID.
 func (c *Client) DeleteCourse(ctx context.Context, courseID string) (json.RawMessage, error) {
 	return c.ConnectAPI(ctx, http.MethodDelete, "/course-service/course/"+courseID, nil)

@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"reflect"
+	"slices"
 	"strings"
 	"testing"
 )
@@ -359,6 +361,153 @@ func TestSaveCourse_ServerError(t *testing.T) {
 	var apiErr *GarminAPIError
 	if !errors.As(err, &apiErr) {
 		t.Fatalf("expected GarminAPIError, got %T: %v", err, err)
+	}
+}
+
+type importCourseServer struct {
+	client   *Client
+	requests []string
+	elev     string
+	save     string
+}
+
+func newImportCourseServer(t *testing.T, importBody string, elevStatus int) *importCourseServer {
+	t.Helper()
+	s := &importCourseServer{}
+	_, s.client = testServer(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		body, _ := io.ReadAll(r.Body)
+		s.requests = append(s.requests, r.Method+" "+r.URL.RequestURI())
+		switch r.URL.Path {
+		case "/course-service/course/import":
+			_, _ = w.Write([]byte(importBody))
+		case "/course-service/course/elevation":
+			s.elev = string(body)
+			if elevStatus != 0 {
+				w.WriteHeader(elevStatus)
+				return
+			}
+			_, _ = w.Write([]byte(`[[47,8,500],[47.1,8.1,510]]`))
+		case "/course-service/course":
+			s.save = string(body)
+			_, _ = w.Write([]byte(`{"courseId":999}`))
+		default:
+			t.Errorf("unexpected request %s %s", r.Method, r.URL.Path)
+		}
+	}))
+	return s
+}
+
+func writeGPX(t *testing.T, name string) string {
+	t.Helper()
+	path := filepath.Join(t.TempDir(), name)
+	if err := os.WriteFile(path, []byte("<gpx/>"), 0o644); err != nil {
+		t.Fatalf("write temp file: %v", err)
+	}
+	return path
+}
+
+func TestImportCourse(t *testing.T) {
+	tests := []struct {
+		name       string
+		importBody string
+		opts       CourseImportOptions
+		wantSave   string
+	}{
+		{
+			name:       "fills defaults and the file name",
+			importBody: `{"courseName":"","extra":1,"geoPoints":[{"latitude":47,"longitude":8},{"lat":47.1,"lon":8.1}]}`,
+			opts:       CourseImportOptions{ActivityTypePK: 3, Privacy: 1},
+			wantSave: `{"activityTypePk":3,"coordinateSystem":"WGS84","courseName":"route","coursePrivacy":1,
+				"geoPoints":[{"latitude":47,"longitude":8,"elevation":500},{"lat":47.1,"lon":8.1,"elevation":510}],
+				"rulePK":2,"sourceTypeId":3,"startPoint":{"latitude":47,"longitude":8,"elevation":500}}`,
+		},
+		{
+			name:       "keeps the GPX values",
+			importBody: `{"courseName":"Loop","coordinateSystem":"X","sourceTypeId":5,"rulePK":7,"startPoint":{"latitude":1},"geoPoints":[{"latitude":47,"longitude":8}]}`,
+			opts:       CourseImportOptions{ActivityTypePK: 2, Privacy: 2},
+			wantSave: `{"activityTypePk":2,"coordinateSystem":"X","courseName":"Loop","coursePrivacy":2,
+				"geoPoints":[{"latitude":47,"longitude":8,"elevation":500}],
+				"rulePK":7,"sourceTypeId":5,"startPoint":{"latitude":1}}`,
+		},
+		{
+			name:       "name option replaces the GPX name",
+			importBody: `{"courseName":"Loop","geoPoints":[{"latitude":47,"longitude":8}]}`,
+			opts:       CourseImportOptions{Name: "Ride", ActivityTypePK: 2, Privacy: 4},
+			wantSave: `{"activityTypePk":2,"coordinateSystem":"WGS84","courseName":"Ride","coursePrivacy":4,
+				"geoPoints":[{"latitude":47,"longitude":8,"elevation":500}],
+				"rulePK":2,"sourceTypeId":3,"startPoint":{"latitude":47,"longitude":8,"elevation":500}}`,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			s := newImportCourseServer(t, tt.importBody, 0)
+
+			saved, err := s.client.ImportCourse(context.Background(), writeGPX(t, "route.gpx"), tt.opts)
+			if err != nil {
+				t.Fatalf("ImportCourse: %v", err)
+			}
+			if string(saved) != `{"courseId":999}` {
+				t.Errorf("saved = %s, want the save response", saved)
+			}
+			wantRequests := []string{
+				"POST /course-service/course/import",
+				"POST /course-service/course/elevation?smoothingEnabled=true",
+				"POST /course-service/course",
+			}
+			if !slices.Equal(s.requests, wantRequests) {
+				t.Errorf("requests = %q, want %q", s.requests, wantRequests)
+			}
+			var gotSave, wantSave any
+			if err := json.Unmarshal([]byte(s.save), &gotSave); err != nil {
+				t.Fatalf("save body %q: %v", s.save, err)
+			}
+			if err := json.Unmarshal([]byte(tt.wantSave), &wantSave); err != nil {
+				t.Fatalf("want save: %v", err)
+			}
+			if !reflect.DeepEqual(gotSave, wantSave) {
+				t.Errorf("save body = %s\nwant %s", s.save, tt.wantSave)
+			}
+		})
+	}
+}
+
+func TestImportCourse_ElevationInput(t *testing.T) {
+	s := newImportCourseServer(t, `{"geoPoints":[{"latitude":47,"longitude":8},{"lat":47.1,"lon":8.1},{"latitude":1},"x"]}`, 0)
+
+	if _, err := s.client.ImportCourse(context.Background(), writeGPX(t, "route.gpx"), CourseImportOptions{}); err != nil {
+		t.Fatalf("ImportCourse: %v", err)
+	}
+	if want := `[[47,8,null],[47.1,8.1,null]]`; s.elev != want {
+		t.Errorf("elevation body = %s, want %s", s.elev, want)
+	}
+}
+
+func TestImportCourse_Errors(t *testing.T) {
+	tests := []struct {
+		name         string
+		file         string
+		importBody   string
+		elevStatus   int
+		wantErr      string
+		wantRequests int
+	}{
+		{"not a GPX file", "run.fit", "", 0, "import GPX: invalid file format: fit", 0},
+		{"bad import JSON", "route.gpx", `{`, 0, "parse imported course: unexpected end of JSON input", 1},
+		{"no geo points", "route.gpx", `{"geoPoints":[]}`, 0, "imported course has no geo points", 1},
+		{"elevation fails", "route.gpx", `{"geoPoints":[{"latitude":47,"longitude":8}]}`, http.StatusInternalServerError, "get elevation: garmin api: 500 Internal Server Error", 2},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			s := newImportCourseServer(t, tt.importBody, tt.elevStatus)
+
+			_, err := s.client.ImportCourse(context.Background(), writeGPX(t, tt.file), CourseImportOptions{})
+			if err == nil || !strings.HasPrefix(err.Error(), tt.wantErr) {
+				t.Fatalf("err = %v, want prefix %q", err, tt.wantErr)
+			}
+			if len(s.requests) != tt.wantRequests {
+				t.Errorf("requests = %q, want %d", s.requests, tt.wantRequests)
+			}
+		})
 	}
 }
 

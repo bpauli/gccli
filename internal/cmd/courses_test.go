@@ -397,45 +397,19 @@ func TestCourseImport_Success(t *testing.T) {
 	}
 }
 
-func TestCourseImport_NameOverride(t *testing.T) {
-	server := coursesTestServer(t)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	gpxPath := newTestGPXFile(t)
-
-	// Use JSON output to verify the name in the response.
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &CourseImportCmd{File: gpxPath, Name: "Sunday Ride", Type: "cycling"}
-	err := cmd.Run(g)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
-	}
-}
-
-func TestCourseImport_NameFallback(t *testing.T) {
-	// Server returns null courseName to test filename fallback.
+func TestCourseImport_Flags(t *testing.T) {
+	var save map[string]any
 	mux := http.NewServeMux()
 	mux.HandleFunc("/course-service/course/import", func(w http.ResponseWriter, _ *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(`{"courseName":null,"geoPoints":[{"lat":47.0,"lon":8.0}]}`))
+		_, _ = w.Write([]byte(`{"courseName":"GPX Route","geoPoints":[{"lat":47.0,"lon":8.0}]}`))
 	})
 	mux.HandleFunc("/course-service/course/elevation", func(w http.ResponseWriter, _ *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
 		_, _ = w.Write([]byte(`[[47.0,8.0,500.0]]`))
 	})
 	mux.HandleFunc("/course-service/course", func(w http.ResponseWriter, r *http.Request) {
 		body, _ := io.ReadAll(r.Body)
-		var course map[string]any
-		_ = json.Unmarshal(body, &course)
-		w.Header().Set("Content-Type", "application/json")
-		name := course["courseName"].(string)
-		_, _ = w.Write([]byte(`{"courseId":999,"courseName":"` + name + `","distanceMeter":5000}`))
+		_ = json.Unmarshal(body, &save)
+		_, _ = w.Write([]byte(`{"courseId":999}`))
 	})
 	server := httptest.NewServer(mux)
 	defer server.Close()
@@ -445,19 +419,14 @@ func TestCourseImport_NameFallback(t *testing.T) {
 	overrideNewClient(t, server)
 	storeTestTokens(t, store, "test@example.com", testTokens())
 
-	gpxPath := newTestGPXFile(t)
-
 	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &CourseImportCmd{File: gpxPath, Type: "hiking"}
-	err := cmd.Run(g)
-	if err != nil {
+	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
+	cmd := &CourseImportCmd{File: newTestGPXFile(t), Name: "Sunday Ride", Type: "hiking", Privacy: 1}
+	if err := cmd.Run(g); err != nil {
 		t.Fatalf("expected no error, got: %v", err)
 	}
-	out := buf.String()
-	// Should use filename "route" (without .gpx extension).
-	if !strings.Contains(out, "route") {
-		t.Errorf("expected filename-based name in output, got: %s", out)
+	if save["courseName"] != "Sunday Ride" || save["activityTypePk"] != float64(3) || save["coursePrivacy"] != float64(1) {
+		t.Errorf("save body = %v, want courseName Sunday Ride, activityTypePk 3, coursePrivacy 1", save)
 	}
 }
 
