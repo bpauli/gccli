@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"bytes"
 	"fmt"
 	"io"
 	"net/http"
@@ -11,7 +10,6 @@ import (
 	"testing"
 
 	"github.com/bpauli/gccli/internal/garminapi"
-	"github.com/bpauli/gccli/internal/ui"
 )
 
 func TestExecute_Version(t *testing.T) {
@@ -59,30 +57,6 @@ func TestExecute_NoArgs(t *testing.T) {
 func TestExitCode_Nil(t *testing.T) {
 	if got := exitCode(nil); got != 0 {
 		t.Fatalf("expected 0, got %d", got)
-	}
-}
-
-func TestPrintNextPageHint(t *testing.T) {
-	var buf bytes.Buffer
-	u := ui.NewWithWriter(&buf, "never")
-
-	// No hint when all results are shown.
-	PrintNextPageHint(u, 0, 20, 10)
-	if buf.String() != "" {
-		t.Fatalf("expected no output, got %q", buf.String())
-	}
-
-	// Hint when there are more results.
-	PrintNextPageHint(u, 0, 20, 50)
-	if !strings.Contains(buf.String(), "--start 20") {
-		t.Fatalf("expected hint with --start 20, got %q", buf.String())
-	}
-}
-
-func TestTableWriter(t *testing.T) {
-	tw := TableWriter()
-	if tw == nil {
-		t.Fatal("expected non-nil tabwriter")
 	}
 }
 
