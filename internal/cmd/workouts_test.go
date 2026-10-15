@@ -192,7 +192,7 @@ func TestExecute_WorkoutsDeleteHelp(t *testing.T) {
 func TestWorkoutsList_NoAccount(t *testing.T) {
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &WorkoutsListCmd{Limit: 20}
+	cmd := &WorkoutsListCmd{Pagination: Pagination{Limit: 20}}
 	err := cmd.Run(g)
 	if err == nil {
 		t.Fatal("expected error, got nil")
@@ -213,7 +213,7 @@ func TestWorkoutsList_Table(t *testing.T) {
 
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &WorkoutsListCmd{Limit: 20}
+	cmd := &WorkoutsListCmd{Pagination: Pagination{Limit: 20}}
 	err := cmd.Run(g)
 	if err != nil {
 		t.Fatalf("expected no error, got: %v", err)
@@ -231,7 +231,7 @@ func TestWorkoutsList_JSON(t *testing.T) {
 
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &WorkoutsListCmd{Limit: 20}
+	cmd := &WorkoutsListCmd{Pagination: Pagination{Limit: 20}}
 	err := cmd.Run(g)
 	if err != nil {
 		t.Fatalf("expected no error, got: %v", err)
@@ -249,7 +249,7 @@ func TestWorkoutsList_Plain(t *testing.T) {
 
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Plain, "test@example.com")
-	cmd := &WorkoutsListCmd{Limit: 20}
+	cmd := &WorkoutsListCmd{Pagination: Pagination{Limit: 20}}
 	err := cmd.Run(g)
 	if err != nil {
 		t.Fatalf("expected no error, got: %v", err)

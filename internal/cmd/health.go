@@ -100,8 +100,8 @@ func (c *HealthStepsViewCmd) Run(g *Globals) error {
 
 // HealthStepsDailyCmd shows daily step totals for a date range.
 type HealthStepsDailyCmd struct {
-	StartDate string `help:"Start date (YYYY-MM-DD)." required:"" name:"start"`
-	EndDate   string `help:"End date (YYYY-MM-DD)." required:"" name:"end"`
+	StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+	EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
 }
 
 func (c *HealthStepsDailyCmd) Run(g *Globals) error {
@@ -110,7 +110,7 @@ func (c *HealthStepsDailyCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetDailySteps(g.Context, c.StartDate, c.EndDate)
+	data, err := client.GetDailySteps(g.Context, string(c.StartDate), string(c.EndDate))
 	if err != nil {
 		return fmt.Errorf("get daily steps: %w", err)
 	}
@@ -120,8 +120,8 @@ func (c *HealthStepsDailyCmd) Run(g *Globals) error {
 
 // HealthStepsWeeklyCmd shows weekly step totals.
 type HealthStepsWeeklyCmd struct {
-	EndDate string `help:"End date (YYYY-MM-DD). Defaults to today." name:"end"`
-	Weeks   int    `help:"Number of weeks." default:"4" name:"weeks"`
+	EndDate Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"end"`
+	Weeks   int  `help:"Number of weeks." default:"4" name:"weeks"`
 }
 
 func (c *HealthStepsWeeklyCmd) Run(g *Globals) error {
@@ -130,7 +130,7 @@ func (c *HealthStepsWeeklyCmd) Run(g *Globals) error {
 		return err
 	}
 
-	endDate := c.EndDate
+	endDate := string(c.EndDate)
 	if endDate == "" {
 		endDate = nowFn().Format("2006-01-02")
 	}
@@ -274,8 +274,8 @@ func (c *HealthStressViewCmd) Run(g *Globals) error {
 
 // HealthStressWeeklyCmd shows weekly stress data.
 type HealthStressWeeklyCmd struct {
-	EndDate string `help:"End date (YYYY-MM-DD). Defaults to today." name:"end"`
-	Weeks   int    `help:"Number of weeks." default:"4" name:"weeks"`
+	EndDate Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"end"`
+	Weeks   int  `help:"Number of weeks." default:"4" name:"weeks"`
 }
 
 func (c *HealthStressWeeklyCmd) Run(g *Globals) error {
@@ -284,7 +284,7 @@ func (c *HealthStressWeeklyCmd) Run(g *Globals) error {
 		return err
 	}
 
-	endDate := c.EndDate
+	endDate := string(c.EndDate)
 	if endDate == "" {
 		endDate = nowFn().Format("2006-01-02")
 	}

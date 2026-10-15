@@ -633,10 +633,11 @@ gccli activities list --limit 5</pre>
           <div class="cmd-group fade-in">
             <div class="cmd-header"><h3>Activities</h3><span class="cmd-arrow">&#x25B6;</span></div>
             <div class="cmd-body">
-              <div class="cmd-row"><div class="cmd">gccli activities list --limit 20 --start 0</div><div class="desc">List recent activities</div></div>
+              <div class="cmd-row"><div class="cmd">gccli activities list --limit 20</div><div class="desc">List recent activities</div></div>
+              <div class="cmd-row"><div class="cmd">gccli activities list --limit 20 --offset 20</div><div class="desc">Next page of activities</div></div>
               <div class="cmd-row"><div class="cmd">gccli activities list --type running</div><div class="desc">Filter by activity type</div></div>
               <div class="cmd-row"><div class="cmd">gccli activities count</div><div class="desc">Total activity count</div></div>
-              <div class="cmd-row"><div class="cmd">gccli activities search --start-date ... --end-date ...</div><div class="desc">Search by date range</div></div>
+              <div class="cmd-row"><div class="cmd">gccli activities search --start ... --end ...</div><div class="desc">Search by date range</div></div>
               <div class="cmd-row"><div class="cmd">gccli activity summary &lt;id&gt;</div><div class="desc">Activity summary</div></div>
               <div class="cmd-row"><div class="cmd">gccli activity details &lt;id&gt;</div><div class="desc">Full activity details</div></div>
               <div class="cmd-row"><div class="cmd">gccli activity splits &lt;id&gt;</div><div class="desc">Activity split data</div></div>
@@ -796,6 +797,7 @@ gccli activities list --limit 5</pre>
             <div class="cmd-body">
               <div class="cmd-row"><div class="cmd">gccli events list</div><div class="desc">List upcoming calendar events</div></div>
               <div class="cmd-row"><div class="cmd">gccli events list --start 2024-06-01 --limit 50</div><div class="desc">List events from a date</div></div>
+              <div class="cmd-row"><div class="cmd">gccli events list --limit 50 --offset 50</div><div class="desc">Next page of events (--offset must be a multiple of --limit)</div></div>
               <div class="cmd-row"><div class="cmd">gccli events add --name "Race" --date 2026-09-27 --type running --race</div><div class="desc">Add a race event</div></div>
               <div class="cmd-row"><div class="cmd">gccli events add --name "10K" --date 2026-05-10 --type running --distance 10km --goal 40m --training</div><div class="desc">Add event with goal &amp; training priority</div></div>
               <div class="cmd-row"><div class="cmd">gccli events delete &lt;id&gt;</div><div class="desc">Delete an event (with confirmation)</div></div>
@@ -815,8 +817,8 @@ gccli activities list --limit 5</pre>
               <div class="cmd-row"><div class="cmd">gccli profile settings</div><div class="desc">Account settings</div></div>
               <div class="cmd-row"><div class="cmd">gccli training plans --locale en</div><div class="desc">Browse training plans</div></div>
               <div class="cmd-row"><div class="cmd">gccli training plan &lt;id&gt;</div><div class="desc">View a training plan</div></div>
-              <div class="cmd-row"><div class="cmd">gccli wellness menstrual-cycle --start-date ... --end-date ...</div><div class="desc">Menstrual cycle data</div></div>
-              <div class="cmd-row"><div class="cmd">gccli wellness menstrual-summary --start-date ... --end-date ...</div><div class="desc">Menstrual cycle summary</div></div>
+              <div class="cmd-row"><div class="cmd">gccli wellness menstrual-cycle --start ... --end ...</div><div class="desc">Menstrual cycle data</div></div>
+              <div class="cmd-row"><div class="cmd">gccli wellness menstrual-summary --start ... --end ...</div><div class="desc">Menstrual cycle summary</div></div>
               <div class="cmd-row"><div class="cmd">gccli wellness pregnancy-summary</div><div class="desc">Pregnancy summary</div></div>
               <div class="cmd-row"><div class="cmd">gccli reload [date]</div><div class="desc">Reload data for a date</div></div>
               <div class="cmd-row"><div class="cmd">gccli completion bash</div><div class="desc">Generate bash completion script</div></div>
@@ -897,6 +899,7 @@ gccli activities list --limit 5</pre>
 
           <div class="card fade-in">
             <h3>Date Formats</h3>
+            <p>Every <code>--start</code> and <code>--end</code> flag accepts these formats. A bad date in one of these flags is a usage error (exit code 2).</p>
             <table class="env-table">
               <thead><tr><th>Format</th><th>Example</th><th>Description</th></tr></thead>
               <tbody>
@@ -904,6 +907,7 @@ gccli activities list --limit 5</pre>
                 <tr><td>today</td><td></td><td>Today's date</td></tr>
                 <tr><td>yesterday</td><td></td><td>Yesterday's date</td></tr>
                 <tr><td>Nd</td><td>3d, 7d</td><td>N days ago</td></tr>
+                <tr><td>+Nd</td><td>+30d</td><td>N days ahead</td></tr>
               </tbody>
             </table>
           </div>
@@ -921,7 +925,7 @@ gccli activities list --limit 5</pre>
             <h3>Export all runs from the last month</h3>
             <p>Fetch running activities and download each as GPX.</p>
             <pre class="code-block">gccli --json activities search \
-  --start-date 2024-05-15 --end-date 2024-06-15 \
+  --start 2024-05-15 --end 2024-06-15 \
   --limit 100 | \
   jq -r '.[] | select(.activityType.typeKey == "running") | .activityId' | \
   while read id; do

@@ -82,8 +82,8 @@ func (c *HealthBodyBatteryViewCmd) Run(g *Globals) error {
 
 // HealthBodyBatteryRangeCmd shows body battery data for a date range.
 type HealthBodyBatteryRangeCmd struct {
-	StartDate string `help:"Start date (YYYY-MM-DD)." required:"" name:"start"`
-	EndDate   string `help:"End date (YYYY-MM-DD)." required:"" name:"end"`
+	StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+	EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
 }
 
 func (c *HealthBodyBatteryRangeCmd) Run(g *Globals) error {
@@ -92,7 +92,7 @@ func (c *HealthBodyBatteryRangeCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetBodyBattery(g.Context, c.StartDate, c.EndDate)
+	data, err := client.GetBodyBattery(g.Context, string(c.StartDate), string(c.EndDate))
 	if err != nil {
 		return fmt.Errorf("get body battery range: %w", err)
 	}
@@ -132,8 +132,8 @@ func (c *HealthIntensityMinutesViewCmd) Run(g *Globals) error {
 
 // HealthIntensityMinutesWeeklyCmd shows weekly intensity minutes for a date range.
 type HealthIntensityMinutesWeeklyCmd struct {
-	StartDate string `help:"Start date (YYYY-MM-DD)." required:"" name:"start"`
-	EndDate   string `help:"End date (YYYY-MM-DD)." required:"" name:"end"`
+	StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+	EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
 }
 
 func (c *HealthIntensityMinutesWeeklyCmd) Run(g *Globals) error {
@@ -142,7 +142,7 @@ func (c *HealthIntensityMinutesWeeklyCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetWeeklyIntensityMinutes(g.Context, c.StartDate, c.EndDate)
+	data, err := client.GetWeeklyIntensityMinutes(g.Context, string(c.StartDate), string(c.EndDate))
 	if err != nil {
 		return fmt.Errorf("get weekly intensity minutes: %w", err)
 	}
@@ -307,8 +307,8 @@ func (c *HealthRacePredictionsViewCmd) Run(g *Globals) error {
 
 // HealthRacePredictionsRangeCmd shows race predictions for a date range.
 type HealthRacePredictionsRangeCmd struct {
-	StartDate string `help:"Start date (YYYY-MM-DD)." required:"" name:"start"`
-	EndDate   string `help:"End date (YYYY-MM-DD)." required:"" name:"end"`
+	StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+	EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
 }
 
 func (c *HealthRacePredictionsRangeCmd) Run(g *Globals) error {
@@ -317,7 +317,7 @@ func (c *HealthRacePredictionsRangeCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetRacePredictions(g.Context, c.StartDate, c.EndDate)
+	data, err := client.GetRacePredictions(g.Context, string(c.StartDate), string(c.EndDate))
 	if err != nil {
 		return fmt.Errorf("get race predictions range: %w", err)
 	}

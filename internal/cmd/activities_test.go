@@ -101,7 +101,7 @@ func TestExecute_ActivitiesSearchHelp(t *testing.T) {
 func TestActivitiesList_NoAccount(t *testing.T) {
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &ActivitiesListCmd{Limit: 20}
+	cmd := &ActivitiesListCmd{Pagination: Pagination{Limit: 20}}
 	err := cmd.Run(g)
 	if err == nil {
 		t.Fatal("expected error, got nil")
@@ -117,7 +117,7 @@ func TestActivitiesList_NotFound(t *testing.T) {
 
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "nobody@example.com")
-	cmd := &ActivitiesListCmd{Limit: 20}
+	cmd := &ActivitiesListCmd{Pagination: Pagination{Limit: 20}}
 	err := cmd.Run(g)
 	if err == nil {
 		t.Fatal("expected error, got nil")
@@ -138,7 +138,7 @@ func TestActivitiesList_Table(t *testing.T) {
 
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &ActivitiesListCmd{Limit: 20, Start: 0}
+	cmd := &ActivitiesListCmd{Pagination: Pagination{Limit: 20}}
 	err := cmd.Run(g)
 	if err != nil {
 		t.Fatalf("expected no error, got: %v", err)
@@ -157,7 +157,7 @@ func TestActivitiesList_JSON(t *testing.T) {
 
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &ActivitiesListCmd{Limit: 20, Start: 0}
+	cmd := &ActivitiesListCmd{Pagination: Pagination{Limit: 20}}
 	err := cmd.Run(g)
 	if err != nil {
 		t.Fatalf("expected no error, got: %v", err)
@@ -186,7 +186,7 @@ func TestActivitiesList_WithType(t *testing.T) {
 
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &ActivitiesListCmd{Limit: 20, Start: 0, Type: "running"}
+	cmd := &ActivitiesListCmd{Pagination: Pagination{Limit: 20}, Type: "running"}
 	err := cmd.Run(g)
 	if err != nil {
 		t.Fatalf("expected no error, got: %v", err)
@@ -321,10 +321,9 @@ func TestActivitiesSearch_Success(t *testing.T) {
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
 	cmd := &ActivitiesSearchCmd{
-		Limit:     20,
-		Start:     0,
-		StartDate: "2024-06-01",
-		EndDate:   "2024-06-30",
+		Pagination: Pagination{Limit: 20},
+		StartDate:  "2024-06-01",
+		EndDate:    "2024-06-30",
 	}
 	err := cmd.Run(g)
 	if err != nil {
@@ -347,10 +346,9 @@ func TestActivitiesSearch_JSON(t *testing.T) {
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
 	cmd := &ActivitiesSearchCmd{
-		Limit:     20,
-		Start:     0,
-		StartDate: "2024-06-01",
-		EndDate:   "2024-06-30",
+		Pagination: Pagination{Limit: 20},
+		StartDate:  "2024-06-01",
+		EndDate:    "2024-06-30",
 	}
 	err := cmd.Run(g)
 	if err != nil {

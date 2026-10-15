@@ -76,7 +76,7 @@ func runActivitiesList(t *testing.T, mode outfmt.Mode, pref units.Preference) (s
 	g := testGlobals(t, &buf, mode, "test@example.com")
 	g.Units = pref
 	stdout = captureStdout(t, func() {
-		if err := (&ActivitiesListCmd{Limit: 20}).Run(g); err != nil {
+		if err := (&ActivitiesListCmd{Pagination: Pagination{Limit: 20}}).Run(g); err != nil {
 			t.Fatalf("Run: %v", err)
 		}
 	})

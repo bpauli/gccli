@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -19,14 +20,37 @@ type EventsCmd struct {
 
 // EventsListCmd lists calendar events from a start date.
 type EventsListCmd struct {
-	StartDate string `help:"Start date (YYYY-MM-DD, today, 3d, +30d). Defaults to today." name:"start"`
-	Limit     int    `help:"Maximum number of events to return." default:"20" short:"l"`
-	Page      int    `help:"Page index for pagination." default:"1" short:"p"`
-	Sort      string `help:"Sort order." default:"eventDate_asc" enum:"eventDate_asc,eventDate_desc" short:"s"`
+	StartDate  Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"start"`
+	Pagination `embed:"" set:"items=events"`
+	Sort       string `help:"Sort order." default:"eventDate_asc" enum:"eventDate_asc,eventDate_desc"`
+}
+
+func (c *EventsListCmd) Validate() error {
+	_, err := c.pageIndex()
+	return err
+}
+
+func (c *EventsListCmd) pageIndex() (int, error) {
+	switch {
+	case c.Offset < 0:
+		return 0, errors.New("--offset must not be negative")
+	case c.Offset == 0:
+		return 1, nil
+	case c.Limit <= 0:
+		return 0, errors.New("--offset needs --limit greater than 0")
+	case c.Offset%c.Limit != 0:
+		return 0, fmt.Errorf("--offset %d is not a multiple of --limit %d; events are fetched in pages of --limit", c.Offset, c.Limit)
+	}
+	return c.Offset/c.Limit + 1, nil
 }
 
 func (c *EventsListCmd) Run(g *Globals) error {
-	startDate := c.StartDate
+	page, err := c.pageIndex()
+	if err != nil {
+		return err
+	}
+
+	startDate := string(c.StartDate)
 	if startDate == "" {
 		startDate = "today"
 	}
@@ -41,7 +65,7 @@ func (c *EventsListCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetEvents(g.Context, date, c.Page, c.Limit, c.Sort)
+	data, err := client.GetEvents(g.Context, date, page, c.Limit, c.Sort)
 	if err != nil {
 		return fmt.Errorf("list events: %w", err)
 	}
