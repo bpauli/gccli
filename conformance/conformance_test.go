@@ -342,11 +342,6 @@ func TestGolden(t *testing.T) {
 				for _, u := range r.unexpectedRequests() {
 					t.Errorf("%q in %s mode sent %s, which %s has no route for", name, m.name, u, file)
 				}
-				for _, req := range s.proxy.requests() {
-					if !strings.HasSuffix(req.Host, ".garmin.com") {
-						t.Errorf("%q in %s mode sent %s to a host outside garmin.com", name, m.name, req)
-					}
-				}
 			})
 		}
 	}
@@ -365,7 +360,7 @@ type reply struct {
 }
 
 func (r *replay) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	key := req.Method + " " + req.URL.RequestURI()
+	key := req.Method + " " + req.Host + req.URL.RequestURI()
 	rep, ok := r.routes[key]
 	if !ok {
 		r.mu.Lock()
@@ -430,7 +425,7 @@ func parseGolden(data string) (goldenCase, error) {
 			} else if len(f) != 2 {
 				return c, fmt.Errorf("section %q: want route <METHOD> <uri> [status]", name)
 			}
-			c.routes[f[0]+" "+f[1]] = rep
+			c.routes[f[0]+" "+routeHost(f[1])+f[1]] = rep
 		default:
 			c.outputs[name] = body
 		}
@@ -439,6 +434,13 @@ func parseGolden(data string) (goldenCase, error) {
 		return c, errors.New("no args section")
 	}
 	return c, nil
+}
+
+func routeHost(uri string) string {
+	if strings.HasPrefix(uri, "/web-data/") {
+		return "connect.garmin.com"
+	}
+	return "connectapi.garmin.com"
 }
 
 func lineDiff(want, got string) string {

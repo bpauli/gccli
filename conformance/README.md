@@ -33,7 +33,7 @@ The binary uses its real URLs. Nothing overrides a base URL.
 
 The suite runs each case with `--account test@example.com --units metric`, like the in-process harness. It leaves `--color` at its default, because output to a pipe must have no color. When a case has stdin, the suite gives it a pseudo-terminal, so a confirmation prompt reads the answer as typed input.
 
-A case fails when the output differs, when the binary sends a request that the file has no route for, or when a request goes to a host outside `garmin.com`.
+A case fails when the output differs, or when the binary sends a request that the file has no route for. A route matches the method, the host and the URI. The golden files do not name a host, so the suite expects `connect.garmin.com` for the `/web-data/` routes and `connectapi.garmin.com` for all other routes. A call that moves to another host fails.
 
 The suite skips these cases:
 
