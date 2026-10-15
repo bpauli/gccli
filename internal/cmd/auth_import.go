@@ -52,12 +52,17 @@ func (c *AuthImportCmd) Run(g *Globals) error {
 		}
 	}
 
+	data, err := tokens.Marshal()
+	if err != nil {
+		return fmt.Errorf("encode tokens: %w", err)
+	}
+
 	store, err := loadSecretsStore()
 	if err != nil {
 		return err
 	}
 
-	if err := store.Set(tokens.Email, decoded); err != nil {
+	if err := store.Set(tokens.Email, data); err != nil {
 		return fmt.Errorf("store tokens: %w", err)
 	}
 
