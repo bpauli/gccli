@@ -177,11 +177,24 @@ func renderHTMLReference(groups []refGroup) string {
 			for _, p := range c.Params {
 				desc += "<br><code>" + html.EscapeString(p.Name) + "</code> " + html.EscapeString(p.Help)
 			}
-			fmt.Fprintf(&b, "%s    <div class=\"cmd-row\"><div class=\"cmd\">%s</div><div class=\"desc\">%s</div></div>\n", indent, html.EscapeString(c.Synopsis), desc)
+			fmt.Fprintf(&b, "%s    <div class=\"cmd-row\"><div class=\"cmd\">%s</div><div class=\"desc\">%s</div></div>\n", indent, synopsisHTML(c.Synopsis), desc)
 		}
 		fmt.Fprintf(&b, "%s  </div>\n%s</div>\n", indent, indent)
 	}
 	return b.String()
+}
+
+// A browser may break a line after a hyphen and split --name=STRING into
+// -- and name=STRING.
+func synopsisHTML(synopsis string) string {
+	words := strings.Fields(synopsis)
+	for i, w := range words {
+		words[i] = html.EscapeString(w)
+		if strings.Contains(w, "-") {
+			words[i] = `<span class="nowrap">` + words[i] + "</span>"
+		}
+	}
+	return strings.Join(words, " ")
 }
 
 func spliceReference(doc, block string) (string, error) {

@@ -78,7 +78,7 @@ func TestRenderReference(t *testing.T) {
             <div class="cmd-header"><h3>Things &amp; Stuff</h3><span class="cmd-arrow">&#x25B6;</span></div>
             <div class="cmd-body">
               <div class="cmd-row"><div class="cmd">gccli things list [&lt;date&gt;]</div><div class="desc">List things. Also runs as <code>gccli things [&lt;date&gt;]</code>.<br><code>[&lt;date&gt;]</code> Day to list.</div></div>
-              <div class="cmd-row"><div class="cmd">gccli things get --since=DATE &lt;id&gt; [flags]</div><div class="desc">Show one thing&#39;s &lt;parts&gt; &amp; more.<br><code>&lt;id&gt;</code> Thing ID.<br><code>--since=DATE</code> Start date.<br><code>-f, --force</code> Skip the check.<br><code>--output=&#34;out.txt&#34;</code> Output file.<br><code>--kind=&#34;plain&#34;</code> Thing kind. One of: plain, fancy.<br><code>--mode=&#34;on&#34;</code> Turn it on or off.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli things get <span class="nowrap">--since=DATE</span> &lt;id&gt; [flags]</div><div class="desc">Show one thing&#39;s &lt;parts&gt; &amp; more.<br><code>&lt;id&gt;</code> Thing ID.<br><code>--since=DATE</code> Start date.<br><code>-f, --force</code> Skip the check.<br><code>--output=&#34;out.txt&#34;</code> Output file.<br><code>--kind=&#34;plain&#34;</code> Thing kind. One of: plain, fancy.<br><code>--mode=&#34;on&#34;</code> Turn it on or off.</div></div>
             </div>
           </div>
 `
