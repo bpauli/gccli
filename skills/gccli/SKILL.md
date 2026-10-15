@@ -21,6 +21,7 @@ Output
 - Default: human-friendly tables. Use `--json` / `-j` for JSON.
 - `--plain` prints TSV with no header row, but only for `activities list`, `activities search`, `activities types`, `activity summary`, `courses list`, `courses favorites`, `courses import`, `events list`, `workouts list`, `workouts schedule list` and `exercises list` (without `-c`). Most other commands print JSON in all modes.
 - Data goes to stdout, messages/errors to stderr.
+- Write commands (add, create, upload, import, update, rename, retype, schedule, send, link, unlink, remove, delete) print the Garmin response with `--json`, or `{"ok": true}` when the response is empty. Without `--json` they print a message on stderr and nothing on stdout. Only `courses import` prints a table on stdout instead (TSV with `--plain`).
 - Always use `--json` when parsing output programmatically.
 - Tables show distance, speed, pace and elevation in the user's Garmin unit system (`metric`, `statute_us`, or `statute_uk`, which is miles with elevation in metres). Override with `--units <system>` or `GCCLI_UNITS`. JSON is never converted (meters, m/s).
 
