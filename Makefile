@@ -27,20 +27,27 @@ run: build
 
 # ── Quality ──────────────────────────────────────────────────────────────────
 
+require-tools = for t in $(1); do test -x "$(TOOLS_DIR)/$$t" || { echo "$(TOOLS_DIR)/$$t not found; run 'make tools'"; exit 1; }; done
+
 .PHONY: fmt
 fmt:
+	@$(call require-tools,goimports gofumpt)
 	$(TOOLS_DIR)/goimports -w -local $(LOCAL_PREFIX) .
 	$(TOOLS_DIR)/gofumpt -w .
 
 .PHONY: fmt-check
 fmt-check:
-	@test -z "$$($(TOOLS_DIR)/goimports -l -local $(LOCAL_PREFIX) .)" || \
-		{ echo "goimports check failed; run 'make fmt'"; exit 1; }
-	@test -z "$$($(TOOLS_DIR)/gofumpt -l .)" || \
-		{ echo "gofumpt check failed; run 'make fmt'"; exit 1; }
+	@$(call require-tools,goimports gofumpt)
+	@out=$$($(TOOLS_DIR)/goimports -l -local $(LOCAL_PREFIX) .) || \
+		{ echo "goimports failed"; exit 1; }; \
+		test -z "$$out" || { echo "goimports check failed; run 'make fmt'"; exit 1; }
+	@out=$$($(TOOLS_DIR)/gofumpt -l .) || \
+		{ echo "gofumpt failed"; exit 1; }; \
+		test -z "$$out" || { echo "gofumpt check failed; run 'make fmt'"; exit 1; }
 
 .PHONY: lint
 lint:
+	@$(call require-tools,golangci-lint)
 	$(TOOLS_DIR)/golangci-lint run ./...
 
 .PHONY: test
