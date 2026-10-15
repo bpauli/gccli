@@ -161,67 +161,22 @@ func (c *Client) UploadActivity(ctx context.Context, filePath string) (json.RawM
 }
 
 func (c *Client) doUpload(ctx context.Context, path, contentType string, body io.Reader, canRetry bool) (json.RawMessage, error) {
-	var bodyBytes []byte
+	r := request{kind: kindUpload, method: http.MethodPost, path: path, contentType: contentType, noRefresh: !canRetry}
 	if body != nil {
 		var err error
-		bodyBytes, err = io.ReadAll(body)
+		r.body, err = io.ReadAll(body)
 		if err != nil {
 			return nil, fmt.Errorf("read upload body: %w", err)
 		}
 	}
-	return c.doUploadBytes(ctx, path, contentType, bodyBytes, canRetry)
-}
-
-func (c *Client) doUploadBytes(ctx context.Context, path, contentType string, body []byte, canRetry bool) (json.RawMessage, error) {
-	reqURL := c.baseURL + path
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, reqURL, bytes.NewReader(body))
+	resp, err := c.do(ctx, r)
 	if err != nil {
-		return nil, fmt.Errorf("create upload request: %w", err)
+		return nil, err
 	}
-
-	req.Header.Set("Authorization", "Bearer "+c.tokens.OAuth2AccessToken)
-	req.Header.Set("Content-Type", contentType)
-	req.Header.Set("User-Agent", "com.garmin.android.apps.connectmobile")
-
-	resp, err := c.httpClient.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("upload %s: %w", path, err)
-	}
-	defer func() { _ = resp.Body.Close() }()
-
-	if resp.StatusCode == http.StatusUnauthorized {
-		_, _ = io.Copy(io.Discard, resp.Body)
-		if canRetry {
-			if refreshErr := c.refreshToken(ctx); refreshErr == nil {
-				return c.doUploadBytes(ctx, path, contentType, body, false)
-			}
-		}
-		return nil, &TokenExpiredError{Email: c.tokens.Email}
-	}
-
-	if resp.StatusCode == http.StatusTooManyRequests {
-		_, _ = io.Copy(io.Discard, resp.Body)
-		return nil, &RateLimitError{RetryAfter: resp.Header.Get("Retry-After")}
-	}
-
-	data, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("read upload response: %w", err)
-	}
-
-	if resp.StatusCode >= 400 {
-		return nil, &GarminAPIError{
-			StatusCode: resp.StatusCode,
-			Message:    string(data),
-		}
-	}
-
-	if len(data) == 0 {
+	if len(resp.body) == 0 {
 		return nil, nil
 	}
-
-	return json.RawMessage(data), nil
+	return json.RawMessage(resp.body), nil
 }
 
 // CreateManualActivity creates a manual activity entry.
