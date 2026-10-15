@@ -27,7 +27,7 @@ func TestHealthSummary(t *testing.T) {
 	displayName := displayNameOf(t, client)
 	today := time.Now().Format("2006-01-02")
 
-	data, err := client.GetDailySummary(ctx, displayName, today)
+	data, err := client.Call(ctx, "health.daily-summary", map[string]string{"displayName": displayName, "date": today}, nil)
 	if err != nil {
 		t.Fatalf("GetDailySummary failed: %v", err)
 	}
@@ -46,7 +46,7 @@ func TestHealthSteps(t *testing.T) {
 	displayName := displayNameOf(t, client)
 	today := time.Now().Format("2006-01-02")
 
-	data, err := client.GetSteps(ctx, displayName, today)
+	data, err := client.Call(ctx, "health.steps", map[string]string{"displayName": displayName, "date": today}, nil)
 	if err != nil {
 		t.Fatalf("GetSteps failed: %v", err)
 	}
@@ -64,7 +64,7 @@ func TestHealthHeartRate(t *testing.T) {
 	displayName := displayNameOf(t, client)
 	today := time.Now().Format("2006-01-02")
 
-	data, err := client.GetHeartRate(ctx, displayName, today)
+	data, err := client.Call(ctx, "health.heart-rate", map[string]string{"displayName": displayName, "date": today}, nil)
 	if err != nil {
 		t.Fatalf("GetHeartRate failed: %v", err)
 	}
@@ -82,7 +82,7 @@ func TestHealthSleep(t *testing.T) {
 	displayName := displayNameOf(t, client)
 	today := time.Now().Format("2006-01-02")
 
-	data, err := client.GetSleep(ctx, displayName, today)
+	data, err := client.Call(ctx, "health.sleep", map[string]string{"displayName": displayName, "date": today}, nil)
 	if err != nil {
 		t.Fatalf("GetSleep failed: %v", err)
 	}
@@ -99,7 +99,7 @@ func TestHealthRestingHeartRate(t *testing.T) {
 	displayName := displayNameOf(t, client)
 	today := time.Now().Format("2006-01-02")
 
-	data, err := client.GetRestingHeartRate(ctx, displayName, today)
+	data, err := client.Call(ctx, "health.resting-heart-rate", map[string]string{"displayName": displayName, "date": today}, nil)
 	if err != nil {
 		t.Fatalf("GetRestingHeartRate failed: %v", err)
 	}

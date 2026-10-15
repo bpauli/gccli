@@ -18,7 +18,7 @@ func (c *HealthSPO2Cmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetSPO2(g.Context, date)
+	data, err := client.Call(g.Context, "health.spo2", map[string]string{"date": date}, nil)
 	if err != nil {
 		return fmt.Errorf("get spo2: %w", err)
 	}
@@ -42,7 +42,7 @@ func (c *HealthHRVCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetHRV(g.Context, date)
+	data, err := client.Call(g.Context, "health.hrv", map[string]string{"date": date}, nil)
 	if err != nil {
 		return fmt.Errorf("get hrv: %w", err)
 	}
@@ -72,7 +72,7 @@ func (c *HealthBodyBatteryViewCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetBodyBattery(g.Context, date, date)
+	data, err := client.Call(g.Context, "health.body-battery", map[string]string{"startDate": date, "endDate": date}, nil)
 	if err != nil {
 		return fmt.Errorf("get body battery: %w", err)
 	}
@@ -92,7 +92,7 @@ func (c *HealthBodyBatteryRangeCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetBodyBattery(g.Context, string(c.StartDate), string(c.EndDate))
+	data, err := client.Call(g.Context, "health.body-battery", map[string]string{"startDate": string(c.StartDate), "endDate": string(c.EndDate)}, nil)
 	if err != nil {
 		return fmt.Errorf("get body battery range: %w", err)
 	}
@@ -122,7 +122,7 @@ func (c *HealthIntensityMinutesViewCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetIntensityMinutes(g.Context, date)
+	data, err := client.Call(g.Context, "health.intensity-minutes", map[string]string{"date": date}, nil)
 	if err != nil {
 		return fmt.Errorf("get intensity minutes: %w", err)
 	}
@@ -142,7 +142,7 @@ func (c *HealthIntensityMinutesWeeklyCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetWeeklyIntensityMinutes(g.Context, string(c.StartDate), string(c.EndDate))
+	data, err := client.Call(g.Context, "health.weekly-intensity-minutes", map[string]string{"startDate": string(c.StartDate), "endDate": string(c.EndDate)}, nil)
 	if err != nil {
 		return fmt.Errorf("get weekly intensity minutes: %w", err)
 	}
@@ -166,7 +166,7 @@ func (c *HealthTrainingReadinessCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetTrainingReadiness(g.Context, date)
+	data, err := client.Call(g.Context, "health.training-readiness", map[string]string{"date": date}, nil)
 	if err != nil {
 		return fmt.Errorf("get training readiness: %w", err)
 	}
@@ -190,7 +190,7 @@ func (c *HealthTrainingStatusCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetTrainingStatus(g.Context, date)
+	data, err := client.Call(g.Context, "health.training-status", map[string]string{"date": date}, nil)
 	if err != nil {
 		return fmt.Errorf("get training status: %w", err)
 	}
@@ -214,7 +214,7 @@ func (c *HealthFitnessAgeCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetFitnessAge(g.Context, date)
+	data, err := client.Call(g.Context, "health.fitness-age", map[string]string{"date": date}, nil)
 	if err != nil {
 		return fmt.Errorf("get fitness age: %w", err)
 	}
@@ -238,7 +238,7 @@ func (c *HealthMaxMetricsCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetMaxMetrics(g.Context, date)
+	data, err := client.Call(g.Context, "health.max-metrics", map[string]string{"date": date}, nil)
 	if err != nil {
 		return fmt.Errorf("get max metrics: %w", err)
 	}
@@ -255,7 +255,7 @@ func (c *HealthLactateThresholdCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetLactateThreshold(g.Context)
+	data, err := client.Call(g.Context, "health.lactate-threshold", nil, nil)
 	if err != nil {
 		return fmt.Errorf("get lactate threshold: %w", err)
 	}
@@ -272,7 +272,7 @@ func (c *HealthCyclingFTPCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetCyclingFTP(g.Context)
+	data, err := client.Call(g.Context, "health.cycling-ftp", nil, nil)
 	if err != nil {
 		return fmt.Errorf("get cycling ftp: %w", err)
 	}
@@ -341,7 +341,7 @@ func (c *HealthEnduranceScoreCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetEnduranceScore(g.Context, date)
+	data, err := client.Call(g.Context, "health.endurance-score", map[string]string{"date": date}, nil)
 	if err != nil {
 		return fmt.Errorf("get endurance score: %w", err)
 	}
@@ -365,7 +365,7 @@ func (c *HealthHillScoreCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetHillScore(g.Context, date)
+	data, err := client.Call(g.Context, "health.hill-score", map[string]string{"date": date}, nil)
 	if err != nil {
 		return fmt.Errorf("get hill score: %w", err)
 	}
@@ -389,7 +389,7 @@ func (c *HealthEventsCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetAllDayEvents(g.Context, date)
+	data, err := client.Call(g.Context, "health.all-day-events", map[string]string{"date": date}, nil)
 	if err != nil {
 		return fmt.Errorf("get events: %w", err)
 	}
@@ -413,7 +413,7 @@ func (c *HealthLifestyleCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetLifestyleLogging(g.Context, date)
+	data, err := client.Call(g.Context, "health.lifestyle-logging", map[string]string{"date": date}, nil)
 	if err != nil {
 		return fmt.Errorf("get lifestyle: %w", err)
 	}

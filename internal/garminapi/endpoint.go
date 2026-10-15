@@ -14,6 +14,7 @@ import (
 
 var endpoints = mustIndex(
 	goalsEndpoints,
+	healthEndpoints,
 )
 
 // Host is the Garmin server an endpoint lives on.
