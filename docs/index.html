@@ -859,7 +859,7 @@ gccli activities list --limit 5</pre>
                 <tr><td>0</td><td>Success</td></tr>
                 <tr><td>1</td><td>Other error</td></tr>
                 <tr><td>2</td><td>Usage error (unknown command, flag or value); usage text goes to stderr</td></tr>
-                <tr><td>3</td><td>Login needed: no account, no stored credentials, or an expired token</td></tr>
+                <tr><td>3</td><td>Login needed: no account, no stored credentials, or an expired token. <code>auth status</code> exits 3 when no credentials are stored, so a script can use it as a login check.</td></tr>
                 <tr><td>4</td><td>Garmin returned 404 Not Found</td></tr>
                 <tr><td>5</td><td>Garmin rate limit (HTTP 429)</td></tr>
               </tbody>
