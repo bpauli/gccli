@@ -10,6 +10,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/bpauli/gccli/internal/e2e/harness"
 	"github.com/bpauli/gccli/internal/garminapi"
 )
 
@@ -56,10 +57,11 @@ func TestCreateManualActivity(t *testing.T) {
 		}
 	})
 
-	// Verify the created activity appears in the listing.
-	found := findActivityByID(t, client, activityID)
+	found := harness.Poll(10*time.Second, 2*time.Second, func() bool {
+		return findActivityByID(t, client, activityID)
+	})
 	if !found {
-		t.Errorf("created activity %s not found in GetActivities listing", activityID)
+		t.Errorf("created activity %s not found in GetActivities listing after 10 s", activityID)
 	}
 
 	// Test rename: rename to E2E_TEST_RENAMED.

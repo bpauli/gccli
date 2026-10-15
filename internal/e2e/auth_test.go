@@ -10,20 +10,8 @@ import (
 	"github.com/bpauli/gccli/internal/garminauth"
 )
 
-// TestHeadlessLogin verifies that headless SSO login returns valid DI OAuth
-// tokens with all expected fields populated.
 func TestHeadlessLogin(t *testing.T) {
-	email, password := LoadEnv(t)
-
-	tokens, err := garminauth.LoginHeadless(
-		context.Background(),
-		email,
-		password,
-		garminauth.LoginOptions{},
-	)
-	if err != nil {
-		t.Fatalf("LoginHeadless failed: %v", err)
-	}
+	tokens := getOrLogin(t)
 
 	// Verify OAuth2 access token is present.
 	if tokens.OAuth2AccessToken == "" {

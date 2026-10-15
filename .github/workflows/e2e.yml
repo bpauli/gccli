@@ -3,6 +3,13 @@ name: e2e
 on:
   push:
     branches: [main]
+    paths:
+      - "internal/garminapi/**"
+      - "internal/garminauth/**"
+      - "internal/e2e/**"
+      - "internal/units/**"
+      - "go.mod"
+      - ".github/workflows/e2e.yml"
   schedule:
     # Run daily at 06:00 UTC
     - cron: "0 6 * * *"

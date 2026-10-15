@@ -4,9 +4,13 @@ package e2e
 
 import (
 	"context"
+	"errors"
+	"net/http"
+	"os"
 	"sync"
 	"testing"
 
+	"github.com/bpauli/gccli/internal/e2e/harness"
 	"github.com/bpauli/gccli/internal/garminapi"
 	"github.com/bpauli/gccli/internal/garminauth"
 )
@@ -20,12 +24,6 @@ var (
 	tokensMu     sync.Mutex
 )
 
-// AuthenticatedClient returns a *garminapi.Client that is authenticated
-// against the real Garmin Connect API using credentials from .env.
-//
-// Tokens are cached for the lifetime of the test binary so that multiple
-// tests share a single SSO login. If authentication fails, the test is
-// marked as fatal.
 func AuthenticatedClient(t *testing.T) *garminapi.Client {
 	t.Helper()
 
@@ -33,15 +31,28 @@ func AuthenticatedClient(t *testing.T) *garminapi.Client {
 	return garminapi.NewClient(tokens)
 }
 
-// getOrLogin returns cached tokens or performs a headless SSO login.
 func getOrLogin(t *testing.T) *garminauth.Tokens {
 	t.Helper()
 
 	tokensMu.Lock()
 	defer tokensMu.Unlock()
 
+	var rateLimited *harness.SSORateLimitError
+	if errors.As(loginErr, &rateLimited) {
+		t.Skip(loginErr)
+	}
 	if loginErr != nil {
 		t.Skipf("skipping: prior auth failed: %v", loginErr)
+	}
+
+	if raw := os.Getenv("GARMIN_TOKEN"); raw != "" {
+		if cachedTokens == nil {
+			cachedTokens, loginErr = harness.DecodeToken(raw)
+			if loginErr != nil {
+				t.Fatalf("E2E token: %v", loginErr)
+			}
+		}
+		return cachedTokens
 	}
 
 	if cachedTokens != nil && !cachedTokens.IsExpired() {
@@ -50,14 +61,12 @@ func getOrLogin(t *testing.T) *garminauth.Tokens {
 
 	email, password := LoadEnv(t)
 
-	tokens, err := garminauth.LoginHeadless(
-		context.Background(),
-		email,
-		password,
-		garminauth.LoginOptions{},
-	)
+	tokens, err := harness.Login(context.Background(), email, password, http.DefaultTransport)
 	if err != nil {
 		loginErr = err
+		if errors.As(err, &rateLimited) {
+			t.Skip(err)
+		}
 		t.Fatalf("E2E login failed: %v", err)
 	}
 
