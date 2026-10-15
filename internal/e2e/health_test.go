@@ -7,16 +7,27 @@ import (
 	"encoding/json"
 	"testing"
 	"time"
+
+	"github.com/bpauli/gccli/internal/garminapi"
 )
+
+func displayNameOf(t *testing.T, client *garminapi.Client) string {
+	t.Helper()
+	name, err := client.GetDisplayName(context.Background())
+	if err != nil {
+		t.Fatalf("GetDisplayName failed: %v", err)
+	}
+	return name
+}
 
 // TestHealthSummary calls GetDailySummary for today and verifies valid JSON.
 func TestHealthSummary(t *testing.T) {
 	client := AuthenticatedClient(t)
 	ctx := context.Background()
-	tokens := getOrLogin(t)
+	displayName := displayNameOf(t, client)
 	today := time.Now().Format("2006-01-02")
 
-	data, err := client.GetDailySummary(ctx, tokens.DisplayName, today)
+	data, err := client.GetDailySummary(ctx, displayName, today)
 	if err != nil {
 		t.Fatalf("GetDailySummary failed: %v", err)
 	}
@@ -32,10 +43,10 @@ func TestHealthSummary(t *testing.T) {
 func TestHealthSteps(t *testing.T) {
 	client := AuthenticatedClient(t)
 	ctx := context.Background()
-	tokens := getOrLogin(t)
+	displayName := displayNameOf(t, client)
 	today := time.Now().Format("2006-01-02")
 
-	data, err := client.GetSteps(ctx, tokens.DisplayName, today)
+	data, err := client.GetSteps(ctx, displayName, today)
 	if err != nil {
 		t.Fatalf("GetSteps failed: %v", err)
 	}
@@ -50,10 +61,10 @@ func TestHealthSteps(t *testing.T) {
 func TestHealthHeartRate(t *testing.T) {
 	client := AuthenticatedClient(t)
 	ctx := context.Background()
-	tokens := getOrLogin(t)
+	displayName := displayNameOf(t, client)
 	today := time.Now().Format("2006-01-02")
 
-	data, err := client.GetHeartRate(ctx, tokens.DisplayName, today)
+	data, err := client.GetHeartRate(ctx, displayName, today)
 	if err != nil {
 		t.Fatalf("GetHeartRate failed: %v", err)
 	}
@@ -68,10 +79,10 @@ func TestHealthHeartRate(t *testing.T) {
 func TestHealthSleep(t *testing.T) {
 	client := AuthenticatedClient(t)
 	ctx := context.Background()
-	tokens := getOrLogin(t)
+	displayName := displayNameOf(t, client)
 	today := time.Now().Format("2006-01-02")
 
-	data, err := client.GetSleep(ctx, tokens.DisplayName, today)
+	data, err := client.GetSleep(ctx, displayName, today)
 	if err != nil {
 		t.Fatalf("GetSleep failed: %v", err)
 	}
@@ -80,4 +91,39 @@ func TestHealthSleep(t *testing.T) {
 		t.Error("expected valid JSON from GetSleep")
 	}
 	t.Logf("GetSleep returned %d bytes", len(data))
+}
+
+// TestHealthRestingHeartRate calls GetRestingHeartRate for today and verifies valid JSON.
+func TestHealthRestingHeartRate(t *testing.T) {
+	client := AuthenticatedClient(t)
+	ctx := context.Background()
+	displayName := displayNameOf(t, client)
+	today := time.Now().Format("2006-01-02")
+
+	data, err := client.GetRestingHeartRate(ctx, displayName, today)
+	if err != nil {
+		t.Fatalf("GetRestingHeartRate failed: %v", err)
+	}
+
+	if !json.Valid(data) {
+		t.Error("expected valid JSON from GetRestingHeartRate")
+	}
+	t.Logf("GetRestingHeartRate returned %d bytes", len(data))
+}
+
+// TestPersonalRecords calls GetPersonalRecords and verifies valid JSON.
+func TestPersonalRecords(t *testing.T) {
+	client := AuthenticatedClient(t)
+	ctx := context.Background()
+	displayName := displayNameOf(t, client)
+
+	data, err := client.GetPersonalRecords(ctx, displayName)
+	if err != nil {
+		t.Fatalf("GetPersonalRecords failed: %v", err)
+	}
+
+	if !json.Valid(data) {
+		t.Error("expected valid JSON from GetPersonalRecords")
+	}
+	t.Logf("GetPersonalRecords returned %d bytes", len(data))
 }

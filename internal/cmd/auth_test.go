@@ -101,7 +101,6 @@ func testTokens() *garminauth.Tokens {
 		OAuth2ExpiresAt:    time.Now().Add(time.Hour),
 		Domain:             "garmin.com",
 		Email:              "test@example.com",
-		DisplayName:        "Test User",
 	}
 }
 

@@ -8,14 +8,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/bpauli/gccli/internal/garminapi"
-	"github.com/bpauli/gccli/internal/garminauth"
 	"github.com/bpauli/gccli/internal/outfmt"
 )
 
 func healthTestServer(t *testing.T) *httptest.Server {
 	t.Helper()
 	mux := http.NewServeMux()
+	serveDisplayName(mux)
 
 	mux.HandleFunc("/usersummary-service/usersummary/daily/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -197,6 +196,7 @@ func TestHealthSummary_Success(t *testing.T) {
 func TestHealthSummary_WithDate(t *testing.T) {
 	called := false
 	mux := http.NewServeMux()
+	serveDisplayName(mux)
 	mux.HandleFunc("/usersummary-service/usersummary/daily/", func(w http.ResponseWriter, r *http.Request) {
 		called = true
 		if !strings.Contains(r.URL.String(), "calendarDate=2024-06-15") {
@@ -222,39 +222,6 @@ func TestHealthSummary_WithDate(t *testing.T) {
 	}
 	if !called {
 		t.Fatal("expected API to be called")
-	}
-}
-
-func TestHealthSummary_DisplayNameInPath(t *testing.T) {
-	var capturedPath string
-	mux := http.NewServeMux()
-	mux.HandleFunc("/usersummary-service/usersummary/daily/", func(w http.ResponseWriter, r *http.Request) {
-		capturedPath = r.URL.Path
-		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(`{}`))
-	})
-	server := httptest.NewServer(mux)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	orig := newClientFn
-	newClientFn = func(tokens *garminauth.Tokens) *garminapi.Client {
-		return garminapi.NewClient(tokens, garminapi.WithHTTPClient(server.Client()), garminapi.WithBaseURL(server.URL))
-	}
-	t.Cleanup(func() { newClientFn = orig })
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &HealthSummaryCmd{}
-	err := cmd.Run(g)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
-	}
-	if !strings.Contains(capturedPath, "Test User") {
-		t.Errorf("expected path to contain display name 'Test User', got %q", capturedPath)
 	}
 }
 
@@ -689,6 +656,7 @@ func TestWriteHealthJSON_NilData(t *testing.T) {
 
 func TestHealthSummary_ServerError(t *testing.T) {
 	mux := http.NewServeMux()
+	serveDisplayName(mux)
 	mux.HandleFunc("/usersummary-service/usersummary/daily/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		_, _ = w.Write([]byte("internal server error"))
