@@ -16,6 +16,20 @@ type referenceGroup struct {
 	Commands []string
 }
 
+var referenceGroups = []referenceGroup{
+	{"Authentication", []string{"auth"}},
+	{"Activities", []string{"activities", "activity", "exercises"}},
+	{"Health Data", []string{"health"}},
+	{"Body Composition", []string{"body"}},
+	{"Workouts", []string{"workouts"}},
+	{"Courses", []string{"courses"}},
+	{"Devices", []string{"devices"}},
+	{"Gear", []string{"gear"}},
+	{"Goals, Badges & Challenges", []string{"goals", "badges", "challenges", "records"}},
+	{"Events", []string{"events"}},
+	{"Hydration, Nutrition, Profile, Training, Wellness & Utilities", []string{"hydration", "nutrition", "profile", "training", "wellness", "reload", "completion"}},
+}
+
 type refParam struct {
 	Name string
 	Help string

@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -126,4 +128,58 @@ func TestSpliceReference(t *testing.T) {
 			t.Errorf("%s: want an error", name)
 		}
 	}
+}
+
+var referenceTargets = []struct {
+	path   string
+	render func([]refGroup) string
+}{
+	{"README.md", renderMarkdownReference},
+	{"skills/gccli/SKILL.md", renderMarkdownReference},
+	{"docs/index.html", renderHTMLReference},
+}
+
+func TestDocsUpToDate(t *testing.T) {
+	groups, err := buildReference(newTestParser(t).Model.Node, referenceGroups)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, target := range referenceTargets {
+		file := filepath.Join("..", "..", filepath.FromSlash(target.path))
+		data, err := os.ReadFile(file)
+		if err != nil {
+			t.Fatal(err)
+		}
+		want, err := spliceReference(string(data), target.render(groups))
+		if err != nil {
+			t.Fatalf("%s: %v", target.path, err)
+		}
+		if want == string(data) {
+			continue
+		}
+		if *update {
+			if err := os.WriteFile(file, []byte(want), 0o644); err != nil {
+				t.Fatal(err)
+			}
+			continue
+		}
+		t.Errorf("%s is out of date: run go test ./internal/cmd -run TestDocsUpToDate -update", target.path)
+		line, haveLine, wantLine := firstDifference(string(data), want)
+		t.Errorf("first difference at line %d:\nhave: %s\nwant: %s", line, haveLine, wantLine)
+	}
+}
+
+func firstDifference(a, b string) (line int, lineA, lineB string) {
+	as, bs := strings.Split(a, "\n"), strings.Split(b, "\n")
+	i := 0
+	for i < len(as) && i < len(bs) && as[i] == bs[i] {
+		i++
+	}
+	at := func(lines []string) string {
+		if i < len(lines) {
+			return lines[i]
+		}
+		return "(end of file)"
+	}
+	return i + 1, at(as), at(bs)
 }
