@@ -58,6 +58,8 @@ Both lock files are in the config directory. gccli creates each one with mode `0
 
 When a process waits for `token.lock` for more than one second, it writes `Waiting for another gccli process to refresh the token` to stderr.
 
+When gccli cannot create `token.lock` because the config directory is read-only or does not give write permission, it refreshes the token without the lock. Any other lock failure stops the command with an error.
+
 On systems that are not Unix, such as Windows, `LockFile` does nothing. Writes to `config.json` are atomic but not locked there, and token refreshes are not locked.
 
 ## Keyring

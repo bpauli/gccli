@@ -4,8 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
+	"syscall"
 
 	"github.com/bpauli/gccli/internal/config"
 	"github.com/bpauli/gccli/internal/garminapi"
@@ -128,21 +130,26 @@ func (r *tokenRefresher) refresh(ctx context.Context, sent *garminauth.Tokens) (
 	return fresh, nil
 }
 
+// lockTokens takes token.lock. When the config dir does not let gccli create
+// the lock file, as with a read-only config dir and a keychain backend, it
+// refreshes without the lock, as gccli did before token.lock existed.
 func lockTokens(u *ui.UI) (unlock func(), err error) {
 	dir, err := config.ConfigDir()
 	if err != nil {
 		return nil, err
 	}
-	if err := os.MkdirAll(dir, 0o700); err != nil {
-		return nil, fmt.Errorf("lock token refresh: %w", err)
+	if err = os.MkdirAll(dir, 0o700); err == nil {
+		unlock, err = config.LockFile(filepath.Join(dir, "token.lock"), func() {
+			u.Infof("Waiting for another gccli process to refresh the token")
+		})
 	}
-	unlock, err = config.LockFile(filepath.Join(dir, "token.lock"), func() {
-		u.Infof("Waiting for another gccli process to refresh the token")
-	})
-	if err != nil {
-		return nil, fmt.Errorf("lock token refresh: %w", err)
+	switch {
+	case err == nil:
+		return unlock, nil
+	case errors.Is(err, fs.ErrPermission), errors.Is(err, syscall.EROFS):
+		return func() {}, nil
 	}
-	return unlock, nil
+	return nil, fmt.Errorf("lock token refresh: %w", err)
 }
 
 func persistTokens(store *secrets.Store, email string, tokens *garminauth.Tokens) error {
