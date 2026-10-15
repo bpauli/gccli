@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/bpauli/gccli/internal/outfmt"
@@ -30,7 +31,7 @@ func (c *ActivitiesListCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetActivities(g.Context, c.Offset, c.Limit, c.Type)
+	data, err := client.Call(g.Context, "activities.list", map[string]string{"start": strconv.Itoa(c.Offset), "limit": strconv.Itoa(c.Limit), "activityType": c.Type}, nil)
 	if err != nil {
 		return fmt.Errorf("list activities: %w", err)
 	}
@@ -88,7 +89,7 @@ func (c *ActivitiesSearchCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.SearchActivities(g.Context, c.Offset, c.Limit, string(c.StartDate), string(c.EndDate))
+	data, err := client.Call(g.Context, "activities.search", map[string]string{"start": strconv.Itoa(c.Offset), "limit": strconv.Itoa(c.Limit), "startDate": string(c.StartDate), "endDate": string(c.EndDate)}, nil)
 	if err != nil {
 		return fmt.Errorf("search activities: %w", err)
 	}
@@ -237,7 +238,7 @@ func (c *ActivitiesTypesCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetActivityTypes(g.Context)
+	data, err := client.Call(g.Context, "activities.types", nil, nil)
 	if err != nil {
 		return fmt.Errorf("get activity types: %w", err)
 	}

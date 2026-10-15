@@ -14,6 +14,34 @@ import (
 	"strings"
 )
 
+var activitiesEndpoints = []Endpoint{
+	{
+		Name: "activities.list", Method: http.MethodGet, Host: ConnectAPI,
+		Path:   "/activitylist-service/activities/search/activities?start={start}&limit={limit}&activityType={activityType}",
+		Params: []Param{{Name: "activityType", Optional: true}},
+	},
+	{Name: "activities.get", Method: http.MethodGet, Host: ConnectAPI, Path: "/activity-service/activity/{activityID}"},
+	{Name: "activities.details", Method: http.MethodGet, Host: ConnectAPI, Path: "/activity-service/activity/{activityID}/details?maxChartSize={maxChart}&maxPolylineSize={maxPoly}"},
+	{Name: "activities.splits", Method: http.MethodGet, Host: ConnectAPI, Path: "/activity-service/activity/{activityID}/splits"},
+	{Name: "activities.typed-splits", Method: http.MethodGet, Host: ConnectAPI, Path: "/activity-service/activity/{activityID}/typedsplits"},
+	{Name: "activities.split-summaries", Method: http.MethodGet, Host: ConnectAPI, Path: "/activity-service/activity/{activityID}/split_summaries"},
+	{Name: "activities.weather", Method: http.MethodGet, Host: ConnectAPI, Path: "/activity-service/activity/{activityID}/weather"},
+	{Name: "activities.hr-zones", Method: http.MethodGet, Host: ConnectAPI, Path: "/activity-service/activity/{activityID}/hrTimeInZones"},
+	{Name: "activities.power-zones", Method: http.MethodGet, Host: ConnectAPI, Path: "/activity-service/activity/{activityID}/powerTimeInZones"},
+	{Name: "activities.exercise-sets", Method: http.MethodGet, Host: ConnectAPI, Path: "/activity-service/activity/{activityID}/exerciseSets"},
+	{Name: "activities.gear", Method: http.MethodGet, Host: ConnectAPI, Path: "/gear-service/gear?activityId={activityID}"},
+	{
+		Name: "activities.search", Method: http.MethodGet, Host: ConnectAPI,
+		Path:   "/activitylist-service/activities/search/activities?start={start}&limit={limit}&startDate={startDate}&endDate={endDate}",
+		Params: []Param{{Name: "endDate", Optional: true}},
+	},
+	{Name: "activities.set-exercise-sets", Method: http.MethodPut, Host: ConnectAPI, Path: "/activity-service/activity/{activityID}/exerciseSets", Body: true},
+	{Name: "activities.create", Method: http.MethodPost, Host: ConnectAPI, Path: "/activity-service/activity", Body: true},
+	{Name: "activities.update", Method: http.MethodPut, Host: ConnectAPI, Path: "/activity-service/activity/{activityID}", Body: true},
+	{Name: "activities.delete", Method: http.MethodDelete, Host: ConnectAPI, Path: "/activity-service/activity/{activityID}"},
+	{Name: "activities.types", Method: http.MethodGet, Host: ConnectAPI, Path: "/activity-service/activity/activityTypes"},
+}
+
 // CountActivities returns the total number of activities for the authenticated user.
 func (c *Client) CountActivities(ctx context.Context) (int, error) {
 	data, err := c.ConnectAPI(ctx, http.MethodGet, "/activitylist-service/activities/count", nil)
@@ -28,77 +56,6 @@ func (c *Client) CountActivities(ctx context.Context) (int, error) {
 		return 0, fmt.Errorf("parse activity count: %w", err)
 	}
 	return result.TotalCount, nil
-}
-
-// GetActivities returns a page of activities.
-func (c *Client) GetActivities(ctx context.Context, start, limit int, activityType string) (json.RawMessage, error) {
-	path := fmt.Sprintf("/activitylist-service/activities/search/activities?start=%d&limit=%d", start, limit)
-	if activityType != "" {
-		path += "&activityType=" + activityType
-	}
-	return c.ConnectAPI(ctx, http.MethodGet, path, nil)
-}
-
-// GetActivity returns a single activity by ID.
-func (c *Client) GetActivity(ctx context.Context, activityID string) (json.RawMessage, error) {
-	return c.ConnectAPI(ctx, http.MethodGet, "/activity-service/activity/"+activityID, nil)
-}
-
-// GetActivityDetails returns detailed activity data including charts and polylines.
-func (c *Client) GetActivityDetails(ctx context.Context, activityID string, maxChart, maxPoly int) (json.RawMessage, error) {
-	path := fmt.Sprintf("/activity-service/activity/%s/details?maxChartSize=%d&maxPolylineSize=%d",
-		activityID, maxChart, maxPoly)
-	return c.ConnectAPI(ctx, http.MethodGet, path, nil)
-}
-
-// GetActivitySplits returns the splits for an activity.
-func (c *Client) GetActivitySplits(ctx context.Context, activityID string) (json.RawMessage, error) {
-	return c.ConnectAPI(ctx, http.MethodGet, "/activity-service/activity/"+activityID+"/splits", nil)
-}
-
-// GetActivityTypedSplits returns the typed splits for an activity.
-func (c *Client) GetActivityTypedSplits(ctx context.Context, activityID string) (json.RawMessage, error) {
-	return c.ConnectAPI(ctx, http.MethodGet, "/activity-service/activity/"+activityID+"/typedsplits", nil)
-}
-
-// GetActivitySplitSummaries returns the split summaries for an activity.
-func (c *Client) GetActivitySplitSummaries(ctx context.Context, activityID string) (json.RawMessage, error) {
-	return c.ConnectAPI(ctx, http.MethodGet, "/activity-service/activity/"+activityID+"/split_summaries", nil)
-}
-
-// GetActivityWeather returns weather data for an activity.
-func (c *Client) GetActivityWeather(ctx context.Context, activityID string) (json.RawMessage, error) {
-	return c.ConnectAPI(ctx, http.MethodGet, "/activity-service/activity/"+activityID+"/weather", nil)
-}
-
-// GetActivityHRZones returns heart rate time-in-zone data for an activity.
-func (c *Client) GetActivityHRZones(ctx context.Context, activityID string) (json.RawMessage, error) {
-	return c.ConnectAPI(ctx, http.MethodGet, "/activity-service/activity/"+activityID+"/hrTimeInZones", nil)
-}
-
-// GetActivityPowerZones returns power time-in-zone data for an activity.
-func (c *Client) GetActivityPowerZones(ctx context.Context, activityID string) (json.RawMessage, error) {
-	return c.ConnectAPI(ctx, http.MethodGet, "/activity-service/activity/"+activityID+"/powerTimeInZones", nil)
-}
-
-// GetActivityExerciseSets returns exercise set data for strength training activities.
-func (c *Client) GetActivityExerciseSets(ctx context.Context, activityID string) (json.RawMessage, error) {
-	return c.ConnectAPI(ctx, http.MethodGet, "/activity-service/activity/"+activityID+"/exerciseSets", nil)
-}
-
-// GetActivityGear returns gear linked to an activity.
-func (c *Client) GetActivityGear(ctx context.Context, activityID string) (json.RawMessage, error) {
-	return c.ConnectAPI(ctx, http.MethodGet, "/gear-service/gear?activityId="+activityID, nil)
-}
-
-// SearchActivities returns activities matching date range and optional filters.
-func (c *Client) SearchActivities(ctx context.Context, start, limit int, startDate, endDate string) (json.RawMessage, error) {
-	path := fmt.Sprintf("/activitylist-service/activities/search/activities?start=%d&limit=%d&startDate=%s",
-		start, limit, startDate)
-	if endDate != "" {
-		path += "&endDate=" + endDate
-	}
-	return c.ConnectAPI(ctx, http.MethodGet, path, nil)
 }
 
 // downloadPath returns the API path for downloading an activity in the given format.
@@ -199,7 +156,7 @@ func (c *Client) CreateManualActivity(ctx context.Context, name, activityType, t
 		return nil, fmt.Errorf("marshal activity: %w", err)
 	}
 
-	return c.ConnectAPI(ctx, http.MethodPost, "/activity-service/activity", bytes.NewReader(body))
+	return c.Call(ctx, "activities.create", nil, body)
 }
 
 // RenameActivity updates the name of an activity.
@@ -219,7 +176,7 @@ func (c *Client) RenameActivity(ctx context.Context, activityID string, name str
 		return nil, fmt.Errorf("marshal rename: %w", err)
 	}
 
-	return c.ConnectAPI(ctx, http.MethodPut, "/activity-service/activity/"+activityID, bytes.NewReader(body))
+	return c.Call(ctx, "activities.update", map[string]string{"activityID": activityID}, body)
 }
 
 // RetypeActivity changes the activity type.
@@ -243,22 +200,5 @@ func (c *Client) RetypeActivity(ctx context.Context, activityID string, typeID i
 		return nil, fmt.Errorf("marshal retype: %w", err)
 	}
 
-	return c.ConnectAPI(ctx, http.MethodPut, "/activity-service/activity/"+activityID, bytes.NewReader(body))
-}
-
-// SetExerciseSets sets exercise sets for a strength training activity.
-func (c *Client) SetExerciseSets(ctx context.Context, activityID string, payload json.RawMessage) (json.RawMessage, error) {
-	return c.ConnectAPI(ctx, http.MethodPut,
-		"/activity-service/activity/"+activityID+"/exerciseSets",
-		bytes.NewReader(payload))
-}
-
-// DeleteActivity deletes an activity by ID.
-func (c *Client) DeleteActivity(ctx context.Context, activityID string) (json.RawMessage, error) {
-	return c.ConnectAPI(ctx, http.MethodDelete, "/activity-service/activity/"+activityID, nil)
-}
-
-// GetActivityTypes returns all activity types from Garmin Connect.
-func (c *Client) GetActivityTypes(ctx context.Context) (json.RawMessage, error) {
-	return c.ConnectAPI(ctx, http.MethodGet, "/activity-service/activity/activityTypes", nil)
+	return c.Call(ctx, "activities.update", map[string]string{"activityID": activityID}, body)
 }

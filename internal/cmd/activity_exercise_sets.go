@@ -29,7 +29,7 @@ func (c *ActivityExerciseSetsSetCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.SetExerciseSets(g.Context, c.ID, body)
+	data, err := client.Call(g.Context, "activities.set-exercise-sets", map[string]string{"activityID": c.ID}, body)
 	if err != nil {
 		return fmt.Errorf("set exercise sets: %w", err)
 	}

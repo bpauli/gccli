@@ -12,17 +12,14 @@ import (
 )
 
 var passthroughMethods = []string{
-	"AddEvent", "DeleteActivity", "DeleteBloodPressure", "DeleteCourse", "DeleteEvent", "DeleteWeight",
-	"DeleteWorkout", "GetActivities", "GetActivity", "GetActivityDetails", "GetActivityExerciseSets",
-	"GetActivityGear", "GetActivityHRZones", "GetActivityPowerZones", "GetActivitySplitSummaries",
-	"GetActivitySplits", "GetActivityTypedSplits", "GetActivityTypes", "GetActivityWeather", "GetBloodPressure",
-	"GetBodyComposition", "GetCourse", "GetCourseElevation", "GetCourseFavorites", "GetCourses",
-	"GetDailyWeighIns", "GetDeviceSettings", "GetDeviceSolar", "GetDevices", "GetEvents", "GetGear",
-	"GetGearActivities", "GetGearDefaults", "GetGearStats", "GetHydration", "GetLastUsedDevice",
+	"AddEvent", "DeleteBloodPressure", "DeleteCourse", "DeleteEvent", "DeleteWeight", "DeleteWorkout",
+	"GetBloodPressure", "GetBodyComposition", "GetCourse", "GetCourseElevation", "GetCourseFavorites",
+	"GetCourses", "GetDailyWeighIns", "GetDeviceSettings", "GetDeviceSolar", "GetDevices", "GetEvents",
+	"GetGear", "GetGearActivities", "GetGearDefaults", "GetGearStats", "GetHydration", "GetLastUsedDevice",
 	"GetNutritionDailyFoodLog", "GetNutritionDailyMeals", "GetNutritionDailySettings",
 	"GetPrimaryTrainingDevice", "GetProfile", "GetUserSettings", "GetWeighIns", "GetWorkout", "GetWorkouts",
-	"LinkGear", "SaveCourse", "ScheduleWorkout", "SearchActivities", "SetExerciseSets", "UnlinkGear",
-	"UnscheduleWorkout", "UpdateWorkout", "UploadWorkout",
+	"LinkGear", "SaveCourse", "ScheduleWorkout", "UnlinkGear", "UnscheduleWorkout", "UpdateWorkout",
+	"UploadWorkout",
 }
 
 func TestNoNewPassthroughMethods(t *testing.T) {

@@ -3,6 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
 
 	"github.com/bpauli/gccli/internal/config"
 	"github.com/bpauli/gccli/internal/outfmt"
@@ -40,7 +41,7 @@ func (c *ActivitySummaryCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetActivity(g.Context, c.ID)
+	data, err := client.Call(g.Context, "activities.get", map[string]string{"activityID": c.ID}, nil)
 	if err != nil {
 		return fmt.Errorf("get activity: %w", err)
 	}
@@ -131,7 +132,7 @@ func (c *ActivityDetailsCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetActivityDetails(g.Context, c.ID, c.MaxChart, c.MaxPoly)
+	data, err := client.Call(g.Context, "activities.details", map[string]string{"activityID": c.ID, "maxChart": strconv.Itoa(c.MaxChart), "maxPoly": strconv.Itoa(c.MaxPoly)}, nil)
 	if err != nil {
 		return fmt.Errorf("get activity details: %w", err)
 	}
@@ -150,7 +151,7 @@ func (c *ActivitySplitsCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetActivitySplits(g.Context, c.ID)
+	data, err := client.Call(g.Context, "activities.splits", map[string]string{"activityID": c.ID}, nil)
 	if err != nil {
 		return fmt.Errorf("get activity splits: %w", err)
 	}
@@ -169,7 +170,7 @@ func (c *ActivityTypedSplitsCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetActivityTypedSplits(g.Context, c.ID)
+	data, err := client.Call(g.Context, "activities.typed-splits", map[string]string{"activityID": c.ID}, nil)
 	if err != nil {
 		return fmt.Errorf("get activity typed splits: %w", err)
 	}
@@ -188,7 +189,7 @@ func (c *ActivitySplitSummariesCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetActivitySplitSummaries(g.Context, c.ID)
+	data, err := client.Call(g.Context, "activities.split-summaries", map[string]string{"activityID": c.ID}, nil)
 	if err != nil {
 		return fmt.Errorf("get activity split summaries: %w", err)
 	}
@@ -207,7 +208,7 @@ func (c *ActivityWeatherCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetActivityWeather(g.Context, c.ID)
+	data, err := client.Call(g.Context, "activities.weather", map[string]string{"activityID": c.ID}, nil)
 	if err != nil {
 		return fmt.Errorf("get activity weather: %w", err)
 	}
@@ -226,7 +227,7 @@ func (c *ActivityHRZonesCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetActivityHRZones(g.Context, c.ID)
+	data, err := client.Call(g.Context, "activities.hr-zones", map[string]string{"activityID": c.ID}, nil)
 	if err != nil {
 		return fmt.Errorf("get activity HR zones: %w", err)
 	}
@@ -245,7 +246,7 @@ func (c *ActivityPowerZonesCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetActivityPowerZones(g.Context, c.ID)
+	data, err := client.Call(g.Context, "activities.power-zones", map[string]string{"activityID": c.ID}, nil)
 	if err != nil {
 		return fmt.Errorf("get activity power zones: %w", err)
 	}
@@ -270,7 +271,7 @@ func (c *ActivityExerciseSetsShowCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetActivityExerciseSets(g.Context, c.ID)
+	data, err := client.Call(g.Context, "activities.exercise-sets", map[string]string{"activityID": c.ID}, nil)
 	if err != nil {
 		return fmt.Errorf("get activity exercise sets: %w", err)
 	}
@@ -289,7 +290,7 @@ func (c *ActivityGearCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetActivityGear(g.Context, c.ID)
+	data, err := client.Call(g.Context, "activities.gear", map[string]string{"activityID": c.ID}, nil)
 	if err != nil {
 		return fmt.Errorf("get activity gear: %w", err)
 	}

@@ -15,6 +15,52 @@ import (
 	"github.com/bpauli/gccli/internal/garminauth"
 )
 
+func TestActivitiesEndpoints(t *testing.T) {
+	id := map[string]string{"activityID": "123"}
+	page := func(kv ...string) map[string]string {
+		args := map[string]string{"start": "0", "limit": "20"}
+		for i := 0; i < len(kv); i += 2 {
+			args[kv[i]] = kv[i+1]
+		}
+		return args
+	}
+	const list = "GET /activitylist-service/activities/search/activities?start=0&limit=20"
+	testEndpoints(t, activitiesEndpoints, []endpointCase{
+		{"activities.list", page("activityType", ""), list},
+		{"activities.list", page("activityType", "running"), list + "&activityType=running"},
+		{"activities.list", page("activityType", "a b&c"), list + "&activityType=a+b%26c"},
+		{"activities.get", id, "GET /activity-service/activity/123"},
+		{"activities.details", map[string]string{"activityID": "123", "maxChart": "2000", "maxPoly": "4000"}, "GET /activity-service/activity/123/details?maxChartSize=2000&maxPolylineSize=4000"},
+		{"activities.splits", id, "GET /activity-service/activity/123/splits"},
+		{"activities.typed-splits", id, "GET /activity-service/activity/123/typedsplits"},
+		{"activities.split-summaries", id, "GET /activity-service/activity/123/split_summaries"},
+		{"activities.weather", id, "GET /activity-service/activity/123/weather"},
+		{"activities.hr-zones", id, "GET /activity-service/activity/123/hrTimeInZones"},
+		{"activities.power-zones", id, "GET /activity-service/activity/123/powerTimeInZones"},
+		{"activities.exercise-sets", id, "GET /activity-service/activity/123/exerciseSets"},
+		{"activities.gear", id, "GET /gear-service/gear?activityId=123"},
+		{"activities.search", page("startDate", "2024-01-01", "endDate", "2024-01-31"), list + "&startDate=2024-01-01&endDate=2024-01-31"},
+		{"activities.search", page("startDate", "2024-01-01", "endDate", ""), list + "&startDate=2024-01-01"},
+		{"activities.set-exercise-sets", id, "PUT /activity-service/activity/123/exerciseSets"},
+		{"activities.create", nil, "POST /activity-service/activity"},
+		{"activities.update", id, "PUT /activity-service/activity/123"},
+		{"activities.delete", id, "DELETE /activity-service/activity/123"},
+		{"activities.types", nil, "GET /activity-service/activity/activityTypes"},
+	})
+}
+
+func TestActivitiesRefuseAnEmptyID(t *testing.T) {
+	_, client := testServer(t, http.HandlerFunc(func(_ http.ResponseWriter, r *http.Request) {
+		t.Errorf("request sent: %s %s", r.Method, r.URL.RequestURI())
+	}))
+	for _, name := range []string{"activities.get", "activities.gear", "activities.delete"} {
+		_, err := client.Call(context.Background(), name, map[string]string{"activityID": ""}, nil)
+		if want := "endpoint " + name + ": activityID: required"; err == nil || err.Error() != want {
+			t.Errorf("%s: err = %v, want %q", name, err, want)
+		}
+	}
+}
+
 // --- CountActivities tests ---
 
 func TestCountActivities_Success(t *testing.T) {
@@ -65,285 +111,6 @@ func TestCountActivities_ServerError(t *testing.T) {
 	var apiErr *GarminAPIError
 	if !errors.As(err, &apiErr) {
 		t.Fatalf("expected GarminAPIError, got %T: %v", err, err)
-	}
-}
-
-// --- GetActivities tests ---
-
-func TestGetActivities_Success(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/activitylist-service/activities/search/activities" {
-			t.Errorf("path = %s", r.URL.Path)
-		}
-		if got := r.URL.Query().Get("start"); got != "0" {
-			t.Errorf("start = %s, want 0", got)
-		}
-		if got := r.URL.Query().Get("limit"); got != "20" {
-			t.Errorf("limit = %s, want 20", got)
-		}
-		_, _ = w.Write([]byte(`[{"activityId":1},{"activityId":2}]`))
-	})
-
-	_, client := testServer(t, handler)
-	data, err := client.GetActivities(context.Background(), 0, 20, "")
-	if err != nil {
-		t.Fatalf("GetActivities: %v", err)
-	}
-
-	var activities []map[string]any
-	if err := json.Unmarshal(data, &activities); err != nil {
-		t.Fatalf("unmarshal: %v", err)
-	}
-	if len(activities) != 2 {
-		t.Errorf("len = %d, want 2", len(activities))
-	}
-}
-
-func TestGetActivities_WithType(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if got := r.URL.Query().Get("activityType"); got != "running" {
-			t.Errorf("activityType = %s, want running", got)
-		}
-		_, _ = w.Write([]byte(`[]`))
-	})
-
-	_, client := testServer(t, handler)
-	_, err := client.GetActivities(context.Background(), 0, 10, "running")
-	if err != nil {
-		t.Fatalf("GetActivities: %v", err)
-	}
-}
-
-// --- GetActivity tests ---
-
-func TestGetActivity_Success(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/activity-service/activity/12345" {
-			t.Errorf("path = %s, want /activity-service/activity/12345", r.URL.Path)
-		}
-		_, _ = w.Write([]byte(`{"activityId":12345,"activityName":"Morning Run"}`))
-	})
-
-	_, client := testServer(t, handler)
-	data, err := client.GetActivity(context.Background(), "12345")
-	if err != nil {
-		t.Fatalf("GetActivity: %v", err)
-	}
-
-	var result map[string]any
-	if err := json.Unmarshal(data, &result); err != nil {
-		t.Fatalf("unmarshal: %v", err)
-	}
-	if result["activityName"] != "Morning Run" {
-		t.Errorf("activityName = %v, want Morning Run", result["activityName"])
-	}
-}
-
-// --- GetActivityDetails tests ---
-
-func TestGetActivityDetails_Success(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/activity-service/activity/123/details" {
-			t.Errorf("path = %s", r.URL.Path)
-		}
-		if got := r.URL.Query().Get("maxChartSize"); got != "2000" {
-			t.Errorf("maxChartSize = %s, want 2000", got)
-		}
-		if got := r.URL.Query().Get("maxPolylineSize"); got != "4000" {
-			t.Errorf("maxPolylineSize = %s, want 4000", got)
-		}
-		_, _ = w.Write([]byte(`{"details":true}`))
-	})
-
-	_, client := testServer(t, handler)
-	data, err := client.GetActivityDetails(context.Background(), "123", 2000, 4000)
-	if err != nil {
-		t.Fatalf("GetActivityDetails: %v", err)
-	}
-
-	var result map[string]any
-	if err := json.Unmarshal(data, &result); err != nil {
-		t.Fatalf("unmarshal: %v", err)
-	}
-	if result["details"] != true {
-		t.Errorf("details = %v, want true", result["details"])
-	}
-}
-
-// --- Activity sub-resource tests ---
-
-func TestGetActivitySplits(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/activity-service/activity/100/splits" {
-			t.Errorf("path = %s", r.URL.Path)
-		}
-		_, _ = w.Write([]byte(`{"splits":[]}`))
-	})
-
-	_, client := testServer(t, handler)
-	_, err := client.GetActivitySplits(context.Background(), "100")
-	if err != nil {
-		t.Fatalf("GetActivitySplits: %v", err)
-	}
-}
-
-func TestGetActivityTypedSplits(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/activity-service/activity/100/typedsplits" {
-			t.Errorf("path = %s", r.URL.Path)
-		}
-		_, _ = w.Write([]byte(`{}`))
-	})
-
-	_, client := testServer(t, handler)
-	_, err := client.GetActivityTypedSplits(context.Background(), "100")
-	if err != nil {
-		t.Fatalf("GetActivityTypedSplits: %v", err)
-	}
-}
-
-func TestGetActivitySplitSummaries(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/activity-service/activity/100/split_summaries" {
-			t.Errorf("path = %s", r.URL.Path)
-		}
-		_, _ = w.Write([]byte(`{}`))
-	})
-
-	_, client := testServer(t, handler)
-	_, err := client.GetActivitySplitSummaries(context.Background(), "100")
-	if err != nil {
-		t.Fatalf("GetActivitySplitSummaries: %v", err)
-	}
-}
-
-func TestGetActivityWeather(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/activity-service/activity/100/weather" {
-			t.Errorf("path = %s", r.URL.Path)
-		}
-		_, _ = w.Write([]byte(`{"temp":20}`))
-	})
-
-	_, client := testServer(t, handler)
-	_, err := client.GetActivityWeather(context.Background(), "100")
-	if err != nil {
-		t.Fatalf("GetActivityWeather: %v", err)
-	}
-}
-
-func TestGetActivityHRZones(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/activity-service/activity/100/hrTimeInZones" {
-			t.Errorf("path = %s", r.URL.Path)
-		}
-		_, _ = w.Write([]byte(`{}`))
-	})
-
-	_, client := testServer(t, handler)
-	_, err := client.GetActivityHRZones(context.Background(), "100")
-	if err != nil {
-		t.Fatalf("GetActivityHRZones: %v", err)
-	}
-}
-
-func TestGetActivityPowerZones(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/activity-service/activity/100/powerTimeInZones" {
-			t.Errorf("path = %s", r.URL.Path)
-		}
-		_, _ = w.Write([]byte(`{}`))
-	})
-
-	_, client := testServer(t, handler)
-	_, err := client.GetActivityPowerZones(context.Background(), "100")
-	if err != nil {
-		t.Fatalf("GetActivityPowerZones: %v", err)
-	}
-}
-
-func TestGetActivityExerciseSets(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/activity-service/activity/100/exerciseSets" {
-			t.Errorf("path = %s", r.URL.Path)
-		}
-		_, _ = w.Write([]byte(`{}`))
-	})
-
-	_, client := testServer(t, handler)
-	_, err := client.GetActivityExerciseSets(context.Background(), "100")
-	if err != nil {
-		t.Fatalf("GetActivityExerciseSets: %v", err)
-	}
-}
-
-func TestGetActivityGear(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/gear-service/gear" {
-			t.Errorf("path = %s, want /gear-service/gear", r.URL.Path)
-		}
-		if got := r.URL.Query().Get("activityId"); got != "100" {
-			t.Errorf("activityId = %s, want 100", got)
-		}
-		_, _ = w.Write([]byte(`[]`))
-	})
-
-	_, client := testServer(t, handler)
-	_, err := client.GetActivityGear(context.Background(), "100")
-	if err != nil {
-		t.Fatalf("GetActivityGear: %v", err)
-	}
-}
-
-// --- SearchActivities tests ---
-
-func TestSearchActivities_Success(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/activitylist-service/activities/search/activities" {
-			t.Errorf("path = %s", r.URL.Path)
-		}
-		if got := r.URL.Query().Get("startDate"); got != "2024-01-01" {
-			t.Errorf("startDate = %s, want 2024-01-01", got)
-		}
-		if got := r.URL.Query().Get("endDate"); got != "2024-01-31" {
-			t.Errorf("endDate = %s, want 2024-01-31", got)
-		}
-		if got := r.URL.Query().Get("start"); got != "0" {
-			t.Errorf("start = %s, want 0", got)
-		}
-		if got := r.URL.Query().Get("limit"); got != "50" {
-			t.Errorf("limit = %s, want 50", got)
-		}
-		_, _ = w.Write([]byte(`[{"activityId":1}]`))
-	})
-
-	_, client := testServer(t, handler)
-	data, err := client.SearchActivities(context.Background(), 0, 50, "2024-01-01", "2024-01-31")
-	if err != nil {
-		t.Fatalf("SearchActivities: %v", err)
-	}
-
-	var activities []map[string]any
-	if err := json.Unmarshal(data, &activities); err != nil {
-		t.Fatalf("unmarshal: %v", err)
-	}
-	if len(activities) != 1 {
-		t.Errorf("len = %d, want 1", len(activities))
-	}
-}
-
-func TestSearchActivities_NoEndDate(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if got := r.URL.Query().Get("endDate"); got != "" {
-			t.Errorf("endDate = %s, want empty", got)
-		}
-		_, _ = w.Write([]byte(`[]`))
-	})
-
-	_, client := testServer(t, handler)
-	_, err := client.SearchActivities(context.Background(), 0, 20, "2024-01-01", "")
-	if err != nil {
-		t.Fatalf("SearchActivities: %v", err)
 	}
 }
 
@@ -808,98 +575,5 @@ func TestRetypeActivity_InvalidID(t *testing.T) {
 	_, err := client.RetypeActivity(context.Background(), "abc", 1, "running", 17)
 	if err == nil {
 		t.Fatal("expected error for invalid ID")
-	}
-}
-
-// --- DeleteActivity tests ---
-
-func TestDeleteActivity_Success(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/activity-service/activity/12345" {
-			t.Errorf("path = %s", r.URL.Path)
-		}
-		if r.Method != http.MethodDelete {
-			t.Errorf("method = %s, want DELETE", r.Method)
-		}
-		w.WriteHeader(http.StatusNoContent)
-	})
-
-	_, client := testServer(t, handler)
-	_, err := client.DeleteActivity(context.Background(), "12345")
-	if err != nil {
-		t.Fatalf("DeleteActivity: %v", err)
-	}
-}
-
-func TestDeleteActivity_ServerError(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusNotFound)
-		_, _ = w.Write([]byte("not found"))
-	})
-
-	_, client := testServer(t, handler)
-	_, err := client.DeleteActivity(context.Background(), "99999")
-	if err == nil {
-		t.Fatal("expected error")
-	}
-
-	var apiErr *GarminAPIError
-	if !errors.As(err, &apiErr) {
-		t.Fatalf("expected GarminAPIError, got %T: %v", err, err)
-	}
-	if apiErr.StatusCode != 404 {
-		t.Errorf("StatusCode = %d, want 404", apiErr.StatusCode)
-	}
-}
-
-// --- GetActivityTypes tests ---
-
-func TestGetActivityTypes_Success(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/activity-service/activity/activityTypes" {
-			t.Errorf("path = %s, want /activity-service/activity/activityTypes", r.URL.Path)
-		}
-		if r.Method != http.MethodGet {
-			t.Errorf("method = %s, want GET", r.Method)
-		}
-		_, _ = w.Write([]byte(`[
-			{"typeId":1,"typeKey":"running","parentTypeId":17,"isHidden":false,"restricted":false,"trimmable":true},
-			{"typeId":2,"typeKey":"cycling","parentTypeId":17,"isHidden":false,"restricted":false,"trimmable":true}
-		]`))
-	})
-
-	_, client := testServer(t, handler)
-	data, err := client.GetActivityTypes(context.Background())
-	if err != nil {
-		t.Fatalf("GetActivityTypes: %v", err)
-	}
-
-	var types []map[string]any
-	if err := json.Unmarshal(data, &types); err != nil {
-		t.Fatalf("unmarshal: %v", err)
-	}
-	if len(types) != 2 {
-		t.Errorf("len = %d, want 2", len(types))
-	}
-	if types[0]["typeKey"] != "running" {
-		t.Errorf("typeKey = %v, want running", types[0]["typeKey"])
-	}
-}
-
-func TestGetActivityTypes_ServerError(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusInternalServerError)
-		_, _ = w.Write([]byte("error"))
-	})
-
-	_, client := testServer(t, handler)
-	_, err := client.GetActivityTypes(context.Background())
-	if err == nil {
-		t.Fatal("expected error")
-	}
-
-	var apiErr *GarminAPIError
-	if !errors.As(err, &apiErr) {
-		t.Fatalf("expected GarminAPIError, got %T: %v", err, err)
 	}
 }

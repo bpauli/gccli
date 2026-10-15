@@ -14,7 +14,7 @@ func TestListActivities(t *testing.T) {
 	client := AuthenticatedClient(t)
 	ctx := context.Background()
 
-	data, err := client.GetActivities(ctx, 0, 5, "")
+	data, err := client.Call(ctx, "activities.list", map[string]string{"start": "0", "limit": "5"}, nil)
 	if err != nil {
 		t.Fatalf("GetActivities failed: %v", err)
 	}
@@ -52,7 +52,7 @@ func TestActivityDetails(t *testing.T) {
 	ctx := context.Background()
 
 	// Fetch first activity to get an ID.
-	data, err := client.GetActivities(ctx, 0, 1, "")
+	data, err := client.Call(ctx, "activities.list", map[string]string{"start": "0", "limit": "1"}, nil)
 	if err != nil {
 		t.Fatalf("GetActivities failed: %v", err)
 	}
@@ -74,7 +74,7 @@ func TestActivityDetails(t *testing.T) {
 	activityID := formatID(activityIDRaw)
 
 	// Fetch the activity by ID.
-	detail, err := client.GetActivity(ctx, activityID)
+	detail, err := client.Call(ctx, "activities.get", map[string]string{"activityID": activityID}, nil)
 	if err != nil {
 		t.Fatalf("GetActivity(%s) failed: %v", activityID, err)
 	}
@@ -98,7 +98,7 @@ func TestActivitySubResources(t *testing.T) {
 	ctx := context.Background()
 
 	// Fetch first activity to get an ID.
-	data, err := client.GetActivities(ctx, 0, 1, "")
+	data, err := client.Call(ctx, "activities.list", map[string]string{"start": "0", "limit": "1"}, nil)
 	if err != nil {
 		t.Fatalf("GetActivities failed: %v", err)
 	}
@@ -115,7 +115,7 @@ func TestActivitySubResources(t *testing.T) {
 
 	// Test splits — may return data or empty depending on activity type.
 	t.Run("splits", func(t *testing.T) {
-		resp, err := client.GetActivitySplits(ctx, activityID)
+		resp, err := client.Call(ctx, "activities.splits", map[string]string{"activityID": activityID}, nil)
 		if err != nil {
 			t.Fatalf("GetActivitySplits(%s) failed: %v", activityID, err)
 		}
@@ -126,7 +126,7 @@ func TestActivitySubResources(t *testing.T) {
 
 	// Test weather — may return data or empty depending on activity.
 	t.Run("weather", func(t *testing.T) {
-		resp, err := client.GetActivityWeather(ctx, activityID)
+		resp, err := client.Call(ctx, "activities.weather", map[string]string{"activityID": activityID}, nil)
 		if err != nil {
 			t.Fatalf("GetActivityWeather(%s) failed: %v", activityID, err)
 		}
@@ -137,7 +137,7 @@ func TestActivitySubResources(t *testing.T) {
 
 	// Test HR zones — may return data or empty depending on activity type.
 	t.Run("hr-zones", func(t *testing.T) {
-		resp, err := client.GetActivityHRZones(ctx, activityID)
+		resp, err := client.Call(ctx, "activities.hr-zones", map[string]string{"activityID": activityID}, nil)
 		if err != nil {
 			t.Fatalf("GetActivityHRZones(%s) failed: %v", activityID, err)
 		}
