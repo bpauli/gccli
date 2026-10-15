@@ -28,21 +28,20 @@ type AuthLoginCmd struct {
 }
 
 func (c *AuthLoginCmd) Validate() error {
-	_, _, err := loginConfig()
+	_, err := loginDomain()
 	return err
 }
 
-func loginConfig() (*config.File, string, error) {
+func loginDomain() (string, error) {
 	cfg, err := config.Read()
 	if err != nil {
-		return nil, "", fmt.Errorf("read config: %w", err)
+		return "", fmt.Errorf("read config: %w", err)
 	}
-	domain, err := garminauth.ParseDomain(cfg.Domain())
-	return cfg, domain, err
+	return garminauth.ParseDomain(cfg.Domain())
 }
 
 func (c *AuthLoginCmd) Run(g *Globals) error {
-	cfg, domain, err := loginConfig()
+	domain, err := loginDomain()
 	if err != nil {
 		return err
 	}

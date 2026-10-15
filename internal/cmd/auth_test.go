@@ -528,7 +528,7 @@ func TestExecute_AuthLoginUnknownDomain(t *testing.T) {
 			testutil.TempConfigDir(t)
 			t.Setenv(config.EnvDomain, tt.env)
 			if tt.config != "" {
-				if err := config.Write(&config.File{DomainName: tt.config}); err != nil {
+				if err := config.Update(func(f *config.File) { f.DomainName = tt.config }); err != nil {
 					t.Fatal(err)
 				}
 			}
