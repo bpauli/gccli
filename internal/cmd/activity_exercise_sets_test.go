@@ -179,3 +179,27 @@ func TestActivityExerciseSetsSet_SentBody(t *testing.T) {
 		t.Errorf("body\n got %s\nwant %s", got, want)
 	}
 }
+
+func TestActivityExerciseSetsSet_BadInputFailsBeforeCredentials(t *testing.T) {
+	tests := []struct {
+		name       string
+		args       []string
+		wantStderr string
+	}{
+		{
+			name:       "bad exercise",
+			args:       []string{"activity", "exercise-sets", "set", "--exercise", "nope", "111"},
+			wantStderr: "exercise 1 (\"nope\"): expected format CATEGORY/NAME:reps@weightkg[:dSECS][:rSECS]\n",
+		},
+		{
+			name:       "bad activity ID before bad exercise",
+			args:       []string{"activity", "exercise-sets", "set", "--exercise", "nope", "abc"},
+			wantStderr: "invalid activity ID: strconv.ParseInt: parsing \"abc\": invalid syntax\n",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			runBadInput(t, tt.args, tt.wantStderr)
+		})
+	}
+}

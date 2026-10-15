@@ -16,12 +16,12 @@ type WorkoutCreateCmd struct {
 }
 
 func (c *WorkoutCreateCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
+	body, err := payload.Workout(c.Name, c.Type, c.Unit, c.Steps)
 	if err != nil {
 		return err
 	}
 
-	body, err := payload.Workout(c.Name, c.Type, c.Unit, c.Steps)
+	client, err := resolveClient(g)
 	if err != nil {
 		return err
 	}

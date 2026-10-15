@@ -14,17 +14,17 @@ type ActivityExerciseSetsSetCmd struct {
 }
 
 func (c *ActivityExerciseSetsSetCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
 	activityID, err := strconv.ParseInt(c.ID, 10, 64)
 	if err != nil {
 		return fmt.Errorf("invalid activity ID: %w", err)
 	}
 
 	body, err := payload.ExerciseSets(activityID, c.Exercise)
+	if err != nil {
+		return err
+	}
+
+	client, err := resolveClient(g)
 	if err != nil {
 		return err
 	}

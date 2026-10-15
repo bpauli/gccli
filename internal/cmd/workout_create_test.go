@@ -3,6 +3,7 @@ package cmd
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -10,6 +11,7 @@ import (
 	"testing"
 
 	"github.com/bpauli/gccli/internal/outfmt"
+	"github.com/bpauli/gccli/internal/secrets"
 )
 
 func TestWorkoutCreateCmd_Run_Table(t *testing.T) {
@@ -341,4 +343,31 @@ func TestWorkoutCreateCmd_SentBody(t *testing.T) {
 			}
 		})
 	}
+}
+
+// runBadInput runs args with and without an account, with a credential store
+// that fails the test when the command opens it.
+func runBadInput(t *testing.T, args []string, wantStderr string) {
+	t.Helper()
+	for _, account := range []string{harnessAccount, ""} {
+		newHarness(t, harnessInput{})
+		stub(t, &loadSecretsStore, func() (*secrets.Store, error) {
+			t.Errorf("account %q: the credential store was opened for bad input", account)
+			return nil, errors.New("no store in this test")
+		})
+		var stdout, stderr bytes.Buffer
+		global := []string{"--color", "never"}
+		if account != "" {
+			global = append(global, "--account", account)
+		}
+		code := execute(append(global, args...), "test", "none", "never", &stdout, &stderr)
+		if code != 1 || stdout.Len() != 0 || stderr.String() != wantStderr {
+			t.Errorf("account %q: exit %d, stdout %q, stderr %q; want exit 1, no stdout, stderr %q", account, code, stdout.String(), stderr.String(), wantStderr)
+		}
+	}
+}
+
+func TestWorkoutCreateCmd_BadStepFailsBeforeCredentials(t *testing.T) {
+	runBadInput(t, []string{"workouts", "create", "--type", "run", "--step", "bad", "Foo"},
+		"invalid step \"bad\": expected type:duration[@target:values]\n")
 }
