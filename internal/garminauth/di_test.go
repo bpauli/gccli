@@ -6,7 +6,10 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
+	"slices"
 	"strings"
+	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -363,6 +366,74 @@ func TestExtractClientIDFromJWT(t *testing.T) {
 			got := extractClientIDFromJWT(tc.token, tc.fallback)
 			if got != tc.want {
 				t.Errorf("extractClientIDFromJWT() = %q, want %q", got, tc.want)
+			}
+		})
+	}
+}
+
+// hostRecorder sends every request to one test server and records the
+// method, host and path each request was addressed to.
+type hostRecorder struct {
+	target *url.URL
+	mu     sync.Mutex
+	reqs   []string
+}
+
+func newHostRecorder(t *testing.T, handler http.Handler) *hostRecorder {
+	t.Helper()
+	srv := httptest.NewServer(handler)
+	t.Cleanup(srv.Close)
+	target, err := url.Parse(srv.URL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return &hostRecorder{target: target}
+}
+
+func (h *hostRecorder) RoundTrip(r *http.Request) (*http.Response, error) {
+	h.mu.Lock()
+	h.reqs = append(h.reqs, r.Method+" "+r.URL.Host+r.URL.Path)
+	h.mu.Unlock()
+	r = r.Clone(r.Context())
+	r.URL.Scheme, r.URL.Host = h.target.Scheme, h.target.Host
+	return http.DefaultTransport.RoundTrip(r)
+}
+
+func (h *hostRecorder) client() *http.Client { return &http.Client{Transport: h} }
+
+func (h *hostRecorder) requests() []string {
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	return slices.Clone(h.reqs)
+}
+
+func TestRefreshOAuth2_DIHostFollowsTokenDomain(t *testing.T) {
+	tests := []struct {
+		domain string
+		want   string
+	}{
+		{DomainGlobal, "POST diauth.garmin.com/di-oauth2-service/oauth/token"},
+		{DomainChina, "POST diauth.garmin.cn/di-oauth2-service/oauth/token"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.domain, func(t *testing.T) {
+			mux := http.NewServeMux()
+			mux.HandleFunc("POST /di-oauth2-service/oauth/token", func(w http.ResponseWriter, _ *http.Request) {
+				w.Header().Set("Content-Type", "application/json")
+				_, _ = w.Write([]byte(`{"access_token":"new-access","refresh_token":"new-refresh","expires_in":3600}`))
+			})
+			rec := newHostRecorder(t, mux)
+			tokens := &Tokens{OAuth2RefreshToken: "old-refresh", DIClientID: "test-di-client", Domain: tt.domain}
+
+			refreshed, err := RefreshOAuth2(context.Background(), tokens, LoginOptions{Domain: tt.domain, HTTPClient: rec.client()})
+			if err != nil {
+				t.Fatalf("RefreshOAuth2() error: %v", err)
+			}
+			if got := rec.requests(); !slices.Equal(got, []string{tt.want}) {
+				t.Errorf("requests = %q, want %q", got, tt.want)
+			}
+			if refreshed.Domain != tt.domain {
+				t.Errorf("Domain = %q, want %q", refreshed.Domain, tt.domain)
 			}
 		})
 	}

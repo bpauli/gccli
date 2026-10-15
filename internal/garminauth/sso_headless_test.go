@@ -7,6 +7,7 @@ import (
 	"net/http/cookiejar"
 	"net/http/httptest"
 	"net/url"
+	"slices"
 	"strings"
 	"testing"
 	"time"
@@ -742,6 +743,28 @@ func TestEndpointsDomain(t *testing.T) {
 		ep := Endpoints{SSOBase: tt.ssoBase}
 		if got := ep.domain(); got != tt.want {
 			t.Errorf("Endpoints{SSOBase: %q}.domain() = %q, want %q", tt.ssoBase, got, tt.want)
+		}
+	}
+}
+
+func TestLoginHeadless_ChinaDomainUsesChinaHosts(t *testing.T) {
+	rec := newHostRecorder(t, ssoMux(t))
+
+	tokens, err := LoginHeadless(context.Background(), "test@example.com", "correctpass",
+		LoginOptions{Domain: DomainChina, HTTPClient: rec.client()})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if tokens.Domain != DomainChina {
+		t.Errorf("domain = %q, want %q", tokens.Domain, DomainChina)
+	}
+	reqs := rec.requests()
+	if !slices.Contains(reqs, "POST diauth.garmin.cn/di-oauth2-service/oauth/token") {
+		t.Errorf("no DI token request to diauth.garmin.cn in %q", reqs)
+	}
+	for _, r := range reqs {
+		if addr := strings.Fields(r)[1]; !strings.Contains(addr, ".garmin.cn/") {
+			t.Errorf("request %q left garmin.cn", r)
 		}
 	}
 }
