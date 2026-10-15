@@ -657,8 +657,6 @@ func TestInvalidFileFormatError(t *testing.T) {
 	}
 }
 
-// --- Refresher tests ---
-
 func TestConnectAPI_Unauthorized_NoRefreshCredentials(t *testing.T) {
 	_, client := testServer(t, http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusUnauthorized)

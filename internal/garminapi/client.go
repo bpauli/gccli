@@ -27,8 +27,6 @@ type Client struct {
 	baseURL    string
 	tokens     *garminauth.Tokens
 
-	// Refresher replaces the tokens after a 401. NewClient sets one that
-	// refreshes in memory only.
 	Refresher Refresher
 }
 

@@ -21,8 +21,7 @@ func defaultNewClient(tokens *garminauth.Tokens) *garminapi.Client {
 	return garminapi.NewClient(tokens)
 }
 
-// refreshFn refreshes the OAuth2 token for both the proactive and the 401 path.
-// Variable to allow overriding in tests.
+// refreshFn is a variable to allow overriding in tests.
 var refreshFn = garminauth.RefreshOAuth2
 
 // resolveClient loads stored tokens for the account and returns an API client.
@@ -53,7 +52,7 @@ func resolveClient(g *Globals) (*garminapi.Client, error) {
 		case err == nil:
 			tokens = fresh
 		case errors.As(err, &expired):
-			// Proceed with the expired token. The API may still accept it.
+			// IsExpired counts a token as expired 60 s early, so Garmin may still accept it.
 		default:
 			return nil, err
 		}
@@ -64,7 +63,6 @@ func resolveClient(g *Globals) (*garminapi.Client, error) {
 	return client, nil
 }
 
-// loadTokens reads the stored tokens for email and resolves their domain.
 func loadTokens(store *secrets.Store, email string) (*garminauth.Tokens, error) {
 	data, err := store.Get(email)
 	if err != nil {
@@ -91,18 +89,11 @@ func loadTokens(store *secrets.Store, email string) (*garminauth.Tokens, error) 
 	return tokens, nil
 }
 
-// tokenRefresher refreshes the stored tokens of one account. Processes that
-// share the store take turns through a file lock, so each refresh token is
-// sent once.
 type tokenRefresher struct {
 	store *secrets.Store
 	email string
 }
 
-// refresh returns the tokens to use in place of sent. When another process
-// already stored newer tokens, it returns them without a refresh. It returns a
-// *garminapi.TokenExpiredError when Garmin does not refresh the token, and
-// other errors when the lock or the store fails.
 func (r *tokenRefresher) refresh(ctx context.Context, sent *garminauth.Tokens) (*garminauth.Tokens, error) {
 	unlock, err := lockTokens()
 	if err != nil {
