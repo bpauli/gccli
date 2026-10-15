@@ -72,6 +72,8 @@ type proxy struct {
 	handler http.Handler
 	ln      net.Listener
 	tunnels chan net.Conn
+	done    chan struct{}
+	served  chan struct{}
 	server  *http.Server
 
 	mu   sync.Mutex
@@ -88,12 +90,15 @@ func (a *authority) serve(handler http.Handler) (*proxy, error) {
 		handler: handler,
 		ln:      ln,
 		tunnels: make(chan net.Conn),
+		done:    make(chan struct{}),
+		served:  make(chan struct{}),
 	}
 	p.server = &http.Server{
 		Handler:  http.HandlerFunc(p.record),
 		ErrorLog: log.New(io.Discard, "", 0),
 	}
 	go func() {
+		defer close(p.served)
 		_ = p.server.Serve(tls.NewListener(tunnelListener{p}, &tls.Config{Certificates: []tls.Certificate{a.cert}}))
 	}()
 	go p.accept()
@@ -104,7 +109,6 @@ func (p *proxy) accept() {
 	for {
 		c, err := p.ln.Accept()
 		if err != nil {
-			close(p.tunnels)
 			return
 		}
 		go func() {
@@ -115,7 +119,11 @@ func (p *proxy) accept() {
 				return
 			}
 			_, _ = c.Write([]byte("HTTP/1.1 200 OK\r\n\r\n"))
-			p.tunnels <- c
+			select {
+			case p.tunnels <- c:
+			case <-p.done:
+				_ = c.Close()
+			}
 		}()
 	}
 }
@@ -139,18 +147,21 @@ func (p *proxy) requests() []request {
 }
 
 func (p *proxy) close() {
+	close(p.done)
 	_ = p.ln.Close()
 	_ = p.server.Close()
+	<-p.served
 }
 
 type tunnelListener struct{ p *proxy }
 
 func (l tunnelListener) Accept() (net.Conn, error) {
-	c, ok := <-l.p.tunnels
-	if !ok {
+	select {
+	case c := <-l.p.tunnels:
+		return c, nil
+	case <-l.p.done:
 		return nil, net.ErrClosed
 	}
-	return c, nil
 }
 
 func (l tunnelListener) Close() error   { return nil }
