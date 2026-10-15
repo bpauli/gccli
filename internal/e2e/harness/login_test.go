@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"syscall"
 	"testing"
 )
 
@@ -72,5 +73,33 @@ func TestLoginKeepsFailureAfterRecoveredRateLimit(t *testing.T) {
 	}
 	if posts != 2 {
 		t.Errorf("posts = %d, want 2 (one 429, one retry)", posts)
+	}
+}
+
+type resetAfter429 struct{ posts int }
+
+func (s *resetAfter429) RoundTrip(req *http.Request) (*http.Response, error) {
+	if req.Method == http.MethodGet {
+		return page(req, http.StatusOK, `<html><input name="_csrf" value="c"></html>`), nil
+	}
+	s.posts++
+	if s.posts == 1 {
+		return page(req, http.StatusTooManyRequests, ""), nil
+	}
+	return nil, syscall.ECONNRESET
+}
+
+func TestLoginKeepsTransportErrorAfterRateLimit(t *testing.T) {
+	sso := &resetAfter429{}
+	_, err := Login(context.Background(), "e@example.com", "x", sso)
+	if !errors.Is(err, syscall.ECONNRESET) {
+		t.Fatalf("err = %v, want the connection reset", err)
+	}
+	var rateLimited *SSORateLimitError
+	if errors.As(err, &rateLimited) {
+		t.Errorf("err = %v, want no rate limit mark when the request after the 429 got no response", err)
+	}
+	if sso.posts != 2 {
+		t.Errorf("posts = %d, want 2 (one 429, one reset)", sso.posts)
 	}
 }

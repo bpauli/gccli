@@ -47,7 +47,7 @@ func getOrLogin(t *testing.T) *garminauth.Tokens {
 
 	if raw := os.Getenv("GARMIN_TOKEN"); raw != "" {
 		if cachedTokens == nil {
-			cachedTokens, loginErr = harness.DecodeToken(raw)
+			cachedTokens, loginErr = harness.LoadToken(context.Background(), raw, http.DefaultTransport)
 			if loginErr != nil {
 				t.Fatalf("E2E token: %v", loginErr)
 			}
