@@ -23,7 +23,6 @@ const OAuthConsumerURL = "https://thegarth.s3.amazonaws.com/oauth_consumer.json"
 // User-Agent used for OAuth exchange requests (matches Garmin mobile app).
 const UserAgent = "com.garmin.android.apps.connectmobile"
 
-// ParseDomain returns s if it is a supported Garmin domain.
 func ParseDomain(s string) (string, error) {
 	switch s {
 	case DomainGlobal, DomainChina:
@@ -34,7 +33,6 @@ func ParseDomain(s string) (string, error) {
 
 // Endpoints holds the resolved URLs for a given Garmin domain.
 type Endpoints struct {
-	// Domain is the Garmin domain the URLs were built from.
 	Domain string
 	// SSOBase is the base URL for SSO operations (e.g. "https://sso.garmin.com").
 	SSOBase string
@@ -48,8 +46,7 @@ type Endpoints struct {
 	OAuthBase string
 	// ConnectAPI is the base URL for the Connect API (e.g. "https://connectapi.garmin.com").
 	ConnectAPI string
-	// DIToken is the DI OAuth2 token URL for ticket exchange and refresh.
-	DIToken string
+	DIToken    string
 }
 
 // NewEndpoints builds the full endpoint URLs for the given domain.

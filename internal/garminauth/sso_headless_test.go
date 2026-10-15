@@ -723,7 +723,7 @@ func TestPostSigninWithRetry_ContextCancelled(t *testing.T) {
 }
 
 func TestLoginHeadless_ChinaDomainUsesChinaHosts(t *testing.T) {
-	rec := newHostRecorder(t, ssoMux(t))
+	rec := newReroutingRecorder(t, ssoMux(t))
 
 	tokens, err := LoginHeadless(context.Background(), "test@example.com", "correctpass",
 		LoginOptions{Domain: DomainChina, HTTPClient: rec.client()})

@@ -45,7 +45,7 @@ func TestRefreshOAuth2_DIRefresh(t *testing.T) {
 		})
 	})
 
-	rec := newHostRecorder(t, mux)
+	rec := newReroutingRecorder(t, mux)
 
 	tokens := &Tokens{
 		OAuth2AccessToken:  "old-access",
@@ -89,7 +89,7 @@ func TestRefreshOAuth2_DIRefreshPreservesRefreshTokenWhenOmitted(t *testing.T) {
 		})
 	})
 
-	rec := newHostRecorder(t, mux)
+	rec := newReroutingRecorder(t, mux)
 
 	tokens := &Tokens{
 		OAuth2RefreshToken: "old-refresh",
@@ -122,7 +122,7 @@ func TestRefreshDI_OnlyTriesStoredClientID(t *testing.T) {
 		http.Error(w, `{"error":"invalid_grant"}`, http.StatusBadRequest)
 	})
 
-	rec := newHostRecorder(t, mux)
+	rec := newReroutingRecorder(t, mux)
 
 	tokens := &Tokens{
 		OAuth2RefreshToken: "old-refresh",
@@ -149,7 +149,7 @@ func TestRefreshDI_IteratesWhenClientIDUnknown(t *testing.T) {
 		http.Error(w, `{"error":"invalid_grant"}`, http.StatusBadRequest)
 	})
 
-	rec := newHostRecorder(t, mux)
+	rec := newReroutingRecorder(t, mux)
 
 	tokens := &Tokens{OAuth2RefreshToken: "old-refresh"}
 
@@ -339,15 +339,13 @@ func TestExtractClientIDFromJWT(t *testing.T) {
 	}
 }
 
-// hostRecorder sends every request to one test server and records the
-// method, host and path each request was addressed to.
-type hostRecorder struct {
+type reroutingRecorder struct {
 	target *url.URL
 	mu     sync.Mutex
 	reqs   []string
 }
 
-func newHostRecorder(t *testing.T, handler http.Handler) *hostRecorder {
+func newReroutingRecorder(t *testing.T, handler http.Handler) *reroutingRecorder {
 	t.Helper()
 	srv := httptest.NewServer(handler)
 	t.Cleanup(srv.Close)
@@ -355,10 +353,10 @@ func newHostRecorder(t *testing.T, handler http.Handler) *hostRecorder {
 	if err != nil {
 		t.Fatal(err)
 	}
-	return &hostRecorder{target: target}
+	return &reroutingRecorder{target: target}
 }
 
-func (h *hostRecorder) RoundTrip(r *http.Request) (*http.Response, error) {
+func (h *reroutingRecorder) RoundTrip(r *http.Request) (*http.Response, error) {
 	h.mu.Lock()
 	h.reqs = append(h.reqs, r.Method+" "+r.URL.Host+r.URL.Path)
 	h.mu.Unlock()
@@ -367,9 +365,9 @@ func (h *hostRecorder) RoundTrip(r *http.Request) (*http.Response, error) {
 	return http.DefaultTransport.RoundTrip(r)
 }
 
-func (h *hostRecorder) client() *http.Client { return &http.Client{Transport: h} }
+func (h *reroutingRecorder) client() *http.Client { return &http.Client{Transport: h} }
 
-func (h *hostRecorder) requests() []string {
+func (h *reroutingRecorder) requests() []string {
 	h.mu.Lock()
 	defer h.mu.Unlock()
 	return slices.Clone(h.reqs)
@@ -390,7 +388,7 @@ func TestRefreshOAuth2_DIHostFollowsTokenDomain(t *testing.T) {
 				w.Header().Set("Content-Type", "application/json")
 				_, _ = w.Write([]byte(`{"access_token":"new-access","refresh_token":"new-refresh","expires_in":3600}`))
 			})
-			rec := newHostRecorder(t, mux)
+			rec := newReroutingRecorder(t, mux)
 			tokens := &Tokens{OAuth2RefreshToken: "old-refresh", DIClientID: "test-di-client", Domain: tt.domain}
 
 			refreshed, err := RefreshOAuth2(context.Background(), tokens, LoginOptions{Domain: tt.domain, HTTPClient: rec.client()})
