@@ -9,7 +9,7 @@ Each PR gets one independent verifier: an agent that did not write the change. T
 The verifier:
 
 1. Checks out the exact head SHA in its own worktree, and the base SHA in a second one when it compares behavior.
-2. Runs `make tools` in each new worktree, then the gate on the head: `make fmt-check`, `make lint`, `go vet -tags e2e ./...` and `make test`. Without `make tools`, `make fmt-check` passes without checking anything (#146). When the local Go is newer than the `go` line in `go.mod`, set `GOTOOLCHAIN=go<that version>` for `make tools` and `make lint`.
+2. Runs `make tools` in each new worktree, then the gate on the head: `make fmt-check`, `make lint`, `go vet -tags e2e ./...` and `make test`. When the local Go is newer than the `go` line in `go.mod`, set `GOTOOLCHAIN=go<that version>` for `make tools` and `make lint`.
 3. Runs the real binary from base and head (`go build -o bin/gccli ./cmd/gccli`) against a local HTTPS mock, on Linux. Point `HTTPS_PROXY` and `SSL_CERT_FILE` at the mock. Set both `HOME` and `XDG_CONFIG_HOME` to a temp directory, because gccli reads its config and file keyring from `XDG_CONFIG_HOME` on Linux, and the real one holds the owner's login. Use `GCCLI_KEYRING_BACKEND=file` and a token from `auth import`. For a refactor, stdout, stderr and the exit code must match base byte for byte. For a behavior change, every difference must be one the PR names.
 4. Injects the defect that each new test claims to catch, and confirms the test fails. Runs these tests, like every test run, with `HOME` and `XDG_CONFIG_HOME` set to a temp directory, because mutated test code can reach the real config.
 5. Reruns the claims in the PR's Verification section that are cheap to rerun.
