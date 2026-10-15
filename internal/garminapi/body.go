@@ -50,10 +50,9 @@ func (c *Client) AddWeight(ctx context.Context, weight float64, unitKey string, 
 
 // DeleteWeight deletes a weigh-in entry by date and version (primary key).
 // Date format: YYYY-MM-DD.
-func (c *Client) DeleteWeight(ctx context.Context, date string, version string) error {
+func (c *Client) DeleteWeight(ctx context.Context, date string, version string) (json.RawMessage, error) {
 	path := fmt.Sprintf("/weight-service/weight/%s/byversion/%s", date, version)
-	_, err := c.ConnectAPI(ctx, http.MethodDelete, path, nil)
-	return err
+	return c.ConnectAPI(ctx, http.MethodDelete, path, nil)
 }
 
 // GetBloodPressure returns blood pressure data for a date range.
@@ -85,10 +84,9 @@ func (c *Client) AddBloodPressure(ctx context.Context, systolic, diastolic, puls
 
 // DeleteBloodPressure deletes a blood pressure entry by date and version.
 // Date format: YYYY-MM-DD.
-func (c *Client) DeleteBloodPressure(ctx context.Context, date string, version string) error {
+func (c *Client) DeleteBloodPressure(ctx context.Context, date string, version string) (json.RawMessage, error) {
 	path := fmt.Sprintf("/bloodpressure-service/bloodpressure/%s/%s", date, version)
-	_, err := c.ConnectAPI(ctx, http.MethodDelete, path, nil)
-	return err
+	return c.ConnectAPI(ctx, http.MethodDelete, path, nil)
 }
 
 // UploadBodyComposition uploads a FIT-encoded body composition file.

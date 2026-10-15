@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"time"
-
-	"github.com/bpauli/gccli/internal/outfmt"
 )
 
 // ActivityCreateCmd creates a manual activity entry.
@@ -51,21 +49,12 @@ func (c *ActivityCreateCmd) Run(g *Globals) error {
 		return fmt.Errorf("create activity: %w", err)
 	}
 
-	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
-	}
-
-	// Try to extract the created activity ID for user feedback.
 	var result map[string]any
-	if err := json.Unmarshal(data, &result); err == nil {
-		if id, ok := result["activityId"]; ok {
-			g.UI.Successf("Created activity %v", id)
-			return nil
-		}
+	_ = json.Unmarshal(data, &result)
+	if id := jsonString(result, "activityId"); id != "" {
+		return reportWrite(g, data, "Created activity %s", id)
 	}
-
-	g.UI.Successf("Activity created")
-	return nil
+	return reportWrite(g, data, "Activity created")
 }
 
 // parseDateTime parses a date/time string in various formats.

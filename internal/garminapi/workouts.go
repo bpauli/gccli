@@ -57,13 +57,11 @@ func (c *Client) GetCalendarWeek(ctx context.Context, date string) (json.RawMess
 }
 
 // UnscheduleWorkout removes a scheduled workout from the calendar.
-func (c *Client) UnscheduleWorkout(ctx context.Context, scheduleID string) error {
-	_, err := c.ConnectAPI(ctx, http.MethodDelete, "/workout-service/schedule/"+scheduleID, nil)
-	return err
+func (c *Client) UnscheduleWorkout(ctx context.Context, scheduleID string) (json.RawMessage, error) {
+	return c.ConnectAPI(ctx, http.MethodDelete, "/workout-service/schedule/"+scheduleID, nil)
 }
 
 // DeleteWorkout deletes a workout by ID.
-func (c *Client) DeleteWorkout(ctx context.Context, workoutID string) error {
-	_, err := c.ConnectAPI(ctx, http.MethodDelete, "/workout-service/workout/"+workoutID, nil)
-	return err
+func (c *Client) DeleteWorkout(ctx context.Context, workoutID string) (json.RawMessage, error) {
+	return c.ConnectAPI(ctx, http.MethodDelete, "/workout-service/workout/"+workoutID, nil)
 }

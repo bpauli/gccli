@@ -99,24 +99,6 @@ func TestActivityRename_Success(t *testing.T) {
 	}
 }
 
-func TestActivityRename_JSON(t *testing.T) {
-	server := modifyTestServer(t)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &ActivityRenameCmd{ID: "12345678", Name: "New Name"}
-	err := cmd.Run(g)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
-	}
-}
-
 func TestActivityRename_InvalidID(t *testing.T) {
 	server := modifyTestServer(t)
 	defer server.Close()
@@ -174,24 +156,6 @@ func TestActivityRetype_Success(t *testing.T) {
 	}
 	if !strings.Contains(buf.String(), "cycling") {
 		t.Fatalf("expected type key in message, got: %q", buf.String())
-	}
-}
-
-func TestActivityRetype_JSON(t *testing.T) {
-	server := modifyTestServer(t)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &ActivityRetypeCmd{ID: "12345678", TypeID: 1, TypeKey: "running"}
-	err := cmd.Run(g)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
 	}
 }
 

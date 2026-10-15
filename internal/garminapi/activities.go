@@ -292,17 +292,15 @@ func (c *Client) RetypeActivity(ctx context.Context, activityID string, typeID i
 }
 
 // SetExerciseSets sets exercise sets for a strength training activity.
-func (c *Client) SetExerciseSets(ctx context.Context, activityID string, payload json.RawMessage) error {
-	_, err := c.ConnectAPI(ctx, http.MethodPut,
+func (c *Client) SetExerciseSets(ctx context.Context, activityID string, payload json.RawMessage) (json.RawMessage, error) {
+	return c.ConnectAPI(ctx, http.MethodPut,
 		"/activity-service/activity/"+activityID+"/exerciseSets",
 		bytes.NewReader(payload))
-	return err
 }
 
 // DeleteActivity deletes an activity by ID.
-func (c *Client) DeleteActivity(ctx context.Context, activityID string) error {
-	_, err := c.ConnectAPI(ctx, http.MethodDelete, "/activity-service/activity/"+activityID, nil)
-	return err
+func (c *Client) DeleteActivity(ctx context.Context, activityID string) (json.RawMessage, error) {
+	return c.ConnectAPI(ctx, http.MethodDelete, "/activity-service/activity/"+activityID, nil)
 }
 
 // GetActivityTypes returns all activity types from Garmin Connect.

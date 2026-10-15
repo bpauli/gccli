@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/bpauli/gccli/internal/outfmt"
 	"github.com/bpauli/gccli/internal/units"
 )
 
@@ -96,20 +95,12 @@ func (c *WorkoutCreateCmd) Run(g *Globals) error {
 		return fmt.Errorf("create workout: %w", err)
 	}
 
-	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
-	}
-
 	var resp map[string]any
-	if err := json.Unmarshal(data, &resp); err == nil {
-		if id := jsonString(resp, "workoutId"); id != "" {
-			g.UI.Successf("Created workout %q (ID: %s)", c.Name, id)
-			return nil
-		}
+	_ = json.Unmarshal(data, &resp)
+	if id := jsonString(resp, "workoutId"); id != "" {
+		return reportWrite(g, data, "Created workout %q (ID: %s)", c.Name, id)
 	}
-
-	g.UI.Successf("Created workout %q", c.Name)
-	return nil
+	return reportWrite(g, data, "Created workout %q", c.Name)
 }
 
 func parseSteps(raw []string, unit string) ([]workoutStep, error) {

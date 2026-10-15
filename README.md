@@ -224,8 +224,11 @@ gccli activities list
 - Default: human-friendly tables on stdout.
 - `--json` / `-j`: JSON on stdout (best for scripting).
 - `--plain`: tab-separated values on stdout, with no header row. Only these commands print TSV: `activities list`, `activities search`, `activities types`, `activity summary`, `courses list`, `courses favorites`, `courses import`, `events list`, `workouts list`, `workouts schedule list` and `exercises list` (without `--category`). Most other commands that return data print the same JSON in all modes, also without `--json`. `activities count` prints a single number. Use `--json` when a script parses the output.
+- Write commands (the commands that add, create, upload, import, update, rename, retype, schedule, send, link, unlink, remove or delete data in Garmin Connect) all follow one rule:
+  - With `--json`, they print the Garmin response on stdout, indented like all JSON output. When Garmin sends an empty response, they print `{"ok": true}`.
+  - Without `--json`, they print one message on stderr and nothing on stdout. `courses import` is the only exception. It prints the saved course as a table on stdout (TSV with `--plain`).
 - Human-facing messages (errors, warnings, info) go to stderr.
-- Delete commands ask for confirmation in a terminal. Without a terminal (scripts, pipes, agents), they exit with an error unless you pass `--force`.
+- Delete commands ask for confirmation in a terminal. Without a terminal (scripts, pipes, agents), they exit with an error unless you pass `--force`. If you answer no, the command prints `Cancelled` on stderr, prints nothing on stdout and exits with 0.
 - Tables, TSV and JSON on stdout have no colors. The messages on stderr use colors. The `--help` text uses bold and faint text when stdout is a terminal, and `--color` does not change this.
 - With `--color auto` (the default), gccli uses colors when stderr is a color terminal and neither `NO_COLOR` nor `CI` is set. `--color always` and `--color never` override this detection. `GCCLI_COLOR` sets the mode when you do not give `--color`. `--json` and `--plain` do not change the colors.
 

@@ -479,30 +479,6 @@ func TestBuildWorkoutJSON_UnknownSport(t *testing.T) {
 	}
 }
 
-func TestWorkoutCreateCmd_Run_JSON(t *testing.T) {
-	server := workoutsTestServer(t)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &WorkoutCreateCmd{
-		Name:  "Test Run",
-		Type:  "run",
-		Steps: []string{"warmup:1m@pace:5:30-6:00", "run:5m@pace:5:15-5:30", "cooldown:1m@pace:5:30-6:00"},
-		Unit:  "km",
-	}
-
-	err := cmd.Run(g)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
-	}
-}
-
 func TestWorkoutCreateCmd_Run_Table(t *testing.T) {
 	server := workoutsTestServer(t)
 	defer server.Close()

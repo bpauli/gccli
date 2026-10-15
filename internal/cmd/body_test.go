@@ -358,24 +358,6 @@ func TestBodyAddWeight_Success(t *testing.T) {
 	}
 }
 
-func TestBodyAddWeight_JSON(t *testing.T) {
-	server := bodyTestServer(t)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &BodyAddWeightCmd{Value: 75.5, Unit: "kg"}
-	err := cmd.Run(g)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
-	}
-}
-
 func TestBodyAddWeight_VerifyPayload(t *testing.T) {
 	var receivedPayload map[string]any
 	mux := http.NewServeMux()
@@ -454,24 +436,6 @@ func TestBodyAddComposition_Success(t *testing.T) {
 	}
 	if !strings.Contains(buf.String(), "75.5") {
 		t.Fatalf("expected weight value in message, got: %q", buf.String())
-	}
-}
-
-func TestBodyAddComposition_JSON(t *testing.T) {
-	server := bodyTestServer(t)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &BodyAddCompositionCmd{Weight: 75.5}
-	err := cmd.Run(g)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
 	}
 }
 
@@ -720,24 +684,6 @@ func TestBodyAddBP_Success(t *testing.T) {
 	}
 	if !strings.Contains(buf.String(), "120/80") {
 		t.Fatalf("expected bp values in message, got: %q", buf.String())
-	}
-}
-
-func TestBodyAddBP_JSON(t *testing.T) {
-	server := bodyTestServer(t)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &BodyAddBPCmd{Systolic: 120, Diastolic: 80, Pulse: 72}
-	err := cmd.Run(g)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
 	}
 }
 

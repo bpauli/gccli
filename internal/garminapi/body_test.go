@@ -192,7 +192,7 @@ func TestDeleteWeight_Success(t *testing.T) {
 	})
 
 	_, client := testServer(t, handler)
-	err := client.DeleteWeight(context.Background(), "2024-01-15", "12345")
+	_, err := client.DeleteWeight(context.Background(), "2024-01-15", "12345")
 	if err != nil {
 		t.Fatalf("DeleteWeight: %v", err)
 	}
@@ -204,7 +204,7 @@ func TestDeleteWeight_NotFound(t *testing.T) {
 	})
 
 	_, client := testServer(t, handler)
-	err := client.DeleteWeight(context.Background(), "2024-01-15", "12345")
+	_, err := client.DeleteWeight(context.Background(), "2024-01-15", "12345")
 	if err == nil {
 		t.Fatal("expected error")
 	}
@@ -344,7 +344,7 @@ func TestDeleteBloodPressure_Success(t *testing.T) {
 	})
 
 	_, client := testServer(t, handler)
-	err := client.DeleteBloodPressure(context.Background(), "2024-01-15", "67890")
+	_, err := client.DeleteBloodPressure(context.Background(), "2024-01-15", "67890")
 	if err != nil {
 		t.Fatalf("DeleteBloodPressure: %v", err)
 	}
@@ -356,7 +356,7 @@ func TestDeleteBloodPressure_NotFound(t *testing.T) {
 	})
 
 	_, client := testServer(t, handler)
-	err := client.DeleteBloodPressure(context.Background(), "2024-01-15", "67890")
+	_, err := client.DeleteBloodPressure(context.Background(), "2024-01-15", "67890")
 	if err == nil {
 		t.Fatal("expected error")
 	}

@@ -42,7 +42,7 @@ func createTestServer(t *testing.T) *httptest.Server {
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(`{"activityId":99999,"activityName":"Test Run"}`))
+		_, _ = w.Write([]byte(`{"activityId":21234567890,"activityName":"Test Run"}`))
 	})
 
 	return httptest.NewServer(mux)
@@ -93,35 +93,8 @@ func TestActivityCreate_Success(t *testing.T) {
 	if err != nil {
 		t.Fatalf("expected no error, got: %v", err)
 	}
-	if !strings.Contains(buf.String(), "Created activity") {
-		t.Fatalf("expected 'Created activity' message, got: %q", buf.String())
-	}
-}
-
-func TestActivityCreate_JSON(t *testing.T) {
-	server := createTestServer(t)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &ActivityCreateCmd{
-		Name:     "Test Run",
-		Type:     "running",
-		Distance: 5000,
-		Duration: 30 * time.Minute,
-	}
-	err := cmd.Run(g)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
-	}
-	// JSON mode should not print "Created activity" message.
-	if strings.Contains(buf.String(), "Created activity") {
-		t.Fatalf("expected JSON output, got: %q", buf.String())
+	if got, want := buf.String(), "Created activity 21234567890\n"; got != want {
+		t.Fatalf("message = %q, want %q", got, want)
 	}
 }
 

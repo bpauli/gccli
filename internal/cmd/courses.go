@@ -258,29 +258,21 @@ func (c *CourseImportCmd) Run(g *Globals) error {
 		return fmt.Errorf("save course: %w", err)
 	}
 
-	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(g.Stdout, json.RawMessage(saved))
-	}
-
-	var result map[string]any
-	if err := json.Unmarshal(saved, &result); err != nil {
-		return fmt.Errorf("parse saved course: %w", err)
-	}
-
-	sys := resolveUnits(g, client)
-	rows := [][]string{{
-		jsonString(result, "courseId"),
-		jsonString(result, "courseName"),
-		sys.Distance(jsonFloat(result, "distanceMeter")),
-		sys.Elevation(jsonFloat(result, "elevationGainMeter")),
-		sys.Elevation(jsonFloat(result, "elevationLossMeter")),
-	}}
 	header := []string{"ID", "NAME", "DISTANCE", "ELEV GAIN", "ELEV LOSS"}
-
-	if outfmt.IsPlain(g.Context) {
-		return outfmt.WritePlain(g.Stdout, rows)
-	}
-	return outfmt.WriteTable(g.Stdout, header, rows)
+	return reportWriteTable(g, saved, header, func() ([][]string, error) {
+		var result map[string]any
+		if err := json.Unmarshal(saved, &result); err != nil {
+			return nil, fmt.Errorf("parse saved course: %w", err)
+		}
+		sys := resolveUnits(g, client)
+		return [][]string{{
+			jsonString(result, "courseId"),
+			jsonString(result, "courseName"),
+			sys.Distance(jsonFloat(result, "distanceMeter")),
+			sys.Elevation(jsonFloat(result, "elevationGainMeter")),
+			sys.Elevation(jsonFloat(result, "elevationLossMeter")),
+		}}, nil
+	})
 }
 
 // CourseSendCmd sends a course to a device.
@@ -312,21 +304,13 @@ func (c *CourseSendCmd) Run(g *Globals) error {
 		return fmt.Errorf("send course to device: %w", err)
 	}
 
-	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
-	}
-
-	// Extract response details for success message.
 	var msgs []map[string]any
 	if err := json.Unmarshal(data, &msgs); err == nil && len(msgs) > 0 {
 		deviceName := jsonString(msgs[0], "deviceName")
 		messageID := jsonString(msgs[0], "messageId")
-		g.UI.Successf("Sent course %q to device %s (message %s)", courseName, deviceName, messageID)
-	} else {
-		g.UI.Successf("Sent course %q to device %s", courseName, c.DeviceID)
+		return reportWrite(g, data, "Sent course %q to device %s (message %s)", courseName, deviceName, messageID)
 	}
-
-	return nil
+	return reportWrite(g, data, "Sent course %q to device %s", courseName, c.DeviceID)
 }
 
 // CourseDeleteCmd deletes a course.
@@ -350,12 +334,11 @@ func (c *CourseDeleteCmd) Run(g *Globals) error {
 		return nil
 	}
 
-	if err := client.DeleteCourse(g.Context, c.ID); err != nil {
+	data, err := client.DeleteCourse(g.Context, c.ID)
+	if err != nil {
 		return fmt.Errorf("delete course: %w", err)
 	}
-
-	g.UI.Successf("Deleted course %s", c.ID)
-	return nil
+	return reportWrite(g, data, "Deleted course %s", c.ID)
 }
 
 // parseCourses extracts the course list from the API response.

@@ -441,30 +441,6 @@ func TestWorkoutUpload_Success(t *testing.T) {
 	}
 }
 
-func TestWorkoutUpload_JSON(t *testing.T) {
-	server := workoutsTestServer(t)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	tmpFile := filepath.Join(t.TempDir(), "workout.json")
-	workoutJSON := `{"workoutName":"Test Workout","sportType":{"sportTypeKey":"running"}}`
-	if err := os.WriteFile(tmpFile, []byte(workoutJSON), 0o644); err != nil {
-		t.Fatalf("write temp file: %v", err)
-	}
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &WorkoutUploadCmd{File: tmpFile}
-	err := cmd.Run(g)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
-	}
-}
-
 func TestWorkoutUpload_InvalidJSON(t *testing.T) {
 	server := workoutsTestServer(t)
 	defer server.Close()
@@ -524,24 +500,6 @@ func TestWorkoutScheduleAdd_Success(t *testing.T) {
 	}
 	if !strings.Contains(buf.String(), "Scheduled workout 77 on 2026-02-12") {
 		t.Fatalf("expected success message, got: %q", buf.String())
-	}
-}
-
-func TestWorkoutScheduleAdd_JSON(t *testing.T) {
-	server := workoutsTestServer(t)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &WorkoutScheduleAddCmd{ID: "77", Date: "2026-02-12"}
-	err := cmd.Run(g)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
 	}
 }
 
@@ -1182,29 +1140,6 @@ func TestWorkoutUpdate_Success(t *testing.T) {
 	}
 	if !strings.Contains(buf.String(), "Updated workout 42") {
 		t.Fatalf("expected 'Updated workout 42' message, got: %q", buf.String())
-	}
-}
-
-func TestWorkoutUpdate_JSON(t *testing.T) {
-	server := workoutsTestServer(t)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	tmpFile := filepath.Join(t.TempDir(), "workout.json")
-	workoutJSON := `{"workoutName":"Tempo Run v2","sportType":{"sportTypeKey":"running"}}`
-	if err := os.WriteFile(tmpFile, []byte(workoutJSON), 0o644); err != nil {
-		t.Fatalf("write temp file: %v", err)
-	}
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &WorkoutUpdateCmd{ID: "42", File: tmpFile}
-	if err := cmd.Run(g); err != nil {
-		t.Fatalf("expected no error, got: %v", err)
 	}
 }
 

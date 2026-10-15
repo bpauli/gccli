@@ -55,6 +55,5 @@ func (c *HydrationAddCmd) Run(g *Globals) error {
 	if err != nil {
 		return fmt.Errorf("add hydration: %w", err)
 	}
-
-	return writeHealthJSON(g, data)
+	return reportWrite(g, data, "Added %g ml of water on %s", c.Amount, date)
 }

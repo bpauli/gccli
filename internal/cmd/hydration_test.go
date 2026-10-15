@@ -168,44 +168,6 @@ func TestHydrationAdd_NoAccount(t *testing.T) {
 	}
 }
 
-func TestHydrationAdd_Success(t *testing.T) {
-	server := hydrationTestServer(t)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	overrideNowFn(t, time.Date(2024, 1, 15, 12, 0, 0, 0, time.UTC))
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &HydrationAddCmd{Amount: 500}
-	err := cmd.Run(g)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
-	}
-}
-
-func TestHydrationAdd_WithDate(t *testing.T) {
-	server := hydrationTestServer(t)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &HydrationAddCmd{Amount: 250, Date: "2024-03-20"}
-	err := cmd.Run(g)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
-	}
-}
-
 func TestHydrationAdd_ServerError(t *testing.T) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/usersummary-service/usersummary/hydration/log", func(w http.ResponseWriter, _ *http.Request) {

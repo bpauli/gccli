@@ -825,7 +825,7 @@ func TestDeleteActivity_Success(t *testing.T) {
 	})
 
 	_, client := testServer(t, handler)
-	err := client.DeleteActivity(context.Background(), "12345")
+	_, err := client.DeleteActivity(context.Background(), "12345")
 	if err != nil {
 		t.Fatalf("DeleteActivity: %v", err)
 	}
@@ -838,7 +838,7 @@ func TestDeleteActivity_ServerError(t *testing.T) {
 	})
 
 	_, client := testServer(t, handler)
-	err := client.DeleteActivity(context.Background(), "99999")
+	_, err := client.DeleteActivity(context.Background(), "99999")
 	if err == nil {
 		t.Fatal("expected error")
 	}

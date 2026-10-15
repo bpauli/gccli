@@ -56,12 +56,11 @@ func (c *ActivityExerciseSetsSetCmd) Run(g *Globals) error {
 		return fmt.Errorf("marshal exercise sets: %w", err)
 	}
 
-	if err := client.SetExerciseSets(g.Context, c.ID, body); err != nil {
+	data, err := client.SetExerciseSets(g.Context, c.ID, body)
+	if err != nil {
 		return fmt.Errorf("set exercise sets: %w", err)
 	}
-
-	g.UI.Successf("Exercise sets updated for activity %s", c.ID)
-	return nil
+	return reportWrite(g, data, "Exercise sets updated for activity %s", c.ID)
 }
 
 // parseExerciseSets parses exercise flag values into API-compatible sets.

@@ -1,11 +1,6 @@
 package cmd
 
-import (
-	"encoding/json"
-	"fmt"
-
-	"github.com/bpauli/gccli/internal/outfmt"
-)
+import "fmt"
 
 // ActivityRenameCmd renames an activity.
 type ActivityRenameCmd struct {
@@ -24,12 +19,7 @@ func (c *ActivityRenameCmd) Run(g *Globals) error {
 		return fmt.Errorf("rename activity: %w", err)
 	}
 
-	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
-	}
-
-	g.UI.Successf("Renamed activity %s to %q", c.ID, c.Name)
-	return nil
+	return reportWrite(g, data, "Renamed activity %s to %q", c.ID, c.Name)
 }
 
 // ActivityRetypeCmd changes the type of an activity.
@@ -51,12 +41,7 @@ func (c *ActivityRetypeCmd) Run(g *Globals) error {
 		return fmt.Errorf("retype activity: %w", err)
 	}
 
-	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
-	}
-
-	g.UI.Successf("Changed activity %s type to %s", c.ID, c.TypeKey)
-	return nil
+	return reportWrite(g, data, "Changed activity %s type to %s", c.ID, c.TypeKey)
 }
 
 // ActivityDeleteCmd deletes an activity.
@@ -80,10 +65,9 @@ func (c *ActivityDeleteCmd) Run(g *Globals) error {
 		return nil
 	}
 
-	if err := client.DeleteActivity(g.Context, c.ID); err != nil {
+	data, err := client.DeleteActivity(g.Context, c.ID)
+	if err != nil {
 		return fmt.Errorf("delete activity: %w", err)
 	}
-
-	g.UI.Successf("Deleted activity %s", c.ID)
-	return nil
+	return reportWrite(g, data, "Deleted activity %s", c.ID)
 }
