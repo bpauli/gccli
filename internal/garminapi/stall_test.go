@@ -331,11 +331,12 @@ func TestStall_SlowUploadSucceeds(t *testing.T) {
 	for _, mode := range bothProtos {
 		t.Run(string(mode), func(t *testing.T) {
 			const (
-				size            = 8 << 20
-				readStep        = 64 << 10
+				size            = 24 << 20
+				readStep        = 256 << 10
 				h2StreamWindow  = 1 << 20
-				idleTail        = h2StreamWindow + clientWriteBuffer + serverReadBuffer
-				tailDrainBudget = testStallTimeout / 2
+				h2BodyChunk     = 512 << 10 // the h2 client reads the body this much at a time
+				idleTail        = h2StreamWindow + h2BodyChunk + clientWriteBuffer + serverReadBuffer
+				tailDrainBudget = testStallTimeout / 4
 				pausePerStep    = tailDrainBudget * readStep / idleTail
 			)
 			var total atomic.Int64
