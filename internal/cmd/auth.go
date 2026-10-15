@@ -28,7 +28,7 @@ type AuthCmd struct {
 	Login  AuthLoginCmd  `cmd:"" help:"Log in to Garmin Connect."`
 	Status AuthStatusCmd `cmd:"" help:"Show authentication status."`
 	Remove AuthRemoveCmd `cmd:"" help:"Remove stored credentials."`
-	Token  AuthTokenCmd  `cmd:"" help:"Print current access token."`
+	Token  AuthTokenCmd  `cmd:"" help:"Print current access token, refreshing it first when expired."`
 	Export AuthExportCmd `cmd:"" help:"Export credentials for transfer to another machine."`
 	Import AuthImportCmd `cmd:"" help:"Import credentials from another machine."`
 }
@@ -142,7 +142,10 @@ func (c *AuthTokenCmd) Run(g *Globals) error {
 	}
 
 	if tokens.IsExpired() {
-		g.UI.Warnf("Warning: token is expired")
+		r := &tokenRefresher{store: store, email: email}
+		if tokens, err = r.refresh(g.Context, tokens); err != nil {
+			return err
+		}
 	}
 
 	_, _ = fmt.Fprintln(g.Stdout, tokens.OAuth2AccessToken)

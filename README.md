@@ -143,7 +143,7 @@ List current auth state:
 gccli auth status
 ```
 
-Print the raw OAuth2 access token (useful for scripting):
+Print the raw OAuth2 access token (useful for scripting). If the token is expired, the command refreshes it first and prints the new token. If the refresh fails, it prints nothing and exits 3:
 
 ```bash
 gccli auth token
@@ -334,7 +334,7 @@ gccli auth login <email>               # Log in via browser SSO
 gccli auth login <email> --headless    # Log in via email/password
 gccli auth login <email> --headless --mfa-code <code>  # With MFA
 gccli auth status                      # Show auth state and token expiry (exit 3 if no credentials are stored)
-gccli auth token                       # Print OAuth2 access token
+gccli auth token                       # Print OAuth2 access token (refresh it first if expired; exit 3 if the refresh fails)
 gccli auth export                      # Export credentials (for transfer to another machine)
 gccli auth import <token>              # Import credentials from another machine
 gccli auth remove                      # Remove stored credentials

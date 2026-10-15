@@ -299,40 +299,70 @@ func TestAuthToken_NotFound(t *testing.T) {
 	}
 }
 
-func TestAuthToken_Success(t *testing.T) {
-	store := newTestSecretsStore(t)
+func runAuthToken(t *testing.T, stored *garminauth.Tokens, refresh func(context.Context, *garminauth.Tokens, garminauth.LoginOptions) (*garminauth.Tokens, error)) (store *secrets.Store, stdout, stderr string, err error) {
+	t.Helper()
+	testutil.TempConfigDir(t)
+	store = newTestSecretsStore(t)
 	overrideLoadSecrets(t, store)
+	storeTestTokens(t, store, "test@example.com", stored)
 
-	tokens := testTokens()
-	storeTestTokens(t, store, "test@example.com", tokens)
+	origRefresh := refreshFn
+	t.Cleanup(func() { refreshFn = origRefresh })
+	refreshFn = refresh
 
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &AuthTokenCmd{}
-	err := cmd.Run(g)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
-	}
-	// Token is printed to stdout (not captured), but no error means success.
+	stdout, stderr = captureOutput(t, func() { err = (&AuthTokenCmd{}).Run(g) })
+	return store, stdout, buf.String() + stderr, err
 }
 
-func TestAuthToken_Expired(t *testing.T) {
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-
-	tokens := testTokens()
-	tokens.OAuth2ExpiresAt = time.Now().Add(-time.Hour)
-	storeTestTokens(t, store, "test@example.com", tokens)
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &AuthTokenCmd{}
-	err := cmd.Run(g)
+func TestAuthToken_Success(t *testing.T) {
+	_, stdout, stderr, err := runAuthToken(t, testTokens(), func(context.Context, *garminauth.Tokens, garminauth.LoginOptions) (*garminauth.Tokens, error) {
+		t.Error("refreshFn called for a valid token")
+		return nil, fmt.Errorf("unexpected")
+	})
 	if err != nil {
 		t.Fatalf("expected no error, got: %v", err)
 	}
-	if !strings.Contains(buf.String(), "expired") {
-		t.Fatalf("expected expired warning, got: %q", buf.String())
+	if stdout != "test-access-token\n" || stderr != "" {
+		t.Fatalf("stdout = %q, stderr = %q, want the stored token and no stderr", stdout, stderr)
+	}
+}
+
+func TestAuthToken_ExpiredRefreshes(t *testing.T) {
+	expired := testTokens()
+	expired.OAuth2ExpiresAt = time.Now().Add(-time.Hour)
+	store, stdout, stderr, err := runAuthToken(t, expired, func(_ context.Context, tokens *garminauth.Tokens, _ garminauth.LoginOptions) (*garminauth.Tokens, error) {
+		fresh := *tokens
+		fresh.OAuth2AccessToken = "AT-1"
+		fresh.OAuth2ExpiresAt = time.Now().Add(time.Hour)
+		return &fresh, nil
+	})
+	if err != nil {
+		t.Fatalf("expected no error, got: %v", err)
+	}
+	if stdout != "AT-1\n" || stderr != "" {
+		t.Fatalf("stdout = %q, stderr = %q, want the refreshed token and no stderr", stdout, stderr)
+	}
+	if got := storedAccessToken(t, store); got != "AT-1" {
+		t.Errorf("stored token = %q, want AT-1", got)
+	}
+}
+
+func TestAuthToken_ExpiredRefreshFails(t *testing.T) {
+	expired := testTokens()
+	expired.OAuth2ExpiresAt = time.Now().Add(-time.Hour)
+	store, stdout, _, err := runAuthToken(t, expired, func(context.Context, *garminauth.Tokens, garminauth.LoginOptions) (*garminauth.Tokens, error) {
+		return nil, fmt.Errorf("HTTP 400: invalid_grant")
+	})
+	if code := exitCode(err); code != 3 {
+		t.Fatalf("exit code = %d (err %v), want 3", code, err)
+	}
+	if stdout != "" {
+		t.Fatalf("stdout = %q, want empty", stdout)
+	}
+	if got := storedAccessToken(t, store); got != "test-access-token" {
+		t.Errorf("stored token = %q, want the old token kept", got)
 	}
 }
 

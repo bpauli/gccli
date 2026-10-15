@@ -34,7 +34,7 @@ Date shortcuts
 Common commands
 
 - Auth status: `gccli auth status`
-- Auth token (for scripting): `gccli auth token`
+- Auth token (for scripting): `gccli auth token`. An expired token is refreshed first. If the refresh fails, stdout is empty and the exit code is 3.
 - Export credentials: `gccli auth export` (pipe to file or copy to another machine)
 - Import credentials: `gccli auth import <token>` (from `auth export` output)
 - Remove credentials: `gccli auth remove`
