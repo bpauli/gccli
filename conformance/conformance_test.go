@@ -223,8 +223,14 @@ var (
 	}
 )
 
+const clockSkip = "a route asks for a date that the binary takes from its clock"
+
 var skipped = map[string]string{
-	"auth login": "the harness stubs the browser SSO login",
+	"auth login":           "the harness stubs the browser SSO login",
+	"devices solar":        clockSkip,
+	"events list":          clockSkip,
+	"health steps weekly":  clockSkip,
+	"health stress weekly": clockSkip,
 }
 
 var dateInURI = regexp.MustCompile(`\d{4}-\d{2}-\d{2}`)
@@ -241,6 +247,55 @@ func (c goldenCase) clockDate() (string, bool) {
 	return "", false
 }
 
+type goldenFile struct {
+	path, name string
+	goldenCase
+}
+
+func goldenFiles(t *testing.T) []goldenFile {
+	t.Helper()
+	paths, err := filepath.Glob(filepath.Join(goldenDir, "*.golden"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(paths) == 0 {
+		t.Fatalf("no golden files in %s", goldenDir)
+	}
+	var files []goldenFile
+	for _, path := range paths {
+		data, err := os.ReadFile(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		c, err := parseGolden(string(data))
+		if err != nil {
+			t.Fatalf("%s: %v", path, err)
+		}
+		name := strings.ReplaceAll(strings.TrimSuffix(filepath.Base(path), ".golden"), "_", " ")
+		files = append(files, goldenFile{path, name, c})
+	}
+	return files
+}
+
+func TestGoldenSkips(t *testing.T) {
+	names := map[string]bool{}
+	for _, f := range goldenFiles(t) {
+		names[f.name] = true
+		d, fromClock := f.clockDate()
+		switch listed := skipped[f.name] == clockSkip; {
+		case fromClock && !listed:
+			t.Errorf("%s: a route asks for %s, which the binary takes from its clock: give the date in the args, or add %q to skipped", f.path, d, f.name)
+		case !fromClock && listed:
+			t.Errorf("%s: skipped names %q as a clock case, but no route asks for a date from the clock: remove it from skipped", f.path, f.name)
+		}
+	}
+	for name := range skipped {
+		if !names[name] {
+			t.Errorf("skipped names %q, which has no golden file in %s", name, goldenDir)
+		}
+	}
+}
+
 func TestGolden(t *testing.T) {
 	bin := binary(t)
 	token, err := os.ReadFile("testdata/state/token_golden.json")
@@ -250,30 +305,12 @@ func TestGolden(t *testing.T) {
 	seed := newSandbox(t, bin, http.NotFoundHandler())
 	seed.importToken(t, token)
 
-	files, err := filepath.Glob(filepath.Join(goldenDir, "*.golden"))
-	if err != nil {
-		t.Fatal(err)
-	}
-	if len(files) == 0 {
-		t.Fatalf("no golden files in %s", goldenDir)
-	}
-	for _, file := range files {
-		data, err := os.ReadFile(file)
-		if err != nil {
-			t.Fatal(err)
-		}
-		c, err := parseGolden(string(data))
-		if err != nil {
-			t.Fatalf("%s: %v", file, err)
-		}
-		name := strings.ReplaceAll(strings.TrimSuffix(filepath.Base(file), ".golden"), "_", " ")
+	for _, f := range goldenFiles(t) {
+		file, name, c := f.path, f.name, f.goldenCase
 		for _, m := range goldenModes {
 			t.Run(name+"/"+m.name, func(t *testing.T) {
 				if why, ok := skipped[name]; ok {
 					t.Skip(why)
-				}
-				if d, ok := c.clockDate(); ok {
-					t.Skipf("a route asks for %s, which the binary takes from its clock", d)
 				}
 				t.Parallel()
 				r := &replay{routes: c.routes}

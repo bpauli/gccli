@@ -38,7 +38,9 @@ A case fails when the output differs, when the binary sends a request that the f
 The suite skips these cases:
 
 - `auth login`, because the in-process harness stubs the browser login.
-- Each case whose routes ask for a date that the args do not give. The binary takes that date from its clock, and the in-process harness pins its clock to 2026-10-15.
+- `devices solar`, `events list`, `health steps weekly` and `health stress weekly`. Their routes ask for a date that the args do not give. The binary takes that date from its clock, and the in-process harness pins its clock to 2026-10-15.
+
+The `skipped` map in `conformance_test.go` holds this list. `TestGoldenSkips` fails when a golden case asks for a date from the clock and is not in the list, when a case in the list no longer asks for one, and when the list names a case that has no golden file. So a new skip cannot pass unseen. This test does not need `GCCLI_BIN`.
 
 ## State cases
 
