@@ -75,6 +75,16 @@ func (e *EndpointError) Error() string {
 	return fmt.Sprintf("endpoint %s: %s: %s", e.Endpoint, e.Param, e.Problem)
 }
 
+// EndpointMethod returns the HTTP method of the named endpoint, so the cmd
+// write census can find the commands that send a write through Call.
+func EndpointMethod(name string) (string, bool) {
+	r, ok := endpoints[name]
+	if !ok {
+		return "", false
+	}
+	return r.Method, true
+}
+
 // Call sends the named endpoint with args filling its placeholders and body
 // as the JSON request body (nil for none). It checks every argument before it
 // sends anything. The result is the same as ConnectAPI: the response body, or
