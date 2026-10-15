@@ -16,16 +16,20 @@ import (
 // Variable for dependency injection in tests.
 var refreshTokensFn = garminauth.RefreshOAuth2
 
+// Refresher returns the tokens to use after the API rejected sent with a 401.
+// It returns a *TokenExpiredError when the tokens cannot be refreshed. The
+// client returns any error from it unchanged.
+type Refresher func(ctx context.Context, sent *garminauth.Tokens) (*garminauth.Tokens, error)
+
 // Client interacts with the Garmin Connect API.
 type Client struct {
 	httpClient *http.Client
 	baseURL    string
 	tokens     *garminauth.Tokens
 
-	// OnTokenRefresh is called after a successful OAuth2 token refresh.
-	// Use this to persist refreshed tokens back to storage.
-	// If nil, no action is taken (tokens are only updated in-memory).
-	OnTokenRefresh func(tokens *garminauth.Tokens)
+	// Refresher replaces the tokens after a 401. NewClient sets one that
+	// refreshes in memory only.
+	Refresher Refresher
 }
 
 // ClientOption configures a Client.
@@ -54,6 +58,7 @@ func NewClient(tokens *garminauth.Tokens, opts ...ClientOption) *Client {
 		httpClient: newHTTPClient(),
 		baseURL:    garminauth.NewEndpoints(tokens.Domain).ConnectAPI,
 		tokens:     tokens,
+		Refresher:  refreshInMemory,
 	}
 	for _, opt := range opts {
 		opt(c)
@@ -135,10 +140,15 @@ func (c *Client) do(ctx context.Context, r request) (response, error) {
 
 		switch {
 		case resp.StatusCode == http.StatusUnauthorized:
-			if canRefresh && c.refreshToken(ctx) == nil {
-				continue
+			if !canRefresh || !c.tokens.CanRefresh() {
+				return response{}, &TokenExpiredError{Email: c.tokens.Email}
 			}
-			return response{}, &TokenExpiredError{Email: c.tokens.Email}
+			tokens, err := c.Refresher(ctx, c.tokens)
+			if err != nil {
+				return response{}, err
+			}
+			c.tokens = tokens
+			continue
 		case resp.StatusCode == http.StatusTooManyRequests:
 			return response{}, &RateLimitError{RetryAfter: resp.Header.Get("Retry-After")}
 		case err != nil:
@@ -182,22 +192,10 @@ func (c *Client) Download(ctx context.Context, path string) ([]byte, error) {
 	return resp.body, nil
 }
 
-// refreshToken attempts to refresh the OAuth2 token using stored refresh credentials.
-func (c *Client) refreshToken(ctx context.Context) error {
-	if !c.tokens.CanRefresh() {
-		return fmt.Errorf("no refresh credentials available")
-	}
-
-	newTokens, err := refreshTokensFn(ctx, c.tokens, garminauth.LoginOptions{
-		Domain: c.tokens.Domain,
-	})
+func refreshInMemory(ctx context.Context, sent *garminauth.Tokens) (*garminauth.Tokens, error) {
+	tokens, err := refreshTokensFn(ctx, sent, garminauth.LoginOptions{Domain: sent.Domain})
 	if err != nil {
-		return fmt.Errorf("refresh token: %w", err)
+		return nil, &TokenExpiredError{Email: sent.Email}
 	}
-
-	c.tokens = newTokens
-	if c.OnTokenRefresh != nil {
-		c.OnTokenRefresh(newTokens)
-	}
-	return nil
+	return tokens, nil
 }

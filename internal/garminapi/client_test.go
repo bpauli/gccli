@@ -320,43 +320,66 @@ func TestConnectAPI_Unauthorized_RefreshSuccess(t *testing.T) {
 	}
 }
 
-func TestConnectAPI_Unauthorized_RefreshCallsOnTokenRefresh(t *testing.T) {
-	calls := 0
+func TestConnectAPI_Unauthorized_RefresherReturnsStoredToken(t *testing.T) {
+	var auth []string
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		calls++
-		if calls == 1 {
+		auth = append(auth, r.Header.Get("Authorization"))
+		if len(auth) == 1 {
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
 		w.Header().Set("Content-Type", "application/json")
 		_, _ = w.Write([]byte(`{"ok":true}`))
 	})
-
 	_, client := testServer(t, handler)
 
 	origRefresh := refreshTokensFn
 	t.Cleanup(func() { refreshTokensFn = origRefresh })
-	refreshTokensFn = func(_ context.Context, tokens *garminauth.Tokens, _ garminauth.LoginOptions) (*garminauth.Tokens, error) {
-		newTokens := *tokens
-		newTokens.OAuth2AccessToken = "refreshed-token"
-		newTokens.OAuth2ExpiresAt = time.Now().Add(time.Hour)
-		return &newTokens, nil
+	refreshTokensFn = func(context.Context, *garminauth.Tokens, garminauth.LoginOptions) (*garminauth.Tokens, error) {
+		t.Error("refreshTokensFn called, want the stored token without a refresh")
+		return nil, errors.New("unexpected")
 	}
 
-	var callbackCalled bool
-	client.OnTokenRefresh = func(tokens *garminauth.Tokens) {
-		callbackCalled = true
-		if tokens.OAuth2AccessToken != "refreshed-token" {
-			t.Errorf("callback token = %q, want refreshed-token", tokens.OAuth2AccessToken)
-		}
+	var sent string
+	client.Refresher = func(_ context.Context, tokens *garminauth.Tokens) (*garminauth.Tokens, error) {
+		sent = tokens.OAuth2AccessToken
+		stored := *tokens
+		stored.OAuth2AccessToken = "stored-newer"
+		return &stored, nil
+	}
+
+	if _, err := client.ConnectAPI(context.Background(), http.MethodGet, "/api/path", nil); err != nil {
+		t.Fatalf("ConnectAPI: %v", err)
+	}
+	if sent != "access-token" {
+		t.Errorf("Refresher got %q, want the rejected token access-token", sent)
+	}
+	want := []string{"Bearer access-token", "Bearer stored-newer"}
+	if !reflect.DeepEqual(auth, want) {
+		t.Errorf("Authorization = %q, want %q", auth, want)
+	}
+	if client.Tokens().OAuth2AccessToken != "stored-newer" {
+		t.Errorf("client token = %q, want stored-newer", client.Tokens().OAuth2AccessToken)
+	}
+}
+
+func TestConnectAPI_Unauthorized_RefresherErrorPassesThrough(t *testing.T) {
+	calls := 0
+	_, client := testServer(t, http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		calls++
+		w.WriteHeader(http.StatusUnauthorized)
+	}))
+	lockErr := errors.New("lock token refresh: permission denied")
+	client.Refresher = func(context.Context, *garminauth.Tokens) (*garminauth.Tokens, error) {
+		return nil, lockErr
 	}
 
 	_, err := client.ConnectAPI(context.Background(), http.MethodGet, "/api/path", nil)
-	if err != nil {
-		t.Fatalf("ConnectAPI: %v", err)
+	if !errors.Is(err, lockErr) {
+		t.Fatalf("err = %v, want %v", err, lockErr)
 	}
-	if !callbackCalled {
-		t.Error("OnTokenRefresh was not called during 401 refresh")
+	if calls != 1 {
+		t.Errorf("calls = %d, want 1", calls)
 	}
 }
 
@@ -634,25 +657,28 @@ func TestInvalidFileFormatError(t *testing.T) {
 	}
 }
 
-// --- RefreshToken tests ---
+// --- Refresher tests ---
 
-func TestRefreshToken_NoRefreshCredentials(t *testing.T) {
-	tokens := testTokens()
-	tokens.OAuth1Token = ""
-	tokens.OAuth1Secret = ""
-	tokens.OAuth2RefreshToken = ""
-	client := NewClient(tokens)
-
-	err := client.refreshToken(context.Background())
-	if err == nil {
-		t.Fatal("expected error when no refresh credentials")
+func TestConnectAPI_Unauthorized_NoRefreshCredentials(t *testing.T) {
+	_, client := testServer(t, http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusUnauthorized)
+	}))
+	client.tokens.OAuth1Token = ""
+	client.tokens.OAuth1Secret = ""
+	client.tokens.OAuth2RefreshToken = ""
+	client.Refresher = func(context.Context, *garminauth.Tokens) (*garminauth.Tokens, error) {
+		t.Error("Refresher called without refresh credentials")
+		return nil, errors.New("unexpected")
 	}
-	if !strings.Contains(err.Error(), "no refresh credentials") {
-		t.Errorf("error = %q, want to contain 'no refresh credentials'", err.Error())
+
+	_, err := client.ConnectAPI(context.Background(), http.MethodGet, "/api/path", nil)
+	var tokenErr *TokenExpiredError
+	if !errors.As(err, &tokenErr) {
+		t.Fatalf("err = %T %v, want TokenExpiredError", err, err)
 	}
 }
 
-func TestRefreshToken_Success(t *testing.T) {
+func TestRefreshInMemory(t *testing.T) {
 	origRefresh := refreshTokensFn
 	t.Cleanup(func() { refreshTokensFn = origRefresh })
 	refreshTokensFn = func(_ context.Context, tokens *garminauth.Tokens, opts garminauth.LoginOptions) (*garminauth.Tokens, error) {
@@ -661,92 +687,29 @@ func TestRefreshToken_Success(t *testing.T) {
 		}
 		newTokens := *tokens
 		newTokens.OAuth2AccessToken = "new-access-token"
-		newTokens.OAuth2ExpiresAt = time.Now().Add(time.Hour)
 		return &newTokens, nil
 	}
 
-	tokens := testTokens()
-	client := NewClient(tokens)
-
-	err := client.refreshToken(context.Background())
+	got, err := refreshInMemory(context.Background(), testTokens())
 	if err != nil {
-		t.Fatalf("refreshToken: %v", err)
+		t.Fatalf("refreshInMemory: %v", err)
 	}
-	if client.tokens.OAuth2AccessToken != "new-access-token" {
-		t.Errorf("access token = %q, want new-access-token", client.tokens.OAuth2AccessToken)
+	if got.OAuth2AccessToken != "new-access-token" {
+		t.Errorf("access token = %q, want new-access-token", got.OAuth2AccessToken)
 	}
 }
 
-func TestRefreshToken_CallsOnTokenRefresh(t *testing.T) {
+func TestRefreshInMemory_Failure(t *testing.T) {
 	origRefresh := refreshTokensFn
 	t.Cleanup(func() { refreshTokensFn = origRefresh })
-	refreshTokensFn = func(_ context.Context, tokens *garminauth.Tokens, _ garminauth.LoginOptions) (*garminauth.Tokens, error) {
-		newTokens := *tokens
-		newTokens.OAuth2AccessToken = "callback-token"
-		newTokens.OAuth2ExpiresAt = time.Now().Add(time.Hour)
-		return &newTokens, nil
-	}
-
-	tokens := testTokens()
-	client := NewClient(tokens)
-
-	var called bool
-	var receivedTokens *garminauth.Tokens
-	client.OnTokenRefresh = func(t *garminauth.Tokens) {
-		called = true
-		receivedTokens = t
-	}
-
-	err := client.refreshToken(context.Background())
-	if err != nil {
-		t.Fatalf("refreshToken: %v", err)
-	}
-	if !called {
-		t.Fatal("OnTokenRefresh was not called")
-	}
-	if receivedTokens.OAuth2AccessToken != "callback-token" {
-		t.Errorf("received token = %q, want callback-token", receivedTokens.OAuth2AccessToken)
-	}
-}
-
-func TestRefreshToken_NilOnTokenRefresh(t *testing.T) {
-	origRefresh := refreshTokensFn
-	t.Cleanup(func() { refreshTokensFn = origRefresh })
-	refreshTokensFn = func(_ context.Context, tokens *garminauth.Tokens, _ garminauth.LoginOptions) (*garminauth.Tokens, error) {
-		newTokens := *tokens
-		newTokens.OAuth2AccessToken = "new-token"
-		return &newTokens, nil
-	}
-
-	tokens := testTokens()
-	client := NewClient(tokens)
-	// OnTokenRefresh is nil by default — must not panic.
-
-	err := client.refreshToken(context.Background())
-	if err != nil {
-		t.Fatalf("refreshToken: %v", err)
-	}
-	if client.tokens.OAuth2AccessToken != "new-token" {
-		t.Errorf("token = %q, want new-token", client.tokens.OAuth2AccessToken)
-	}
-}
-
-func TestRefreshToken_Failure(t *testing.T) {
-	origRefresh := refreshTokensFn
-	t.Cleanup(func() { refreshTokensFn = origRefresh })
-	refreshTokensFn = func(_ context.Context, _ *garminauth.Tokens, _ garminauth.LoginOptions) (*garminauth.Tokens, error) {
+	refreshTokensFn = func(context.Context, *garminauth.Tokens, garminauth.LoginOptions) (*garminauth.Tokens, error) {
 		return nil, errors.New("exchange failed")
 	}
 
-	tokens := testTokens()
-	client := NewClient(tokens)
-
-	err := client.refreshToken(context.Background())
-	if err == nil {
-		t.Fatal("expected error")
-	}
-	if !strings.Contains(err.Error(), "exchange failed") {
-		t.Errorf("error = %q, want to contain 'exchange failed'", err.Error())
+	_, err := refreshInMemory(context.Background(), testTokens())
+	var tokenErr *TokenExpiredError
+	if !errors.As(err, &tokenErr) {
+		t.Fatalf("err = %T %v, want TokenExpiredError", err, err)
 	}
 }
 

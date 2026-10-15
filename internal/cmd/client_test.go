@@ -3,7 +3,11 @@ package cmd
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
+	"io/fs"
+	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -21,7 +25,7 @@ import (
 )
 
 func TestResolveClient_ProactiveRefresh(t *testing.T) {
-	// Set up store with expired tokens.
+	testutil.TempConfigDir(t)
 	store := newTestSecretsStore(t)
 	overrideLoadSecrets(t, store)
 
@@ -30,9 +34,9 @@ func TestResolveClient_ProactiveRefresh(t *testing.T) {
 	storeTestTokens(t, store, "test@example.com", expired)
 
 	// Override proactive refresh to return fresh tokens.
-	origRefresh := proactiveRefreshFn
-	t.Cleanup(func() { proactiveRefreshFn = origRefresh })
-	proactiveRefreshFn = func(_ context.Context, tokens *garminauth.Tokens, _ garminauth.LoginOptions) (*garminauth.Tokens, error) {
+	origRefresh := refreshFn
+	t.Cleanup(func() { refreshFn = origRefresh })
+	refreshFn = func(_ context.Context, tokens *garminauth.Tokens, _ garminauth.LoginOptions) (*garminauth.Tokens, error) {
 		newTokens := *tokens
 		newTokens.OAuth2AccessToken = "proactively-refreshed"
 		newTokens.OAuth2ExpiresAt = time.Now().Add(time.Hour)
@@ -77,6 +81,7 @@ func TestResolveClient_ProactiveRefresh(t *testing.T) {
 }
 
 func TestResolveClient_ValidTokens_NoRefresh(t *testing.T) {
+	dir := testutil.TempConfigDir(t)
 	store := newTestSecretsStore(t)
 	overrideLoadSecrets(t, store)
 
@@ -84,10 +89,10 @@ func TestResolveClient_ValidTokens_NoRefresh(t *testing.T) {
 	storeTestTokens(t, store, "test@example.com", tokens)
 
 	// Override proactive refresh — should NOT be called.
-	origRefresh := proactiveRefreshFn
-	t.Cleanup(func() { proactiveRefreshFn = origRefresh })
+	origRefresh := refreshFn
+	t.Cleanup(func() { refreshFn = origRefresh })
 	refreshCalled := false
-	proactiveRefreshFn = func(_ context.Context, _ *garminauth.Tokens, _ garminauth.LoginOptions) (*garminauth.Tokens, error) {
+	refreshFn = func(_ context.Context, _ *garminauth.Tokens, _ garminauth.LoginOptions) (*garminauth.Tokens, error) {
 		refreshCalled = true
 		return nil, nil
 	}
@@ -113,9 +118,13 @@ func TestResolveClient_ValidTokens_NoRefresh(t *testing.T) {
 	if receivedTokens.OAuth2AccessToken != "test-access-token" {
 		t.Errorf("token = %q, want test-access-token", receivedTokens.OAuth2AccessToken)
 	}
+	if _, err := os.Stat(filepath.Join(dir, "token.lock")); !errors.Is(err, fs.ErrNotExist) {
+		t.Errorf("token.lock stat err = %v, want not exist: a valid token takes no lock", err)
+	}
 }
 
 func TestResolveClient_ProactiveRefreshFails_UsesOriginalTokens(t *testing.T) {
+	testutil.TempConfigDir(t)
 	store := newTestSecretsStore(t)
 	overrideLoadSecrets(t, store)
 
@@ -124,9 +133,9 @@ func TestResolveClient_ProactiveRefreshFails_UsesOriginalTokens(t *testing.T) {
 	storeTestTokens(t, store, "test@example.com", expired)
 
 	// Override proactive refresh to fail.
-	origRefresh := proactiveRefreshFn
-	t.Cleanup(func() { proactiveRefreshFn = origRefresh })
-	proactiveRefreshFn = func(_ context.Context, _ *garminauth.Tokens, _ garminauth.LoginOptions) (*garminauth.Tokens, error) {
+	origRefresh := refreshFn
+	t.Cleanup(func() { refreshFn = origRefresh })
+	refreshFn = func(_ context.Context, _ *garminauth.Tokens, _ garminauth.LoginOptions) (*garminauth.Tokens, error) {
 		return nil, fmt.Errorf("refresh unavailable")
 	}
 
@@ -151,41 +160,192 @@ func TestResolveClient_ProactiveRefreshFails_UsesOriginalTokens(t *testing.T) {
 	}
 }
 
-func TestResolveClient_OnTokenRefreshPersistsTokens(t *testing.T) {
+func TestResolveClient_RefresherRefreshesAndSaves(t *testing.T) {
+	testutil.TempConfigDir(t)
 	store := newTestSecretsStore(t)
 	overrideLoadSecrets(t, store)
+	storeTestTokens(t, store, "test@example.com", testTokens())
 
-	tokens := testTokens() // Valid tokens — no proactive refresh.
-	storeTestTokens(t, store, "test@example.com", tokens)
+	origRefresh := refreshFn
+	t.Cleanup(func() { refreshFn = origRefresh })
+	refreshFn = func(_ context.Context, tokens *garminauth.Tokens, _ garminauth.LoginOptions) (*garminauth.Tokens, error) {
+		fresh := *tokens
+		fresh.OAuth2AccessToken = "401-refreshed-token"
+		return &fresh, nil
+	}
 
 	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	client, err := resolveClient(g)
+	client, err := resolveClient(testGlobals(t, &buf, outfmt.Table, "test@example.com"))
 	if err != nil {
 		t.Fatalf("resolveClient: %v", err)
 	}
+	got, err := client.Refresher(context.Background(), client.Tokens())
+	if err != nil {
+		t.Fatalf("Refresher: %v", err)
+	}
+	if got.OAuth2AccessToken != "401-refreshed-token" {
+		t.Errorf("token = %q, want 401-refreshed-token", got.OAuth2AccessToken)
+	}
+	if persisted := storedAccessToken(t, store); persisted != "401-refreshed-token" {
+		t.Errorf("persisted token = %q, want 401-refreshed-token", persisted)
+	}
+}
 
-	if client.OnTokenRefresh == nil {
-		t.Fatal("OnTokenRefresh callback was not set")
+func TestResolveClient_RefresherAdoptsNewerStoredToken(t *testing.T) {
+	testutil.TempConfigDir(t)
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	storeTestTokens(t, store, "test@example.com", testTokens())
+
+	origRefresh := refreshFn
+	t.Cleanup(func() { refreshFn = origRefresh })
+	refreshFn = func(context.Context, *garminauth.Tokens, garminauth.LoginOptions) (*garminauth.Tokens, error) {
+		t.Error("refreshFn called, want the newer stored token")
+		return nil, fmt.Errorf("unexpected")
 	}
 
-	// Simulate a 401-triggered refresh by invoking the callback directly.
-	refreshed := testTokens()
-	refreshed.OAuth2AccessToken = "401-refreshed-token"
-	client.OnTokenRefresh(refreshed)
+	var buf bytes.Buffer
+	client, err := resolveClient(testGlobals(t, &buf, outfmt.Table, "test@example.com"))
+	if err != nil {
+		t.Fatalf("resolveClient: %v", err)
+	}
+	other := testTokens()
+	other.OAuth2AccessToken = "other-process-token"
+	storeTestTokens(t, store, "test@example.com", other)
 
-	// Verify the refreshed tokens were persisted to the keyring.
+	got, err := client.Refresher(context.Background(), client.Tokens())
+	if err != nil {
+		t.Fatalf("Refresher: %v", err)
+	}
+	if got.OAuth2AccessToken != "other-process-token" {
+		t.Errorf("token = %q, want other-process-token", got.OAuth2AccessToken)
+	}
+}
+
+func TestResolveClient_RefresherRefreshesNewerExpiredStoredToken(t *testing.T) {
+	testutil.TempConfigDir(t)
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	storeTestTokens(t, store, "test@example.com", testTokens())
+
+	origRefresh := refreshFn
+	t.Cleanup(func() { refreshFn = origRefresh })
+	var usedRefresh string
+	refreshFn = func(_ context.Context, tokens *garminauth.Tokens, _ garminauth.LoginOptions) (*garminauth.Tokens, error) {
+		usedRefresh = tokens.OAuth2RefreshToken
+		fresh := *tokens
+		fresh.OAuth2AccessToken = "fresh"
+		return &fresh, nil
+	}
+
+	var buf bytes.Buffer
+	client, err := resolveClient(testGlobals(t, &buf, outfmt.Table, "test@example.com"))
+	if err != nil {
+		t.Fatalf("resolveClient: %v", err)
+	}
+	other := testTokens()
+	other.OAuth2AccessToken = "other-process-token"
+	other.OAuth2RefreshToken = "other-process-refresh"
+	other.OAuth2ExpiresAt = time.Now().Add(-time.Minute)
+	storeTestTokens(t, store, "test@example.com", other)
+
+	if _, err := client.Refresher(context.Background(), client.Tokens()); err != nil {
+		t.Fatalf("Refresher: %v", err)
+	}
+	if usedRefresh != "other-process-refresh" {
+		t.Errorf("refresh token sent = %q, want the stored other-process-refresh", usedRefresh)
+	}
+}
+
+func TestResolveClient_RefresherRejected(t *testing.T) {
+	testutil.TempConfigDir(t)
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	storeTestTokens(t, store, "test@example.com", testTokens())
+
+	origRefresh := refreshFn
+	t.Cleanup(func() { refreshFn = origRefresh })
+	refreshFn = func(context.Context, *garminauth.Tokens, garminauth.LoginOptions) (*garminauth.Tokens, error) {
+		return nil, fmt.Errorf("HTTP 400: invalid_grant")
+	}
+
+	var buf bytes.Buffer
+	client, err := resolveClient(testGlobals(t, &buf, outfmt.Table, "test@example.com"))
+	if err != nil {
+		t.Fatalf("resolveClient: %v", err)
+	}
+	_, err = client.Refresher(context.Background(), client.Tokens())
+	var expired *garminapi.TokenExpiredError
+	if !errors.As(err, &expired) {
+		t.Fatalf("err = %T %v, want TokenExpiredError", err, err)
+	}
+}
+
+func TestResolveClient_LockFails(t *testing.T) {
+	dir := testutil.TempConfigDir(t)
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	expired := testTokens()
+	expired.OAuth2ExpiresAt = time.Now().Add(-time.Hour)
+	storeTestTokens(t, store, "test@example.com", expired)
+	if err := os.Chmod(dir, 0o500); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = os.Chmod(dir, 0o700) })
+
+	origRefresh := refreshFn
+	t.Cleanup(func() { refreshFn = origRefresh })
+	refreshFn = func(context.Context, *garminauth.Tokens, garminauth.LoginOptions) (*garminauth.Tokens, error) {
+		t.Error("refreshFn called without the lock")
+		return nil, fmt.Errorf("unexpected")
+	}
+
+	var buf bytes.Buffer
+	_, err := resolveClient(testGlobals(t, &buf, outfmt.Table, "test@example.com"))
+	if err == nil || !strings.Contains(err.Error(), "token.lock") {
+		t.Fatalf("err = %v, want one that names token.lock", err)
+	}
+}
+
+type failSetKeyring struct{ *memKeyring }
+
+func (failSetKeyring) Set(keyring.Item) error { return fmt.Errorf("keyring is read-only") }
+
+func TestResolveClient_SaveFails(t *testing.T) {
+	testutil.TempConfigDir(t)
+	ring := &memKeyring{items: map[string]keyring.Item{}}
+	expired := testTokens()
+	expired.OAuth2ExpiresAt = time.Now().Add(-time.Hour)
+	storeTestTokens(t, secrets.OpenWithKeyring(ring), "test@example.com", expired)
+	overrideLoadSecrets(t, secrets.OpenWithKeyring(failSetKeyring{ring}))
+
+	origRefresh := refreshFn
+	t.Cleanup(func() { refreshFn = origRefresh })
+	refreshFn = func(_ context.Context, tokens *garminauth.Tokens, _ garminauth.LoginOptions) (*garminauth.Tokens, error) {
+		fresh := *tokens
+		fresh.OAuth2AccessToken = "unsaved"
+		fresh.OAuth2ExpiresAt = time.Now().Add(time.Hour)
+		return &fresh, nil
+	}
+
+	var buf bytes.Buffer
+	_, err := resolveClient(testGlobals(t, &buf, outfmt.Table, "test@example.com"))
+	if err == nil || !strings.Contains(err.Error(), "save refreshed token") {
+		t.Fatalf("err = %v, want a save error", err)
+	}
+}
+
+func storedAccessToken(t *testing.T, store *secrets.Store) string {
+	t.Helper()
 	data, err := store.Get("test@example.com")
 	if err != nil {
 		t.Fatalf("store.Get: %v", err)
 	}
-	persisted, err := garminauth.UnmarshalTokens(data)
+	tokens, err := garminauth.UnmarshalTokens(data)
 	if err != nil {
 		t.Fatalf("unmarshal: %v", err)
 	}
-	if persisted.OAuth2AccessToken != "401-refreshed-token" {
-		t.Errorf("persisted token = %q, want 401-refreshed-token", persisted.OAuth2AccessToken)
-	}
+	return tokens.OAuth2AccessToken
 }
 
 func TestResolveClient_Domain(t *testing.T) {
@@ -276,19 +436,24 @@ func TestResolveClient_ConcurrentExpiredRefreshesOnce(t *testing.T) {
 	expired.OAuth2ExpiresAt = time.Now().Add(-time.Hour)
 	storeTestTokens(t, store, "test@example.com", expired)
 
-	origRefresh := proactiveRefreshFn
-	t.Cleanup(func() { proactiveRefreshFn = origRefresh })
+	origRefresh := refreshFn
+	t.Cleanup(func() { refreshFn = origRefresh })
 	var calls atomic.Int32
-	proactiveRefreshFn = func(_ context.Context, tokens *garminauth.Tokens, _ garminauth.LoginOptions) (*garminauth.Tokens, error) {
+	var used sync.Map
+	refreshFn = func(_ context.Context, tokens *garminauth.Tokens, _ garminauth.LoginOptions) (*garminauth.Tokens, error) {
 		n := calls.Add(1)
 		time.Sleep(100 * time.Millisecond)
+		if _, reused := used.LoadOrStore(tokens.OAuth2RefreshToken, true); reused {
+			return nil, fmt.Errorf("HTTP 400: invalid_grant")
+		}
 		fresh := *tokens
 		fresh.OAuth2AccessToken = fmt.Sprintf("refreshed-%d", n)
+		fresh.OAuth2RefreshToken = fmt.Sprintf("refresh-%d", n)
 		fresh.OAuth2ExpiresAt = time.Now().Add(time.Hour)
 		return &fresh, nil
 	}
 
-	got := make([]string, 2)
+	got := make([]string, 5)
 	var wg sync.WaitGroup
 	for i := range got {
 		wg.Go(func() {
@@ -310,5 +475,8 @@ func TestResolveClient_ConcurrentExpiredRefreshesOnce(t *testing.T) {
 		if tok != "refreshed-1" {
 			t.Errorf("client %d token = %q, want refreshed-1", i, tok)
 		}
+	}
+	if persisted := storedAccessToken(t, store); persisted != "refreshed-1" {
+		t.Errorf("persisted token = %q, want refreshed-1", persisted)
 	}
 }
