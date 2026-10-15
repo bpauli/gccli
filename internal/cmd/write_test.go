@@ -527,10 +527,10 @@ func clientMethods(fns []*ast.FuncDecl) map[string]*ast.FuncDecl {
 	return methods
 }
 
-// apiWriteMethods returns the Client methods that send a write: those that
-// name a write verb, and those that call such a method.
-func apiWriteMethods(methods map[string]*ast.FuncDecl) map[string]string {
-	writes := map[string]string{}
+type clientMethod = string
+
+func apiWriteMethods(methods map[string]*ast.FuncDecl) map[string]clientMethod {
+	writes := map[string]clientMethod{}
 	for name, fn := range methods {
 		if namesWriteVerb(fn.Body) {
 			writes[name] = name
@@ -539,10 +539,8 @@ func apiWriteMethods(methods map[string]*ast.FuncDecl) map[string]string {
 	return reachWrites(slices.Collect(maps.Values(methods)), writes)
 }
 
-// runWrites maps each Run method in fns that sends a write, itself or
-// through other functions in fns, to the Client method it calls.
-func runWrites(fns []*ast.FuncDecl, apiWrites map[string]string) map[*ast.FuncDecl]string {
-	writes := map[string]string{}
+func runWrites(fns []*ast.FuncDecl, apiWrites map[string]clientMethod) map[*ast.FuncDecl]clientMethod {
+	writes := map[string]clientMethod{}
 	for name := range apiWrites {
 		writes[name] = name
 	}
@@ -555,7 +553,7 @@ func runWrites(fns []*ast.FuncDecl, apiWrites map[string]string) map[*ast.FuncDe
 		}
 	}
 	writes = reachWrites(helpers, writes)
-	out := map[*ast.FuncDecl]string{}
+	out := map[*ast.FuncDecl]clientMethod{}
 	for _, fn := range runs {
 		if callee, ok := firstCallIn(fn.Body, writes); ok {
 			out[fn] = writes[callee]
@@ -564,9 +562,7 @@ func runWrites(fns []*ast.FuncDecl, apiWrites map[string]string) map[*ast.FuncDe
 	return out
 }
 
-// reachWrites adds to writes each function in fns that calls a function
-// already in writes, until no more are added. Functions are matched by name.
-func reachWrites(fns []*ast.FuncDecl, writes map[string]string) map[string]string {
+func reachWrites(fns []*ast.FuncDecl, writes map[string]clientMethod) map[string]clientMethod {
 	for grew := true; grew; {
 		grew = false
 		for _, fn := range fns {
@@ -581,7 +577,7 @@ func reachWrites(fns []*ast.FuncDecl, writes map[string]string) map[string]strin
 	return writes
 }
 
-func firstCallIn(body ast.Node, writes map[string]string) (string, bool) {
+func firstCallIn(body ast.Node, writes map[string]clientMethod) (string, bool) {
 	for _, name := range slices.Sorted(maps.Keys(calls(body))) {
 		if _, ok := writes[name]; ok {
 			return name, true
@@ -602,7 +598,7 @@ func namesWriteVerb(body ast.Node) bool {
 		case *ast.Ident:
 			found = found || writeVerbs[n.Name]
 		case *ast.BasicLit:
-			found = found || (n.Kind == token.STRING && writeVerbs[strings.ToUpper(n.Value)])
+			found = found || (n.Kind == token.STRING && writeVerbs[n.Value])
 		}
 		return !found
 	})
