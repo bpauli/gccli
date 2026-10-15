@@ -7,8 +7,11 @@ import (
 	"go/parser"
 	"go/token"
 	"io"
+	"maps"
 	"net/http"
 	"path/filepath"
+	"slices"
+	"strconv"
 	"strings"
 	"testing"
 )
@@ -245,4 +248,98 @@ func TestEveryTableIsIndexed(t *testing.T) {
 	if rows != len(endpoints) {
 		t.Errorf("the package declares %d endpoint rows but the index holds %d: add each service table to mustIndex in endpoint.go", rows, len(endpoints))
 	}
+}
+
+func TestCallSitesMatchTable(t *testing.T) {
+	fset := token.NewFileSet()
+	files, err := filepath.Glob("../cmd/*.go")
+	if err != nil {
+		t.Fatal(err)
+	}
+	own, err := filepath.Glob("*.go")
+	if err != nil {
+		t.Fatal(err)
+	}
+	files = append(files, own...)
+	called := map[string]bool{}
+	for _, file := range files {
+		if strings.HasSuffix(file, "_test.go") {
+			continue
+		}
+		f, err := parser.ParseFile(fset, file, nil, 0)
+		if err != nil {
+			t.Fatal(err)
+		}
+		ast.Inspect(f, func(n ast.Node) bool {
+			call, ok := n.(*ast.CallExpr)
+			if !ok || len(call.Args) != 4 {
+				return true
+			}
+			if sel, ok := call.Fun.(*ast.SelectorExpr); !ok || sel.Sel.Name != "Call" {
+				return true
+			}
+			pos := fset.Position(call.Pos())
+			lit, ok := call.Args[1].(*ast.BasicLit)
+			if !ok || lit.Kind != token.STRING {
+				t.Errorf("%s: pass the endpoint name to Client.Call as a string literal, so the write census can read it", pos)
+				return true
+			}
+			name, _ := strconv.Unquote(lit.Value)
+			r, ok := endpoints[name]
+			if !ok {
+				t.Errorf("%s: Client.Call names %q, which is not a row of the endpoint table", pos, name)
+				return true
+			}
+			called[name] = true
+			keys, ok := literalKeys(call.Args[2])
+			if !ok {
+				return true
+			}
+			for _, k := range keys {
+				if _, ok := r.params[k]; !ok {
+					t.Errorf("%s: row %s has no placeholder {%s}", pos, name, k)
+				}
+			}
+			for _, p := range r.names {
+				if rule := r.params[p]; !rule.Optional && rule.Default == "" && !slices.Contains(keys, p) {
+					t.Errorf("%s: row %s needs a value for {%s}", pos, name, p)
+				}
+			}
+			return true
+		})
+	}
+	for _, name := range slices.Sorted(maps.Keys(endpoints)) {
+		if !called[name] {
+			t.Errorf("row %s has no caller in internal/cmd or internal/garminapi: delete it or call it", name)
+		}
+	}
+}
+
+func literalKeys(e ast.Expr) (keys []string, ok bool) {
+	if id, isIdent := e.(*ast.Ident); isIdent && id.Name == "nil" {
+		return nil, true
+	}
+	lit, isLit := e.(*ast.CompositeLit)
+	if !isLit {
+		return nil, false
+	}
+	if _, isMap := lit.Type.(*ast.MapType); !isMap {
+		return nil, false
+	}
+	for _, el := range lit.Elts {
+		kv, isKV := el.(*ast.KeyValueExpr)
+		if !isKV {
+			return nil, false
+		}
+		k, isStr := kv.Key.(*ast.BasicLit)
+		if !isStr || k.Kind != token.STRING {
+			return nil, false
+		}
+		key, err := strconv.Unquote(k.Value)
+		if err != nil {
+			return nil, false
+		}
+		keys = append(keys, key)
+	}
+	return keys, true
 }

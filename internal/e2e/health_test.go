@@ -115,13 +115,13 @@ func TestPersonalRecords(t *testing.T) {
 	ctx := context.Background()
 	displayName := displayNameOf(t, client)
 
-	data, err := client.GetPersonalRecords(ctx, displayName)
+	data, err := client.Call(ctx, "records.list", map[string]string{"displayName": displayName}, nil)
 	if err != nil {
-		t.Fatalf("GetPersonalRecords failed: %v", err)
+		t.Fatalf("records.list failed: %v", err)
 	}
 
 	if !json.Valid(data) {
-		t.Error("expected valid JSON from GetPersonalRecords")
+		t.Error("expected valid JSON from records.list")
 	}
-	t.Logf("GetPersonalRecords returned %d bytes", len(data))
+	t.Logf("records.list returned %d bytes", len(data))
 }

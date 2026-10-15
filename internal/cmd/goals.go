@@ -20,7 +20,7 @@ func (c *GoalsListCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetGoals(g.Context, c.Status)
+	data, err := client.Call(g.Context, "goals.list", map[string]string{"status": c.Status}, nil)
 	if err != nil {
 		return fmt.Errorf("get goals: %w", err)
 	}
@@ -44,7 +44,7 @@ func (c *BadgesEarnedCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetBadgesEarned(g.Context)
+	data, err := client.Call(g.Context, "badges.earned", nil, nil)
 	if err != nil {
 		return fmt.Errorf("get earned badges: %w", err)
 	}
@@ -61,7 +61,7 @@ func (c *BadgesAvailableCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetBadgesAvailable(g.Context)
+	data, err := client.Call(g.Context, "badges.available", nil, nil)
 	if err != nil {
 		return fmt.Errorf("get available badges: %w", err)
 	}
@@ -78,7 +78,7 @@ func (c *BadgesInProgressCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetBadgesInProgress(g.Context)
+	data, err := client.Call(g.Context, "badges.in-progress", nil, nil)
 	if err != nil {
 		return fmt.Errorf("get in-progress badges: %w", err)
 	}
@@ -101,7 +101,7 @@ func (c *ChallengesListCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetChallenges(g.Context)
+	data, err := client.Call(g.Context, "challenges.joined", nil, nil)
 	if err != nil {
 		return fmt.Errorf("get challenges: %w", err)
 	}
@@ -118,7 +118,7 @@ func (c *ChallengesBadgeCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetBadgeChallenges(g.Context)
+	data, err := client.Call(g.Context, "badges.challenges", nil, nil)
 	if err != nil {
 		return fmt.Errorf("get badge challenges: %w", err)
 	}
@@ -140,7 +140,7 @@ func (c *RecordsCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetPersonalRecords(g.Context, displayName)
+	data, err := client.Call(g.Context, "records.list", map[string]string{"displayName": displayName}, nil)
 	if err != nil {
 		return fmt.Errorf("get personal records: %w", err)
 	}

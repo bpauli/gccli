@@ -12,7 +12,9 @@ import (
 	"strings"
 )
 
-var endpoints = mustIndex()
+var endpoints = mustIndex(
+	goalsEndpoints,
+)
 
 // Host is the Garmin server an endpoint lives on.
 type Host uint8
