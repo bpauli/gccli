@@ -287,12 +287,14 @@ func walkFlags(t *testing.T, fn func(path string, f *kong.Flag)) {
 func TestNoLegacyFlagNames(t *testing.T) {
 	dateType := reflect.TypeOf(Date(""))
 	walkFlags(t, func(path string, f *kong.Flag) {
-		switch f.Name {
-		case "start-date", "end-date", "page":
-			t.Errorf("%s: legacy flag --%s", path, f.Name)
-		case "start", "end":
-			if f.Target.Type() != dateType {
-				t.Errorf("%s: --%s has type %s, want Date", path, f.Name, f.Target.Type())
+		for _, name := range append([]string{f.Name}, f.Aliases...) {
+			switch name {
+			case "start-date", "end-date", "page":
+				t.Errorf("%s: legacy flag --%s", path, name)
+			case "start", "end":
+				if f.Target.Type() != dateType {
+					t.Errorf("%s: --%s has type %s, want Date", path, name, f.Target.Type())
+				}
 			}
 		}
 	})
