@@ -288,10 +288,9 @@ func TestResolveClient_LockFails(t *testing.T) {
 	expired := testTokens()
 	expired.OAuth2ExpiresAt = time.Now().Add(-time.Hour)
 	storeTestTokens(t, store, "test@example.com", expired)
-	if err := os.Chmod(dir, 0o500); err != nil {
+	if err := os.Mkdir(filepath.Join(dir, "token.lock"), 0o700); err != nil {
 		t.Fatal(err)
 	}
-	t.Cleanup(func() { _ = os.Chmod(dir, 0o700) })
 
 	origRefresh := refreshFn
 	t.Cleanup(func() { refreshFn = origRefresh })
