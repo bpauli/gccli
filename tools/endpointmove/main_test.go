@@ -291,6 +291,140 @@ var healthEndpoints = []Endpoint{
 	}
 }
 
+func TestMoveHandlesBodiesAndOptionalPairs(t *testing.T) {
+	root := t.TempDir()
+	files := map[string]string{
+		"go.mod":                  before["go.mod"],
+		"api/endpoint.go":         after["api/endpoint.go"],
+		"api/passthrough_test.go": "package api\n\nvar passthroughMethods = []string{\n\t\"GetThings\", \"Other\", \"UpdateThing\",\n}\n",
+		"api/things.go": `package api
+
+import (
+	"bytes"
+	"context"
+	"encoding/json"
+	"fmt"
+	"net/http"
+)
+
+// GetThings has an optional filter.
+func (c *Client) GetThings(ctx context.Context, start int, kind, end string) (json.RawMessage, error) {
+	path := fmt.Sprintf("/things?start=%d", start)
+	if kind != "" {
+		path += "&kind=" + kind
+	}
+	if end != "" {
+		path += "&end=" + end
+	}
+	return c.ConnectAPI(ctx, http.MethodGet, path, nil)
+}
+
+// UpdateThing sends the payload as it is.
+func (c *Client) UpdateThing(ctx context.Context, id string, payload json.RawMessage) (json.RawMessage, error) {
+	return c.ConnectAPI(ctx, http.MethodPut, "/things/"+id, bytes.NewReader(payload))
+}
+
+// GetTwice uses its filter in the path too, so it stays a method.
+func (c *Client) GetTwice(ctx context.Context, kind string) (json.RawMessage, error) {
+	path := "/twice/" + kind
+	if kind != "" {
+		path += "?kind=" + kind
+	}
+	return c.ConnectAPI(ctx, http.MethodGet, path, nil)
+}
+
+// SendBuilt sends a body it builds, so it stays a method.
+func (c *Client) SendBuilt(ctx context.Context, id string) (json.RawMessage, error) {
+	return c.ConnectAPI(ctx, http.MethodPost, "/built/"+id, bytes.NewReader([]byte(id)))
+}
+`,
+		"cli/client.go": before["cli/client.go"],
+		"cli/things.go": `package cli
+
+import "context"
+
+func run(ctx context.Context, kind string, body []byte) error {
+	if _, err := client.GetThings(ctx, 0, kind, ""); err != nil {
+		return err
+	}
+	_, err := client.UpdateThing(ctx, "7", body)
+	return err
+}
+`,
+	}
+	for name, src := range files {
+		path := filepath.Join(root, name)
+		if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(path, []byte(src), 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if _, err := move(root, "api/things.go", ""); err != nil {
+		t.Fatalf("move: %v", err)
+	}
+	want := map[string]string{
+		"api/passthrough_test.go": "package api\n\nvar passthroughMethods = []string{\n\t\"Other\",\n}\n",
+		"api/things.go": `package api
+
+import (
+	"bytes"
+	"context"
+	"encoding/json"
+	"net/http"
+)
+
+var thingsEndpoints = []Endpoint{
+	{
+		Name: "things.list", Method: http.MethodGet, Host: ConnectAPI,
+		Path:   "/things?start={start}&kind={kind}&end={end}",
+		Params: []Param{{Name: "kind", Optional: true}, {Name: "end", Optional: true}},
+	},
+	{Name: "things.update", Method: http.MethodPut, Host: ConnectAPI, Path: "/things/{id}", Body: true},
+}
+
+// GetTwice uses its filter in the path too, so it stays a method.
+func (c *Client) GetTwice(ctx context.Context, kind string) (json.RawMessage, error) {
+	path := "/twice/" + kind
+	if kind != "" {
+		path += "?kind=" + kind
+	}
+	return c.ConnectAPI(ctx, http.MethodGet, path, nil)
+}
+
+// SendBuilt sends a body it builds, so it stays a method.
+func (c *Client) SendBuilt(ctx context.Context, id string) (json.RawMessage, error) {
+	return c.ConnectAPI(ctx, http.MethodPost, "/built/"+id, bytes.NewReader([]byte(id)))
+}
+`,
+		"cli/things.go": `package cli
+
+import "context"
+
+func run(ctx context.Context, kind string, body []byte) error {
+	if _, err := client.Call(ctx, "things.list", map[string]string{"start": "0", "kind": kind, "end": ""}, nil); err != nil {
+		return err
+	}
+	_, err := client.Call(ctx, "things.update", map[string]string{"id": "7"}, body)
+	return err
+}
+`,
+	}
+	for name, exp := range want {
+		got, err := os.ReadFile(filepath.Join(root, name))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if string(got) != exp {
+			t.Errorf("%s:\n%s\nwant:\n%s", name, got, exp)
+		}
+	}
+	if again, err := move(root, "api/things.go", ""); err != nil || len(again) != 0 {
+		t.Errorf("second run changed %q, err %v", again, err)
+	}
+}
+
 func TestAction(t *testing.T) {
 	tests := []struct{ method, area, want string }{
 		{"GetDailySummary", "health", "daily-summary"},
@@ -300,7 +434,14 @@ func TestAction(t *testing.T) {
 		{"GetTrainingPlans", "training", "plans"},
 		{"GetTrainingReadiness", "health", "training-readiness"},
 		{"RequestReload", "wellness", "request-reload"},
-		{"GetHealth", "health", "health"},
+		{"GetHealth", "health", "get"},
+		{"GetActivities", "activities", "list"},
+		{"GetActivity", "activities", "get"},
+		{"GetActivityDetails", "activities", "details"},
+		{"DeleteActivity", "activities", "delete"},
+		{"SearchActivities", "activities", "search"},
+		{"GetCourseFavorites", "courses", "favorites"},
+		{"UnscheduleWorkout", "workouts", "unschedule"},
 	}
 	for _, tc := range tests {
 		if got := action(tc.method, tc.area); got != tc.want {
