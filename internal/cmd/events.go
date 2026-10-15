@@ -23,7 +23,7 @@ type EventsCmd struct {
 type EventsListCmd struct {
 	StartDate  Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"start"`
 	Pagination `embed:"" set:"items=events"`
-	Sort       string `help:"Sort order." default:"eventDate_asc" enum:"eventDate_asc,eventDate_desc" short:"s"`
+	Sort       string `help:"Sort order." default:"eventDate_asc" enum:"eventDate_asc,eventDate_desc"`
 }
 
 func (c *EventsListCmd) Validate() error {

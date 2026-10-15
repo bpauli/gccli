@@ -207,6 +207,12 @@ func TestFlagArgv(t *testing.T) {
 		{args: []string{"devices", "solar", "123", "--start", "bad"}},
 		{args: []string{"events", "list", "--start", "bad"}},
 		{args: []string{"workouts", "schedule", "list", "--start", "bad", "--end", "today"}},
+		{
+			args:      []string{"events", "list", "--sort", "eventDate_desc"},
+			wantPath:  "/calendar-service/events",
+			wantQuery: map[string]string{"sortOrder": "eventDate_desc"},
+		},
+		{args: []string{"events", "list", "-s", "eventDate_desc"}},
 		{args: []string{"events", "list", "--offset", "3", "--limit", "2"}},
 		{args: []string{"events", "list", "--offset", "-20"}},
 		{args: []string{"events", "list", "--page", "2"}},
@@ -281,6 +287,24 @@ func TestNoLegacyFlagNames(t *testing.T) {
 			if f.Target.Type() != dateType {
 				t.Errorf("%s: --%s has type %s, want Date", path, f.Name, f.Target.Type())
 			}
+		}
+	})
+}
+
+func TestShortFlagsHaveOneMeaning(t *testing.T) {
+	type use struct{ long, path string }
+	first := map[rune]use{}
+	walkFlags(t, func(path string, f *kong.Flag) {
+		if f.Short == 0 {
+			return
+		}
+		prev, ok := first[f.Short]
+		if !ok {
+			first[f.Short] = use{long: f.Name, path: path}
+			return
+		}
+		if prev.long != f.Name {
+			t.Errorf("-%c means --%s in %q and --%s in %q", f.Short, prev.long, prev.path, f.Name, path)
 		}
 	})
 }
