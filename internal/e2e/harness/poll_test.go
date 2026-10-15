@@ -22,7 +22,7 @@ func TestPollGivesUpAfterTimeout(t *testing.T) {
 	if found {
 		t.Error("Poll = true, want false")
 	}
-	if elapsed := time.Since(start); elapsed < 50*time.Millisecond {
-		t.Errorf("Poll gave up after %v, want at least 50ms", elapsed)
+	if elapsed := time.Since(start); elapsed < 50*time.Millisecond || elapsed > time.Second {
+		t.Errorf("Poll gave up after %v, want between 50ms and 1s", elapsed)
 	}
 }
