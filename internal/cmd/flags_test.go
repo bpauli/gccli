@@ -30,6 +30,9 @@ func TestDateDecode(t *testing.T) {
 		{args: []string{"--r", "2024-01-02", "--d=+30d"}, want: "2026-11-14"},
 		{args: []string{"--r", "2024-01-02", "--d", "bad"}, wantErr: `--d: invalid date "bad"`},
 		{args: []string{"--r", "2024-01-02", "--d", "20"}, wantErr: `--d: invalid date "20"`},
+		{args: []string{"--r", "2024-01-02", "--d", ""}, wantErr: "--d: empty date"},
+		{args: []string{"--r", "2024-01-02", "--d", " "}, wantErr: "--d: empty date"},
+		{args: []string{"--r", ""}, wantErr: "--r: empty date"},
 		{args: []string{"--d", "today"}, wantErr: "missing flags: --r=DATE"},
 	}
 	for _, tt := range tests {
@@ -207,6 +210,10 @@ func TestFlagArgv(t *testing.T) {
 		{args: []string{"devices", "solar", "123", "--start", "bad"}},
 		{args: []string{"events", "list", "--start", "bad"}},
 		{args: []string{"workouts", "schedule", "list", "--start", "bad", "--end", "today"}},
+		{args: []string{"activities", "search", "--start", ""}},
+		{args: []string{"workouts", "schedule", "list", "--start", "", "--end", "today"}},
+		{args: []string{"events", "list", "--start", ""}},
+		{args: []string{"health", "steps", "daily", "--start", "", "--end", "today"}},
 		{
 			args:      []string{"events", "list", "--sort", "eventDate_desc"},
 			wantPath:  "/calendar-service/events",
