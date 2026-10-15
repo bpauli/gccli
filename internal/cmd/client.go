@@ -130,7 +130,7 @@ func (r *tokenRefresher) refresh(ctx context.Context, sent *garminauth.Tokens) (
 		return nil, &garminapi.TokenExpiredError{Email: r.email, Err: err}
 	}
 	if err := persistTokens(r.store, r.email, fresh); err != nil {
-		return nil, fmt.Errorf("save refreshed token: %w", err)
+		r.ui.Warnf("Could not save the refreshed token: %v", err)
 	}
 	return fresh, nil
 }
