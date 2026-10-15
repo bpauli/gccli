@@ -13,7 +13,7 @@ import (
 // imported back, producing an identical token set. Token values are never
 // logged to avoid leaking credentials in CI output.
 func TestAuthExportImport(t *testing.T) {
-	original := getOrLogin(t)
+	original := getOrLogin(t).Tokens()
 
 	// --- Export: marshal and base64-encode ---
 	data, err := original.Marshal()

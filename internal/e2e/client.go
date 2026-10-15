@@ -12,30 +12,32 @@ import (
 
 	"github.com/bpauli/gccli/internal/e2e/harness"
 	"github.com/bpauli/gccli/internal/garminapi"
-	"github.com/bpauli/gccli/internal/garminauth"
 )
 
-// cachedTokens stores tokens across tests in the same test binary run so
-// we only authenticate once against the real Garmin SSO.
-// loginErr is stored on first auth failure so subsequent tests skip immediately.
 var (
-	cachedTokens *garminauth.Tokens
-	loginErr     error
-	tokensMu     sync.Mutex
+	shared   *harness.SharedTokens
+	loginErr error
+	tokensMu sync.Mutex
 )
 
 func AuthenticatedClient(t *testing.T) *garminapi.Client {
 	t.Helper()
 
-	tokens := getOrLogin(t)
-	return garminapi.NewClient(tokens)
+	s := getOrLogin(t)
+	client := garminapi.NewClient(s.Tokens())
+	client.Refresher = s.Refresh
+	return client
 }
 
-func getOrLogin(t *testing.T) *garminauth.Tokens {
+func getOrLogin(t *testing.T) *harness.SharedTokens {
 	t.Helper()
 
 	tokensMu.Lock()
 	defer tokensMu.Unlock()
+
+	if loginErr == nil && shared != nil {
+		loginErr = shared.Err()
+	}
 
 	var rateLimited *harness.SSORateLimitError
 	if errors.As(loginErr, &rateLimited) {
@@ -46,17 +48,19 @@ func getOrLogin(t *testing.T) *garminauth.Tokens {
 	}
 
 	if raw := os.Getenv("GARMIN_TOKEN"); raw != "" {
-		if cachedTokens == nil {
-			cachedTokens, loginErr = harness.LoadToken(context.Background(), raw, http.DefaultTransport)
-			if loginErr != nil {
-				t.Fatalf("E2E token: %v", loginErr)
+		if shared == nil {
+			tokens, err := harness.LoadToken(context.Background(), raw, http.DefaultTransport)
+			if err != nil {
+				loginErr = err
+				t.Fatalf("E2E token: %v", err)
 			}
+			shared = harness.NewSharedTokens(tokens, http.DefaultTransport)
 		}
-		return cachedTokens
+		return shared
 	}
 
-	if cachedTokens != nil && !cachedTokens.IsExpired() {
-		return cachedTokens
+	if shared != nil && !shared.Tokens().IsExpired() {
+		return shared
 	}
 
 	email, password := LoadEnv(t)
@@ -70,6 +74,6 @@ func getOrLogin(t *testing.T) *garminauth.Tokens {
 		t.Fatalf("E2E login failed: %v", err)
 	}
 
-	cachedTokens = tokens
-	return cachedTokens
+	shared = harness.NewSharedTokens(tokens, http.DefaultTransport)
+	return shared
 }
