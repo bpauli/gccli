@@ -3,6 +3,7 @@ package payload
 import (
 	"encoding/json"
 	"math"
+	"strings"
 	"testing"
 )
 
@@ -473,5 +474,43 @@ func TestBuildWorkoutJSON_UnknownSport(t *testing.T) {
 	_, err := buildWorkoutJSON("Bad", "unknown", nil)
 	if err == nil {
 		t.Fatal("expected error, got nil")
+	}
+}
+
+func TestWorkout_RejectsOutOfRangeValues(t *testing.T) {
+	digits400 := strings.Repeat("9", 400)
+	overflowsTimes60 := "2" + strings.Repeat("0", 307)
+	tests := []struct {
+		name  string
+		steps []string
+		want  string
+	}{
+		{"NaN target", []string{"run:5m@hr:nan-160"}, `invalid step "run:5m@hr:nan-160": invalid range low value "nan": out of range`},
+		{"Inf target", []string{"run:5m@hr:100-inf"}, `invalid step "run:5m@hr:100-inf": invalid range high value "inf": out of range`},
+		{"Infinity target", []string{"interval:4m@power:200-Infinity"}, `invalid step "interval:4m@power:200-Infinity": invalid range high value "Infinity": out of range`},
+		{"400-digit minutes", []string{"run:" + digits400 + "m"}, `invalid step "run:` + digits400 + `m": invalid duration "` + digits400 + `m": out of range`},
+		{"400-digit seconds", []string{"run:" + digits400 + "s"}, `invalid step "run:` + digits400 + `s": invalid duration "` + digits400 + `s": out of range`},
+		{"minutes overflow in seconds", []string{"run:" + overflowsTimes60 + "m"}, `invalid step "run:` + overflowsTimes60 + `m": invalid duration "` + overflowsTimes60 + `m": out of range`},
+		{"400-digit pace", []string{"run:5m@pace:" + digits400 + ":00-" + digits400 + ":01"}, `invalid step "run:5m@pace:` + digits400 + ":00-" + digits400 + `:01": invalid pace "` + digits400 + `:00": out of range`},
+		{"pace overflows in seconds", []string{"run:5m@pace:" + overflowsTimes60 + ":00-" + overflowsTimes60 + ":01"}, `invalid step "run:5m@pace:` + overflowsTimes60 + ":00-" + overflowsTimes60 + `:01": invalid pace "` + overflowsTimes60 + `:00": out of range`},
+		{"no steps", nil, `invalid step "": expected type:duration[@target:values]`},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			body, err := Workout("Foo", "run", "km", tt.steps)
+			if err == nil || err.Error() != tt.want {
+				t.Fatalf("Workout(%q) = %s, %v; want error %q", tt.steps, body, err, tt.want)
+			}
+		})
+	}
+}
+
+func TestWorkout_KeepsLargestFiniteTarget(t *testing.T) {
+	body, err := Workout("Foo", "run", "km", []string{"run:5m@hr:1-1.7976931348623157e308"})
+	if err != nil {
+		t.Fatalf("Workout: %v", err)
+	}
+	if !strings.Contains(string(body), `"targetValueTwo":1.7976931348623157e+308`) {
+		t.Errorf("body %s does not carry the largest finite target", body)
 	}
 }

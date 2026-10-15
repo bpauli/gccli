@@ -5,6 +5,7 @@ package payload
 import (
 	"encoding/json"
 	"fmt"
+	"math"
 	"regexp"
 	"strconv"
 	"strings"
@@ -13,6 +14,12 @@ import (
 )
 
 const metersPerKm = 1000.0
+
+// finite reports whether v can go into a JSON body. strconv.ParseFloat
+// accepts "nan" and "inf", and large inputs overflow to Inf.
+func finite(v float64) bool {
+	return !math.IsNaN(v) && !math.IsInf(v, 0)
+}
 
 type workoutStep struct {
 	stepType       string
@@ -83,6 +90,9 @@ func Workout(name, sportType, unit string, rawSteps []string) (json.RawMessage, 
 }
 
 func parseSteps(raw []string, unit string) ([]workoutStep, error) {
+	if len(raw) == 0 {
+		return nil, fmt.Errorf(`invalid step "": expected type:duration[@target:values]`)
+	}
 	steps := make([]workoutStep, 0, len(raw))
 	for _, s := range raw {
 		step, err := parseStep(s, unit)
@@ -174,6 +184,9 @@ func parseStepDuration(s string) (float64, error) {
 	if total == 0 {
 		return 0, fmt.Errorf("duration must be greater than zero")
 	}
+	if !finite(total) {
+		return 0, fmt.Errorf("invalid duration %q: out of range", s)
+	}
 
 	return total, nil
 }
@@ -189,10 +202,16 @@ func parseNumericRange(s string) (float64, float64, error) {
 	if err != nil {
 		return 0, 0, fmt.Errorf("invalid range low value %q: %w", low, err)
 	}
+	if !finite(lowVal) {
+		return 0, 0, fmt.Errorf("invalid range low value %q: out of range", low)
+	}
 
 	highVal, err := strconv.ParseFloat(high, 64)
 	if err != nil {
 		return 0, 0, fmt.Errorf("invalid range high value %q: %w", high, err)
+	}
+	if !finite(highVal) {
+		return 0, 0, fmt.Errorf("invalid range high value %q: out of range", high)
 	}
 
 	if lowVal >= highVal {
@@ -256,6 +275,9 @@ func parsePaceToMPS(s string, unit string) (float64, error) {
 
 	if totalSecs == 0 {
 		return 0, fmt.Errorf("pace must be greater than zero")
+	}
+	if !finite(totalSecs) {
+		return 0, fmt.Errorf("invalid pace %q: out of range", s)
 	}
 
 	dist := metersPerKm

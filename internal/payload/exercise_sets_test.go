@@ -261,3 +261,36 @@ func TestParseExerciseSets_LastExerciseWithRest(t *testing.T) {
 		t.Errorf("set[1].setType = %q, want REST", sets[1].SetType)
 	}
 }
+
+func TestExerciseSets_RejectsBadValues(t *testing.T) {
+	tests := []struct {
+		exercise string
+		want     string
+	}{
+		{"A/B:12@inf", `exercise 1 ("A/B:12@inf"): invalid weight "inf": out of range`},
+		{"A/B:12@nan", `exercise 1 ("A/B:12@nan"): invalid weight "nan": out of range`},
+		{"A/B:12@-Inf", `exercise 1 ("A/B:12@-Inf"): invalid weight "-Inf": out of range`},
+		{"A/B:12@1.7976931348623157e308", `exercise 1 ("A/B:12@1.7976931348623157e308"): invalid weight "1.7976931348623157e308": out of range`},
+		{"A/B:-1", `exercise 1 ("A/B:-1"): invalid rep count "-1": must not be negative`},
+		{"A/:1", `exercise 1 ("A/:1"): expected CATEGORY/NAME before ':'`},
+		{"/B:1", `exercise 1 ("/B:1"): expected CATEGORY/NAME before ':'`},
+	}
+	for _, tt := range tests {
+		t.Run(tt.exercise, func(t *testing.T) {
+			body, err := ExerciseSets(111, []string{tt.exercise})
+			if err == nil || err.Error() != tt.want {
+				t.Fatalf("ExerciseSets(%q) = %s, %v; want error %q", tt.exercise, body, err, tt.want)
+			}
+		})
+	}
+}
+
+func TestExerciseSets_AcceptsZeroReps(t *testing.T) {
+	body, err := ExerciseSets(111, []string{"A/B:0"})
+	if err != nil {
+		t.Fatalf("ExerciseSets: %v", err)
+	}
+	if !strings.Contains(string(body), `"repetitionCount":0`) {
+		t.Errorf("body %s does not carry zero reps", body)
+	}
+}

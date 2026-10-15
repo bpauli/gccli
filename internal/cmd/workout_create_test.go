@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"sync"
 	"testing"
 
@@ -368,7 +369,24 @@ func TestWorkoutCreateCmd_BadStepFailsBeforeCredentials(t *testing.T) {
 		"invalid step \"bad\": expected type:duration[@target:values]\n")
 }
 
-func TestWorkoutCreateCmd_NaNTargetKeepsBuildPrefix(t *testing.T) {
-	runBadInput(t, []string{"workouts", "create", "--type", "run", "--step", "run:5m@hr:nan-160", "Foo"},
-		"build workout: json: unsupported value: NaN\n")
+func TestWorkoutCreateCmd_OutOfRangeStepFailsBeforeCredentials(t *testing.T) {
+	digits400 := strings.Repeat("9", 400)
+	overflowsTimes60 := "2" + strings.Repeat("0", 307)
+	tests := []struct {
+		name       string
+		step       string
+		wantStderr string
+	}{
+		{"NaN target", "run:5m@hr:nan-160", "invalid step \"run:5m@hr:nan-160\": invalid range low value \"nan\": out of range\n"},
+		{"Inf target", "run:5m@hr:100-inf", "invalid step \"run:5m@hr:100-inf\": invalid range high value \"inf\": out of range\n"},
+		{"400-digit duration", "run:" + digits400 + "m", "invalid step \"run:" + digits400 + "m\": invalid duration \"" + digits400 + "m\": out of range\n"},
+		{"minutes overflow in seconds", "run:" + overflowsTimes60 + "m", "invalid step \"run:" + overflowsTimes60 + "m\": invalid duration \"" + overflowsTimes60 + "m\": out of range\n"},
+		{"400-digit pace", "run:5m@pace:" + digits400 + ":00-" + digits400 + ":01", "invalid step \"run:5m@pace:" + digits400 + ":00-" + digits400 + ":01\": invalid pace \"" + digits400 + ":00\": out of range\n"},
+		{"empty step", "", "invalid step \"\": expected type:duration[@target:values]\n"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			runBadInput(t, []string{"workouts", "create", "--type", "run", "--step", tt.step, "Foo"}, tt.wantStderr)
+		})
+	}
 }
