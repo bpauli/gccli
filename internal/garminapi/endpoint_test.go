@@ -255,18 +255,18 @@ func TestEveryTableIsIndexed(t *testing.T) {
 
 func TestCallSitesMatchTable(t *testing.T) {
 	fset := token.NewFileSet()
-	files, err := filepath.Glob("../cmd/*.go")
-	if err != nil {
-		t.Fatal(err)
+	var files []string
+	for _, pattern := range []string{"../cmd/*.go", "*.go", "../e2e/*.go"} {
+		matches, err := filepath.Glob(pattern)
+		if err != nil {
+			t.Fatal(err)
+		}
+		files = append(files, matches...)
 	}
-	own, err := filepath.Glob("*.go")
-	if err != nil {
-		t.Fatal(err)
-	}
-	files = append(files, own...)
 	called := map[string]bool{}
 	for _, file := range files {
-		if strings.HasSuffix(file, "_test.go") {
+		e2e := strings.HasPrefix(file, "../e2e/")
+		if strings.HasSuffix(file, "_test.go") && !e2e {
 			continue
 		}
 		f, err := parser.ParseFile(fset, file, nil, 0)
@@ -293,7 +293,7 @@ func TestCallSitesMatchTable(t *testing.T) {
 				t.Errorf("%s: Client.Call names %q, which is not a row of the endpoint table", pos, name)
 				return true
 			}
-			called[name] = true
+			called[name] = called[name] || !e2e
 			keys, ok := literalKeys(call.Args[2])
 			if !ok {
 				return true
