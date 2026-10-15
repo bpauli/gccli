@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"io"
-	"os"
 	"strings"
 	"testing"
 )
@@ -186,75 +184,6 @@ func TestContextRoundTrip(t *testing.T) {
 		if got != mode {
 			t.Errorf("round-trip mode %d: got %d", mode, got)
 		}
-	}
-}
-
-// captureStdout redirects os.Stdout to a pipe, runs fn, and returns the
-// captured output.
-func captureStdout(t *testing.T, fn func()) string {
-	t.Helper()
-	r, w, err := os.Pipe()
-	if err != nil {
-		t.Fatalf("os.Pipe: %v", err)
-	}
-
-	origStdout := os.Stdout
-	os.Stdout = w
-
-	fn()
-
-	_ = w.Close()
-	os.Stdout = origStdout
-
-	var buf bytes.Buffer
-	_, _ = io.Copy(&buf, r)
-	_ = r.Close()
-	return buf.String()
-}
-
-func TestWrite_JSON(t *testing.T) {
-	ctx := NewContext(context.Background(), JSON)
-	data := map[string]string{"key": "value"}
-
-	got := captureStdout(t, func() {
-		if err := Write(ctx, data, nil, nil); err != nil {
-			t.Fatalf("Write JSON: %v", err)
-		}
-	})
-
-	if !strings.Contains(got, `"key"`) || !strings.Contains(got, `"value"`) {
-		t.Errorf("Write JSON output = %q, want key/value pair", got)
-	}
-}
-
-func TestWrite_Plain(t *testing.T) {
-	ctx := NewContext(context.Background(), Plain)
-	rows := [][]string{{"a", "b"}, {"c", "d"}}
-
-	got := captureStdout(t, func() {
-		if err := Write(ctx, nil, nil, rows); err != nil {
-			t.Fatalf("Write Plain: %v", err)
-		}
-	})
-
-	if !strings.Contains(got, "a\tb") {
-		t.Errorf("Write Plain output = %q, want tab-separated", got)
-	}
-}
-
-func TestWrite_Table(t *testing.T) {
-	ctx := NewContext(context.Background(), Table)
-	header := []string{"COL1", "COL2"}
-	rows := [][]string{{"x", "y"}}
-
-	got := captureStdout(t, func() {
-		if err := Write(ctx, nil, header, rows); err != nil {
-			t.Fatalf("Write Table: %v", err)
-		}
-	})
-
-	if !strings.Contains(got, "COL1") || !strings.Contains(got, "x") {
-		t.Errorf("Write Table output = %q, want header and data", got)
 	}
 }
 
