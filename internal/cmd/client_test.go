@@ -5,13 +5,18 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
+
+	"github.com/99designs/keyring"
 
 	"github.com/bpauli/gccli/internal/config"
 	"github.com/bpauli/gccli/internal/garminapi"
 	"github.com/bpauli/gccli/internal/garminauth"
 	"github.com/bpauli/gccli/internal/outfmt"
+	"github.com/bpauli/gccli/internal/secrets"
 	"github.com/bpauli/gccli/internal/testutil"
 )
 
@@ -243,5 +248,67 @@ func TestResolveClient_UnknownDomain(t *testing.T) {
 	_, err := resolveClient(testGlobals(t, &buf, outfmt.Table, "test@example.com"))
 	if err == nil || !strings.Contains(err.Error(), "foo.example") {
 		t.Fatalf("error = %v, want one that names foo.example", err)
+	}
+}
+
+type syncKeyring struct {
+	mu sync.Mutex
+	*memKeyring
+}
+
+func (k *syncKeyring) Get(key string) (keyring.Item, error) {
+	k.mu.Lock()
+	defer k.mu.Unlock()
+	return k.memKeyring.Get(key)
+}
+
+func (k *syncKeyring) Set(item keyring.Item) error {
+	k.mu.Lock()
+	defer k.mu.Unlock()
+	return k.memKeyring.Set(item)
+}
+
+func TestResolveClient_ConcurrentExpiredRefreshesOnce(t *testing.T) {
+	testutil.TempConfigDir(t)
+	store := secrets.OpenWithKeyring(&syncKeyring{memKeyring: &memKeyring{items: map[string]keyring.Item{}}})
+	overrideLoadSecrets(t, store)
+	expired := testTokens()
+	expired.OAuth2ExpiresAt = time.Now().Add(-time.Hour)
+	storeTestTokens(t, store, "test@example.com", expired)
+
+	origRefresh := proactiveRefreshFn
+	t.Cleanup(func() { proactiveRefreshFn = origRefresh })
+	var calls atomic.Int32
+	proactiveRefreshFn = func(_ context.Context, tokens *garminauth.Tokens, _ garminauth.LoginOptions) (*garminauth.Tokens, error) {
+		n := calls.Add(1)
+		time.Sleep(100 * time.Millisecond)
+		fresh := *tokens
+		fresh.OAuth2AccessToken = fmt.Sprintf("refreshed-%d", n)
+		fresh.OAuth2ExpiresAt = time.Now().Add(time.Hour)
+		return &fresh, nil
+	}
+
+	got := make([]string, 2)
+	var wg sync.WaitGroup
+	for i := range got {
+		wg.Go(func() {
+			var buf bytes.Buffer
+			client, err := resolveClient(testGlobals(t, &buf, outfmt.Table, "test@example.com"))
+			if err != nil {
+				t.Errorf("resolveClient: %v", err)
+				return
+			}
+			got[i] = client.Tokens().OAuth2AccessToken
+		})
+	}
+	wg.Wait()
+
+	if n := calls.Load(); n != 1 {
+		t.Errorf("refresh calls = %d, want 1", n)
+	}
+	for i, tok := range got {
+		if tok != "refreshed-1" {
+			t.Errorf("client %d token = %q, want refreshed-1", i, tok)
+		}
 	}
 }
