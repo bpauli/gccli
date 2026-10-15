@@ -356,7 +356,7 @@ func TestRefreshLockWaitMessage(t *testing.T) {
 		return &fresh, nil
 	})
 
-	unlock, err := config.LockFile(filepath.Join(dir, "token.lock"))
+	unlock, err := config.LockFile(filepath.Join(dir, "token.lock"), nil)
 	if err != nil {
 		t.Fatal(err)
 	}

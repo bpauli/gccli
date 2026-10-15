@@ -56,6 +56,8 @@ Both lock files are in the config directory. gccli creates each one with mode `0
 | `config.lock` | `config.Update` reads, changes and writes `config.json`. |
 | `token.lock` | gccli reads the stored token again, refreshes it with Garmin, and stores the result. A second process that waits on the lock then reads the new token. It does not refresh a second time. |
 
+When a process waits for `token.lock` for more than one second, it writes `Waiting for another gccli process to refresh the token` to stderr.
+
 On systems that are not Unix, such as Windows, `LockFile` does nothing. Writes to `config.json` are atomic but not locked there, and token refreshes are not locked.
 
 ## Keyring

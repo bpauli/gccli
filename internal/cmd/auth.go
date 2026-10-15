@@ -139,7 +139,7 @@ func (c *AuthTokenCmd) Run(g *Globals) error {
 	}
 
 	if tokens.IsExpired() {
-		r := &tokenRefresher{store: store, email: email}
+		r := &tokenRefresher{store: store, email: email, ui: g.UI}
 		if tokens, err = r.refresh(g.Context, tokens); err != nil {
 			return err
 		}

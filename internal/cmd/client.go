@@ -11,6 +11,7 @@ import (
 	"github.com/bpauli/gccli/internal/garminapi"
 	"github.com/bpauli/gccli/internal/garminauth"
 	"github.com/bpauli/gccli/internal/secrets"
+	"github.com/bpauli/gccli/internal/ui"
 )
 
 // newClientFn creates a garminapi.Client from tokens.
@@ -44,7 +45,7 @@ func resolveClient(g *Globals) (*garminapi.Client, error) {
 		return nil, err
 	}
 
-	r := &tokenRefresher{store: store, email: email}
+	r := &tokenRefresher{store: store, email: email, ui: g.UI}
 	if tokens.IsExpired() && tokens.CanRefresh() {
 		fresh, err := r.refresh(g.Context, tokens)
 		var expired *garminapi.TokenExpiredError
@@ -104,10 +105,11 @@ func checkStoredDomain(email string, tokens *garminauth.Tokens) error {
 type tokenRefresher struct {
 	store *secrets.Store
 	email string
+	ui    *ui.UI
 }
 
 func (r *tokenRefresher) refresh(ctx context.Context, sent *garminauth.Tokens) (*garminauth.Tokens, error) {
-	unlock, err := lockTokens()
+	unlock, err := lockTokens(r.ui)
 	if err != nil {
 		return nil, err
 	}
@@ -133,7 +135,7 @@ func (r *tokenRefresher) refresh(ctx context.Context, sent *garminauth.Tokens) (
 	return fresh, nil
 }
 
-func lockTokens() (unlock func(), err error) {
+func lockTokens(u *ui.UI) (unlock func(), err error) {
 	dir, err := config.ConfigDir()
 	if err != nil {
 		return nil, err
@@ -141,7 +143,9 @@ func lockTokens() (unlock func(), err error) {
 	if err := os.MkdirAll(dir, 0o700); err != nil {
 		return nil, fmt.Errorf("lock token refresh: %w", err)
 	}
-	unlock, err = config.LockFile(filepath.Join(dir, "token.lock"))
+	unlock, err = config.LockFile(filepath.Join(dir, "token.lock"), func() {
+		u.Infof("Waiting for another gccli process to refresh the token")
+	})
 	if err != nil {
 		return nil, fmt.Errorf("lock token refresh: %w", err)
 	}
