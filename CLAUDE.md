@@ -83,7 +83,10 @@ The command reference in `README.md`, `skills/gccli/SKILL.md` and `docs/index.ht
 - After you add or change a command, a flag or a `help:` tag, run `go test ./internal/cmd -run TestDocsUpToDate -update`.
 - `make test` fails while a block is stale.
 - A new top-level command also needs a place in `referenceGroups` in `internal/cmd/docs_gen.go`. If it has no place, `TestDocsUpToDate` fails.
-- Text outside the markers is hand-written: the features list and examples in `README.md`, and the feature cards in `docs/index.html`. Update it by hand when a feature needs it.
+- Text outside the markers is hand-written. Update it by hand when a feature needs it:
+  - `README.md`: the features list and the examples.
+  - `skills/gccli/SKILL.md`: Setup, Output, Date shortcuts, Worked examples, the strength training workflow and Notes.
+  - `docs/index.html`: the rest of the page, such as the feature cards, the Commands intro above the reference and the exit code table. Its CSS also styles the generated rows.
 
 ## Shell Completion
 

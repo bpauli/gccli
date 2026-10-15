@@ -13,7 +13,7 @@ import (
 	"testing"
 )
 
-var update = flag.Bool("update", false, "rewrite the outputs in testdata/golden")
+var update = flag.Bool("update", false, "rewrite the outputs in testdata/golden and the command reference in the docs")
 
 const goldenDir = "testdata/golden"
 
