@@ -22,6 +22,19 @@ jobs:
       - name: Test
         run: make test
 
+  conformance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: true
+      - name: Build
+        run: make build
+      - name: Conformance
+        run: make conformance GCCLI_BIN=bin/gccli
+
   darwin-cgo-build:
     runs-on: macos-latest
     steps:

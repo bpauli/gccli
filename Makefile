@@ -58,6 +58,10 @@ test:
 test-e2e:
 	go test -tags=e2e -v -count=1 ./internal/e2e/...
 
+.PHONY: conformance
+conformance:
+	GCCLI_BIN=$(abspath $(GCCLI_BIN)) go test -tags=conformance -count=1 ./conformance/
+
 .PHONY: ci
 ci: fmt-check lint test
 
