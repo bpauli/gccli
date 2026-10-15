@@ -1,12 +1,10 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
 	"time"
 
 	"github.com/bpauli/gccli/internal/fit"
-	"github.com/bpauli/gccli/internal/outfmt"
 )
 
 // BodyCmd groups body composition subcommands.
@@ -121,12 +119,7 @@ func (c *BodyAddWeightCmd) Run(g *Globals) error {
 		return fmt.Errorf("add weight: %w", err)
 	}
 
-	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
-	}
-
-	g.UI.Successf("Added weight: %.1f %s", c.Value, c.Unit)
-	return nil
+	return reportWrite(g, data, "Added weight: %.1f %s", c.Value, c.Unit)
 }
 
 // BodyAddCompositionCmd adds body composition data via FIT file upload.
@@ -173,12 +166,7 @@ func (c *BodyAddCompositionCmd) Run(g *Globals) error {
 		return fmt.Errorf("upload body composition: %w", err)
 	}
 
-	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
-	}
-
-	g.UI.Successf("Added body composition: %.1f kg", c.Weight)
-	return nil
+	return reportWrite(g, data, "Added body composition: %.1f kg", c.Weight)
 }
 
 // BodyDeleteWeightCmd deletes a weigh-in entry.
@@ -203,12 +191,11 @@ func (c *BodyDeleteWeightCmd) Run(g *Globals) error {
 		return nil
 	}
 
-	if _, err := client.DeleteWeight(g.Context, c.Date, c.PK); err != nil {
+	data, err := client.DeleteWeight(g.Context, c.Date, c.PK)
+	if err != nil {
 		return fmt.Errorf("delete weight: %w", err)
 	}
-
-	g.UI.Successf("Deleted weigh-in %s", c.PK)
-	return nil
+	return reportWrite(g, data, "Deleted weigh-in %s", c.PK)
 }
 
 // BodyBloodPressureCmd shows blood pressure data for a date range.
@@ -253,12 +240,7 @@ func (c *BodyAddBPCmd) Run(g *Globals) error {
 		return fmt.Errorf("add blood pressure: %w", err)
 	}
 
-	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
-	}
-
-	g.UI.Successf("Added blood pressure: %d/%d mmHg, pulse %d bpm", c.Systolic, c.Diastolic, c.Pulse)
-	return nil
+	return reportWrite(g, data, "Added blood pressure: %d/%d mmHg, pulse %d bpm", c.Systolic, c.Diastolic, c.Pulse)
 }
 
 // BodyDeleteBPCmd deletes a blood pressure entry.
@@ -283,10 +265,9 @@ func (c *BodyDeleteBPCmd) Run(g *Globals) error {
 		return nil
 	}
 
-	if _, err := client.DeleteBloodPressure(g.Context, c.Date, c.Version); err != nil {
+	data, err := client.DeleteBloodPressure(g.Context, c.Date, c.Version)
+	if err != nil {
 		return fmt.Errorf("delete blood pressure: %w", err)
 	}
-
-	g.UI.Successf("Deleted blood pressure entry %s", c.Version)
-	return nil
+	return reportWrite(g, data, "Deleted blood pressure entry %s", c.Version)
 }

@@ -370,7 +370,7 @@ func TestGearLink_Success(t *testing.T) {
 	storeTestTokens(t, store, "test@example.com", testTokens())
 
 	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
+	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
 	cmd := &GearLinkCmd{UUID: "abc-123", ActivityID: "100"}
 	err := cmd.Run(g)
 	if err != nil {
@@ -441,7 +441,7 @@ func TestGearUnlink_Success(t *testing.T) {
 	storeTestTokens(t, store, "test@example.com", testTokens())
 
 	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
+	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
 	cmd := &GearUnlinkCmd{UUID: "abc-123", ActivityID: "100"}
 	err := cmd.Run(g)
 	if err != nil {

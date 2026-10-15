@@ -1,11 +1,6 @@
 package cmd
 
-import (
-	"encoding/json"
-	"fmt"
-
-	"github.com/bpauli/gccli/internal/outfmt"
-)
+import "fmt"
 
 // ActivityUploadCmd uploads an activity file.
 type ActivityUploadCmd struct {
@@ -23,10 +18,5 @@ func (c *ActivityUploadCmd) Run(g *Globals) error {
 		return fmt.Errorf("upload activity: %w", err)
 	}
 
-	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
-	}
-
-	g.UI.Successf("Uploaded %s", c.File)
-	return nil
+	return reportWrite(g, data, "Uploaded %s", c.File)
 }

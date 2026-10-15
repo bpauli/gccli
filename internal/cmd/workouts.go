@@ -132,12 +132,7 @@ func (c *WorkoutUploadCmd) Run(g *Globals) error {
 		return fmt.Errorf("upload workout: %w", err)
 	}
 
-	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
-	}
-
-	g.UI.Successf("Uploaded workout from %s", c.File)
-	return nil
+	return reportWrite(g, data, "Uploaded workout from %s", c.File)
 }
 
 // WorkoutUpdateCmd updates an existing workout from a JSON file.
@@ -174,12 +169,7 @@ func (c *WorkoutUpdateCmd) Run(g *Globals) error {
 		return fmt.Errorf("update workout: %w", err)
 	}
 
-	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
-	}
-
-	g.UI.Successf("Updated workout %s from %s", c.ID, c.File)
-	return nil
+	return reportWrite(g, data, "Updated workout %s from %s", c.ID, c.File)
 }
 
 // setWorkoutID returns the payload with workoutId set to workoutID. Garmin
@@ -237,12 +227,7 @@ func (c *WorkoutScheduleAddCmd) Run(g *Globals) error {
 		return fmt.Errorf("schedule workout: %w", err)
 	}
 
-	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
-	}
-
-	g.UI.Successf("Scheduled workout %s on %s", c.ID, date)
-	return nil
+	return reportWrite(g, data, "Scheduled workout %s on %s", c.ID, date)
 }
 
 // WorkoutScheduleListCmd lists scheduled workouts for a date or date range.
@@ -455,12 +440,11 @@ func (c *WorkoutScheduleRemoveCmd) Run(g *Globals) error {
 		return nil
 	}
 
-	if _, err := client.UnscheduleWorkout(g.Context, c.ID); err != nil {
+	data, err := client.UnscheduleWorkout(g.Context, c.ID)
+	if err != nil {
 		return fmt.Errorf("remove scheduled workout: %w", err)
 	}
-
-	g.UI.Successf("Removed scheduled workout %s", c.ID)
-	return nil
+	return reportWrite(g, data, "Removed scheduled workout %s", c.ID)
 }
 
 // WorkoutDeleteCmd deletes a workout.
@@ -484,12 +468,11 @@ func (c *WorkoutDeleteCmd) Run(g *Globals) error {
 		return nil
 	}
 
-	if _, err := client.DeleteWorkout(g.Context, c.ID); err != nil {
+	data, err := client.DeleteWorkout(g.Context, c.ID)
+	if err != nil {
 		return fmt.Errorf("delete workout: %w", err)
 	}
-
-	g.UI.Successf("Deleted workout %s", c.ID)
-	return nil
+	return reportWrite(g, data, "Deleted workout %s", c.ID)
 }
 
 // parseWorkouts unmarshals workout list data.

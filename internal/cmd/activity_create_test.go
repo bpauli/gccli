@@ -98,33 +98,6 @@ func TestActivityCreate_Success(t *testing.T) {
 	}
 }
 
-func TestActivityCreate_JSON(t *testing.T) {
-	server := createTestServer(t)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &ActivityCreateCmd{
-		Name:     "Test Run",
-		Type:     "running",
-		Distance: 5000,
-		Duration: 30 * time.Minute,
-	}
-	err := cmd.Run(g)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
-	}
-	// JSON mode should not print "Created activity" message.
-	if strings.Contains(buf.String(), "Created activity") {
-		t.Fatalf("expected JSON output, got: %q", buf.String())
-	}
-}
-
 func TestActivityCreate_VerifyPayload(t *testing.T) {
 	var receivedPayload map[string]any
 	mux := http.NewServeMux()

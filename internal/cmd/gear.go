@@ -113,13 +113,11 @@ func (c *GearLinkCmd) Run(g *Globals) error {
 		return err
 	}
 
-	_, err = client.LinkGear(g.Context, c.UUID, c.ActivityID)
+	data, err := client.LinkGear(g.Context, c.UUID, c.ActivityID)
 	if err != nil {
 		return fmt.Errorf("link gear: %w", err)
 	}
-
-	g.UI.Successf("Linked gear %s to activity %s", c.UUID, c.ActivityID)
-	return nil
+	return reportWrite(g, data, "Linked gear %s to activity %s", c.UUID, c.ActivityID)
 }
 
 // GearUnlinkCmd unlinks a gear item from an activity.
@@ -134,13 +132,11 @@ func (c *GearUnlinkCmd) Run(g *Globals) error {
 		return err
 	}
 
-	_, err = client.UnlinkGear(g.Context, c.UUID, c.ActivityID)
+	data, err := client.UnlinkGear(g.Context, c.UUID, c.ActivityID)
 	if err != nil {
 		return fmt.Errorf("unlink gear: %w", err)
 	}
-
-	g.UI.Successf("Unlinked gear %s from activity %s", c.UUID, c.ActivityID)
-	return nil
+	return reportWrite(g, data, "Unlinked gear %s from activity %s", c.UUID, c.ActivityID)
 }
 
 // getUserProfilePK fetches the authenticated user's social profile and extracts

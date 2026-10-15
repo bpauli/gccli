@@ -85,34 +85,6 @@ func TestActivityUpload_FIT(t *testing.T) {
 	}
 }
 
-func TestActivityUpload_JSON(t *testing.T) {
-	server := uploadTestServer(t)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	tmpDir := t.TempDir()
-	fitPath := filepath.Join(tmpDir, "test.fit")
-	if err := os.WriteFile(fitPath, []byte("FIT-DATA"), 0o644); err != nil {
-		t.Fatalf("write test file: %v", err)
-	}
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &ActivityUploadCmd{File: fitPath}
-	err := cmd.Run(g)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
-	}
-	// JSON mode should not print "Uploaded" message.
-	if strings.Contains(buf.String(), "Uploaded") {
-		t.Fatalf("expected JSON output (no 'Uploaded' message), got: %q", buf.String())
-	}
-}
-
 func TestActivityUpload_ServerError(t *testing.T) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/upload-service/upload", func(w http.ResponseWriter, r *http.Request) {

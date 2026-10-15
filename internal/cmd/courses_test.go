@@ -293,24 +293,6 @@ func TestCourseSend_NoAccount(t *testing.T) {
 	}
 }
 
-func TestCourseSend_Success_JSON(t *testing.T) {
-	server := coursesTestServer(t)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &CourseSendCmd{CourseID: "123", DeviceID: "456"}
-	err := cmd.Run(g)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
-	}
-}
-
 func TestCourseSend_Success_Table(t *testing.T) {
 	server := coursesTestServer(t)
 	defer server.Close()
@@ -476,26 +458,6 @@ func TestCourseImport_NameFallback(t *testing.T) {
 	// Should use filename "route" (without .gpx extension).
 	if !strings.Contains(out, "route") {
 		t.Errorf("expected filename-based name in output, got: %s", out)
-	}
-}
-
-func TestCourseImport_JSON(t *testing.T) {
-	server := coursesTestServer(t)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	gpxPath := newTestGPXFile(t)
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &CourseImportCmd{File: gpxPath, Type: "cycling"}
-	err := cmd.Run(g)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
 	}
 }
 

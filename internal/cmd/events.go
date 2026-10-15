@@ -214,23 +214,12 @@ func (c *EventsAddCmd) Run(g *Globals) error {
 		return fmt.Errorf("add event: %w", err)
 	}
 
-	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
-	}
-
 	var resp map[string]any
-	if err := json.Unmarshal(data, &resp); err == nil {
-		name := jsonString(resp, "eventName")
-		respDate := jsonString(resp, "date")
-		id := jsonString(resp, "id")
-		if id != "" {
-			g.UI.Successf("Added event %q on %s (ID: %s)", name, respDate, id)
-			return nil
-		}
+	_ = json.Unmarshal(data, &resp)
+	if id := jsonString(resp, "id"); id != "" {
+		return reportWrite(g, data, "Added event %q on %s (ID: %s)", jsonString(resp, "eventName"), jsonString(resp, "date"), id)
 	}
-
-	g.UI.Successf("Added event")
-	return nil
+	return reportWrite(g, data, "Added event")
 }
 
 var distanceRe = regexp.MustCompile(`^([0-9]+(?:\.[0-9]+)?)\s*(km|mi|m)$`)
@@ -278,10 +267,9 @@ func (c *EventsDeleteCmd) Run(g *Globals) error {
 		return nil
 	}
 
-	if _, err := client.DeleteEvent(g.Context, c.ID); err != nil {
+	data, err := client.DeleteEvent(g.Context, c.ID)
+	if err != nil {
 		return fmt.Errorf("delete event: %w", err)
 	}
-
-	g.UI.Successf("Deleted event %s", c.ID)
-	return nil
+	return reportWrite(g, data, "Deleted event %s", c.ID)
 }

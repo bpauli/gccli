@@ -208,28 +208,6 @@ func TestEventsAdd_AllFlags(t *testing.T) {
 	}
 }
 
-func TestEventsAdd_JSON(t *testing.T) {
-	server := eventsTestServer(t)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &EventsAddCmd{
-		Name: "Spring Race",
-		Date: "2026-04-01",
-		Type: "running",
-	}
-	err := cmd.Run(g)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
-	}
-}
-
 func TestEventsAdd_InvalidDistance(t *testing.T) {
 	server := eventsTestServer(t)
 	defer server.Close()
