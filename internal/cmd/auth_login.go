@@ -27,10 +27,25 @@ type AuthLoginCmd struct {
 	MFACode  string `help:"MFA code for two-factor authentication." name:"mfa-code"`
 }
 
+// Validate rejects an unknown domain as a usage error, before the password
+// prompt and before any request.
+func (c *AuthLoginCmd) Validate() error {
+	cfg, err := config.Read()
+	if err != nil {
+		return nil // Run reports it as a runtime error.
+	}
+	_, err = garminauth.ParseDomain(cfg.Domain())
+	return err
+}
+
 func (c *AuthLoginCmd) Run(g *Globals) error {
 	cfg, err := config.Read()
 	if err != nil {
 		return fmt.Errorf("read config: %w", err)
+	}
+	domain, err := garminauth.ParseDomain(cfg.Domain())
+	if err != nil {
+		return err
 	}
 
 	// Build an HTTP client with retry transport so auth requests
@@ -47,7 +62,7 @@ func (c *AuthLoginCmd) Run(g *Globals) error {
 	}
 
 	opts := garminauth.LoginOptions{
-		Domain:     cfg.Domain(),
+		Domain:     domain,
 		MFACode:    c.MFACode,
 		HTTPClient: httpClient,
 	}

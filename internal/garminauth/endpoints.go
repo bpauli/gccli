@@ -23,6 +23,15 @@ const OAuthConsumerURL = "https://thegarth.s3.amazonaws.com/oauth_consumer.json"
 // User-Agent used for OAuth exchange requests (matches Garmin mobile app).
 const UserAgent = "com.garmin.android.apps.connectmobile"
 
+// ParseDomain returns s if it is a supported Garmin domain.
+func ParseDomain(s string) (string, error) {
+	switch s {
+	case DomainGlobal, DomainChina:
+		return s, nil
+	}
+	return "", fmt.Errorf("unknown Garmin domain %q; use %s or %s", s, DomainGlobal, DomainChina)
+}
+
 // Endpoints holds the resolved URLs for a given Garmin domain.
 type Endpoints struct {
 	// Domain is the Garmin domain the URLs were built from.

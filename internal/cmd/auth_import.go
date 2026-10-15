@@ -46,6 +46,11 @@ func (c *AuthImportCmd) Run(g *Globals) error {
 	if tokens.Email == "" {
 		return fmt.Errorf("token data missing email address")
 	}
+	if tokens.Domain != "" {
+		if _, err := garminauth.ParseDomain(tokens.Domain); err != nil {
+			return fmt.Errorf("invalid token data: %w", err)
+		}
+	}
 
 	store, err := loadSecretsStore()
 	if err != nil {
