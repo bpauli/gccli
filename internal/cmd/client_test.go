@@ -375,6 +375,40 @@ func TestRefreshLockWaitMessage(t *testing.T) {
 	}
 }
 
+func TestResolveClient_ReadOnlyConfigDirRefreshesUnlocked(t *testing.T) {
+	if os.Geteuid() == 0 {
+		t.Skip("root ignores directory permissions")
+	}
+	dir := testutil.TempConfigDir(t)
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	expired := testTokens()
+	expired.OAuth2ExpiresAt = time.Now().Add(-time.Hour)
+	storeTestTokens(t, store, "test@example.com", expired)
+	if err := os.Chmod(dir, 0o500); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = os.Chmod(dir, 0o700) })
+	stub(t, &refreshFn, func(_ context.Context, tokens *garminauth.Tokens, _ garminauth.LoginOptions) (*garminauth.Tokens, error) {
+		fresh := *tokens
+		fresh.OAuth2AccessToken = "refreshed"
+		fresh.OAuth2ExpiresAt = time.Now().Add(time.Hour)
+		return &fresh, nil
+	})
+
+	var buf bytes.Buffer
+	client, err := resolveClient(testGlobals(t, &buf, outfmt.Table, "test@example.com"))
+	if err != nil {
+		t.Fatalf("resolveClient: %v", err)
+	}
+	if got := client.Tokens().OAuth2AccessToken; got != "refreshed" {
+		t.Errorf("client token = %q, want refreshed", got)
+	}
+	if got := storedAccessToken(t, store); got != "refreshed" {
+		t.Errorf("stored token = %q, want refreshed", got)
+	}
+}
+
 type failSetKeyring struct{ *memKeyring }
 
 func (failSetKeyring) Set(keyring.Item) error { return fmt.Errorf("keyring is read-only") }
