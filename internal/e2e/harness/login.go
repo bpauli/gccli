@@ -21,21 +21,19 @@ func Login(ctx context.Context, email, password string, base http.RoundTripper) 
 	tokens, err := garminauth.LoginHeadless(ctx, email, password, garminauth.LoginOptions{
 		HTTPClient: &http.Client{Jar: jar, Transport: watch},
 	})
-	if err != nil && watch.hit.Load() {
+	if err != nil && watch.last429.Load() {
 		return nil, &SSORateLimitError{err: err}
 	}
 	return tokens, err
 }
 
 type rateLimitWatch struct {
-	base http.RoundTripper
-	hit  atomic.Bool
+	base    http.RoundTripper
+	last429 atomic.Bool
 }
 
 func (w *rateLimitWatch) RoundTrip(req *http.Request) (*http.Response, error) {
 	resp, err := w.base.RoundTrip(req)
-	if err == nil && resp.StatusCode == http.StatusTooManyRequests {
-		w.hit.Store(true)
-	}
+	w.last429.Store(err == nil && resp.StatusCode == http.StatusTooManyRequests)
 	return resp, err
 }
