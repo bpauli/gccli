@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -26,19 +25,15 @@ type EventsListCmd struct {
 }
 
 func (c *EventsListCmd) Validate() error {
+	if err := c.Pagination.Validate(); err != nil {
+		return err
+	}
 	_, err := c.pageIndex()
 	return err
 }
 
 func (c *EventsListCmd) pageIndex() (int, error) {
-	switch {
-	case c.Offset < 0:
-		return 0, errors.New("--offset must not be negative")
-	case c.Offset == 0:
-		return 1, nil
-	case c.Limit <= 0:
-		return 0, errors.New("--offset needs --limit greater than 0")
-	case c.Offset%c.Limit != 0:
+	if c.Offset%c.Limit != 0 {
 		return 0, fmt.Errorf("--offset %d is not a multiple of --limit %d; events are fetched in pages of --limit", c.Offset, c.Limit)
 	}
 	return c.Offset/c.Limit + 1, nil
