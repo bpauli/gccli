@@ -92,8 +92,7 @@ func (c *AuthLoginCmd) Run(g *Globals) error {
 	}
 
 	// Save as default account so subsequent commands don't need --account.
-	cfg.DefaultAccount = c.Email
-	if err := config.Write(cfg); err != nil {
+	if err := config.Update(func(f *config.File) { f.DefaultAccount = c.Email }); err != nil {
 		return fmt.Errorf("save default account: %w", err)
 	}
 

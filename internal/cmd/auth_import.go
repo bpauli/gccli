@@ -57,12 +57,7 @@ func (c *AuthImportCmd) Run(g *Globals) error {
 	}
 
 	// Save as default account.
-	cfg, err := config.Read()
-	if err != nil {
-		return fmt.Errorf("read config: %w", err)
-	}
-	cfg.DefaultAccount = tokens.Email
-	if err := config.Write(cfg); err != nil {
+	if err := config.Update(func(f *config.File) { f.DefaultAccount = tokens.Email }); err != nil {
 		return fmt.Errorf("save default account: %w", err)
 	}
 
