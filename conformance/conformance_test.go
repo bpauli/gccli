@@ -101,6 +101,7 @@ func (s *sandbox) env() []string {
 		"HTTPS_PROXY=" + s.proxy.URL,
 		"HTTP_PROXY=" + s.proxy.URL,
 		"SSL_CERT_FILE=" + caFile,
+		"SSL_CERT_DIR=" + filepath.Dir(caFile),
 		"TZ=UTC",
 	}
 }

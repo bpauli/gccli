@@ -22,7 +22,8 @@ Each binary run gets its own environment, built from nothing:
 - `HOME` and `XDG_CONFIG_HOME` point to the same new temp directory, so the run never reads or writes your real config or keyring.
 - `GCCLI_KEYRING_BACKEND=file` keeps the token in that directory.
 - `HTTPS_PROXY` and `HTTP_PROXY` point to a CONNECT proxy in the test process. The proxy never dials out. It ends TLS for every Garmin host itself, with a certificate from a CA that the suite makes for each run.
-- `SSL_CERT_FILE` names that CA. `TZ=UTC` fixes the time zone.
+- `SSL_CERT_FILE` names that CA, and `SSL_CERT_DIR` names a directory that holds only that CA. The binary does not trust the system roots, so a binary that ignores the proxy cannot reach the real Garmin. `TestSandboxDistrustsSystemRoots` checks this.
+- `TZ=UTC` fixes the time zone.
 
 The binary uses its real URLs. Nothing overrides a base URL.
 
