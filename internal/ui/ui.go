@@ -42,15 +42,6 @@ func NewContext(ctx context.Context, u *UI) context.Context {
 	return context.WithValue(ctx, contextKey{}, u)
 }
 
-// FromContext retrieves the UI from the context.
-// Returns a default auto-mode UI if none is stored.
-func FromContext(ctx context.Context) *UI {
-	if u, ok := ctx.Value(contextKey{}).(*UI); ok {
-		return u
-	}
-	return New("auto")
-}
-
 // Successf prints a green message.
 func (u *UI) Successf(format string, args ...any) {
 	msg := fmt.Sprintf(format, args...)

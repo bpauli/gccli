@@ -43,7 +43,7 @@ All three checks (`make fmt`, `make lint`, `make test`) must pass before committ
 - **`internal/secrets/`** — OS keyring storage (macOS Keychain, Linux Secret Service, file fallback). Tokens keyed by `gccli:token:{email}`.
 - **`internal/config/`** — Config file paths and env var overrides.
 - **`internal/outfmt/`** — Output formatting (JSON/Table/Plain). Mode passed via context.
-- **`internal/ui/`** — Terminal UI (colors, prompts) via termenv. Passed via context.
+- **`internal/ui/`** - Terminal UI (colors, prompts) via termenv. Passed to commands in `Globals.UI`.
 - **`internal/errfmt/`** — Maps typed errors to user-friendly messages.
 - **`internal/fit/`** — FIT file binary encoding for weight data uploads.
 - **`internal/testutil/`** — Test helpers: mock HTTP servers, test token fixtures.
@@ -51,7 +51,7 @@ All three checks (`make fmt`, `make lint`, `make test`) must pass before committ
 
 ### Patterns
 
-- **Context-based DI:** Output mode and UI are injected via `context.Context` using `outfmt.NewContext()`/`ui.NewContext()` and retrieved with `outfmt.IsJSON(ctx)`/`ui.FromContext(ctx)`.
+- **Context-based DI:** The output mode is injected via `context.Context` using `outfmt.NewContext()` and read with `outfmt.IsJSON(ctx)`/`outfmt.IsPlain(ctx)`. Commands get the UI from `Globals.UI`.
 - **Function variable mocking:** External dependencies are stored as package-level function variables (e.g., `newClientFn`, `loginHeadlessFn`, `refreshTokensFn`) that tests override. No interface-heavy DI.
 - **Output convention:** Parseable output (JSON, TSV) goes to stdout. Human messages (errors, info, warnings) go to stderr via `UI`.
 - **Typed errors:** `garminapi` defines `TokenExpiredError`, `RateLimitError`, `GarminAPIError` and `StallError`. `errfmt.Format()` adds hints for the first two.

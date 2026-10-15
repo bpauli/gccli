@@ -2,7 +2,6 @@ package ui
 
 import (
 	"bytes"
-	"context"
 	"errors"
 	"strings"
 	"testing"
@@ -94,21 +93,5 @@ func TestAllMethodsWithColor(t *testing.T) {
 		if !strings.Contains(got, want) {
 			t.Errorf("output missing %q in %q", want, got)
 		}
-	}
-}
-
-func TestContext(t *testing.T) {
-	u := New("never")
-	ctx := NewContext(context.Background(), u)
-	got := FromContext(ctx)
-	if got != u {
-		t.Error("FromContext did not return the stored UI")
-	}
-}
-
-func TestFromContextDefault(t *testing.T) {
-	got := FromContext(context.Background())
-	if got == nil {
-		t.Error("FromContext with no UI returned nil")
 	}
 }
