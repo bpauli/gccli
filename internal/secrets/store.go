@@ -6,7 +6,6 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
-	"runtime"
 
 	"github.com/99designs/keyring"
 
@@ -23,9 +22,8 @@ const (
 
 // Store wraps a keyring for reading and writing token data.
 type Store struct {
-	ring keyring.Keyring
-	// file is the config of the file backend, or nil for other backends.
-	file *keyring.Config
+	ring        keyring.Keyring
+	fileBackend *keyring.Config
 }
 
 // openKeyringFn is the function used to open a keyring.
@@ -62,22 +60,13 @@ func Open(backend string) (*Store, error) {
 			return newStore(ring, cfg), nil
 		}
 	}
-	// On Linux, fall back to file backend if D-Bus/secret-service fails.
-	if runtime.GOOS == "linux" && backend == "" {
-		cfg.AllowedBackends = []keyring.BackendType{keyring.FileBackend}
-		ring, err := openKeyringFn(cfg)
-		if err != nil {
-			return nil, fmt.Errorf("open keyring (file fallback): %w", err)
-		}
-		return newStore(ring, cfg), nil
-	}
 	return nil, fmt.Errorf("open keyring: %w", err)
 }
 
 func newStore(ring keyring.Keyring, cfg keyring.Config) *Store {
 	s := &Store{ring: ring}
 	if cfg.AllowedBackends[0] == keyring.FileBackend {
-		s.file = &cfg
+		s.fileBackend = &cfg
 	}
 	return s
 }
@@ -104,7 +93,7 @@ func (s *Store) Get(email string) ([]byte, error) {
 func (s *Store) Set(email string, data []byte) error {
 	item := keyring.Item{Key: keyFor(email), Data: data}
 	var err error
-	if s.file != nil {
+	if s.fileBackend != nil {
 		err = s.replaceFile(item)
 	} else {
 		err = s.ring.Set(item)
@@ -115,20 +104,19 @@ func (s *Store) Set(email string, data []byte) error {
 	return nil
 }
 
-// replaceFile writes item with a file keyring in a temporary directory and
-// renames the file into place. The file keyring itself truncates the file
-// before it writes, so a concurrent reader could see an empty or cut file.
+// The file keyring truncates the file before it writes, so a concurrent
+// reader could see an empty or cut file.
 func (s *Store) replaceFile(item keyring.Item) error {
-	if err := os.MkdirAll(s.file.FileDir, 0o700); err != nil {
+	if err := os.MkdirAll(s.fileBackend.FileDir, 0o700); err != nil {
 		return err
 	}
-	tmp, err := os.MkdirTemp(s.file.FileDir, ".set-")
+	tmp, err := os.MkdirTemp(s.fileBackend.FileDir, ".set-")
 	if err != nil {
 		return err
 	}
 	defer func() { _ = os.RemoveAll(tmp) }()
 
-	cfg := *s.file
+	cfg := *s.fileBackend
 	cfg.FileDir = tmp
 	ring, err := keyring.Open(cfg)
 	if err != nil {
@@ -145,7 +133,7 @@ func (s *Store) replaceFile(item keyring.Item) error {
 		return fmt.Errorf("file keyring wrote %d files, want 1", len(written))
 	}
 	name := written[0].Name()
-	return os.Rename(filepath.Join(tmp, name), filepath.Join(s.file.FileDir, name))
+	return os.Rename(filepath.Join(tmp, name), filepath.Join(s.fileBackend.FileDir, name))
 }
 
 // Delete removes token data for the given email.

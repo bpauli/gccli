@@ -85,8 +85,6 @@ func loadTokens(store *secrets.Store, email string) (*garminauth.Tokens, error) 
 	return tokens, nil
 }
 
-// tokenDomain returns the Garmin domain that requests with tokens use: the
-// stored domain, or the login domain when the token has none.
 func tokenDomain(email string, tokens *garminauth.Tokens) (string, error) {
 	if tokens.Domain == "" {
 		return loginDomain()
@@ -130,9 +128,6 @@ func (r *tokenRefresher) refresh(ctx context.Context, sent *garminauth.Tokens) (
 	return fresh, nil
 }
 
-// lockTokens takes token.lock. When the config dir does not let gccli create
-// the lock file, as with a read-only config dir and a keychain backend, it
-// refreshes without the lock, as gccli did before token.lock existed.
 func lockTokens(u *ui.UI) (unlock func(), err error) {
 	dir, err := config.ConfigDir()
 	if err != nil {
@@ -147,10 +142,12 @@ func lockTokens(u *ui.UI) (unlock func(), err error) {
 	case err == nil:
 		return unlock, nil
 	case errors.Is(err, fs.ErrPermission), errors.Is(err, syscall.EROFS):
-		return func() {}, nil
+		return refreshWithoutLock, nil
 	}
 	return nil, fmt.Errorf("lock token refresh: %w", err)
 }
+
+func refreshWithoutLock() {}
 
 func persistTokens(store *secrets.Store, email string, tokens *garminauth.Tokens) error {
 	data, err := tokens.Marshal()
