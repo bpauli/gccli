@@ -82,6 +82,8 @@ On Linux, when neither `GCCLI_KEYRING_BACKEND` nor `keyring_backend` has a value
 
 The `file` backend writes one file per item in `credentials/` in the config directory. The file name is the item key, for example `gccli:token:you@example.com`. The file has mode `0600`. The directory has mode `0700`.
 
+gccli writes the new file in a temporary directory in `credentials/` and then renames it over the old file. A process that reads the file at the same time gets the old or the new token, never a partly written file. A temporary directory that a crash leaves behind has a name that starts with `.set-`. You can delete it.
+
 Each file is a JWE (PBES2-HS256+A128KW key wrap, A256GCM content encryption) of the keyring item. The passphrase is the fixed string `gccli-file-store`, built into gccli. You cannot change it. Anyone who can read the file can decrypt the token.
 
 ## Token
