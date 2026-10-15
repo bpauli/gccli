@@ -80,7 +80,7 @@ gccli picks the backend in this order. The first one that is set wins.
 2. `keyring_backend` in `config.json`
 3. Automatic selection by the keyring library
 
-On Linux, when neither `GCCLI_KEYRING_BACKEND` nor `keyring_backend` has a value and automatic selection cannot open a keyring, gccli uses the `file` backend. A value that selects the backend automatically, such as `auto`, gets no `file` fallback. On macOS, the Keychain item is not synchronized, it is readable only when the Keychain is unlocked, and it trusts the gccli binary.
+When neither `GCCLI_KEYRING_BACKEND` nor `keyring_backend` names a backend (no value, `auto`, or any other value), gccli tries the backends that the keyring library offers on that system, in the library's order, and uses the first one that opens. The `file` backend is always last, so it is the fallback on every system. On macOS, the Keychain item is not synchronized, it is readable only when the Keychain is unlocked, and it trusts the gccli binary.
 
 ### File backend
 
