@@ -3,7 +3,6 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/bpauli/gccli/internal/fit"
@@ -195,7 +194,7 @@ func (c *BodyDeleteWeightCmd) Run(g *Globals) error {
 		return err
 	}
 
-	ok, err := confirm(os.Stderr, fmt.Sprintf("Delete weigh-in %s on %s?", c.PK, c.Date), c.Force)
+	ok, err := confirm(g.Stderr, fmt.Sprintf("Delete weigh-in %s on %s?", c.PK, c.Date), c.Force)
 	if err != nil {
 		return err
 	}
@@ -275,7 +274,7 @@ func (c *BodyDeleteBPCmd) Run(g *Globals) error {
 		return err
 	}
 
-	ok, err := confirm(os.Stderr, fmt.Sprintf("Delete blood pressure entry %s on %s?", c.Version, c.Date), c.Force)
+	ok, err := confirm(g.Stderr, fmt.Sprintf("Delete blood pressure entry %s on %s?", c.Version, c.Date), c.Force)
 	if err != nil {
 		return err
 	}

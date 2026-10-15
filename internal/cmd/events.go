@@ -3,7 +3,6 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"os"
 	"regexp"
 	"strconv"
 	"time"
@@ -246,7 +245,7 @@ func (c *EventsDeleteCmd) Run(g *Globals) error {
 		return err
 	}
 
-	ok, err := confirm(os.Stderr, fmt.Sprintf("Delete event %s?", c.ID), c.Force)
+	ok, err := confirm(g.Stderr, fmt.Sprintf("Delete event %s?", c.ID), c.Force)
 	if err != nil {
 		return err
 	}

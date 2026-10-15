@@ -3,7 +3,6 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"os"
 
 	"github.com/bpauli/gccli/internal/outfmt"
 )
@@ -72,7 +71,7 @@ func (c *ActivityDeleteCmd) Run(g *Globals) error {
 		return err
 	}
 
-	ok, err := confirm(os.Stderr, fmt.Sprintf("Delete activity %s?", c.ID), c.Force)
+	ok, err := confirm(g.Stderr, fmt.Sprintf("Delete activity %s?", c.ID), c.Force)
 	if err != nil {
 		return err
 	}

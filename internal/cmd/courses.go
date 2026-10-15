@@ -341,7 +341,7 @@ func (c *CourseDeleteCmd) Run(g *Globals) error {
 		return err
 	}
 
-	ok, err := confirm(os.Stderr, fmt.Sprintf("Delete course %s?", c.ID), c.Force)
+	ok, err := confirm(g.Stderr, fmt.Sprintf("Delete course %s?", c.ID), c.Force)
 	if err != nil {
 		return err
 	}

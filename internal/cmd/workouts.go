@@ -447,7 +447,7 @@ func (c *WorkoutScheduleRemoveCmd) Run(g *Globals) error {
 		return err
 	}
 
-	ok, err := confirm(os.Stderr, fmt.Sprintf("Remove scheduled workout %s?", c.ID), c.Force)
+	ok, err := confirm(g.Stderr, fmt.Sprintf("Remove scheduled workout %s?", c.ID), c.Force)
 	if err != nil {
 		return err
 	}
@@ -476,7 +476,7 @@ func (c *WorkoutDeleteCmd) Run(g *Globals) error {
 		return err
 	}
 
-	ok, err := confirm(os.Stderr, fmt.Sprintf("Delete workout %s?", c.ID), c.Force)
+	ok, err := confirm(g.Stderr, fmt.Sprintf("Delete workout %s?", c.ID), c.Force)
 	if err != nil {
 		return err
 	}
