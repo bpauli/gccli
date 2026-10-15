@@ -17,7 +17,7 @@ type refTestThingsCmd struct {
 	Verbose bool `help:"Print more."`
 
 	List refTestListCmd `cmd:"" default:"withargs" help:"List things."`
-	Get  refTestGetCmd  `cmd:"" help:"Show one thing."`
+	Get  refTestGetCmd  `cmd:"" help:"Show one thing's <parts> & more."`
 }
 
 type refTestListCmd struct {
@@ -60,7 +60,7 @@ func TestRenderReference(t *testing.T) {
 
 - ` + "`gccli things list [<date>]`: List things. Also runs as `gccli things [<date>]`." + `
   - ` + "`[<date>]`: Day to list." + `
-- ` + "`gccli things get --since=DATE <id> [flags]`: Show one thing." + `
+- ` + "`gccli things get --since=DATE <id> [flags]`: Show one thing's <parts> & more." + `
   - ` + "`<id>`: Thing ID." + `
   - ` + "`--since=DATE`: Start date." + `
   - ` + "`-f, --force`: Skip the check." + `
@@ -78,7 +78,7 @@ func TestRenderReference(t *testing.T) {
             <div class="cmd-header"><h3>Things &amp; Stuff</h3><span class="cmd-arrow">&#x25B6;</span></div>
             <div class="cmd-body">
               <div class="cmd-row"><div class="cmd">gccli things list [&lt;date&gt;]</div><div class="desc">List things. Also runs as <code>gccli things [&lt;date&gt;]</code>.<br><code>[&lt;date&gt;]</code> Day to list.</div></div>
-              <div class="cmd-row"><div class="cmd">gccli things get --since=DATE &lt;id&gt; [flags]</div><div class="desc">Show one thing.<br><code>&lt;id&gt;</code> Thing ID.<br><code>--since=DATE</code> Start date.<br><code>-f, --force</code> Skip the check.<br><code>--output=&#34;out.txt&#34;</code> Output file.<br><code>--kind=&#34;plain&#34;</code> Thing kind. One of: plain, fancy.<br><code>--mode=&#34;on&#34;</code> Turn it on or off.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli things get --since=DATE &lt;id&gt; [flags]</div><div class="desc">Show one thing&#39;s &lt;parts&gt; &amp; more.<br><code>&lt;id&gt;</code> Thing ID.<br><code>--since=DATE</code> Start date.<br><code>-f, --force</code> Skip the check.<br><code>--output=&#34;out.txt&#34;</code> Output file.<br><code>--kind=&#34;plain&#34;</code> Thing kind. One of: plain, fancy.<br><code>--mode=&#34;on&#34;</code> Turn it on or off.</div></div>
             </div>
           </div>
 `
