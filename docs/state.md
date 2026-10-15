@@ -44,7 +44,7 @@ gccli keeps keys that it does not know. It never removes them.
 2. It takes an exclusive lock on `config.lock`.
 3. If `config.json` is a symbolic link, it resolves the link and writes to the target file.
 4. It reads the file. A missing file reads as `{}`. If the file is not valid JSON, `Update` returns an error and does not write.
-5. It applies the change. It writes only the known keys that the change sets. When the change sets a known key to the empty value, `Update` removes that key. All other keys, also unknown keys, keep their values.
+5. It decodes the known keys, applies the change, and writes every known key again from the result. A known key that is empty after the change is removed. Unknown keys keep their values.
 6. It writes the result, indented with two spaces and followed by a newline, to a temporary file in the same directory. It syncs that file and renames it over `config.json`. The new file has mode `0600`.
 
 ## Lock files
@@ -76,7 +76,7 @@ gccli picks the backend in this order. The first one that is set wins.
 2. `keyring_backend` in `config.json`
 3. Automatic selection by the keyring library
 
-On Linux, when no backend is set and automatic selection cannot open a keyring, gccli uses the `file` backend. On macOS, the Keychain item is not synchronized, it is readable only when the Keychain is unlocked, and it trusts the gccli binary.
+On Linux, when neither `GCCLI_KEYRING_BACKEND` nor `keyring_backend` has a value and automatic selection cannot open a keyring, gccli uses the `file` backend. A value that selects the backend automatically, such as `auto`, gets no `file` fallback. On macOS, the Keychain item is not synchronized, it is readable only when the Keychain is unlocked, and it trusts the gccli binary.
 
 ### File backend
 
@@ -107,10 +107,13 @@ gccli ignores keys that it does not know. gccli 2.0.0 and older declared a `disp
 
 - A token without `version` is version 1.
 - gccli reads version 1.
-- For any other version, gccli fails before it sends a request. The error names the version of the token and version 1. `auth import` stores nothing in that case.
+- A `version` of `null` is version 1.
+- For any other integer version, gccli fails before it sends a request. The error names the version of the token and version 1. A `version` that is not an integer fails with the JSON decoder error. `auth import` stores nothing in either case.
 - `auth login`, `auth import` and every token refresh write the token with `"version":1`. They write only the keys in the table above.
 
 gccli 2.0.0 ignores the `version` key, so it reads a version 1 token.
+
+gccli drops unknown keys each time it writes a token. A key that must survive a write by an older gccli therefore needs a new version.
 
 ## Domain
 
