@@ -3,6 +3,11 @@ name: e2e
 on:
   push:
     branches: [main]
+    paths:
+      - "internal/garminapi/**"
+      - "internal/garminauth/**"
+      - "internal/e2e/**"
+      - "go.mod"
   schedule:
     # Run daily at 06:00 UTC
     - cron: "0 6 * * *"
