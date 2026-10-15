@@ -397,9 +397,15 @@ func TestResolveClient_SaveFails(t *testing.T) {
 	}
 
 	var buf bytes.Buffer
-	_, err := resolveClient(testGlobals(t, &buf, outfmt.Table, "test@example.com"))
-	if err == nil || !strings.Contains(err.Error(), "save refreshed token") {
-		t.Fatalf("err = %v, want a save error", err)
+	client, err := resolveClient(testGlobals(t, &buf, outfmt.Table, "test@example.com"))
+	if err != nil {
+		t.Fatalf("resolveClient: %v", err)
+	}
+	if got := client.Tokens().OAuth2AccessToken; got != "unsaved" {
+		t.Errorf("client token = %q, want the refreshed token unsaved", got)
+	}
+	if want := "Could not save the refreshed token: keyring set: keyring is read-only\n"; buf.String() != want {
+		t.Errorf("stderr = %q, want %q", buf.String(), want)
 	}
 }
 
