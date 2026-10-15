@@ -190,7 +190,7 @@ func (c *Client) Download(ctx context.Context, path string) ([]byte, error) {
 func refreshInMemory(ctx context.Context, sent *garminauth.Tokens) (*garminauth.Tokens, error) {
 	tokens, err := refreshTokensFn(ctx, sent, garminauth.LoginOptions{Domain: sent.Domain})
 	if err != nil {
-		return nil, &TokenExpiredError{Email: sent.Email}
+		return nil, &TokenExpiredError{Email: sent.Email, Err: err}
 	}
 	return tokens, nil
 }
