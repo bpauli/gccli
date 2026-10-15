@@ -6,6 +6,17 @@ linters:
     - errcheck
     - staticcheck
     - unused
+    - depguard
+  settings:
+    depguard:
+      rules:
+        payload:
+          list-mode: strict
+          files:
+            - "**/internal/payload/**"
+          allow:
+            - $gostd
+            - github.com/bpauli/gccli/internal/units
 
 formatters:
   enable:
