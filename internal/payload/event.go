@@ -28,7 +28,6 @@ type Event struct {
 	URL      string
 }
 
-// JSON builds the body of the event.
 func (e Event) JSON() (json.RawMessage, error) {
 	body := map[string]any{
 		"eventName": e.Name,

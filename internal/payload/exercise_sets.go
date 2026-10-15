@@ -37,7 +37,7 @@ type exerciseRef struct {
 	Name        string `json:"name"`
 }
 
-// parseExerciseSets parses exercise flag values into API-compatible sets.
+// parseExerciseSets parses exercise values into API-compatible sets.
 // Each exercise may include an optional :rSECS suffix for per-set rest time.
 // When present, a REST set is inserted after the active set.
 // Format: CATEGORY/NAME:reps@weightkg[:dSECS][:rSECS]

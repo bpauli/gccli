@@ -89,8 +89,6 @@ func compactJSON(t *testing.T, s string) string {
 	return b.String()
 }
 
-// sentBody runs cmd against a server that answers one route and returns the
-// body of the request that cmd sent to it.
 func sentBody(t *testing.T, route string, cmd interface{ Run(*Globals) error }) string {
 	t.Helper()
 	var mu sync.Mutex
@@ -345,8 +343,6 @@ func TestWorkoutCreateCmd_SentBody(t *testing.T) {
 	}
 }
 
-// runBadInput runs args with and without an account, with a credential store
-// that fails the test when the command opens it.
 func runBadInput(t *testing.T, args []string, wantStderr string) {
 	t.Helper()
 	for _, account := range []string{harnessAccount, ""} {
