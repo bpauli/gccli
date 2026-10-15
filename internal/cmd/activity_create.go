@@ -31,7 +31,7 @@ func (c *ActivityCreateCmd) Run(g *Globals) error {
 		startTime = t.Format("2006-01-02T15:04:05.000")
 		timezone = t.Location().String()
 	} else {
-		now := time.Now()
+		now := nowFn()
 		startTime = now.Format("2006-01-02T15:04:05.000")
 		timezone = now.Location().String()
 	}
@@ -67,7 +67,7 @@ func parseDateTime(s string) (time.Time, error) {
 		"2006-01-02",
 	}
 	for _, f := range formats {
-		if t, err := time.ParseInLocation(f, s, time.Now().Location()); err == nil {
+		if t, err := time.ParseInLocation(f, s, nowFn().Location()); err == nil {
 			return t, nil
 		}
 	}
