@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/bpauli/gccli/internal/outfmt"
@@ -83,8 +84,8 @@ func TestDisplayName_ProfileErrorStopsCommand(t *testing.T) {
 
 			var buf bytes.Buffer
 			g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-			if err := tc.cmd.Run(g); err == nil {
-				t.Fatal("expected error, got nil")
+			if err := tc.cmd.Run(g); err == nil || !strings.HasPrefix(err.Error(), "resolve display name: ") {
+				t.Fatalf("err = %v, want prefix %q", err, "resolve display name: ")
 			}
 			if len(dataPaths) != 0 {
 				t.Errorf("data requests = %q, want none", dataPaths)

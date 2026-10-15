@@ -421,3 +421,20 @@ func TestEventsListPageIndex(t *testing.T) {
 		}
 	}
 }
+
+func TestEventsListPageIndexRejectsLimitBelowOne(t *testing.T) {
+	for _, limit := range []int{0, -1} {
+		cmd := &EventsListCmd{Pagination: Pagination{Limit: limit, Offset: 4}}
+		if _, err := cmd.pageIndex(); err == nil || !strings.Contains(err.Error(), "--limit must be at least 1") {
+			t.Errorf("limit %d: pageIndex() err = %v, want a --limit error", limit, err)
+		}
+	}
+}
+
+func TestEventsList_LimitZeroIsUsageError(t *testing.T) {
+	h := newWriteHarness(t, writeCase{})
+	stdout, stderr, code := h.run([]string{"--json"}, []string{"events", "list", "--limit", "0"})
+	if code != 2 || stdout != "" || !strings.Contains(stderr, "--limit must be at least 1, got 0") {
+		t.Errorf("exit %d, want 2\nstdout %q, want empty\nstderr %q, want a --limit error", code, stdout, stderr)
+	}
+}

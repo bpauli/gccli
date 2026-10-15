@@ -39,6 +39,11 @@ const noContent = ""
 
 const okOut = "{\n  \"ok\": true\n}\n"
 
+const (
+	deletedBody = `{"deleted":true}`
+	deletedOut  = "{\n  \"deleted\": true\n}\n"
+)
+
 var writeCases = map[string]writeCase{
 	"activity upload": {
 		args:   []string{"run.fit"},
@@ -68,9 +73,9 @@ var writeCases = map[string]writeCase{
 	},
 	"activity delete": {
 		args:   []string{"1"},
-		routes: map[string]string{"DELETE /activity-service/activity/1": noContent},
+		routes: map[string]string{"DELETE /activity-service/activity/1": deletedBody},
 		prompt: "Delete activity 1?",
-		json:   okOut,
+		json:   deletedOut,
 		human:  "Deleted activity 1\n",
 	},
 	"activity exercise-sets set": {
@@ -93,9 +98,9 @@ var writeCases = map[string]writeCase{
 	},
 	"body delete-weight": {
 		args:   []string{"3", "--date", "2024-01-15"},
-		routes: map[string]string{"DELETE /weight-service/weight/2024-01-15/byversion/3": noContent},
+		routes: map[string]string{"DELETE /weight-service/weight/2024-01-15/byversion/3": deletedBody},
 		prompt: "Delete weigh-in 3 on 2024-01-15?",
-		json:   okOut,
+		json:   deletedOut,
 		human:  "Deleted weigh-in 3\n",
 	},
 	"body add-blood-pressure": {
@@ -106,9 +111,9 @@ var writeCases = map[string]writeCase{
 	},
 	"body delete-blood-pressure": {
 		args:   []string{"4", "--date", "2024-01-15"},
-		routes: map[string]string{"DELETE /bloodpressure-service/bloodpressure/2024-01-15/4": noContent},
+		routes: map[string]string{"DELETE /bloodpressure-service/bloodpressure/2024-01-15/4": deletedBody},
 		prompt: "Delete blood pressure entry 4 on 2024-01-15?",
-		json:   okOut,
+		json:   deletedOut,
 		human:  "Deleted blood pressure entry 4\n",
 	},
 	"workouts upload": {
@@ -141,16 +146,16 @@ var writeCases = map[string]writeCase{
 	},
 	"workouts schedule remove": {
 		args:   []string{"10"},
-		routes: map[string]string{"DELETE /workout-service/schedule/10": noContent},
+		routes: map[string]string{"DELETE /workout-service/schedule/10": deletedBody},
 		prompt: "Remove scheduled workout 10?",
-		json:   okOut,
+		json:   deletedOut,
 		human:  "Removed scheduled workout 10\n",
 	},
 	"workouts delete": {
 		args:   []string{"9"},
-		routes: map[string]string{"DELETE /workout-service/workout/9": noContent},
+		routes: map[string]string{"DELETE /workout-service/workout/9": deletedBody},
 		prompt: "Delete workout 9?",
-		json:   okOut,
+		json:   deletedOut,
 		human:  "Deleted workout 9\n",
 	},
 	"courses import": {
@@ -180,9 +185,9 @@ var writeCases = map[string]writeCase{
 	},
 	"courses delete": {
 		args:   []string{"42"},
-		routes: map[string]string{"DELETE /course-service/course/42": noContent},
+		routes: map[string]string{"DELETE /course-service/course/42": deletedBody},
 		prompt: "Delete course 42?",
-		json:   okOut,
+		json:   deletedOut,
 		human:  "Deleted course 42\n",
 	},
 	"events add": {
@@ -194,9 +199,9 @@ var writeCases = map[string]writeCase{
 	},
 	"events delete": {
 		args:   []string{"11"},
-		routes: map[string]string{"DELETE /calendar-service/event/11": noContent},
+		routes: map[string]string{"DELETE /calendar-service/event/11": deletedBody},
 		prompt: "Delete event 11?",
-		json:   okOut,
+		json:   deletedOut,
 		human:  "Deleted event 11\n",
 	},
 	"gear link": {
@@ -431,22 +436,8 @@ func (h *writeHarness) writes() []string {
 
 func TestWriteCensus(t *testing.T) {
 	fset := token.NewFileSet()
-	apiWrites := map[string]bool{}
-	methods := map[string]*ast.FuncDecl{}
-	for _, fn := range parseFuncs(t, fset, "../garminapi") {
-		if fn.Recv != nil && types.ExprString(fn.Recv.List[0].Type) == "*Client" {
-			methods[fn.Name.Name] = fn
-		}
-	}
-	for grew := true; grew; {
-		grew = false
-		for name, fn := range methods {
-			ids := idents(fn.Body)
-			if !apiWrites[name] && (ids["MethodPost"] || ids["MethodPut"] || ids["MethodPatch"] || ids["MethodDelete"] || hasAny(calls(fn.Body), apiWrites)) {
-				apiWrites[name], grew = true, true
-			}
-		}
-	}
+	methods := clientMethods(parseFuncs(t, fset, "../garminapi"))
+	apiWrites := apiWriteMethods(methods)
 	for name := range apiWrites {
 		fn := methods[name]
 		if res := fn.Type.Results; ast.IsExported(name) && (res == nil || len(res.List) != 2 ||
@@ -459,12 +450,9 @@ func TestWriteCensus(t *testing.T) {
 	commandPaths(newTestParser(t).Model.Node, "", paths)
 	banned := []string{"IsJSON", "IsPlain", "ModeFromContext", "WriteJSON", "WriteTable", "WritePlain", "writeHealthJSON", "Stdout", "Successf"}
 	found := map[string]bool{}
-	for _, fn := range parseFuncs(t, fset, ".") {
-		if fn.Name.Name != "Run" || fn.Recv == nil || !hasAny(calls(fn.Body), apiWrites) {
-			continue
-		}
+	for fn, method := range runWrites(parseFuncs(t, fset, "."), apiWrites) {
 		pos := fset.Position(fn.Pos())
-		recv := strings.TrimPrefix(types.ExprString(fn.Recv.List[0].Type), "*")
+		recv := recvName(fn)
 		if len(paths[recv]) == 0 {
 			t.Errorf("%s: %s.Run sends a write but is not a command in the CLI tree", pos, recv)
 		}
@@ -472,7 +460,7 @@ func TestWriteCensus(t *testing.T) {
 		for _, path := range paths[recv] {
 			found[path] = true
 			if _, ok := writeCases[path]; !ok {
-				t.Errorf("%s: %q sends a write to Garmin: add a row to writeCases in write_test.go", pos, path)
+				t.Errorf("%s: %q sends a write to Garmin through Client.%s: add a row to writeCases in write_test.go", pos, path, method)
 			}
 			if !called["reportWrite"] && !called["reportWriteTable"] {
 				t.Errorf("%s: %q sends a write: end Run with reportWrite or reportWriteTable (write.go)", pos, path)
@@ -491,6 +479,139 @@ func TestWriteCensus(t *testing.T) {
 	}
 }
 
+func TestWriteCensusFindsIndirectWrites(t *testing.T) {
+	fset := token.NewFileSet()
+	api := parseSource(t, fset, `package garminapi
+func (c *Client) PatchNote(ctx context.Context) (json.RawMessage, error) {
+	return c.ConnectAPI(ctx, "PATCH", "/note", nil)
+}
+func (c *Client) SaveNote(ctx context.Context) (json.RawMessage, error) {
+	return c.ConnectAPI(ctx, http.MethodPost, "/note", nil)
+}
+func (c *Client) GetNote(ctx context.Context) (json.RawMessage, error) {
+	return c.ConnectAPI(ctx, http.MethodGet, "/note", nil)
+}`)
+	cli := parseSource(t, fset, `package cmd
+func (c *LiteralVerbCmd) Run(g *Globals) error {
+	_, err := client.PatchNote(g.Context)
+	return err
+}
+func (c *HelperCmd) Run(g *Globals) error { return c.save(g) }
+func (c *HelperCmd) save(g *Globals) error { return storeNote(g) }
+func storeNote(g *Globals) error {
+	_, err := client.SaveNote(g.Context)
+	return err
+}
+func (c *ReadCmd) Run(g *Globals) error {
+	_, err := client.GetNote(g.Context)
+	return err
+}`)
+
+	got := map[string]string{}
+	for fn, method := range runWrites(cli, apiWriteMethods(clientMethods(api))) {
+		got[recvName(fn)] = method
+	}
+	want := map[string]string{"LiteralVerbCmd": "PatchNote", "HelperCmd": "SaveNote"}
+	if !maps.Equal(got, want) {
+		t.Errorf("runWrites = %v, want %v", got, want)
+	}
+}
+
+func clientMethods(fns []*ast.FuncDecl) map[string]*ast.FuncDecl {
+	methods := map[string]*ast.FuncDecl{}
+	for _, fn := range fns {
+		if recvName(fn) == "Client" {
+			methods[fn.Name.Name] = fn
+		}
+	}
+	return methods
+}
+
+type clientMethod = string
+
+func apiWriteMethods(methods map[string]*ast.FuncDecl) map[string]clientMethod {
+	writes := map[string]clientMethod{}
+	for name, fn := range methods {
+		if namesWriteVerb(fn.Body) {
+			writes[name] = name
+		}
+	}
+	return reachWrites(slices.Collect(maps.Values(methods)), writes)
+}
+
+func runWrites(fns []*ast.FuncDecl, apiWrites map[string]clientMethod) map[*ast.FuncDecl]clientMethod {
+	writes := map[string]clientMethod{}
+	for name := range apiWrites {
+		writes[name] = name
+	}
+	var helpers, runs []*ast.FuncDecl
+	for _, fn := range fns {
+		if fn.Name.Name == "Run" && fn.Recv != nil {
+			runs = append(runs, fn)
+		} else {
+			helpers = append(helpers, fn)
+		}
+	}
+	writes = reachWrites(helpers, writes)
+	out := map[*ast.FuncDecl]clientMethod{}
+	for _, fn := range runs {
+		if callee, ok := firstCallIn(fn.Body, writes); ok {
+			out[fn] = writes[callee]
+		}
+	}
+	return out
+}
+
+func reachWrites(fns []*ast.FuncDecl, writes map[string]clientMethod) map[string]clientMethod {
+	for grew := true; grew; {
+		grew = false
+		for _, fn := range fns {
+			if _, ok := writes[fn.Name.Name]; ok {
+				continue
+			}
+			if callee, ok := firstCallIn(fn.Body, writes); ok {
+				writes[fn.Name.Name], grew = writes[callee], true
+			}
+		}
+	}
+	return writes
+}
+
+func firstCallIn(body ast.Node, writes map[string]clientMethod) (string, bool) {
+	for _, name := range slices.Sorted(maps.Keys(calls(body))) {
+		if _, ok := writes[name]; ok {
+			return name, true
+		}
+	}
+	return "", false
+}
+
+var writeVerbs = map[string]bool{
+	"MethodPost": true, "MethodPut": true, "MethodPatch": true, "MethodDelete": true,
+	`"POST"`: true, `"PUT"`: true, `"PATCH"`: true, `"DELETE"`: true,
+}
+
+func namesWriteVerb(body ast.Node) bool {
+	found := false
+	ast.Inspect(body, func(n ast.Node) bool {
+		switch n := n.(type) {
+		case *ast.Ident:
+			found = found || writeVerbs[n.Name]
+		case *ast.BasicLit:
+			found = found || (n.Kind == token.STRING && writeVerbs[n.Value])
+		}
+		return !found
+	})
+	return found
+}
+
+func recvName(fn *ast.FuncDecl) string {
+	if fn.Recv == nil {
+		return ""
+	}
+	return strings.TrimPrefix(types.ExprString(fn.Recv.List[0].Type), "*")
+}
+
 func parseFuncs(t *testing.T, fset *token.FileSet, dir string) []*ast.FuncDecl {
 	t.Helper()
 	names, err := filepath.Glob(filepath.Join(dir, "*.go"))
@@ -506,10 +627,25 @@ func parseFuncs(t *testing.T, fset *token.FileSet, dir string) []*ast.FuncDecl {
 		if err != nil {
 			t.Fatal(err)
 		}
-		for _, d := range f.Decls {
-			if fn, ok := d.(*ast.FuncDecl); ok && fn.Body != nil {
-				fns = append(fns, fn)
-			}
+		fns = append(fns, funcDecls(f)...)
+	}
+	return fns
+}
+
+func parseSource(t *testing.T, fset *token.FileSet, src string) []*ast.FuncDecl {
+	t.Helper()
+	f, err := parser.ParseFile(fset, "fixture.go", src, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return funcDecls(f)
+}
+
+func funcDecls(f *ast.File) []*ast.FuncDecl {
+	var fns []*ast.FuncDecl
+	for _, d := range f.Decls {
+		if fn, ok := d.(*ast.FuncDecl); ok && fn.Body != nil {
+			fns = append(fns, fn)
 		}
 	}
 	return fns
@@ -540,15 +676,6 @@ func calls(n ast.Node) map[string]bool {
 		return true
 	})
 	return out
-}
-
-func hasAny(names, set map[string]bool) bool {
-	for name := range names {
-		if set[name] {
-			return true
-		}
-	}
-	return false
 }
 
 func commandPaths(n *kong.Node, prefix string, out map[string][]string) {
