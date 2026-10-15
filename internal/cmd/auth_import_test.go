@@ -194,3 +194,46 @@ func TestAuthImport_ExpiredWarning(t *testing.T) {
 		t.Fatalf("expected expired warning, got: %q", buf.String())
 	}
 }
+
+func TestAuthImport_UnknownDomain(t *testing.T) {
+	testutil.TempConfigDir(t)
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+
+	tokens := testTokens()
+	tokens.Domain = "foo.example"
+	data, _ := tokens.Marshal()
+
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "")
+	err := (&AuthImportCmd{Token: base64.StdEncoding.EncodeToString(data)}).Run(g)
+	if err == nil || !strings.Contains(err.Error(), "foo.example") {
+		t.Fatalf("error = %v, want one that names foo.example", err)
+	}
+	if _, getErr := store.Get(tokens.Email); getErr == nil {
+		t.Error("token with an unknown domain was stored")
+	}
+}
+
+func TestAuthImport_EmptyDomainStoredAsIs(t *testing.T) {
+	testutil.TempConfigDir(t)
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+
+	tokens := testTokens()
+	tokens.Domain = ""
+	data, _ := tokens.Marshal()
+
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "")
+	if err := (&AuthImportCmd{Token: base64.StdEncoding.EncodeToString(data)}).Run(g); err != nil {
+		t.Fatalf("Run: %v", err)
+	}
+	stored, err := store.Get(tokens.Email)
+	if err != nil {
+		t.Fatalf("store.Get: %v", err)
+	}
+	if !bytes.Equal(stored, data) {
+		t.Errorf("stored = %s, want %s", stored, data)
+	}
+}
