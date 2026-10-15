@@ -269,17 +269,31 @@ func TestStall_DrainBeforeRetryThenRetrySucceeds(t *testing.T) {
 	}
 }
 
+func dialOutsideStallWatch(t *testing.T, c *Client, path string) {
+	t.Helper()
+	stallLayer(c).idle = time.Minute
+	if _, err := c.ConnectAPI(context.Background(), http.MethodGet, path, nil); err != nil {
+		t.Fatalf("warm-up request: %v", err)
+	}
+	stallLayer(c).idle = testStallTimeout
+}
+
 func TestStall_HeadersThenSlowBodySucceeds(t *testing.T) {
 	for _, mode := range bothProtos {
 		t.Run(string(mode), func(t *testing.T) {
-			const overHalfLimit = testStallTimeout/2 + testStallTimeout/5
-			c, _ := stallServer(t, mode, func(w http.ResponseWriter, _ *http.Request) {
+			const overHalfLimit = testStallTimeout/2 + testStallTimeout/20
+			c, conns := stallServer(t, mode, func(w http.ResponseWriter, r *http.Request) {
+				if r.URL.Path == "/warm" {
+					_, _ = io.WriteString(w, `{"ok":true}`)
+					return
+				}
 				time.Sleep(overHalfLimit)
 				w.WriteHeader(http.StatusOK)
 				w.(http.Flusher).Flush()
 				time.Sleep(overHalfLimit)
 				_, _ = io.WriteString(w, `{"ok":true}`)
 			})
+			dialOutsideStallWatch(t, c, "/warm")
 			var data []byte
 			d, err := callWithin(t, 3*time.Second, func() error {
 				var err error
@@ -291,6 +305,9 @@ func TestStall_HeadersThenSlowBodySucceeds(t *testing.T) {
 			}
 			if string(data) != `{"ok":true}` {
 				t.Fatalf("data = %q, want the full body", data)
+			}
+			if n := conns.Load(); n != 1 {
+				t.Fatalf("server conns = %d, want the timed request on the warm connection", n)
 			}
 		})
 	}
