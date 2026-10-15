@@ -13,6 +13,7 @@ import (
 func goalsTestServer(t *testing.T) *httptest.Server {
 	t.Helper()
 	mux := http.NewServeMux()
+	serveDisplayName(mux)
 
 	mux.HandleFunc("/goal-service/goal/goals", func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -491,76 +492,9 @@ func TestRecords_Success(t *testing.T) {
 	}
 }
 
-func TestRecords_DisplayNamePath(t *testing.T) {
-	called := false
-	mux := http.NewServeMux()
-	mux.HandleFunc("/personalrecord-service/personalrecord/prs/", func(w http.ResponseWriter, r *http.Request) {
-		called = true
-		wantPath := "/personalrecord-service/personalrecord/prs/Test User"
-		if r.URL.Path != wantPath {
-			t.Errorf("path = %s, want %s", r.URL.Path, wantPath)
-		}
-		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(`[{"typeId":1,"typeName":"Longest Run"}]`))
-	})
-	server := httptest.NewServer(mux)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &RecordsCmd{}
-	err := cmd.Run(g)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
-	}
-	if !called {
-		t.Fatal("expected API to be called with display name in path")
-	}
-}
-
-func TestRecords_FallbackToEmail(t *testing.T) {
-	called := false
-	mux := http.NewServeMux()
-	mux.HandleFunc("/personalrecord-service/personalrecord/prs/", func(w http.ResponseWriter, r *http.Request) {
-		called = true
-		wantPath := "/personalrecord-service/personalrecord/prs/test@example.com"
-		if r.URL.Path != wantPath {
-			t.Errorf("path = %s, want %s", r.URL.Path, wantPath)
-		}
-		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(`[{"typeId":1,"typeName":"Longest Run"}]`))
-	})
-	server := httptest.NewServer(mux)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-
-	// Store tokens without display name
-	tokens := testTokens()
-	tokens.DisplayName = ""
-	storeTestTokens(t, store, "test@example.com", tokens)
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &RecordsCmd{}
-	err := cmd.Run(g)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
-	}
-	if !called {
-		t.Fatal("expected API to be called with email in path")
-	}
-}
-
 func TestRecords_ServerError(t *testing.T) {
 	mux := http.NewServeMux()
+	serveDisplayName(mux)
 	mux.HandleFunc("/personalrecord-service/personalrecord/prs/", func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		_, _ = w.Write([]byte("error"))

@@ -57,7 +57,10 @@ func (c *HealthSummaryCmd) Run(g *Globals) error {
 		return err
 	}
 
-	displayName := client.Tokens().DisplayName
+	displayName, err := resolveDisplayName(g, client)
+	if err != nil {
+		return err
+	}
 	data, err := client.GetDailySummary(g.Context, displayName, date)
 	if err != nil {
 		return fmt.Errorf("get daily summary: %w", err)
@@ -89,7 +92,10 @@ func (c *HealthStepsViewCmd) Run(g *Globals) error {
 		return err
 	}
 
-	displayName := client.Tokens().DisplayName
+	displayName, err := resolveDisplayName(g, client)
+	if err != nil {
+		return err
+	}
 	data, err := client.GetSteps(g.Context, displayName, date)
 	if err != nil {
 		return fmt.Errorf("get steps: %w", err)
@@ -159,7 +165,10 @@ func (c *HealthHRCmd) Run(g *Globals) error {
 		return err
 	}
 
-	displayName := client.Tokens().DisplayName
+	displayName, err := resolveDisplayName(g, client)
+	if err != nil {
+		return err
+	}
 	data, err := client.GetHeartRate(g.Context, displayName, date)
 	if err != nil {
 		return fmt.Errorf("get heart rate: %w", err)
@@ -184,7 +193,10 @@ func (c *HealthRHRCmd) Run(g *Globals) error {
 		return err
 	}
 
-	displayName := client.Tokens().DisplayName
+	displayName, err := resolveDisplayName(g, client)
+	if err != nil {
+		return err
+	}
 	data, err := client.GetRestingHeartRate(g.Context, displayName, date)
 	if err != nil {
 		return fmt.Errorf("get resting heart rate: %w", err)
@@ -233,7 +245,10 @@ func (c *HealthSleepCmd) Run(g *Globals) error {
 		return err
 	}
 
-	displayName := client.Tokens().DisplayName
+	displayName, err := resolveDisplayName(g, client)
+	if err != nil {
+		return err
+	}
 	data, err := client.GetSleep(g.Context, displayName, date)
 	if err != nil {
 		return fmt.Errorf("get sleep: %w", err)

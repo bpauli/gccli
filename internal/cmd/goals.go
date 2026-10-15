@@ -135,9 +135,9 @@ func (c *RecordsCmd) Run(g *Globals) error {
 		return err
 	}
 
-	displayName := client.Tokens().DisplayName
-	if displayName == "" {
-		displayName = client.Tokens().Email
+	displayName, err := resolveDisplayName(g, client)
+	if err != nil {
+		return err
 	}
 
 	data, err := client.GetPersonalRecords(g.Context, displayName)
