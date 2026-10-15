@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"os"
 	"sync"
 	"testing"
 
@@ -42,6 +43,16 @@ func getOrLogin(t *testing.T) *garminauth.Tokens {
 	}
 	if loginErr != nil {
 		t.Skipf("skipping: prior auth failed: %v", loginErr)
+	}
+
+	if raw := os.Getenv("GARMIN_TOKEN"); raw != "" {
+		if cachedTokens == nil {
+			cachedTokens, loginErr = harness.DecodeToken(raw)
+			if loginErr != nil {
+				t.Fatalf("E2E token: %v", loginErr)
+			}
+		}
+		return cachedTokens
 	}
 
 	if cachedTokens != nil && !cachedTokens.IsExpired() {
