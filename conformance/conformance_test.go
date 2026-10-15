@@ -7,6 +7,7 @@ import (
 	"encoding/base64"
 	"encoding/pem"
 	"errors"
+	"flag"
 	"fmt"
 	"io"
 	"net/http"
@@ -114,7 +115,7 @@ func TestSandboxDistrustsSystemRoots(t *testing.T) {
 	if len(roots) == 0 {
 		t.Skip("no system roots found")
 	}
-	if os.Getenv("GCCLI_CONFORMANCE_PROBE") != "" {
+	if flag.Arg(0) == "trusted-roots-probe" {
 		pool, err := x509.SystemCertPool()
 		if err != nil {
 			t.Fatal(err)
@@ -127,8 +128,8 @@ func TestSandboxDistrustsSystemRoots(t *testing.T) {
 		return
 	}
 	s := newSandbox(t, "", http.NotFoundHandler())
-	cmd := exec.Command(os.Args[0], "-test.run=^TestSandboxDistrustsSystemRoots$")
-	cmd.Env = append(s.env(), "GCCLI_CONFORMANCE_PROBE=1")
+	cmd := exec.Command(os.Args[0], "-test.run=^TestSandboxDistrustsSystemRoots$", "trusted-roots-probe")
+	cmd.Env = s.env()
 	if out, err := cmd.CombinedOutput(); err != nil {
 		t.Errorf("a process with the sandbox env trusts the system roots, so a binary that ignores HTTPS_PROXY can reach the real Garmin: %v\n%s", err, out)
 	}
