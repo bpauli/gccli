@@ -3,7 +3,9 @@ package conformance
 import (
 	"cmp"
 	"context"
+	"crypto/x509"
 	"encoding/base64"
+	"encoding/pem"
 	"errors"
 	"fmt"
 	"io"
@@ -101,6 +103,53 @@ func (s *sandbox) env() []string {
 		"SSL_CERT_FILE=" + caFile,
 		"TZ=UTC",
 	}
+}
+
+func TestSandboxDistrustsSystemRoots(t *testing.T) {
+	if runtime.GOOS != "linux" {
+		t.Skip("the sandbox env selects the trusted roots only on linux")
+	}
+	roots := systemRoots()
+	if len(roots) == 0 {
+		t.Skip("no system roots found")
+	}
+	if os.Getenv("GCCLI_CONFORMANCE_PROBE") != "" {
+		pool, err := x509.SystemCertPool()
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, root := range roots {
+			if _, err := root.Verify(x509.VerifyOptions{Roots: pool}); err == nil {
+				t.Fatalf("the system root %q is trusted", root.Subject)
+			}
+		}
+		return
+	}
+	s := newSandbox(t, "", http.NotFoundHandler())
+	cmd := exec.Command(os.Args[0], "-test.run=^TestSandboxDistrustsSystemRoots$")
+	cmd.Env = append(s.env(), "GCCLI_CONFORMANCE_PROBE=1")
+	if out, err := cmd.CombinedOutput(); err != nil {
+		t.Errorf("a process with the sandbox env trusts the system roots, so a binary that ignores HTTPS_PROXY can reach the real Garmin: %v\n%s", err, out)
+	}
+}
+
+func systemRoots() []*x509.Certificate {
+	var roots []*x509.Certificate
+	for _, dir := range []string{"/etc/ssl/certs", "/etc/pki/tls/certs"} {
+		entries, _ := os.ReadDir(dir)
+		for _, e := range entries {
+			data, err := os.ReadFile(filepath.Join(dir, e.Name()))
+			if err != nil {
+				continue
+			}
+			for block, rest := pem.Decode(data); block != nil; block, rest = pem.Decode(rest) {
+				if c, err := x509.ParseCertificate(block.Bytes); err == nil {
+					roots = append(roots, c)
+				}
+			}
+		}
+	}
+	return roots
 }
 
 type result struct {
