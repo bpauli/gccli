@@ -2,6 +2,8 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+Read `AGENTS.md` before you verify or merge a PR, and before you change command output.
+
 ## Project Overview
 
 `gccli` is a Go CLI (`gccli`) for interacting with the Garmin Connect API. It covers authentication, activities, workouts, health data, body composition, devices, gear, goals, badges, challenges, profile, hydration, training, and wellness data. Module: `github.com/bpauli/gccli`.
