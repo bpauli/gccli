@@ -9,6 +9,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/bpauli/gccli/internal/garminapi"
 	"github.com/bpauli/gccli/internal/garminauth"
 )
 
@@ -143,5 +144,78 @@ func (hangingTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 		return nil, req.Context().Err()
 	case <-time.After(2 * time.Second):
 		return page(req, http.StatusOK, `{"access_token":"AT-new","refresh_token":"RT-new","expires_in":3600}`), nil
+	}
+}
+
+func rejectedToken() *garminauth.Tokens {
+	tokens := expiredToken()
+	tokens.OAuth2ExpiresAt = time.Date(2099, 1, 1, 0, 0, 0, 0, time.UTC)
+	return tokens
+}
+
+func sharedGarmin(t *testing.T, diStatus int, diBody string) (transport http.RoundTripper, refreshes *[]string) {
+	t.Helper()
+	refreshes = new([]string)
+	transport = roundTripFunc(func(req *http.Request) *http.Response {
+		if req.URL.Host == "diauth.garmin.com" {
+			if err := req.ParseForm(); err != nil {
+				t.Error(err)
+			}
+			*refreshes = append(*refreshes, req.PostForm.Get("refresh_token"))
+			return page(req, diStatus, diBody)
+		}
+		if req.Header.Get("Authorization") != "Bearer AT-new" {
+			return page(req, http.StatusUnauthorized, "")
+		}
+		return page(req, http.StatusOK, `{"ok":true}`)
+	})
+	return transport, refreshes
+}
+
+func sharedClient(shared *SharedTokens, transport http.RoundTripper) *garminapi.Client {
+	client := garminapi.NewClient(shared.Tokens(),
+		garminapi.WithHTTPClient(&http.Client{Transport: transport}),
+		garminapi.WithBaseURL("https://connectapi.garmin.com"))
+	client.Refresher = shared.Refresh
+	return client
+}
+
+func TestSharedTokensRefreshOnceForAllClients(t *testing.T) {
+	transport, refreshes := sharedGarmin(t, http.StatusOK, `{"access_token":"AT-new","refresh_token":"RT-new","expires_in":3600}`)
+	shared := NewSharedTokens(rejectedToken(), transport)
+	get := func(name string, client *garminapi.Client) {
+		if _, err := client.ConnectAPI(context.Background(), http.MethodGet, "/x", nil); err != nil {
+			t.Fatalf("%s client: %v", name, err)
+		}
+	}
+	first, second := sharedClient(shared, transport), sharedClient(shared, transport)
+	get("first", first)
+	get("second", second)
+	get("later", sharedClient(shared, transport))
+	if want := []string{"RT-secret-old"}; !slices.Equal(*refreshes, want) {
+		t.Errorf("refresh tokens sent = %q, want %q", *refreshes, want)
+	}
+	if got := shared.Tokens(); got.OAuth2AccessToken != "AT-new" || got.OAuth2RefreshToken != "RT-new" {
+		t.Errorf("shared tokens = %+v, want AT-new and RT-new", got)
+	}
+}
+
+func TestSharedTokensKeepFailedRefresh(t *testing.T) {
+	transport, refreshes := sharedGarmin(t, http.StatusBadRequest, `{"error":"invalid_grant"}`)
+	shared := NewSharedTokens(rejectedToken(), transport)
+	for i := range 2 {
+		_, err := sharedClient(shared, transport).ConnectAPI(context.Background(), http.MethodGet, "/x", nil)
+		if err == nil || !strings.HasPrefix(err.Error(), "token refresh after 401: ") || !strings.Contains(err.Error(), "invalid_grant") {
+			t.Fatalf("client %d: err = %v, want the failed refresh with the invalid_grant answer", i, err)
+		}
+		if strings.Contains(err.Error(), "RT-secret") {
+			t.Errorf("client %d: err = %v, want no refresh token in the message", i, err)
+		}
+	}
+	if len(*refreshes) != 1 {
+		t.Errorf("refreshes = %d, want 1", len(*refreshes))
+	}
+	if shared.Err() == nil {
+		t.Error("Err() = nil, want the failed refresh")
 	}
 }

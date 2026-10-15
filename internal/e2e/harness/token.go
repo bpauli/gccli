@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/bpauli/gccli/internal/garminauth"
@@ -48,4 +49,45 @@ func refresh(ctx context.Context, tokens *garminauth.Tokens, base http.RoundTrip
 		Domain:     tokens.Domain,
 		HTTPClient: &http.Client{Transport: base, Timeout: refreshTimeout},
 	})
+}
+
+type SharedTokens struct {
+	base   http.RoundTripper
+	mu     sync.Mutex
+	tokens *garminauth.Tokens
+	err    error
+}
+
+func NewSharedTokens(tokens *garminauth.Tokens, base http.RoundTripper) *SharedTokens {
+	return &SharedTokens{base: base, tokens: tokens}
+}
+
+func (s *SharedTokens) Tokens() *garminauth.Tokens {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.tokens
+}
+
+func (s *SharedTokens) Err() error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.err
+}
+
+func (s *SharedTokens) Refresh(ctx context.Context, sent *garminauth.Tokens) (*garminauth.Tokens, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if s.err != nil {
+		return nil, s.err
+	}
+	if s.tokens.OAuth2AccessToken != sent.OAuth2AccessToken {
+		return s.tokens, nil
+	}
+	refreshed, err := refresh(ctx, s.tokens, s.base)
+	if err != nil {
+		s.err = fmt.Errorf("token refresh after 401: %w", err)
+		return nil, s.err
+	}
+	s.tokens = refreshed
+	return refreshed, nil
 }

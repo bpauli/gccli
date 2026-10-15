@@ -11,7 +11,7 @@ import (
 )
 
 func TestHeadlessLogin(t *testing.T) {
-	tokens := getOrLogin(t)
+	tokens := getOrLogin(t).Tokens()
 
 	// Verify OAuth2 access token is present.
 	if tokens.OAuth2AccessToken == "" {
@@ -35,7 +35,7 @@ func TestTokenFields(t *testing.T) {
 	email, _ := LoadEnv(t)
 
 	// Use the cached authenticated client path to get tokens.
-	tokens := getOrLogin(t)
+	tokens := getOrLogin(t).Tokens()
 
 	// Verify email matches the login email.
 	if tokens.Email != email {
