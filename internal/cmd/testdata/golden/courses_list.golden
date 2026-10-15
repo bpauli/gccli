@@ -1,0 +1,46 @@
+-- args --
+courses
+list
+-- route GET /web-gateway/course/owner/ --
+{"coursesForUser":[{"courseId":111,"courseName":"Morning Loop","courseType":{"typeKey":"running"},"distanceInMeters":8200,"createdDate":"2026-09-01T10:00:00.0"},{"courseId":112,"courseName":"Hill Repeats","courseType":{"typeKey":"cycling"},"distanceInMeters":42000,"createdDate":"2026-09-20T10:00:00.0"}]}
+-- route GET /userprofile-service/userprofile/user-settings --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- table stdout --
+ID   NAME          TYPE     DISTANCE  CREATED
+111  Morning Loop  running  8.20 km   2026-09-01T10:00:00.0
+112  Hill Repeats  cycling  42.00 km  2026-09-20T10:00:00.0
+-- table stderr --
+-- table exit --
+0
+-- plain stdout --
+111	Morning Loop	running	8.20 km	2026-09-01T10:00:00.0
+112	Hill Repeats	cycling	42.00 km	2026-09-20T10:00:00.0
+-- plain stderr --
+-- plain exit --
+0
+-- json stdout --
+{
+  "coursesForUser": [
+    {
+      "courseId": 111,
+      "courseName": "Morning Loop",
+      "courseType": {
+        "typeKey": "running"
+      },
+      "distanceInMeters": 8200,
+      "createdDate": "2026-09-01T10:00:00.0"
+    },
+    {
+      "courseId": 112,
+      "courseName": "Hill Repeats",
+      "courseType": {
+        "typeKey": "cycling"
+      },
+      "distanceInMeters": 42000,
+      "createdDate": "2026-09-20T10:00:00.0"
+    }
+  ]
+}
+-- json stderr --
+-- json exit --
+0

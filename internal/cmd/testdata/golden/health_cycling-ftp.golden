@@ -1,0 +1,26 @@
+-- args --
+health
+cycling-ftp
+-- route GET /biometric-service/biometric/latestFunctionalThresholdPower/CYCLING --
+{"value":1}
+-- table stdout --
+{
+  "value": 1
+}
+-- table stderr --
+-- table exit --
+0
+-- plain stdout --
+{
+  "value": 1
+}
+-- plain stderr --
+-- plain exit --
+0
+-- json stdout --
+{
+  "value": 1
+}
+-- json stderr --
+-- json exit --
+0

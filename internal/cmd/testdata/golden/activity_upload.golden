@@ -1,0 +1,27 @@
+-- args --
+activity
+upload
+run.fit
+-- file run.fit --
+fit
+-- route POST /upload-service/upload --
+{"detailedImportResult":{"uploadId":4711}}
+-- table stdout --
+-- table stderr --
+Uploaded $DIR/run.fit
+-- table exit --
+0
+-- plain stdout --
+-- plain stderr --
+Uploaded $DIR/run.fit
+-- plain exit --
+0
+-- json stdout --
+{
+  "detailedImportResult": {
+    "uploadId": 4711
+  }
+}
+-- json stderr --
+-- json exit --
+0

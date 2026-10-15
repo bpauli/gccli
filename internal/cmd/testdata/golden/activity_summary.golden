@@ -1,0 +1,64 @@
+-- args --
+activity
+summary
+111
+-- route GET /activity-service/activity/111 --
+{"activityId":111,"activityName":"Morning Run","activityTypeDTO":{"typeKey":"running"},"summaryDTO":{"startTimeLocal":"2026-10-14T07:30:00.0","distance":10012.5,"duration":3005.2,"movingDuration":2950,"elevationGain":85,"elevationLoss":80,"averageSpeed":3.33,"maxSpeed":4.1,"averageHR":148,"maxHR":171,"calories":712}}
+-- route GET /userprofile-service/userprofile/user-settings --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- table stdout --
+NAME                       Morning Run
+TYPE                       running
+DATE                       2026-10-14T07:30:00.0
+DISTANCE                   10.01 km
+DURATION                   50:05
+AVG SPEED                  12.0 km/h
+AVG HR                     148 bpm
+CALORIES                   712
+AEROBIC TRAINING EFFECT    -
+ANAEROBIC TRAINING EFFECT  -
+FEEL                       -
+RPE                        -
+-- table stderr --
+-- table exit --
+0
+-- plain stdout --
+NAME	Morning Run
+TYPE	running
+DATE	2026-10-14T07:30:00.0
+DISTANCE	10.01 km
+DURATION	50:05
+AVG SPEED	12.0 km/h
+AVG HR	148 bpm
+CALORIES	712
+AEROBIC TRAINING EFFECT	-
+ANAEROBIC TRAINING EFFECT	-
+FEEL	-
+RPE	-
+-- plain stderr --
+-- plain exit --
+0
+-- json stdout --
+{
+  "activityId": 111,
+  "activityName": "Morning Run",
+  "activityTypeDTO": {
+    "typeKey": "running"
+  },
+  "summaryDTO": {
+    "startTimeLocal": "2026-10-14T07:30:00.0",
+    "distance": 10012.5,
+    "duration": 3005.2,
+    "movingDuration": 2950,
+    "elevationGain": 85,
+    "elevationLoss": 80,
+    "averageSpeed": 3.33,
+    "maxSpeed": 4.1,
+    "averageHR": 148,
+    "maxHR": 171,
+    "calories": 712
+  }
+}
+-- json stderr --
+-- json exit --
+0

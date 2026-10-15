@@ -1,0 +1,24 @@
+-- args --
+gear
+unlink
+abc-123
+111
+-- route PUT /gear-service/gear/unlink/abc-123/activity/111 --
+{"ok":true}
+-- table stdout --
+-- table stderr --
+Unlinked gear abc-123 from activity 111
+-- table exit --
+0
+-- plain stdout --
+-- plain stderr --
+Unlinked gear abc-123 from activity 111
+-- plain exit --
+0
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0

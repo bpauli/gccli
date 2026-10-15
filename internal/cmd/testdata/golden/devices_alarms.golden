@@ -1,0 +1,52 @@
+-- args --
+devices
+alarms
+-- route GET /device-service/deviceregistration/devices --
+[{"deviceId":3333,"productDisplayName":"Forerunner 265"}]
+-- route GET /device-service/deviceservice/device-info/settings/3333 --
+{"alarms":[{"alarmId":1,"alarmTime":420,"alarmDays":["MONDAY","FRIDAY"],"alarmMode":"ON"}]}
+-- table stdout --
+[
+  {
+    "alarmDays": [
+      "MONDAY",
+      "FRIDAY"
+    ],
+    "alarmId": 1,
+    "alarmMode": "ON",
+    "alarmTime": 420
+  }
+]
+-- table stderr --
+-- table exit --
+0
+-- plain stdout --
+[
+  {
+    "alarmDays": [
+      "MONDAY",
+      "FRIDAY"
+    ],
+    "alarmId": 1,
+    "alarmMode": "ON",
+    "alarmTime": 420
+  }
+]
+-- plain stderr --
+-- plain exit --
+0
+-- json stdout --
+[
+  {
+    "alarmDays": [
+      "MONDAY",
+      "FRIDAY"
+    ],
+    "alarmId": 1,
+    "alarmMode": "ON",
+    "alarmTime": 420
+  }
+]
+-- json stderr --
+-- json exit --
+0

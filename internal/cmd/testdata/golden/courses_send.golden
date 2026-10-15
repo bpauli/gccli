@@ -1,0 +1,29 @@
+-- args --
+courses
+send
+111
+3333
+-- route GET /course-service/course/111 --
+{"courseId":111,"courseName":"Morning Loop"}
+-- route POST /device-service/devicemessage/messages --
+[{"deviceName":"Forerunner 265","messageId":888}]
+-- table stdout --
+-- table stderr --
+Sent course "Morning Loop" to device Forerunner 265 (message 888)
+-- table exit --
+0
+-- plain stdout --
+-- plain stderr --
+Sent course "Morning Loop" to device Forerunner 265 (message 888)
+-- plain exit --
+0
+-- json stdout --
+[
+  {
+    "deviceName": "Forerunner 265",
+    "messageId": 888
+  }
+]
+-- json stderr --
+-- json exit --
+0

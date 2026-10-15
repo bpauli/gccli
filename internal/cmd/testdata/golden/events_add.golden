@@ -1,0 +1,30 @@
+-- args --
+events
+add
+--name
+City Race
+--date
+2026-11-01
+--type
+running
+-- route POST /calendar-service/event --
+{"id":4242,"eventName":"City Race","date":"2026-11-01"}
+-- table stdout --
+-- table stderr --
+Added event "City Race" on 2026-11-01 (ID: 4242)
+-- table exit --
+0
+-- plain stdout --
+-- plain stderr --
+Added event "City Race" on 2026-11-01 (ID: 4242)
+-- plain exit --
+0
+-- json stdout --
+{
+  "id": 4242,
+  "eventName": "City Race",
+  "date": "2026-11-01"
+}
+-- json stderr --
+-- json exit --
+0

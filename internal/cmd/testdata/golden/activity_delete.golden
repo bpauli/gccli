@@ -1,0 +1,26 @@
+-- args --
+activity
+delete
+111
+-- stdin --
+y
+-- route DELETE /activity-service/activity/111 --
+{"deleted":true}
+-- table stdout --
+-- table stderr --
+Delete activity 111? [y/N]: Deleted activity 111
+-- table exit --
+0
+-- plain stdout --
+-- plain stderr --
+Delete activity 111? [y/N]: Deleted activity 111
+-- plain exit --
+0
+-- json stdout --
+{
+  "deleted": true
+}
+-- json stderr noeol --
+Delete activity 111? [y/N]: 
+-- json exit --
+0

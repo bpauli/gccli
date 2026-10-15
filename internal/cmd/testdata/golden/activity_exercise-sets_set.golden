@@ -1,0 +1,26 @@
+-- args --
+activity
+exercise-sets
+set
+111
+-e
+BENCH_PRESS/BARBELL_BENCH_PRESS:12@20
+-- route PUT /activity-service/activity/111/exerciseSets --
+{"ok":true}
+-- table stdout --
+-- table stderr --
+Exercise sets updated for activity 111
+-- table exit --
+0
+-- plain stdout --
+-- plain stderr --
+Exercise sets updated for activity 111
+-- plain exit --
+0
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0

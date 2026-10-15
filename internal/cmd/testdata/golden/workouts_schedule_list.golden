@@ -1,0 +1,32 @@
+-- args --
+workouts
+schedule
+list
+2026-10-15
+-- route GET /calendar-service/year/2026/month/9/day/15/start/0 --
+{"calendarItems":[{"id":10,"itemType":"workout","title":"Tempo","sportTypeKey":"running","date":"2026-10-15","workoutId":901},{"id":11,"itemType":"activity","title":"Morning Run","date":"2026-10-14"}]}
+-- table stdout --
+SCHEDULE ID  WORKOUT ID  TITLE  SPORT    DATE
+10           901         Tempo  running  2026-10-15
+-- table stderr --
+-- table exit --
+0
+-- plain stdout --
+10	901	Tempo	running	2026-10-15
+-- plain stderr --
+-- plain exit --
+0
+-- json stdout --
+[
+  {
+    "date": "2026-10-15",
+    "id": 10,
+    "itemType": "workout",
+    "sportTypeKey": "running",
+    "title": "Tempo",
+    "workoutId": 901
+  }
+]
+-- json stderr --
+-- json exit --
+0

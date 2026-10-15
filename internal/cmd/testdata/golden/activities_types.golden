@@ -1,0 +1,40 @@
+-- args --
+activities
+types
+-- route GET /activity-service/activity/activityTypes --
+[{"typeId":2,"typeKey":"cycling","parentTypeId":17},{"typeId":1,"typeKey":"running","parentTypeId":17},{"typeId":17,"typeKey":"all"}]
+-- table stdout --
+ID  TYPE KEY  PARENT ID  TRIMMABLE  HIDDEN  RESTRICTED
+1   running   17         -          -       -
+2   cycling   17         -          -       -
+17  all       -          -          -       -
+-- table stderr --
+-- table exit --
+0
+-- plain stdout --
+1	running	17	-	-	-
+2	cycling	17	-	-	-
+17	all	-	-	-	-
+-- plain stderr --
+-- plain exit --
+0
+-- json stdout --
+[
+  {
+    "typeId": 2,
+    "typeKey": "cycling",
+    "parentTypeId": 17
+  },
+  {
+    "typeId": 1,
+    "typeKey": "running",
+    "parentTypeId": 17
+  },
+  {
+    "typeId": 17,
+    "typeKey": "all"
+  }
+]
+-- json stderr --
+-- json exit --
+0

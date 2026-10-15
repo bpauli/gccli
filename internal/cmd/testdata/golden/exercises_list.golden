@@ -1,0 +1,33 @@
+-- args --
+exercises
+list
+-- route GET /web-data/exercises/Exercises.json --
+{"categories":{"BENCH_PRESS":{"exercises":{"BARBELL_BENCH_PRESS":{"primaryMuscles":["CHEST"]}}}}}
+-- table stdout --
+CATEGORY     COUNT
+BENCH_PRESS  1 exercises
+-- table stderr --
+-- table exit --
+0
+-- plain stdout --
+BENCH_PRESS	1 exercises
+-- plain stderr --
+-- plain exit --
+0
+-- json stdout --
+{
+  "categories": {
+    "BENCH_PRESS": {
+      "exercises": {
+        "BARBELL_BENCH_PRESS": {
+          "primaryMuscles": [
+            "CHEST"
+          ]
+        }
+      }
+    }
+  }
+}
+-- json stderr --
+-- json exit --
+0
