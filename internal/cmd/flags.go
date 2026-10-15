@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/alecthomas/kong"
 )
@@ -13,7 +15,11 @@ func (d *Date) Decode(ctx *kong.DecodeContext) error {
 	if err != nil {
 		return err
 	}
-	resolved, err := resolveDate(fmt.Sprint(tok.Value))
+	raw := fmt.Sprint(tok.Value)
+	if strings.TrimSpace(raw) == "" {
+		return errors.New("empty date: expected YYYY-MM-DD, today, yesterday, Nd (e.g. 3d), or +Nd (e.g. +30d)")
+	}
+	resolved, err := resolveDate(raw)
 	if err != nil {
 		return err
 	}
