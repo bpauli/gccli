@@ -93,7 +93,6 @@ func TestHealthSleep(t *testing.T) {
 	t.Logf("GetSleep returned %d bytes", len(data))
 }
 
-// TestHealthRestingHeartRate calls GetRestingHeartRate for today and verifies valid JSON.
 func TestHealthRestingHeartRate(t *testing.T) {
 	client := AuthenticatedClient(t)
 	ctx := context.Background()
@@ -111,7 +110,6 @@ func TestHealthRestingHeartRate(t *testing.T) {
 	t.Logf("GetRestingHeartRate returned %d bytes", len(data))
 }
 
-// TestPersonalRecords calls GetPersonalRecords and verifies valid JSON.
 func TestPersonalRecords(t *testing.T) {
 	client := AuthenticatedClient(t)
 	ctx := context.Background()

@@ -82,3 +82,11 @@ func persistTokens(store *secrets.Store, email string, tokens *garminauth.Tokens
 	}
 	_ = store.Set(email, data)
 }
+
+func resolveDisplayName(g *Globals, client *garminapi.Client) (string, error) {
+	displayName, err := client.GetDisplayName(g.Context)
+	if err != nil {
+		return "", fmt.Errorf("resolve display name: %w", err)
+	}
+	return displayName, nil
+}

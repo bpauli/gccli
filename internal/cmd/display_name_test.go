@@ -9,8 +9,6 @@ import (
 	"github.com/bpauli/gccli/internal/outfmt"
 )
 
-// serveDisplayName answers the profile settings request that resolves the
-// display name for the health and records paths.
 func serveDisplayName(mux *http.ServeMux) {
 	mux.HandleFunc("/userprofile-service/userprofile/settings", func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -18,27 +16,21 @@ func serveDisplayName(mux *http.ServeMux) {
 	})
 }
 
-func displayNameCommands() []struct {
+var displayNameCommands = []struct {
 	name     string
 	cmd      interface{ Run(*Globals) error }
 	wantPath string
-} {
-	return []struct {
-		name     string
-		cmd      interface{ Run(*Globals) error }
-		wantPath string
-	}{
-		{"health summary", &HealthSummaryCmd{}, "/usersummary-service/usersummary/daily/Test User"},
-		{"health steps", &HealthStepsViewCmd{}, "/wellness-service/wellness/dailySummaryChart/Test User"},
-		{"health hr", &HealthHRCmd{}, "/wellness-service/wellness/dailyHeartRate/Test User"},
-		{"health rhr", &HealthRHRCmd{}, "/userstats-service/wellness/daily/Test User"},
-		{"health sleep", &HealthSleepCmd{}, "/wellness-service/wellness/dailySleepData/Test User"},
-		{"records", &RecordsCmd{}, "/personalrecord-service/personalrecord/prs/Test User"},
-	}
+}{
+	{"health summary", &HealthSummaryCmd{}, "/usersummary-service/usersummary/daily/Test User"},
+	{"health steps", &HealthStepsViewCmd{}, "/wellness-service/wellness/dailySummaryChart/Test User"},
+	{"health hr", &HealthHRCmd{}, "/wellness-service/wellness/dailyHeartRate/Test User"},
+	{"health rhr", &HealthRHRCmd{}, "/userstats-service/wellness/daily/Test User"},
+	{"health sleep", &HealthSleepCmd{}, "/wellness-service/wellness/dailySleepData/Test User"},
+	{"records", &RecordsCmd{}, "/personalrecord-service/personalrecord/prs/Test User"},
 }
 
 func TestDisplayName_ResolvedFromProfile(t *testing.T) {
-	for _, tc := range displayNameCommands() {
+	for _, tc := range displayNameCommands {
 		t.Run(tc.name, func(t *testing.T) {
 			var dataPaths []string
 			mux := http.NewServeMux()
@@ -69,7 +61,7 @@ func TestDisplayName_ResolvedFromProfile(t *testing.T) {
 }
 
 func TestDisplayName_ProfileErrorStopsCommand(t *testing.T) {
-	for _, tc := range displayNameCommands() {
+	for _, tc := range displayNameCommands {
 		t.Run(tc.name, func(t *testing.T) {
 			var dataPaths []string
 			mux := http.NewServeMux()
