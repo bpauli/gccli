@@ -63,7 +63,7 @@ func TestEventsList_Success(t *testing.T) {
 
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &EventsListCmd{StartDate: "2026-03-11", Limit: 20, Page: 1, Sort: "eventDate_asc"}
+	cmd := &EventsListCmd{StartDate: "2026-03-11", Pagination: Pagination{Limit: 20}, Sort: "eventDate_asc"}
 	err := cmd.Run(g)
 	if err != nil {
 		t.Fatalf("expected no error, got: %v", err)
@@ -81,7 +81,7 @@ func TestEventsList_JSON(t *testing.T) {
 
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &EventsListCmd{StartDate: "2026-03-11", Limit: 20, Page: 1, Sort: "eventDate_asc"}
+	cmd := &EventsListCmd{StartDate: "2026-03-11", Pagination: Pagination{Limit: 20}, Sort: "eventDate_asc"}
 	err := cmd.Run(g)
 	if err != nil {
 		t.Fatalf("expected no error, got: %v", err)
@@ -91,7 +91,7 @@ func TestEventsList_JSON(t *testing.T) {
 func TestEventsList_NoAccount(t *testing.T) {
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &EventsListCmd{Limit: 20, Page: 1, Sort: "eventDate_asc"}
+	cmd := &EventsListCmd{Pagination: Pagination{Limit: 20}, Sort: "eventDate_asc"}
 	err := cmd.Run(g)
 	if err == nil {
 		t.Fatal("expected error, got nil")
@@ -407,5 +407,34 @@ func TestEventsDelete_ServerError(t *testing.T) {
 	}
 	if !strings.Contains(err.Error(), "delete event") {
 		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestEventsListPageIndex(t *testing.T) {
+	tests := []struct {
+		offset, limit int
+		want          int
+		wantErr       string
+	}{
+		{offset: 0, limit: 20, want: 1},
+		{offset: 4, limit: 2, want: 3},
+		{offset: 3, limit: 1, want: 4},
+		{offset: 3, limit: 3, want: 2},
+		{offset: 0, limit: 0, want: 1},
+		{offset: 3, limit: 2, wantErr: "--offset 3 is not a multiple of --limit 2"},
+		{offset: -20, limit: 20, wantErr: "--offset must not be negative"},
+		{offset: 5, limit: 0, wantErr: "--offset needs --limit greater than 0"},
+	}
+	for _, tt := range tests {
+		got, err := (&EventsListCmd{Pagination: Pagination{Limit: tt.limit, Offset: tt.offset}}).pageIndex()
+		if tt.wantErr != "" {
+			if err == nil || !strings.Contains(err.Error(), tt.wantErr) {
+				t.Errorf("offset %d limit %d: err = %v, want %q", tt.offset, tt.limit, err, tt.wantErr)
+			}
+			continue
+		}
+		if err != nil || got != tt.want {
+			t.Errorf("offset %d limit %d: pageIndex() = %d, %v, want %d", tt.offset, tt.limit, got, err, tt.want)
+		}
 	}
 }

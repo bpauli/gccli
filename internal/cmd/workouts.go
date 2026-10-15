@@ -25,8 +25,7 @@ type WorkoutsCmd struct {
 
 // WorkoutsListCmd lists workouts.
 type WorkoutsListCmd struct {
-	Limit int `help:"Maximum number of workouts to return." default:"20" short:"l"`
-	Start int `help:"Start index for pagination." default:"0" short:"s"`
+	Pagination `embed:"" set:"items=workouts"`
 }
 
 func (c *WorkoutsListCmd) Run(g *Globals) error {
@@ -35,7 +34,7 @@ func (c *WorkoutsListCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetWorkouts(g.Context, c.Start, c.Limit)
+	data, err := client.GetWorkouts(g.Context, c.Offset, c.Limit)
 	if err != nil {
 		return fmt.Errorf("list workouts: %w", err)
 	}

@@ -21,9 +21,8 @@ type ActivitiesCmd struct {
 
 // ActivitiesListCmd lists recent activities.
 type ActivitiesListCmd struct {
-	Limit int    `help:"Maximum number of activities to return." default:"20" short:"l"`
-	Start int    `help:"Start index for pagination." default:"0" short:"s"`
-	Type  string `help:"Filter by activity type (e.g. running, cycling)." short:"t"`
+	Pagination `embed:"" set:"items=activities"`
+	Type       string `help:"Filter by activity type (e.g. running, cycling)." short:"t"`
 }
 
 func (c *ActivitiesListCmd) Run(g *Globals) error {
@@ -32,7 +31,7 @@ func (c *ActivitiesListCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetActivities(g.Context, c.Start, c.Limit, c.Type)
+	data, err := client.GetActivities(g.Context, c.Offset, c.Limit, c.Type)
 	if err != nil {
 		return fmt.Errorf("list activities: %w", err)
 	}
@@ -79,10 +78,9 @@ func (c *ActivitiesCountCmd) Run(g *Globals) error {
 
 // ActivitiesSearchCmd searches activities by date range.
 type ActivitiesSearchCmd struct {
-	Limit     int    `help:"Maximum number of activities to return." default:"20" short:"l"`
-	Start     int    `help:"Start index for pagination." default:"0" short:"s"`
-	StartDate string `help:"Start date (YYYY-MM-DD)." required:"" name:"start-date"`
-	EndDate   string `help:"End date (YYYY-MM-DD)." name:"end-date"`
+	Pagination `embed:"" set:"items=activities"`
+	StartDate  string `help:"Start date (YYYY-MM-DD)." required:"" name:"start-date"`
+	EndDate    string `help:"End date (YYYY-MM-DD)." name:"end-date"`
 }
 
 func (c *ActivitiesSearchCmd) Run(g *Globals) error {
@@ -91,7 +89,7 @@ func (c *ActivitiesSearchCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.SearchActivities(g.Context, c.Start, c.Limit, c.StartDate, c.EndDate)
+	data, err := client.SearchActivities(g.Context, c.Offset, c.Limit, c.StartDate, c.EndDate)
 	if err != nil {
 		return fmt.Errorf("search activities: %w", err)
 	}
