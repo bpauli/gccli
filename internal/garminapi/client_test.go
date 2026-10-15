@@ -392,8 +392,9 @@ func TestConnectAPI_Unauthorized_RefreshFails(t *testing.T) {
 
 	origRefresh := refreshTokensFn
 	t.Cleanup(func() { refreshTokensFn = origRefresh })
+	cause := errors.New("refresh failed")
 	refreshTokensFn = func(_ context.Context, _ *garminauth.Tokens, _ garminauth.LoginOptions) (*garminauth.Tokens, error) {
-		return nil, errors.New("refresh failed")
+		return nil, cause
 	}
 
 	_, err := client.ConnectAPI(context.Background(), http.MethodGet, "/api/path", nil)
@@ -404,6 +405,9 @@ func TestConnectAPI_Unauthorized_RefreshFails(t *testing.T) {
 	var tokenErr *TokenExpiredError
 	if !errors.As(err, &tokenErr) {
 		t.Fatalf("expected TokenExpiredError, got %T: %v", err, err)
+	}
+	if !strings.Contains(err.Error(), cause.Error()) {
+		t.Errorf("err = %q, want it to keep the cause %q", err, cause)
 	}
 }
 

@@ -306,6 +306,42 @@ func TestResolveClient_LockFails(t *testing.T) {
 	}
 }
 
+func TestRefreshFailureKeepsCause(t *testing.T) {
+	const cause = "refresh DI token: dial tcp 127.0.0.1:1: connect: connection refused"
+	const msg = "Token expired: " + cause + ". Run: gccli auth login test@example.com"
+	tests := []struct {
+		name   string
+		args   []string
+		stderr string
+	}{
+		{"text", []string{"auth", "token"}, msg + "\n"},
+		{"json", []string{"--json", "auth", "token"}, `{"error":{"code":"auth_required","status":401,"message":"` + msg + `"}}` + "\n"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			testutil.TempConfigDir(t)
+			store := newTestSecretsStore(t)
+			overrideLoadSecrets(t, store)
+			expired := testTokens()
+			expired.OAuth2ExpiresAt = time.Now().Add(-time.Hour)
+			storeTestTokens(t, store, "test@example.com", expired)
+			stub(t, &refreshFn, func(context.Context, *garminauth.Tokens, garminauth.LoginOptions) (*garminauth.Tokens, error) {
+				return nil, errors.New(cause)
+			})
+
+			var stdout, stderr bytes.Buffer
+			args := append([]string{"--account", "test@example.com", "--color", "never"}, tt.args...)
+			code := execute(args, "test", "none", "never", &stdout, &stderr)
+			if code != 3 {
+				t.Errorf("exit code = %d, want 3", code)
+			}
+			if stderr.String() != tt.stderr {
+				t.Errorf("stderr = %q, want %q", stderr.String(), tt.stderr)
+			}
+		})
+	}
+}
+
 type failSetKeyring struct{ *memKeyring }
 
 func (failSetKeyring) Set(keyring.Item) error { return fmt.Errorf("keyring is read-only") }
