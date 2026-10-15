@@ -175,10 +175,7 @@ func (c *Client) ConnectAPI(ctx context.Context, method, path string, body io.Re
 	if err != nil {
 		return nil, err
 	}
-	if resp.status == http.StatusNoContent || len(resp.body) == 0 {
-		return nil, nil
-	}
-	return json.RawMessage(resp.body), nil
+	return jsonResult(resp), nil
 }
 
 // Download fetches a binary resource from the API.
