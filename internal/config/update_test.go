@@ -196,6 +196,19 @@ func TestUpdate_InvalidJSONIsNotOverwritten(t *testing.T) {
 	}
 }
 
+func TestUpdate_NullFileIsEmptyConfig(t *testing.T) {
+	path := tempConfigPath(t)
+	writeConfig(t, path, `null`)
+
+	if err := Update(func(f *File) { f.Units = "metric" }); err != nil {
+		t.Fatalf("Update: %v", err)
+	}
+
+	if got := readKeys(t, path); len(got) != 1 || got["units"] != `"metric"` {
+		t.Errorf("config = %v, want only units", got)
+	}
+}
+
 func TestUpdate_CreatesMissingConfigDir(t *testing.T) {
 	path := tempConfigPath(t)
 

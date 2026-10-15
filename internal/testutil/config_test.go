@@ -22,8 +22,8 @@ func TestTempConfigDir_IgnoresOuterXDG(t *testing.T) {
 
 	dir := TempConfigDir(t)
 
-	if err := config.Write(&config.File{DefaultAccount: "test@example.com"}); err != nil {
-		t.Fatalf("Write: %v", err)
+	if err := config.Update(func(f *config.File) { f.DefaultAccount = "test@example.com" }); err != nil {
+		t.Fatalf("Update: %v", err)
 	}
 
 	got, err := os.ReadFile(sentinelPath)

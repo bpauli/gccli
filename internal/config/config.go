@@ -2,6 +2,10 @@ package config
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
+	"io/fs"
+	"maps"
 	"os"
 	"path/filepath"
 )
@@ -53,37 +57,100 @@ func ReadFrom(path string) (*File, error) {
 	return &f, nil
 }
 
-// Write saves the configuration to the default config file path.
-func Write(f *File) error {
-	p, err := ConfigFilePath()
-	if err != nil {
-		return err
-	}
-	return WriteTo(f, p)
-}
-
-// WriteTo saves the configuration to the given file path,
-// creating parent directories as needed.
-func WriteTo(f *File, path string) error {
-	if err := os.MkdirAll(filepath.Dir(path), 0o700); err != nil {
-		return err
-	}
-	data, err := json.MarshalIndent(f, "", "  ")
-	if err != nil {
-		return err
-	}
-	data = append(data, '\n')
-	return os.WriteFile(path, data, 0o600)
-}
-
-// Update applies fn to the configuration in the default config file path.
+// Update applies fn to the config file under an exclusive lock and writes
+// back the keys that fn sets. All other keys, also keys that File does not
+// know, keep their values. The new file replaces the old one by rename. If
+// the file is not valid JSON, Update returns an error and does not write.
 func Update(fn func(*File)) error {
-	f, err := Read()
+	path, err := ConfigFilePath()
 	if err != nil {
 		return err
 	}
-	fn(f)
-	return Write(f)
+	dir := filepath.Dir(path)
+	if err := os.MkdirAll(dir, 0o700); err != nil {
+		return err
+	}
+	unlock, err := lockFile(filepath.Join(dir, "config.lock"))
+	if err != nil {
+		return err
+	}
+	defer unlock()
+
+	if target, err := filepath.EvalSymlinks(path); err == nil {
+		path = target
+	} else if !errors.Is(err, fs.ErrNotExist) {
+		return err
+	}
+	data, err := os.ReadFile(path)
+	if errors.Is(err, fs.ErrNotExist) {
+		data = []byte("{}")
+	} else if err != nil {
+		return err
+	}
+
+	var keys map[string]json.RawMessage
+	var f File
+	if err := json.Unmarshal(data, &keys); err != nil {
+		return fmt.Errorf("parse %s: %w", path, err)
+	}
+	if err := json.Unmarshal(data, &f); err != nil {
+		return fmt.Errorf("parse %s: %w", path, err)
+	}
+	if keys == nil {
+		keys = map[string]json.RawMessage{}
+	}
+
+	before, err := knownKeys(&f)
+	if err != nil {
+		return err
+	}
+	fn(&f)
+	after, err := knownKeys(&f)
+	if err != nil {
+		return err
+	}
+	maps.Copy(keys, after)
+	for k := range before {
+		if _, ok := after[k]; !ok {
+			delete(keys, k)
+		}
+	}
+
+	out, err := json.MarshalIndent(keys, "", "  ")
+	if err != nil {
+		return err
+	}
+	return writeFileAtomic(path, append(out, '\n'))
+}
+
+func knownKeys(f *File) (map[string]json.RawMessage, error) {
+	data, err := json.Marshal(f)
+	if err != nil {
+		return nil, err
+	}
+	var keys map[string]json.RawMessage
+	err = json.Unmarshal(data, &keys)
+	return keys, err
+}
+
+func writeFileAtomic(path string, data []byte) error {
+	tmp, err := os.CreateTemp(filepath.Dir(path), filepath.Base(path)+".tmp-*")
+	if err != nil {
+		return err
+	}
+	defer func() { _ = os.Remove(tmp.Name()) }()
+	if _, err := tmp.Write(data); err != nil {
+		_ = tmp.Close()
+		return err
+	}
+	if err := tmp.Sync(); err != nil {
+		_ = tmp.Close()
+		return err
+	}
+	if err := tmp.Close(); err != nil {
+		return err
+	}
+	return os.Rename(tmp.Name(), path)
 }
 
 // Domain returns the effective domain, checking the environment variable first,

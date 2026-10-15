@@ -3,7 +3,6 @@ package config
 import (
 	"os"
 	"path/filepath"
-	"strings"
 	"testing"
 )
 
@@ -47,55 +46,6 @@ func TestReadFrom_Missing(t *testing.T) {
 	}
 	if f.KeyringBackend != "" || f.DomainName != "" || f.DefaultFormat != "" {
 		t.Errorf("ReadFrom missing file should return zero-value File, got %+v", f)
-	}
-}
-
-func TestWriteToAndReadFrom(t *testing.T) {
-	dir := t.TempDir()
-	path := filepath.Join(dir, "sub", "config.json")
-
-	want := &File{
-		KeyringBackend: "file",
-		DomainName:     "garmin.cn",
-		DefaultFormat:  "json",
-	}
-
-	if err := WriteTo(want, path); err != nil {
-		t.Fatal(err)
-	}
-
-	got, err := ReadFrom(path)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if got.KeyringBackend != want.KeyringBackend {
-		t.Errorf("KeyringBackend = %q, want %q", got.KeyringBackend, want.KeyringBackend)
-	}
-	if got.DomainName != want.DomainName {
-		t.Errorf("DomainName = %q, want %q", got.DomainName, want.DomainName)
-	}
-	if got.DefaultFormat != want.DefaultFormat {
-		t.Errorf("DefaultFormat = %q, want %q", got.DefaultFormat, want.DefaultFormat)
-	}
-}
-
-func TestWriteTo_FilePermissions(t *testing.T) {
-	dir := t.TempDir()
-	path := filepath.Join(dir, "config.json")
-
-	if err := WriteTo(&File{}, path); err != nil {
-		t.Fatal(err)
-	}
-
-	info, err := os.Stat(path)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	perm := info.Mode().Perm()
-	if perm != 0o600 {
-		t.Errorf("file perm = %o, want 0600", perm)
 	}
 }
 
@@ -165,26 +115,6 @@ func TestFile_Account(t *testing.T) {
 	}
 }
 
-func TestWriteToAndReadFrom_DefaultAccount(t *testing.T) {
-	dir := t.TempDir()
-	path := filepath.Join(dir, "config.json")
-
-	want := &File{
-		DefaultAccount: "user@example.com",
-		DomainName:     "garmin.com",
-	}
-	if err := WriteTo(want, path); err != nil {
-		t.Fatal(err)
-	}
-	got, err := ReadFrom(path)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if got.DefaultAccount != want.DefaultAccount {
-		t.Errorf("DefaultAccount = %q, want %q", got.DefaultAccount, want.DefaultAccount)
-	}
-}
-
 func TestIsJSON(t *testing.T) {
 	t.Setenv(EnvJSON, "")
 	if IsJSON() {
@@ -243,39 +173,6 @@ func TestRead_ReturnsFileOrZeroValue(t *testing.T) {
 	}
 }
 
-func TestWrite_AndRead_RoundTrip(t *testing.T) {
-	// Point both HOME (macOS) and XDG_CONFIG_HOME (Linux, wins over HOME)
-	// at a temp dir so Write() doesn't pollute the real config.
-	tmp := t.TempDir()
-	t.Setenv("HOME", tmp)
-	t.Setenv("XDG_CONFIG_HOME", tmp)
-
-	want := &File{
-		KeyringBackend: "file",
-		DomainName:     "garmin.cn",
-		DefaultFormat:  "json",
-	}
-
-	if err := Write(want); err != nil {
-		t.Fatalf("Write: %v", err)
-	}
-
-	got, err := Read()
-	if err != nil {
-		t.Fatalf("Read: %v", err)
-	}
-
-	if got.KeyringBackend != want.KeyringBackend {
-		t.Errorf("KeyringBackend = %q, want %q", got.KeyringBackend, want.KeyringBackend)
-	}
-	if got.DomainName != want.DomainName {
-		t.Errorf("DomainName = %q, want %q", got.DomainName, want.DomainName)
-	}
-	if got.DefaultFormat != want.DefaultFormat {
-		t.Errorf("DefaultFormat = %q, want %q", got.DefaultFormat, want.DefaultFormat)
-	}
-}
-
 func TestReadFrom_ActivitySummary(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "config.json")
@@ -307,42 +204,6 @@ func TestReadFrom_ActivitySummary(t *testing.T) {
 	}
 }
 
-func TestWriteToAndReadFrom_ActivitySummary(t *testing.T) {
-	dir := t.TempDir()
-	path := filepath.Join(dir, "config.json")
-
-	want := &File{
-		ActivitySummary: map[string][]string{
-			"cycling": {"distance", "duration"},
-		},
-	}
-	if err := WriteTo(want, path); err != nil {
-		t.Fatal(err)
-	}
-	got, err := ReadFrom(path)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if len(got.ActivitySummary["cycling"]) != 2 {
-		t.Errorf("ActivitySummary cycling = %v, want [distance duration]", got.ActivitySummary["cycling"])
-	}
-}
-
-func TestReadFrom_ActivitySummaryOmittedWhenEmpty(t *testing.T) {
-	dir := t.TempDir()
-	path := filepath.Join(dir, "config.json")
-	if err := WriteTo(&File{DomainName: "garmin.com"}, path); err != nil {
-		t.Fatal(err)
-	}
-	got, err := ReadFrom(path)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if got.ActivitySummary != nil {
-		t.Errorf("ActivitySummary should be nil when not set, got %v", got.ActivitySummary)
-	}
-}
-
 func TestReadFrom_PermissionError(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "unreadable.json")
@@ -354,46 +215,5 @@ func TestReadFrom_PermissionError(t *testing.T) {
 	_, err := ReadFrom(path)
 	if err == nil {
 		t.Error("ReadFrom unreadable file should return error")
-	}
-}
-
-func TestWriteTo_MarshalError(t *testing.T) {
-	// WriteTo calls json.MarshalIndent which cannot fail for File struct.
-	// But we can verify it handles directory creation.
-	dir := t.TempDir()
-	path := filepath.Join(dir, "deep", "nested", "config.json")
-
-	if err := WriteTo(&File{DomainName: "garmin.com"}, path); err != nil {
-		t.Fatalf("WriteTo nested: %v", err)
-	}
-
-	got, err := ReadFrom(path)
-	if err != nil {
-		t.Fatalf("ReadFrom: %v", err)
-	}
-	if got.DomainName != "garmin.com" {
-		t.Errorf("DomainName = %q, want garmin.com", got.DomainName)
-	}
-}
-
-func TestWriteToAndReadFrom_Units(t *testing.T) {
-	path := filepath.Join(t.TempDir(), "config.json")
-
-	if err := WriteTo(&File{Units: "statute_us"}, path); err != nil {
-		t.Fatal(err)
-	}
-	data, err := os.ReadFile(path)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if !strings.Contains(string(data), `"units": "statute_us"`) {
-		t.Errorf("config file missing units key:\n%s", data)
-	}
-	got, err := ReadFrom(path)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if got.Units != "statute_us" {
-		t.Errorf("Units = %q, want statute_us", got.Units)
 	}
 }
