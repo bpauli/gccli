@@ -88,7 +88,11 @@ func (e Event) JSON() (json.RawMessage, error) {
 		body["eventCustomization"] = cust
 	}
 
-	return json.Marshal(body)
+	raw, err := json.Marshal(body)
+	if err != nil {
+		return nil, fmt.Errorf("build event payload: %w", err)
+	}
+	return raw, nil
 }
 
 var distanceRe = regexp.MustCompile(`^([0-9]+(?:\.[0-9]+)?)\s*(km|mi|m)$`)

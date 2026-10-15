@@ -14,10 +14,14 @@ func ExerciseSets(activityID int64, exercises []string) (json.RawMessage, error)
 	if err != nil {
 		return nil, err
 	}
-	return json.Marshal(map[string]any{
+	body, err := json.Marshal(map[string]any{
 		"activityId":   activityID,
 		"exerciseSets": sets,
 	})
+	if err != nil {
+		return nil, fmt.Errorf("marshal exercise sets: %w", err)
+	}
+	return body, nil
 }
 
 // exerciseSet represents a single exercise set for the Garmin API.

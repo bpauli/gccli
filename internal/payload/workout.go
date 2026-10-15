@@ -75,7 +75,11 @@ func Workout(name, sportType, unit string, rawSteps []string) (json.RawMessage, 
 	if err != nil {
 		return nil, err
 	}
-	return buildWorkoutJSON(name, sportType, steps)
+	body, err := buildWorkoutJSON(name, sportType, steps)
+	if err != nil {
+		return nil, fmt.Errorf("build workout: %w", err)
+	}
+	return body, nil
 }
 
 func parseSteps(raw []string, unit string) ([]workoutStep, error) {
