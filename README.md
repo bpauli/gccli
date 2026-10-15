@@ -662,6 +662,7 @@ gccli training plan <id>
 gccli events list                      # List upcoming events
 gccli events list --start 2024-01-01 --limit 50
 gccli events list --limit 50 --offset 50  # Next page (--offset must be a multiple of --limit)
+# On every paginated command --limit must be at least 1 and --offset must not be negative (exit code 2).
 gccli events list --sort eventDate_desc
 gccli events delete <id>               # Delete an event (with confirmation)
 gccli events delete <id> -f            # Delete without confirmation
@@ -832,7 +833,7 @@ All commands support these flags:
 
 ## Date Format Reference
 
-Many commands accept flexible date formats. Every `--start` and `--end` flag accepts all of them. A bad date in one of these flags is a usage error (exit code 2).
+Many commands accept flexible date formats. Every `--start` and `--end` flag accepts all of them. A bad or empty date in one of these flags is a usage error (exit code 2).
 
 | Format | Example | Description |
 | --- | --- | --- |
