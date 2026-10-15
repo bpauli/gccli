@@ -34,7 +34,7 @@ func (c *WorkoutsListCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetWorkouts(g.Context, c.Offset, c.Limit)
+	data, err := client.Call(g.Context, "workouts.list", map[string]string{"start": strconv.Itoa(c.Offset), "limit": strconv.Itoa(c.Limit)}, nil)
 	if err != nil {
 		return fmt.Errorf("list workouts: %w", err)
 	}
@@ -68,7 +68,7 @@ func (c *WorkoutDetailCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetWorkout(g.Context, c.ID)
+	data, err := client.Call(g.Context, "workouts.get", map[string]string{"workoutID": c.ID}, nil)
 	if err != nil {
 		return fmt.Errorf("get workout: %w", err)
 	}
@@ -127,7 +127,7 @@ func (c *WorkoutUploadCmd) Run(g *Globals) error {
 		return fmt.Errorf("invalid JSON in %s", c.File)
 	}
 
-	data, err := client.UploadWorkout(g.Context, jsonData)
+	data, err := client.Call(g.Context, "workouts.upload", nil, jsonData)
 	if err != nil {
 		return fmt.Errorf("upload workout: %w", err)
 	}
@@ -164,7 +164,7 @@ func (c *WorkoutUpdateCmd) Run(g *Globals) error {
 		g.UI.Warnf("Workout JSON has workoutId %s, updating workout %s instead", replaced, c.ID)
 	}
 
-	data, err := client.UpdateWorkout(g.Context, c.ID, payload)
+	data, err := client.Call(g.Context, "workouts.update", map[string]string{"workoutID": c.ID}, payload)
 	if err != nil {
 		return fmt.Errorf("update workout: %w", err)
 	}
@@ -222,7 +222,11 @@ func (c *WorkoutScheduleAddCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.ScheduleWorkout(g.Context, c.ID, date)
+	body, err := json.Marshal(map[string]string{"date": date})
+	if err != nil {
+		return fmt.Errorf("schedule workout: %w", err)
+	}
+	data, err := client.Call(g.Context, "workouts.schedule", map[string]string{"workoutID": c.ID}, body)
 	if err != nil {
 		return fmt.Errorf("schedule workout: %w", err)
 	}
@@ -432,7 +436,7 @@ func (c *WorkoutScheduleRemoveCmd) Run(g *Globals) error {
 		return nil
 	}
 
-	data, err := client.UnscheduleWorkout(g.Context, c.ID)
+	data, err := client.Call(g.Context, "workouts.unschedule", map[string]string{"scheduleID": c.ID}, nil)
 	if err != nil {
 		return fmt.Errorf("remove scheduled workout: %w", err)
 	}
@@ -460,7 +464,7 @@ func (c *WorkoutDeleteCmd) Run(g *Globals) error {
 		return nil
 	}
 
-	data, err := client.DeleteWorkout(g.Context, c.ID)
+	data, err := client.Call(g.Context, "workouts.delete", map[string]string{"workoutID": c.ID}, nil)
 	if err != nil {
 		return fmt.Errorf("delete workout: %w", err)
 	}

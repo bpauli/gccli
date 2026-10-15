@@ -26,7 +26,7 @@ func (c *WorkoutCreateCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.UploadWorkout(g.Context, body)
+	data, err := client.Call(g.Context, "workouts.upload", nil, body)
 	if err != nil {
 		return fmt.Errorf("create workout: %w", err)
 	}

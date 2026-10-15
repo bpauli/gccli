@@ -60,7 +60,7 @@ func createE2EWorkout(t *testing.T, client *garminapi.Client, name string) strin
 	t.Helper()
 	ctx := context.Background()
 
-	data, err := client.UploadWorkout(ctx, workoutPayload(name, 1000, ""))
+	data, err := client.Call(ctx, "workouts.upload", nil, workoutPayload(name, 1000, ""))
 	if err != nil {
 		t.Fatalf("UploadWorkout failed: %v", err)
 	}
@@ -77,7 +77,7 @@ func createE2EWorkout(t *testing.T, client *garminapi.Client, name string) strin
 	t.Logf("Created workout %s with name %q", workoutID, name)
 
 	RegisterCleanup(t, func() {
-		if _, delErr := client.DeleteWorkout(context.Background(), workoutID); delErr != nil {
+		if _, delErr := client.Call(context.Background(), "workouts.delete", map[string]string{"workoutID": workoutID}, nil); delErr != nil {
 			t.Logf("WARNING: failed to clean up workout %s: %v", workoutID, delErr)
 		} else {
 			t.Logf("Cleaned up workout %s", workoutID)
@@ -128,7 +128,7 @@ func TestUpdateWorkout(t *testing.T) {
 	workoutID := createE2EWorkout(t, client, workoutName)
 
 	updatedName := workoutName + "_V2"
-	data, err := client.UpdateWorkout(ctx, workoutID, workoutPayload(updatedName, 2000, workoutID))
+	data, err := client.Call(ctx, "workouts.update", map[string]string{"workoutID": workoutID}, workoutPayload(updatedName, 2000, workoutID))
 	if err != nil {
 		t.Fatalf("UpdateWorkout(%s) failed: %v", workoutID, err)
 	}
@@ -180,8 +180,9 @@ func TestUpdateWorkoutKeepsSchedule(t *testing.T) {
 	workoutID := createE2EWorkout(t, client, workoutName)
 
 	date := time.Now().AddDate(0, 0, 14).Format("2006-01-02")
-	if _, err := client.ScheduleWorkout(ctx, workoutID, date); err != nil {
-		t.Fatalf("ScheduleWorkout(%s, %s) failed: %v", workoutID, date, err)
+	body := []byte(`{"date":"` + date + `"}`)
+	if _, err := client.Call(ctx, "workouts.schedule", map[string]string{"workoutID": workoutID}, body); err != nil {
+		t.Fatalf("schedule workout %s on %s failed: %v", workoutID, date, err)
 	}
 
 	scheduleID := findScheduleID(t, client, workoutID, date)
@@ -192,7 +193,7 @@ func TestUpdateWorkoutKeepsSchedule(t *testing.T) {
 
 	// Runs before the workout delete registered above (t.Cleanup is LIFO).
 	RegisterCleanup(t, func() {
-		if _, err := client.UnscheduleWorkout(context.Background(), scheduleID); err != nil {
+		if _, err := client.Call(context.Background(), "workouts.unschedule", map[string]string{"scheduleID": scheduleID}, nil); err != nil {
 			t.Logf("WARNING: failed to remove schedule %s: %v", scheduleID, err)
 		} else {
 			t.Logf("Removed schedule %s", scheduleID)
@@ -200,7 +201,7 @@ func TestUpdateWorkoutKeepsSchedule(t *testing.T) {
 	})
 
 	updatedName := workoutName + "_V2"
-	if _, err := client.UpdateWorkout(ctx, workoutID, workoutPayload(updatedName, 2000, workoutID)); err != nil {
+	if _, err := client.Call(ctx, "workouts.update", map[string]string{"workoutID": workoutID}, workoutPayload(updatedName, 2000, workoutID)); err != nil {
 		t.Fatalf("UpdateWorkout(%s) failed: %v", workoutID, err)
 	}
 
@@ -213,7 +214,7 @@ func TestUpdateWorkoutKeepsSchedule(t *testing.T) {
 func fetchWorkout(t *testing.T, client *garminapi.Client, workoutID string) map[string]any {
 	t.Helper()
 
-	data, err := client.GetWorkout(context.Background(), workoutID)
+	data, err := client.Call(context.Background(), "workouts.get", map[string]string{"workoutID": workoutID}, nil)
 	if err != nil {
 		t.Fatalf("GetWorkout(%s) failed: %v", workoutID, err)
 	}
@@ -285,7 +286,7 @@ func findWorkoutByID(t *testing.T, client *garminapi.Client, workoutID string) b
 	t.Helper()
 	ctx := context.Background()
 
-	data, err := client.GetWorkouts(ctx, 0, 50)
+	data, err := client.Call(ctx, "workouts.list", map[string]string{"start": "0", "limit": "50"}, nil)
 	if err != nil {
 		t.Fatalf("GetWorkouts failed while searching for workout %s: %v", workoutID, err)
 	}
@@ -322,7 +323,7 @@ func cleanupOrphanWorkouts(t *testing.T, client *garminapi.Client) {
 	t.Helper()
 	ctx := context.Background()
 
-	data, err := client.GetWorkouts(ctx, 0, 50)
+	data, err := client.Call(ctx, "workouts.list", map[string]string{"start": "0", "limit": "50"}, nil)
 	if err != nil {
 		t.Logf("WARNING: could not list workouts for orphan cleanup: %v", err)
 		return
@@ -349,7 +350,7 @@ func cleanupOrphanWorkouts(t *testing.T, client *garminapi.Client) {
 		name, _ := w["workoutName"].(string)
 		if strings.HasPrefix(name, e2eWorkoutPrefix) {
 			id := formatID(w["workoutId"])
-			if _, delErr := client.DeleteWorkout(ctx, id); delErr != nil {
+			if _, delErr := client.Call(ctx, "workouts.delete", map[string]string{"workoutID": id}, nil); delErr != nil {
 				t.Logf("WARNING: failed to delete orphaned workout %s (%s): %v", id, name, delErr)
 			} else {
 				t.Logf("Cleaned up orphaned workout %s (%s)", id, name)

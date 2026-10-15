@@ -1,7 +1,6 @@
 package garminapi
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -9,40 +8,19 @@ import (
 	"time"
 )
 
-// GetWorkouts returns a page of workouts.
-func (c *Client) GetWorkouts(ctx context.Context, start, limit int) (json.RawMessage, error) {
-	path := fmt.Sprintf("/workout-service/workouts?start=%d&limit=%d", start, limit)
-	return c.ConnectAPI(ctx, http.MethodGet, path, nil)
-}
-
-// GetWorkout returns a single workout by ID.
-func (c *Client) GetWorkout(ctx context.Context, workoutID string) (json.RawMessage, error) {
-	return c.ConnectAPI(ctx, http.MethodGet, "/workout-service/workout/"+workoutID, nil)
+var workoutsEndpoints = []Endpoint{
+	{Name: "workouts.list", Method: http.MethodGet, Host: ConnectAPI, Path: "/workout-service/workouts?start={start}&limit={limit}"},
+	{Name: "workouts.get", Method: http.MethodGet, Host: ConnectAPI, Path: "/workout-service/workout/{workoutID}"},
+	{Name: "workouts.upload", Method: http.MethodPost, Host: ConnectAPI, Path: "/workout-service/workout", Body: true},
+	{Name: "workouts.update", Method: http.MethodPut, Host: ConnectAPI, Path: "/workout-service/workout/{workoutID}", Body: true},
+	{Name: "workouts.schedule", Method: http.MethodPost, Host: ConnectAPI, Path: "/workout-service/schedule/{workoutID}", Body: true},
+	{Name: "workouts.unschedule", Method: http.MethodDelete, Host: ConnectAPI, Path: "/workout-service/schedule/{scheduleID}"},
+	{Name: "workouts.delete", Method: http.MethodDelete, Host: ConnectAPI, Path: "/workout-service/workout/{workoutID}"},
 }
 
 // DownloadWorkout downloads a workout as a FIT file.
 func (c *Client) DownloadWorkout(ctx context.Context, workoutID string) ([]byte, error) {
 	return c.Download(ctx, "/workout-service/workout/FIT/"+workoutID)
-}
-
-// UploadWorkout uploads a workout from JSON data.
-func (c *Client) UploadWorkout(ctx context.Context, workoutJSON json.RawMessage) (json.RawMessage, error) {
-	return c.ConnectAPI(ctx, http.MethodPost, "/workout-service/workout", bytes.NewReader(workoutJSON))
-}
-
-// UpdateWorkout replaces an existing workout with the given JSON payload.
-// The workout keeps its ID, so any calendar schedule referencing it stays intact.
-func (c *Client) UpdateWorkout(ctx context.Context, workoutID string, workoutJSON json.RawMessage) (json.RawMessage, error) {
-	return c.ConnectAPI(ctx, http.MethodPut, "/workout-service/workout/"+workoutID, bytes.NewReader(workoutJSON))
-}
-
-// ScheduleWorkout schedules a workout on a calendar date.
-func (c *Client) ScheduleWorkout(ctx context.Context, workoutID, date string) (json.RawMessage, error) {
-	body, err := json.Marshal(map[string]string{"date": date})
-	if err != nil {
-		return nil, fmt.Errorf("marshal schedule: %w", err)
-	}
-	return c.ConnectAPI(ctx, http.MethodPost, "/workout-service/schedule/"+workoutID, bytes.NewReader(body))
 }
 
 // GetCalendarWeek returns the calendar data for the week containing the given date.
@@ -54,14 +32,4 @@ func (c *Client) GetCalendarWeek(ctx context.Context, date string) (json.RawMess
 	}
 	path := fmt.Sprintf("/calendar-service/year/%d/month/%d/day/%d/start/0", t.Year(), t.Month()-1, t.Day())
 	return c.ConnectAPI(ctx, http.MethodGet, path, nil)
-}
-
-// UnscheduleWorkout removes a scheduled workout from the calendar.
-func (c *Client) UnscheduleWorkout(ctx context.Context, scheduleID string) (json.RawMessage, error) {
-	return c.ConnectAPI(ctx, http.MethodDelete, "/workout-service/schedule/"+scheduleID, nil)
-}
-
-// DeleteWorkout deletes a workout by ID.
-func (c *Client) DeleteWorkout(ctx context.Context, workoutID string) (json.RawMessage, error) {
-	return c.ConnectAPI(ctx, http.MethodDelete, "/workout-service/workout/"+workoutID, nil)
 }

@@ -503,6 +503,30 @@ func TestWorkoutScheduleAdd_Success(t *testing.T) {
 	}
 }
 
+func TestWorkoutScheduleAdd_SendsTheDate(t *testing.T) {
+	var got string
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		body, _ := io.ReadAll(r.Body)
+		got = r.Method + " " + r.URL.RequestURI() + " " + r.Header.Get("Content-Type") + " " + string(body)
+		_, _ = w.Write([]byte(`{"scheduledWorkoutId":123}`))
+	}))
+	defer server.Close()
+
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	overrideNewClient(t, server)
+	storeTestTokens(t, store, "test@example.com", testTokens())
+
+	var buf bytes.Buffer
+	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
+	if err := (&WorkoutScheduleAddCmd{ID: "77", Date: "2026-02-12"}).Run(g); err != nil {
+		t.Fatalf("Run: %v", err)
+	}
+	if want := `POST /workout-service/schedule/77 application/json {"date":"2026-02-12"}`; got != want {
+		t.Errorf("sent %q, want %q", got, want)
+	}
+}
+
 func TestWorkoutScheduleAdd_InvalidDate(t *testing.T) {
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
