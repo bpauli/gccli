@@ -4,9 +4,13 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"sync"
+	"sync/atomic"
 	"testing"
 
 	"github.com/99designs/keyring"
+
+	"github.com/bpauli/gccli/internal/testutil"
 )
 
 // newTestStore returns a Store backed by an in-memory keyring for testing.
@@ -96,6 +100,53 @@ func TestDeleteTwiceFileBackend(t *testing.T) {
 	err := s.Delete(email)
 	if !errors.Is(err, ErrNotFound) {
 		t.Errorf("second Delete = %v, want ErrNotFound", err)
+	}
+}
+
+func TestFileBackendReadDuringWrite(t *testing.T) {
+	testutil.TempConfigDir(t)
+	open := func() *Store {
+		s, err := Open("file")
+		if err != nil {
+			t.Fatalf("Open: %v", err)
+		}
+		return s
+	}
+	email := "race@example.com"
+	data := []byte(`{"oauth2_access_token":"` + strings.Repeat("a", 1<<16) + `"}`)
+	writer := open()
+	if err := writer.Set(email, data); err != nil {
+		t.Fatalf("Set: %v", err)
+	}
+
+	var stop atomic.Bool
+	var wg sync.WaitGroup
+	errs := make(chan error, 4)
+	for range 4 {
+		reader := open()
+		wg.Go(func() {
+			for !stop.Load() {
+				got, err := reader.Get(email)
+				if err == nil && string(got) != string(data) {
+					err = fmt.Errorf("got %d bytes, want %d", len(got), len(data))
+				}
+				if err != nil {
+					errs <- err
+					return
+				}
+			}
+		})
+	}
+	for range 100 {
+		if err := writer.Set(email, data); err != nil {
+			t.Fatalf("Set: %v", err)
+		}
+	}
+	stop.Store(true)
+	wg.Wait()
+	close(errs)
+	for err := range errs {
+		t.Errorf("Get during a write: %v", err)
 	}
 }
 
