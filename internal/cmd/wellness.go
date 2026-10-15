@@ -23,7 +23,7 @@ func (c *WellnessMenstrualCycleCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetMenstrualCycleData(g.Context, string(c.StartDate), string(c.EndDate))
+	data, err := client.Call(g.Context, "wellness.menstrual-cycle-data", map[string]string{"startDate": string(c.StartDate), "endDate": string(c.EndDate)}, nil)
 	if err != nil {
 		return fmt.Errorf("get menstrual cycle data: %w", err)
 	}
@@ -43,7 +43,7 @@ func (c *WellnessMenstrualSummaryCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetMenstrualCycleSummary(g.Context, string(c.StartDate), string(c.EndDate))
+	data, err := client.Call(g.Context, "wellness.menstrual-cycle-summary", map[string]string{"startDate": string(c.StartDate), "endDate": string(c.EndDate)}, nil)
 	if err != nil {
 		return fmt.Errorf("get menstrual cycle summary: %w", err)
 	}
@@ -60,7 +60,7 @@ func (c *WellnessPregnancySummaryCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetPregnancySummary(g.Context)
+	data, err := client.Call(g.Context, "wellness.pregnancy-summary", nil, nil)
 	if err != nil {
 		return fmt.Errorf("get pregnancy summary: %w", err)
 	}

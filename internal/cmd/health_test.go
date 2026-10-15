@@ -318,6 +318,37 @@ func TestHealthStepsWeekly_Success(t *testing.T) {
 	}
 }
 
+func TestHealthWeeklySendsWeeksAsDecimal(t *testing.T) {
+	tests := []struct {
+		cmd  interface{ Run(*Globals) error }
+		want string
+	}{
+		{&HealthStepsWeeklyCmd{EndDate: "2024-01-31", Weeks: 12}, "/usersummary-service/stats/steps/weekly/2024-01-31/12"},
+		{&HealthStepsWeeklyCmd{EndDate: "2024-01-31", Weeks: 0}, "/usersummary-service/stats/steps/weekly/2024-01-31/0"},
+		{&HealthStressWeeklyCmd{EndDate: "2024-01-31", Weeks: -1}, "/usersummary-service/stats/stress/weekly/2024-01-31/-1"},
+	}
+	for _, tc := range tests {
+		var got string
+		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			got = r.URL.Path
+			_, _ = w.Write([]byte(`[]`))
+		}))
+		store := newTestSecretsStore(t)
+		overrideLoadSecrets(t, store)
+		overrideNewClient(t, server)
+		storeTestTokens(t, store, "test@example.com", testTokens())
+
+		var buf bytes.Buffer
+		if err := tc.cmd.Run(testGlobals(t, &buf, outfmt.JSON, "test@example.com")); err != nil {
+			t.Fatalf("Run: %v", err)
+		}
+		server.Close()
+		if got != tc.want {
+			t.Errorf("path = %q, want %q", got, tc.want)
+		}
+	}
+}
+
 func TestHealthStepsWeekly_DefaultEndDate(t *testing.T) {
 	fixed := time.Date(2024, 6, 15, 12, 0, 0, 0, time.UTC)
 	overrideNowFn(t, fixed)

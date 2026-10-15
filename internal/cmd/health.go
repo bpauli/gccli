@@ -61,7 +61,7 @@ func (c *HealthSummaryCmd) Run(g *Globals) error {
 	if err != nil {
 		return err
 	}
-	data, err := client.GetDailySummary(g.Context, displayName, date)
+	data, err := client.Call(g.Context, "health.daily-summary", map[string]string{"displayName": displayName, "date": date}, nil)
 	if err != nil {
 		return fmt.Errorf("get daily summary: %w", err)
 	}
@@ -96,7 +96,7 @@ func (c *HealthStepsViewCmd) Run(g *Globals) error {
 	if err != nil {
 		return err
 	}
-	data, err := client.GetSteps(g.Context, displayName, date)
+	data, err := client.Call(g.Context, "health.steps", map[string]string{"displayName": displayName, "date": date}, nil)
 	if err != nil {
 		return fmt.Errorf("get steps: %w", err)
 	}
@@ -116,7 +116,7 @@ func (c *HealthStepsDailyCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetDailySteps(g.Context, string(c.StartDate), string(c.EndDate))
+	data, err := client.Call(g.Context, "health.daily-steps", map[string]string{"startDate": string(c.StartDate), "endDate": string(c.EndDate)}, nil)
 	if err != nil {
 		return fmt.Errorf("get daily steps: %w", err)
 	}
@@ -141,7 +141,7 @@ func (c *HealthStepsWeeklyCmd) Run(g *Globals) error {
 		endDate = nowFn().Format("2006-01-02")
 	}
 
-	data, err := client.GetWeeklySteps(g.Context, endDate, c.Weeks)
+	data, err := client.Call(g.Context, "health.weekly-steps", map[string]string{"endDate": endDate, "weeks": strconv.Itoa(c.Weeks)}, nil)
 	if err != nil {
 		return fmt.Errorf("get weekly steps: %w", err)
 	}
@@ -169,7 +169,7 @@ func (c *HealthHRCmd) Run(g *Globals) error {
 	if err != nil {
 		return err
 	}
-	data, err := client.GetHeartRate(g.Context, displayName, date)
+	data, err := client.Call(g.Context, "health.heart-rate", map[string]string{"displayName": displayName, "date": date}, nil)
 	if err != nil {
 		return fmt.Errorf("get heart rate: %w", err)
 	}
@@ -197,7 +197,7 @@ func (c *HealthRHRCmd) Run(g *Globals) error {
 	if err != nil {
 		return err
 	}
-	data, err := client.GetRestingHeartRate(g.Context, displayName, date)
+	data, err := client.Call(g.Context, "health.resting-heart-rate", map[string]string{"displayName": displayName, "date": date}, nil)
 	if err != nil {
 		return fmt.Errorf("get resting heart rate: %w", err)
 	}
@@ -221,7 +221,7 @@ func (c *HealthFloorsCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetFloors(g.Context, date)
+	data, err := client.Call(g.Context, "health.floors", map[string]string{"date": date}, nil)
 	if err != nil {
 		return fmt.Errorf("get floors: %w", err)
 	}
@@ -249,7 +249,7 @@ func (c *HealthSleepCmd) Run(g *Globals) error {
 	if err != nil {
 		return err
 	}
-	data, err := client.GetSleep(g.Context, displayName, date)
+	data, err := client.Call(g.Context, "health.sleep", map[string]string{"displayName": displayName, "date": date}, nil)
 	if err != nil {
 		return fmt.Errorf("get sleep: %w", err)
 	}
@@ -279,7 +279,7 @@ func (c *HealthStressViewCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetStress(g.Context, date)
+	data, err := client.Call(g.Context, "health.stress", map[string]string{"date": date}, nil)
 	if err != nil {
 		return fmt.Errorf("get stress: %w", err)
 	}
@@ -304,7 +304,7 @@ func (c *HealthStressWeeklyCmd) Run(g *Globals) error {
 		endDate = nowFn().Format("2006-01-02")
 	}
 
-	data, err := client.GetWeeklyStress(g.Context, endDate, c.Weeks)
+	data, err := client.Call(g.Context, "health.weekly-stress", map[string]string{"endDate": endDate, "weeks": strconv.Itoa(c.Weeks)}, nil)
 	if err != nil {
 		return fmt.Errorf("get weekly stress: %w", err)
 	}
@@ -328,7 +328,7 @@ func (c *HealthRespirationCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetRespiration(g.Context, date)
+	data, err := client.Call(g.Context, "health.respiration", map[string]string{"date": date}, nil)
 	if err != nil {
 		return fmt.Errorf("get respiration: %w", err)
 	}

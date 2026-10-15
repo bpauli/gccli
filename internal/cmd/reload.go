@@ -20,7 +20,7 @@ func (c *ReloadCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.RequestReload(g.Context, date)
+	data, err := client.Call(g.Context, "wellness.request-reload", map[string]string{"date": date}, nil)
 	if err != nil {
 		return fmt.Errorf("request reload: %w", err)
 	}

@@ -29,6 +29,34 @@ func mustRoute(t *testing.T, e Endpoint) *route {
 	return r
 }
 
+type endpointCase struct {
+	name string
+	args map[string]string
+	want string
+}
+
+func testEndpoints(t *testing.T, table []Endpoint, cases []endpointCase) {
+	t.Helper()
+	for _, e := range table {
+		if !slices.ContainsFunc(cases, func(c endpointCase) bool { return c.name == e.Name }) {
+			t.Errorf("row %s has no case", e.Name)
+		}
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			var got string
+			_, client := testServer(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				got = r.Method + " " + r.URL.RequestURI()
+				_, _ = w.Write([]byte(`[{"id":1}]`))
+			}))
+			data, err := client.Call(context.Background(), tc.name, tc.args, nil)
+			if err != nil || got != tc.want || string(data) != `[{"id":1}]` {
+				t.Errorf("Call = %q, %v; sent %q, want %q", data, err, got, tc.want)
+			}
+		})
+	}
+}
+
 type sent struct {
 	line, accept, contentType, body string
 }
@@ -200,6 +228,9 @@ func TestIndexRejectsMalformedRows(t *testing.T) {
 		{"relative path", func(e *Endpoint) { e.Path = "x" }, "must start with /"},
 		{"open brace", func(e *Endpoint) { e.Path = "/x/{id" }, "unmatched {"},
 		{"close brace", func(e *Endpoint) { e.Path = "/x/id}" }, "unmatched }"},
+		{"space in path", func(e *Endpoint) { e.Path = "/x y/{id}" }, `path text "/x y/" may hold only`},
+		{"hash in path", func(e *Endpoint) { e.Path = "/x/{id}#frag" }, `path text "#frag" may hold only`},
+		{"escape in path", func(e *Endpoint) { e.Path = "/x%2F/{id}" }, `path text "/x%2F/" may hold only`},
 		{"partial query value", func(e *Endpoint) { e.Path = "/x?q=a{q}" }, "one whole {placeholder}"},
 		{"param without placeholder", func(e *Endpoint) { e.Params = []Param{{Name: "nope"}} }, `"nope" has no placeholder`},
 		{"param twice", func(e *Endpoint) { e.Params = []Param{{Name: "q"}, {Name: "q"}} }, "listed twice"},
@@ -252,18 +283,18 @@ func TestEveryTableIsIndexed(t *testing.T) {
 
 func TestCallSitesMatchTable(t *testing.T) {
 	fset := token.NewFileSet()
-	files, err := filepath.Glob("../cmd/*.go")
-	if err != nil {
-		t.Fatal(err)
+	var files []string
+	for _, pattern := range []string{"../cmd/*.go", "*.go", "../e2e/*.go"} {
+		matches, err := filepath.Glob(pattern)
+		if err != nil {
+			t.Fatal(err)
+		}
+		files = append(files, matches...)
 	}
-	own, err := filepath.Glob("*.go")
-	if err != nil {
-		t.Fatal(err)
-	}
-	files = append(files, own...)
 	called := map[string]bool{}
 	for _, file := range files {
-		if strings.HasSuffix(file, "_test.go") {
+		e2e := strings.HasPrefix(file, "../e2e/")
+		if strings.HasSuffix(file, "_test.go") && !e2e {
 			continue
 		}
 		f, err := parser.ParseFile(fset, file, nil, 0)
@@ -290,7 +321,7 @@ func TestCallSitesMatchTable(t *testing.T) {
 				t.Errorf("%s: Client.Call names %q, which is not a row of the endpoint table", pos, name)
 				return true
 			}
-			called[name] = true
+			called[name] = called[name] || !e2e
 			keys, ok := literalKeys(call.Args[2])
 			if !ok {
 				return true

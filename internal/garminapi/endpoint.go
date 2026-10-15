@@ -14,6 +14,9 @@ import (
 
 var endpoints = mustIndex(
 	goalsEndpoints,
+	healthEndpoints,
+	wellnessEndpoints,
+	trainingEndpoints,
 )
 
 // Host is the Garmin server an endpoint lives on.
@@ -233,6 +236,7 @@ var (
 	endpointNameRe = regexp.MustCompile(`^[a-z][a-z0-9]*(-[a-z0-9]+)*(\.[a-z][a-z0-9]*(-[a-z0-9]+)*)+$`)
 	placeholderRe  = regexp.MustCompile(`^[a-zA-Z][a-zA-Z0-9]*$`)
 	literalRe      = regexp.MustCompile(`^[A-Za-z0-9._~-]*$`)
+	pathTextRe     = regexp.MustCompile(`^[A-Za-z0-9._~/-]*$`)
 	methods        = []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodPatch, http.MethodDelete}
 )
 
@@ -271,6 +275,9 @@ func compile(e Endpoint) (*route, error) {
 		}
 		if strings.ContainsRune(rest[:open], '}') {
 			return nil, errors.New("unmatched } in path")
+		}
+		if !pathTextRe.MatchString(rest[:open]) {
+			return nil, fmt.Errorf("path text %q may hold only letters, digits and . _ ~ / -", rest[:open])
 		}
 		if open > 0 {
 			r.path = append(r.path, piece{text: rest[:open]})
