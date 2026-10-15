@@ -1,9 +1,11 @@
 package harness
 
 import (
+	"context"
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"net/http"
 
 	"github.com/bpauli/gccli/internal/garminauth"
 )
@@ -21,4 +23,22 @@ func DecodeToken(raw string) (*garminauth.Tokens, error) {
 		return nil, errors.New("GARMIN_TOKEN has no OAuth2 access token")
 	}
 	return tokens, nil
+}
+
+func LoadToken(ctx context.Context, raw string, base http.RoundTripper) (*garminauth.Tokens, error) {
+	tokens, err := DecodeToken(raw)
+	if err != nil {
+		return nil, err
+	}
+	if !tokens.IsExpired() {
+		return tokens, nil
+	}
+	refreshed, err := garminauth.RefreshOAuth2(ctx, tokens, garminauth.LoginOptions{
+		Domain:     tokens.Domain,
+		HTTPClient: &http.Client{Transport: base},
+	})
+	if err != nil {
+		return nil, fmt.Errorf("GARMIN_TOKEN refresh: %w", err)
+	}
+	return refreshed, nil
 }
