@@ -66,131 +66,120 @@ func (c *Client) Tokens() *garminauth.Tokens {
 	return c.tokens
 }
 
+type kind int
+
+const (
+	kindJSON kind = iota
+	kindDownload
+	kindUpload
+)
+
+var kinds = [...]struct {
+	accept, createErr, readErr string
+	sendErr                    func(method, path string) string
+}{
+	kindJSON: {
+		accept: "application/json", createErr: "create request", readErr: "read response",
+		sendErr: func(method, path string) string { return "request " + method + " " + path },
+	},
+	kindDownload: {
+		createErr: "create request", readErr: "read download response",
+		sendErr: func(_, path string) string { return "download " + path },
+	},
+	kindUpload: {
+		createErr: "create upload request", readErr: "read upload response",
+		sendErr: func(_, path string) string { return "upload " + path },
+	},
+}
+
+type request struct {
+	kind        kind
+	method      string
+	path        string
+	body        []byte
+	contentType string
+	noRefresh   bool
+}
+
+type response struct {
+	status int
+	body   []byte
+}
+
+func (c *Client) do(ctx context.Context, r request) (response, error) {
+	k := kinds[r.kind]
+	for canRefresh := !r.noRefresh; ; canRefresh = false {
+		var body io.Reader
+		if r.body != nil {
+			body = bytes.NewReader(r.body)
+		}
+		req, err := http.NewRequestWithContext(ctx, r.method, c.baseURL+r.path, body)
+		if err != nil {
+			return response{}, fmt.Errorf("%s: %w", k.createErr, err)
+		}
+		req.Header.Set("Authorization", "Bearer "+c.tokens.OAuth2AccessToken)
+		req.Header.Set("User-Agent", garminauth.UserAgent)
+		if k.accept != "" {
+			req.Header.Set("Accept", k.accept)
+		}
+		if r.contentType != "" {
+			req.Header.Set("Content-Type", r.contentType)
+		}
+
+		resp, err := c.httpClient.Do(req)
+		if err != nil {
+			return response{}, fmt.Errorf("%s: %w", k.sendErr(r.method, r.path), err)
+		}
+		data, err := io.ReadAll(resp.Body)
+		_ = resp.Body.Close()
+
+		switch {
+		case resp.StatusCode == http.StatusUnauthorized:
+			if canRefresh && c.refreshToken(ctx) == nil {
+				continue
+			}
+			return response{}, &TokenExpiredError{Email: c.tokens.Email}
+		case resp.StatusCode == http.StatusTooManyRequests:
+			return response{}, &RateLimitError{RetryAfter: resp.Header.Get("Retry-After")}
+		case err != nil:
+			return response{}, fmt.Errorf("%s: %w", k.readErr, err)
+		case resp.StatusCode >= 400:
+			return response{}, &GarminAPIError{StatusCode: resp.StatusCode, Message: string(data)}
+		}
+		return response{status: resp.StatusCode, body: data}, nil
+	}
+}
+
 // ConnectAPI makes a JSON API request to the Garmin Connect API.
 // The response body is returned as a json.RawMessage. For 204 No Content
 // responses (common for delete operations), nil is returned.
 func (c *Client) ConnectAPI(ctx context.Context, method, path string, body io.Reader) (json.RawMessage, error) {
-	var bodyBytes []byte
+	r := request{kind: kindJSON, method: method, path: path}
 	if body != nil {
 		var err error
-		bodyBytes, err = io.ReadAll(body)
+		r.body, err = io.ReadAll(body)
 		if err != nil {
 			return nil, fmt.Errorf("read request body: %w", err)
 		}
+		r.contentType = "application/json"
 	}
-	return c.doAPI(ctx, method, path, bodyBytes, true)
-}
-
-func (c *Client) doAPI(ctx context.Context, method, path string, body []byte, canRetry bool) (json.RawMessage, error) {
-	reqURL := c.baseURL + path
-
-	var bodyReader io.Reader
-	if body != nil {
-		bodyReader = bytes.NewReader(body)
-	}
-
-	req, err := http.NewRequestWithContext(ctx, method, reqURL, bodyReader)
+	resp, err := c.do(ctx, r)
 	if err != nil {
-		return nil, fmt.Errorf("create request: %w", err)
+		return nil, err
 	}
-
-	req.Header.Set("Authorization", "Bearer "+c.tokens.OAuth2AccessToken)
-	req.Header.Set("Accept", "application/json")
-	req.Header.Set("User-Agent", garminauth.UserAgent)
-	if body != nil {
-		req.Header.Set("Content-Type", "application/json")
-	}
-
-	resp, err := c.httpClient.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("request %s %s: %w", method, path, err)
-	}
-	defer func() { _ = resp.Body.Close() }()
-
-	if resp.StatusCode == http.StatusUnauthorized {
-		_, _ = io.Copy(io.Discard, resp.Body)
-		if canRetry {
-			if refreshErr := c.refreshToken(ctx); refreshErr == nil {
-				return c.doAPI(ctx, method, path, body, false)
-			}
-		}
-		return nil, &TokenExpiredError{Email: c.tokens.Email}
-	}
-
-	if resp.StatusCode == http.StatusTooManyRequests {
-		_, _ = io.Copy(io.Discard, resp.Body)
-		return nil, &RateLimitError{RetryAfter: resp.Header.Get("Retry-After")}
-	}
-
-	data, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("read response: %w", err)
-	}
-
-	if resp.StatusCode >= 400 {
-		return nil, &GarminAPIError{
-			StatusCode: resp.StatusCode,
-			Message:    string(data),
-		}
-	}
-
-	if resp.StatusCode == http.StatusNoContent || len(data) == 0 {
+	if resp.status == http.StatusNoContent || len(resp.body) == 0 {
 		return nil, nil
 	}
-
-	return json.RawMessage(data), nil
+	return json.RawMessage(resp.body), nil
 }
 
 // Download fetches a binary resource from the API.
 func (c *Client) Download(ctx context.Context, path string) ([]byte, error) {
-	return c.doDownload(ctx, path, true)
-}
-
-func (c *Client) doDownload(ctx context.Context, path string, canRetry bool) ([]byte, error) {
-	reqURL := c.baseURL + path
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, reqURL, nil)
+	resp, err := c.do(ctx, request{kind: kindDownload, method: http.MethodGet, path: path})
 	if err != nil {
-		return nil, fmt.Errorf("create request: %w", err)
+		return nil, err
 	}
-
-	req.Header.Set("Authorization", "Bearer "+c.tokens.OAuth2AccessToken)
-	req.Header.Set("User-Agent", garminauth.UserAgent)
-
-	resp, err := c.httpClient.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("download %s: %w", path, err)
-	}
-	defer func() { _ = resp.Body.Close() }()
-
-	if resp.StatusCode == http.StatusUnauthorized {
-		_, _ = io.Copy(io.Discard, resp.Body)
-		if canRetry {
-			if refreshErr := c.refreshToken(ctx); refreshErr == nil {
-				return c.doDownload(ctx, path, false)
-			}
-		}
-		return nil, &TokenExpiredError{Email: c.tokens.Email}
-	}
-
-	if resp.StatusCode == http.StatusTooManyRequests {
-		_, _ = io.Copy(io.Discard, resp.Body)
-		return nil, &RateLimitError{RetryAfter: resp.Header.Get("Retry-After")}
-	}
-
-	data, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("read download response: %w", err)
-	}
-
-	if resp.StatusCode >= 400 {
-		return nil, &GarminAPIError{
-			StatusCode: resp.StatusCode,
-			Message:    string(data),
-		}
-	}
-
-	return data, nil
+	return resp.body, nil
 }
 
 // refreshToken attempts to refresh the OAuth2 token using stored refresh credentials.

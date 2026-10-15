@@ -7,6 +7,8 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"os"
+	"reflect"
 	"strings"
 	"testing"
 	"time"
@@ -745,5 +747,190 @@ func TestRefreshToken_Failure(t *testing.T) {
 	}
 	if !strings.Contains(err.Error(), "exchange failed") {
 		t.Errorf("error = %q, want to contain 'exchange failed'", err.Error())
+	}
+}
+
+type requestKind struct {
+	name        string
+	method      string
+	path        string
+	body        string
+	accept      string
+	contentType string
+	call        func(c *Client) ([]byte, error)
+	emptyIsNil  bool
+}
+
+func requestKinds(t *testing.T) []requestKind {
+	t.Helper()
+	fitPath := t.TempDir() + "/run.fit"
+	if err := os.WriteFile(fitPath, []byte("FIT-DATA"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	ctx := context.Background()
+	return []requestKind{
+		{
+			name: "json get", method: http.MethodGet, path: "/api/get", accept: "application/json", emptyIsNil: true,
+			call: func(c *Client) ([]byte, error) { return c.ConnectAPI(ctx, http.MethodGet, "/api/get", nil) },
+		},
+		{
+			name: "json put", method: http.MethodPut, path: "/api/put", body: `{"a":1}`, accept: "application/json", contentType: "application/json", emptyIsNil: true,
+			call: func(c *Client) ([]byte, error) {
+				return c.ConnectAPI(ctx, http.MethodPut, "/api/put", strings.NewReader(`{"a":1}`))
+			},
+		},
+		{
+			name: "download", method: http.MethodGet, path: "/download/1",
+			call: func(c *Client) ([]byte, error) { return c.Download(ctx, "/download/1") },
+		},
+		{
+			name: "upload", method: http.MethodPost, path: "/upload-service/upload", body: "FIT-DATA", contentType: "multipart/form-data; boundary=", emptyIsNil: true,
+			call: func(c *Client) ([]byte, error) { return c.UploadActivity(ctx, fitPath) },
+		},
+	}
+}
+
+type answer struct {
+	status     int
+	body       string
+	retryAfter string
+}
+
+func TestRequestKinds(t *testing.T) {
+	ok := answer{status: http.StatusOK, body: `{"ok":true}`}
+	unauthorized := answer{status: http.StatusUnauthorized, body: "expired"}
+	scenarios := []struct {
+		name      string
+		answers   []answer
+		refreshes int
+		wantBody  string
+		wantErr   error
+	}{
+		{name: "200", answers: []answer{ok}, wantBody: ok.body},
+		{name: "204", answers: []answer{{status: http.StatusNoContent}}},
+		{name: "empty 200", answers: []answer{{status: http.StatusOK}}},
+		{name: "401 then 200", answers: []answer{unauthorized, ok}, refreshes: 1, wantBody: ok.body},
+		{name: "401 then 401", answers: []answer{unauthorized, unauthorized}, refreshes: 1, wantErr: &TokenExpiredError{Email: "test@example.com"}},
+		{name: "429", answers: []answer{{status: http.StatusTooManyRequests, body: "slow down", retryAfter: "120"}}, wantErr: &RateLimitError{RetryAfter: "120"}},
+		{name: "500", answers: []answer{{status: http.StatusInternalServerError, body: "boom"}}, wantErr: &GarminAPIError{StatusCode: 500, Message: "boom"}},
+	}
+
+	for _, kind := range requestKinds(t) {
+		for _, sc := range scenarios {
+			t.Run(kind.name+"/"+sc.name, func(t *testing.T) {
+				var got []*http.Request
+				var bodies []string
+				handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+					b, _ := io.ReadAll(r.Body)
+					got = append(got, r)
+					bodies = append(bodies, string(b))
+					if len(got) > len(sc.answers) {
+						w.WriteHeader(http.StatusTeapot)
+						return
+					}
+					a := sc.answers[len(got)-1]
+					if a.retryAfter != "" {
+						w.Header().Set("Retry-After", a.retryAfter)
+					}
+					w.WriteHeader(a.status)
+					_, _ = io.WriteString(w, a.body)
+				})
+				_, client := testServer(t, handler)
+
+				refreshes := 0
+				origRefresh := refreshTokensFn
+				t.Cleanup(func() { refreshTokensFn = origRefresh })
+				refreshTokensFn = func(_ context.Context, tokens *garminauth.Tokens, _ garminauth.LoginOptions) (*garminauth.Tokens, error) {
+					refreshes++
+					next := *tokens
+					next.OAuth2AccessToken = "refreshed-token"
+					return &next, nil
+				}
+
+				data, err := kind.call(client)
+
+				if sc.wantErr != nil {
+					if err == nil || err.Error() != sc.wantErr.Error() || reflect.TypeOf(err) != reflect.TypeOf(sc.wantErr) {
+						t.Fatalf("err = %T %v, want %T %v", err, err, sc.wantErr, sc.wantErr)
+					}
+					if data != nil {
+						t.Errorf("data = %q, want nil", data)
+					}
+				} else {
+					if err != nil {
+						t.Fatalf("err = %v", err)
+					}
+					if string(data) != sc.wantBody {
+						t.Errorf("data = %q, want %q", data, sc.wantBody)
+					}
+					if sc.wantBody == "" && kind.emptyIsNil != (data == nil) {
+						t.Errorf("data nil = %v, want %v", data == nil, kind.emptyIsNil)
+					}
+				}
+				if refreshes != sc.refreshes {
+					t.Errorf("refreshes = %d, want %d", refreshes, sc.refreshes)
+				}
+				if len(got) != len(sc.answers) {
+					t.Fatalf("requests = %d, want %d", len(got), len(sc.answers))
+				}
+				for i, r := range got {
+					token := "access-token"
+					if i > 0 {
+						token = "refreshed-token"
+					}
+					checkRequest(t, i, r, bodies[i], kind, token)
+				}
+			})
+		}
+	}
+}
+
+func checkRequest(t *testing.T, i int, r *http.Request, body string, kind requestKind, token string) {
+	t.Helper()
+	if r.Method != kind.method || r.URL.Path != kind.path {
+		t.Errorf("request %d = %s %s, want %s %s", i, r.Method, r.URL.Path, kind.method, kind.path)
+	}
+	want := map[string]string{
+		"Authorization": "Bearer " + token,
+		"User-Agent":    "com.garmin.android.apps.connectmobile",
+		"Accept":        kind.accept,
+	}
+	for name, v := range want {
+		if got := r.Header.Get(name); got != v {
+			t.Errorf("request %d %s = %q, want %q", i, name, got, v)
+		}
+	}
+	if ct := r.Header.Get("Content-Type"); !strings.HasPrefix(ct, kind.contentType) || (kind.contentType == "") != (ct == "") {
+		t.Errorf("request %d Content-Type = %q, want prefix %q", i, ct, kind.contentType)
+	}
+	if !strings.Contains(body, kind.body) || (kind.body == "") != (body == "") {
+		t.Errorf("request %d body = %q, want it to hold %q", i, body, kind.body)
+	}
+}
+
+type failingBody struct{}
+
+func (failingBody) Read([]byte) (int, error) { return 0, errors.New("cut") }
+func (failingBody) Close() error             { return nil }
+
+func TestRequestKinds_ErrorText(t *testing.T) {
+	sendFails := roundTripFunc(func(*http.Request) (*http.Response, error) { return nil, errors.New("down") })
+	readFails := roundTripFunc(func(*http.Request) (*http.Response, error) {
+		return &http.Response{StatusCode: http.StatusOK, Header: http.Header{}, Body: failingBody{}}, nil
+	})
+	want := map[string][2]string{
+		"json get": {`request GET /api/get: Get "https://x.test/api/get": down`, "read response: cut"},
+		"json put": {`request PUT /api/put: Put "https://x.test/api/put": down`, "read response: cut"},
+		"download": {`download /download/1: Get "https://x.test/download/1": down`, "read download response: cut"},
+		"upload":   {`upload /upload-service/upload: Post "https://x.test/upload-service/upload": down`, "read upload response: cut"},
+	}
+	for _, kind := range requestKinds(t) {
+		for i, rt := range []http.RoundTripper{sendFails, readFails} {
+			client := NewClient(testTokens(), WithHTTPClient(&http.Client{Transport: rt}), WithBaseURL("https://x.test"))
+			_, err := kind.call(client)
+			if err == nil || err.Error() != want[kind.name][i] {
+				t.Errorf("%s: err = %v, want %s", kind.name, err, want[kind.name][i])
+			}
+		}
 	}
 }
