@@ -202,3 +202,39 @@ func TestGetMeasurementSystem_HTTPError(t *testing.T) {
 		t.Errorf("StatusCode = %d, want 404", apiErr.StatusCode)
 	}
 }
+
+func TestGetProfilePK(t *testing.T) {
+	tests := []struct {
+		name    string
+		profile string
+		want    string
+		wantErr string
+	}{
+		{"number", `{"profileId":12345678901234567,"displayName":"tester"}`, "12345678901234567", ""},
+		{"missing profileId", `{"displayName":"tester"}`, "", "user profile missing profileId field"},
+		{"bad JSON", `{"profileId":`, "", "parse user profile: unexpected EOF"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mux := http.NewServeMux()
+			mux.HandleFunc("/userprofile-service/userprofile/settings", func(w http.ResponseWriter, _ *http.Request) {
+				_, _ = w.Write([]byte(`{"displayName":"tester"}`))
+			})
+			mux.HandleFunc("/userprofile-service/socialProfile/tester", func(w http.ResponseWriter, _ *http.Request) {
+				_, _ = w.Write([]byte(tt.profile))
+			})
+			_, client := testServer(t, mux)
+
+			got, err := client.GetProfilePK(context.Background())
+			if tt.wantErr != "" {
+				if err == nil || err.Error() != tt.wantErr {
+					t.Fatalf("err = %v, want %q", err, tt.wantErr)
+				}
+				return
+			}
+			if err != nil || got != tt.want {
+				t.Fatalf("GetProfilePK = %q, %v, want %q", got, err, tt.want)
+			}
+		})
+	}
+}

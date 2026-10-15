@@ -158,108 +158,18 @@ func (c *CourseImportCmd) Run(g *Globals) error {
 		return err
 	}
 
-	// Step 1: Parse GPX.
 	g.UI.Infof("Importing %s...", filepath.Base(c.File))
-	parsed, err := client.ImportCourseGPX(g.Context, c.File)
+	saved, err := client.ImportCourse(g.Context, c.File, garminapi.CourseImportOptions{
+		Name:           c.Name,
+		ActivityTypePK: typePk,
+		Privacy:        c.Privacy,
+	})
 	if err != nil {
-		return fmt.Errorf("import GPX: %w", err)
-	}
-
-	var course map[string]any
-	if err := json.Unmarshal(parsed, &course); err != nil {
-		return fmt.Errorf("parse imported course: %w", err)
-	}
-
-	// Step 2: Enrich elevation.
-	geoPoints, ok := course["geoPoints"].([]any)
-	if !ok || len(geoPoints) == 0 {
-		return fmt.Errorf("imported course has no geo points")
-	}
-
-	elevInput := make([][]any, 0, len(geoPoints))
-	for _, p := range geoPoints {
-		pt, ok := p.(map[string]any)
-		if !ok {
-			continue
-		}
-		lat := pt["latitude"]
-		lon := pt["longitude"]
-		if lat == nil || lon == nil {
-			lat = pt["lat"]
-			lon = pt["lon"]
-		}
-		if lat == nil || lon == nil {
-			continue
-		}
-		elevInput = append(elevInput, []any{lat, lon, nil})
-	}
-
-	elevJSON, err := json.Marshal(elevInput)
-	if err != nil {
-		return fmt.Errorf("marshal elevation input: %w", err)
-	}
-
-	elevData, err := client.GetCourseElevation(g.Context, elevJSON)
-	if err != nil {
-		return fmt.Errorf("get elevation: %w", err)
-	}
-
-	var elevPoints [][]any
-	if err := json.Unmarshal(elevData, &elevPoints); err != nil {
-		return fmt.Errorf("parse elevation: %w", err)
-	}
-
-	// Merge elevation back into geoPoints.
-	for i, ep := range elevPoints {
-		if i >= len(geoPoints) {
-			break
-		}
-		if pt, ok := geoPoints[i].(map[string]any); ok && len(ep) >= 3 {
-			pt["elevation"] = ep[2]
-		}
-	}
-	course["geoPoints"] = geoPoints
-
-	// Override course name.
-	if c.Name != "" {
-		course["courseName"] = c.Name
-	} else if course["courseName"] == nil || jsonString(course, "courseName") == "" {
-		// Fallback to filename without extension.
-		course["courseName"] = strings.TrimSuffix(filepath.Base(c.File), filepath.Ext(c.File))
-	}
-
-	// Set activity type and defaults for fields the import response leaves nil.
-	course["activityTypePk"] = typePk
-	if course["coordinateSystem"] == nil {
-		course["coordinateSystem"] = "WGS84"
-	}
-	if course["sourceTypeId"] == nil {
-		course["sourceTypeId"] = 3
-	}
-	if course["startPoint"] == nil && len(geoPoints) > 0 {
-		course["startPoint"] = geoPoints[0]
-	}
-
-	// Build save payload with only the fields the API accepts.
-	save := filterCourseFields(course)
-	save["coursePrivacy"] = c.Privacy
-	if save["rulePK"] == nil {
-		save["rulePK"] = 2
-	}
-
-	payload, err := json.Marshal(save)
-	if err != nil {
-		return fmt.Errorf("marshal course: %w", err)
-	}
-
-	// Step 3: Save course.
-	saved, err := client.SaveCourse(g.Context, payload)
-	if err != nil {
-		return fmt.Errorf("save course: %w", err)
+		return err
 	}
 
 	header := []string{"ID", "NAME", "DISTANCE", "ELEV GAIN", "ELEV LOSS"}
-	return reportWriteTable(g, saved, header, func() ([][]string, error) {
+	return reportWriteTable(g, saved, "Imported course from "+filepath.Base(c.File), header, func() ([][]string, error) {
 		var result map[string]any
 		if err := json.Unmarshal(saved, &result); err != nil {
 			return nil, fmt.Errorf("parse saved course: %w", err)
@@ -381,28 +291,6 @@ func formatCourseRows(sys units.System, courses []map[string]any) [][]string {
 		})
 	}
 	return rows
-}
-
-// courseSaveFields are the fields accepted by the course save endpoint.
-var courseSaveFields = []string{
-	"activityTypePk", "boundingBox", "coordinateSystem", "courseLines",
-	"courseName", "coursePoints", "distanceMeter", "elapsedSeconds",
-	"elevationGainMeter", "elevationLossMeter", "favorite", "geoPoints",
-	"hasPaceBand", "hasPowerGuide", "hasTurnDetectionDisabled", "includeLaps",
-	"matchedToSegments", "openStreetMap", "rulePK", "sourceTypeId",
-	"speedMeterPerSecond", "startPoint", "userProfilePk",
-}
-
-// filterCourseFields returns a new map containing only the non-nil fields
-// accepted by the course save endpoint, dropping extra fields from the import response.
-func filterCourseFields(course map[string]any) map[string]any {
-	save := make(map[string]any, len(courseSaveFields))
-	for _, key := range courseSaveFields {
-		if v, ok := course[key]; ok && v != nil {
-			save[key] = v
-		}
-	}
-	return save
 }
 
 // courseTypeKey extracts the course type from nested courseType.typeKey.

@@ -19,9 +19,13 @@ func reportWrite(g *Globals, body json.RawMessage, format string, args ...any) e
 	return nil
 }
 
-func reportWriteTable(g *Globals, body json.RawMessage, header []string, rows func() ([][]string, error)) error {
+func reportWriteTable(g *Globals, body json.RawMessage, empty string, header []string, rows func() ([][]string, error)) error {
 	if outfmt.IsJSON(g.Context) {
 		return writeResponseJSON(g.Stdout, body)
+	}
+	if len(bytes.TrimSpace(body)) == 0 {
+		g.UI.Successf("%s", empty)
+		return nil
 	}
 	r, err := rows()
 	if err != nil {
