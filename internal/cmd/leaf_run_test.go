@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bytes"
+	"encoding/json"
 	"maps"
 	"net/http"
 	"slices"
@@ -211,7 +212,7 @@ func TestLeafRun(t *testing.T) {
 			name:     "a root element that is not an object is an error",
 			args:     []string{"activities"},
 			routes:   map[string]mockReply{activitiesRoute: {body: `[5]`}},
-			stderr:   "parse activities: json: cannot unmarshal number into Go value of type map[string]interface {}\n",
+			stderr:   "parse activities: " + unmarshalError(`[5]`) + "\n",
 			code:     1,
 			requests: []string{activitiesRoute},
 		},
@@ -361,4 +362,10 @@ func TestLeafRowSadPaths(t *testing.T) {
 			}
 		}
 	})
+}
+
+// The text of a json.Unmarshal type error changes between Go versions.
+func unmarshalError(body string) string {
+	var items []map[string]any
+	return json.Unmarshal([]byte(body), &items).Error()
 }
