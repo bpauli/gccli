@@ -77,21 +77,111 @@ var healthGroup = Group{Name: "health", Help: "View health data.", Children: []N
 		Verb:     "get respiration", Output: JSON{},
 		LateDates: []string{"Date"},
 	},
-	Custom{Name: "spo2", Help: "Show SpO2 (blood oxygen) data.", Cmd: &HealthSPO2Cmd{}},
-	Custom{Name: "hrv", Help: "Show heart rate variability data.", Cmd: &HealthHRVCmd{}},
+	Leaf{
+		Name: "spo2", Help: "Show SpO2 (blood oxygen) data.",
+		Spec: argsOf(&struct {
+			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+		}{}),
+		Endpoint: "health.spo2",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get spo2", Output: JSON{},
+		LateDates: []string{"Date"},
+	},
+	Leaf{
+		Name: "hrv", Help: "Show heart rate variability data.",
+		Spec: argsOf(&struct {
+			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+		}{}),
+		Endpoint: "health.hrv",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get hrv", Output: JSON{},
+		LateDates: []string{"Date"},
+	},
 	healthBodyBatteryGroup,
 	healthIntensityMinutesGroup,
-	Custom{Name: "training-readiness", Help: "Show training readiness data.", Cmd: &HealthTrainingReadinessCmd{}},
-	Custom{Name: "training-status", Help: "Show training status data.", Cmd: &HealthTrainingStatusCmd{}},
-	Custom{Name: "fitness-age", Help: "Show fitness age data.", Cmd: &HealthFitnessAgeCmd{}},
-	Custom{Name: "max-metrics", Help: "Show VO2max and max metrics data.", Cmd: &HealthMaxMetricsCmd{}},
-	Custom{Name: "lactate-threshold", Help: "Show latest lactate threshold.", Cmd: &HealthLactateThresholdCmd{}},
-	Custom{Name: "cycling-ftp", Help: "Show latest cycling FTP.", Cmd: &HealthCyclingFTPCmd{}},
+	Leaf{
+		Name: "training-readiness", Help: "Show training readiness data.",
+		Spec: argsOf(&struct {
+			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+		}{}),
+		Endpoint: "health.training-readiness",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get training readiness", Output: JSON{},
+		LateDates: []string{"Date"},
+	},
+	Leaf{
+		Name: "training-status", Help: "Show training status data.",
+		Spec: argsOf(&struct {
+			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+		}{}),
+		Endpoint: "health.training-status",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get training status", Output: JSON{},
+		LateDates: []string{"Date"},
+	},
+	Leaf{
+		Name: "fitness-age", Help: "Show fitness age data.",
+		Spec: argsOf(&struct {
+			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+		}{}),
+		Endpoint: "health.fitness-age",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get fitness age", Output: JSON{},
+		LateDates: []string{"Date"},
+	},
+	Leaf{
+		Name: "max-metrics", Help: "Show VO2max and max metrics data.",
+		Spec: argsOf(&struct {
+			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+		}{}),
+		Endpoint: "health.max-metrics",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get max metrics", Output: JSON{},
+		LateDates: []string{"Date"},
+	},
+	Leaf{Name: "lactate-threshold", Help: "Show latest lactate threshold.", Endpoint: "health.lactate-threshold", Verb: "get lactate threshold", Output: JSON{}},
+	Leaf{Name: "cycling-ftp", Help: "Show latest cycling FTP.", Endpoint: "health.cycling-ftp", Verb: "get cycling ftp", Output: JSON{}},
 	healthRacePredictionsGroup,
-	Custom{Name: "endurance-score", Help: "Show endurance score data.", Cmd: &HealthEnduranceScoreCmd{}},
-	Custom{Name: "hill-score", Help: "Show hill score data.", Cmd: &HealthHillScoreCmd{}},
-	Custom{Name: "events", Help: "Show daily wellness events.", Cmd: &HealthEventsCmd{}},
-	Custom{Name: "lifestyle", Help: "Show lifestyle logging data.", Cmd: &HealthLifestyleCmd{}},
+	Leaf{
+		Name: "endurance-score", Help: "Show endurance score data.",
+		Spec: argsOf(&struct {
+			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+		}{}),
+		Endpoint: "health.endurance-score",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get endurance score", Output: JSON{},
+		LateDates: []string{"Date"},
+	},
+	Leaf{
+		Name: "hill-score", Help: "Show hill score data.",
+		Spec: argsOf(&struct {
+			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+		}{}),
+		Endpoint: "health.hill-score",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get hill score", Output: JSON{},
+		LateDates: []string{"Date"},
+	},
+	Leaf{
+		Name: "events", Help: "Show daily wellness events.",
+		Spec: argsOf(&struct {
+			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+		}{}),
+		Endpoint: "health.all-day-events",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get events", Output: JSON{},
+		LateDates: []string{"Date"},
+	},
+	Leaf{
+		Name: "lifestyle", Help: "Show lifestyle logging data.",
+		Spec: argsOf(&struct {
+			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+		}{}),
+		Endpoint: "health.lifestyle-logging",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get lifestyle", Output: JSON{},
+		LateDates: []string{"Date"},
+	},
 }}
 
 var healthStepsGroup = Group{Name: "steps", Help: "Show step data.", Children: []Node{
