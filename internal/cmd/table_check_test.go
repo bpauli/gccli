@@ -54,6 +54,27 @@ func TestCheckTableRejects(t *testing.T) {
 			`goals list: Params["status"] binds In("Stat"), which is not a field of the args struct`,
 		},
 		{
+			"In reads the outer field that shadows an embedded one", "activities list",
+			func(l *Leaf) {
+				l.Spec = argsOf(&struct {
+					Limit      string `help:"Cap." name:"cap"`
+					Pagination `embed:"" set:"items=activities"`
+					Type       string `help:"Filter by activity type." short:"t"`
+				}{})
+			},
+			`activities list: placeholder {limit} of activities.list is required, but In("Limit") may be empty: make the field required, give it a default, or add .Or(...)`,
+		},
+		{
+			"In names a field of a named embed", "activities list",
+			func(l *Leaf) {
+				l.Spec = argsOf(&struct {
+					Page Pagination `embed:"" set:"items=activities"`
+					Type string     `help:"Filter by activity type." short:"t"`
+				}{})
+			},
+			`activities list: Params["limit"] binds In("Limit"), which is not a field of the args struct`,
+		},
+		{
 			"LateDates names a Date field", "health sleep",
 			func(l *Leaf) {
 				l.Spec = argsOf(&struct {
