@@ -506,7 +506,7 @@ func TestWriteCensus(t *testing.T) {
 	fset := token.NewFileSet()
 	cli := parseFuncs(t, fset, ".")
 	methods := clientMethods(parseFuncs(t, fset, "../garminapi"))
-	apiWrites := apiWriteMethods(methods, tableWrites(garminapi.EndpointMethod, cli, slices.Collect(maps.Values(methods))))
+	apiWrites := apiWriteMethods(methods, tableWrites(garminapi.Describe, cli, slices.Collect(maps.Values(methods))))
 	for name := range apiWrites {
 		fn, ok := methods[name]
 		if !ok {
@@ -614,7 +614,10 @@ func (c *ReadCmd) Run(g *Globals) error {
 	return err
 }`)
 	table := map[string]string{"notes.delete": http.MethodDelete, "notes.update": http.MethodPut, "notes.get": http.MethodGet}
-	lookup := func(name string) (string, bool) { m, ok := table[name]; return m, ok }
+	lookup := func(name string) (garminapi.Endpoint, bool) {
+		m, ok := table[name]
+		return garminapi.Endpoint{Method: m}, ok
+	}
 
 	got := map[string]string{}
 	methods := clientMethods(api)
@@ -807,7 +810,7 @@ func endpointName(call *ast.CallExpr) (string, bool) {
 	return name, err == nil
 }
 
-func tableWrites(lookup func(string) (string, bool), fnSets ...[]*ast.FuncDecl) map[string]clientMethod {
+func tableWrites(lookup func(string) (garminapi.Endpoint, bool), fnSets ...[]*ast.FuncDecl) map[string]clientMethod {
 	writes := map[string]clientMethod{}
 	for _, fns := range fnSets {
 		for _, fn := range fns {
@@ -820,7 +823,7 @@ func tableWrites(lookup func(string) (string, bool), fnSets ...[]*ast.FuncDecl) 
 				if !ok {
 					return true
 				}
-				if method, known := lookup(name); known && method != http.MethodGet {
+				if e, known := lookup(name); known && e.Method != http.MethodGet {
 					writes[callKey(name)] = callKey(name)
 				}
 				return true

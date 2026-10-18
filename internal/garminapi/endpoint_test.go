@@ -10,6 +10,7 @@ import (
 	"maps"
 	"net/http"
 	"path/filepath"
+	"reflect"
 	"slices"
 	"strconv"
 	"strings"
@@ -202,6 +203,20 @@ func TestCallUnknownName(t *testing.T) {
 	_, err := client.Call(context.Background(), "goals.lsit", nil, nil)
 	if err == nil || err.Error() != "endpoint goals.lsit: not in the endpoint table" {
 		t.Errorf("err = %v", err)
+	}
+}
+
+func TestDescribe(t *testing.T) {
+	e, ok := Describe("activities.list")
+	if !ok || e.Method != http.MethodGet {
+		t.Fatalf("Describe(activities.list) = %+v, %v", e, ok)
+	}
+	want := []Param{{Name: "start"}, {Name: "limit"}, {Name: "activityType", Optional: true}}
+	if !reflect.DeepEqual(e.Params, want) {
+		t.Errorf("Params = %+v, want %+v", e.Params, want)
+	}
+	if _, ok := Describe("goals.lsit"); ok {
+		t.Error("Describe(goals.lsit) = ok")
 	}
 }
 
