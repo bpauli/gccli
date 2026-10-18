@@ -90,8 +90,9 @@ func (e *EndpointError) Error() string {
 	return fmt.Sprintf("endpoint %s: %s: %s", e.Endpoint, e.Param, e.Problem)
 }
 
-// Describe returns the named row with Params filled for every placeholder
-// in path order. ok is false for a name that is not in the table.
+// Describe returns a copy of the named row with Params filled for every
+// placeholder in path order. The caller may change the copy. ok is false
+// for a name that is not in the table.
 func Describe(name string) (e Endpoint, ok bool) {
 	r, ok := endpoints[name]
 	if !ok {
@@ -102,6 +103,7 @@ func Describe(name string) (e Endpoint, ok bool) {
 	for _, n := range r.names {
 		p := r.params[n]
 		p.Name = n
+		p.Enum = slices.Clone(p.Enum)
 		e.Params = append(e.Params, p)
 	}
 	return e, true
