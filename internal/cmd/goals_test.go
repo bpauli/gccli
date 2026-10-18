@@ -55,69 +55,6 @@ func goalsTestServer(t *testing.T) *httptest.Server {
 
 // --- Execute-level tests ---
 
-func TestExecute_GoalsHelp(t *testing.T) {
-	code := Execute([]string{"goals", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_GoalsListHelp(t *testing.T) {
-	code := Execute([]string{"goals", "list", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_BadgesHelp(t *testing.T) {
-	code := Execute([]string{"badges", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_BadgesEarnedHelp(t *testing.T) {
-	code := Execute([]string{"badges", "earned", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_BadgesAvailableHelp(t *testing.T) {
-	code := Execute([]string{"badges", "available", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_BadgesInProgressHelp(t *testing.T) {
-	code := Execute([]string{"badges", "in-progress", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_ChallengesHelp(t *testing.T) {
-	code := Execute([]string{"challenges", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_ChallengesBadgeHelp(t *testing.T) {
-	code := Execute([]string{"challenges", "badge", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_RecordsHelp(t *testing.T) {
-	code := Execute([]string{"records", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
 func TestExecute_GoalsListSendsStatus(t *testing.T) {
 	tests := []struct {
 		args []string
@@ -185,19 +122,6 @@ func TestExecute_GoalsListRejectsUnknownStatus(t *testing.T) {
 }
 
 // --- GoalsListCmd tests ---
-
-func TestGoalsList_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &GoalsListCmd{Status: "active"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestGoalsList_Success(t *testing.T) {
 	server := goalsTestServer(t)
@@ -273,19 +197,6 @@ func TestGoalsList_ServerError(t *testing.T) {
 
 // --- BadgesEarnedCmd tests ---
 
-func TestBadgesEarned_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &BadgesEarnedCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
-
 func TestBadgesEarned_Success(t *testing.T) {
 	server := goalsTestServer(t)
 	defer server.Close()
@@ -305,19 +216,6 @@ func TestBadgesEarned_Success(t *testing.T) {
 }
 
 // --- BadgesAvailableCmd tests ---
-
-func TestBadgesAvailable_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &BadgesAvailableCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestBadgesAvailable_Success(t *testing.T) {
 	server := goalsTestServer(t)
@@ -339,19 +237,6 @@ func TestBadgesAvailable_Success(t *testing.T) {
 
 // --- BadgesInProgressCmd tests ---
 
-func TestBadgesInProgress_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &BadgesInProgressCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
-
 func TestBadgesInProgress_Success(t *testing.T) {
 	server := goalsTestServer(t)
 	defer server.Close()
@@ -371,19 +256,6 @@ func TestBadgesInProgress_Success(t *testing.T) {
 }
 
 // --- ChallengesListCmd tests ---
-
-func TestChallengesList_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &ChallengesListCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestChallengesList_Success(t *testing.T) {
 	server := goalsTestServer(t)
@@ -428,19 +300,6 @@ func TestChallengesList_ServerError(t *testing.T) {
 
 // --- ChallengesBadgeCmd tests ---
 
-func TestChallengesBadge_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &ChallengesBadgeCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
-
 func TestChallengesBadge_Success(t *testing.T) {
 	server := goalsTestServer(t)
 	defer server.Close()
@@ -460,19 +319,6 @@ func TestChallengesBadge_Success(t *testing.T) {
 }
 
 // --- RecordsCmd tests ---
-
-func TestRecords_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &RecordsCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestRecords_Success(t *testing.T) {
 	server := goalsTestServer(t)

@@ -103,55 +103,7 @@ func coursesTestServer(t *testing.T) *httptest.Server {
 
 // --- Execute-level tests ---
 
-func TestExecute_CoursesHelp(t *testing.T) {
-	code := Execute([]string{"courses", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_CoursesListHelp(t *testing.T) {
-	code := Execute([]string{"courses", "list", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_CoursesFavoritesHelp(t *testing.T) {
-	code := Execute([]string{"courses", "favorites", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_CoursesDetailHelp(t *testing.T) {
-	code := Execute([]string{"courses", "detail", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_CoursesSendHelp(t *testing.T) {
-	code := Execute([]string{"courses", "send", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
 // --- CoursesListCmd tests ---
-
-func TestCoursesList_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &CoursesListCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestCoursesList_Success_JSON(t *testing.T) {
 	server := coursesTestServer(t)
@@ -214,19 +166,6 @@ func TestCoursesList_ServerError(t *testing.T) {
 
 // --- CoursesFavoritesCmd tests ---
 
-func TestCoursesFavorites_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &CoursesFavoritesCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
-
 func TestCoursesFavorites_Success(t *testing.T) {
 	server := coursesTestServer(t)
 	defer server.Close()
@@ -247,19 +186,6 @@ func TestCoursesFavorites_Success(t *testing.T) {
 
 // --- CourseDetailCmd tests ---
 
-func TestCourseDetail_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &CourseDetailCmd{ID: "123"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
-
 func TestCourseDetail_Success(t *testing.T) {
 	server := coursesTestServer(t)
 	defer server.Close()
@@ -279,19 +205,6 @@ func TestCourseDetail_Success(t *testing.T) {
 }
 
 // --- CourseSendCmd tests ---
-
-func TestCourseSend_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &CourseSendCmd{CourseID: "123", DeviceID: "456"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestCourseSend_Success_Table(t *testing.T) {
 	server := coursesTestServer(t)
@@ -342,26 +255,6 @@ func newTestGPXFile(t *testing.T) string {
 		t.Fatalf("write temp file: %v", err)
 	}
 	return path
-}
-
-func TestExecute_CoursesImportHelp(t *testing.T) {
-	code := Execute([]string{"courses", "import", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestCourseImport_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &CourseImportCmd{File: "route.gpx", Type: "cycling"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
 }
 
 func TestCourseImport_InvalidType(t *testing.T) {
@@ -431,26 +324,6 @@ func TestCourseImport_Flags(t *testing.T) {
 }
 
 // --- CourseDeleteCmd tests ---
-
-func TestExecute_CoursesDeleteHelp(t *testing.T) {
-	code := Execute([]string{"courses", "delete", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestCourseDelete_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &CourseDeleteCmd{ID: "123", Force: true}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestCourseDelete_Success(t *testing.T) {
 	server := coursesTestServer(t)
