@@ -11,8 +11,6 @@ import (
 	"testing"
 )
 
-var passthroughMethods = []string{}
-
 func TestNoNewPassthroughMethods(t *testing.T) {
 	fset := token.NewFileSet()
 	got := map[string]token.Position{}
@@ -35,14 +33,7 @@ func TestNoNewPassthroughMethods(t *testing.T) {
 		}
 	}
 	for _, name := range slices.Sorted(maps.Keys(got)) {
-		if !slices.Contains(passthroughMethods, name) {
-			t.Errorf("%s: Client.%s only forwards one request: add a row to the service's endpoint table and call it with Client.Call", got[name], name)
-		}
-	}
-	for _, name := range passthroughMethods {
-		if _, ok := got[name]; !ok {
-			t.Errorf("passthroughMethods lists %s, which is no longer a passthrough method: delete it from the list", name)
-		}
+		t.Errorf("%s: Client.%s only forwards one request: add a row to the service's endpoint table and call it with Client.Call", got[name], name)
 	}
 }
 
