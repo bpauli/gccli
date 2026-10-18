@@ -85,23 +85,27 @@ func TestScrubCollapsesArrays(t *testing.T) {
 		}
 		return `{"sleepTimeSeconds":` + strconv.Itoa(minutes*60) + `,"sleepMovement":[` + strings.Join(entries, ",") + `]}`
 	}
+	const (
+		sleepPath     = "/wellness-service/wellness/dailySleepData/jane"
+		heartRatePath = "/wellness-service/wellness/dailyHeartRate/jane"
+	)
 	for _, tc := range []struct {
-		name   string
-		bodies []string
-		want   string
+		name, path string
+		bodies     []string
+		want       string
 	}{
 		{
-			"sleep series of 1, 360 and 480 minutes",
+			"sleep series of 1, 360 and 480 minutes", sleepPath,
 			[]string{sleep(1), sleep(360), sleep(480)},
 			`{"sleepMovement":[{"activityLevel":0.5,"endGMT":"2026-01-01T00:00:00.0","startGMT":"2026-01-01T00:00:00.0"}],"sleepTimeSeconds":1}`,
 		},
 		{
-			"empty series",
+			"empty series", sleepPath,
 			[]string{sleep(0)},
 			`{"sleepMovement":[],"sleepTimeSeconds":1}`,
 		},
 		{
-			"heart rate with and without off-wrist gaps",
+			"heart rate with and without off-wrist gaps", heartRatePath,
 			[]string{
 				`{"heartRateValues":[[1760738400000,58],[1760738520000,58],[1760738640000,null],[1760738760000,null],[1760738880000,61]]}`,
 				`{"heartRateValues":[[1760738400000,58],[1760738520000,59]]}`,
@@ -110,19 +114,38 @@ func TestScrubCollapsesArrays(t *testing.T) {
 			`{"heartRateValues":[[1]]}`,
 		},
 		{
-			"nulls before, between and after values",
+			"heart rate with the off-wrist intervals at other times of the day", heartRatePath,
+			[]string{
+				`{"heartRateValues":[[1760738400000,58],[1760738520000,58],[1760738640000,null],[1760738760000,null],[1760738880000,null],[1760739000000,61],[1760739120000,62],[1760739240000,60]]}`,
+				`{"heartRateValues":[[1760738400000,null],[1760738520000,null],[1760738640000,57],[1760738760000,59],[1760738880000,61],[1760739000000,null],[1760739120000,null],[1760739240000,null]]}`,
+				`{"heartRateValues":[[1760738400000,57],[1760738520000,57],[1760738640000,57],[1760738760000,59],[1760738880000,61],[1760739000000,60],[1760739120000,60],[1760739240000,60]]}`,
+			},
+			`{"heartRateValues":[[1]]}`,
+		},
+		{
+			"a series with a null or a missing key in any element", sleepPath,
+			[]string{
+				`{"sleepHeartRate":[{"value":null,"startGMT":1760738400000},{"value":55,"startGMT":1760738520000}]}`,
+				`{"sleepHeartRate":[{"value":55,"startGMT":1760738400000},{"value":null,"startGMT":1760738520000}]}`,
+				`{"sleepHeartRate":[{"startGMT":1760738400000},{"value":55,"startGMT":1760738520000},{"value":56}]}`,
+				`{"sleepHeartRate":[null,{"value":55,"startGMT":1760738400000}]}`,
+			},
+			`{"sleepHeartRate":[{"startGMT":1,"value":1}]}`,
+		},
+		{
+			"nulls before, between and after values", sleepPath,
 			[]string{`{"v":[null,null,5,null,7]}`, `{"v":[5]}`, `{"v":[9,null,null]}`},
 			`{"v":[1]}`,
 		},
 		{
-			"only nulls",
+			"only nulls", sleepPath,
 			[]string{`{"v":[null]}`, `{"v":[null,null,null]}`},
 			`{"v":[null]}`,
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			for _, body := range tc.bodies {
-				got, err := scrubBody(t, "GET", "/wellness-service/wellness/dailySleepData/jane", body)
+				got, err := scrubBody(t, "GET", tc.path, body)
 				if err != nil {
 					t.Fatal(err)
 				}
