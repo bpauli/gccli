@@ -23,7 +23,7 @@ func (c *DevicesListCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetDevices(g.Context)
+	data, err := client.Call(g.Context, "devices.list", nil, nil)
 	if err != nil {
 		return fmt.Errorf("get devices: %w", err)
 	}
@@ -42,7 +42,7 @@ func (c *DeviceSettingsCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetDeviceSettings(g.Context, c.DeviceID)
+	data, err := client.Call(g.Context, "devices.settings", map[string]string{"deviceID": c.DeviceID}, nil)
 	if err != nil {
 		return fmt.Errorf("get device settings: %w", err)
 	}
@@ -59,7 +59,7 @@ func (c *DevicePrimaryCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetPrimaryTrainingDevice(g.Context)
+	data, err := client.Call(g.Context, "devices.primary-training", nil, nil)
 	if err != nil {
 		return fmt.Errorf("get primary training device: %w", err)
 	}
@@ -93,7 +93,7 @@ func (c *DeviceSolarCmd) Run(g *Globals) error {
 		endDate = startDate
 	}
 
-	data, err := client.GetDeviceSolar(g.Context, c.DeviceID, startDate, endDate)
+	data, err := client.Call(g.Context, "devices.solar", map[string]string{"deviceID": c.DeviceID, "startDate": startDate, "endDate": endDate}, nil)
 	if err != nil {
 		return fmt.Errorf("get device solar: %w", err)
 	}
@@ -127,7 +127,7 @@ func (c *DeviceLastUsedCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetLastUsedDevice(g.Context)
+	data, err := client.Call(g.Context, "devices.last-used", nil, nil)
 	if err != nil {
 		return fmt.Errorf("get last used device: %w", err)
 	}
