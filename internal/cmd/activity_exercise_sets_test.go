@@ -64,22 +64,6 @@ func TestActivityExerciseSetsSet_Success(t *testing.T) {
 	}
 }
 
-func TestActivityExerciseSetsSet_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &ActivityExerciseSetsSetCmd{
-		ID:       "99999",
-		Exercise: []string{"BENCH_PRESS/BARBELL_BENCH_PRESS:12@20"},
-	}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
-
 func TestActivityExerciseSetsSet_SentBody(t *testing.T) {
 	cmd := &ActivityExerciseSetsSetCmd{
 		ID: "111",

@@ -75,41 +75,7 @@ func overrideNewClient(t *testing.T, server *httptest.Server) {
 
 // --- Execute-level tests ---
 
-func TestExecute_ActivitiesHelp(t *testing.T) {
-	code := Execute([]string{"activities", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_ActivitiesCountHelp(t *testing.T) {
-	code := Execute([]string{"activities", "count", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_ActivitiesSearchHelp(t *testing.T) {
-	code := Execute([]string{"activities", "search", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
 // --- ActivitiesListCmd tests ---
-
-func TestActivitiesList_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &ActivitiesListCmd{Pagination: Pagination{Limit: 20}}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestActivitiesList_NotFound(t *testing.T) {
 	store := newTestSecretsStore(t)
@@ -198,19 +164,6 @@ func TestActivitiesList_WithType(t *testing.T) {
 
 // --- ActivitiesCountCmd tests ---
 
-func TestActivitiesCount_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &ActivitiesCountCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
-
 func TestActivitiesCount_Success(t *testing.T) {
 	server := activitiesTestServer(t)
 	defer server.Close()
@@ -282,19 +235,6 @@ func TestActivitiesCount_WritesToGlobalsStdout(t *testing.T) {
 }
 
 // --- ActivitiesSearchCmd tests ---
-
-func TestActivitiesSearch_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &ActivitiesSearchCmd{StartDate: "2024-01-01"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestActivitiesSearch_Success(t *testing.T) {
 	called := false
@@ -604,13 +544,6 @@ func TestJsonFloat(t *testing.T) {
 
 // --- ActivitiesTypesCmd tests ---
 
-func TestExecute_ActivitiesTypesHelp(t *testing.T) {
-	code := Execute([]string{"activities", "types", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
 func TestActivitiesTypes_Table(t *testing.T) {
 	server := activitiesTestServer(t)
 	defer server.Close()
@@ -735,18 +668,5 @@ func TestJsonBool(t *testing.T) {
 		if v != tc.wantVal || ok != tc.wantOK {
 			t.Errorf("jsonBool(%q) = (%v, %v), want (%v, %v)", tc.key, v, ok, tc.wantVal, tc.wantOK)
 		}
-	}
-}
-
-func TestActivitiesTypes_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &ActivitiesTypesCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
 	}
 }

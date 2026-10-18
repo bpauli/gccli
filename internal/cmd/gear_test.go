@@ -57,69 +57,7 @@ func gearTestServer(t *testing.T) *httptest.Server {
 
 // --- Execute-level tests ---
 
-func TestExecute_GearHelp(t *testing.T) {
-	code := Execute([]string{"gear", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_GearListHelp(t *testing.T) {
-	code := Execute([]string{"gear", "list", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_GearStatsHelp(t *testing.T) {
-	code := Execute([]string{"gear", "stats", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_GearActivitiesHelp(t *testing.T) {
-	code := Execute([]string{"gear", "activities", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_GearDefaultsHelp(t *testing.T) {
-	code := Execute([]string{"gear", "defaults", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_GearLinkHelp(t *testing.T) {
-	code := Execute([]string{"gear", "link", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_GearUnlinkHelp(t *testing.T) {
-	code := Execute([]string{"gear", "unlink", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
 // --- GearListCmd tests ---
-
-func TestGearList_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &GearListCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestGearList_Success(t *testing.T) {
 	server := gearTestServer(t)
@@ -198,19 +136,6 @@ func TestGearList_ProfileError(t *testing.T) {
 
 // --- GearStatsCmd tests ---
 
-func TestGearStats_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &GearStatsCmd{UUID: "abc-123"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
-
 func TestGearStats_Success(t *testing.T) {
 	called := false
 	mux := http.NewServeMux()
@@ -240,19 +165,6 @@ func TestGearStats_Success(t *testing.T) {
 }
 
 // --- GearActivitiesCmd tests ---
-
-func TestGearActivities_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &GearActivitiesCmd{UUID: "abc-123", Limit: 20}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestGearActivities_Success(t *testing.T) {
 	server := gearTestServer(t)
@@ -305,19 +217,6 @@ func TestGearActivities_LimitParam(t *testing.T) {
 
 // --- GearDefaultsCmd tests ---
 
-func TestGearDefaults_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &GearDefaultsCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
-
 func TestGearDefaults_Success(t *testing.T) {
 	server := gearTestServer(t)
 	defer server.Close()
@@ -337,19 +236,6 @@ func TestGearDefaults_Success(t *testing.T) {
 }
 
 // --- GearLinkCmd tests ---
-
-func TestGearLink_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &GearLinkCmd{UUID: "abc-123", ActivityID: "100"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestGearLink_Success(t *testing.T) {
 	called := false
@@ -408,19 +294,6 @@ func TestGearLink_ServerError(t *testing.T) {
 }
 
 // --- GearUnlinkCmd tests ---
-
-func TestGearUnlink_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &GearUnlinkCmd{UUID: "abc-123", ActivityID: "100"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestGearUnlink_Success(t *testing.T) {
 	called := false

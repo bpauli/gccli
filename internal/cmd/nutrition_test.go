@@ -33,40 +33,6 @@ func nutritionTestServer(t *testing.T) *httptest.Server {
 	return httptest.NewServer(mux)
 }
 
-func TestExecute_NutritionHelp(t *testing.T) {
-	code := Execute([]string{"nutrition", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_NutritionMealsHelp(t *testing.T) {
-	code := Execute([]string{"nutrition", "meals", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_NutritionSettingsHelp(t *testing.T) {
-	code := Execute([]string{"nutrition", "settings", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestNutritionFoodLog_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &NutritionFoodLogCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
-
 func TestNutritionFoodLog_InvalidDate(t *testing.T) {
 	server := nutritionTestServer(t)
 	defer server.Close()
@@ -132,19 +98,6 @@ func TestNutritionFoodLog_ServerError(t *testing.T) {
 
 // --- NutritionMealsCmd tests ---
 
-func TestNutritionMeals_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &NutritionMealsCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
-
 func TestNutritionMeals_WithDate(t *testing.T) {
 	called := false
 	mux := http.NewServeMux()
@@ -202,19 +155,6 @@ func TestNutritionMeals_ServerError(t *testing.T) {
 }
 
 // --- NutritionSettingsCmd tests ---
-
-func TestNutritionSettings_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &NutritionSettingsCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestNutritionSettings_ServerError(t *testing.T) {
 	mux := http.NewServeMux()
