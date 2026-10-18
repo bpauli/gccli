@@ -266,9 +266,57 @@ func (tc writeCase) want(m writeMode) (stdout, stderr string) {
 	}
 }
 
+func tableWriteCases(t *testing.T) map[string]writeCase {
+	t.Helper()
+	cases := map[string]writeCase{}
+	walkNodes(commands, "", func(path string, n Node) {
+		l, ok := n.(Leaf)
+		if !ok {
+			return
+		}
+		w, ok := l.Output.(Write)
+		if !ok {
+			return
+		}
+		g, err := readGolden(goldenFile(path))
+		if err != nil {
+			t.Fatal(err)
+		}
+		args, in, err := g.input()
+		if err != nil {
+			t.Fatalf("%s: %v", goldenFile(path), err)
+		}
+		tc := writeCase{args: args[len(strings.Fields(path)):], files: in.files, routes: map[string]string{}}
+		for route, reply := range in.routes {
+			tc.routes[route] = reply.body
+		}
+		tc.result = tc.resultRoute(t)
+		tc.json = g.sections["json stdout"]
+		tc.human = g.sections["table stderr"]
+		if w.Confirm != "" {
+			tc.prompt, tc.human, _ = strings.Cut(tc.human, " [y/N]: ")
+		}
+		cases[path] = tc
+	})
+	return cases
+}
+
+func allWriteCases(t *testing.T) map[string]writeCase {
+	t.Helper()
+	cases := maps.Clone(writeCases)
+	for path, tc := range tableWriteCases(t) {
+		if _, dup := cases[path]; dup {
+			t.Errorf("writeCases[%q] names a Leaf row: remove the row", path)
+		}
+		cases[path] = tc
+	}
+	return cases
+}
+
 func TestWriteCommandOutput(t *testing.T) {
-	for _, path := range slices.Sorted(maps.Keys(writeCases)) {
-		tc := writeCases[path]
+	cases := allWriteCases(t)
+	for _, path := range slices.Sorted(maps.Keys(cases)) {
+		tc := cases[path]
 		for _, m := range writeModes {
 			if m.name == "table-empty" && tc.fallback == "" {
 				continue
@@ -277,7 +325,7 @@ func TestWriteCommandOutput(t *testing.T) {
 				tc := tc
 				if m.empty {
 					tc.routes = maps.Clone(tc.routes)
-					tc.routes[tc.resultRoute()] = noContent
+					tc.routes[tc.resultRoute(t)] = noContent
 				}
 				h := newHarness(t, tc.input())
 				args := append(strings.Fields(path), tc.args...)
@@ -299,8 +347,9 @@ func TestWriteCommandOutput(t *testing.T) {
 }
 
 func TestWriteCommandDeclined(t *testing.T) {
-	for _, path := range slices.Sorted(maps.Keys(writeCases)) {
-		tc := writeCases[path]
+	cases := allWriteCases(t)
+	for _, path := range slices.Sorted(maps.Keys(cases)) {
+		tc := cases[path]
 		if tc.prompt == "" {
 			continue
 		}
@@ -328,8 +377,9 @@ func TestWriteCommandDeclined(t *testing.T) {
 
 func TestWriteCommandNotInteractive(t *testing.T) {
 	const msg = "stdin is not a terminal: use --force to confirm"
-	for _, path := range slices.Sorted(maps.Keys(writeCases)) {
-		tc := writeCases[path]
+	cases := allWriteCases(t)
+	for _, path := range slices.Sorted(maps.Keys(cases)) {
+		tc := cases[path]
 		if tc.prompt == "" {
 			continue
 		}
@@ -359,7 +409,7 @@ func TestWriteCommandNotInteractive(t *testing.T) {
 
 func TestWriteCommandNotJSON(t *testing.T) {
 	tc := writeCases["activity rename"]
-	tc.routes = map[string]string{tc.resultRoute(): "<html>saved</html>"}
+	tc.routes = map[string]string{tc.resultRoute(t): "<html>saved</html>"}
 	h := newHarness(t, tc.input())
 
 	stdout, stderr, code := h.run([]string{"--json"}, append([]string{"activity", "rename"}, tc.args...))
@@ -369,14 +419,30 @@ func TestWriteCommandNotJSON(t *testing.T) {
 	}
 }
 
-func (tc writeCase) resultRoute() string {
+func (tc writeCase) resultRoute(t *testing.T) string {
+	t.Helper()
 	if tc.result != "" {
 		return tc.result
 	}
+	var data []string
 	for route := range tc.routes {
-		return route
+		if !isLookup(route) {
+			data = append(data, route)
+		}
 	}
-	return ""
+	if len(data) != 1 {
+		t.Fatalf("the case has %d data routes %q: set result", len(data), data)
+	}
+	return data[0]
+}
+
+func TestResultRouteSkipsLookups(t *testing.T) {
+	tc := writeCase{routes: map[string]string{profileRoute: profileBody, socialRoute: profileBody, "DELETE /x/1": noContent}}
+	for range 20 {
+		if got := tc.resultRoute(t); got != "DELETE /x/1" {
+			t.Fatalf("resultRoute = %q, want the one data route", got)
+		}
+	}
 }
 
 type mockReply struct {
