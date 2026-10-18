@@ -743,3 +743,23 @@ func TestLoginHeadless_ChinaDomainUsesChinaHosts(t *testing.T) {
 		}
 	}
 }
+
+func TestExchangeOAuth2_CutsLongErrorBody(t *testing.T) {
+	body := strings.Repeat("€", 200)
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusBadGateway)
+		_, _ = w.Write([]byte(body))
+	}))
+	t.Cleanup(srv.Close)
+
+	ep := Endpoints{OAuthBase: srv.URL}
+	consumer := &oauthConsumer{ConsumerKey: "ck", ConsumerSecret: "cs"}
+
+	_, err := exchangeOAuth2(context.Background(), srv.Client(), ep, consumer, "t", "s", "")
+	if err == nil {
+		t.Fatal("expected error")
+	}
+	if want := "HTTP 502: " + strings.Repeat("€", 170) + "... (90 bytes cut)"; err.Error() != want {
+		t.Errorf("error = %q, want %q", err.Error(), want)
+	}
+}
