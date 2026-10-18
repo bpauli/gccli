@@ -1,11 +1,15 @@
 package cmd
 
 import (
+	"go/ast"
+	"go/token"
 	"os"
 	"path/filepath"
 	"slices"
 	"strings"
 	"testing"
+
+	"github.com/bpauli/gccli/internal/garminapi"
 )
 
 // fixtureLeaf returns the fixture leaf at path, or a zero Leaf for a path
@@ -28,6 +32,37 @@ func leafAt(path string, l Leaf) []Node {
 		node = Group{Name: words[i], Children: []Node{node}}
 	}
 	return []Node{node}
+}
+
+func TestCommandTable(t *testing.T) {
+	for _, err := range checkTable(commands) {
+		t.Error(err)
+	}
+}
+
+func TestEveryEndpointHasACaller(t *testing.T) {
+	called := map[string]bool{}
+	walkNodes(commands, "", func(_ string, n Node) {
+		if l, ok := n.(Leaf); ok {
+			called[l.Endpoint] = true
+		}
+	})
+	fset := token.NewFileSet()
+	for _, fn := range slices.Concat(parseFuncs(t, fset, "."), parseFuncs(t, fset, "../garminapi")) {
+		ast.Inspect(fn.Body, func(n ast.Node) bool {
+			if call, ok := n.(*ast.CallExpr); ok {
+				if name, ok := endpointName(call); ok {
+					called[name] = true
+				}
+			}
+			return true
+		})
+	}
+	for _, name := range garminapi.Names() {
+		if !called[name] {
+			t.Errorf("row %s has no caller in internal/cmd or internal/garminapi: delete it or call it", name)
+		}
+	}
 }
 
 func TestCheckTableAcceptsFixture(t *testing.T) {
@@ -221,6 +256,17 @@ func TestCheckTableRejects(t *testing.T) {
 			"Confirm names no field", "courses delete",
 			func(l *Leaf) { l.Output = Write{Done: "Deleted course {ID}", Confirm: "Delete course {Idd}?"} },
 			`courses delete: Confirm names {Idd}, which is not a field of the args struct`,
+		},
+		{
+			"Done names a field a template cannot take", "courses delete",
+			func(l *Leaf) {
+				l.Spec = argsOf(&struct {
+					ID   string `arg:"" help:"Course ID."`
+					Deep bool   `help:"Deep."`
+				}{})
+				l.Output = Write{Done: "Deleted course {ID} {Deep}", Confirm: "Delete course {ID}?"}
+			},
+			`courses delete: Done names {Deep} of type bool: a template takes only string, int and Date`,
 		},
 		{
 			"Rows without Noun", "activities list",

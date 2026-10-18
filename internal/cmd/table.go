@@ -178,7 +178,7 @@ func (Rows) output()     {}
 func (Write) output()    {}
 
 type argsSpec interface {
-	target(force bool) any
+	target(l Leaf) any
 	fields() reflect.Type
 	check() error
 }
@@ -191,9 +191,9 @@ func argsOf[A any](args *A) argsSpec { return argsOfT[A]{args} }
 
 type argsOfT[A any] struct{ args *A }
 
-func (s argsOfT[A]) target(force bool) any {
-	t := specLeafG[A]{Args: *s.args}
-	if force {
+func (s argsOfT[A]) target(l Leaf) any {
+	t := specLeafG[A]{Args: *s.args, leaf: l}
+	if l.confirms() {
 		t.Force = &forceArgs{}
 	}
 	return t
@@ -214,8 +214,9 @@ func (s argsOfT[A]) check() error {
 // specLeafG is the Kong target of every Leaf. Force is nil or *forceArgs;
 // Kong skips a nil interface embed.
 type specLeafG[A any] struct {
-	Args  A   `embed:""`
-	Force any `embed:""`
+	Args  A    `embed:""`
+	Force any  `embed:""`
+	leaf  Leaf `kong:"-"`
 }
 
 type forceArgs struct {
@@ -242,7 +243,7 @@ func holder(n Node) any {
 	case Custom:
 		cmd = reflect.Indirect(reflect.ValueOf(n.Cmd))
 	case Leaf:
-		cmd = reflect.ValueOf(n.spec().target(n.confirms()))
+		cmd = reflect.ValueOf(n.spec().target(n))
 	}
 	h := n.head()
 	tag := `cmd:"" name:` + strconv.Quote(h.Name) + ` help:` + strconv.Quote(h.Help)

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"maps"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -108,6 +109,9 @@ func Describe(name string) (e Endpoint, ok bool) {
 	}
 	return e, true
 }
+
+// Names returns every endpoint name, sorted.
+func Names() []string { return slices.Sorted(maps.Keys(endpoints)) }
 
 // Call sends the named endpoint with args filling its placeholders and body
 // as the JSON request body (nil for none). It checks every argument before it
