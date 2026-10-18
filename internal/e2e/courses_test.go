@@ -104,6 +104,4 @@ func TestGetCourseDetail(t *testing.T) {
 	if _, ok := detailMap["courseName"]; !ok {
 		t.Error("course detail response missing courseName field")
 	}
-
-	t.Logf("GetCourse(%s) returned course: %v", courseID, detailMap["courseName"])
 }
