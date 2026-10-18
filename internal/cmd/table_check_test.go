@@ -12,8 +12,8 @@ import (
 // outside the fixture tree.
 func fixtureLeaf(path string) Leaf {
 	var found Leaf
-	walkLeaves(fixtureTree(), "", func(p string, l Leaf) {
-		if p == path {
+	walkNodes(fixtureTree(), "", func(p string, n Node) {
+		if l, ok := n.(Leaf); ok && p == path {
 			found = l
 		}
 	})
@@ -52,6 +52,58 @@ func TestCheckTableRejects(t *testing.T) {
 			"In names no field", "goals list",
 			func(l *Leaf) { l.Params = Params{"status": In("Stat")} },
 			`goals list: Params["status"] binds In("Stat"), which is not a field of the args struct`,
+		},
+		{
+			"In names an unexported field", "goals list",
+			func(l *Leaf) {
+				l.Spec = argsOf(&struct {
+					status string `help:"Goal status." default:"active"`
+				}{})
+				l.Params = Params{"status": In("status")}
+			},
+			`goals list: Params["status"] binds In("status"), which is not a field of the args struct`,
+		},
+		{
+			"In names no field at all", "goals list",
+			func(l *Leaf) { l.Params = Params{"status": In("")} },
+			`goals list: Params["status"] binds In(""), which names no field`,
+		},
+		{
+			"In names a field Kong skips", "goals list",
+			func(l *Leaf) {
+				l.Spec = argsOf(&struct {
+					Status string `kong:"-" default:"active"`
+				}{})
+			},
+			`goals list: Params["status"] binds In("Status"), which Kong skips (kong:"-")`,
+		},
+		{
+			"In names a field the runner cannot send", "goals list",
+			func(l *Leaf) {
+				l.Spec = argsOf(&struct {
+					Status []string `help:"Goal status." default:"active"`
+				}{})
+			},
+			`goals list: Params["status"] binds In("Status") of type []string: the runner sends only string, int and Date`,
+		},
+		{
+			"Kong enum allows a value the placeholder does not", "goals list",
+			func(l *Leaf) {
+				l.Spec = argsOf(&struct {
+					Status string `help:"Goal status." default:"active" enum:"active,future,past,done"`
+				}{})
+			},
+			`goals list: Params["status"] binds In("Status"), whose enum allows "done", which {status} of goals.list does not: active, future, past`,
+		},
+		{
+			"argsOf(nil)", "goals list",
+			func(l *Leaf) { l.Spec = argsOf[struct{}](nil) },
+			`goals list: argsOf[struct {}](nil): pass a pointer to a struct literal`,
+		},
+		{
+			"argsOf of a non-struct", "goals list",
+			func(l *Leaf) { l.Spec = argsOf(new(int)) },
+			`goals list: argsOf(*int) is not a struct: pass a pointer to a struct literal`,
 		},
 		{
 			"In reads the outer field that shadows an embedded one", "activities list",
@@ -206,6 +258,29 @@ func TestCheckTableRejects(t *testing.T) {
 		})
 	}
 }
+
+func TestCheckTableRejectsBadCustom(t *testing.T) {
+	cases := []struct {
+		name string
+		cmd  interface{ Run(*Globals) error }
+		want string
+	}{
+		{"nil Cmd", nil, "completion: Custom needs a Cmd that points to a struct, got <nil>"},
+		{"Cmd is not a struct", intCmd(0), "completion: Custom needs a Cmd that points to a struct, got cmd.intCmd"},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			errs := checkTable([]Node{Custom{Name: "completion", Help: "Completion.", Cmd: tc.cmd}})
+			if len(errs) != 1 || errs[0].Error() != tc.want {
+				t.Errorf("checkTable = %v\nwant %s", errs, tc.want)
+			}
+		})
+	}
+}
+
+type intCmd int
+
+func (intCmd) Run(*Globals) error { return nil }
 
 // The frozen lists must match the golden files that pin each quirk, so a
 // new entry and a stale entry both fail here.

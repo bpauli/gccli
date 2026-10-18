@@ -60,14 +60,8 @@ func TestEveryLeafNeedsAccount(t *testing.T) {
 			t.Errorf("accountArgs names %q, which is not a leaf command", path)
 		}
 	}
-	modes := []struct {
-		flag, stderr string
-	}{
-		{"--plain", errNoAccount().Error() + "\n"},
-		{"--json", `{"error":{"code":"auth_required","message":"` + errNoAccount().Error() + `"}}` + "\n"},
-	}
 	for _, path := range leaves {
-		args, in, err := goldenInput(path)
+		args, in, err := goldenInput(goldenFile(path))
 		if err != nil {
 			t.Errorf("%q has no golden args: %v", path, err)
 			continue
@@ -75,44 +69,74 @@ func TestEveryLeafNeedsAccount(t *testing.T) {
 		if a, ok := accountArgs[path]; ok {
 			args = a
 		}
-		_, exempt := noAccountLeaves[path]
-		if !exempt {
-			in.routes = nil
-		}
-		for _, m := range modes {
-			t.Run(path+"/"+strings.TrimPrefix(m.flag, "--"), func(t *testing.T) {
-				h := newHarness(t, in)
-				t.Setenv("GCCLI_ACCOUNT", "")
-				if err := os.Unsetenv("GCCLI_ACCOUNT"); err != nil {
-					t.Fatal(err)
-				}
-				var stdout, stderr bytes.Buffer
-				code := execute(append([]string{"--color", "never", m.flag}, args...), "test", "none", "never", &stdout, &stderr)
-				if exempt {
+		if _, exempt := noAccountLeaves[path]; exempt {
+			for _, flag := range []string{"--plain", "--json"} {
+				t.Run(path+"/"+strings.TrimPrefix(flag, "--"), func(t *testing.T) {
+					_, stderr, code, _ := runWithoutAccount(t, in, flag, args)
 					if code != 0 {
-						t.Errorf("exit %d without an account, want 0: fix the command or remove %q from noAccountLeaves; stderr:\n%s", code, path, stderr.String())
+						t.Errorf("exit %d without an account, want 0: fix the command or remove %q from noAccountLeaves; stderr:\n%s", code, path, stderr)
 					}
-					return
-				}
-				if code != kindAuth.exit {
-					t.Errorf("exit %d, want %d: if the golden args stop before Run, add args that reach Run to accountArgs; stderr:\n%s", code, kindAuth.exit, stderr.String())
-				}
-				if stderr.String() != m.stderr {
-					t.Errorf("stderr:\n%s\nwant:\n%s", stderr.String(), m.stderr)
-				}
-				if stdout.Len() != 0 {
-					t.Errorf("stdout is not empty:\n%s", stdout.String())
-				}
-				if len(h.log) != 0 {
-					t.Errorf("sent %d requests without an account, first: %s", len(h.log), h.log[0].route)
-				}
-			})
+				})
+			}
+			continue
 		}
+		in.routes = nil
+		checkNeedsAccount(t, path, args, in)
 	}
 }
 
-func goldenInput(path string) ([]string, harnessInput, error) {
-	data, err := os.ReadFile(goldenFile(path))
+func TestLateDatesAreCheckedAfterAccount(t *testing.T) {
+	for _, path := range v1LateDates {
+		args, in, err := goldenInput(strings.TrimSuffix(goldenFile(path), ".golden") + "@bad-date.golden")
+		if err != nil {
+			t.Errorf("%q: %v", path, err)
+			continue
+		}
+		checkNeedsAccount(t, path, args, in)
+	}
+}
+
+func checkNeedsAccount(t *testing.T, path string, args []string, in harnessInput) {
+	t.Helper()
+	modes := []struct {
+		flag, stderr string
+	}{
+		{"--plain", errNoAccount().Error() + "\n"},
+		{"--json", `{"error":{"code":"auth_required","message":"` + errNoAccount().Error() + `"}}` + "\n"},
+	}
+	for _, m := range modes {
+		t.Run(path+"/"+strings.TrimPrefix(m.flag, "--"), func(t *testing.T) {
+			stdout, stderr, code, requests := runWithoutAccount(t, in, m.flag, args)
+			if code != kindAuth.exit {
+				t.Errorf("exit %d, want %d: if the golden args stop before Run, add args that reach Run to accountArgs; stderr:\n%s", code, kindAuth.exit, stderr)
+			}
+			if stderr != m.stderr {
+				t.Errorf("stderr:\n%s\nwant:\n%s", stderr, m.stderr)
+			}
+			if stdout != "" {
+				t.Errorf("stdout is not empty:\n%s", stdout)
+			}
+			if len(requests) != 0 {
+				t.Errorf("sent %d requests without an account, first: %s", len(requests), requests[0].route)
+			}
+		})
+	}
+}
+
+func runWithoutAccount(t *testing.T, in harnessInput, flag string, args []string) (stdout, stderr string, code int, requests []loggedRequest) {
+	t.Helper()
+	h := newHarness(t, in)
+	t.Setenv("GCCLI_ACCOUNT", "")
+	if err := os.Unsetenv("GCCLI_ACCOUNT"); err != nil {
+		t.Fatal(err)
+	}
+	var out, errOut bytes.Buffer
+	code = execute(append([]string{"--color", "never", flag}, args...), "test", "none", "never", &out, &errOut)
+	return out.String(), errOut.String(), code, h.requests()
+}
+
+func goldenInput(file string) ([]string, harnessInput, error) {
+	data, err := os.ReadFile(file)
 	if err != nil {
 		return nil, harnessInput{}, err
 	}

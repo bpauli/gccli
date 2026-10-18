@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"reflect"
 	"slices"
 	"strconv"
@@ -179,6 +180,7 @@ func (Write) output()    {}
 type argsSpec interface {
 	target(force bool) any
 	fields() reflect.Type
+	check() error
 }
 
 // argsOf wraps an args struct literal with Kong tags as a Leaf Spec. The
@@ -198,6 +200,16 @@ func (s argsOfT[A]) target(force bool) any {
 }
 
 func (s argsOfT[A]) fields() reflect.Type { return reflect.TypeFor[A]() }
+
+func (s argsOfT[A]) check() error {
+	switch t := s.fields(); {
+	case s.args == nil:
+		return fmt.Errorf("argsOf[%s](nil): pass a pointer to a struct literal", t)
+	case t.Kind() != reflect.Struct:
+		return fmt.Errorf("argsOf(*%s) is not a struct: pass a pointer to a struct literal", t)
+	}
+	return nil
+}
 
 // specLeafG is the Kong target of every Leaf. Force is nil or *forceArgs;
 // Kong skips a nil interface embed.

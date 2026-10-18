@@ -1,10 +1,13 @@
 package cmd
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 	"testing"
@@ -28,19 +31,31 @@ func newTestParser(t *testing.T) *kong.Kong {
 	return parser
 }
 
-func TestCollectCommands(t *testing.T) {
-	parser := newTestParser(t)
-	cmds := collectCommands(parser.Model.Node, nil)
+// Kong prints the help of a long path on the next line, so the help part
+// is optional.
+var helpLeaf = regexp.MustCompile(`(?m)^  ([a-z0-9-]+(?: [a-z0-9-]+)*)(?: {2,}.*)?$`)
 
-	found := map[string]bool{}
-	for _, cmd := range cmds {
-		found[cmd.Path[0]] = true
+func TestCollectCommandsMatchesHelp(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	t.Setenv("XDG_CONFIG_HOME", home)
+	var stdout, stderr bytes.Buffer
+	if code := execute([]string{"--help"}, "test", "none", "never", &stdout, &stderr); code != 0 {
+		t.Fatalf("exit %d: %s", code, stderr.String())
 	}
-
-	for _, n := range commands {
-		if want := n.head().Name; !found[want] {
-			t.Errorf("expected command %q in collectCommands output", want)
-		}
+	_, commandsSection, ok := strings.Cut(stdout.String(), "\nCommands:\n")
+	if !ok {
+		t.Fatalf("root help has no Commands section:\n%s", stdout.String())
+	}
+	var fromHelp []string
+	for _, m := range helpLeaf.FindAllStringSubmatch(commandsSection, -1) {
+		fromHelp = append(fromHelp, m[1])
+	}
+	if len(fromHelp) < 100 {
+		t.Fatalf("root help lists %d leaves, want more than 100:\n%s", len(fromHelp), commandsSection)
+	}
+	if got := leafCommands(t); !slices.Equal(got, fromHelp) {
+		t.Errorf("collectCommands leaves differ from the root help\ngot:  %q\nhelp: %q", got, fromHelp)
 	}
 }
 

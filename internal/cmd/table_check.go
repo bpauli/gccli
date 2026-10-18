@@ -5,8 +5,9 @@ import (
 	"maps"
 	"net/http"
 	"reflect"
-	"regexp"
 	"slices"
+	"strconv"
+	"strings"
 
 	"github.com/bpauli/gccli/internal/garminapi"
 )
@@ -62,21 +63,19 @@ var v1NullJSON = []string{
 	"workouts detail",
 }
 
-// checkTable reports the Leaf rows that break a rule it can read from the
-// row and the endpoint table: the endpoint exists and takes no body; every
-// In, LateDates, Done and Confirm name names an args field; every Params key
-// is a placeholder; every required placeholder is bound to a source that is
-// never empty; the Output fits the method and is complete; LateDates and
-// JSONNull stay on their frozen paths, and the frozen lists name only such
-// rows. It does not run Kong, so it does not see an enum with no default
-// or a flag that collides with a root flag; kong.New rejects those. It does
-// not read Column paths or the response shape.
 func checkTable(nodes []Node) []error {
 	var errs []error
 	leaves := map[string]Leaf{}
-	walkLeaves(nodes, "", func(path string, l Leaf) {
-		leaves[path] = l
-		errs = append(errs, checkLeaf(path, l)...)
+	walkNodes(nodes, "", func(path string, n Node) {
+		switch n := n.(type) {
+		case Custom:
+			if n.Cmd == nil || reflect.Indirect(reflect.ValueOf(n.Cmd)).Kind() != reflect.Struct {
+				errs = append(errs, fmt.Errorf("%s: Custom needs a Cmd that points to a struct, got %T", path, n.Cmd))
+			}
+		case Leaf:
+			leaves[path] = n
+			errs = append(errs, checkLeaf(path, n)...)
+		}
 	})
 	for _, path := range v1LateDates {
 		if l, ok := leaves[path]; ok && len(l.LateDates) == 0 {
@@ -96,14 +95,12 @@ func isNullJSON(l Leaf) bool {
 	return ok
 }
 
-func walkLeaves(nodes []Node, prefix string, visit func(path string, l Leaf)) {
+func walkNodes(nodes []Node, prefix string, visit func(path string, n Node)) {
 	for _, n := range nodes {
 		path := prefix + n.head().Name
-		switch n := n.(type) {
-		case Group:
-			walkLeaves(n.Children, path+" ", visit)
-		case Leaf:
-			visit(path, n)
+		visit(path, n)
+		if g, ok := n.(Group); ok {
+			walkNodes(g.Children, path+" ", visit)
 		}
 	}
 }
@@ -114,6 +111,10 @@ func checkLeaf(path string, l Leaf) []error {
 		errs = append(errs, fmt.Errorf(path+": "+format, a...))
 	}
 
+	if err := l.spec().check(); err != nil {
+		fail("%s", err)
+		return errs
+	}
 	fields := l.spec().fields()
 	for _, name := range l.LateDates {
 		if f, ok := argsField(fields, name); !ok || f.Type != reflect.TypeFor[string]() {
@@ -128,8 +129,21 @@ func checkLeaf(path string, l Leaf) []error {
 	}
 	for _, key := range slices.Sorted(maps.Keys(l.Params)) {
 		for _, a := range l.Params[key].alts {
-			if _, ok := argsField(fields, a.field); a.field != "" && !ok {
+			if a.lookup != noLookup {
+				continue
+			}
+			f, ok := argsField(fields, a.field)
+			switch {
+			case a.field == "":
+				fail("Params[%q] binds In(\"\"), which names no field", key)
+			case !ok:
 				fail("Params[%q] binds %s, which is not a field of the args struct", key, a)
+			case f.Tag.Get("kong") == "-":
+				fail("Params[%q] binds %s, which Kong skips (kong:\"-\")", key, a)
+			default:
+				if _, sendable := requestValue(reflect.Zero(f.Type)); !sendable {
+					fail("Params[%q] binds %s of type %s: the runner sends only string, int and Date", key, a, f.Type)
+				}
 			}
 		}
 	}
@@ -148,10 +162,21 @@ func checkLeaf(path string, l Leaf) []error {
 		}
 	}
 	for _, p := range e.Params {
+		s, bound := l.Params[p.Name]
+		for _, a := range s.alts {
+			f, ok := argsField(fields, a.field)
+			if !ok || p.Enum == nil {
+				continue
+			}
+			for _, v := range kongEnum(f) {
+				if !slices.Contains(p.Enum, v) {
+					fail("Params[%q] binds %s, whose enum allows %q, which {%s} of %s does not: %s", p.Name, a, v, p.Name, l.Endpoint, strings.Join(p.Enum, ", "))
+				}
+			}
+		}
 		if p.Optional || p.Default != "" {
 			continue
 		}
-		s, bound := l.Params[p.Name]
 		switch {
 		case !bound:
 			fail("placeholder {%s} of %s is required, but Params does not bind it", p.Name, l.Endpoint)
@@ -176,9 +201,9 @@ func checkLeaf(path string, l Leaf) []error {
 			fail("%s is a DELETE: Write needs Confirm", l.Endpoint)
 		}
 		for _, tpl := range []struct{ name, text string }{{"Done", out.Done}, {"Confirm", out.Confirm}} {
-			for _, m := range templateField.FindAllStringSubmatch(tpl.text, -1) {
-				if _, ok := argsField(fields, m[1]); !ok {
-					fail("%s names {%s}, which is not a field of the args struct", tpl.name, m[1])
+			for _, name := range templateFields(tpl.text) {
+				if _, ok := argsField(fields, name); !ok {
+					fail("%s names {%s}, which is not a field of the args struct", tpl.name, name)
 				}
 			}
 		}
@@ -193,8 +218,45 @@ func checkLeaf(path string, l Leaf) []error {
 	return errs
 }
 
-// templateField matches one {Field} of a Done or Confirm template.
-var templateField = regexp.MustCompile(`\{(\w+)\}`)
+func templateFields(text string) []string {
+	var names []string
+	for {
+		open := strings.IndexByte(text, '{')
+		if open < 0 {
+			return names
+		}
+		length := strings.IndexByte(text[open:], '}')
+		if length < 0 {
+			return names
+		}
+		names = append(names, text[open+1:open+length])
+		text = text[open+length+1:]
+	}
+}
+
+func requestValue(v reflect.Value) (value string, ok bool) {
+	switch x := v.Interface().(type) {
+	case string:
+		return x, true
+	case Date:
+		return string(x), true
+	case int:
+		return strconv.Itoa(x), true
+	}
+	return "", false
+}
+
+func kongEnum(f reflect.StructField) []string {
+	tag, ok := f.Tag.Lookup("enum")
+	if !ok {
+		return nil
+	}
+	values := strings.Split(tag, ",")
+	for i, v := range values {
+		values[i] = strings.TrimSpace(v)
+	}
+	return values
+}
 
 // A LateDates field is never empty: resolveDate gives today for "".
 func (s Source) sure(fields reflect.Type, late []string) bool {
@@ -218,8 +280,8 @@ func argsField(t reflect.Type, name string) (reflect.StructField, bool) {
 	return f, ok && f.IsExported()
 }
 
-// alwaysSet reports whether Kong never leaves the field empty. A required
-// field in an xor group may stay empty when the other member is given.
+// Kong lets a required flag in an xor group stay empty when another member
+// of the group is given.
 func alwaysSet(f reflect.StructField) bool {
 	_, arg := f.Tag.Lookup("arg")
 	_, optional := f.Tag.Lookup("optional")
