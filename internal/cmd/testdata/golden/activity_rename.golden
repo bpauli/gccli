@@ -15,6 +15,11 @@ Renamed activity 111 to "Morning Run"
 Renamed activity 111 to "Morning Run"
 -- plain exit --
 0
+-- plain-header stdout --
+-- plain-header stderr --
+Renamed activity 111 to "Morning Run"
+-- plain-header exit --
+0
 -- json stdout --
 {
   "ok": true

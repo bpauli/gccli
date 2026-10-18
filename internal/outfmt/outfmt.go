@@ -20,6 +20,8 @@ const (
 	JSON
 	// Plain outputs TSV/plain text with no alignment.
 	Plain
+	// PlainHeader is Plain with the header row as the first line.
+	PlainHeader
 )
 
 // NewContext stores the output mode in the context.
@@ -50,10 +52,7 @@ func WriteJSON(w io.Writer, v any) error {
 	return enc.Encode(v)
 }
 
-// WriteRows writes rows in the table or plain format of the mode in ctx.
-// Table mode aligns the columns under header, and Plain mode does not write
-// it. Each cell is escaped,
-// so a value never adds a column or a line.
+// WriteRows escapes each cell, so a value never adds a column or a line.
 func WriteRows(ctx context.Context, w io.Writer, header []string, rows [][]string) error {
 	mode := ModeFromContext(ctx)
 	if mode == Plain {
@@ -61,6 +60,9 @@ func WriteRows(ctx context.Context, w io.Writer, header []string, rows [][]strin
 	}
 	if len(header) > 0 {
 		rows = append([][]string{header}, rows...)
+	}
+	if mode == PlainHeader {
+		return writeLines(w, rows)
 	}
 	tw := tabwriter.NewWriter(w, 0, 0, 2, ' ', 0)
 	if err := writeLines(tw, rows); err != nil {

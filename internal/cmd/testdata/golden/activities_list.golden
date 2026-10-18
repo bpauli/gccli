@@ -16,6 +16,13 @@ ID   DATE        TYPE          NAME         DISTANCE  DURATION  CALORIES
 -- plain stderr --
 -- plain exit --
 0
+-- plain-header stdout --
+ID	DATE	TYPE	NAME	DISTANCE	DURATION	CALORIES
+111	2026-10-14	running	Morning Run	10.01 km	50:05	712
+112	2026-10-13	lap_swimming	Pool Swim	1.50 km	33:00	350
+-- plain-header stderr --
+-- plain-header exit --
+0
 -- json stdout --
 [
   {

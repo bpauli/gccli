@@ -79,7 +79,7 @@ func TestWriteJSON(t *testing.T) {
 }
 
 func TestContextRoundTrip(t *testing.T) {
-	for _, mode := range []Mode{Table, JSON, Plain} {
+	for _, mode := range []Mode{Table, JSON, Plain, PlainHeader} {
 		ctx := NewContext(context.Background(), mode)
 		got := ModeFromContext(ctx)
 		if got != mode {
@@ -114,6 +114,9 @@ func TestWriteRows(t *testing.T) {
 		{Table, header, nil, "ID  NAME  STATUS\n"},
 		{Plain, header, rows, "1\talpha\tok\n22\tbeta\tfail\n"},
 		{Plain, header, nil, ""},
+		{PlainHeader, header, rows, "ID\tNAME\tSTATUS\n1\talpha\tok\n22\tbeta\tfail\n"},
+		{PlainHeader, nil, rows, "1\talpha\tok\n22\tbeta\tfail\n"},
+		{PlainHeader, header, nil, "ID\tNAME\tSTATUS\n"},
 	}
 	for _, tt := range tests {
 		if got := writeRows(t, tt.mode, tt.header, tt.rows); got != tt.want {
@@ -141,6 +144,9 @@ func TestWriteRowsEscapes(t *testing.T) {
 		rows := [][]string{{"1", tt.value, "x"}}
 		if got, want := writeRows(t, Plain, nil, rows), "1\t"+tt.want+"\tx\n"; got != want {
 			t.Errorf("plain cell %q = %q, want %q", tt.value, got, want)
+		}
+		if got, want := writeRows(t, PlainHeader, []string{tt.value}, nil), tt.want+"\n"; got != want {
+			t.Errorf("plain header %q = %q, want %q", tt.value, got, want)
 		}
 		width := max(utf8.RuneCountInString(tt.want), len("NAME"))
 		pad := func(s string) string { return s + strings.Repeat(" ", width-utf8.RuneCountInString(s)) }

@@ -22,6 +22,14 @@ ID   NAME                          TYPE     DISTANCE  CREATED
 -- plain stderr --
 -- plain exit --
 0
+-- plain-header stdout --
+ID	NAME	TYPE	DISTANCE	CREATED
+111	Morning Loop	running	5.10 mi	2026-09-01T10:00:00.0
+112	Hill Repeats	cycling	26.10 mi	2026-09-20T10:00:00.0
+113	Tab\there\nNewline\\back\rCR	hiking	0.62 mi	2026-09-21T10:00:00.0
+-- plain-header stderr --
+-- plain-header exit --
+0
 -- json stdout --
 {
   "coursesForUser": [

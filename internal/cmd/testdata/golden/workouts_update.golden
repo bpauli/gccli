@@ -17,6 +17,11 @@ Updated workout 111 from $DIR/workout.json
 Updated workout 111 from $DIR/workout.json
 -- plain exit --
 0
+-- plain-header stdout --
+-- plain-header stderr --
+Updated workout 111 from $DIR/workout.json
+-- plain-header exit --
+0
 -- json stdout --
 {
   "ok": true

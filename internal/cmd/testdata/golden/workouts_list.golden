@@ -14,6 +14,12 @@ ID   NAME   TYPE     OWNER
 -- plain stderr --
 -- plain exit --
 0
+-- plain-header stdout --
+ID	NAME	TYPE	OWNER
+901	Tempo	running	tester
+-- plain-header stderr --
+-- plain-header exit --
+0
 -- json stdout --
 {
   "workouts": [

@@ -16,6 +16,12 @@ SCHEDULE ID  WORKOUT ID  TITLE  SPORT    DATE
 -- plain stderr --
 -- plain exit --
 0
+-- plain-header stdout --
+SCHEDULE ID	WORKOUT ID	TITLE	SPORT	DATE
+10	901	Tempo	running	2026-10-15
+-- plain-header stderr --
+-- plain-header exit --
+0
 -- json stdout --
 [
   {

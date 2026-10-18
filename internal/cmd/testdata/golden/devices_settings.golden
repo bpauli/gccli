@@ -15,6 +15,11 @@ get device settings: garmin api: 404 Not Found: {"message":"Device not found"}
 get device settings: garmin api: 404 Not Found: {"message":"Device not found"}
 -- plain exit --
 4
+-- plain-header stdout --
+-- plain-header stderr --
+get device settings: garmin api: 404 Not Found: {"message":"Device not found"}
+-- plain-header exit --
+4
 -- json stdout --
 -- json stderr --
 {"error":{"code":"not_found","status":404,"message":"get device settings: garmin api: 404 Not Found: {\"message\":\"Device not found\"}"}}

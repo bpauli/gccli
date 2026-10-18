@@ -11,6 +11,11 @@ Removed credentials for test@example.com
 Removed credentials for test@example.com
 -- plain exit --
 0
+-- plain-header stdout --
+-- plain-header stderr --
+Removed credentials for test@example.com
+-- plain-header exit --
+0
 -- json stdout --
 -- json stderr --
 Removed credentials for test@example.com

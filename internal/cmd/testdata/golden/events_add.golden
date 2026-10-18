@@ -19,6 +19,11 @@ Added event "City Race" on 2026-11-01 (ID: 4242)
 Added event "City Race" on 2026-11-01 (ID: 4242)
 -- plain exit --
 0
+-- plain-header stdout --
+-- plain-header stderr --
+Added event "City Race" on 2026-11-01 (ID: 4242)
+-- plain-header exit --
+0
 -- json stdout --
 {
   "id": 4242,

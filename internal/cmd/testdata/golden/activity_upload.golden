@@ -16,6 +16,11 @@ Uploaded $DIR/run.fit
 Uploaded $DIR/run.fit
 -- plain exit --
 0
+-- plain-header stdout --
+-- plain-header stderr --
+Uploaded $DIR/run.fit
+-- plain-header exit --
+0
 -- json stdout --
 {
   "detailedImportResult": {

@@ -16,6 +16,11 @@ Uploaded workout from $DIR/workout.json
 Uploaded workout from $DIR/workout.json
 -- plain exit --
 0
+-- plain-header stdout --
+-- plain-header stderr --
+Uploaded workout from $DIR/workout.json
+-- plain-header exit --
+0
 -- json stdout --
 {
   "workoutId": 902,

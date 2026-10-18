@@ -25,6 +25,7 @@ type goldenMode struct {
 var goldenModes = []goldenMode{
 	{"table", nil},
 	{"plain", []string{"--plain"}},
+	{"plain-header", []string{"--plain", "--header"}},
 	{"json", []string{"--json"}},
 }
 

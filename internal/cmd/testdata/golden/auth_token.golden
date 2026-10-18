@@ -11,6 +11,11 @@ test-access-token
 -- plain stderr --
 -- plain exit --
 0
+-- plain-header stdout --
+test-access-token
+-- plain-header stderr --
+-- plain-header exit --
+0
 -- json stdout --
 test-access-token
 -- json stderr --

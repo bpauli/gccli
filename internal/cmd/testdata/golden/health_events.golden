@@ -18,6 +18,13 @@ events
 -- plain stderr --
 -- plain exit --
 0
+-- plain-header stdout --
+{
+  "value": 1
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
 -- json stdout --
 {
   "value": 1

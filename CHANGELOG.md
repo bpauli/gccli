@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`--header` prints the column names in plain output** - With `--plain`, the first line of a list holds the column names, the same names as the table header. `GCCLI_HEADER=1` does the same. `activity summary` has no column names, so it prints no header line. `--header` without `--plain`, or with `--json`, fails with `--header works only with --plain` and exit code 2. (#99)
+
 ### Changed
 
 - **Table and plain output escape values** - A backslash prints as `\\`, a tab as `\t`, a newline as `\n`, a carriage return as `\r`, a vertical tab as `\v` and a form feed as `\f`. Before, a course or activity name with a tab or a newline split its record into more fields or more lines, and a script that read `--plain` output got the wrong columns. A value that holds a backslash also changes, because the backslash is now doubled. `--json` output does not change. (#99)

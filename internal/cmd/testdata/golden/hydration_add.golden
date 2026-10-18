@@ -16,6 +16,11 @@ Added 250 ml of water on 2026-10-15
 Added 250 ml of water on 2026-10-15
 -- plain exit --
 0
+-- plain-header stdout --
+-- plain-header stderr --
+Added 250 ml of water on 2026-10-15
+-- plain-header exit --
+0
 -- json stdout --
 {
   "ok": true

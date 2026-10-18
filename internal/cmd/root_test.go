@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"cmp"
 	"fmt"
 	"io"
 	"net/http"
@@ -178,6 +179,45 @@ func TestExecute_UsageErrorGoesToStderrWithExitCode2(t *testing.T) {
 	}
 	if !strings.Contains(stderr, "unknown flag --bogus") || !strings.Contains(stderr, "Usage:") {
 		t.Fatalf("stderr = %q, want the error and the usage text", stderr)
+	}
+}
+
+func TestExecute_HeaderWithoutPlainIsUsageError(t *testing.T) {
+	tests := []struct {
+		name string
+		env  map[string]string
+		args []string
+	}{
+		{name: "table", args: []string{"--header"}},
+		{name: "json", args: []string{"--json", "--header"}},
+		{name: "json beats plain", args: []string{"--json", "--plain", "--header"}},
+		{name: "env header", env: map[string]string{"GCCLI_HEADER": "1"}},
+		{name: "env json", env: map[string]string{"GCCLI_JSON": "1"}, args: []string{"--plain", "--header"}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tmp := t.TempDir()
+			t.Setenv("HOME", tmp)
+			t.Setenv("XDG_CONFIG_HOME", tmp)
+			t.Setenv("GCCLI_ACCOUNT", "")
+			for _, k := range []string{"GCCLI_JSON", "GCCLI_PLAIN", "GCCLI_HEADER"} {
+				t.Setenv(k, cmp.Or(tt.env[k], "0"))
+			}
+
+			var code int
+			stdout, stderr := captureOutput(t, func() {
+				code = Execute(append(tt.args, "courses", "list"), "1.0.0", "abc123", "2024-01-01")
+			})
+			if code != 2 {
+				t.Fatalf("exit code = %d, want 2", code)
+			}
+			if stdout != "" {
+				t.Fatalf("stdout = %q, want empty", stdout)
+			}
+			if !strings.Contains(stderr, "gccli: error: --header works only with --plain\n") || !strings.Contains(stderr, "Usage:") {
+				t.Fatalf("stderr = %q, want the --header error and the usage text", stderr)
+			}
+		})
 	}
 }
 

@@ -18,6 +18,14 @@ ID  TYPE KEY  PARENT ID  TRIMMABLE  HIDDEN  RESTRICTED
 -- plain stderr --
 -- plain exit --
 0
+-- plain-header stdout --
+ID	TYPE KEY	PARENT ID	TRIMMABLE	HIDDEN	RESTRICTED
+1	running	17	-	-	-
+2	cycling	17	-	-	-
+17	all	-	-	-	-
+-- plain-header stderr --
+-- plain-header exit --
+0
 -- json stdout --
 [
   {

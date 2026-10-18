@@ -15,6 +15,11 @@ get lifestyle: garmin api: 400 Bad Request: {"message":"Bad Request"}
 get lifestyle: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- plain exit --
 1
+-- plain-header stdout --
+-- plain-header stderr --
+get lifestyle: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
 -- json stdout --
 -- json stderr --
 {"error":{"code":"error","status":400,"message":"get lifestyle: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}

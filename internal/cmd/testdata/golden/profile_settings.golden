@@ -25,6 +25,17 @@ settings
 -- plain stderr --
 -- plain exit --
 0
+-- plain-header stdout --
+{
+  "displayName": "tester",
+  "profileId": 3141592,
+  "userData": {
+    "measurementSystem": "metric"
+  }
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
 -- json stdout --
 {
   "displayName": "tester",

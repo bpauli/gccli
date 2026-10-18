@@ -17,6 +17,11 @@ Exercise sets updated for activity 111
 Exercise sets updated for activity 111
 -- plain exit --
 0
+-- plain-header stdout --
+-- plain-header stderr --
+Exercise sets updated for activity 111
+-- plain-header exit --
+0
 -- json stdout --
 {
   "ok": true

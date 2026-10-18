@@ -13,6 +13,11 @@ count
 -- plain stderr --
 -- plain exit --
 0
+-- plain-header stdout --
+42
+-- plain-header stderr --
+-- plain-header exit --
+0
 -- json stdout --
 {
   "count": 42

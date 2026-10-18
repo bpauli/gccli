@@ -35,6 +35,21 @@ alarms
 -- plain stderr --
 -- plain exit --
 0
+-- plain-header stdout --
+[
+  {
+    "alarmDays": [
+      "MONDAY",
+      "FRIDAY"
+    ],
+    "alarmId": 1,
+    "alarmMode": "ON",
+    "alarmTime": 420
+  }
+]
+-- plain-header stderr --
+-- plain-header exit --
+0
 -- json stdout --
 [
   {

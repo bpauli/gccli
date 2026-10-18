@@ -16,6 +16,11 @@ Changed activity 111 type to running
 Changed activity 111 type to running
 -- plain exit --
 0
+-- plain-header stdout --
+-- plain-header stderr --
+Changed activity 111 type to running
+-- plain-header exit --
+0
 -- json stdout --
 {
   "ok": true

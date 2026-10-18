@@ -14,6 +14,11 @@ Token expired. Run: gccli auth login test@example.com
 Token expired. Run: gccli auth login test@example.com
 -- plain exit --
 3
+-- plain-header stdout --
+-- plain-header stderr --
+Token expired. Run: gccli auth login test@example.com
+-- plain-header exit --
+3
 -- json stdout --
 -- json stderr --
 {"error":{"code":"auth_required","status":401,"message":"Token expired. Run: gccli auth login test@example.com"}}

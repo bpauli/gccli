@@ -223,7 +223,8 @@ gccli activities list
 
 - Default: human-friendly tables on stdout.
 - `--json` / `-j`: JSON on stdout (best for scripting).
-- `--plain`: tab-separated values on stdout, with no header row. Only these commands print TSV: `activities list`, `activities search`, `activities types`, `activity summary`, `courses list`, `courses favorites`, `courses import`, `events list`, `workouts list`, `workouts schedule list` and `exercises list` (without `--category`). Most other commands that return data print the same JSON in all modes, also without `--json`. `activities count` prints a single number. Use `--json` when a script parses the output.
+- `--plain`: tab-separated values on stdout, with no header row unless you add `--header`. Only these commands print TSV: `activities list`, `activities search`, `activities types`, `activity summary`, `courses list`, `courses favorites`, `courses import`, `events list`, `workouts list`, `workouts schedule list` and `exercises list` (without `--category`). Most other commands that return data print the same JSON in all modes, also without `--json`. `activities count` prints a single number. Use `--json` when a script parses the output.
+- `--header`: with `--plain`, the first line holds the column names. `activity summary` has no column names, so it prints no header line. `--header` without `--plain`, or with `--json`, is a usage error (exit code 2).
 - Table and `--plain` output escape the characters that would break a row or a column. A backslash prints as `\\`, a tab as `\t`, a newline as `\n`, a carriage return as `\r`, a vertical tab as `\v` and a form feed as `\f`. So each record is one line, and in `--plain` output only real tabs separate the fields. `--json` output does not change.
 - Write commands (the commands that add, create, upload, import, update, set, rename, retype, schedule, send, link, unlink, remove or delete data in Garmin Connect) all follow one rule:
   - With `--json`, they print the Garmin response on stdout, indented like all JSON output. When Garmin sends an empty response, they print `{"ok": true}`.
@@ -308,6 +309,7 @@ Example:
 | `GCCLI_DOMAIN` | Garmin domain (`garmin.com` or `garmin.cn`) |
 | `GCCLI_JSON` | Enable JSON output (`1`, `true`, `yes`) |
 | `GCCLI_PLAIN` | Enable plain/TSV output (`1`, `true`, `yes`) |
+| `GCCLI_HEADER` | Print the column names as the first line of plain output (`1`, `true`, `yes`) |
 | `GCCLI_COLOR` | Color mode: `auto`, `always`, `never` |
 | `GCCLI_UNITS` | Unit system: `auto`, `metric`, `statute_us`, `statute_uk` (see [Units](#units)) |
 | `GCCLI_KEYRING_BACKEND` | Keyring backend: `keychain`, `secret-service`, `file` |
@@ -1122,13 +1124,21 @@ gccli --json activities list --limit 100 | jq '.[] | select(.activityType.typeKe
 
 ### Plain (TSV)
 
-Tab-separated values with no header row. A tab, newline or backslash in a value is escaped (see [Output](#output)), so each record is one line. Only the commands listed under [Output](#output) print TSV. Most other commands print JSON, also with `--plain`.
+Tab-separated values with no header row. Add `--header` to print the column names first. A tab, newline or backslash in a value is escaped (see [Output](#output)), so each record is one line. Only the commands listed under [Output](#output) print TSV. Most other commands print JSON, also with `--plain`.
 
 ```bash
 $ gccli --plain activities list --limit 3
 123456789	2024-06-15	running	Morning Run	10.02 km	52:31	712
 123456780	2024-06-14	walking	Evening Walk	3.10 km	38:05	180
 123456771	2024-06-13	cycling	Cycling Workout	42.50 km	1:25:10	950
+```
+
+```bash
+$ gccli --plain --header courses list
+ID	NAME	TYPE	DISTANCE	CREATED
+111	Morning Loop	running	5.10 mi	2026-09-01T10:00:00.0
+112	Hill Repeats	cycling	26.10 mi	2026-09-20T10:00:00.0
+113	Tab\there\nNewline\\back\rCR	hiking	0.62 mi	2026-09-21T10:00:00.0
 ```
 
 ## Examples
@@ -1177,6 +1187,7 @@ All commands support these flags:
 | `--account <email>` | Account to use (overrides `GCCLI_ACCOUNT` and config default) |
 | `--json`, `-j` | Output JSON to stdout |
 | `--plain` | Output TSV to stdout (only some commands, see [Output](#output)) |
+| `--header` | With `--plain`, print the column names as the first line |
 | `--color <mode>` | Color mode: `auto`, `always`, `never` (default: `auto`) |
 | `--units <system>` | Unit system for table and plain output: `auto`, `metric`, `statute_us`, `statute_uk` (default: `auto`, from the Garmin profile) |
 | `--version` | Print version information |

@@ -16,6 +16,11 @@ Delete event 111? [y/N]: Deleted event 111
 Delete event 111? [y/N]: Deleted event 111
 -- plain exit --
 0
+-- plain-header stdout --
+-- plain-header stderr --
+Delete event 111? [y/N]: Deleted event 111
+-- plain-header exit --
+0
 -- json stdout --
 {
   "deleted": true

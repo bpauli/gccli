@@ -18,6 +18,11 @@ Created workout "Tempo" (ID: 9)
 Created workout "Tempo" (ID: 9)
 -- plain exit --
 0
+-- plain-header stdout --
+-- plain-header stderr --
+Created workout "Tempo" (ID: 9)
+-- plain-header exit --
+0
 -- json stdout --
 {
   "workoutId": 9

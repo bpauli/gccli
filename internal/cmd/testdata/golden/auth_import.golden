@@ -12,6 +12,11 @@ Imported credentials for other@example.com (domain: garmin.com)
 Imported credentials for other@example.com (domain: garmin.com)
 -- plain exit --
 0
+-- plain-header stdout --
+-- plain-header stderr --
+Imported credentials for other@example.com (domain: garmin.com)
+-- plain-header exit --
+0
 -- json stdout --
 -- json stderr --
 Imported credentials for other@example.com (domain: garmin.com)

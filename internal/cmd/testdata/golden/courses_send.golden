@@ -17,6 +17,11 @@ Sent course "Morning Loop" to device Forerunner 265 (message 888)
 Sent course "Morning Loop" to device Forerunner 265 (message 888)
 -- plain exit --
 0
+-- plain-header stdout --
+-- plain-header stderr --
+Sent course "Morning Loop" to device Forerunner 265 (message 888)
+-- plain-header exit --
+0
 -- json stdout --
 [
   {

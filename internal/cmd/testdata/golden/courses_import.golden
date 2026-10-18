@@ -23,6 +23,13 @@ Importing route.gpx...
 Importing route.gpx...
 -- plain exit --
 0
+-- plain-header stdout --
+ID	NAME	DISTANCE	ELEV GAIN	ELEV LOSS
+999	route	10.00 km	150 m	140 m
+-- plain-header stderr --
+Importing route.gpx...
+-- plain-header exit --
+0
 -- json stdout --
 {
   "courseId": 999,
