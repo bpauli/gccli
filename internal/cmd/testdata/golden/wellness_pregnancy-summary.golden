@@ -10,6 +10,8 @@ pregnancy-summary
 -- table stderr --
 -- table exit --
 0
+-- table requests --
+GET /periodichealth-service/pregnancy/summary
 -- plain stdout --
 {
   "value": 1
@@ -17,6 +19,8 @@ pregnancy-summary
 -- plain stderr --
 -- plain exit --
 0
+-- plain requests --
+GET /periodichealth-service/pregnancy/summary
 -- plain-header stdout --
 {
   "value": 1
@@ -24,6 +28,8 @@ pregnancy-summary
 -- plain-header stderr --
 -- plain-header exit --
 0
+-- plain-header requests --
+GET /periodichealth-service/pregnancy/summary
 -- json stdout --
 {
   "value": 1
@@ -31,3 +37,5 @@ pregnancy-summary
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+GET /periodichealth-service/pregnancy/summary

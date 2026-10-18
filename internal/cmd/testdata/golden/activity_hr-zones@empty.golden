@@ -1,0 +1,33 @@
+-- args --
+activity
+hr-zones
+111
+-- route GET /activity-service/activity/111/hrTimeInZones 204 --
+-- table stdout --
+null
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /activity-service/activity/111/hrTimeInZones
+-- plain stdout --
+null
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /activity-service/activity/111/hrTimeInZones
+-- plain-header stdout --
+null
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /activity-service/activity/111/hrTimeInZones
+-- json stdout --
+null
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /activity-service/activity/111/hrTimeInZones

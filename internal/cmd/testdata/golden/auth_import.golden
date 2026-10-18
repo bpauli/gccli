@@ -7,18 +7,22 @@ eyJvYXV0aDJfYWNjZXNzX3Rva2VuIjoiaW1wb3J0ZWQtYWNjZXNzLXRva2VuIiwib2F1dGgyX2V4cGly
 Imported credentials for other@example.com (domain: garmin.com)
 -- table exit --
 0
+-- table requests --
 -- plain stdout --
 -- plain stderr --
 Imported credentials for other@example.com (domain: garmin.com)
 -- plain exit --
 0
+-- plain requests --
 -- plain-header stdout --
 -- plain-header stderr --
 Imported credentials for other@example.com (domain: garmin.com)
 -- plain-header exit --
 0
+-- plain-header requests --
 -- json stdout --
 -- json stderr --
 Imported credentials for other@example.com (domain: garmin.com)
 -- json exit --
 0
+-- json requests --

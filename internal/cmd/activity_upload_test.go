@@ -35,27 +35,7 @@ func uploadTestServer(t *testing.T) *httptest.Server {
 
 // --- Execute-level tests ---
 
-func TestExecute_ActivityUploadHelp(t *testing.T) {
-	code := Execute([]string{"activity", "upload", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
 // --- ActivityUploadCmd tests ---
-
-func TestActivityUpload_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &ActivityUploadCmd{File: "test.fit"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestActivityUpload_FIT(t *testing.T) {
 	server := uploadTestServer(t)

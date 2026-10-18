@@ -9,17 +9,23 @@ ID   NAME          TYPE     DISTANCE  CREATED
 -- table stderr --
 -- table exit --
 0
+-- table requests --
+GET /course-service/course/favorites
 -- plain stdout --
 111	Morning Loop	running	8.20 km	2026-09-01T10:00:00.0
 -- plain stderr --
 -- plain exit --
 0
+-- plain requests --
+GET /course-service/course/favorites
 -- plain-header stdout --
 ID	NAME	TYPE	DISTANCE	CREATED
 111	Morning Loop	running	8.20 km	2026-09-01T10:00:00.0
 -- plain-header stderr --
 -- plain-header exit --
 0
+-- plain-header requests --
+GET /course-service/course/favorites
 -- json stdout --
 [
   {
@@ -35,3 +41,5 @@ ID	NAME	TYPE	DISTANCE	CREATED
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+GET /course-service/course/favorites

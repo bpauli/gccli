@@ -1,0 +1,33 @@
+-- args --
+activities
+search
+--start=2026-10-01
+-- route GET /activitylist-service/activities/search/activities?start=0&limit=20&startDate=2026-10-01 204 --
+-- table stdout --
+-- table stderr --
+parse activities: unexpected end of JSON input
+-- table exit --
+1
+-- table requests --
+GET /activitylist-service/activities/search/activities?start=0&limit=20&startDate=2026-10-01
+-- plain stdout --
+-- plain stderr --
+parse activities: unexpected end of JSON input
+-- plain exit --
+1
+-- plain requests --
+GET /activitylist-service/activities/search/activities?start=0&limit=20&startDate=2026-10-01
+-- plain-header stdout --
+-- plain-header stderr --
+parse activities: unexpected end of JSON input
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /activitylist-service/activities/search/activities?start=0&limit=20&startDate=2026-10-01
+-- json stdout --
+null
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /activitylist-service/activities/search/activities?start=0&limit=20&startDate=2026-10-01

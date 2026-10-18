@@ -10,6 +10,7 @@ import (
 	"maps"
 	"net/http"
 	"path/filepath"
+	"reflect"
 	"slices"
 	"strconv"
 	"strings"
@@ -202,6 +203,37 @@ func TestCallUnknownName(t *testing.T) {
 	_, err := client.Call(context.Background(), "goals.lsit", nil, nil)
 	if err == nil || err.Error() != "endpoint goals.lsit: not in the endpoint table" {
 		t.Errorf("err = %v", err)
+	}
+}
+
+func TestDescribe(t *testing.T) {
+	e, ok := Describe("activities.list")
+	if !ok || e.Method != http.MethodGet {
+		t.Fatalf("Describe(activities.list) = %+v, %v", e, ok)
+	}
+	want := []Param{{Name: "start"}, {Name: "limit"}, {Name: "activityType", Optional: true}}
+	if !reflect.DeepEqual(e.Params, want) {
+		t.Errorf("Params = %+v, want %+v", e.Params, want)
+	}
+	if _, ok := Describe("goals.lsit"); ok {
+		t.Error("Describe(goals.lsit) = ok")
+	}
+}
+
+func TestDescribeReturnsACopy(t *testing.T) {
+	e, ok := Describe("goals.list")
+	if !ok || len(e.Params) != 1 || len(e.Params[0].Enum) == 0 {
+		t.Fatalf("Describe(goals.list) = %+v, %v", e, ok)
+	}
+	e.Params[0].Enum[0] = "MUTATED"
+
+	_, client := testServer(t, http.HandlerFunc(func(_ http.ResponseWriter, r *http.Request) {
+		t.Errorf("request sent: %s", r.URL.RequestURI())
+	}))
+	_, err := client.Call(context.Background(), "goals.list", map[string]string{"status": "MUTATED"}, nil)
+	want := `endpoint goals.list: status: "MUTATED" is not one of active, future, past`
+	if err == nil || err.Error() != want {
+		t.Errorf("Call after a mutated Describe: err = %v, want %q", err, want)
 	}
 }
 

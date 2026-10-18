@@ -13,6 +13,9 @@ hr
 -- table stderr --
 -- table exit --
 0
+-- table requests --
+GET /userprofile-service/userprofile/settings
+GET /wellness-service/wellness/dailyHeartRate/tester?date=2026-10-15
 -- plain stdout --
 {
   "value": 1
@@ -20,6 +23,9 @@ hr
 -- plain stderr --
 -- plain exit --
 0
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+GET /wellness-service/wellness/dailyHeartRate/tester?date=2026-10-15
 -- plain-header stdout --
 {
   "value": 1
@@ -27,6 +33,9 @@ hr
 -- plain-header stderr --
 -- plain-header exit --
 0
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /wellness-service/wellness/dailyHeartRate/tester?date=2026-10-15
 -- json stdout --
 {
   "value": 1
@@ -34,3 +43,6 @@ hr
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+GET /userprofile-service/userprofile/settings
+GET /wellness-service/wellness/dailyHeartRate/tester?date=2026-10-15

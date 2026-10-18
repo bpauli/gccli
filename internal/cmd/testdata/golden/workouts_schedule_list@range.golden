@@ -1,0 +1,83 @@
+-- args --
+workouts
+schedule
+list
+--start
+2026-10-01
+--end
+2026-10-15
+-- route GET /calendar-service/year/2026/month/9/day/1/start/0 --
+{"calendarItems":[{"id":20,"itemType":"workout","title":"Before","sportTypeKey":"running","date":"2026-09-30","workoutId":900},{"id":21,"itemType":"workout","title":"Tempo","sportTypeKey":"running","date":"2026-10-02","workoutId":901},{"id":22,"itemType":"activity","title":"Morning Run","date":"2026-10-03"}]}
+-- route GET /calendar-service/year/2026/month/9/day/8/start/0 --
+{"calendarItems":[{"id":21,"itemType":"workout","title":"Tempo","sportTypeKey":"running","date":"2026-10-02","workoutId":901},{"id":23,"itemType":"workout","title":"Intervals","sportTypeKey":"running","date":"2026-10-09","workoutId":902}]}
+-- route GET /calendar-service/year/2026/month/9/day/15/start/0 --
+{"calendarItems":[{"id":24,"itemType":"workout","title":"Long Ride","sportTypeKey":"cycling","date":"2026-10-15","workoutId":903},{"id":25,"itemType":"workout","title":"After","sportTypeKey":"running","date":"2026-10-16","workoutId":904}]}
+-- table stdout --
+SCHEDULE ID  WORKOUT ID  TITLE      SPORT    DATE
+21           901         Tempo      running  2026-10-02
+23           902         Intervals  running  2026-10-09
+24           903         Long Ride  cycling  2026-10-15
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /calendar-service/year/2026/month/9/day/1/start/0
+GET /calendar-service/year/2026/month/9/day/8/start/0
+GET /calendar-service/year/2026/month/9/day/15/start/0
+-- plain stdout --
+21	901	Tempo	running	2026-10-02
+23	902	Intervals	running	2026-10-09
+24	903	Long Ride	cycling	2026-10-15
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /calendar-service/year/2026/month/9/day/1/start/0
+GET /calendar-service/year/2026/month/9/day/8/start/0
+GET /calendar-service/year/2026/month/9/day/15/start/0
+-- plain-header stdout --
+SCHEDULE ID	WORKOUT ID	TITLE	SPORT	DATE
+21	901	Tempo	running	2026-10-02
+23	902	Intervals	running	2026-10-09
+24	903	Long Ride	cycling	2026-10-15
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /calendar-service/year/2026/month/9/day/1/start/0
+GET /calendar-service/year/2026/month/9/day/8/start/0
+GET /calendar-service/year/2026/month/9/day/15/start/0
+-- json stdout --
+[
+  {
+    "date": "2026-10-02",
+    "id": 21,
+    "itemType": "workout",
+    "sportTypeKey": "running",
+    "title": "Tempo",
+    "workoutId": 901
+  },
+  {
+    "date": "2026-10-09",
+    "id": 23,
+    "itemType": "workout",
+    "sportTypeKey": "running",
+    "title": "Intervals",
+    "workoutId": 902
+  },
+  {
+    "date": "2026-10-15",
+    "id": 24,
+    "itemType": "workout",
+    "sportTypeKey": "cycling",
+    "title": "Long Ride",
+    "workoutId": 903
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /calendar-service/year/2026/month/9/day/1/start/0
+GET /calendar-service/year/2026/month/9/day/8/start/0
+GET /calendar-service/year/2026/month/9/day/15/start/0

@@ -1,0 +1,48 @@
+-- args --
+workouts
+list
+-- route GET /workout-service/workouts?start=0&limit=20 --
+{"results":[{"workoutId":901,"workoutName":"Tempo","sportType":{"sportTypeKey":"running"},"owner":{"displayName":"tester"}}]}
+-- table stdout --
+ID   NAME   TYPE     OWNER
+901  Tempo  running  tester
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /workout-service/workouts?start=0&limit=20
+-- plain stdout --
+901	Tempo	running	tester
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /workout-service/workouts?start=0&limit=20
+-- plain-header stdout --
+ID	NAME	TYPE	OWNER
+901	Tempo	running	tester
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /workout-service/workouts?start=0&limit=20
+-- json stdout --
+{
+  "results": [
+    {
+      "workoutId": 901,
+      "workoutName": "Tempo",
+      "sportType": {
+        "sportTypeKey": "running"
+      },
+      "owner": {
+        "displayName": "tester"
+      }
+    }
+  ]
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /workout-service/workouts?start=0&limit=20

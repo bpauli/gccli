@@ -10,6 +10,8 @@ badge
 -- table stderr --
 -- table exit --
 0
+-- table requests --
+GET /badge-service/badge/challenges
 -- plain stdout --
 {
   "value": 1
@@ -17,6 +19,8 @@ badge
 -- plain stderr --
 -- plain exit --
 0
+-- plain requests --
+GET /badge-service/badge/challenges
 -- plain-header stdout --
 {
   "value": 1
@@ -24,6 +28,8 @@ badge
 -- plain-header stderr --
 -- plain-header exit --
 0
+-- plain-header requests --
+GET /badge-service/badge/challenges
 -- json stdout --
 {
   "value": 1
@@ -31,3 +37,5 @@ badge
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+GET /badge-service/badge/challenges

@@ -11,16 +11,25 @@ fit
 Uploaded $DIR/run.fit
 -- table exit --
 0
+-- table requests --
+POST /upload-service/upload
+  part "file" file "run.fit" 4 bytes sha256 245f96285b109ccf
 -- plain stdout --
 -- plain stderr --
 Uploaded $DIR/run.fit
 -- plain exit --
 0
+-- plain requests --
+POST /upload-service/upload
+  part "file" file "run.fit" 4 bytes sha256 245f96285b109ccf
 -- plain-header stdout --
 -- plain-header stderr --
 Uploaded $DIR/run.fit
 -- plain-header exit --
 0
+-- plain-header requests --
+POST /upload-service/upload
+  part "file" file "run.fit" 4 bytes sha256 245f96285b109ccf
 -- json stdout --
 {
   "detailedImportResult": {
@@ -30,3 +39,6 @@ Uploaded $DIR/run.fit
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+POST /upload-service/upload
+  part "file" file "run.fit" 4 bytes sha256 245f96285b109ccf

@@ -1,0 +1,61 @@
+-- args --
+workouts
+schedule
+list
+--start
+2026-10-01
+--end
+2026-10-15
+-- route GET /calendar-service/year/2026/month/9/day/1/start/0 --
+{"items":[{"id":21,"itemType":"workout","title":"Tempo","sportTypeKey":"running","date":"2026-10-02","workoutId":901}]}
+-- route GET /calendar-service/year/2026/month/9/day/8/start/0 --
+{"calendarItems":[{"id":23,"itemType":"workout","title":"Intervals","sportTypeKey":"running","date":"2026-10-09","workoutId":902}]}
+-- route GET /calendar-service/year/2026/month/9/day/15/start/0 --
+{}
+-- table stdout --
+SCHEDULE ID  WORKOUT ID  TITLE      SPORT    DATE
+23           902         Intervals  running  2026-10-09
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /calendar-service/year/2026/month/9/day/1/start/0
+GET /calendar-service/year/2026/month/9/day/8/start/0
+GET /calendar-service/year/2026/month/9/day/15/start/0
+-- plain stdout --
+23	902	Intervals	running	2026-10-09
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /calendar-service/year/2026/month/9/day/1/start/0
+GET /calendar-service/year/2026/month/9/day/8/start/0
+GET /calendar-service/year/2026/month/9/day/15/start/0
+-- plain-header stdout --
+SCHEDULE ID	WORKOUT ID	TITLE	SPORT	DATE
+23	902	Intervals	running	2026-10-09
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /calendar-service/year/2026/month/9/day/1/start/0
+GET /calendar-service/year/2026/month/9/day/8/start/0
+GET /calendar-service/year/2026/month/9/day/15/start/0
+-- json stdout --
+[
+  {
+    "date": "2026-10-09",
+    "id": 23,
+    "itemType": "workout",
+    "sportTypeKey": "running",
+    "title": "Intervals",
+    "workoutId": 902
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /calendar-service/year/2026/month/9/day/1/start/0
+GET /calendar-service/year/2026/month/9/day/8/start/0
+GET /calendar-service/year/2026/month/9/day/15/start/0

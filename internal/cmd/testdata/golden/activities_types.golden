@@ -11,6 +11,8 @@ ID  TYPE KEY  PARENT ID  TRIMMABLE  HIDDEN  RESTRICTED
 -- table stderr --
 -- table exit --
 0
+-- table requests --
+GET /activity-service/activity/activityTypes
 -- plain stdout --
 1	running	17	-	-	-
 2	cycling	17	-	-	-
@@ -18,6 +20,8 @@ ID  TYPE KEY  PARENT ID  TRIMMABLE  HIDDEN  RESTRICTED
 -- plain stderr --
 -- plain exit --
 0
+-- plain requests --
+GET /activity-service/activity/activityTypes
 -- plain-header stdout --
 ID	TYPE KEY	PARENT ID	TRIMMABLE	HIDDEN	RESTRICTED
 1	running	17	-	-	-
@@ -26,6 +30,8 @@ ID	TYPE KEY	PARENT ID	TRIMMABLE	HIDDEN	RESTRICTED
 -- plain-header stderr --
 -- plain-header exit --
 0
+-- plain-header requests --
+GET /activity-service/activity/activityTypes
 -- json stdout --
 [
   {
@@ -46,3 +52,5 @@ ID	TYPE KEY	PARENT ID	TRIMMABLE	HIDDEN	RESTRICTED
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+GET /activity-service/activity/activityTypes

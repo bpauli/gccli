@@ -39,41 +39,7 @@ func modifyTestServer(t *testing.T) *httptest.Server {
 
 // --- Execute-level tests ---
 
-func TestExecute_ActivityRenameHelp(t *testing.T) {
-	code := Execute([]string{"activity", "rename", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_ActivityRetypeHelp(t *testing.T) {
-	code := Execute([]string{"activity", "retype", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_ActivityDeleteHelp(t *testing.T) {
-	code := Execute([]string{"activity", "delete", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
 // --- ActivityRenameCmd tests ---
-
-func TestActivityRename_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &ActivityRenameCmd{ID: "12345678", Name: "New Name"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestActivityRename_Success(t *testing.T) {
 	server := modifyTestServer(t)
@@ -121,19 +87,6 @@ func TestActivityRename_InvalidID(t *testing.T) {
 }
 
 // --- ActivityRetypeCmd tests ---
-
-func TestActivityRetype_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &ActivityRetypeCmd{ID: "12345678", TypeID: 1, TypeKey: "running"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestActivityRetype_Success(t *testing.T) {
 	server := modifyTestServer(t)
@@ -200,19 +153,6 @@ func TestActivityRetype_VerifyPayload(t *testing.T) {
 }
 
 // --- ActivityDeleteCmd tests ---
-
-func TestActivityDelete_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &ActivityDeleteCmd{ID: "12345678", Force: true}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestActivityDelete_Success(t *testing.T) {
 	server := modifyTestServer(t)

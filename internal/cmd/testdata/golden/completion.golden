@@ -212,6 +212,7 @@ complete -F _gccli_completions gccli
 -- table stderr --
 -- table exit --
 0
+-- table requests --
 -- plain stdout --
 #!/bin/bash
 # bash completion for gccli
@@ -423,6 +424,7 @@ complete -F _gccli_completions gccli
 -- plain stderr --
 -- plain exit --
 0
+-- plain requests --
 -- plain-header stdout --
 #!/bin/bash
 # bash completion for gccli
@@ -634,6 +636,7 @@ complete -F _gccli_completions gccli
 -- plain-header stderr --
 -- plain-header exit --
 0
+-- plain-header requests --
 -- json stdout --
 #!/bin/bash
 # bash completion for gccli
@@ -845,3 +848,4 @@ complete -F _gccli_completions gccli
 -- json stderr --
 -- json exit --
 0
+-- json requests --

@@ -28,6 +28,7 @@ Flags:
 gccli: error: expected "<id>"
 -- table exit --
 2
+-- table requests --
 -- plain stdout --
 -- plain stderr --
 Usage: gccli training plan <id>
@@ -54,6 +55,7 @@ Flags:
 gccli: error: expected "<id>"
 -- plain exit --
 2
+-- plain requests --
 -- plain-header stdout --
 -- plain-header stderr --
 Usage: gccli training plan <id>
@@ -80,6 +82,7 @@ Flags:
 gccli: error: expected "<id>"
 -- plain-header exit --
 2
+-- plain-header requests --
 -- json stdout --
 -- json stderr --
 Usage: gccli training plan <id>
@@ -106,3 +109,4 @@ Flags:
 gccli: error: expected "<id>"
 -- json exit --
 2
+-- json requests --

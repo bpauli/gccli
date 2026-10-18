@@ -12,6 +12,8 @@ blood-pressure
 -- table stderr --
 -- table exit --
 0
+-- table requests --
+GET /bloodpressure-service/bloodpressure/range/2026-10-01/2026-10-01?includeAll=true
 -- plain stdout --
 {
   "value": 1
@@ -19,6 +21,8 @@ blood-pressure
 -- plain stderr --
 -- plain exit --
 0
+-- plain requests --
+GET /bloodpressure-service/bloodpressure/range/2026-10-01/2026-10-01?includeAll=true
 -- plain-header stdout --
 {
   "value": 1
@@ -26,6 +30,8 @@ blood-pressure
 -- plain-header stderr --
 -- plain-header exit --
 0
+-- plain-header requests --
+GET /bloodpressure-service/bloodpressure/range/2026-10-01/2026-10-01?includeAll=true
 -- json stdout --
 {
   "value": 1
@@ -33,3 +39,5 @@ blood-pressure
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+GET /bloodpressure-service/bloodpressure/range/2026-10-01/2026-10-01?includeAll=true

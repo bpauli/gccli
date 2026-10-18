@@ -16,16 +16,85 @@ swimming
 Created activity 21234567890
 -- table exit --
 0
+-- table requests --
+POST /activity-service/activity
+  {
+    "accessControlRuleDTO": {
+      "typeId": 2,
+      "typeKey": "private"
+    },
+    "activityName": "Swim",
+    "activityTypeDTO": {
+      "typeKey": "swimming"
+    },
+    "metadataDTO": {
+      "autoCalcCalories": true
+    },
+    "summaryDTO": {
+      "distance": 0,
+      "duration": 1800,
+      "startTimeLocal": "2026-10-15T07:30:00.000"
+    },
+    "timeZoneUnitDTO": {
+      "unitKey": "UTC"
+    }
+  }
 -- plain stdout --
 -- plain stderr --
 Created activity 21234567890
 -- plain exit --
 0
+-- plain requests --
+POST /activity-service/activity
+  {
+    "accessControlRuleDTO": {
+      "typeId": 2,
+      "typeKey": "private"
+    },
+    "activityName": "Swim",
+    "activityTypeDTO": {
+      "typeKey": "swimming"
+    },
+    "metadataDTO": {
+      "autoCalcCalories": true
+    },
+    "summaryDTO": {
+      "distance": 0,
+      "duration": 1800,
+      "startTimeLocal": "2026-10-15T07:30:00.000"
+    },
+    "timeZoneUnitDTO": {
+      "unitKey": "UTC"
+    }
+  }
 -- plain-header stdout --
 -- plain-header stderr --
 Created activity 21234567890
 -- plain-header exit --
 0
+-- plain-header requests --
+POST /activity-service/activity
+  {
+    "accessControlRuleDTO": {
+      "typeId": 2,
+      "typeKey": "private"
+    },
+    "activityName": "Swim",
+    "activityTypeDTO": {
+      "typeKey": "swimming"
+    },
+    "metadataDTO": {
+      "autoCalcCalories": true
+    },
+    "summaryDTO": {
+      "distance": 0,
+      "duration": 1800,
+      "startTimeLocal": "2026-10-15T07:30:00.000"
+    },
+    "timeZoneUnitDTO": {
+      "unitKey": "UTC"
+    }
+  }
 -- json stdout --
 {
   "activityId": 21234567890,
@@ -34,3 +103,26 @@ Created activity 21234567890
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+POST /activity-service/activity
+  {
+    "accessControlRuleDTO": {
+      "typeId": 2,
+      "typeKey": "private"
+    },
+    "activityName": "Swim",
+    "activityTypeDTO": {
+      "typeKey": "swimming"
+    },
+    "metadataDTO": {
+      "autoCalcCalories": true
+    },
+    "summaryDTO": {
+      "distance": 0,
+      "duration": 1800,
+      "startTimeLocal": "2026-10-15T07:30:00.000"
+    },
+    "timeZoneUnitDTO": {
+      "unitKey": "UTC"
+    }
+  }

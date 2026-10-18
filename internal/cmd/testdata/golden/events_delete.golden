@@ -11,16 +11,22 @@ y
 Delete event 111? [y/N]: Deleted event 111
 -- table exit --
 0
+-- table requests --
+DELETE /calendar-service/event/111
 -- plain stdout --
 -- plain stderr --
 Delete event 111? [y/N]: Deleted event 111
 -- plain exit --
 0
+-- plain requests --
+DELETE /calendar-service/event/111
 -- plain-header stdout --
 -- plain-header stderr --
 Delete event 111? [y/N]: Deleted event 111
 -- plain-header exit --
 0
+-- plain-header requests --
+DELETE /calendar-service/event/111
 -- json stdout --
 {
   "deleted": true
@@ -29,3 +35,5 @@ Delete event 111? [y/N]: Deleted event 111
 Delete event 111? [y/N]: 
 -- json exit --
 0
+-- json requests --
+DELETE /calendar-service/event/111

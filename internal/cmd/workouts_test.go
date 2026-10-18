@@ -110,97 +110,7 @@ func workoutsTestServer(t *testing.T) *httptest.Server {
 
 // --- Execute-level tests ---
 
-func TestExecute_WorkoutsHelp(t *testing.T) {
-	code := Execute([]string{"workouts", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_WorkoutsListHelp(t *testing.T) {
-	code := Execute([]string{"workouts", "list", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_WorkoutsDetailHelp(t *testing.T) {
-	code := Execute([]string{"workouts", "detail", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_WorkoutsDownloadHelp(t *testing.T) {
-	code := Execute([]string{"workouts", "download", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_WorkoutsUploadHelp(t *testing.T) {
-	code := Execute([]string{"workouts", "upload", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_WorkoutsUpdateHelp(t *testing.T) {
-	code := Execute([]string{"workouts", "update", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_WorkoutsScheduleHelp(t *testing.T) {
-	code := Execute([]string{"workouts", "schedule", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_WorkoutsScheduleAddHelp(t *testing.T) {
-	code := Execute([]string{"workouts", "schedule", "add", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_WorkoutsScheduleListHelp(t *testing.T) {
-	code := Execute([]string{"workouts", "schedule", "list", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_WorkoutsScheduleRemoveHelp(t *testing.T) {
-	code := Execute([]string{"workouts", "schedule", "remove", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_WorkoutsDeleteHelp(t *testing.T) {
-	code := Execute([]string{"workouts", "delete", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
 // --- WorkoutsListCmd tests ---
-
-func TestWorkoutsList_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &WorkoutsListCmd{Pagination: Pagination{Limit: 20}}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestWorkoutsList_Table(t *testing.T) {
 	server := workoutsTestServer(t)
@@ -258,19 +168,6 @@ func TestWorkoutsList_Plain(t *testing.T) {
 
 // --- WorkoutDetailCmd tests ---
 
-func TestWorkoutDetail_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &WorkoutDetailCmd{ID: "42"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
-
 func TestWorkoutDetail_Success(t *testing.T) {
 	server := workoutsTestServer(t)
 	defer server.Close()
@@ -290,19 +187,6 @@ func TestWorkoutDetail_Success(t *testing.T) {
 }
 
 // --- WorkoutDownloadCmd tests ---
-
-func TestWorkoutDownload_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &WorkoutDownloadCmd{ID: "42"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestWorkoutDownload_Success(t *testing.T) {
 	server := workoutsTestServer(t)
@@ -396,24 +280,6 @@ func TestWorkoutDownload_ServerError(t *testing.T) {
 
 // --- WorkoutUploadCmd tests ---
 
-func TestWorkoutUpload_NoAccount(t *testing.T) {
-	tmpFile := filepath.Join(t.TempDir(), "workout.json")
-	if err := os.WriteFile(tmpFile, []byte(`{}`), 0o644); err != nil {
-		t.Fatalf("write temp file: %v", err)
-	}
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &WorkoutUploadCmd{File: tmpFile}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
-
 func TestWorkoutUpload_Success(t *testing.T) {
 	server := workoutsTestServer(t)
 	defer server.Close()
@@ -468,19 +334,6 @@ func TestWorkoutUpload_InvalidJSON(t *testing.T) {
 }
 
 // --- WorkoutScheduleAddCmd tests ---
-
-func TestWorkoutScheduleAdd_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &WorkoutScheduleAddCmd{ID: "77", Date: "2026-02-12"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestWorkoutScheduleAdd_Success(t *testing.T) {
 	server := workoutsTestServer(t)
@@ -587,19 +440,6 @@ func TestWorkoutScheduleList_InvalidDate(t *testing.T) {
 		t.Fatal("expected error, got nil")
 	}
 	if !strings.Contains(err.Error(), "invalid date") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
-
-func TestWorkoutScheduleList_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &WorkoutScheduleListCmd{Date: "2026-02-12"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
 		t.Fatalf("unexpected error: %v", err)
 	}
 }
@@ -772,33 +612,7 @@ func TestWorkoutScheduleRemove_ConfirmYes(t *testing.T) {
 	}
 }
 
-func TestWorkoutScheduleRemove_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &WorkoutScheduleRemoveCmd{ID: "123", Force: true}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
-
 // --- WorkoutDeleteCmd tests ---
-
-func TestWorkoutDelete_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &WorkoutDeleteCmd{ID: "42", Force: true}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestWorkoutDelete_Success(t *testing.T) {
 	server := workoutsTestServer(t)
@@ -1122,24 +936,6 @@ func TestWorkoutOwner(t *testing.T) {
 }
 
 // --- WorkoutUpdateCmd tests ---
-
-func TestWorkoutUpdate_NoAccount(t *testing.T) {
-	tmpFile := filepath.Join(t.TempDir(), "workout.json")
-	if err := os.WriteFile(tmpFile, []byte(`{}`), 0o644); err != nil {
-		t.Fatalf("write temp file: %v", err)
-	}
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &WorkoutUpdateCmd{ID: "42", File: tmpFile}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestWorkoutUpdate_Success(t *testing.T) {
 	server := workoutsTestServer(t)

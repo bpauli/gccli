@@ -12,16 +12,22 @@ y
 Remove scheduled workout 111? [y/N]: Removed scheduled workout 111
 -- table exit --
 0
+-- table requests --
+DELETE /workout-service/schedule/111
 -- plain stdout --
 -- plain stderr --
 Remove scheduled workout 111? [y/N]: Removed scheduled workout 111
 -- plain exit --
 0
+-- plain requests --
+DELETE /workout-service/schedule/111
 -- plain-header stdout --
 -- plain-header stderr --
 Remove scheduled workout 111? [y/N]: Removed scheduled workout 111
 -- plain-header exit --
 0
+-- plain-header requests --
+DELETE /workout-service/schedule/111
 -- json stdout --
 {
   "deleted": true
@@ -30,3 +36,5 @@ Remove scheduled workout 111? [y/N]: Removed scheduled workout 111
 Remove scheduled workout 111? [y/N]: 
 -- json exit --
 0
+-- json requests --
+DELETE /workout-service/schedule/111

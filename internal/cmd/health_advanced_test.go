@@ -99,146 +99,7 @@ func healthAdvancedTestServer(t *testing.T) *httptest.Server {
 
 // --- Execute-level help tests ---
 
-func TestExecute_HealthSPO2Help(t *testing.T) {
-	code := Execute([]string{"health", "spo2", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_HealthHRVHelp(t *testing.T) {
-	code := Execute([]string{"health", "hrv", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_HealthBodyBatteryHelp(t *testing.T) {
-	code := Execute([]string{"health", "body-battery", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_HealthBodyBatteryRangeHelp(t *testing.T) {
-	code := Execute([]string{"health", "body-battery", "range", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_HealthIntensityMinutesHelp(t *testing.T) {
-	code := Execute([]string{"health", "intensity-minutes", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_HealthIntensityMinutesWeeklyHelp(t *testing.T) {
-	code := Execute([]string{"health", "intensity-minutes", "weekly", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_HealthTrainingReadinessHelp(t *testing.T) {
-	code := Execute([]string{"health", "training-readiness", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_HealthTrainingStatusHelp(t *testing.T) {
-	code := Execute([]string{"health", "training-status", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_HealthFitnessAgeHelp(t *testing.T) {
-	code := Execute([]string{"health", "fitness-age", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_HealthMaxMetricsHelp(t *testing.T) {
-	code := Execute([]string{"health", "max-metrics", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_HealthLactateThresholdHelp(t *testing.T) {
-	code := Execute([]string{"health", "lactate-threshold", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_HealthCyclingFTPHelp(t *testing.T) {
-	code := Execute([]string{"health", "cycling-ftp", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_HealthRacePredictionsHelp(t *testing.T) {
-	code := Execute([]string{"health", "race-predictions", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_HealthRacePredictionsRangeHelp(t *testing.T) {
-	code := Execute([]string{"health", "race-predictions", "range", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_HealthEnduranceScoreHelp(t *testing.T) {
-	code := Execute([]string{"health", "endurance-score", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_HealthHillScoreHelp(t *testing.T) {
-	code := Execute([]string{"health", "hill-score", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_HealthEventsHelp(t *testing.T) {
-	code := Execute([]string{"health", "events", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_HealthLifestyleHelp(t *testing.T) {
-	code := Execute([]string{"health", "lifestyle", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
 // --- HealthSPO2Cmd tests ---
-
-func TestHealthSPO2_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &HealthSPO2Cmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestHealthSPO2_Success(t *testing.T) {
 	server := healthAdvancedTestServer(t)
@@ -260,16 +121,6 @@ func TestHealthSPO2_Success(t *testing.T) {
 
 // --- HealthHRVCmd tests ---
 
-func TestHealthHRV_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &HealthHRVCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-}
-
 func TestHealthHRV_Success(t *testing.T) {
 	server := healthAdvancedTestServer(t)
 	defer server.Close()
@@ -290,16 +141,6 @@ func TestHealthHRV_Success(t *testing.T) {
 
 // --- HealthBodyBatteryCmd tests ---
 
-func TestHealthBodyBattery_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &HealthBodyBatteryViewCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-}
-
 func TestHealthBodyBattery_Success(t *testing.T) {
 	server := healthAdvancedTestServer(t)
 	defer server.Close()
@@ -315,16 +156,6 @@ func TestHealthBodyBattery_Success(t *testing.T) {
 	err := cmd.Run(g)
 	if err != nil {
 		t.Fatalf("expected no error, got: %v", err)
-	}
-}
-
-func TestHealthBodyBatteryRange_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &HealthBodyBatteryRangeCmd{StartDate: "2024-06-01", EndDate: "2024-06-15"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
 	}
 }
 
@@ -364,16 +195,6 @@ func TestHealthBodyBatteryRange_Success(t *testing.T) {
 
 // --- HealthIntensityMinutesCmd tests ---
 
-func TestHealthIntensityMinutes_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &HealthIntensityMinutesViewCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-}
-
 func TestHealthIntensityMinutes_Success(t *testing.T) {
 	server := healthAdvancedTestServer(t)
 	defer server.Close()
@@ -389,16 +210,6 @@ func TestHealthIntensityMinutes_Success(t *testing.T) {
 	err := cmd.Run(g)
 	if err != nil {
 		t.Fatalf("expected no error, got: %v", err)
-	}
-}
-
-func TestHealthIntensityMinutesWeekly_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &HealthIntensityMinutesWeeklyCmd{StartDate: "2024-06-01", EndDate: "2024-06-15"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
 	}
 }
 
@@ -436,16 +247,6 @@ func TestHealthIntensityMinutesWeekly_Success(t *testing.T) {
 
 // --- HealthTrainingReadinessCmd tests ---
 
-func TestHealthTrainingReadiness_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &HealthTrainingReadinessCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-}
-
 func TestHealthTrainingReadiness_Success(t *testing.T) {
 	server := healthAdvancedTestServer(t)
 	defer server.Close()
@@ -465,16 +266,6 @@ func TestHealthTrainingReadiness_Success(t *testing.T) {
 }
 
 // --- HealthTrainingStatusCmd tests ---
-
-func TestHealthTrainingStatus_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &HealthTrainingStatusCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-}
 
 func TestHealthTrainingStatus_Success(t *testing.T) {
 	server := healthAdvancedTestServer(t)
@@ -496,16 +287,6 @@ func TestHealthTrainingStatus_Success(t *testing.T) {
 
 // --- HealthFitnessAgeCmd tests ---
 
-func TestHealthFitnessAge_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &HealthFitnessAgeCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-}
-
 func TestHealthFitnessAge_Success(t *testing.T) {
 	server := healthAdvancedTestServer(t)
 	defer server.Close()
@@ -525,16 +306,6 @@ func TestHealthFitnessAge_Success(t *testing.T) {
 }
 
 // --- HealthMaxMetricsCmd tests ---
-
-func TestHealthMaxMetrics_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &HealthMaxMetricsCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-}
 
 func TestHealthMaxMetrics_Success(t *testing.T) {
 	server := healthAdvancedTestServer(t)
@@ -556,16 +327,6 @@ func TestHealthMaxMetrics_Success(t *testing.T) {
 
 // --- HealthLactateThresholdCmd tests ---
 
-func TestHealthLactateThreshold_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &HealthLactateThresholdCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-}
-
 func TestHealthLactateThreshold_Success(t *testing.T) {
 	server := healthAdvancedTestServer(t)
 	defer server.Close()
@@ -585,16 +346,6 @@ func TestHealthLactateThreshold_Success(t *testing.T) {
 }
 
 // --- HealthCyclingFTPCmd tests ---
-
-func TestHealthCyclingFTP_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &HealthCyclingFTPCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-}
 
 func TestHealthCyclingFTP_Success(t *testing.T) {
 	server := healthAdvancedTestServer(t)
@@ -616,16 +367,6 @@ func TestHealthCyclingFTP_Success(t *testing.T) {
 
 // --- HealthRacePredictionsCmd tests ---
 
-func TestHealthRacePredictions_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &HealthRacePredictionsViewCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-}
-
 func TestHealthRacePredictions_Success(t *testing.T) {
 	server := healthAdvancedTestServer(t)
 	defer server.Close()
@@ -641,16 +382,6 @@ func TestHealthRacePredictions_Success(t *testing.T) {
 	err := cmd.Run(g)
 	if err != nil {
 		t.Fatalf("expected no error, got: %v", err)
-	}
-}
-
-func TestHealthRacePredictionsRange_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &HealthRacePredictionsRangeCmd{StartDate: "2024-06-01", EndDate: "2024-06-15"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
 	}
 }
 
@@ -691,16 +422,6 @@ func TestHealthRacePredictionsRange_Success(t *testing.T) {
 
 // --- HealthEnduranceScoreCmd tests ---
 
-func TestHealthEnduranceScore_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &HealthEnduranceScoreCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-}
-
 func TestHealthEnduranceScore_Success(t *testing.T) {
 	server := healthAdvancedTestServer(t)
 	defer server.Close()
@@ -721,16 +442,6 @@ func TestHealthEnduranceScore_Success(t *testing.T) {
 
 // --- HealthHillScoreCmd tests ---
 
-func TestHealthHillScore_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &HealthHillScoreCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-}
-
 func TestHealthHillScore_Success(t *testing.T) {
 	server := healthAdvancedTestServer(t)
 	defer server.Close()
@@ -750,16 +461,6 @@ func TestHealthHillScore_Success(t *testing.T) {
 }
 
 // --- HealthEventsCmd tests ---
-
-func TestHealthEvents_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &HealthEventsCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-}
 
 func TestHealthEvents_Success(t *testing.T) {
 	server := healthAdvancedTestServer(t)
@@ -811,16 +512,6 @@ func TestHealthEvents_WithDate(t *testing.T) {
 }
 
 // --- HealthLifestyleCmd tests ---
-
-func TestHealthLifestyle_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &HealthLifestyleCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-}
 
 func TestHealthLifestyle_Success(t *testing.T) {
 	server := healthAdvancedTestServer(t)

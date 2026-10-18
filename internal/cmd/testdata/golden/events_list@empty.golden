@@ -1,0 +1,32 @@
+-- args --
+events
+list
+-- route GET /calendar-service/events?startDate=2026-10-15&pageIndex=1&limit=20&sortOrder=eventDate_asc 204 --
+-- table stdout --
+-- table stderr --
+parse events: unexpected end of JSON input
+-- table exit --
+1
+-- table requests --
+GET /calendar-service/events?startDate=2026-10-15&pageIndex=1&limit=20&sortOrder=eventDate_asc
+-- plain stdout --
+-- plain stderr --
+parse events: unexpected end of JSON input
+-- plain exit --
+1
+-- plain requests --
+GET /calendar-service/events?startDate=2026-10-15&pageIndex=1&limit=20&sortOrder=eventDate_asc
+-- plain-header stdout --
+-- plain-header stderr --
+parse events: unexpected end of JSON input
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /calendar-service/events?startDate=2026-10-15&pageIndex=1&limit=20&sortOrder=eventDate_asc
+-- json stdout --
+null
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /calendar-service/events?startDate=2026-10-15&pageIndex=1&limit=20&sortOrder=eventDate_asc

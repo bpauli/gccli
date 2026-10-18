@@ -117,48 +117,7 @@ func storeTestTokens(t *testing.T, store *secrets.Store, email string, tokens *g
 
 // --- Execute-level tests (command parsing) ---
 
-func TestExecute_AuthLoginHelp(t *testing.T) {
-	code := Execute([]string{"auth", "login", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_AuthStatusHelp(t *testing.T) {
-	code := Execute([]string{"auth", "status", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_AuthRemoveHelp(t *testing.T) {
-	code := Execute([]string{"auth", "remove", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_AuthTokenHelp(t *testing.T) {
-	code := Execute([]string{"auth", "token", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
 // --- AuthStatusCmd tests ---
-
-func TestAuthStatus_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &AuthStatusCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestAuthStatus_NotFound(t *testing.T) {
 	store := newTestSecretsStore(t)
@@ -214,19 +173,6 @@ func TestAuthStatus_Expired(t *testing.T) {
 
 // --- AuthRemoveCmd tests ---
 
-func TestAuthRemove_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &AuthRemoveCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
-
 func TestAuthRemove_NotFound(t *testing.T) {
 	store := newTestSecretsStore(t)
 	overrideLoadSecrets(t, store)
@@ -269,19 +215,6 @@ func TestAuthRemove_Success(t *testing.T) {
 }
 
 // --- AuthTokenCmd tests ---
-
-func TestAuthToken_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &AuthTokenCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestAuthToken_NotFound(t *testing.T) {
 	store := newTestSecretsStore(t)

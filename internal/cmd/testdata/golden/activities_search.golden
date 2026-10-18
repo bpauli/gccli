@@ -10,17 +10,23 @@ ID   DATE        TYPE     NAME         DISTANCE  DURATION  CALORIES
 -- table stderr --
 -- table exit --
 0
+-- table requests --
+GET /activitylist-service/activities/search/activities?start=0&limit=20&startDate=2026-10-01
 -- plain stdout --
 111	2026-10-14	running	Morning Run	10.01 km	50:05	712
 -- plain stderr --
 -- plain exit --
 0
+-- plain requests --
+GET /activitylist-service/activities/search/activities?start=0&limit=20&startDate=2026-10-01
 -- plain-header stdout --
 ID	DATE	TYPE	NAME	DISTANCE	DURATION	CALORIES
 111	2026-10-14	running	Morning Run	10.01 km	50:05	712
 -- plain-header stderr --
 -- plain-header exit --
 0
+-- plain-header requests --
+GET /activitylist-service/activities/search/activities?start=0&limit=20&startDate=2026-10-01
 -- json stdout --
 [
   {
@@ -38,3 +44,5 @@ ID	DATE	TYPE	NAME	DISTANCE	DURATION	CALORIES
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+GET /activitylist-service/activities/search/activities?start=0&limit=20&startDate=2026-10-01

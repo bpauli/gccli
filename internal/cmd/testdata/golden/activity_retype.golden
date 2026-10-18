@@ -11,16 +11,46 @@ retype
 Changed activity 111 type to running
 -- table exit --
 0
+-- table requests --
+PUT /activity-service/activity/111
+  {
+    "activityId": 111,
+    "activityTypeDTO": {
+      "parentTypeId": 0,
+      "typeId": 1,
+      "typeKey": "running"
+    }
+  }
 -- plain stdout --
 -- plain stderr --
 Changed activity 111 type to running
 -- plain exit --
 0
+-- plain requests --
+PUT /activity-service/activity/111
+  {
+    "activityId": 111,
+    "activityTypeDTO": {
+      "parentTypeId": 0,
+      "typeId": 1,
+      "typeKey": "running"
+    }
+  }
 -- plain-header stdout --
 -- plain-header stderr --
 Changed activity 111 type to running
 -- plain-header exit --
 0
+-- plain-header requests --
+PUT /activity-service/activity/111
+  {
+    "activityId": 111,
+    "activityTypeDTO": {
+      "parentTypeId": 0,
+      "typeId": 1,
+      "typeKey": "running"
+    }
+  }
 -- json stdout --
 {
   "ok": true
@@ -28,3 +58,13 @@ Changed activity 111 type to running
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+PUT /activity-service/activity/111
+  {
+    "activityId": 111,
+    "activityTypeDTO": {
+      "parentTypeId": 0,
+      "typeId": 1,
+      "typeKey": "running"
+    }
+  }

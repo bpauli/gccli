@@ -10,16 +10,22 @@ abc-123
 Linked gear abc-123 to activity 111
 -- table exit --
 0
+-- table requests --
+PUT /gear-service/gear/link/abc-123/activity/111
 -- plain stdout --
 -- plain stderr --
 Linked gear abc-123 to activity 111
 -- plain exit --
 0
+-- plain requests --
+PUT /gear-service/gear/link/abc-123/activity/111
 -- plain-header stdout --
 -- plain-header stderr --
 Linked gear abc-123 to activity 111
 -- plain-header exit --
 0
+-- plain-header requests --
+PUT /gear-service/gear/link/abc-123/activity/111
 -- json stdout --
 {
   "ok": true
@@ -27,3 +33,5 @@ Linked gear abc-123 to activity 111
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+PUT /gear-service/gear/link/abc-123/activity/111
