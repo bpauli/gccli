@@ -22,4 +22,9 @@ var wellnessGroup = Group{Name: "wellness", Help: "View wellness data.", Childre
 		Verb:     "get menstrual cycle summary", Output: JSON{},
 	},
 	Leaf{Name: "pregnancy-summary", Help: "Show pregnancy summary.", Endpoint: "wellness.pregnancy-summary", Verb: "get pregnancy summary", Output: JSON{}},
+	wellnessJetLagGroup,
+}}
+
+var wellnessJetLagGroup = Group{Name: "jet-lag", Help: "View jet lag trips.", Children: []Node{
+	Leaf{Name: "list", Help: "List jet lag trips.", Default: true, Endpoint: "wellness.jet-lag-trips", Verb: "get jet lag trips", Output: JSON{}},
 }}
