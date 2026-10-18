@@ -145,7 +145,7 @@ type handCLI struct {
 		} `cmd:"" default:"withargs" help:"List goals."`
 	} `cmd:"" help:"View goals."`
 	Health struct {
-		Sleep HealthSleepCmd `cmd:"" help:"Show sleep data."`
+		Sleep handHealthSleep `cmd:"" help:"Show sleep data."`
 	} `cmd:"" help:"View health data."`
 	Devices struct {
 		Solar DeviceSolarCmd `cmd:"" help:"Show solar charging data for a device."`
@@ -162,6 +162,10 @@ type handCLI struct {
 		Delete CourseDeleteCmd `cmd:"" help:"Delete a course."`
 	} `cmd:"" help:"Manage courses."`
 	Completion CompletionCmd `cmd:"" help:"Generate shell completion script."`
+}
+
+type handHealthSleep struct {
+	Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
 }
 
 type handActivitiesList struct {

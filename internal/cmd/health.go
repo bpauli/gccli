@@ -15,14 +15,68 @@ import (
 var nowFn = time.Now
 
 var healthGroup = Group{Name: "health", Help: "View health data.", Children: []Node{
-	Custom{Name: "summary", Help: "Show daily health summary.", Default: true, Cmd: &HealthSummaryCmd{}},
+	Leaf{
+		Name: "summary", Help: "Show daily health summary.", Default: true,
+		Spec: argsOf(&struct {
+			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+		}{}),
+		Endpoint: "health.daily-summary",
+		Params:   Params{"displayName": DisplayName, "date": In("Date")},
+		Verb:     "get daily summary", Output: JSON{},
+		LateDates: []string{"Date"},
+	},
 	healthStepsGroup,
-	Custom{Name: "hr", Help: "Show heart rate data.", Cmd: &HealthHRCmd{}},
-	Custom{Name: "rhr", Help: "Show resting heart rate data.", Cmd: &HealthRHRCmd{}},
-	Custom{Name: "floors", Help: "Show floors climbed data.", Cmd: &HealthFloorsCmd{}},
-	Custom{Name: "sleep", Help: "Show sleep data.", Cmd: &HealthSleepCmd{}},
+	Leaf{
+		Name: "hr", Help: "Show heart rate data.",
+		Spec: argsOf(&struct {
+			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+		}{}),
+		Endpoint: "health.heart-rate",
+		Params:   Params{"displayName": DisplayName, "date": In("Date")},
+		Verb:     "get heart rate", Output: JSON{},
+		LateDates: []string{"Date"},
+	},
+	Leaf{
+		Name: "rhr", Help: "Show resting heart rate data.",
+		Spec: argsOf(&struct {
+			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+		}{}),
+		Endpoint: "health.resting-heart-rate",
+		Params:   Params{"displayName": DisplayName, "date": In("Date")},
+		Verb:     "get resting heart rate", Output: JSON{},
+		LateDates: []string{"Date"},
+	},
+	Leaf{
+		Name: "floors", Help: "Show floors climbed data.",
+		Spec: argsOf(&struct {
+			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+		}{}),
+		Endpoint: "health.floors",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get floors", Output: JSON{},
+		LateDates: []string{"Date"},
+	},
+	Leaf{
+		Name: "sleep", Help: "Show sleep data.",
+		Spec: argsOf(&struct {
+			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+		}{}),
+		Endpoint: "health.sleep",
+		Params:   Params{"displayName": DisplayName, "date": In("Date")},
+		Verb:     "get sleep", Output: JSON{},
+		LateDates: []string{"Date"},
+	},
 	healthStressGroup,
-	Custom{Name: "respiration", Help: "Show respiration data.", Cmd: &HealthRespirationCmd{}},
+	Leaf{
+		Name: "respiration", Help: "Show respiration data.",
+		Spec: argsOf(&struct {
+			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+		}{}),
+		Endpoint: "health.respiration",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get respiration", Output: JSON{},
+		LateDates: []string{"Date"},
+	},
 	Custom{Name: "spo2", Help: "Show SpO2 (blood oxygen) data.", Cmd: &HealthSPO2Cmd{}},
 	Custom{Name: "hrv", Help: "Show heart rate variability data.", Cmd: &HealthHRVCmd{}},
 	healthBodyBatteryGroup,
@@ -40,298 +94,61 @@ var healthGroup = Group{Name: "health", Help: "View health data.", Children: []N
 	Custom{Name: "lifestyle", Help: "Show lifestyle logging data.", Cmd: &HealthLifestyleCmd{}},
 }}
 
-// HealthSummaryCmd shows the daily health summary.
-type HealthSummaryCmd struct {
-	Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
-}
-
-func (c *HealthSummaryCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	date, err := resolveDate(c.Date)
-	if err != nil {
-		return err
-	}
-
-	displayName, err := resolveDisplayName(g, client)
-	if err != nil {
-		return err
-	}
-	data, err := client.Call(g.Context, "health.daily-summary", map[string]string{"displayName": displayName, "date": date}, nil)
-	if err != nil {
-		return fmt.Errorf("get daily summary: %w", err)
-	}
-
-	return writeHealthJSON(g, data)
-}
-
 var healthStepsGroup = Group{Name: "steps", Help: "Show step data.", Children: []Node{
-	Custom{Name: "view", Help: "Show step chart data for a date.", Default: true, Cmd: &HealthStepsViewCmd{}},
-	Custom{Name: "daily", Help: "Show daily step totals for a date range.", Cmd: &HealthStepsDailyCmd{}},
-	Custom{Name: "weekly", Help: "Show weekly step totals.", Cmd: &HealthStepsWeeklyCmd{}},
+	Leaf{
+		Name: "view", Help: "Show step chart data for a date.", Default: true,
+		Spec: argsOf(&struct {
+			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+		}{}),
+		Endpoint: "health.steps",
+		Params:   Params{"displayName": DisplayName, "date": In("Date")},
+		Verb:     "get steps", Output: JSON{},
+		LateDates: []string{"Date"},
+	},
+	Leaf{
+		Name: "daily", Help: "Show daily step totals for a date range.",
+		Spec: argsOf(&struct {
+			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+			EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
+		}{}),
+		Endpoint: "health.daily-steps",
+		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
+		Verb:     "get daily steps", Output: JSON{},
+	},
+	Leaf{
+		Name: "weekly", Help: "Show weekly step totals.",
+		Spec: argsOf(&struct {
+			EndDate Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"end"`
+			Weeks   int  `help:"Number of weeks." default:"4" name:"weeks"`
+		}{}),
+		Endpoint: "health.weekly-steps",
+		Params:   Params{"endDate": In("EndDate").Or(Today), "weeks": In("Weeks")},
+		Verb:     "get weekly steps", Output: JSON{},
+	},
 }}
-
-// HealthStepsViewCmd shows step chart data for a date.
-type HealthStepsViewCmd struct {
-	Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
-}
-
-func (c *HealthStepsViewCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	date, err := resolveDate(c.Date)
-	if err != nil {
-		return err
-	}
-
-	displayName, err := resolveDisplayName(g, client)
-	if err != nil {
-		return err
-	}
-	data, err := client.Call(g.Context, "health.steps", map[string]string{"displayName": displayName, "date": date}, nil)
-	if err != nil {
-		return fmt.Errorf("get steps: %w", err)
-	}
-
-	return writeHealthJSON(g, data)
-}
-
-// HealthStepsDailyCmd shows daily step totals for a date range.
-type HealthStepsDailyCmd struct {
-	StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
-	EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
-}
-
-func (c *HealthStepsDailyCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.Call(g.Context, "health.daily-steps", map[string]string{"startDate": string(c.StartDate), "endDate": string(c.EndDate)}, nil)
-	if err != nil {
-		return fmt.Errorf("get daily steps: %w", err)
-	}
-
-	return writeHealthJSON(g, data)
-}
-
-// HealthStepsWeeklyCmd shows weekly step totals.
-type HealthStepsWeeklyCmd struct {
-	EndDate Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"end"`
-	Weeks   int  `help:"Number of weeks." default:"4" name:"weeks"`
-}
-
-func (c *HealthStepsWeeklyCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	endDate := string(c.EndDate)
-	if endDate == "" {
-		endDate = nowFn().Format("2006-01-02")
-	}
-
-	data, err := client.Call(g.Context, "health.weekly-steps", map[string]string{"endDate": endDate, "weeks": strconv.Itoa(c.Weeks)}, nil)
-	if err != nil {
-		return fmt.Errorf("get weekly steps: %w", err)
-	}
-
-	return writeHealthJSON(g, data)
-}
-
-// HealthHRCmd shows heart rate data for a date.
-type HealthHRCmd struct {
-	Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
-}
-
-func (c *HealthHRCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	date, err := resolveDate(c.Date)
-	if err != nil {
-		return err
-	}
-
-	displayName, err := resolveDisplayName(g, client)
-	if err != nil {
-		return err
-	}
-	data, err := client.Call(g.Context, "health.heart-rate", map[string]string{"displayName": displayName, "date": date}, nil)
-	if err != nil {
-		return fmt.Errorf("get heart rate: %w", err)
-	}
-
-	return writeHealthJSON(g, data)
-}
-
-// HealthRHRCmd shows resting heart rate data for a date.
-type HealthRHRCmd struct {
-	Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
-}
-
-func (c *HealthRHRCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	date, err := resolveDate(c.Date)
-	if err != nil {
-		return err
-	}
-
-	displayName, err := resolveDisplayName(g, client)
-	if err != nil {
-		return err
-	}
-	data, err := client.Call(g.Context, "health.resting-heart-rate", map[string]string{"displayName": displayName, "date": date}, nil)
-	if err != nil {
-		return fmt.Errorf("get resting heart rate: %w", err)
-	}
-
-	return writeHealthJSON(g, data)
-}
-
-// HealthFloorsCmd shows floors climbed data for a date.
-type HealthFloorsCmd struct {
-	Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
-}
-
-func (c *HealthFloorsCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	date, err := resolveDate(c.Date)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.Call(g.Context, "health.floors", map[string]string{"date": date}, nil)
-	if err != nil {
-		return fmt.Errorf("get floors: %w", err)
-	}
-
-	return writeHealthJSON(g, data)
-}
-
-// HealthSleepCmd shows sleep data for a date.
-type HealthSleepCmd struct {
-	Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
-}
-
-func (c *HealthSleepCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	date, err := resolveDate(c.Date)
-	if err != nil {
-		return err
-	}
-
-	displayName, err := resolveDisplayName(g, client)
-	if err != nil {
-		return err
-	}
-	data, err := client.Call(g.Context, "health.sleep", map[string]string{"displayName": displayName, "date": date}, nil)
-	if err != nil {
-		return fmt.Errorf("get sleep: %w", err)
-	}
-
-	return writeHealthJSON(g, data)
-}
 
 var healthStressGroup = Group{Name: "stress", Help: "Show stress data.", Children: []Node{
-	Custom{Name: "view", Help: "Show stress data for a date.", Default: true, Cmd: &HealthStressViewCmd{}},
-	Custom{Name: "weekly", Help: "Show weekly stress data.", Cmd: &HealthStressWeeklyCmd{}},
+	Leaf{
+		Name: "view", Help: "Show stress data for a date.", Default: true,
+		Spec: argsOf(&struct {
+			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+		}{}),
+		Endpoint: "health.stress",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get stress", Output: JSON{},
+		LateDates: []string{"Date"},
+	},
+	Leaf{
+		Name: "weekly", Help: "Show weekly stress data.",
+		Spec: argsOf(&struct {
+			EndDate Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"end"`
+			Weeks   int  `help:"Number of weeks." default:"4" name:"weeks"`
+		}{}),
+		Endpoint: "health.weekly-stress",
+		Params:   Params{"endDate": In("EndDate").Or(Today), "weeks": In("Weeks")},
+		Verb:     "get weekly stress", Output: JSON{},
+	},
 }}
-
-// HealthStressViewCmd shows stress data for a date.
-type HealthStressViewCmd struct {
-	Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
-}
-
-func (c *HealthStressViewCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	date, err := resolveDate(c.Date)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.Call(g.Context, "health.stress", map[string]string{"date": date}, nil)
-	if err != nil {
-		return fmt.Errorf("get stress: %w", err)
-	}
-
-	return writeHealthJSON(g, data)
-}
-
-// HealthStressWeeklyCmd shows weekly stress data.
-type HealthStressWeeklyCmd struct {
-	EndDate Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"end"`
-	Weeks   int  `help:"Number of weeks." default:"4" name:"weeks"`
-}
-
-func (c *HealthStressWeeklyCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	endDate := string(c.EndDate)
-	if endDate == "" {
-		endDate = nowFn().Format("2006-01-02")
-	}
-
-	data, err := client.Call(g.Context, "health.weekly-stress", map[string]string{"endDate": endDate, "weeks": strconv.Itoa(c.Weeks)}, nil)
-	if err != nil {
-		return fmt.Errorf("get weekly stress: %w", err)
-	}
-
-	return writeHealthJSON(g, data)
-}
-
-// HealthRespirationCmd shows respiration data for a date.
-type HealthRespirationCmd struct {
-	Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
-}
-
-func (c *HealthRespirationCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	date, err := resolveDate(c.Date)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.Call(g.Context, "health.respiration", map[string]string{"date": date}, nil)
-	if err != nil {
-		return fmt.Errorf("get respiration: %w", err)
-	}
-
-	return writeHealthJSON(g, data)
-}
 
 // writeHealthJSON writes health data as JSON output.
 // Health endpoints return complex nested JSON, so we always output JSON

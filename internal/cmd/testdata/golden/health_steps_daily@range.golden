@@ -1,0 +1,74 @@
+-- args --
+health
+steps
+daily
+--start
+2026-10-01
+--end
+2026-10-10
+-- route GET /usersummary-service/stats/steps/daily/2026-10-01/2026-10-10 --
+[{"calendarDate":"2026-10-01","totalSteps":8500},{"calendarDate":"2026-10-10","totalSteps":9100}]
+-- table stdout --
+[
+  {
+    "calendarDate": "2026-10-01",
+    "totalSteps": 8500
+  },
+  {
+    "calendarDate": "2026-10-10",
+    "totalSteps": 9100
+  }
+]
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /usersummary-service/stats/steps/daily/2026-10-01/2026-10-10
+-- plain stdout --
+[
+  {
+    "calendarDate": "2026-10-01",
+    "totalSteps": 8500
+  },
+  {
+    "calendarDate": "2026-10-10",
+    "totalSteps": 9100
+  }
+]
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /usersummary-service/stats/steps/daily/2026-10-01/2026-10-10
+-- plain-header stdout --
+[
+  {
+    "calendarDate": "2026-10-01",
+    "totalSteps": 8500
+  },
+  {
+    "calendarDate": "2026-10-10",
+    "totalSteps": 9100
+  }
+]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /usersummary-service/stats/steps/daily/2026-10-01/2026-10-10
+-- json stdout --
+[
+  {
+    "calendarDate": "2026-10-01",
+    "totalSteps": 8500
+  },
+  {
+    "calendarDate": "2026-10-10",
+    "totalSteps": 9100
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /usersummary-service/stats/steps/daily/2026-10-01/2026-10-10
