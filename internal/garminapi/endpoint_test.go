@@ -220,6 +220,23 @@ func TestDescribe(t *testing.T) {
 	}
 }
 
+func TestDescribeReturnsACopy(t *testing.T) {
+	e, ok := Describe("goals.list")
+	if !ok || len(e.Params) != 1 || len(e.Params[0].Enum) == 0 {
+		t.Fatalf("Describe(goals.list) = %+v, %v", e, ok)
+	}
+	e.Params[0].Enum[0] = "MUTATED"
+
+	_, client := testServer(t, http.HandlerFunc(func(_ http.ResponseWriter, r *http.Request) {
+		t.Errorf("request sent: %s", r.URL.RequestURI())
+	}))
+	_, err := client.Call(context.Background(), "goals.list", map[string]string{"status": "MUTATED"}, nil)
+	want := `endpoint goals.list: status: "MUTATED" is not one of active, future, past`
+	if err == nil || err.Error() != want {
+		t.Errorf("Call after a mutated Describe: err = %v, want %q", err, want)
+	}
+}
+
 func TestCallReturnsAPIErrors(t *testing.T) {
 	_, client := testServer(t, http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
