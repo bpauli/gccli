@@ -1,0 +1,30 @@
+-- args --
+courses
+list
+--units
+auto
+-- route GET /web-gateway/course/owner/ --
+{"courses":[{"courseId":111,"courseName":"Morning Loop"}]}
+-- route GET /userprofile-service/userprofile/user-settings --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"statute_us"}}
+-- table stdout --
+ID  NAME  TYPE  DISTANCE  CREATED
+-- table stderr --
+-- table exit --
+0
+-- plain stdout --
+-- plain stderr --
+-- plain exit --
+0
+-- json stdout --
+{
+  "courses": [
+    {
+      "courseId": 111,
+      "courseName": "Morning Loop"
+    }
+  ]
+}
+-- json stderr --
+-- json exit --
+0

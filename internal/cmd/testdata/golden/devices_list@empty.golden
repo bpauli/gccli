@@ -1,0 +1,19 @@
+-- args --
+devices
+list
+-- route GET /device-service/deviceregistration/devices 204 --
+-- table stdout --
+{}
+-- table stderr --
+-- table exit --
+0
+-- plain stdout --
+{}
+-- plain stderr --
+-- plain exit --
+0
+-- json stdout --
+{}
+-- json stderr --
+-- json exit --
+0

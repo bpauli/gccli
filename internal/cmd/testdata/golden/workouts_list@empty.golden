@@ -1,0 +1,19 @@
+-- args --
+workouts
+list
+-- route GET /workout-service/workouts?start=0&limit=20 204 --
+-- table stdout --
+-- table stderr --
+parse workouts: unexpected end of JSON input
+-- table exit --
+1
+-- plain stdout --
+-- plain stderr --
+parse workouts: unexpected end of JSON input
+-- plain exit --
+1
+-- json stdout --
+null
+-- json stderr --
+-- json exit --
+0

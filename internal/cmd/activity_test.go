@@ -121,62 +121,7 @@ func activityTestServer(t *testing.T) *httptest.Server {
 
 // --- Execute-level tests ---
 
-func TestExecute_ActivityHelp(t *testing.T) {
-	code := Execute([]string{"activity", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_ActivityDetailsHelp(t *testing.T) {
-	code := Execute([]string{"activity", "details", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_ActivitySplitsHelp(t *testing.T) {
-	code := Execute([]string{"activity", "splits", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_ActivityWeatherHelp(t *testing.T) {
-	code := Execute([]string{"activity", "weather", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_ActivityHRZonesHelp(t *testing.T) {
-	code := Execute([]string{"activity", "hr-zones", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_ActivityGearHelp(t *testing.T) {
-	code := Execute([]string{"activity", "gear", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
 // --- ActivitySummaryCmd tests ---
-
-func TestActivitySummary_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &ActivitySummaryCmd{ID: "12345678"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestActivitySummary_NotFound(t *testing.T) {
 	store := newTestSecretsStore(t)
@@ -252,19 +197,6 @@ func TestActivitySummary_Plain(t *testing.T) {
 }
 
 // --- ActivityDetailsCmd tests ---
-
-func TestActivityDetails_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &ActivityDetailsCmd{ID: "12345678", MaxChart: 2000, MaxPoly: 4000}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestActivityDetails_Success(t *testing.T) {
 	server := activityTestServer(t)

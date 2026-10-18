@@ -1,0 +1,50 @@
+-- args --
+activities
+list
+--units
+auto
+-- route GET /activitylist-service/activities/search/activities?start=0&limit=20 --
+[{"activityId":111,"activityName":"Morning Run","startTimeLocal":"2026-10-14 07:30:00","activityType":{"typeKey":"running"},"distance":10012.5,"duration":3005.2,"calories":712},{"activityId":112,"activityName":"Pool Swim","startTimeLocal":"2026-10-13 18:00:00","activityType":{"typeKey":"lap_swimming"},"distance":1500,"duration":1980,"calories":350}]
+-- route GET /userprofile-service/userprofile/user-settings --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"statute_us"}}
+-- table stdout --
+ID   DATE        TYPE          NAME         DISTANCE  DURATION  CALORIES
+111  2026-10-14  running       Morning Run  6.22 mi   50:05     712
+112  2026-10-13  lap_swimming  Pool Swim    0.93 mi   33:00     350
+-- table stderr --
+-- table exit --
+0
+-- plain stdout --
+111	2026-10-14	running	Morning Run	6.22 mi	50:05	712
+112	2026-10-13	lap_swimming	Pool Swim	0.93 mi	33:00	350
+-- plain stderr --
+-- plain exit --
+0
+-- json stdout --
+[
+  {
+    "activityId": 111,
+    "activityName": "Morning Run",
+    "startTimeLocal": "2026-10-14 07:30:00",
+    "activityType": {
+      "typeKey": "running"
+    },
+    "distance": 10012.5,
+    "duration": 3005.2,
+    "calories": 712
+  },
+  {
+    "activityId": 112,
+    "activityName": "Pool Swim",
+    "startTimeLocal": "2026-10-13 18:00:00",
+    "activityType": {
+      "typeKey": "lap_swimming"
+    },
+    "distance": 1500,
+    "duration": 1980,
+    "calories": 350
+  }
+]
+-- json stderr --
+-- json exit --
+0

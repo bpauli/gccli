@@ -1,0 +1,20 @@
+-- args --
+activity
+details
+111
+-- route GET /activity-service/activity/111/details?maxChartSize=2000&maxPolylineSize=4000 204 --
+-- table stdout --
+null
+-- table stderr --
+-- table exit --
+0
+-- plain stdout --
+null
+-- plain stderr --
+-- plain exit --
+0
+-- json stdout --
+null
+-- json stderr --
+-- json exit --
+0

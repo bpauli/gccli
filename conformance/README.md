@@ -29,7 +29,7 @@ The binary uses its real URLs. Nothing overrides a base URL.
 
 ## Golden cases
 
-`TestGolden` reads every file in `internal/cmd/testdata/golden`, the same files that the in-process test in `internal/cmd/golden_test.go` uses. Each file holds the args, the stdin, the input files, the routes that the mock answers, and the expected output in table, plain and JSON mode. To add or change a case, edit those files as `internal/cmd/golden_test.go` describes. This suite has no cases of its own.
+`TestGolden` reads every file in `internal/cmd/testdata/golden`, the same files that the in-process test in `internal/cmd/golden_test.go` uses. Each file holds the args, the stdin, the input files, the routes that the mock answers, and the expected output in table, plain and JSON mode. To add or change a case, edit those files as `internal/cmd/golden_test.go` describes. This suite has no cases of its own. It also runs the case files `<leaf>@<case>.golden`, and a skip for a leaf also skips its case files.
 
 The suite runs each case with `--account test@example.com --units metric`, like the in-process harness. It leaves `--color` at its default, because output to a pipe must have no color. When a case has stdin, the suite gives it a pseudo-terminal, so a confirmation prompt reads the answer as typed input.
 

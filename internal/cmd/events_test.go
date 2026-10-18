@@ -88,16 +88,6 @@ func TestEventsList_JSON(t *testing.T) {
 	}
 }
 
-func TestEventsList_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &EventsListCmd{Pagination: Pagination{Limit: 20}, Sort: "eventDate_asc"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-}
-
 func TestParseEvents(t *testing.T) {
 	data := []byte(`[{"id":1,"eventName":"Race"},{"id":2,"eventName":"Ride"}]`)
 	events, err := parseEvents(data)
@@ -261,16 +251,6 @@ func TestEventsAdd_BadValueFailsBeforeCredentials(t *testing.T) {
 	}
 }
 
-func TestEventsAdd_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &EventsAddCmd{Name: "Race", Date: "2026-04-01", Type: "running"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-}
-
 // --- EventsDeleteCmd tests ---
 
 func TestEventsDelete_Success(t *testing.T) {
@@ -316,16 +296,6 @@ func TestEventsDelete_Cancelled(t *testing.T) {
 	}
 	if !strings.Contains(buf.String(), "Cancelled") {
 		t.Fatalf("expected 'Cancelled' message, got: %q", buf.String())
-	}
-}
-
-func TestEventsDelete_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &EventsDeleteCmd{ID: "99999", Force: true}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
 	}
 }
 

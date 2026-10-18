@@ -1,0 +1,20 @@
+-- args --
+health
+hrv
+2026-10-15
+-- route GET /hrv-service/hrv/2026-10-15 204 --
+-- table stdout --
+{}
+-- table stderr --
+-- table exit --
+0
+-- plain stdout --
+{}
+-- plain stderr --
+-- plain exit --
+0
+-- json stdout --
+{}
+-- json stderr --
+-- json exit --
+0
