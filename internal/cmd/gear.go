@@ -1,6 +1,9 @@
 package cmd
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+)
 
 // GearCmd groups gear subcommands.
 type GearCmd struct {
@@ -26,7 +29,7 @@ func (c *GearListCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetGear(g.Context, profilePK)
+	data, err := client.Call(g.Context, "gear.list", map[string]string{"userProfilePK": profilePK}, nil)
 	if err != nil {
 		return fmt.Errorf("get gear: %w", err)
 	}
@@ -45,7 +48,7 @@ func (c *GearStatsCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetGearStats(g.Context, c.UUID)
+	data, err := client.Call(g.Context, "gear.stats", map[string]string{"gearUUID": c.UUID}, nil)
 	if err != nil {
 		return fmt.Errorf("get gear stats: %w", err)
 	}
@@ -65,7 +68,7 @@ func (c *GearActivitiesCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetGearActivities(g.Context, c.UUID, c.Limit)
+	data, err := client.Call(g.Context, "gear.activities", map[string]string{"gearUUID": c.UUID, "limit": strconv.Itoa(c.Limit)}, nil)
 	if err != nil {
 		return fmt.Errorf("get gear activities: %w", err)
 	}
@@ -87,7 +90,7 @@ func (c *GearDefaultsCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetGearDefaults(g.Context, profilePK)
+	data, err := client.Call(g.Context, "gear.defaults", map[string]string{"userProfileNumber": profilePK}, nil)
 	if err != nil {
 		return fmt.Errorf("get gear defaults: %w", err)
 	}
@@ -107,7 +110,7 @@ func (c *GearLinkCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.LinkGear(g.Context, c.UUID, c.ActivityID)
+	data, err := client.Call(g.Context, "gear.link", map[string]string{"gearUUID": c.UUID, "activityID": c.ActivityID}, nil)
 	if err != nil {
 		return fmt.Errorf("link gear: %w", err)
 	}
@@ -126,7 +129,7 @@ func (c *GearUnlinkCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.UnlinkGear(g.Context, c.UUID, c.ActivityID)
+	data, err := client.Call(g.Context, "gear.unlink", map[string]string{"gearUUID": c.UUID, "activityID": c.ActivityID}, nil)
 	if err != nil {
 		return fmt.Errorf("unlink gear: %w", err)
 	}

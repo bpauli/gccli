@@ -7,33 +7,18 @@ import (
 	"net/http"
 )
 
-// GetDevices returns all registered devices for the current user.
-func (c *Client) GetDevices(ctx context.Context) (json.RawMessage, error) {
-	return c.ConnectAPI(ctx, http.MethodGet, "/device-service/deviceregistration/devices", nil)
-}
-
-// GetDeviceSettings returns settings for a specific device.
-func (c *Client) GetDeviceSettings(ctx context.Context, deviceID string) (json.RawMessage, error) {
-	path := fmt.Sprintf("/device-service/deviceservice/device-info/settings/%s", deviceID)
-	return c.ConnectAPI(ctx, http.MethodGet, path, nil)
-}
-
-// GetPrimaryTrainingDevice returns information about the primary training device.
-func (c *Client) GetPrimaryTrainingDevice(ctx context.Context) (json.RawMessage, error) {
-	return c.ConnectAPI(ctx, http.MethodGet, "/web-gateway/device-info/primary-training-device", nil)
-}
-
-// GetDeviceSolar returns solar charging data for a compatible device.
-// Date format: YYYY-MM-DD.
-func (c *Client) GetDeviceSolar(ctx context.Context, deviceID, startDate, endDate string) (json.RawMessage, error) {
-	path := fmt.Sprintf("/web-gateway/solar/%s/%s/%s", deviceID, startDate, endDate)
-	return c.ConnectAPI(ctx, http.MethodGet, path, nil)
+var devicesEndpoints = []Endpoint{
+	{Name: "devices.list", Method: http.MethodGet, Host: ConnectAPI, Path: "/device-service/deviceregistration/devices"},
+	{Name: "devices.settings", Method: http.MethodGet, Host: ConnectAPI, Path: "/device-service/deviceservice/device-info/settings/{deviceID}"},
+	{Name: "devices.primary-training", Method: http.MethodGet, Host: ConnectAPI, Path: "/web-gateway/device-info/primary-training-device"},
+	{Name: "devices.solar", Method: http.MethodGet, Host: ConnectAPI, Path: "/web-gateway/solar/{deviceID}/{startDate}/{endDate}"},
+	{Name: "devices.last-used", Method: http.MethodGet, Host: ConnectAPI, Path: "/device-service/deviceservice/mylastused"},
 }
 
 // GetDeviceAlarms returns alarms from all devices by fetching device settings
 // for each registered device.
 func (c *Client) GetDeviceAlarms(ctx context.Context) (json.RawMessage, error) {
-	devicesData, err := c.GetDevices(ctx)
+	devicesData, err := c.Call(ctx, "devices.list", nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("get devices: %w", err)
 	}
@@ -51,7 +36,7 @@ func (c *Client) GetDeviceAlarms(ctx context.Context) (json.RawMessage, error) {
 		}
 		idStr := fmt.Sprintf("%v", deviceID)
 
-		settings, err := c.GetDeviceSettings(ctx, idStr)
+		settings, err := c.Call(ctx, "devices.settings", map[string]string{"deviceID": idStr}, nil)
 		if err != nil {
 			continue // skip devices that fail
 		}
@@ -73,9 +58,4 @@ func (c *Client) GetDeviceAlarms(ctx context.Context) (json.RawMessage, error) {
 		return nil, fmt.Errorf("marshal alarms: %w", err)
 	}
 	return json.RawMessage(result), nil
-}
-
-// GetLastUsedDevice returns the most recently used device.
-func (c *Client) GetLastUsedDevice(ctx context.Context) (json.RawMessage, error) {
-	return c.ConnectAPI(ctx, http.MethodGet, "/device-service/deviceservice/mylastused", nil)
 }

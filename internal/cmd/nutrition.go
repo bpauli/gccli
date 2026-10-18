@@ -27,7 +27,7 @@ func (c *NutritionFoodLogCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetNutritionDailyFoodLog(g.Context, date)
+	data, err := client.Call(g.Context, "nutrition.daily-food-log", map[string]string{"date": date}, nil)
 	if err != nil {
 		return fmt.Errorf("get nutrition food log: %w", err)
 	}
@@ -51,7 +51,7 @@ func (c *NutritionMealsCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetNutritionDailyMeals(g.Context, date)
+	data, err := client.Call(g.Context, "nutrition.daily-meals", map[string]string{"date": date}, nil)
 	if err != nil {
 		return fmt.Errorf("get nutrition meals: %w", err)
 	}
@@ -75,7 +75,7 @@ func (c *NutritionSettingsCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetNutritionDailySettings(g.Context, date)
+	data, err := client.Call(g.Context, "nutrition.daily-settings", map[string]string{"date": date}, nil)
 	if err != nil {
 		return fmt.Errorf("get nutrition settings: %w", err)
 	}

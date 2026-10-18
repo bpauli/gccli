@@ -26,7 +26,7 @@ func (c *HydrationViewCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetHydration(g.Context, date)
+	data, err := client.Call(g.Context, "hydration.get", map[string]string{"date": date}, nil)
 	if err != nil {
 		return fmt.Errorf("get hydration: %w", err)
 	}

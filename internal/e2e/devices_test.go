@@ -13,7 +13,7 @@ func TestGetDevices(t *testing.T) {
 	client := AuthenticatedClient(t)
 	ctx := context.Background()
 
-	data, err := client.GetDevices(ctx)
+	data, err := client.Call(ctx, "devices.list", nil, nil)
 	if err != nil {
 		t.Fatalf("GetDevices failed: %v", err)
 	}

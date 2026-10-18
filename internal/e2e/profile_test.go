@@ -13,7 +13,7 @@ func TestGetProfile(t *testing.T) {
 	client := AuthenticatedClient(t)
 	ctx := context.Background()
 
-	data, err := client.GetProfile(ctx)
+	data, err := client.Call(ctx, "profile.get", nil, nil)
 	if err != nil {
 		t.Fatalf("GetProfile failed: %v", err)
 	}

@@ -116,6 +116,13 @@ func TestCallSendsTheTableRequest(t *testing.T) {
 			data: `{}`,
 		},
 		{
+			name: "non-ASCII values are sent as percent-encoded UTF-8",
+			e:    Endpoint{Name: "x.get", Path: "/x/{id}?q={q}"},
+			args: map[string]string{"id": "läufe", "q": "läufe"},
+			want: sent{line: "GET /x/l%C3%A4ufe?q=l%C3%A4ufe", accept: "application/json"},
+			data: `{}`,
+		},
+		{
 			name: "a body is sent as JSON",
 			e:    Endpoint{Name: "workouts.schedule.add", Method: http.MethodPost, Path: "/workout-service/schedule/{id}", Body: true},
 			args: map[string]string{"id": "9"},
@@ -326,6 +333,13 @@ func TestCallSitesMatchTable(t *testing.T) {
 				return true
 			}
 			called[name] = called[name] || !e2e
+			id, ok := call.Args[3].(*ast.Ident)
+			switch noBody := ok && id.Name == "nil"; {
+			case noBody && r.Body:
+				t.Errorf("%s: row %s needs a request body, but the call passes nil", pos, name)
+			case !noBody && !r.Body:
+				t.Errorf("%s: row %s takes no request body, but the call passes one", pos, name)
+			}
 			keys, ok := literalKeys(call.Args[2])
 			if !ok {
 				return true

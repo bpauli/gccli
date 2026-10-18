@@ -1,29 +1,9 @@
 package garminapi
 
-import (
-	"context"
-	"encoding/json"
-	"fmt"
-	"net/http"
-)
+import "net/http"
 
-// GetNutritionDailyFoodLog returns nutrition food log data for a given date.
-// Date format: YYYY-MM-DD.
-func (c *Client) GetNutritionDailyFoodLog(ctx context.Context, date string) (json.RawMessage, error) {
-	path := fmt.Sprintf("/nutrition-service/food/logs/%s", date)
-	return c.ConnectAPI(ctx, http.MethodGet, path, nil)
-}
-
-// GetNutritionDailyMeals returns nutrition meal summary data for a given date.
-// Date format: YYYY-MM-DD.
-func (c *Client) GetNutritionDailyMeals(ctx context.Context, date string) (json.RawMessage, error) {
-	path := fmt.Sprintf("/nutrition-service/meals/%s", date)
-	return c.ConnectAPI(ctx, http.MethodGet, path, nil)
-}
-
-// GetNutritionDailySettings returns nutrition settings for a given date.
-// Date format: YYYY-MM-DD.
-func (c *Client) GetNutritionDailySettings(ctx context.Context, date string) (json.RawMessage, error) {
-	path := fmt.Sprintf("/nutrition-service/settings/%s", date)
-	return c.ConnectAPI(ctx, http.MethodGet, path, nil)
+var nutritionEndpoints = []Endpoint{
+	{Name: "nutrition.daily-food-log", Method: http.MethodGet, Host: ConnectAPI, Path: "/nutrition-service/food/logs/{date}"},
+	{Name: "nutrition.daily-meals", Method: http.MethodGet, Host: ConnectAPI, Path: "/nutrition-service/meals/{date}"},
+	{Name: "nutrition.daily-settings", Method: http.MethodGet, Host: ConnectAPI, Path: "/nutrition-service/settings/{date}"},
 }

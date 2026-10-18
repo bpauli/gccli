@@ -1,18 +1,15 @@
 package garminapi
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 )
 
-// GetHydration returns hydration data for a given date.
-// Date format: YYYY-MM-DD.
-func (c *Client) GetHydration(ctx context.Context, date string) (json.RawMessage, error) {
-	path := fmt.Sprintf("/usersummary-service/usersummary/hydration/daily/%s", date)
-	return c.ConnectAPI(ctx, http.MethodGet, path, nil)
+var hydrationEndpoints = []Endpoint{
+	{Name: "hydration.get", Method: http.MethodGet, Host: ConnectAPI, Path: "/usersummary-service/usersummary/hydration/daily/{date}"},
+	{Name: "hydration.log", Method: http.MethodPut, Host: ConnectAPI, Path: "/usersummary-service/usersummary/hydration/log", Body: true},
 }
 
 // AddHydration adds a hydration log entry for the given date.
@@ -26,5 +23,5 @@ func (c *Client) AddHydration(ctx context.Context, date string, amountML float64
 	if err != nil {
 		return nil, fmt.Errorf("marshal hydration payload: %w", err)
 	}
-	return c.ConnectAPI(ctx, http.MethodPut, "/usersummary-service/usersummary/hydration/log", bytes.NewReader(body))
+	return c.Call(ctx, "hydration.log", nil, body)
 }

@@ -10,109 +10,19 @@ import (
 	"testing"
 )
 
-// --- GetBodyComposition tests ---
-
-func TestGetBodyComposition_Success(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/weight-service/weight/dateRange" {
-			t.Errorf("path = %s, want /weight-service/weight/dateRange", r.URL.Path)
-		}
-		if got := r.URL.Query().Get("startDate"); got != "2024-01-01" {
-			t.Errorf("startDate = %s, want 2024-01-01", got)
-		}
-		if got := r.URL.Query().Get("endDate"); got != "2024-01-31" {
-			t.Errorf("endDate = %s, want 2024-01-31", got)
-		}
-		_, _ = w.Write([]byte(`{"totalAverage":{"weight":75000.0}}`))
+func TestBodyEndpoints(t *testing.T) {
+	rng := map[string]string{"startDate": "2024-01-01", "endDate": "2024-01-31"}
+	entry := map[string]string{"date": "2024-01-15", "version": "12345"}
+	testEndpoints(t, bodyEndpoints, []endpointCase{
+		{"body.composition", rng, "GET /weight-service/weight/dateRange?startDate=2024-01-01&endDate=2024-01-31"},
+		{"body.weigh-ins", rng, "GET /weight-service/weight/range/2024-01-01/2024-01-31?includeAll=true"},
+		{"body.daily-weigh-ins", map[string]string{"date": "2024-01-15"}, "GET /weight-service/weight/dayview/2024-01-15?includeAll=true"},
+		{"body.delete-weight", entry, "DELETE /weight-service/weight/2024-01-15/byversion/12345"},
+		{"body.blood-pressure", rng, "GET /bloodpressure-service/bloodpressure/range/2024-01-01/2024-01-31?includeAll=true"},
+		{"body.delete-blood-pressure", entry, "DELETE /bloodpressure-service/bloodpressure/2024-01-15/12345"},
+		{"body.add-weight", nil, "POST /weight-service/user-weight"},
+		{"body.add-blood-pressure", nil, "POST /bloodpressure-service/bloodpressure"},
 	})
-
-	_, client := testServer(t, handler)
-	data, err := client.GetBodyComposition(context.Background(), "2024-01-01", "2024-01-31")
-	if err != nil {
-		t.Fatalf("GetBodyComposition: %v", err)
-	}
-
-	var result map[string]any
-	if err := json.Unmarshal(data, &result); err != nil {
-		t.Fatalf("unmarshal: %v", err)
-	}
-	if result["totalAverage"] == nil {
-		t.Error("expected totalAverage field")
-	}
-}
-
-func TestGetBodyComposition_ServerError(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusInternalServerError)
-		_, _ = w.Write([]byte("error"))
-	})
-
-	_, client := testServer(t, handler)
-	_, err := client.GetBodyComposition(context.Background(), "2024-01-01", "2024-01-31")
-	if err == nil {
-		t.Fatal("expected error")
-	}
-
-	var apiErr *GarminAPIError
-	if !errors.As(err, &apiErr) {
-		t.Fatalf("expected GarminAPIError, got %T: %v", err, err)
-	}
-}
-
-// --- GetWeighIns tests ---
-
-func TestGetWeighIns_Success(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/weight-service/weight/range/2024-01-01/2024-01-31" {
-			t.Errorf("path = %s, want /weight-service/weight/range/2024-01-01/2024-01-31", r.URL.Path)
-		}
-		if got := r.URL.Query().Get("includeAll"); got != "true" {
-			t.Errorf("includeAll = %s, want true", got)
-		}
-		_, _ = w.Write([]byte(`{"dailyWeightSummaries":[{"date":"2024-01-15"}]}`))
-	})
-
-	_, client := testServer(t, handler)
-	data, err := client.GetWeighIns(context.Background(), "2024-01-01", "2024-01-31")
-	if err != nil {
-		t.Fatalf("GetWeighIns: %v", err)
-	}
-
-	var result map[string]any
-	if err := json.Unmarshal(data, &result); err != nil {
-		t.Fatalf("unmarshal: %v", err)
-	}
-	if result["dailyWeightSummaries"] == nil {
-		t.Error("expected dailyWeightSummaries field")
-	}
-}
-
-// --- GetDailyWeighIns tests ---
-
-func TestGetDailyWeighIns_Success(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/weight-service/weight/dayview/2024-01-15" {
-			t.Errorf("path = %s, want /weight-service/weight/dayview/2024-01-15", r.URL.Path)
-		}
-		if got := r.URL.Query().Get("includeAll"); got != "true" {
-			t.Errorf("includeAll = %s, want true", got)
-		}
-		_, _ = w.Write([]byte(`{"dateWeightList":[{"weight":75.0}]}`))
-	})
-
-	_, client := testServer(t, handler)
-	data, err := client.GetDailyWeighIns(context.Background(), "2024-01-15")
-	if err != nil {
-		t.Fatalf("GetDailyWeighIns: %v", err)
-	}
-
-	var result map[string]any
-	if err := json.Unmarshal(data, &result); err != nil {
-		t.Fatalf("unmarshal: %v", err)
-	}
-	if result["dateWeightList"] == nil {
-		t.Error("expected dateWeightList field")
-	}
 }
 
 // --- AddWeight tests ---
@@ -168,89 +78,6 @@ func TestAddWeight_ServerError(t *testing.T) {
 
 	_, client := testServer(t, handler)
 	_, err := client.AddWeight(context.Background(), 75.5, "kg", "2024-01-15T10:00:00", "2024-01-15T09:00:00")
-	if err == nil {
-		t.Fatal("expected error")
-	}
-
-	var apiErr *GarminAPIError
-	if !errors.As(err, &apiErr) {
-		t.Fatalf("expected GarminAPIError, got %T: %v", err, err)
-	}
-}
-
-// --- DeleteWeight tests ---
-
-func TestDeleteWeight_Success(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodDelete {
-			t.Errorf("method = %s, want DELETE", r.Method)
-		}
-		if r.URL.Path != "/weight-service/weight/2024-01-15/byversion/12345" {
-			t.Errorf("path = %s, want /weight-service/weight/2024-01-15/byversion/12345", r.URL.Path)
-		}
-		w.WriteHeader(http.StatusNoContent)
-	})
-
-	_, client := testServer(t, handler)
-	_, err := client.DeleteWeight(context.Background(), "2024-01-15", "12345")
-	if err != nil {
-		t.Fatalf("DeleteWeight: %v", err)
-	}
-}
-
-func TestDeleteWeight_NotFound(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		http.Error(w, "not found", http.StatusNotFound)
-	})
-
-	_, client := testServer(t, handler)
-	_, err := client.DeleteWeight(context.Background(), "2024-01-15", "12345")
-	if err == nil {
-		t.Fatal("expected error")
-	}
-
-	var apiErr *GarminAPIError
-	if !errors.As(err, &apiErr) {
-		t.Fatalf("expected GarminAPIError, got %T: %v", err, err)
-	}
-}
-
-// --- GetBloodPressure tests ---
-
-func TestGetBloodPressure_Success(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/bloodpressure-service/bloodpressure/range/2024-01-01/2024-01-31" {
-			t.Errorf("path = %s, want /bloodpressure-service/bloodpressure/range/2024-01-01/2024-01-31", r.URL.Path)
-		}
-		if got := r.URL.Query().Get("includeAll"); got != "true" {
-			t.Errorf("includeAll = %s, want true", got)
-		}
-		_, _ = w.Write([]byte(`{"measurementSummaries":[{"systolic":120,"diastolic":80}]}`))
-	})
-
-	_, client := testServer(t, handler)
-	data, err := client.GetBloodPressure(context.Background(), "2024-01-01", "2024-01-31")
-	if err != nil {
-		t.Fatalf("GetBloodPressure: %v", err)
-	}
-
-	var result map[string]any
-	if err := json.Unmarshal(data, &result); err != nil {
-		t.Fatalf("unmarshal: %v", err)
-	}
-	if result["measurementSummaries"] == nil {
-		t.Error("expected measurementSummaries field")
-	}
-}
-
-func TestGetBloodPressure_ServerError(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusInternalServerError)
-		_, _ = w.Write([]byte("error"))
-	})
-
-	_, client := testServer(t, handler)
-	_, err := client.GetBloodPressure(context.Background(), "2024-01-01", "2024-01-31")
 	if err == nil {
 		t.Fatal("expected error")
 	}
@@ -320,43 +147,6 @@ func TestAddBloodPressure_ServerError(t *testing.T) {
 
 	_, client := testServer(t, handler)
 	_, err := client.AddBloodPressure(context.Background(), 120, 80, 72, "ts", "gmt", "")
-	if err == nil {
-		t.Fatal("expected error")
-	}
-
-	var apiErr *GarminAPIError
-	if !errors.As(err, &apiErr) {
-		t.Fatalf("expected GarminAPIError, got %T: %v", err, err)
-	}
-}
-
-// --- DeleteBloodPressure tests ---
-
-func TestDeleteBloodPressure_Success(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodDelete {
-			t.Errorf("method = %s, want DELETE", r.Method)
-		}
-		if r.URL.Path != "/bloodpressure-service/bloodpressure/2024-01-15/67890" {
-			t.Errorf("path = %s, want /bloodpressure-service/bloodpressure/2024-01-15/67890", r.URL.Path)
-		}
-		w.WriteHeader(http.StatusNoContent)
-	})
-
-	_, client := testServer(t, handler)
-	_, err := client.DeleteBloodPressure(context.Background(), "2024-01-15", "67890")
-	if err != nil {
-		t.Fatalf("DeleteBloodPressure: %v", err)
-	}
-}
-
-func TestDeleteBloodPressure_NotFound(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		http.Error(w, "not found", http.StatusNotFound)
-	})
-
-	_, client := testServer(t, handler)
-	_, err := client.DeleteBloodPressure(context.Background(), "2024-01-15", "67890")
 	if err == nil {
 		t.Fatal("expected error")
 	}
