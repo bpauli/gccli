@@ -23,11 +23,9 @@ var accountArgs = map[string][]string{
 }
 
 func TestEveryCommandHelps(t *testing.T) {
-	paths := []string{""}
-	for _, c := range collectCommands(newTestParser(t).Model.Node, nil) {
-		paths = append(paths, strings.Join(c.Path, " "))
-	}
-	for _, path := range paths {
+	cmds := append([]commandInfo{{Help: "Garmin Connect CLI"}}, collectCommands(newTestParser(t).Model.Node, nil)...)
+	for _, c := range cmds {
+		path := strings.Join(c.Path, " ")
 		t.Run(strings.TrimSpace("gccli "+path), func(t *testing.T) {
 			home := t.TempDir()
 			t.Setenv("HOME", home)
@@ -39,6 +37,9 @@ func TestEveryCommandHelps(t *testing.T) {
 			}
 			if want := strings.TrimSpace("Usage: gccli " + path); !strings.HasPrefix(stdout.String(), want+" ") && !strings.HasPrefix(stdout.String(), want+"\n") {
 				t.Errorf("stdout does not start with %q:\n%s", want, stdout.String())
+			}
+			if c.Help == "" || !strings.Contains(stdout.String(), "\n"+c.Help+"\n") {
+				t.Errorf("stdout does not show the help text %q:\n%s", c.Help, stdout.String())
 			}
 			if stderr.Len() != 0 {
 				t.Errorf("stderr is not empty:\n%s", stderr.String())
