@@ -1,0 +1,20 @@
+-- args --
+activities
+search
+--start=2026-10-01
+-- route GET /activitylist-service/activities/search/activities?start=0&limit=20&startDate=2026-10-01 204 --
+-- table stdout --
+-- table stderr --
+parse activities: unexpected end of JSON input
+-- table exit --
+1
+-- plain stdout --
+-- plain stderr --
+parse activities: unexpected end of JSON input
+-- plain exit --
+1
+-- json stdout --
+null
+-- json stderr --
+-- json exit --
+0
