@@ -3,6 +3,8 @@ package cmd
 import (
 	"errors"
 
+	"github.com/alecthomas/kong"
+
 	"github.com/bpauli/gccli/internal/config"
 	"github.com/bpauli/gccli/internal/outfmt"
 )
@@ -17,10 +19,17 @@ type RootFlags struct {
 	Units   string `help:"Unit system for distances, speeds, paces and elevations in table and plain output: auto (Garmin profile), metric, statute_us, statute_uk." default:"auto" enum:"${units}" env:"GCCLI_UNITS"`
 }
 
-// Kong calls Validate after parsing.
-func (f *RootFlags) Validate() error {
-	if f.Header && f.outputMode() != outfmt.PlainHeader {
-		return errors.New("--header works only with --plain")
+// Kong calls Validate after parsing. Only --header on the command line is an
+// error outside plain mode: GCCLI_HEADER is a standing preference, like
+// GCCLI_PLAIN, so table and JSON calls ignore it.
+func (f *RootFlags) Validate(kctx *kong.Context) error {
+	if !f.Header || f.outputMode() == outfmt.PlainHeader {
+		return nil
+	}
+	for _, p := range kctx.Path {
+		if p.Flag != nil && p.Flag.Name == "header" {
+			return errors.New("--header works only with --plain")
+		}
 	}
 	return nil
 }
