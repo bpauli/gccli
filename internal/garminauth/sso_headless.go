@@ -238,7 +238,7 @@ func exchangeOAuth2(ctx context.Context, client *http.Client,
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("HTTP %d: %s", resp.StatusCode, body)
+		return nil, fmt.Errorf("HTTP %d: %s", resp.StatusCode, cutBody(body))
 	}
 
 	var oauth2Resp oauth2Response

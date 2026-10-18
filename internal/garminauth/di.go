@@ -11,6 +11,7 @@ import (
 	"net/url"
 	"strings"
 	"time"
+	"unicode/utf8"
 )
 
 const (
@@ -131,7 +132,7 @@ func postDIForm(ctx context.Context, client *http.Client, tokenURL, clientID str
 		return nil, err
 	}
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("HTTP %d: %s", resp.StatusCode, body)
+		return nil, fmt.Errorf("HTTP %d: %s", resp.StatusCode, cutBody(body))
 	}
 
 	var parsed diTokenResponse
@@ -145,6 +146,22 @@ func postDIForm(ctx context.Context, client *http.Client, tokenURL, clientID str
 		return nil, fmt.Errorf("response has invalid expires_in: %d", parsed.ExpiresIn)
 	}
 	return &parsed, nil
+}
+
+// errBodyLimit bounds the response body quoted in an error. Garmin answers
+// some failures with a whole HTML page, and the error reaches the --json
+// error object.
+const errBodyLimit = 512
+
+func cutBody(body []byte) string {
+	if len(body) <= errBodyLimit {
+		return string(body)
+	}
+	n := errBodyLimit
+	for !utf8.RuneStart(body[n]) {
+		n--
+	}
+	return fmt.Sprintf("%s... (%d bytes cut)", body[:n], len(body)-n)
 }
 
 func tokensFromDIResponse(resp *diTokenResponse, clientID string) *Tokens {
