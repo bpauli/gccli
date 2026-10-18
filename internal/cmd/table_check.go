@@ -5,6 +5,7 @@ import (
 	"maps"
 	"net/http"
 	"reflect"
+	"regexp"
 	"slices"
 
 	"github.com/bpauli/gccli/internal/garminapi"
@@ -153,19 +154,41 @@ func checkLeaf(path string, l Leaf) []error {
 		}
 	}
 
-	w, isWrite := l.Output.(Write)
-	switch {
-	case e.Method == http.MethodGet && isWrite:
-		fail("Output is Write, but %s is a GET", l.Endpoint)
-	case e.Method != http.MethodGet && !isWrite:
+	if e.Body {
+		fail("%s takes a request body, which no Source gives: keep the command Custom", l.Endpoint)
+	}
+	switch out := l.Output.(type) {
+	case nil:
+		fail("Output is nil")
+	case Write:
+		switch {
+		case e.Method == http.MethodGet:
+			fail("Output is Write, but %s is a GET", l.Endpoint)
+		case out.Done == "":
+			fail("Write has no Done")
+		case e.Method == http.MethodDelete && out.Confirm == "":
+			fail("%s is a DELETE: Write needs Confirm", l.Endpoint)
+		}
+		for _, tpl := range []struct{ name, text string }{{"Done", out.Done}, {"Confirm", out.Confirm}} {
+			for _, m := range templateField.FindAllStringSubmatch(tpl.text, -1) {
+				if _, ok := argsField(fields, m[1]); !ok {
+					fail("%s names {%s}, which is not a field of the args struct", tpl.name, m[1])
+				}
+			}
+		}
+	case Rows:
+		if out.Noun == "" {
+			fail("Rows has no Noun")
+		}
+	}
+	if _, isWrite := l.Output.(Write); !isWrite && l.Output != nil && e.Method != http.MethodGet {
 		fail("%s is a %s: Output must be Write", l.Endpoint, e.Method)
-	case isWrite && w.Done == "":
-		fail("Write has no Done")
-	case e.Method == http.MethodDelete && w.Confirm == "":
-		fail("%s is a DELETE: Write needs Confirm", l.Endpoint)
 	}
 	return errs
 }
+
+// templateField matches one {Field} of a Done or Confirm template.
+var templateField = regexp.MustCompile(`\{(\w+)\}`)
 
 // A LateDates field is never empty: resolveDate gives today for "".
 func (s Source) sure(fields reflect.Type, late []string) bool {
@@ -189,10 +212,12 @@ func argsField(t reflect.Type, name string) (reflect.StructField, bool) {
 	return f, ok && f.IsExported()
 }
 
+// alwaysSet reports whether Kong never leaves the field empty. A required
+// field in an xor group may stay empty when the other member is given.
 func alwaysSet(f reflect.StructField) bool {
 	_, arg := f.Tag.Lookup("arg")
 	_, optional := f.Tag.Lookup("optional")
 	_, required := f.Tag.Lookup("required")
-	_, def := f.Tag.Lookup("default")
-	return (arg && !optional) || required || def
+	_, xor := f.Tag.Lookup("xor")
+	return (arg && !optional) || (required && !xor) || f.Tag.Get("default") != ""
 }
