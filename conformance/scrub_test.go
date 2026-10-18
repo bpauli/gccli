@@ -185,7 +185,7 @@ func TestScrubFailsOnBadKey(t *testing.T) {
 		t.Fatalf("Scrub with a bad key: err = %v, want a KeyError", err)
 	}
 	msg := err.Error()
-	for _, want := range []string{"$.<key 1>.<key 0>:", "$.<key 1>.<key 2>[1].<key 0>:", "GET /userprofile-service/userprofile/settings"} {
+	for _, want := range []string{"$.<key 1>.<key 0>:", "$.<key 1>.<key 2>[].<key 0>:", "GET /userprofile-service/userprofile/settings"} {
 		if !strings.Contains(msg, want) {
 			t.Errorf("the error does not name %q:\n%s", want, msg)
 		}
@@ -292,7 +292,7 @@ func TestScrubDirWritesNothingOnFailure(t *testing.T) {
 	if err == nil {
 		t.Fatal("ScrubDir succeeded with bad keys")
 	}
-	for _, want := range []string{"$.<key 0>.<key 0>: ", "$.<key 0>.<key 1>: ", "$[0].<key 0>: ", "(1 records, first b.json)", "(1 records, first c.json)"} {
+	for _, want := range []string{"$.<key 0>.<key 0>: ", "$.<key 0>.<key 1>: ", "$[].<key 0>: ", "(1 records, first b.json)", "(1 records, first c.json)"} {
 		if !strings.Contains(err.Error(), want) {
 			t.Errorf("the error does not name %q:\n%v", want, err)
 		}

@@ -136,7 +136,7 @@ func fixedNumber(n json.Number) json.Number {
 }
 
 // A KeyError names an object key that is neither an identifier nor a date.
-// Path holds only structure: `$` is the body, `[i]` an array index from 0
+// Path holds only structure: `$` is the body, `[]` an element of an array
 // and `<key i>` the i-th key of an object in byte order from 0. The key
 // itself can be personal data and is never in the error.
 type KeyError struct {
@@ -151,6 +151,14 @@ func (e *KeyError) Error() string {
 type scrubber struct {
 	route string
 	errs  []error
+}
+
+// fail records a bad key once per position: every element of a series
+// has the same position.
+func (s *scrubber) fail(at string) {
+	if !slices.ContainsFunc(s.errs, func(e error) bool { return e.(*KeyError).Path == at }) {
+		s.errs = append(s.errs, &KeyError{Route: s.route, Path: at})
+	}
 }
 
 func (s *scrubber) value(path string, v any) any {
@@ -174,7 +182,7 @@ func (s *scrubber) value(path string, v any) any {
 			case dateOnly.MatchString(key):
 				out[fixedDate] = x
 			default:
-				s.errs = append(s.errs, &KeyError{Route: s.route, Path: at})
+				s.fail(at)
 			}
 		}
 		return out
@@ -183,17 +191,43 @@ func (s *scrubber) value(path string, v any) any {
 	if len(arr) == 0 {
 		return arr
 	}
-	first := slices.IndexFunc(arr, func(x any) bool { return x != nil })
-	if first < 0 {
-		return []any{nil}
+	var merged any
+	for _, x := range arr {
+		merged = merge(merged, s.value(path+"[]", x))
 	}
-	return []any{s.value(fmt.Sprintf("%s[%d]", path, first), arr[first])}
+	return []any{merged}
+}
+
+// merge joins two scrubbed values into one that holds every key and the
+// element of both, so which element of a series has a key, a value or a
+// null does not survive. A null gives way to a value. When the kinds
+// differ, a wins.
+func merge(a, b any) any {
+	switch a := a.(type) {
+	case nil:
+		return b
+	case map[string]any:
+		if b, ok := b.(map[string]any); ok {
+			for k, v := range b {
+				a[k] = merge(a[k], v)
+			}
+		}
+	case []any:
+		if b, ok := b.([]any); ok && len(b) > 0 {
+			if len(a) == 0 {
+				return b
+			}
+			a[0] = merge(a[0], b[0])
+		}
+	}
+	return a
 }
 
 // Scrub replaces every value in r with a fixed one and collapses every
-// array to its first non-null element, so neither a value, nor the length
-// of a series, nor the position of a null in it survives. An empty array
-// stays empty and an all-null array becomes [null]. Scrub fails when the
+// array to one element that holds every key of its elements and a value
+// where any element has one, so neither a value, nor the length of a
+// series, nor the position of a null or of a key in it survives. An empty
+// array stays empty and an all-null array becomes [null]. Scrub fails when the
 // host is not a Garmin API host, when the path matches no template in
 // scrubPaths, or when an object or query key is neither an identifier nor
 // a date. The error names the route and the position, never a key or a
