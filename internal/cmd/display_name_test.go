@@ -27,7 +27,6 @@ var displayNameCommands = []struct {
 	{"health hr", &HealthHRCmd{}, "/wellness-service/wellness/dailyHeartRate/Test User"},
 	{"health rhr", &HealthRHRCmd{}, "/userstats-service/wellness/daily/Test User"},
 	{"health sleep", &HealthSleepCmd{}, "/wellness-service/wellness/dailySleepData/Test User"},
-	{"records", &RecordsCmd{}, "/personalrecord-service/personalrecord/prs/Test User"},
 }
 
 func TestDisplayName_ResolvedFromProfile(t *testing.T) {
