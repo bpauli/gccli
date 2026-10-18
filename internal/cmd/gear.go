@@ -2,100 +2,43 @@ package cmd
 
 import (
 	"fmt"
-	"strconv"
 )
 
 var gearGroup = Group{Name: "gear", Help: "Manage gear.", Children: []Node{
-	Custom{Name: "list", Help: "List all gear.", Default: true, Cmd: &GearListCmd{}},
-	Custom{Name: "stats", Help: "Show usage statistics for a gear item.", Cmd: &GearStatsCmd{}},
-	Custom{Name: "activities", Help: "Show activities linked to a gear item.", Cmd: &GearActivitiesCmd{}},
-	Custom{Name: "defaults", Help: "Show default gear per activity type.", Cmd: &GearDefaultsCmd{}},
+	Leaf{
+		Name: "list", Help: "List all gear.", Default: true,
+		Endpoint: "gear.list",
+		Params:   Params{"userProfilePK": ProfilePK},
+		Verb:     "get gear", Output: JSON{},
+	},
+	Leaf{
+		Name: "stats", Help: "Show usage statistics for a gear item.",
+		Spec: argsOf(&struct {
+			UUID string `arg:"" help:"Gear UUID."`
+		}{}),
+		Endpoint: "gear.stats",
+		Params:   Params{"gearUUID": In("UUID")},
+		Verb:     "get gear stats", Output: JSON{},
+	},
+	Leaf{
+		Name: "activities", Help: "Show activities linked to a gear item.",
+		Spec: argsOf(&struct {
+			UUID  string `arg:"" help:"Gear UUID."`
+			Limit int    `help:"Maximum number of activities to return." default:"20"`
+		}{}),
+		Endpoint: "gear.activities",
+		Params:   Params{"gearUUID": In("UUID"), "limit": In("Limit")},
+		Verb:     "get gear activities", Output: JSON{},
+	},
+	Leaf{
+		Name: "defaults", Help: "Show default gear per activity type.",
+		Endpoint: "gear.defaults",
+		Params:   Params{"userProfileNumber": ProfilePK},
+		Verb:     "get gear defaults", Output: JSON{},
+	},
 	Custom{Name: "link", Help: "Link gear to an activity.", Cmd: &GearLinkCmd{}},
 	Custom{Name: "unlink", Help: "Unlink gear from an activity.", Cmd: &GearUnlinkCmd{}},
 }}
-
-// GearListCmd lists all gear for the authenticated user.
-type GearListCmd struct{}
-
-func (c *GearListCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	profilePK, err := client.GetProfilePK(g.Context)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.Call(g.Context, "gear.list", map[string]string{"userProfilePK": profilePK}, nil)
-	if err != nil {
-		return fmt.Errorf("get gear: %w", err)
-	}
-
-	return writeHealthJSON(g, data)
-}
-
-// GearStatsCmd shows usage statistics for a gear item.
-type GearStatsCmd struct {
-	UUID string `arg:"" help:"Gear UUID."`
-}
-
-func (c *GearStatsCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.Call(g.Context, "gear.stats", map[string]string{"gearUUID": c.UUID}, nil)
-	if err != nil {
-		return fmt.Errorf("get gear stats: %w", err)
-	}
-
-	return writeHealthJSON(g, data)
-}
-
-// GearActivitiesCmd shows activities linked to a gear item.
-type GearActivitiesCmd struct {
-	UUID  string `arg:"" help:"Gear UUID."`
-	Limit int    `help:"Maximum number of activities to return." default:"20"`
-}
-
-func (c *GearActivitiesCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.Call(g.Context, "gear.activities", map[string]string{"gearUUID": c.UUID, "limit": strconv.Itoa(c.Limit)}, nil)
-	if err != nil {
-		return fmt.Errorf("get gear activities: %w", err)
-	}
-
-	return writeHealthJSON(g, data)
-}
-
-// GearDefaultsCmd shows default gear per activity type.
-type GearDefaultsCmd struct{}
-
-func (c *GearDefaultsCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	profilePK, err := client.GetProfilePK(g.Context)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.Call(g.Context, "gear.defaults", map[string]string{"userProfileNumber": profilePK}, nil)
-	if err != nil {
-		return fmt.Errorf("get gear defaults: %w", err)
-	}
-
-	return writeHealthJSON(g, data)
-}
 
 // GearLinkCmd links a gear item to an activity.
 type GearLinkCmd struct {

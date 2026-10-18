@@ -148,13 +148,13 @@ type handCLI struct {
 		Sleep handHealthSleep `cmd:"" help:"Show sleep data."`
 	} `cmd:"" help:"View health data."`
 	Devices struct {
-		Solar DeviceSolarCmd `cmd:"" help:"Show solar charging data for a device."`
+		Solar handDeviceSolar `cmd:"" help:"Show solar charging data for a device."`
 	} `cmd:"" help:"Manage devices."`
 	Activities struct {
 		List handActivitiesList `cmd:"" default:"withargs" help:"List recent activities."`
 	} `cmd:"" help:"List and search activities."`
 	Gear struct {
-		List   GearListCmd    `cmd:"" default:"withargs" help:"List gear."`
+		List   struct{}       `cmd:"" default:"withargs" help:"List gear."`
 		Unlink handGearUnlink `cmd:"" help:"Unlink gear from an activity."`
 	} `cmd:"" help:"Manage gear."`
 	Courses struct {
@@ -166,6 +166,12 @@ type handCLI struct {
 
 type handHealthSleep struct {
 	Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+}
+
+type handDeviceSolar struct {
+	DeviceID  string `arg:"" help:"Device ID."`
+	StartDate Date   `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"start"`
+	EndDate   Date   `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to start date." name:"end"`
 }
 
 type handActivitiesList struct {
