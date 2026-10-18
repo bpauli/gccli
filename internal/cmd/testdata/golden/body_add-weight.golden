@@ -9,11 +9,29 @@ add-weight
 Added weight: 80.5 kg
 -- table exit --
 0
+-- table requests --
+POST /weight-service/user-weight
+  {
+    "dateTimestamp": "2026-10-15T09:30:00",
+    "gmtTimestamp": "2026-10-15T09:30:00",
+    "sourceType": "MANUAL",
+    "unitKey": "kg",
+    "value": 80.5
+  }
 -- plain stdout --
 -- plain stderr --
 Added weight: 80.5 kg
 -- plain exit --
 0
+-- plain requests --
+POST /weight-service/user-weight
+  {
+    "dateTimestamp": "2026-10-15T09:30:00",
+    "gmtTimestamp": "2026-10-15T09:30:00",
+    "sourceType": "MANUAL",
+    "unitKey": "kg",
+    "value": 80.5
+  }
 -- json stdout --
 {
   "ok": true
@@ -21,3 +39,12 @@ Added weight: 80.5 kg
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+POST /weight-service/user-weight
+  {
+    "dateTimestamp": "2026-10-15T09:30:00",
+    "gmtTimestamp": "2026-10-15T09:30:00",
+    "sourceType": "MANUAL",
+    "unitKey": "kg",
+    "value": 80.5
+  }

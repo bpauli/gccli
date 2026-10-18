@@ -1,0 +1,26 @@
+-- args --
+activity
+splits
+111
+-- route GET /activity-service/activity/111/splits 204 --
+-- table stdout --
+null
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /activity-service/activity/111/splits
+-- plain stdout --
+null
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /activity-service/activity/111/splits
+-- json stdout --
+null
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /activity-service/activity/111/splits

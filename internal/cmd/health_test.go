@@ -83,97 +83,7 @@ func overrideNowFn(t *testing.T, fixed time.Time) {
 
 // --- Execute-level tests ---
 
-func TestExecute_HealthHelp(t *testing.T) {
-	code := Execute([]string{"health", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_HealthStepsHelp(t *testing.T) {
-	code := Execute([]string{"health", "steps", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_HealthHRHelp(t *testing.T) {
-	code := Execute([]string{"health", "hr", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_HealthSleepHelp(t *testing.T) {
-	code := Execute([]string{"health", "sleep", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_HealthStressHelp(t *testing.T) {
-	code := Execute([]string{"health", "stress", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_HealthFloorsHelp(t *testing.T) {
-	code := Execute([]string{"health", "floors", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_HealthRHRHelp(t *testing.T) {
-	code := Execute([]string{"health", "rhr", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_HealthRespirationHelp(t *testing.T) {
-	code := Execute([]string{"health", "respiration", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_HealthStepsDailyHelp(t *testing.T) {
-	code := Execute([]string{"health", "steps", "daily", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_HealthStepsWeeklyHelp(t *testing.T) {
-	code := Execute([]string{"health", "steps", "weekly", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_HealthStressWeeklyHelp(t *testing.T) {
-	code := Execute([]string{"health", "stress", "weekly", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
 // --- HealthSummaryCmd tests ---
-
-func TestHealthSummary_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &HealthSummaryCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestHealthSummary_Success(t *testing.T) {
 	server := healthTestServer(t)
@@ -226,19 +136,6 @@ func TestHealthSummary_WithDate(t *testing.T) {
 }
 
 // --- HealthStepsCmd tests ---
-
-func TestHealthSteps_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &HealthStepsViewCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestHealthSteps_Success(t *testing.T) {
 	server := healthTestServer(t)
@@ -382,16 +279,6 @@ func TestHealthStepsWeekly_DefaultEndDate(t *testing.T) {
 
 // --- HealthHRCmd tests ---
 
-func TestHealthHR_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &HealthHRCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-}
-
 func TestHealthHR_Success(t *testing.T) {
 	server := healthTestServer(t)
 	defer server.Close()
@@ -411,16 +298,6 @@ func TestHealthHR_Success(t *testing.T) {
 }
 
 // --- HealthRHRCmd tests ---
-
-func TestHealthRHR_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &HealthRHRCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-}
 
 func TestHealthRHR_Success(t *testing.T) {
 	server := healthTestServer(t)
@@ -442,16 +319,6 @@ func TestHealthRHR_Success(t *testing.T) {
 
 // --- HealthFloorsCmd tests ---
 
-func TestHealthFloors_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &HealthFloorsCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-}
-
 func TestHealthFloors_Success(t *testing.T) {
 	server := healthTestServer(t)
 	defer server.Close()
@@ -472,16 +339,6 @@ func TestHealthFloors_Success(t *testing.T) {
 
 // --- HealthSleepCmd tests ---
 
-func TestHealthSleep_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &HealthSleepCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-}
-
 func TestHealthSleep_Success(t *testing.T) {
 	server := healthTestServer(t)
 	defer server.Close()
@@ -501,16 +358,6 @@ func TestHealthSleep_Success(t *testing.T) {
 }
 
 // --- HealthStressCmd tests ---
-
-func TestHealthStress_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &HealthStressViewCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-}
 
 func TestHealthStress_Success(t *testing.T) {
 	server := healthTestServer(t)
@@ -580,16 +427,6 @@ func TestHealthStressWeekly_DefaultEndDate(t *testing.T) {
 }
 
 // --- HealthRespirationCmd tests ---
-
-func TestHealthRespiration_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &HealthRespirationCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-}
 
 func TestHealthRespiration_Success(t *testing.T) {
 	server := healthTestServer(t)

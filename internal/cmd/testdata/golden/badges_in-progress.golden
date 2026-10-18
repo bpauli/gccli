@@ -10,6 +10,8 @@ in-progress
 -- table stderr --
 -- table exit --
 0
+-- table requests --
+GET /badge-service/badge/in-progress
 -- plain stdout --
 {
   "value": 1
@@ -17,6 +19,8 @@ in-progress
 -- plain stderr --
 -- plain exit --
 0
+-- plain requests --
+GET /badge-service/badge/in-progress
 -- json stdout --
 {
   "value": 1
@@ -24,3 +28,5 @@ in-progress
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+GET /badge-service/badge/in-progress

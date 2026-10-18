@@ -6,13 +6,16 @@ test-access-token
 -- table stderr --
 -- table exit --
 0
+-- table requests --
 -- plain stdout --
 test-access-token
 -- plain stderr --
 -- plain exit --
 0
+-- plain requests --
 -- json stdout --
 test-access-token
 -- json stderr --
 -- json exit --
 0
+-- json requests --

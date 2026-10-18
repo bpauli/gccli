@@ -9,11 +9,17 @@ add-composition
 Added body composition: 80.0 kg
 -- table exit --
 0
+-- table requests --
+POST /upload-service/upload
+  part "file" file "body_composition.fit" 212 bytes sha256 fc4258dde70fd325
 -- plain stdout --
 -- plain stderr --
 Added body composition: 80.0 kg
 -- plain exit --
 0
+-- plain requests --
+POST /upload-service/upload
+  part "file" file "body_composition.fit" 212 bytes sha256 fc4258dde70fd325
 -- json stdout --
 {
   "detailedImportResult": {
@@ -23,3 +29,6 @@ Added body composition: 80.0 kg
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+POST /upload-service/upload
+  part "file" file "body_composition.fit" 212 bytes sha256 fc4258dde70fd325

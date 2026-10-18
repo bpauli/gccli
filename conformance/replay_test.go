@@ -358,8 +358,13 @@ func servedRecords(recorded map[string][]recordedFile) map[string]Record {
 	return served
 }
 
+// replayable says whether the recorded replay runs a golden file: a leaf
+// case that is not skipped, calls at least one route, exits 0 in table
+// mode and has a served recording for every route. A case file
+// <leaf>@<case>.golden runs the leaf's command on other mock data, and
+// the recording replaces that data, so it is not replayed.
 func replayable(f goldenFile, served map[string]Record) bool {
-	if _, skip := skipped[f.name]; skip || len(f.routes) == 0 || f.outputs["table exit"] != "0\n" {
+	if _, skip := skipped[f.leaf]; skip || f.name != f.leaf || len(f.routes) == 0 || f.outputs["table exit"] != "0\n" {
 		return false
 	}
 	for route := range f.routes {

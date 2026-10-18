@@ -12,11 +12,31 @@ workout.json
 Updated workout 111 from $DIR/workout.json
 -- table exit --
 0
+-- table requests --
+PUT /workout-service/workout/111
+  {
+    "sportType": {
+      "sportTypeId": 1,
+      "sportTypeKey": "running"
+    },
+    "workoutId": 111,
+    "workoutName": "Intervals"
+  }
 -- plain stdout --
 -- plain stderr --
 Updated workout 111 from $DIR/workout.json
 -- plain exit --
 0
+-- plain requests --
+PUT /workout-service/workout/111
+  {
+    "sportType": {
+      "sportTypeId": 1,
+      "sportTypeKey": "running"
+    },
+    "workoutId": 111,
+    "workoutName": "Intervals"
+  }
 -- json stdout --
 {
   "ok": true
@@ -24,3 +44,13 @@ Updated workout 111 from $DIR/workout.json
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+PUT /workout-service/workout/111
+  {
+    "sportType": {
+      "sportTypeId": 1,
+      "sportTypeKey": "running"
+    },
+    "workoutId": 111,
+    "workoutName": "Intervals"
+  }

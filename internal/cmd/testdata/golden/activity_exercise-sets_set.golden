@@ -12,11 +12,53 @@ BENCH_PRESS/BARBELL_BENCH_PRESS:12@20
 Exercise sets updated for activity 111
 -- table exit --
 0
+-- table requests --
+PUT /activity-service/activity/111/exerciseSets
+  {
+    "activityId": 111,
+    "exerciseSets": [
+      {
+        "exercises": [
+          {
+            "probability": 100,
+            "category": "BENCH_PRESS",
+            "name": "BARBELL_BENCH_PRESS"
+          }
+        ],
+        "repetitionCount": 12,
+        "duration": null,
+        "weight": 20000,
+        "setType": "ACTIVE",
+        "startTime": null
+      }
+    ]
+  }
 -- plain stdout --
 -- plain stderr --
 Exercise sets updated for activity 111
 -- plain exit --
 0
+-- plain requests --
+PUT /activity-service/activity/111/exerciseSets
+  {
+    "activityId": 111,
+    "exerciseSets": [
+      {
+        "exercises": [
+          {
+            "probability": 100,
+            "category": "BENCH_PRESS",
+            "name": "BARBELL_BENCH_PRESS"
+          }
+        ],
+        "repetitionCount": 12,
+        "duration": null,
+        "weight": 20000,
+        "setType": "ACTIVE",
+        "startTime": null
+      }
+    ]
+  }
 -- json stdout --
 {
   "ok": true
@@ -24,3 +66,24 @@ Exercise sets updated for activity 111
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+PUT /activity-service/activity/111/exerciseSets
+  {
+    "activityId": 111,
+    "exerciseSets": [
+      {
+        "exercises": [
+          {
+            "probability": 100,
+            "category": "BENCH_PRESS",
+            "name": "BARBELL_BENCH_PRESS"
+          }
+        ],
+        "repetitionCount": 12,
+        "duration": null,
+        "weight": 20000,
+        "setType": "ACTIVE",
+        "startTime": null
+      }
+    ]
+  }

@@ -10,11 +10,15 @@ abc-123
 Unlinked gear abc-123 from activity 111
 -- table exit --
 0
+-- table requests --
+PUT /gear-service/gear/unlink/abc-123/activity/111
 -- plain stdout --
 -- plain stderr --
 Unlinked gear abc-123 from activity 111
 -- plain exit --
 0
+-- plain requests --
+PUT /gear-service/gear/unlink/abc-123/activity/111
 -- json stdout --
 {
   "ok": true
@@ -22,3 +26,5 @@ Unlinked gear abc-123 from activity 111
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+PUT /gear-service/gear/unlink/abc-123/activity/111

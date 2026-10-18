@@ -90,14 +90,23 @@ func (e *EndpointError) Error() string {
 	return fmt.Sprintf("endpoint %s: %s: %s", e.Endpoint, e.Param, e.Problem)
 }
 
-// EndpointMethod returns the HTTP method of the named endpoint, so the cmd
-// write census can find the commands that send a write through Call.
-func EndpointMethod(name string) (string, bool) {
+// Describe returns a copy of the named row with Params filled for every
+// placeholder in path order. The caller may change the copy. ok is false
+// for a name that is not in the table.
+func Describe(name string) (e Endpoint, ok bool) {
 	r, ok := endpoints[name]
 	if !ok {
-		return "", false
+		return Endpoint{}, false
 	}
-	return r.Method, true
+	e = r.Endpoint
+	e.Params = make([]Param, 0, len(r.names))
+	for _, n := range r.names {
+		p := r.params[n]
+		p.Name = n
+		p.Enum = slices.Clone(p.Enum)
+		e.Params = append(e.Params, p)
+	}
+	return e, true
 }
 
 // Call sends the named endpoint with args filling its placeholders and body

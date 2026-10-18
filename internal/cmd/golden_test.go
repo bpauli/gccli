@@ -28,7 +28,7 @@ var goldenModes = []goldenMode{
 	{"json", []string{"--json"}},
 }
 
-var goldenOutputs = []string{"stdout", "stderr", "exit"}
+var goldenOutputs = []string{"stdout", "stderr", "exit", "requests"}
 
 func TestGolden(t *testing.T) {
 	leaves := leafCommands(t)
@@ -36,86 +36,106 @@ func TestGolden(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	cases := map[string][]string{}
 	for _, file := range files {
-		if !slices.Contains(leaves, goldenCommand(file)) {
+		path, isCase := goldenCommand(file)
+		switch {
+		case !slices.Contains(leaves, path):
 			t.Errorf("%s names no leaf command: remove the file", file)
+		case isCase:
+			cases[path] = append(cases[path], file)
 		}
 	}
 
 	for _, path := range leaves {
 		file := goldenFile(path)
-		data, err := os.ReadFile(file)
-		if err != nil {
+		if _, err := os.Stat(file); err != nil {
 			t.Errorf("%q has no golden file: create %s with an args section and the routes it calls, then run go test ./internal/cmd -run TestGolden -update", path, file)
 			continue
 		}
-		g, err := parseGolden(string(data))
-		if err != nil {
-			t.Errorf("%s: %v", file, err)
-			continue
+		for _, f := range append([]string{file}, cases[path]...) {
+			runGolden(t, path, f)
 		}
-		args, in, err := g.input()
-		if err != nil {
-			t.Errorf("%s: %v", file, err)
-			continue
-		}
-		if !slices.Equal(args[:min(len(args), len(strings.Fields(path)))], strings.Fields(path)) {
-			t.Errorf("%s: args must start with %q", file, path)
-			continue
-		}
+	}
+}
 
-		passed := map[string]string{}
-		requested := map[string]bool{}
-		ran := 0
-		for _, m := range goldenModes {
-			t.Run(path+"/"+m.name, func(t *testing.T) {
-				ran++
-				h := newHarness(t, in)
-				stdout, stderr, code := h.run(m.flags, args)
-				h.mu.Lock()
-				maps.Copy(requested, h.requested)
-				h.mu.Unlock()
-				out := map[string]string{
-					"stdout": h.mask(stdout),
-					"stderr": h.mask(stderr),
-					"exit":   strconv.Itoa(code) + "\n",
+func runGolden(t *testing.T, path, file string) {
+	t.Helper()
+	data, err := os.ReadFile(file)
+	if err != nil {
+		t.Errorf("%s: %v", file, err)
+		return
+	}
+	g, err := parseGolden(string(data))
+	if err != nil {
+		t.Errorf("%s: %v", file, err)
+		return
+	}
+	args, in, err := g.input()
+	if err != nil {
+		t.Errorf("%s: %v", file, err)
+		return
+	}
+	if !slices.Equal(args[:min(len(args), len(strings.Fields(path)))], strings.Fields(path)) {
+		t.Errorf("%s: args must start with %q", file, path)
+		return
+	}
+
+	label := strings.ReplaceAll(strings.TrimSuffix(filepath.Base(file), ".golden"), "_", " ")
+	passed := map[string]string{}
+	requested := map[string]bool{}
+	ran := 0
+	for _, m := range goldenModes {
+		t.Run(label+"/"+m.name, func(t *testing.T) {
+			ran++
+			h := newHarness(t, in)
+			stdout, stderr, code := h.run(m.flags, args)
+			var log strings.Builder
+			for _, r := range h.requests() {
+				requested[r.route] = true
+				log.WriteString(r.entry)
+			}
+			out := map[string]string{
+				"stdout":   h.mask(stdout),
+				"stderr":   h.mask(stderr),
+				"exit":     strconv.Itoa(code) + "\n",
+				"requests": h.mask(log.String()),
+			}
+			for _, part := range goldenOutputs {
+				name := m.name + " " + part
+				if *update {
+					passed[name] = out[part]
+					continue
 				}
+				want, ok := g.sections[name]
+				if !ok {
+					t.Errorf("%s has no %q section: run go test ./internal/cmd -run TestGolden -update to write it", file, name)
+					continue
+				}
+				if out[part] != want {
+					t.Errorf("%q in %s mode: %s differs from %s (- want, + got):\n%s", path, m.name, part, file, lineDiff(want, out[part]))
+				}
+			}
+			if t.Failed() {
 				for _, part := range goldenOutputs {
-					name := m.name + " " + part
-					if *update {
-						passed[name] = out[part]
-						continue
-					}
-					want, ok := g.sections[name]
-					if !ok {
-						t.Errorf("%s has no %q section: run go test ./internal/cmd -run TestGolden -update to write it", file, name)
-						continue
-					}
-					if out[part] != want {
-						t.Errorf("%q in %s mode: %s differs from %s (- want, + got):\n%s", path, m.name, part, file, lineDiff(want, out[part]))
-					}
+					delete(passed, m.name+" "+part)
 				}
-				if t.Failed() {
-					for _, part := range goldenOutputs {
-						delete(passed, m.name+" "+part)
-					}
-				}
-			})
+			}
+		})
+	}
+	for _, route := range slices.Sorted(maps.Keys(in.routes)) {
+		if ran == len(goldenModes) && !requested[route] {
+			t.Errorf("%s: no mode requests route %q: remove the section", file, route)
 		}
-		for _, route := range slices.Sorted(maps.Keys(in.routes)) {
-			if ran == len(goldenModes) && !requested[route] {
-				t.Errorf("%s: no mode requests route %q: remove the section", file, route)
+	}
+	if *update {
+		for name, body := range passed {
+			if sectionLine.MatchString(body) {
+				t.Fatalf("%s: %s has a line that looks like a section marker", file, name)
 			}
 		}
-		if *update {
-			for name, body := range passed {
-				if sectionLine.MatchString(body) {
-					t.Fatalf("%s: %s has a line that looks like a section marker", file, name)
-				}
-			}
-			if err := os.WriteFile(file, g.withOutputs(passed).format(), 0o644); err != nil {
-				t.Fatal(err)
-			}
+		if err := os.WriteFile(file, g.withOutputs(passed).format(), 0o644); err != nil {
+			t.Fatal(err)
 		}
 	}
 }
@@ -137,8 +157,9 @@ func goldenFile(path string) string {
 	return filepath.Join(goldenDir, strings.ReplaceAll(path, " ", "_")+".golden")
 }
 
-func goldenCommand(file string) string {
-	return strings.ReplaceAll(strings.TrimSuffix(filepath.Base(file), ".golden"), "_", " ")
+func goldenCommand(file string) (path string, isCase bool) {
+	leaf, _, isCase := strings.Cut(strings.TrimSuffix(filepath.Base(file), ".golden"), "@")
+	return strings.ReplaceAll(leaf, "_", " "), isCase
 }
 
 func (h *harness) mask(s string) string {
@@ -249,7 +270,7 @@ func (g golden) input() ([]string, harnessInput, error) {
 			in.routes[f[0]+" "+f[1]] = reply
 		case isOutput(name):
 		default:
-			return nil, in, fmt.Errorf("unknown section %q: want args, stdin, file <name>, route <METHOD> <uri> [status], or <mode> stdout|stderr|exit", name)
+			return nil, in, fmt.Errorf("unknown section %q: want args, stdin, file <name>, route <METHOD> <uri> [status], or <mode> stdout|stderr|exit|requests", name)
 		}
 	}
 	if len(args) == 0 {

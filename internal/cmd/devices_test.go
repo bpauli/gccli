@@ -44,69 +44,7 @@ func devicesTestServer(t *testing.T) *httptest.Server {
 
 // --- Execute-level tests ---
 
-func TestExecute_DevicesHelp(t *testing.T) {
-	code := Execute([]string{"devices", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_DevicesListHelp(t *testing.T) {
-	code := Execute([]string{"devices", "list", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_DeviceSettingsHelp(t *testing.T) {
-	code := Execute([]string{"devices", "settings", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_DevicePrimaryHelp(t *testing.T) {
-	code := Execute([]string{"devices", "primary", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_DeviceSolarHelp(t *testing.T) {
-	code := Execute([]string{"devices", "solar", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_DeviceAlarmsHelp(t *testing.T) {
-	code := Execute([]string{"devices", "alarms", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_DeviceLastUsedHelp(t *testing.T) {
-	code := Execute([]string{"devices", "last-used", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
 // --- DevicesListCmd tests ---
-
-func TestDevicesList_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &DevicesListCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestDevicesList_Success(t *testing.T) {
 	server := devicesTestServer(t)
@@ -151,19 +89,6 @@ func TestDevicesList_ServerError(t *testing.T) {
 
 // --- DeviceSettingsCmd tests ---
 
-func TestDeviceSettings_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &DeviceSettingsCmd{DeviceID: "12345"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
-
 func TestDeviceSettings_Success(t *testing.T) {
 	called := false
 	mux := http.NewServeMux()
@@ -194,19 +119,6 @@ func TestDeviceSettings_Success(t *testing.T) {
 
 // --- DevicePrimaryCmd tests ---
 
-func TestDevicePrimary_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &DevicePrimaryCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
-
 func TestDevicePrimary_Success(t *testing.T) {
 	server := devicesTestServer(t)
 	defer server.Close()
@@ -226,19 +138,6 @@ func TestDevicePrimary_Success(t *testing.T) {
 }
 
 // --- DeviceSolarCmd tests ---
-
-func TestDeviceSolar_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &DeviceSolarCmd{DeviceID: "12345"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestDeviceSolar_Success(t *testing.T) {
 	server := devicesTestServer(t)
@@ -293,19 +192,6 @@ func TestDeviceSolar_DefaultDates(t *testing.T) {
 
 // --- DeviceAlarmsCmd tests ---
 
-func TestDeviceAlarms_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &DeviceAlarmsCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
-
 func TestDeviceAlarms_Success(t *testing.T) {
 	server := devicesTestServer(t)
 	defer server.Close()
@@ -325,19 +211,6 @@ func TestDeviceAlarms_Success(t *testing.T) {
 }
 
 // --- DeviceLastUsedCmd tests ---
-
-func TestDeviceLastUsed_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &DeviceLastUsedCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestDeviceLastUsed_Success(t *testing.T) {
 	server := devicesTestServer(t)

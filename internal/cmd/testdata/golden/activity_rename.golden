@@ -10,11 +10,23 @@ Morning Run
 Renamed activity 111 to "Morning Run"
 -- table exit --
 0
+-- table requests --
+PUT /activity-service/activity/111
+  {
+    "activityId": 111,
+    "activityName": "Morning Run"
+  }
 -- plain stdout --
 -- plain stderr --
 Renamed activity 111 to "Morning Run"
 -- plain exit --
 0
+-- plain requests --
+PUT /activity-service/activity/111
+  {
+    "activityId": 111,
+    "activityName": "Morning Run"
+  }
 -- json stdout --
 {
   "ok": true
@@ -22,3 +34,9 @@ Renamed activity 111 to "Morning Run"
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+PUT /activity-service/activity/111
+  {
+    "activityId": 111,
+    "activityName": "Morning Run"
+  }

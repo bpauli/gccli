@@ -42,22 +42,6 @@ func TestWorkoutCreateCmd_Run_Table(t *testing.T) {
 	}
 }
 
-func TestWorkoutCreateCmd_Run_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &WorkoutCreateCmd{
-		Name:  "Test Run",
-		Type:  "run",
-		Steps: []string{"warmup:1m"},
-		Unit:  "km",
-	}
-
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-}
-
 func TestWorkoutCreateCmd_Run_InvalidStep(t *testing.T) {
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
@@ -71,13 +55,6 @@ func TestWorkoutCreateCmd_Run_InvalidStep(t *testing.T) {
 	err := cmd.Run(g)
 	if err == nil {
 		t.Fatal("expected error, got nil")
-	}
-}
-
-func TestExecute_WorkoutsCreateHelp(t *testing.T) {
-	code := Execute([]string{"workouts", "create", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
 	}
 }
 
