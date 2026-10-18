@@ -13,11 +13,15 @@ y
 Delete blood pressure entry 4 on 2026-10-15? [y/N]: Deleted blood pressure entry 4
 -- table exit --
 0
+-- table requests --
+DELETE /bloodpressure-service/bloodpressure/2026-10-15/4
 -- plain stdout --
 -- plain stderr --
 Delete blood pressure entry 4 on 2026-10-15? [y/N]: Deleted blood pressure entry 4
 -- plain exit --
 0
+-- plain requests --
+DELETE /bloodpressure-service/bloodpressure/2026-10-15/4
 -- json stdout --
 {
   "deleted": true
@@ -26,3 +30,5 @@ Delete blood pressure entry 4 on 2026-10-15? [y/N]: Deleted blood pressure entry
 Delete blood pressure entry 4 on 2026-10-15? [y/N]: 
 -- json exit --
 0
+-- json requests --
+DELETE /bloodpressure-service/bloodpressure/2026-10-15/4

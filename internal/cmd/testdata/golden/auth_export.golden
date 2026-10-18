@@ -6,13 +6,16 @@ eyJ2ZXJzaW9uIjoxLCJvYXV0aDFfdG9rZW4iOiIiLCJvYXV0aDFfc2VjcmV0IjoiIiwib2F1dGgyX2Fj
 -- table stderr --
 -- table exit --
 0
+-- table requests --
 -- plain stdout --
 eyJ2ZXJzaW9uIjoxLCJvYXV0aDFfdG9rZW4iOiIiLCJvYXV0aDFfc2VjcmV0IjoiIiwib2F1dGgyX2FjY2Vzc190b2tlbiI6InRlc3QtYWNjZXNzLXRva2VuIiwib2F1dGgyX3JlZnJlc2hfdG9rZW4iOiIiLCJvYXV0aDJfZXhwaXJlc19hdCI6IjIwOTktMDEtMDFUMDA6MDA6MDBaIiwiZG9tYWluIjoiZ2FybWluLmNvbSIsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSJ9
 -- plain stderr --
 -- plain exit --
 0
+-- plain requests --
 -- json stdout --
 eyJ2ZXJzaW9uIjoxLCJvYXV0aDFfdG9rZW4iOiIiLCJvYXV0aDFfc2VjcmV0IjoiIiwib2F1dGgyX2FjY2Vzc190b2tlbiI6InRlc3QtYWNjZXNzLXRva2VuIiwib2F1dGgyX3JlZnJlc2hfdG9rZW4iOiIiLCJvYXV0aDJfZXhwaXJlc19hdCI6IjIwOTktMDEtMDFUMDA6MDA6MDBaIiwiZG9tYWluIjoiZ2FybWluLmNvbSIsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSJ9
 -- json stderr --
 -- json exit --
 0
+-- json requests --

@@ -11,6 +11,8 @@ daily-weigh-ins
 -- table stderr --
 -- table exit --
 0
+-- table requests --
+GET /weight-service/weight/dayview/2026-10-15?includeAll=true
 -- plain stdout --
 {
   "value": 1
@@ -18,6 +20,8 @@ daily-weigh-ins
 -- plain stderr --
 -- plain exit --
 0
+-- plain requests --
+GET /weight-service/weight/dayview/2026-10-15?includeAll=true
 -- json stdout --
 {
   "value": 1
@@ -25,3 +29,5 @@ daily-weigh-ins
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+GET /weight-service/weight/dayview/2026-10-15?includeAll=true

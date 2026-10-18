@@ -11,6 +11,8 @@ hrv
 -- table stderr --
 -- table exit --
 0
+-- table requests --
+GET /hrv-service/hrv/2026-10-15
 -- plain stdout --
 {
   "value": 1
@@ -18,6 +20,8 @@ hrv
 -- plain stderr --
 -- plain exit --
 0
+-- plain requests --
+GET /hrv-service/hrv/2026-10-15
 -- json stdout --
 {
   "value": 1
@@ -25,3 +29,5 @@ hrv
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+GET /hrv-service/hrv/2026-10-15

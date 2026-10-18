@@ -7,13 +7,19 @@ list
 parse workouts: unexpected end of JSON input
 -- table exit --
 1
+-- table requests --
+GET /workout-service/workouts?start=0&limit=20
 -- plain stdout --
 -- plain stderr --
 parse workouts: unexpected end of JSON input
 -- plain exit --
 1
+-- plain requests --
+GET /workout-service/workouts?start=0&limit=20
 -- json stdout --
 null
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+GET /workout-service/workouts?start=0&limit=20

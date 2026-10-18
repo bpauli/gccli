@@ -14,12 +14,18 @@ ID   NAME          TYPE     DISTANCE  CREATED
 -- table stderr --
 -- table exit --
 0
+-- table requests --
+GET /web-gateway/course/owner/
+GET /userprofile-service/userprofile/user-settings
 -- plain stdout --
 111	Morning Loop	running	5.10 mi	2026-09-01T10:00:00.0
 112	Hill Repeats	cycling	26.10 mi	2026-09-20T10:00:00.0
 -- plain stderr --
 -- plain exit --
 0
+-- plain requests --
+GET /web-gateway/course/owner/
+GET /userprofile-service/userprofile/user-settings
 -- json stdout --
 {
   "coursesForUser": [
@@ -46,3 +52,5 @@ ID   NAME          TYPE     DISTANCE  CREATED
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+GET /web-gateway/course/owner/

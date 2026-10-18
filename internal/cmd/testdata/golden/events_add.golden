@@ -14,11 +14,27 @@ running
 Added event "City Race" on 2026-11-01 (ID: 4242)
 -- table exit --
 0
+-- table requests --
+POST /calendar-service/event
+  {
+    "date": "2026-11-01",
+    "eventName": "City Race",
+    "eventType": "running",
+    "race": false
+  }
 -- plain stdout --
 -- plain stderr --
 Added event "City Race" on 2026-11-01 (ID: 4242)
 -- plain exit --
 0
+-- plain requests --
+POST /calendar-service/event
+  {
+    "date": "2026-11-01",
+    "eventName": "City Race",
+    "eventType": "running",
+    "race": false
+  }
 -- json stdout --
 {
   "id": 4242,
@@ -28,3 +44,11 @@ Added event "City Race" on 2026-11-01 (ID: 4242)
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+POST /calendar-service/event
+  {
+    "date": "2026-11-01",
+    "eventName": "City Race",
+    "eventType": "running",
+    "race": false
+  }

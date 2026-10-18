@@ -11,11 +11,21 @@ add
 Scheduled workout 111 on 2026-10-15
 -- table exit --
 0
+-- table requests --
+POST /workout-service/schedule/111
+  {
+    "date": "2026-10-15"
+  }
 -- plain stdout --
 -- plain stderr --
 Scheduled workout 111 on 2026-10-15
 -- plain exit --
 0
+-- plain requests --
+POST /workout-service/schedule/111
+  {
+    "date": "2026-10-15"
+  }
 -- json stdout --
 {
   "ok": true
@@ -23,3 +33,8 @@ Scheduled workout 111 on 2026-10-15
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+POST /workout-service/schedule/111
+  {
+    "date": "2026-10-15"
+  }

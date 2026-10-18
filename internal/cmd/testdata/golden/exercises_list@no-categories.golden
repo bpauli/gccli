@@ -8,10 +8,14 @@ CATEGORY  COUNT
 -- table stderr --
 -- table exit --
 0
+-- table requests --
+GET /web-data/exercises/Exercises.json
 -- plain stdout --
 -- plain stderr --
 -- plain exit --
 0
+-- plain requests --
+GET /web-data/exercises/Exercises.json
 -- json stdout --
 {
   "BENCH_PRESS": {
@@ -23,3 +27,5 @@ CATEGORY  COUNT
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+GET /web-data/exercises/Exercises.json

@@ -11,11 +11,23 @@ add
 Added 250 ml of water on 2026-10-15
 -- table exit --
 0
+-- table requests --
+PUT /usersummary-service/usersummary/hydration/log
+  {
+    "calendarDate": "2026-10-15",
+    "valueInML": 250
+  }
 -- plain stdout --
 -- plain stderr --
 Added 250 ml of water on 2026-10-15
 -- plain exit --
 0
+-- plain requests --
+PUT /usersummary-service/usersummary/hydration/log
+  {
+    "calendarDate": "2026-10-15",
+    "valueInML": 250
+  }
 -- json stdout --
 {
   "ok": true
@@ -23,3 +35,9 @@ Added 250 ml of water on 2026-10-15
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+PUT /usersummary-service/usersummary/hydration/log
+  {
+    "calendarDate": "2026-10-15",
+    "valueInML": 250
+  }
