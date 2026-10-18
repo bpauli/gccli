@@ -224,7 +224,7 @@ gccli activities list
 - Default: human-friendly tables on stdout.
 - `--json` / `-j`: JSON on stdout (best for scripting).
 - `--plain`: tab-separated values on stdout, with no header row unless you add `--header`. Only these commands print TSV: `activities list`, `activities search`, `activities types`, `activity summary`, `courses list`, `courses favorites`, `courses import`, `events list`, `workouts list`, `workouts schedule list` and `exercises list` (without `--category`). Most other commands that return data print the same JSON in all modes, also without `--json`. `activities count` prints a single number. Use `--json` when a script parses the output.
-- `--header`: with `--plain`, the first line holds the column names. `activity summary` has no column names, so it prints no header line. `--header` without `--plain`, or with `--json`, is a usage error (exit code 2).
+- `--header`: with `--plain`, the first line holds the column names. `activity summary` has no column names, so it prints no header line. `--header` without `--plain`, or with `--json`, is a usage error (exit code 2). `GCCLI_HEADER` is not an error: table and JSON output ignore it.
 - Table and `--plain` output escape the characters that would break a row or a column. A backslash prints as `\\`, a tab as `\t`, a newline as `\n`, a carriage return as `\r`, a vertical tab as `\v` and a form feed as `\f`. So each record is one line, and in `--plain` output only real tabs separate the fields. `--json` output does not change.
 - Write commands (the commands that add, create, upload, import, update, set, rename, retype, schedule, send, link, unlink, remove or delete data in Garmin Connect) all follow one rule:
   - With `--json`, they print the Garmin response on stdout, indented like all JSON output. When Garmin sends an empty response, they print `{"ok": true}`.
@@ -309,7 +309,7 @@ Example:
 | `GCCLI_DOMAIN` | Garmin domain (`garmin.com` or `garmin.cn`) |
 | `GCCLI_JSON` | Enable JSON output (`1`, `true`, `yes`) |
 | `GCCLI_PLAIN` | Enable plain/TSV output (`1`, `true`, `yes`) |
-| `GCCLI_HEADER` | Print the column names as the first line of plain output (`1`, `true`, `yes`) |
+| `GCCLI_HEADER` | Print the column names as the first line of plain output (`1`, `true`, `yes`). Table and JSON output ignore it |
 | `GCCLI_COLOR` | Color mode: `auto`, `always`, `never` |
 | `GCCLI_UNITS` | Unit system: `auto`, `metric`, `statute_us`, `statute_uk` (see [Units](#units)) |
 | `GCCLI_KEYRING_BACKEND` | Keyring backend: `keychain`, `secret-service`, `file` |
