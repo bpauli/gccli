@@ -232,14 +232,15 @@ var (
 const clockSkip = "a route asks for a date that the binary takes from its clock"
 
 var skipped = map[string]string{
-	"auth login":             "the harness stubs the browser SSO login",
-	"devices solar":          clockSkip,
-	"events list":            clockSkip,
-	"goals weight":           clockSkip,
-	"health running-economy": clockSkip,
-	"health steps weekly":    clockSkip,
-	"health stress weekly":   clockSkip,
-	"training active":        clockSkip,
+	"auth login":                 "the harness stubs the browser SSO login",
+	"devices solar":              clockSkip,
+	"events list":                clockSkip,
+	"goals weight":               clockSkip,
+	"health critical-swim-speed": clockSkip,
+	"health running-economy":     clockSkip,
+	"health steps weekly":        clockSkip,
+	"health stress weekly":       clockSkip,
+	"training active":            clockSkip,
 }
 
 // clockBodies names the leaves that send a time from the clock in a request

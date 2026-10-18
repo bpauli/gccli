@@ -141,6 +141,15 @@ var healthGroup = Group{Name: "health", Help: "View health data.", Children: []N
 	},
 	Leaf{Name: "lactate-threshold", Help: "Show latest lactate threshold.", Endpoint: "health.lactate-threshold", Verb: "get lactate threshold", Output: JSON{}},
 	Leaf{Name: "cycling-ftp", Help: "Show latest cycling FTP.", Endpoint: "health.cycling-ftp", Verb: "get cycling ftp", Output: JSON{}},
+	Leaf{
+		Name: "critical-swim-speed", Help: "Show latest critical swim speed as of a date.",
+		Spec: argsOf(&struct {
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today."`
+		}{}),
+		Endpoint: "health.critical-swim-speed",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get critical swim speed", Output: JSON{},
+	},
 	healthRacePredictionsGroup,
 	Leaf{
 		Name: "endurance-score", Help: "Show endurance score data.",
