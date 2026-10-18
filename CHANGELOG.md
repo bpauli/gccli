@@ -5,6 +5,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2026-10-18
+
+v2.1 keeps the stored login safe when several gccli processes run at the same time, and it checks command input before it sends a request. No flag or command name changes. Read the `Changed` list if a script checks the exit code of `auth token` or passes `events add --time` with seconds.
+
+### Changed
+
+- **Token refresh waits for other gccli processes** - When two or more commands start with an expired token, only one of them refreshes it. The others wait for it, then use the refreshed token. Before, the second command could fail with exit code 3, because Garmin accepts a refresh token only once. A wait longer than one second prints `Waiting for another gccli process to refresh the token` on stderr. The lock is the new empty file `token.lock` in the config directory. (#158, #179)
+- **`auth token` refreshes an expired token** - It prints the new token. When the refresh fails, it exits with 3 and prints nothing on stdout. Before, it printed the expired token, wrote a warning and exited with 0, so a script used a token that Garmin rejects. (#161)
+- **The stored token has a version** - `auth export` output gains `"version": 1`. A token with another version fails before any request, and the error names both versions. Tokens from v2.0.0 still import and refresh, and v2.0.0 can read a token from v2.1.0. The unused `display_name` field is removed. (#171)
+- **Refresh errors name the cause** - A failed refresh now prints `Token expired: <cause>. Run: gccli auth login <email>`. Before, a refused connection and a Garmin 503 both printed only `Token expired`. The cause quotes at most 512 bytes of the Garmin response and says how many bytes it cut. Before, a long HTML error page went into the `--json` error object. The error code and exit code do not change. (#179, #182)
+- **Command input is checked before the request** - `workouts create`, `activity exercise-sets set` and `events add` reject NaN, Inf, numbers that overflow and empty values, with exit code 1 and no request. The error names the value as you typed it. Before, some of these values went to Garmin, and others failed with `json: unsupported value`. (#175)
+  - `workouts create` rejects an empty step list.
+  - `activity exercise-sets set` rejects a negative rep count and an empty category or name.
+  - `events add --time` accepts only `H:MM` or `HH:MM`, from `00:00` to `23:59`. Values such as `07:30:00`, `0730` and `7:30pm` now fail. A script that passes seconds must remove them.
+- **Values in the request path are escaped** - `records`, `training plan` and `training plans --locale` escape the values that they put in the URL. A value with `/`, `?`, `#`, `&` or `%` now reaches Garmin as one value. Before, such a value changed the URL or cut it short. An empty plan ID, `.` and `..` fail with exit code 1 before any request. (#170, #178)
+
+### Fixed
+
+- A `garmin.cn` account could not refresh its token, because every refresh went to `diauth.garmin.com`. Login, refresh and API calls now use one domain: the token domain, then the config, then `garmin.com`. `auth login` rejects an unknown domain with exit code 2 before the password prompt, and `auth import` rejects a token with an unknown domain. (#150)
+- A stored token with an unknown domain now fails with `stored token for <email> has unknown Garmin domain "<domain>"; run: gccli auth login <email>`. Before, the message did not name the token, and `auth status` and `auth token` showed the token as valid. (#177, #179)
+- A refreshed token that gccli cannot save no longer fails the command. The command uses the token and prints `Could not save the refreshed token: <error>` as a warning. A read-only config directory no longer stops a refresh. (#179)
+- With the `file` keyring, a command that read the token while another process wrote it could fail with `jwt.DecodeBytes() expects token of 3 or 5 parts`. gccli now writes the token file in a temporary directory and renames it over the old file. A temporary directory that a killed write leaves behind is removed by the next write and by `auth remove`. On Windows gccli does not remove it. (#179, #182)
+- `auth login` and `auth import` rewrote `config.json` and lost the keys that they do not know. A write that stopped midway left a cut file. Config writes now keep every key, write a temporary file and rename it, and hold a lock on `config.lock`. (#143)
+- `courses import` without `--json` exited with 1 when Garmin saved the course but sent an empty response. It now prints `Imported course from <file>` on stderr and exits with 0. (#169)
+- `gear list` and `gear defaults` sent any `profileId` value to Garmin, also `null` or an object. A `profileId` that is not an unsigned integer now fails with exit code 1 before the request. (#174)
+
+### Docs
+
+- The command reference in the README, the skill and the docs site is now generated from the command tree, so it matches the binary. `make test` fails when it is out of date. (#163)
+- `docs/state.md` describes every file and keyring item that gccli stores, the lock files and the token format. The README links it. (#171, #179, #182)
+- The README no longer has the Credits section. (#155)
+
 ## [2.0.0] - 2026-10-15
 
 v2.0 gives each flag one name and each write command one output rule. Scripts that use the old flag names or parse write output must change. A command with an old flag name fails with exit code 2 and names the flag, so a broken script fails loudly. The tables below list every change.
@@ -405,6 +437,7 @@ Initial release of gccli — a fast, script-friendly CLI for Garmin Connect.
 - **CI pipeline** — GitHub Actions for fmt-check, lint, and test
 - **Cross-platform builds** — macOS (amd64/arm64) and Linux (amd64/arm64) via goreleaser
 
+[2.1.0]: https://github.com/bpauli/gccli/releases/tag/v2.1.0
 [2.0.0]: https://github.com/bpauli/gccli/releases/tag/v2.0.0
 [1.13.0]: https://github.com/bpauli/gccli/releases/tag/v1.13.0
 [1.12.0]: https://github.com/bpauli/gccli/releases/tag/v1.12.0
