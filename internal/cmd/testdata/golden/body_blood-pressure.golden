@@ -23,6 +23,15 @@ GET /bloodpressure-service/bloodpressure/range/2026-10-01/2026-10-01?includeAll=
 0
 -- plain requests --
 GET /bloodpressure-service/bloodpressure/range/2026-10-01/2026-10-01?includeAll=true
+-- plain-header stdout --
+{
+  "value": 1
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /bloodpressure-service/bloodpressure/range/2026-10-01/2026-10-01?includeAll=true
 -- json stdout --
 {
   "value": 1

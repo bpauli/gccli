@@ -16,6 +16,13 @@ parse favorite courses: unexpected end of JSON input
 1
 -- plain requests --
 GET /course-service/course/favorites
+-- plain-header stdout --
+-- plain-header stderr --
+parse favorite courses: unexpected end of JSON input
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /course-service/course/favorites
 -- json stdout --
 null
 -- json stderr --

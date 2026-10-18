@@ -22,6 +22,15 @@ GET /weight-service/weight/dayview/2026-10-15?includeAll=true
 0
 -- plain requests --
 GET /weight-service/weight/dayview/2026-10-15?includeAll=true
+-- plain-header stdout --
+{
+  "value": 1
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /weight-service/weight/dayview/2026-10-15?includeAll=true
 -- json stdout --
 {
   "value": 1

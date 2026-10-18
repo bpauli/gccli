@@ -79,10 +79,7 @@ func (c *EventsListCmd) Run(g *Globals) error {
 	rows := formatEventListRows(events)
 	header := []string{"ID", "DATE", "NAME", "TYPE", "LOCATION"}
 
-	if outfmt.IsPlain(g.Context) {
-		return outfmt.WritePlain(g.Stdout, rows)
-	}
-	return outfmt.WriteTable(g.Stdout, header, rows)
+	return outfmt.WriteRows(g.Context, g.Stdout, header, rows)
 }
 
 // parseEvents unmarshals the events list response.

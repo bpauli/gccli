@@ -17,6 +17,13 @@ GET /hrv-service/hrv/2026-10-15
 0
 -- plain requests --
 GET /hrv-service/hrv/2026-10-15
+-- plain-header stdout --
+{}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /hrv-service/hrv/2026-10-15
 -- json stdout --
 {}
 -- json stderr --

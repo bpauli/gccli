@@ -16,6 +16,13 @@ parse activities: unexpected end of JSON input
 1
 -- plain requests --
 GET /activitylist-service/activities/search/activities?start=0&limit=20
+-- plain-header stdout --
+-- plain-header stderr --
+parse activities: unexpected end of JSON input
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /activitylist-service/activities/search/activities?start=0&limit=20
 -- json stdout --
 null
 -- json stderr --

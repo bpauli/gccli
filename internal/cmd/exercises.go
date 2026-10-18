@@ -71,10 +71,7 @@ func (c *ExercisesListCmd) printAllCategories(g *Globals, catalog exerciseCatalo
 		rows = append(rows, []string{cat, fmt.Sprintf("%d exercises", len(exercises))})
 	}
 
-	if outfmt.IsPlain(g.Context) {
-		return outfmt.WritePlain(g.Stdout, rows)
-	}
-	return outfmt.WriteTable(g.Stdout, []string{"CATEGORY", "COUNT"}, rows)
+	return outfmt.WriteRows(g.Context, g.Stdout, []string{"CATEGORY", "COUNT"}, rows)
 }
 
 func (c *ExercisesListCmd) printCategory(g *Globals, catalog exerciseCatalog, category string) error {

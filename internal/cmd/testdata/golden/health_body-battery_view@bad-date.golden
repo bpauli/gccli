@@ -15,6 +15,12 @@ invalid date "2026-02-30": expected YYYY-MM-DD, today, yesterday, Nd (e.g. 3d), 
 -- plain exit --
 1
 -- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+invalid date "2026-02-30": expected YYYY-MM-DD, today, yesterday, Nd (e.g. 3d), or +Nd (e.g. +30d)
+-- plain-header exit --
+1
+-- plain-header requests --
 -- json stdout --
 -- json stderr --
 {"error":{"code":"error","message":"invalid date \"2026-02-30\": expected YYYY-MM-DD, today, yesterday, Nd (e.g. 3d), or +Nd (e.g. +30d)"}}

@@ -20,6 +20,13 @@ Downloaded activity_111.gpx (82 bytes)
 0
 -- plain requests --
 GET /download-service/export/gpx/activity/111
+-- plain-header stdout --
+-- plain-header stderr --
+Downloaded activity_111.gpx (82 bytes)
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /download-service/export/gpx/activity/111
 -- json stdout --
 -- json stderr --
 Downloaded activity_111.gpx (82 bytes)

@@ -18,6 +18,14 @@ GET /course-service/course/favorites
 0
 -- plain requests --
 GET /course-service/course/favorites
+-- plain-header stdout --
+ID	NAME	TYPE	DISTANCE	CREATED
+111	Morning Loop	running	8.20 km	2026-09-01T10:00:00.0
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /course-service/course/favorites
 -- json stdout --
 [
   {

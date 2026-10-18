@@ -21,6 +21,15 @@ GET /trainingplan-service/trainingplan/plans?locale=en
 0
 -- plain requests --
 GET /trainingplan-service/trainingplan/plans?locale=en
+-- plain-header stdout --
+{
+  "value": 1
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /trainingplan-service/trainingplan/plans?locale=en
 -- json stdout --
 {
   "value": 1

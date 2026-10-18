@@ -16,6 +16,13 @@ parse activity types: unexpected end of JSON input
 1
 -- plain requests --
 GET /activity-service/activity/activityTypes
+-- plain-header stdout --
+-- plain-header stderr --
+parse activity types: unexpected end of JSON input
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /activity-service/activity/activityTypes
 -- json stdout --
 null
 -- json stderr --

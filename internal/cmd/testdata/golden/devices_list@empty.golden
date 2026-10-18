@@ -16,6 +16,13 @@ GET /device-service/deviceregistration/devices
 0
 -- plain requests --
 GET /device-service/deviceregistration/devices
+-- plain-header stdout --
+{}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /device-service/deviceregistration/devices
 -- json stdout --
 {}
 -- json stderr --

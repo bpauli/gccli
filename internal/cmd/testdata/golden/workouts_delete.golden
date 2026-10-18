@@ -20,6 +20,13 @@ Delete workout 111? [y/N]: Deleted workout 111
 0
 -- plain requests --
 DELETE /workout-service/workout/111
+-- plain-header stdout --
+-- plain-header stderr --
+Delete workout 111? [y/N]: Deleted workout 111
+-- plain-header exit --
+0
+-- plain-header requests --
+DELETE /workout-service/workout/111
 -- json stdout --
 {
   "deleted": true

@@ -20,6 +20,15 @@ GET /activitylist-service/activities/search/activities?start=0&limit=20
 0
 -- plain requests --
 GET /activitylist-service/activities/search/activities?start=0&limit=20
+-- plain-header stdout --
+ID	DATE	TYPE	NAME	DISTANCE	DURATION	CALORIES
+111	2026-10-14	running	Morning Run	10.01 km	50:05	712
+112	2026-10-13	lap_swimming	Pool Swim	1.50 km	33:00	350
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /activitylist-service/activities/search/activities?start=0&limit=20
 -- json stdout --
 [
   {

@@ -18,6 +18,13 @@ null
 0
 -- plain requests --
 GET /activity-service/activity/111/exerciseSets
+-- plain-header stdout --
+null
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /activity-service/activity/111/exerciseSets
 -- json stdout --
 null
 -- json stderr --

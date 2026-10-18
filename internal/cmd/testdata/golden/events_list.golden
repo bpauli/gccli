@@ -18,6 +18,14 @@ GET /calendar-service/events?startDate=2026-10-15&pageIndex=1&limit=20&sortOrder
 0
 -- plain requests --
 GET /calendar-service/events?startDate=2026-10-15&pageIndex=1&limit=20&sortOrder=eventDate_asc
+-- plain-header stdout --
+ID	DATE	NAME	TYPE	LOCATION
+4242	2026-11-01	City Race	running	Berlin
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /calendar-service/events?startDate=2026-10-15&pageIndex=1&limit=20&sortOrder=eventDate_asc
 -- json stdout --
 [
   {

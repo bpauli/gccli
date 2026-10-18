@@ -4,13 +4,14 @@ list
 --units
 auto
 -- route GET /web-gateway/course/owner/ --
-{"coursesForUser":[{"courseId":111,"courseName":"Morning Loop","courseType":{"typeKey":"running"},"distanceInMeters":8200,"createdDate":"2026-09-01T10:00:00.0"},{"courseId":112,"courseName":"Hill Repeats","courseType":{"typeKey":"cycling"},"distanceInMeters":42000,"createdDate":"2026-09-20T10:00:00.0"}]}
+{"coursesForUser":[{"courseId":111,"courseName":"Morning Loop","courseType":{"typeKey":"running"},"distanceInMeters":8200,"createdDate":"2026-09-01T10:00:00.0"},{"courseId":112,"courseName":"Hill Repeats","courseType":{"typeKey":"cycling"},"distanceInMeters":42000,"createdDate":"2026-09-20T10:00:00.0"},{"courseId":113,"courseName":"Tab\there\nNewline\\back\rCR","courseType":{"typeKey":"hiking"},"distanceInMeters":1000,"createdDate":"2026-09-21T10:00:00.0"}]}
 -- route GET /userprofile-service/userprofile/user-settings --
 {"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"statute_us"}}
 -- table stdout --
-ID   NAME          TYPE     DISTANCE  CREATED
-111  Morning Loop  running  5.10 mi   2026-09-01T10:00:00.0
-112  Hill Repeats  cycling  26.10 mi  2026-09-20T10:00:00.0
+ID   NAME                          TYPE     DISTANCE  CREATED
+111  Morning Loop                  running  5.10 mi   2026-09-01T10:00:00.0
+112  Hill Repeats                  cycling  26.10 mi  2026-09-20T10:00:00.0
+113  Tab\there\nNewline\\back\rCR  hiking   0.62 mi   2026-09-21T10:00:00.0
 -- table stderr --
 -- table exit --
 0
@@ -20,10 +21,22 @@ GET /userprofile-service/userprofile/user-settings
 -- plain stdout --
 111	Morning Loop	running	5.10 mi	2026-09-01T10:00:00.0
 112	Hill Repeats	cycling	26.10 mi	2026-09-20T10:00:00.0
+113	Tab\there\nNewline\\back\rCR	hiking	0.62 mi	2026-09-21T10:00:00.0
 -- plain stderr --
 -- plain exit --
 0
 -- plain requests --
+GET /web-gateway/course/owner/
+GET /userprofile-service/userprofile/user-settings
+-- plain-header stdout --
+ID	NAME	TYPE	DISTANCE	CREATED
+111	Morning Loop	running	5.10 mi	2026-09-01T10:00:00.0
+112	Hill Repeats	cycling	26.10 mi	2026-09-20T10:00:00.0
+113	Tab\there\nNewline\\back\rCR	hiking	0.62 mi	2026-09-21T10:00:00.0
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
 GET /web-gateway/course/owner/
 GET /userprofile-service/userprofile/user-settings
 -- json stdout --
@@ -46,6 +59,15 @@ GET /userprofile-service/userprofile/user-settings
       },
       "distanceInMeters": 42000,
       "createdDate": "2026-09-20T10:00:00.0"
+    },
+    {
+      "courseId": 113,
+      "courseName": "Tab\there\nNewline\\back\rCR",
+      "courseType": {
+        "typeKey": "hiking"
+      },
+      "distanceInMeters": 1000,
+      "createdDate": "2026-09-21T10:00:00.0"
     }
   ]
 }

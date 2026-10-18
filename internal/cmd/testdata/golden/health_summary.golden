@@ -26,6 +26,16 @@ GET /usersummary-service/usersummary/daily/tester?calendarDate=2026-10-15
 -- plain requests --
 GET /userprofile-service/userprofile/settings
 GET /usersummary-service/usersummary/daily/tester?calendarDate=2026-10-15
+-- plain-header stdout --
+{
+  "value": 1
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /usersummary-service/usersummary/daily/tester?calendarDate=2026-10-15
 -- json stdout --
 {
   "value": 1

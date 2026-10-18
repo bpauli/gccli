@@ -22,6 +22,13 @@ Delete blood pressure entry 4 on 2026-10-15? [y/N]: Deleted blood pressure entry
 0
 -- plain requests --
 DELETE /bloodpressure-service/bloodpressure/2026-10-15/4
+-- plain-header stdout --
+-- plain-header stderr --
+Delete blood pressure entry 4 on 2026-10-15? [y/N]: Deleted blood pressure entry 4
+-- plain-header exit --
+0
+-- plain-header requests --
+DELETE /bloodpressure-service/bloodpressure/2026-10-15/4
 -- json stdout --
 {
   "deleted": true

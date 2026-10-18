@@ -41,6 +41,24 @@ GET /device-service/deviceservice/device-info/settings/3442032430
 -- plain requests --
 GET /device-service/deviceregistration/devices
 GET /device-service/deviceservice/device-info/settings/3442032430
+-- plain-header stdout --
+[
+  {
+    "alarmDays": [
+      "MONDAY",
+      "FRIDAY"
+    ],
+    "alarmId": 1,
+    "alarmMode": "ON",
+    "alarmTime": 420
+  }
+]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /device-service/deviceregistration/devices
+GET /device-service/deviceservice/device-info/settings/3442032430
 -- json stdout --
 [
   {

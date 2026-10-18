@@ -22,6 +22,14 @@ GET /userprofile-service/userprofile/user-settings
 -- plain requests --
 GET /web-gateway/course/owner/
 GET /userprofile-service/userprofile/user-settings
+-- plain-header stdout --
+ID	NAME	TYPE	DISTANCE	CREATED
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /web-gateway/course/owner/
+GET /userprofile-service/userprofile/user-settings
 -- json stdout --
 {
   "courses": [

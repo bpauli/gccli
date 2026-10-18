@@ -67,6 +67,34 @@ POST /activity-service/activity
       "unitKey": "UTC"
     }
   }
+-- plain-header stdout --
+-- plain-header stderr --
+Created activity 21234567890
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /activity-service/activity
+  {
+    "accessControlRuleDTO": {
+      "typeId": 2,
+      "typeKey": "private"
+    },
+    "activityName": "Swim",
+    "activityTypeDTO": {
+      "typeKey": "swimming"
+    },
+    "metadataDTO": {
+      "autoCalcCalories": true
+    },
+    "summaryDTO": {
+      "distance": 0,
+      "duration": 1800,
+      "startTimeLocal": "2026-10-15T07:30:00.000"
+    },
+    "timeZoneUnitDTO": {
+      "unitKey": "UTC"
+    }
+  }
 -- json stdout --
 {
   "activityId": 21234567890,

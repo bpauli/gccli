@@ -35,6 +35,18 @@ GET /calendar-service/year/2026/month/9/day/15/start/0
 GET /calendar-service/year/2026/month/9/day/1/start/0
 GET /calendar-service/year/2026/month/9/day/8/start/0
 GET /calendar-service/year/2026/month/9/day/15/start/0
+-- plain-header stdout --
+SCHEDULE ID	WORKOUT ID	TITLE	SPORT	DATE
+21	901	Tempo	running	2026-10-02
+23	902	Intervals	running	2026-10-09
+24	903	Long Ride	cycling	2026-10-15
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /calendar-service/year/2026/month/9/day/1/start/0
+GET /calendar-service/year/2026/month/9/day/8/start/0
+GET /calendar-service/year/2026/month/9/day/15/start/0
 -- json stdout --
 [
   {

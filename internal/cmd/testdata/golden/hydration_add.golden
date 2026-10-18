@@ -28,6 +28,17 @@ PUT /usersummary-service/usersummary/hydration/log
     "calendarDate": "2026-10-15",
     "valueInML": 250
   }
+-- plain-header stdout --
+-- plain-header stderr --
+Added 250 ml of water on 2026-10-15
+-- plain-header exit --
+0
+-- plain-header requests --
+PUT /usersummary-service/usersummary/hydration/log
+  {
+    "calendarDate": "2026-10-15",
+    "valueInML": 250
+  }
 -- json stdout --
 {
   "ok": true

@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"strings"
 	"testing"
+	"unicode/utf8"
 )
 
 func TestModeConstants(t *testing.T) {
@@ -45,16 +46,6 @@ func TestIsJSON(t *testing.T) {
 	}
 }
 
-func TestIsPlain(t *testing.T) {
-	ctx := NewContext(context.Background(), Plain)
-	if !IsPlain(ctx) {
-		t.Error("IsPlain = false, want true")
-	}
-	if IsPlain(context.Background()) {
-		t.Error("IsPlain(empty ctx) = true, want false")
-	}
-}
-
 func TestWriteJSON(t *testing.T) {
 	var buf bytes.Buffer
 	data := map[string]any{
@@ -87,98 +78,8 @@ func TestWriteJSON(t *testing.T) {
 	}
 }
 
-func TestWriteTable(t *testing.T) {
-	var buf bytes.Buffer
-	header := []string{"ID", "NAME", "STATUS"}
-	rows := [][]string{
-		{"1", "alpha", "ok"},
-		{"2", "beta", "fail"},
-	}
-	if err := WriteTable(&buf, header, rows); err != nil {
-		t.Fatalf("WriteTable error: %v", err)
-	}
-	got := buf.String()
-
-	// Header present.
-	if !strings.Contains(got, "ID") || !strings.Contains(got, "NAME") || !strings.Contains(got, "STATUS") {
-		t.Errorf("WriteTable missing header columns in: %q", got)
-	}
-
-	// Data rows present.
-	if !strings.Contains(got, "alpha") || !strings.Contains(got, "beta") {
-		t.Errorf("WriteTable missing data in: %q", got)
-	}
-
-	// Aligned with spaces (tabwriter uses spaces for padding).
-	lines := strings.Split(strings.TrimSpace(got), "\n")
-	if len(lines) != 3 {
-		t.Errorf("WriteTable produced %d lines, want 3", len(lines))
-	}
-}
-
-func TestWriteTableNoHeader(t *testing.T) {
-	var buf bytes.Buffer
-	rows := [][]string{
-		{"a", "b"},
-		{"c", "d"},
-	}
-	if err := WriteTable(&buf, nil, rows); err != nil {
-		t.Fatalf("WriteTable error: %v", err)
-	}
-	lines := strings.Split(strings.TrimSpace(buf.String()), "\n")
-	if len(lines) != 2 {
-		t.Errorf("WriteTable with no header produced %d lines, want 2", len(lines))
-	}
-}
-
-func TestWritePlain(t *testing.T) {
-	var buf bytes.Buffer
-	rows := [][]string{
-		{"1", "alpha", "ok"},
-		{"2", "beta", "fail"},
-	}
-	if err := WritePlain(&buf, rows); err != nil {
-		t.Fatalf("WritePlain error: %v", err)
-	}
-	got := buf.String()
-	lines := strings.Split(strings.TrimSpace(got), "\n")
-	if len(lines) != 2 {
-		t.Errorf("WritePlain produced %d lines, want 2", len(lines))
-	}
-
-	// Columns separated by tabs.
-	if !strings.Contains(lines[0], "\t") {
-		t.Errorf("WritePlain line not tab-separated: %q", lines[0])
-	}
-	parts := strings.Split(lines[0], "\t")
-	if len(parts) != 3 {
-		t.Errorf("WritePlain line has %d tab-separated parts, want 3", len(parts))
-	}
-	if parts[0] != "1" || parts[1] != "alpha" || parts[2] != "ok" {
-		t.Errorf("WritePlain line = %v, want [1 alpha ok]", parts)
-	}
-}
-
-func TestWritePlainEmpty(t *testing.T) {
-	var buf bytes.Buffer
-	if err := WritePlain(&buf, nil); err != nil {
-		t.Fatalf("WritePlain error: %v", err)
-	}
-	if buf.Len() != 0 {
-		t.Errorf("WritePlain with no rows produced output: %q", buf.String())
-	}
-}
-
-func TestNewTabWriter(t *testing.T) {
-	var buf bytes.Buffer
-	tw := NewTabWriter(&buf)
-	if tw == nil {
-		t.Fatal("NewTabWriter returned nil")
-	}
-}
-
 func TestContextRoundTrip(t *testing.T) {
-	for _, mode := range []Mode{Table, JSON, Plain} {
+	for _, mode := range []Mode{Table, JSON, Plain, PlainHeader} {
 		ctx := NewContext(context.Background(), mode)
 		got := ModeFromContext(ctx)
 		if got != mode {
@@ -187,41 +88,70 @@ func TestContextRoundTrip(t *testing.T) {
 	}
 }
 
-func TestWriteTable_SingleColumn(t *testing.T) {
+func writeRows(t *testing.T, mode Mode, header []string, rows [][]string) string {
+	t.Helper()
 	var buf bytes.Buffer
-	header := []string{"NAME"}
-	rows := [][]string{{"alice"}, {"bob"}}
-	if err := WriteTable(&buf, header, rows); err != nil {
-		t.Fatalf("WriteTable error: %v", err)
+	if err := WriteRows(NewContext(context.Background(), mode), &buf, header, rows); err != nil {
+		t.Fatalf("WriteRows error: %v", err)
 	}
-	got := buf.String()
-	if !strings.Contains(got, "NAME") || !strings.Contains(got, "alice") {
-		t.Errorf("WriteTable single column = %q, want NAME and alice", got)
+	return buf.String()
+}
+
+func TestWriteRows(t *testing.T) {
+	header := []string{"ID", "NAME", "STATUS"}
+	rows := [][]string{
+		{"1", "alpha", "ok"},
+		{"22", "beta", "fail"},
+	}
+	tests := []struct {
+		mode   Mode
+		header []string
+		rows   [][]string
+		want   string
+	}{
+		{Table, header, rows, "ID  NAME   STATUS\n1   alpha  ok\n22  beta   fail\n"},
+		{Table, nil, rows, "1   alpha  ok\n22  beta   fail\n"},
+		{Table, header, nil, "ID  NAME  STATUS\n"},
+		{Plain, header, rows, "1\talpha\tok\n22\tbeta\tfail\n"},
+		{Plain, header, nil, ""},
+		{PlainHeader, header, rows, "ID\tNAME\tSTATUS\n1\talpha\tok\n22\tbeta\tfail\n"},
+		{PlainHeader, nil, rows, "1\talpha\tok\n22\tbeta\tfail\n"},
+		{PlainHeader, header, nil, "ID\tNAME\tSTATUS\n"},
+	}
+	for _, tt := range tests {
+		if got := writeRows(t, tt.mode, tt.header, tt.rows); got != tt.want {
+			t.Errorf("WriteRows(mode %d, header %q, rows %q) = %q, want %q", tt.mode, tt.header, tt.rows, got, tt.want)
+		}
 	}
 }
 
-func TestWritePlain_SingleColumn(t *testing.T) {
-	var buf bytes.Buffer
-	rows := [][]string{{"one"}, {"two"}}
-	if err := WritePlain(&buf, rows); err != nil {
-		t.Fatalf("WritePlain error: %v", err)
+func TestWriteRowsEscapes(t *testing.T) {
+	tests := []struct {
+		value string
+		want  string
+	}{
+		{`back\slash`, `back\\slash`},
+		{"tab\there", `tab\there`},
+		{"new\nline", `new\nline`},
+		{"carriage\rreturn", `carriage\rreturn`},
+		{"vertical\vtab", `vertical\vtab`},
+		{"form\ffeed", `form\ffeed`},
+		{"a\\b\tc\nd\re", `a\\b\tc\nd\re`},
+		{`\t`, `\\t`},
+		{"Grüße", "Grüße"},
 	}
-	lines := strings.Split(strings.TrimSpace(buf.String()), "\n")
-	if len(lines) != 2 {
-		t.Errorf("WritePlain single column produced %d lines, want 2", len(lines))
-	}
-	if lines[0] != "one" {
-		t.Errorf("first line = %q, want %q", lines[0], "one")
-	}
-}
-
-func TestWriteTable_EmptyRows(t *testing.T) {
-	var buf bytes.Buffer
-	if err := WriteTable(&buf, []string{"H"}, nil); err != nil {
-		t.Fatalf("WriteTable error: %v", err)
-	}
-	got := buf.String()
-	if !strings.Contains(got, "H") {
-		t.Errorf("WriteTable empty rows = %q, want header", got)
+	for _, tt := range tests {
+		rows := [][]string{{"1", tt.value, "x"}}
+		if got, want := writeRows(t, Plain, nil, rows), "1\t"+tt.want+"\tx\n"; got != want {
+			t.Errorf("plain cell %q = %q, want %q", tt.value, got, want)
+		}
+		if got, want := writeRows(t, PlainHeader, []string{tt.value}, nil), tt.want+"\n"; got != want {
+			t.Errorf("plain header %q = %q, want %q", tt.value, got, want)
+		}
+		width := max(utf8.RuneCountInString(tt.want), len("NAME"))
+		pad := func(s string) string { return s + strings.Repeat(" ", width-utf8.RuneCountInString(s)) }
+		if got, want := writeRows(t, Table, []string{"ID", "NAME", "X"}, rows), "ID  "+pad("NAME")+"  X\n1   "+pad(tt.want)+"  x\n"; got != want {
+			t.Errorf("table cell %q = %q, want %q", tt.value, got, want)
+		}
 	}
 }

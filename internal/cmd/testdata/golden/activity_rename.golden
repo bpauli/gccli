@@ -27,6 +27,17 @@ PUT /activity-service/activity/111
     "activityId": 111,
     "activityName": "Morning Run"
   }
+-- plain-header stdout --
+-- plain-header stderr --
+Renamed activity 111 to "Morning Run"
+-- plain-header exit --
+0
+-- plain-header requests --
+PUT /activity-service/activity/111
+  {
+    "activityId": 111,
+    "activityName": "Morning Run"
+  }
 -- json stdout --
 {
   "ok": true

@@ -59,6 +59,32 @@ PUT /activity-service/activity/111/exerciseSets
       }
     ]
   }
+-- plain-header stdout --
+-- plain-header stderr --
+Exercise sets updated for activity 111
+-- plain-header exit --
+0
+-- plain-header requests --
+PUT /activity-service/activity/111/exerciseSets
+  {
+    "activityId": 111,
+    "exerciseSets": [
+      {
+        "exercises": [
+          {
+            "probability": 100,
+            "category": "BENCH_PRESS",
+            "name": "BARBELL_BENCH_PRESS"
+          }
+        ],
+        "repetitionCount": 12,
+        "duration": null,
+        "weight": 20000,
+        "setType": "ACTIVE",
+        "startTime": null
+      }
+    ]
+  }
 -- json stdout --
 {
   "ok": true

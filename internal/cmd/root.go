@@ -115,13 +115,7 @@ func run(parser *kong.Kong, cli *CLI, args []string, stdout, stderr io.Writer) (
 		return kindUsage.exit // unreachable: FatalIfErrorf panics via exitSignal
 	}
 
-	// Determine output mode from flags and env vars.
-	mode := outfmt.Table
-	if cli.JSON || config.IsJSON() {
-		mode = outfmt.JSON
-	} else if cli.Plain || config.IsPlain() {
-		mode = outfmt.Plain
-	}
+	mode := cli.outputMode()
 
 	// Determine color mode from flag and env var.
 	colorMode := cli.Color

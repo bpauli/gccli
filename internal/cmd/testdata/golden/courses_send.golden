@@ -47,6 +47,26 @@ POST /device-service/devicemessage/messages
       "priority": 0
     }
   ]
+-- plain-header stdout --
+-- plain-header stderr --
+Sent course "Morning Loop" to device Forerunner 265 (message 888)
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /course-service/course/111
+POST /device-service/devicemessage/messages
+  [
+    {
+      "deviceId": 3333,
+      "fileType": "FIT",
+      "groupName": null,
+      "messageName": "Morning Loop",
+      "messageType": "courses",
+      "messageUrl": "course-service/course/fit/111/3333?elevation=true",
+      "metaDataId": 111,
+      "priority": 0
+    }
+  ]
 -- json stdout --
 [
   {

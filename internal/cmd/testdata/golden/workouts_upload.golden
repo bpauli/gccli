@@ -36,6 +36,21 @@ POST /workout-service/workout
     }
   }
 
+-- plain-header stdout --
+-- plain-header stderr --
+Uploaded workout from $DIR/workout.json
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /workout-service/workout
+  {
+    "workoutName": "Intervals",
+    "sportType": {
+      "sportTypeId": 1,
+      "sportTypeKey": "running"
+    }
+  }
+
 -- json stdout --
 {
   "workoutId": 902,

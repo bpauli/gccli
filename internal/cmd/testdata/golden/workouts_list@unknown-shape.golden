@@ -17,6 +17,13 @@ parse workouts: unexpected response format
 1
 -- plain requests --
 GET /workout-service/workouts?start=0&limit=20
+-- plain-header stdout --
+-- plain-header stderr --
+parse workouts: unexpected response format
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /workout-service/workouts?start=0&limit=20
 -- json stdout --
 {
   "items": [

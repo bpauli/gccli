@@ -20,6 +20,14 @@ GET /calendar-service/year/2026/month/9/day/15/start/0
 0
 -- plain requests --
 GET /calendar-service/year/2026/month/9/day/15/start/0
+-- plain-header stdout --
+SCHEDULE ID	WORKOUT ID	TITLE	SPORT	DATE
+10	901	Tempo	running	2026-10-15
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /calendar-service/year/2026/month/9/day/15/start/0
 -- json stdout --
 [
   {

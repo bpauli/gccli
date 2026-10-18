@@ -26,6 +26,16 @@ POST /workout-service/schedule/111
   {
     "date": "2026-10-15"
   }
+-- plain-header stdout --
+-- plain-header stderr --
+Scheduled workout 111 on 2026-10-15
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /workout-service/schedule/111
+  {
+    "date": "2026-10-15"
+  }
 -- json stdout --
 {
   "ok": true

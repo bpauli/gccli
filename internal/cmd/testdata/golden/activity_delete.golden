@@ -20,6 +20,13 @@ Delete activity 111? [y/N]: Deleted activity 111
 0
 -- plain requests --
 DELETE /activity-service/activity/111
+-- plain-header stdout --
+-- plain-header stderr --
+Delete activity 111? [y/N]: Deleted activity 111
+-- plain-header exit --
+0
+-- plain-header requests --
+DELETE /activity-service/activity/111
 -- json stdout --
 {
   "deleted": true

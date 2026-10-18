@@ -16,6 +16,13 @@ GET /web-data/exercises/Exercises.json
 0
 -- plain requests --
 GET /web-data/exercises/Exercises.json
+-- plain-header stdout --
+CATEGORY	COUNT
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /web-data/exercises/Exercises.json
 -- json stdout --
 {
   "BENCH_PRESS": {

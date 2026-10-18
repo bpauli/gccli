@@ -24,6 +24,16 @@ GET /personalrecord-service/personalrecord/prs/tester
 -- plain requests --
 GET /userprofile-service/userprofile/settings
 GET /personalrecord-service/personalrecord/prs/tester
+-- plain-header stdout --
+{
+  "value": 1
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /personalrecord-service/personalrecord/prs/tester
 -- json stdout --
 {
   "value": 1

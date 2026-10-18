@@ -26,6 +26,16 @@ GET /userstats-service/wellness/daily/tester?fromDate=2026-10-15&untilDate=2026-
 -- plain requests --
 GET /userprofile-service/userprofile/settings
 GET /userstats-service/wellness/daily/tester?fromDate=2026-10-15&untilDate=2026-10-15&metricId=60
+-- plain-header stdout --
+{
+  "value": 1
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /userstats-service/wellness/daily/tester?fromDate=2026-10-15&untilDate=2026-10-15&metricId=60
 -- json stdout --
 {
   "value": 1

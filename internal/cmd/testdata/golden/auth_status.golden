@@ -17,6 +17,14 @@ Authenticated as test@example.com
 -- plain exit --
 0
 -- plain requests --
+-- plain-header stdout --
+Domain:       garmin.com
+Expires at:   2099-01-01T00:00:00Z
+-- plain-header stderr --
+Authenticated as test@example.com
+-- plain-header exit --
+0
+-- plain-header requests --
 -- json stdout --
 {
   "domain": "garmin.com",

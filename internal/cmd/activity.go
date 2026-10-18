@@ -62,10 +62,7 @@ func (c *ActivitySummaryCmd) Run(g *Globals) error {
 
 	rows := formatActivitySummary(resolveUnits(g, client), activity, cfg.ActivitySummary)
 
-	if outfmt.IsPlain(g.Context) {
-		return outfmt.WritePlain(g.Stdout, rows)
-	}
-	return outfmt.WriteTable(g.Stdout, nil, rows)
+	return outfmt.WriteRows(g.Context, g.Stdout, nil, rows)
 }
 
 // readConfigFn is the function used to read config; overridable in tests.

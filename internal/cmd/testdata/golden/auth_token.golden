@@ -13,6 +13,12 @@ test-access-token
 -- plain exit --
 0
 -- plain requests --
+-- plain-header stdout --
+test-access-token
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
 -- json stdout --
 test-access-token
 -- json stderr --

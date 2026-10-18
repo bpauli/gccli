@@ -92,6 +92,48 @@ POST /workout-service/workout
       }
     ]
   }
+-- plain-header stdout --
+-- plain-header stderr --
+Created workout "Tempo" (ID: 9)
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /workout-service/workout
+  {
+    "sportType": {
+      "sportTypeId": 1,
+      "sportTypeKey": "running"
+    },
+    "workoutName": "Tempo",
+    "workoutSegments": [
+      {
+        "segmentOrder": 1,
+        "sportType": {
+          "sportTypeId": 1,
+          "sportTypeKey": "running"
+        },
+        "workoutSteps": [
+          {
+            "endCondition": {
+              "conditionTypeId": 2,
+              "conditionTypeKey": "time"
+            },
+            "endConditionValue": 600,
+            "stepOrder": 1,
+            "stepType": {
+              "stepTypeId": 1,
+              "stepTypeKey": "warmup"
+            },
+            "targetType": {
+              "workoutTargetTypeId": 1,
+              "workoutTargetTypeKey": "no.target"
+            },
+            "type": "ExecutableStepDTO"
+          }
+        ]
+      }
+    ]
+  }
 -- json stdout --
 {
   "workoutId": 9

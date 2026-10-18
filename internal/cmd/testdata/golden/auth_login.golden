@@ -16,6 +16,13 @@ Logged in as test@example.com (domain: garmin.com)
 -- plain exit --
 0
 -- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Opening browser for Garmin SSO login...
+Logged in as test@example.com (domain: garmin.com)
+-- plain-header exit --
+0
+-- plain-header requests --
 -- json stdout --
 -- json stderr --
 Opening browser for Garmin SSO login...

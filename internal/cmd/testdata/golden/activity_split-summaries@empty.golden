@@ -17,6 +17,13 @@ null
 0
 -- plain requests --
 GET /activity-service/activity/111/split_summaries
+-- plain-header stdout --
+null
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /activity-service/activity/111/split_summaries
 -- json stdout --
 null
 -- json stderr --

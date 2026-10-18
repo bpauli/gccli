@@ -29,6 +29,19 @@ GET /userprofile-service/userprofile/user-settings
 0
 -- plain requests --
 GET /userprofile-service/userprofile/user-settings
+-- plain-header stdout --
+{
+  "displayName": "tester",
+  "profileId": 3141592,
+  "userData": {
+    "measurementSystem": "metric"
+  }
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /userprofile-service/userprofile/user-settings
 -- json stdout --
 {
   "displayName": "tester",

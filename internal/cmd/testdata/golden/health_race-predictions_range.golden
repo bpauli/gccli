@@ -24,6 +24,15 @@ GET /metrics-service/metrics/racepredictions/range/2026-10-01/2026-10-01?type=da
 0
 -- plain requests --
 GET /metrics-service/metrics/racepredictions/range/2026-10-01/2026-10-01?type=daily
+-- plain-header stdout --
+{
+  "value": 1
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /metrics-service/metrics/racepredictions/range/2026-10-01/2026-10-01?type=daily
 -- json stdout --
 {
   "value": 1

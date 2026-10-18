@@ -36,6 +36,21 @@ PUT /activity-service/activity/111
       "typeKey": "running"
     }
   }
+-- plain-header stdout --
+-- plain-header stderr --
+Changed activity 111 type to running
+-- plain-header exit --
+0
+-- plain-header requests --
+PUT /activity-service/activity/111
+  {
+    "activityId": 111,
+    "activityTypeDTO": {
+      "parentTypeId": 0,
+      "typeId": 1,
+      "typeKey": "running"
+    }
+  }
 -- json stdout --
 {
   "ok": true

@@ -19,6 +19,13 @@ Linked gear abc-123 to activity 111
 0
 -- plain requests --
 PUT /gear-service/gear/link/abc-123/activity/111
+-- plain-header stdout --
+-- plain-header stderr --
+Linked gear abc-123 to activity 111
+-- plain-header exit --
+0
+-- plain-header requests --
+PUT /gear-service/gear/link/abc-123/activity/111
 -- json stdout --
 {
   "ok": true

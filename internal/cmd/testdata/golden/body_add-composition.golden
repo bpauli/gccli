@@ -20,6 +20,14 @@ Added body composition: 80.0 kg
 -- plain requests --
 POST /upload-service/upload
   part "file" file "body_composition.fit" 212 bytes sha256 fc4258dde70fd325
+-- plain-header stdout --
+-- plain-header stderr --
+Added body composition: 80.0 kg
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /upload-service/upload
+  part "file" file "body_composition.fit" 212 bytes sha256 fc4258dde70fd325
 -- json stdout --
 {
   "detailedImportResult": {

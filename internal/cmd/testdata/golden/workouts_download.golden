@@ -18,6 +18,13 @@ Downloaded workout_111.fit (12 bytes)
 0
 -- plain requests --
 GET /workout-service/workout/FIT/111
+-- plain-header stdout --
+-- plain-header stderr --
+Downloaded workout_111.fit (12 bytes)
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /workout-service/workout/FIT/111
 -- json stdout --
 -- json stderr --
 Downloaded workout_111.fit (12 bytes)

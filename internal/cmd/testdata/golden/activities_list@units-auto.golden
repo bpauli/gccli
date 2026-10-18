@@ -26,6 +26,16 @@ GET /userprofile-service/userprofile/user-settings
 -- plain requests --
 GET /activitylist-service/activities/search/activities?start=0&limit=20
 GET /userprofile-service/userprofile/user-settings
+-- plain-header stdout --
+ID	DATE	TYPE	NAME	DISTANCE	DURATION	CALORIES
+111	2026-10-14	running	Morning Run	6.22 mi	50:05	712
+112	2026-10-13	lap_swimming	Pool Swim	0.93 mi	33:00	350
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /activitylist-service/activities/search/activities?start=0&limit=20
+GET /userprofile-service/userprofile/user-settings
 -- json stdout --
 [
   {

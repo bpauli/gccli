@@ -18,6 +18,14 @@ GET /workout-service/workouts?start=0&limit=20
 0
 -- plain requests --
 GET /workout-service/workouts?start=0&limit=20
+-- plain-header stdout --
+ID	NAME	TYPE	OWNER
+901	Tempo	running	tester
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /workout-service/workouts?start=0&limit=20
 -- json stdout --
 {
   "results": [

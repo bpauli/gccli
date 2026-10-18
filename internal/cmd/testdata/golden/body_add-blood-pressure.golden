@@ -41,6 +41,22 @@ POST /bloodpressure-service/bloodpressure
     "sourceType": "MANUAL",
     "systolic": 120
   }
+-- plain-header stdout --
+-- plain-header stderr --
+Added blood pressure: 120/80 mmHg, pulse 60 bpm
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /bloodpressure-service/bloodpressure
+  {
+    "diastolic": 80,
+    "measurementTimestampGMT": "2026-10-15T09:30:00Z",
+    "measurementTimestampLocal": "2026-10-15T09:30:00Z",
+    "notes": "",
+    "pulse": 60,
+    "sourceType": "MANUAL",
+    "systolic": 120
+  }
 -- json stdout --
 {
   "ok": true

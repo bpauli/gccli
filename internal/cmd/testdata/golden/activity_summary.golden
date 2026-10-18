@@ -40,6 +40,24 @@ RPE	-
 0
 -- plain requests --
 GET /activity-service/activity/111
+-- plain-header stdout --
+NAME	Morning Run
+TYPE	running
+DATE	2026-10-14T07:30:00.0
+DISTANCE	10.01 km
+DURATION	50:05
+AVG SPEED	12.0 km/h
+AVG HR	148 bpm
+CALORIES	712
+AEROBIC TRAINING EFFECT	-
+ANAEROBIC TRAINING EFFECT	-
+FEEL	-
+RPE	-
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /activity-service/activity/111
 -- json stdout --
 {
   "activityId": 111,

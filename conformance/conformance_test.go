@@ -214,14 +214,17 @@ func (s *sandbox) importToken(t *testing.T, tokenJSON []byte) {
 
 const goldenDir = "../internal/cmd/testdata/golden"
 
+type goldenMode struct {
+	name  string
+	flags []string
+}
+
 var (
 	goldenGlobals = []string{"--account", "test@example.com", "--units", "metric"}
-	goldenModes   = []struct {
-		name  string
-		flags []string
-	}{
+	goldenModes   = []goldenMode{
 		{"table", nil},
 		{"plain", []string{"--plain"}},
+		{"plain-header", []string{"--plain", "--header"}},
 		{"json", []string{"--json"}},
 	}
 )
@@ -281,6 +284,12 @@ func goldenFiles(t *testing.T) []goldenFile {
 		c, err := parseGolden(string(data))
 		if err != nil {
 			t.Fatalf("%s: %v", path, err)
+		}
+		for section := range c.outputs {
+			mode, _, _ := strings.Cut(section, " ")
+			if !slices.ContainsFunc(goldenModes, func(m goldenMode) bool { return m.name == mode }) {
+				t.Fatalf("%s: section %q names a mode that goldenModes does not run", path, section)
+			}
 		}
 		name := strings.ReplaceAll(strings.TrimSuffix(filepath.Base(path), ".golden"), "_", " ")
 		leaf, _, _ := strings.Cut(name, "@")

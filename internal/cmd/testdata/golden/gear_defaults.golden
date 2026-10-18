@@ -29,6 +29,17 @@ GET /gear-service/gear/user/3141592/activityTypes
 GET /userprofile-service/userprofile/settings
 GET /userprofile-service/socialProfile/tester
 GET /gear-service/gear/user/3141592/activityTypes
+-- plain-header stdout --
+{
+  "value": 1
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+GET /gear-service/gear/user/3141592/activityTypes
 -- json stdout --
 {
   "value": 1

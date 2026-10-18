@@ -18,6 +18,13 @@ Downloaded course_111.fit (12 bytes)
 0
 -- plain requests --
 GET /course-service/course/fit/111/0?elevation=true
+-- plain-header stdout --
+-- plain-header stderr --
+Downloaded course_111.fit (12 bytes)
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /course-service/course/fit/111/0?elevation=true
 -- json stdout --
 -- json stderr --
 Downloaded course_111.fit (12 bytes)

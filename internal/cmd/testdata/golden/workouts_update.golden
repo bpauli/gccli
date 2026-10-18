@@ -37,6 +37,21 @@ PUT /workout-service/workout/111
     "workoutId": 111,
     "workoutName": "Intervals"
   }
+-- plain-header stdout --
+-- plain-header stderr --
+Updated workout 111 from $DIR/workout.json
+-- plain-header exit --
+0
+-- plain-header requests --
+PUT /workout-service/workout/111
+  {
+    "sportType": {
+      "sportTypeId": 1,
+      "sportTypeKey": "running"
+    },
+    "workoutId": 111,
+    "workoutName": "Intervals"
+  }
 -- json stdout --
 {
   "ok": true

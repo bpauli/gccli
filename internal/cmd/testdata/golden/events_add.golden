@@ -35,6 +35,19 @@ POST /calendar-service/event
     "eventType": "running",
     "race": false
   }
+-- plain-header stdout --
+-- plain-header stderr --
+Added event "City Race" on 2026-11-01 (ID: 4242)
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /calendar-service/event
+  {
+    "date": "2026-11-01",
+    "eventName": "City Race",
+    "eventType": "running",
+    "race": false
+  }
 -- json stdout --
 {
   "id": 4242,

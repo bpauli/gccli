@@ -22,6 +22,15 @@ GET /workout-service/workout/111
 0
 -- plain requests --
 GET /workout-service/workout/111
+-- plain-header stdout --
+{
+  "value": 1
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /workout-service/workout/111
 -- json stdout --
 {
   "value": 1

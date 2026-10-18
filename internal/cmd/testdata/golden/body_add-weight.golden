@@ -32,6 +32,20 @@ POST /weight-service/user-weight
     "unitKey": "kg",
     "value": 80.5
   }
+-- plain-header stdout --
+-- plain-header stderr --
+Added weight: 80.5 kg
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /weight-service/user-weight
+  {
+    "dateTimestamp": "2026-10-15T09:30:00",
+    "gmtTimestamp": "2026-10-15T09:30:00",
+    "sourceType": "MANUAL",
+    "unitKey": "kg",
+    "value": 80.5
+  }
 -- json stdout --
 {
   "ok": true

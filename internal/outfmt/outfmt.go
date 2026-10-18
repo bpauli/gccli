@@ -3,8 +3,8 @@ package outfmt
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"io"
+	"strings"
 	"text/tabwriter"
 )
 
@@ -20,6 +20,8 @@ const (
 	JSON
 	// Plain outputs TSV/plain text with no alignment.
 	Plain
+	// PlainHeader is Plain with the header row as the first line.
+	PlainHeader
 )
 
 // NewContext stores the output mode in the context.
@@ -41,11 +43,6 @@ func IsJSON(ctx context.Context) bool {
 	return ModeFromContext(ctx) == JSON
 }
 
-// IsPlain returns true if the context output mode is Plain.
-func IsPlain(ctx context.Context) bool {
-	return ModeFromContext(ctx) == Plain
-}
-
 // WriteJSON writes v as pretty-printed JSON to stdout.
 // HTML characters are not escaped.
 func WriteJSON(w io.Writer, v any) error {
@@ -55,62 +52,39 @@ func WriteJSON(w io.Writer, v any) error {
 	return enc.Encode(v)
 }
 
-// NewTabWriter creates a tabwriter suitable for aligned table output.
-// Caller must call Flush() when done writing.
-func NewTabWriter(w io.Writer) *tabwriter.Writer {
-	return tabwriter.NewWriter(w, 0, 0, 2, ' ', 0)
-}
-
-// WriteTable writes header and rows in aligned table format to stdout.
-func WriteTable(w io.Writer, header []string, rows [][]string) error {
-	tw := NewTabWriter(w)
-	if len(header) > 0 {
-		for i, h := range header {
-			if i > 0 {
-				if _, err := fmt.Fprint(tw, "\t"); err != nil {
-					return err
-				}
-			}
-			if _, err := fmt.Fprint(tw, h); err != nil {
-				return err
-			}
-		}
-		if _, err := fmt.Fprintln(tw); err != nil {
-			return err
-		}
+// WriteRows escapes each cell, so a value never adds a column or a line.
+func WriteRows(ctx context.Context, w io.Writer, header []string, rows [][]string) error {
+	mode := ModeFromContext(ctx)
+	if mode == Plain {
+		return writeLines(w, rows)
 	}
-	for _, row := range rows {
-		for i, col := range row {
-			if i > 0 {
-				if _, err := fmt.Fprint(tw, "\t"); err != nil {
-					return err
-				}
-			}
-			if _, err := fmt.Fprint(tw, col); err != nil {
-				return err
-			}
-		}
-		if _, err := fmt.Fprintln(tw); err != nil {
-			return err
-		}
+	if len(header) > 0 {
+		rows = append([][]string{header}, rows...)
+	}
+	if mode == PlainHeader {
+		return writeLines(w, rows)
+	}
+	tw := tabwriter.NewWriter(w, 0, 0, 2, ' ', 0)
+	if err := writeLines(tw, rows); err != nil {
+		return err
 	}
 	return tw.Flush()
 }
 
-// WritePlain writes rows as tab-separated values with no alignment.
-func WritePlain(w io.Writer, rows [][]string) error {
+var cellEscaper = strings.NewReplacer(`\`, `\\`, "\t", `\t`, "\n", `\n`, "\r", `\r`, "\v", `\v`, "\f", `\f`)
+
+func writeLines(w io.Writer, rows [][]string) error {
+	var line []byte
 	for _, row := range rows {
-		for i, col := range row {
+		line = line[:0]
+		for i, cell := range row {
 			if i > 0 {
-				if _, err := fmt.Fprint(w, "\t"); err != nil {
-					return err
-				}
+				line = append(line, '\t')
 			}
-			if _, err := fmt.Fprint(w, col); err != nil {
-				return err
-			}
+			line = append(line, cellEscaper.Replace(cell)...)
 		}
-		if _, err := fmt.Fprintln(w); err != nil {
+		line = append(line, '\n')
+		if _, err := w.Write(line); err != nil {
 			return err
 		}
 	}

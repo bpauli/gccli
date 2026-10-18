@@ -21,6 +21,15 @@ GET /wellness-service/wellness/epoch/request/2026-10-15
 0
 -- plain requests --
 GET /wellness-service/wellness/epoch/request/2026-10-15
+-- plain-header stdout --
+{
+  "value": 1
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /wellness-service/wellness/epoch/request/2026-10-15
 -- json stdout --
 {
   "value": 1

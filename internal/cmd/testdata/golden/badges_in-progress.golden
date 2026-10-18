@@ -21,6 +21,15 @@ GET /badge-service/badge/in-progress
 0
 -- plain requests --
 GET /badge-service/badge/in-progress
+-- plain-header stdout --
+{
+  "value": 1
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /badge-service/badge/in-progress
 -- json stdout --
 {
   "value": 1
