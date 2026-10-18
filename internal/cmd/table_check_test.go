@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"os"
+	"path/filepath"
 	"slices"
 	"strings"
 	"testing"
@@ -202,5 +204,69 @@ func TestCheckTableRejects(t *testing.T) {
 				t.Errorf("checkTable = %v\nwant %s", errs, tc.want)
 			}
 		})
+	}
+}
+
+// The frozen lists must match the golden files that pin each quirk, so a
+// new entry and a stale entry both fail here.
+func TestFrozenListsMatchGoldens(t *testing.T) {
+	t.Run("v1NullJSON", func(t *testing.T) {
+		pinned := goldenLeaves(t, "@empty.golden", func(g golden) bool {
+			return slices.IndexFunc(goldenModes, func(m goldenMode) bool {
+				return strings.TrimSpace(g.sections[m.name+" stdout"]) != "null"
+			}) < 0
+		})
+		compareFrozen(t, "v1NullJSON", v1NullJSON, pinned, "<leaf>@empty.golden prints null in every mode")
+	})
+	t.Run("v1LateDates", func(t *testing.T) {
+		if files, _ := filepath.Glob(filepath.Join(goldenDir, "*@bad-date.golden")); len(files) == 0 {
+			t.Skip("no @bad-date.golden file yet: PR #194 adds them, and this check starts when it is merged")
+		}
+		pinned := goldenLeaves(t, "@bad-date.golden", func(g golden) bool {
+			return slices.IndexFunc(goldenModes, func(m goldenMode) bool {
+				return strings.TrimSpace(g.sections[m.name+" exit"]) != "1"
+			}) < 0
+		})
+		compareFrozen(t, "v1LateDates", v1LateDates, pinned, "<leaf>@bad-date.golden exits 1 in every mode")
+	})
+}
+
+// goldenLeaves returns the leaf path of every golden file with the suffix
+// whose sections pass keep.
+func goldenLeaves(t *testing.T, suffix string, keep func(golden) bool) []string {
+	t.Helper()
+	files, err := filepath.Glob(filepath.Join(goldenDir, "*"+suffix))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var leaves []string
+	for _, file := range files {
+		data, err := os.ReadFile(file)
+		if err != nil {
+			t.Fatal(err)
+		}
+		g, err := parseGolden(string(data))
+		if err != nil {
+			t.Fatalf("%s: %v", file, err)
+		}
+		if keep(g) {
+			path, _ := goldenCommand(file)
+			leaves = append(leaves, path)
+		}
+	}
+	return leaves
+}
+
+func compareFrozen(t *testing.T, list string, entries, pinned []string, rule string) {
+	t.Helper()
+	for _, path := range entries {
+		if !slices.Contains(pinned, path) {
+			t.Errorf("%s names %q, but no %s: remove the entry", list, path, rule)
+		}
+	}
+	for _, path := range pinned {
+		if !slices.Contains(entries, path) {
+			t.Errorf("%s does not name %q, but its %s: add the entry", list, path, rule)
+		}
 	}
 }
