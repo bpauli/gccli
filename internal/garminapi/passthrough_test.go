@@ -11,9 +11,7 @@ import (
 	"testing"
 )
 
-var passthroughMethods = []string{
-	"GetNutritionDailyFoodLog", "GetNutritionDailyMeals", "GetNutritionDailySettings",
-}
+var passthroughMethods = []string{}
 
 func TestNoNewPassthroughMethods(t *testing.T) {
 	fset := token.NewFileSet()
