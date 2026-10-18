@@ -412,6 +412,7 @@ func TestPostDIForm_CutsLongErrorBody(t *testing.T) {
 	}{
 		{"short body stays whole", strings.Repeat("x", 512), strings.Repeat("x", 512)},
 		{"long body is cut at a rune start", strings.Repeat("€", 200), strings.Repeat("€", 170) + "... (90 bytes cut)"},
+		{"body that is not UTF-8 is cut", strings.Repeat("\x80", 600), strings.Repeat("\x80", 508) + "... (92 bytes cut)"},
 	}
 
 	for _, tc := range cases {
