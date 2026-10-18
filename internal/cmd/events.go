@@ -3,6 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
 
 	"github.com/bpauli/gccli/internal/outfmt"
 	"github.com/bpauli/gccli/internal/payload"
@@ -61,7 +62,7 @@ func (c *EventsListCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetEvents(g.Context, date, page, c.Limit, c.Sort)
+	data, err := client.Call(g.Context, "events.list", map[string]string{"startDate": date, "pageIndex": strconv.Itoa(page), "limit": strconv.Itoa(c.Limit), "sortOrder": c.Sort}, nil)
 	if err != nil {
 		return fmt.Errorf("list events: %w", err)
 	}
@@ -161,7 +162,7 @@ func (c *EventsAddCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.AddEvent(g.Context, body)
+	data, err := client.Call(g.Context, "events.add", nil, body)
 	if err != nil {
 		return fmt.Errorf("add event: %w", err)
 	}
@@ -195,7 +196,7 @@ func (c *EventsDeleteCmd) Run(g *Globals) error {
 		return nil
 	}
 
-	data, err := client.DeleteEvent(g.Context, c.ID)
+	data, err := client.Call(g.Context, "events.delete", map[string]string{"eventID": c.ID}, nil)
 	if err != nil {
 		return fmt.Errorf("delete event: %w", err)
 	}

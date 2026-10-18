@@ -42,7 +42,7 @@ func TestCreateListDeleteEvent(t *testing.T) {
 		}
 	}`, eventName, eventDate))
 
-	data, err := client.AddEvent(ctx, payload)
+	data, err := client.Call(ctx, "events.add", nil, payload)
 	if err != nil {
 		t.Fatalf("AddEvent failed: %v", err)
 	}
@@ -74,7 +74,7 @@ func TestCreateListDeleteEvent(t *testing.T) {
 
 	// Register cleanup to delete the event — runs even on test failure.
 	RegisterCleanup(t, func() {
-		if _, delErr := client.DeleteEvent(context.Background(), eventID); delErr != nil {
+		if _, delErr := client.Call(context.Background(), "events.delete", map[string]string{"eventID": eventID}, nil); delErr != nil {
 			t.Logf("WARNING: failed to clean up event %s: %v", eventID, delErr)
 		} else {
 			t.Logf("Cleaned up event %s", eventID)
@@ -94,7 +94,7 @@ func TestCreateListDeleteEvent(t *testing.T) {
 	time.Sleep(2 * time.Second)
 
 	// Step 3: Delete the event explicitly (cleanup is the safety net).
-	if _, err := client.DeleteEvent(ctx, eventID); err != nil {
+	if _, err := client.Call(ctx, "events.delete", map[string]string{"eventID": eventID}, nil); err != nil {
 		t.Fatalf("DeleteEvent(%s) failed: %v", eventID, err)
 	}
 	t.Logf("Deleted event %s", eventID)
@@ -112,7 +112,7 @@ func TestCreateListDeleteEvent(t *testing.T) {
 func findEventByID(t *testing.T, client *garminapi.Client, eventID, startDate string) bool {
 	t.Helper()
 
-	data, err := client.GetEvents(context.Background(), startDate, 1, 100, "eventDate_asc")
+	data, err := client.Call(context.Background(), "events.list", map[string]string{"startDate": startDate, "pageIndex": "1", "limit": "100", "sortOrder": "eventDate_asc"}, nil)
 	if err != nil {
 		t.Fatalf("GetEvents failed while searching for event %s: %v", eventID, err)
 	}
@@ -137,7 +137,7 @@ func cleanupOrphanEvents(t *testing.T, client *garminapi.Client) {
 	ctx := context.Background()
 
 	startDate := time.Now().Format("2006-01-02")
-	data, err := client.GetEvents(ctx, startDate, 1, 100, "eventDate_asc")
+	data, err := client.Call(ctx, "events.list", map[string]string{"startDate": startDate, "pageIndex": "1", "limit": "100", "sortOrder": "eventDate_asc"}, nil)
 	if err != nil {
 		t.Logf("WARNING: could not list events for orphan cleanup: %v", err)
 		return
@@ -153,7 +153,7 @@ func cleanupOrphanEvents(t *testing.T, client *garminapi.Client) {
 		name, _ := e["eventName"].(string)
 		if strings.HasPrefix(name, e2eEventPrefix) {
 			id := formatID(e["id"])
-			if _, delErr := client.DeleteEvent(ctx, id); delErr != nil {
+			if _, delErr := client.Call(ctx, "events.delete", map[string]string{"eventID": id}, nil); delErr != nil {
 				t.Logf("WARNING: failed to delete orphaned event %s (%s): %v", id, name, delErr)
 			} else {
 				t.Logf("Cleaned up orphaned event %s (%s)", id, name)
