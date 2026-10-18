@@ -1,0 +1,21 @@
+-- args --
+courses
+list
+--units
+auto
+-- route GET /web-gateway/course/owner/ 204 --
+-- table stdout --
+-- table stderr --
+parse courses: unexpected end of JSON input
+-- table exit --
+1
+-- plain stdout --
+-- plain stderr --
+parse courses: unexpected end of JSON input
+-- plain exit --
+1
+-- json stdout --
+null
+-- json stderr --
+-- json exit --
+0

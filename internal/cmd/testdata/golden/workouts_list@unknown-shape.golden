@@ -1,0 +1,27 @@
+-- args --
+workouts
+list
+-- route GET /workout-service/workouts?start=0&limit=20 --
+{"items":[{"workoutId":901,"workoutName":"Tempo"}]}
+-- table stdout --
+-- table stderr --
+parse workouts: unexpected response format
+-- table exit --
+1
+-- plain stdout --
+-- plain stderr --
+parse workouts: unexpected response format
+-- plain exit --
+1
+-- json stdout --
+{
+  "items": [
+    {
+      "workoutId": 901,
+      "workoutName": "Tempo"
+    }
+  ]
+}
+-- json stderr --
+-- json exit --
+0

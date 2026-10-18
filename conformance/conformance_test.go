@@ -249,7 +249,7 @@ func (c goldenCase) clockDate() (string, bool) {
 }
 
 type goldenFile struct {
-	path, name string
+	path, name, leaf string
 	goldenCase
 }
 
@@ -273,26 +273,28 @@ func goldenFiles(t *testing.T) []goldenFile {
 			t.Fatalf("%s: %v", path, err)
 		}
 		name := strings.ReplaceAll(strings.TrimSuffix(filepath.Base(path), ".golden"), "_", " ")
-		files = append(files, goldenFile{path, name, c})
+		leaf, _, _ := strings.Cut(name, "@")
+		files = append(files, goldenFile{path, name, leaf, c})
 	}
 	return files
 }
 
 func TestGoldenSkips(t *testing.T) {
-	names := map[string]bool{}
+	fromClock := map[string]bool{}
 	for _, f := range goldenFiles(t) {
-		names[f.name] = true
-		d, fromClock := f.clockDate()
-		switch listed := skipped[f.name] == clockSkip; {
-		case fromClock && !listed:
-			t.Errorf("%s: a route asks for %s, which the binary takes from its clock: give the date in the args, or add %q to skipped", f.path, d, f.name)
-		case !fromClock && listed:
-			t.Errorf("%s: skipped names %q as a clock case, but no route asks for a date from the clock: remove it from skipped", f.path, f.name)
+		d, clock := f.clockDate()
+		fromClock[f.leaf] = fromClock[f.leaf] || clock
+		if clock && skipped[f.leaf] != clockSkip {
+			t.Errorf("%s: a route asks for %s, which the binary takes from its clock: give the date in the args, or add %q to skipped", f.path, d, f.leaf)
 		}
 	}
-	for name := range skipped {
-		if !names[name] {
+	for name, why := range skipped {
+		clock, ok := fromClock[name]
+		switch {
+		case !ok:
 			t.Errorf("skipped names %q, which has no golden file in %s", name, goldenDir)
+		case why == clockSkip && !clock:
+			t.Errorf("skipped names %q as a clock case, but no route of its golden files asks for a date from the clock: remove it from skipped", name)
 		}
 	}
 }
@@ -310,7 +312,7 @@ func TestGolden(t *testing.T) {
 		file, name, c := f.path, f.name, f.goldenCase
 		for _, m := range goldenModes {
 			t.Run(name+"/"+m.name, func(t *testing.T) {
-				if why, ok := skipped[name]; ok {
+				if why, ok := skipped[f.leaf]; ok {
 					t.Skip(why)
 				}
 				t.Parallel()
