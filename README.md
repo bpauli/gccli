@@ -13,7 +13,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 
 - **Activities** — list, search, view details, download (FIT/GPX/TCX/KML/CSV), upload, create manual entries (with date), rename, retype, delete, set exercise sets for strength training, list activity types, list pending activities
 - **Exercise Catalog** — browse Garmin's exercise categories and exercises for strength training
-- **Health Data** — daily summaries, steps, heart rate, resting HR, sleep, stress, HRV, SpO2, respiration, body battery, floors, training readiness/status, VO2max, fitness age, race predictions, endurance/hill scores, intensity minutes, lactate threshold, cycling FTP
+- **Health Data** — daily summaries, steps, heart rate, resting HR, sleep, stress, HRV, SpO2, respiration, body battery, floors, training readiness/status, VO2max, fitness age, race predictions, endurance/hill scores, intensity minutes, lactate threshold, cycling FTP, power curve, running economy
 - **Body Composition** — weight tracking, body fat, muscle mass, blood pressure, FIT file encoding for composition uploads
 - **Workouts** — list, view, download as FIT, upload from JSON, update in place from JSON, create with sport types and targets (pace/HR/power/cadence), schedule (add/list/remove), delete
 - **Courses** — list courses, view favorites, get full course detail, download as FIT/GPX, import GPX files as new courses, send courses directly to a device, delete courses
@@ -889,6 +889,11 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli health hill-score [<date>]`: Show hill score data.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
+- `gccli health power-curve --start=DATE --end=DATE`: Show power curve for a date range.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli health running-economy [<date>]`: Show latest running economy as of a date.
+  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli health events [<date>]`: Show daily wellness events.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli health lifestyle [<date>]`: Show lifestyle logging data.
