@@ -4,51 +4,48 @@ import (
 	"encoding/json"
 	"fmt"
 	"sort"
-	"strconv"
 	"strings"
 
 	"github.com/bpauli/gccli/internal/outfmt"
-	"github.com/bpauli/gccli/internal/units"
 )
 
+var activityColumns = []Column{
+	{Label: "ID", Path: "activityId"},
+	{Label: "DATE", Path: "startTimeLocal", Format: DateOnly},
+	{Label: "TYPE", Path: "activityType.typeKey"},
+	{Label: "NAME", Path: "activityName"},
+	{Label: "DISTANCE", Path: "distance", Format: Distance},
+	{Label: "DURATION", Path: "duration", Format: Duration},
+	{Label: "CALORIES", Path: "calories", Format: Count},
+}
+
 var activitiesGroup = Group{Name: "activities", Help: "List and search activities.", Children: []Node{
-	Custom{Name: "list", Help: "List recent activities.", Default: true, Cmd: &ActivitiesListCmd{}},
+	Leaf{
+		Name: "list", Help: "List recent activities.", Default: true,
+		Spec: argsOf(&struct {
+			Pagination `embed:"" set:"items=activities"`
+			Type       string `help:"Filter by activity type (e.g. running, cycling)." short:"t"`
+		}{}),
+		Endpoint: "activities.list",
+		Params:   Params{"start": In("Offset"), "limit": In("Limit"), "activityType": In("Type")},
+		Verb:     "list activities",
+		Output:   Rows{Noun: "activities", Columns: activityColumns},
+	},
 	Custom{Name: "count", Help: "Show total activity count.", Cmd: &ActivitiesCountCmd{}},
-	Custom{Name: "search", Help: "Search activities by date range.", Cmd: &ActivitiesSearchCmd{}},
+	Leaf{
+		Name: "search", Help: "Search activities by date range.",
+		Spec: argsOf(&struct {
+			Pagination `embed:"" set:"items=activities"`
+			StartDate  Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+			EndDate    Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." name:"end"`
+		}{}),
+		Endpoint: "activities.search",
+		Params:   Params{"start": In("Offset"), "limit": In("Limit"), "startDate": In("StartDate"), "endDate": In("EndDate")},
+		Verb:     "search activities",
+		Output:   Rows{Noun: "activities", Columns: activityColumns},
+	},
 	Custom{Name: "types", Help: "List all activity types supported by Garmin.", Cmd: &ActivitiesTypesCmd{}},
 }}
-
-// ActivitiesListCmd lists recent activities.
-type ActivitiesListCmd struct {
-	Pagination `embed:"" set:"items=activities"`
-	Type       string `help:"Filter by activity type (e.g. running, cycling)." short:"t"`
-}
-
-func (c *ActivitiesListCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.Call(g.Context, "activities.list", map[string]string{"start": strconv.Itoa(c.Offset), "limit": strconv.Itoa(c.Limit), "activityType": c.Type}, nil)
-	if err != nil {
-		return fmt.Errorf("list activities: %w", err)
-	}
-
-	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
-	}
-
-	activities, err := parseActivities(data)
-	if err != nil {
-		return err
-	}
-
-	rows := formatActivityRows(resolveUnits(g, client), activities)
-	header := activityHeader()
-
-	return outfmt.WriteRows(g.Context, g.Stdout, header, rows)
-}
 
 // ActivitiesCountCmd shows the total activity count.
 type ActivitiesCountCmd struct{}
@@ -72,98 +69,14 @@ func (c *ActivitiesCountCmd) Run(g *Globals) error {
 	return nil
 }
 
-// ActivitiesSearchCmd searches activities by date range.
-type ActivitiesSearchCmd struct {
-	Pagination `embed:"" set:"items=activities"`
-	StartDate  Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
-	EndDate    Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." name:"end"`
-}
-
-func (c *ActivitiesSearchCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.Call(g.Context, "activities.search", map[string]string{"start": strconv.Itoa(c.Offset), "limit": strconv.Itoa(c.Limit), "startDate": string(c.StartDate), "endDate": string(c.EndDate)}, nil)
-	if err != nil {
-		return fmt.Errorf("search activities: %w", err)
-	}
-
-	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
-	}
-
-	activities, err := parseActivities(data)
-	if err != nil {
-		return err
-	}
-
-	rows := formatActivityRows(resolveUnits(g, client), activities)
-	header := activityHeader()
-
-	return outfmt.WriteRows(g.Context, g.Stdout, header, rows)
-}
-
-func activityHeader() []string {
-	return []string{"ID", "DATE", "TYPE", "NAME", "DISTANCE", "DURATION", "CALORIES"}
-}
-
-// parseActivities unmarshals a JSON array of activities into a slice of maps.
-func parseActivities(data json.RawMessage) ([]map[string]any, error) {
-	var activities []map[string]any
-	if err := json.Unmarshal(data, &activities); err != nil {
-		return nil, fmt.Errorf("parse activities: %w", err)
-	}
-	return activities, nil
-}
-
-// formatActivityRows extracts table rows from activity data.
-func formatActivityRows(sys units.System, activities []map[string]any) [][]string {
-	rows := make([][]string, 0, len(activities))
-	for _, a := range activities {
-		rows = append(rows, []string{
-			jsonString(a, "activityId"),
-			formatDate(jsonString(a, "startTimeLocal")),
-			activityTypeKey(a),
-			jsonString(a, "activityName"),
-			sys.Distance(jsonFloat(a, "distance")),
-			formatDuration(jsonFloat(a, "duration")),
-			formatCalories(jsonFloat(a, "calories")),
-		})
-	}
-	return rows
-}
-
 // jsonString extracts a string (or stringified number) from a JSON map.
 func jsonString(m map[string]any, key string) string {
-	v, ok := m[key]
-	if !ok || v == nil {
-		return ""
-	}
-	switch val := v.(type) {
-	case string:
-		return val
-	case float64:
-		if val == float64(int64(val)) {
-			return fmt.Sprintf("%d", int64(val))
-		}
-		return fmt.Sprintf("%g", val)
-	default:
-		return fmt.Sprintf("%v", val)
-	}
+	return textOf(m[key])
 }
 
 // jsonFloat extracts a float64 from a JSON map.
 func jsonFloat(m map[string]any, key string) float64 {
-	v, ok := m[key]
-	if !ok || v == nil {
-		return 0
-	}
-	if f, ok := v.(float64); ok {
-		return f
-	}
-	return 0
+	return numberOf(m[key])
 }
 
 // jsonBool extracts a bool from a JSON map. The second return value reports
@@ -176,18 +89,6 @@ func jsonBool(m map[string]any, key string) (bool, bool) {
 	}
 	b, ok := v.(bool)
 	return b, ok
-}
-
-// activityTypeKey extracts the activity type key from nested activityType.typeKey.
-func activityTypeKey(a map[string]any) string {
-	at, ok := a["activityType"]
-	if !ok || at == nil {
-		return ""
-	}
-	if m, ok := at.(map[string]any); ok {
-		return jsonString(m, "typeKey")
-	}
-	return ""
 }
 
 // formatDate extracts just the date portion from a datetime string like "2024-01-15 08:30:00".
@@ -212,14 +113,6 @@ func formatDuration(seconds float64) string {
 		return fmt.Sprintf("%d:%02d:%02d", h, m, s)
 	}
 	return fmt.Sprintf("%d:%02d", m, s)
-}
-
-// formatCalories formats calorie count.
-func formatCalories(cal float64) string {
-	if cal == 0 {
-		return "-"
-	}
-	return fmt.Sprintf("%d", int(cal))
 }
 
 // ActivitiesTypesCmd lists all activity types supported by Garmin.

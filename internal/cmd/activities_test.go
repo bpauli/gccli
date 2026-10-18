@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"bytes"
-	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -11,7 +10,6 @@ import (
 	"github.com/bpauli/gccli/internal/garminapi"
 	"github.com/bpauli/gccli/internal/garminauth"
 	"github.com/bpauli/gccli/internal/outfmt"
-	"github.com/bpauli/gccli/internal/units"
 )
 
 // sampleActivitiesJSON returns a JSON array of sample activities for testing.
@@ -74,93 +72,6 @@ func overrideNewClient(t *testing.T, server *httptest.Server) {
 }
 
 // --- Execute-level tests ---
-
-// --- ActivitiesListCmd tests ---
-
-func TestActivitiesList_NotFound(t *testing.T) {
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "nobody@example.com")
-	cmd := &ActivitiesListCmd{Pagination: Pagination{Limit: 20}}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no credentials stored") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
-
-func TestActivitiesList_Table(t *testing.T) {
-	server := activitiesTestServer(t)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &ActivitiesListCmd{Pagination: Pagination{Limit: 20}}
-	err := cmd.Run(g)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
-	}
-	// Table output goes to stdout, not our buffer; just verify no error.
-}
-
-func TestActivitiesList_JSON(t *testing.T) {
-	server := activitiesTestServer(t)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &ActivitiesListCmd{Pagination: Pagination{Limit: 20}}
-	err := cmd.Run(g)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
-	}
-	// JSON output goes to stdout; just verify no error.
-}
-
-func TestActivitiesList_WithType(t *testing.T) {
-	called := false
-	mux := http.NewServeMux()
-	mux.HandleFunc("/activitylist-service/activities/search/activities", func(w http.ResponseWriter, r *http.Request) {
-		called = true
-		if got := r.URL.Query().Get("activityType"); got != "running" {
-			t.Errorf("expected activityType=running, got %q", got)
-		}
-		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte("[]"))
-	})
-	server := httptest.NewServer(mux)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &ActivitiesListCmd{Pagination: Pagination{Limit: 20}, Type: "running"}
-	err := cmd.Run(g)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
-	}
-	if !called {
-		t.Fatal("expected API to be called")
-	}
-}
 
 // --- ActivitiesCountCmd tests ---
 
@@ -234,68 +145,6 @@ func TestActivitiesCount_WritesToGlobalsStdout(t *testing.T) {
 	}
 }
 
-// --- ActivitiesSearchCmd tests ---
-
-func TestActivitiesSearch_Success(t *testing.T) {
-	called := false
-	mux := http.NewServeMux()
-	mux.HandleFunc("/activitylist-service/activities/search/activities", func(w http.ResponseWriter, r *http.Request) {
-		called = true
-		if got := r.URL.Query().Get("startDate"); got != "2024-06-01" {
-			t.Errorf("expected startDate=2024-06-01, got %q", got)
-		}
-		if got := r.URL.Query().Get("endDate"); got != "2024-06-30" {
-			t.Errorf("expected endDate=2024-06-30, got %q", got)
-		}
-		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(sampleActivitiesJSON()))
-	})
-	server := httptest.NewServer(mux)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &ActivitiesSearchCmd{
-		Pagination: Pagination{Limit: 20},
-		StartDate:  "2024-06-01",
-		EndDate:    "2024-06-30",
-	}
-	err := cmd.Run(g)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
-	}
-	if !called {
-		t.Fatal("expected API to be called")
-	}
-}
-
-func TestActivitiesSearch_JSON(t *testing.T) {
-	server := activitiesTestServer(t)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &ActivitiesSearchCmd{
-		Pagination: Pagination{Limit: 20},
-		StartDate:  "2024-06-01",
-		EndDate:    "2024-06-30",
-	}
-	err := cmd.Run(g)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
-	}
-}
-
 // --- resolveClient tests ---
 
 func TestResolveClient_NoAccount(t *testing.T) {
@@ -346,82 +195,6 @@ func TestResolveClient_Success(t *testing.T) {
 
 // --- Formatting helper tests ---
 
-func TestParseActivities(t *testing.T) {
-	data := json.RawMessage(sampleActivitiesJSON())
-	activities, err := parseActivities(data)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
-	}
-	if len(activities) != 2 {
-		t.Fatalf("expected 2 activities, got %d", len(activities))
-	}
-}
-
-func TestParseActivities_Invalid(t *testing.T) {
-	data := json.RawMessage(`{"not": "an array"}`)
-	_, err := parseActivities(data)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-}
-
-func TestParseActivities_Empty(t *testing.T) {
-	data := json.RawMessage(`[]`)
-	activities, err := parseActivities(data)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
-	}
-	if len(activities) != 0 {
-		t.Fatalf("expected 0 activities, got %d", len(activities))
-	}
-}
-
-func TestFormatActivityRows(t *testing.T) {
-	data := json.RawMessage(sampleActivitiesJSON())
-	activities, err := parseActivities(data)
-	if err != nil {
-		t.Fatalf("parse: %v", err)
-	}
-
-	rows := formatActivityRows(units.Metric, activities)
-	if len(rows) != 2 {
-		t.Fatalf("expected 2 rows, got %d", len(rows))
-	}
-
-	// First row: Morning Run
-	row := rows[0]
-	if row[0] != "12345678" {
-		t.Errorf("expected ID 12345678, got %q", row[0])
-	}
-	if row[1] != "2024-06-15" {
-		t.Errorf("expected date 2024-06-15, got %q", row[1])
-	}
-	if row[2] != "running" {
-		t.Errorf("expected type running, got %q", row[2])
-	}
-	if row[3] != "Morning Run" {
-		t.Errorf("expected name 'Morning Run', got %q", row[3])
-	}
-	if row[4] != "5.12 km" {
-		t.Errorf("expected distance '5.12 km', got %q", row[4])
-	}
-	if row[5] != "30:00" {
-		t.Errorf("expected duration '30:00', got %q", row[5])
-	}
-	if row[6] != "350" {
-		t.Errorf("expected calories '350', got %q", row[6])
-	}
-
-	// Second row: Evening Ride
-	row = rows[1]
-	if row[0] != "87654321" {
-		t.Errorf("expected ID 87654321, got %q", row[0])
-	}
-	if row[5] != "1:01:01" {
-		t.Errorf("expected duration '1:01:01', got %q", row[5])
-	}
-}
-
 func TestFormatDuration(t *testing.T) {
 	tests := []struct {
 		seconds float64
@@ -437,23 +210,6 @@ func TestFormatDuration(t *testing.T) {
 		got := formatDuration(tt.seconds)
 		if got != tt.want {
 			t.Errorf("formatDuration(%v) = %q, want %q", tt.seconds, got, tt.want)
-		}
-	}
-}
-
-func TestFormatCalories(t *testing.T) {
-	tests := []struct {
-		cal  float64
-		want string
-	}{
-		{0, "-"},
-		{350, "350"},
-		{600.7, "600"},
-	}
-	for _, tt := range tests {
-		got := formatCalories(tt.cal)
-		if got != tt.want {
-			t.Errorf("formatCalories(%v) = %q, want %q", tt.cal, got, tt.want)
 		}
 	}
 }
@@ -475,7 +231,7 @@ func TestFormatDate(t *testing.T) {
 	}
 }
 
-func TestActivityTypeKey(t *testing.T) {
+func TestValueAt(t *testing.T) {
 	tests := []struct {
 		name string
 		data map[string]any
@@ -485,12 +241,14 @@ func TestActivityTypeKey(t *testing.T) {
 		{"nil type", map[string]any{}, ""},
 		{"missing typeKey", map[string]any{"activityType": map[string]any{}}, ""},
 		{"non-map type", map[string]any{"activityType": "invalid"}, ""},
+		{"null type", map[string]any{"activityType": nil}, ""},
+		{"number key", map[string]any{"activityType": map[string]any{"typeKey": 7.0}}, "7"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := activityTypeKey(tt.data)
+			got := textOf(valueAt(tt.data, "activityType.typeKey"))
 			if got != tt.want {
-				t.Errorf("activityTypeKey() = %q, want %q", got, tt.want)
+				t.Errorf("valueAt() = %q, want %q", got, tt.want)
 			}
 		})
 	}

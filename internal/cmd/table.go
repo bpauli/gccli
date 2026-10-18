@@ -145,22 +145,22 @@ type JSON struct{}
 // v1NullJSON may use it.
 type JSONNull struct{}
 
-// Rows prints the response as JSON in --json mode and as columns otherwise.
-// Items names the wrapper key of the list, or "" for a root array. A
-// missing key gives no rows. SortBy names a numeric path to sort by,
-// ascending and stable; "" keeps Garmin's order. Noun names the list in
-// the parse error: "parse <noun>: <err>".
+// Rows prints the response as JSON in --json mode, null on an empty body
+// included, and as columns otherwise. Items names the wrapper key of the
+// list, or "" for a root array. A missing key gives no rows. Noun names
+// the list in the parse error: "parse <noun>: <err>".
 type Rows struct {
 	Noun    string
 	Items   string
-	SortBy  string
 	Columns []Column
 }
 
-// Column is one table column. Path is a dotted JSON path.
+// Column is one table column. Path is a dotted JSON path, and Format is
+// how the value there is rendered (Text by default).
 type Column struct {
-	Label string
-	Path  string
+	Label  string
+	Path   string
+	Format Format
 }
 
 // Write is the write rule: --json prints the response, other modes print

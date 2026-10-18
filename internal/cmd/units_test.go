@@ -29,6 +29,9 @@ func unitsTestServer(t *testing.T, settings http.HandlerFunc) {
 	}
 	server := httptest.NewServer(mux)
 	t.Cleanup(server.Close)
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	t.Setenv("XDG_CONFIG_HOME", home)
 
 	store := newTestSecretsStore(t)
 	overrideLoadSecrets(t, store)
@@ -72,15 +75,18 @@ func captureStdout(t *testing.T, fn func()) string {
 
 func runActivitiesList(t *testing.T, mode outfmt.Mode, pref units.Preference) (stdout, stderr string) {
 	t.Helper()
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, mode, "test@example.com")
-	g.Units = pref
-	stdout = captureStdout(t, func() {
-		if err := (&ActivitiesListCmd{Pagination: Pagination{Limit: 20}}).Run(g); err != nil {
-			t.Fatalf("Run: %v", err)
-		}
-	})
-	return stdout, buf.String()
+	args := []string{"--account", "test@example.com", "--color", "never", "--units", pref.String()}
+	switch mode {
+	case outfmt.JSON:
+		args = append(args, "--json")
+	case outfmt.Plain:
+		args = append(args, "--plain")
+	}
+	var out, errOut bytes.Buffer
+	if code := execute(append(args, "activities", "list"), "test", "none", "never", &out, &errOut); code != 0 {
+		t.Fatalf("exit %d: %s", code, errOut.String())
+	}
+	return out.String(), errOut.String()
 }
 
 func TestActivitiesList_AutoUsesGarminProfile(t *testing.T) {

@@ -9,76 +9,33 @@ import (
 
 	"github.com/bpauli/gccli/internal/garminapi"
 	"github.com/bpauli/gccli/internal/outfmt"
-	"github.com/bpauli/gccli/internal/units"
 )
 
+var courseColumns = []Column{
+	{Label: "ID", Path: "courseId"},
+	{Label: "NAME", Path: "courseName"},
+	{Label: "TYPE", Path: "courseType.typeKey"},
+	{Label: "DISTANCE", Path: "distanceInMeters", Format: Distance},
+	{Label: "CREATED", Path: "createdDate", Format: DateOnly},
+}
+
 var coursesGroup = Group{Name: "courses", Help: "Manage courses.", Children: []Node{
-	Custom{Name: "list", Help: "List courses.", Default: true, Cmd: &CoursesListCmd{}},
-	Custom{Name: "favorites", Help: "List favorite courses.", Cmd: &CoursesFavoritesCmd{}},
+	Leaf{
+		Name: "list", Help: "List courses.", Default: true,
+		Endpoint: "courses.list", Verb: "list courses",
+		Output: Rows{Noun: "courses", Items: "coursesForUser", Columns: courseColumns},
+	},
+	Leaf{
+		Name: "favorites", Help: "List favorite courses.",
+		Endpoint: "courses.favorites", Verb: "list favorite courses",
+		Output: Rows{Noun: "favorite courses", Columns: courseColumns},
+	},
 	Custom{Name: "detail", Help: "View course details.", Cmd: &CourseDetailCmd{}},
 	Custom{Name: "download", Help: "Download course file.", Cmd: &CourseDownloadCmd{}},
 	Custom{Name: "import", Help: "Import a GPX file as a new course.", Cmd: &CourseImportCmd{}},
 	Custom{Name: "send", Help: "Send a course to a device.", Cmd: &CourseSendCmd{}},
 	Custom{Name: "delete", Help: "Delete a course.", Cmd: &CourseDeleteCmd{}},
 }}
-
-// CoursesListCmd lists the user's courses.
-type CoursesListCmd struct{}
-
-func (c *CoursesListCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.Call(g.Context, "courses.list", nil, nil)
-	if err != nil {
-		return fmt.Errorf("list courses: %w", err)
-	}
-
-	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
-	}
-
-	courses, err := parseCourses(data)
-	if err != nil {
-		return err
-	}
-
-	rows := formatCourseRows(resolveUnits(g, client), courses)
-	header := []string{"ID", "NAME", "TYPE", "DISTANCE", "CREATED"}
-
-	return outfmt.WriteRows(g.Context, g.Stdout, header, rows)
-}
-
-// CoursesFavoritesCmd lists favorite courses.
-type CoursesFavoritesCmd struct{}
-
-func (c *CoursesFavoritesCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.Call(g.Context, "courses.favorites", nil, nil)
-	if err != nil {
-		return fmt.Errorf("list favorite courses: %w", err)
-	}
-
-	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
-	}
-
-	var courses []map[string]any
-	if err := json.Unmarshal(data, &courses); err != nil {
-		return fmt.Errorf("parse favorite courses: %w", err)
-	}
-
-	rows := formatCourseRows(resolveUnits(g, client), courses)
-	header := []string{"ID", "NAME", "TYPE", "DISTANCE", "CREATED"}
-
-	return outfmt.WriteRows(g.Context, g.Stdout, header, rows)
-}
 
 // CourseDetailCmd shows details for a course.
 type CourseDetailCmd struct {
@@ -242,58 +199,4 @@ func (c *CourseDeleteCmd) Run(g *Globals) error {
 		return fmt.Errorf("delete course: %w", err)
 	}
 	return reportWrite(g, data, "Deleted course %s", c.ID)
-}
-
-// parseCourses extracts the course list from the API response.
-// The list endpoint returns {coursesForUser: [...]}.
-func parseCourses(data json.RawMessage) ([]map[string]any, error) {
-	var wrapper map[string]any
-	if err := json.Unmarshal(data, &wrapper); err != nil {
-		return nil, fmt.Errorf("parse courses: %w", err)
-	}
-
-	arr, ok := wrapper["coursesForUser"]
-	if !ok {
-		return nil, nil
-	}
-
-	items, ok := arr.([]any)
-	if !ok {
-		return nil, nil
-	}
-
-	courses := make([]map[string]any, 0, len(items))
-	for _, item := range items {
-		if m, ok := item.(map[string]any); ok {
-			courses = append(courses, m)
-		}
-	}
-	return courses, nil
-}
-
-// formatCourseRows extracts table rows from course data.
-func formatCourseRows(sys units.System, courses []map[string]any) [][]string {
-	rows := make([][]string, 0, len(courses))
-	for _, c := range courses {
-		rows = append(rows, []string{
-			jsonString(c, "courseId"),
-			jsonString(c, "courseName"),
-			courseTypeKey(c),
-			sys.Distance(jsonFloat(c, "distanceInMeters")),
-			formatDate(jsonString(c, "createdDate")),
-		})
-	}
-	return rows
-}
-
-// courseTypeKey extracts the course type from nested courseType.typeKey.
-func courseTypeKey(c map[string]any) string {
-	ct, ok := c["courseType"]
-	if !ok || ct == nil {
-		return ""
-	}
-	if m, ok := ct.(map[string]any); ok {
-		return jsonString(m, "typeKey")
-	}
-	return ""
 }

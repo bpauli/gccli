@@ -1,0 +1,55 @@
+-- args --
+activities
+search
+--start
+2026-10-01
+--end
+2026-10-10
+--limit
+5
+--offset
+10
+-- route GET /activitylist-service/activities/search/activities?start=10&limit=5&startDate=2026-10-01&endDate=2026-10-10 --
+[{"activityId":111,"activityName":"Morning Run","startTimeLocal":"2026-10-14 07:30:00","activityType":{"typeKey":"running"},"distance":10012.5,"duration":0,"calories":0}]
+-- table stdout --
+ID   DATE        TYPE     NAME         DISTANCE  DURATION  CALORIES
+111  2026-10-14  running  Morning Run  10.01 km  -         -
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /activitylist-service/activities/search/activities?start=10&limit=5&startDate=2026-10-01&endDate=2026-10-10
+-- plain stdout --
+111	2026-10-14	running	Morning Run	10.01 km	-	-
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /activitylist-service/activities/search/activities?start=10&limit=5&startDate=2026-10-01&endDate=2026-10-10
+-- plain-header stdout --
+ID	DATE	TYPE	NAME	DISTANCE	DURATION	CALORIES
+111	2026-10-14	running	Morning Run	10.01 km	-	-
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /activitylist-service/activities/search/activities?start=10&limit=5&startDate=2026-10-01&endDate=2026-10-10
+-- json stdout --
+[
+  {
+    "activityId": 111,
+    "activityName": "Morning Run",
+    "startTimeLocal": "2026-10-14 07:30:00",
+    "activityType": {
+      "typeKey": "running"
+    },
+    "distance": 10012.5,
+    "duration": 0,
+    "calories": 0
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /activitylist-service/activities/search/activities?start=10&limit=5&startDate=2026-10-01&endDate=2026-10-10

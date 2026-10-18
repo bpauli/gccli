@@ -63,6 +63,11 @@ var v1NullJSON = []string{
 	"workouts detail",
 }
 
+// checkTable reports every defect of the command tree: a Custom without
+// a struct Cmd; a Leaf whose endpoint, placeholders, In fields, enums,
+// required bindings, int bindings, frozen-list paths, Output type or
+// Rows columns and Write templates do not fit. Each fail message in
+// checkLeaf states one rule.
 func checkTable(nodes []Node) []error {
 	var errs []error
 	leaves := map[string]Leaf{}
@@ -165,7 +170,13 @@ func checkLeaf(path string, l Leaf) []error {
 		s, bound := l.Params[p.Name]
 		for _, a := range s.alts {
 			f, ok := argsField(fields, a.field)
-			if !ok || p.Enum == nil {
+			if !ok {
+				continue
+			}
+			if (p.Optional || p.Default != "") && f.Type == reflect.TypeFor[int]() {
+				fail("Params[%q] binds %s of type int, but {%s} of %s may be left out: the runner sends an int even when it is 0, so use a string field", p.Name, a, p.Name, l.Endpoint)
+			}
+			if p.Enum == nil {
 				continue
 			}
 			for _, v := range kongEnum(f) {
@@ -213,6 +224,17 @@ func checkLeaf(path string, l Leaf) []error {
 	case Rows:
 		if out.Noun == "" {
 			fail("Rows has no Noun")
+		}
+		if len(out.Columns) == 0 {
+			fail("Rows has no Columns")
+		}
+		for i, c := range out.Columns {
+			switch {
+			case c.Path == "":
+				fail("Columns[%d] (%s) has no Path", i, c.Label)
+			case int(c.Format) >= len(formatNames):
+				fail("Columns[%d] (%s) has %s, which is not a Format", i, c.Label, c.Format)
+			}
 		}
 	}
 	if _, isWrite := l.Output.(Write); !isWrite && l.Output != nil && e.Method != http.MethodGet {

@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
 	"maps"
 	"reflect"
@@ -25,10 +24,6 @@ func (l Leaf) run(g *Globals, args reflect.Value, force bool) error {
 	if err != nil {
 		return err
 	}
-	emit, err := l.printer(g, in)
-	if err != nil {
-		return err
-	}
 	if w, ok := l.Output.(Write); ok && w.Confirm != "" {
 		ok, err := confirm(g.Stderr, expand(w.Confirm, in), force)
 		if err != nil {
@@ -47,17 +42,15 @@ func (l Leaf) run(g *Globals, args reflect.Value, force bool) error {
 	if err != nil {
 		return fmt.Errorf("%s: %w", l.Verb, err)
 	}
-	return emit(data)
-}
-
-func (l Leaf) printer(g *Globals, in map[string]string) (func(json.RawMessage) error, error) {
 	switch out := l.Output.(type) {
 	case JSON:
-		return func(data json.RawMessage) error { return writeHealthJSON(g, data) }, nil
+		return writeHealthJSON(g, data)
+	case Rows:
+		return out.print(g, client, data)
 	case Write:
-		return func(data json.RawMessage) error { return reportWrite(g, data, "%s", expand(out.Done, in)) }, nil
+		return reportWrite(g, data, "%s", expand(out.Done, in))
 	}
-	return nil, fmt.Errorf("%T output is not wired yet: keep the command Custom", l.Output)
+	return fmt.Errorf("%T output is not wired: keep the command Custom", l.Output)
 }
 
 func (l Leaf) inputs(args reflect.Value) (map[string]string, error) {
@@ -89,10 +82,9 @@ func (l Leaf) inputs(args reflect.Value) (map[string]string, error) {
 
 func (l Leaf) params(g *Globals, client *garminapi.Client, in map[string]string) (map[string]string, error) {
 	params := map[string]string{}
-	memo := map[lookup]string{}
 	for _, key := range slices.Sorted(maps.Keys(l.Params)) {
 		for _, a := range l.Params[key].alts {
-			v, err := a.value(g, client, in, memo)
+			v, err := a.value(g, client, in)
 			if err != nil {
 				return nil, err
 			}
@@ -105,28 +97,16 @@ func (l Leaf) params(g *Globals, client *garminapi.Client, in map[string]string)
 	return params, nil
 }
 
-func (a alt) value(g *Globals, client *garminapi.Client, in map[string]string, memo map[lookup]string) (string, error) {
-	if a.lookup == noLookup {
-		return in[a.field], nil
-	}
-	if v, ok := memo[a.lookup]; ok {
-		return v, nil
-	}
-	var v string
-	var err error
+func (a alt) value(g *Globals, client *garminapi.Client, in map[string]string) (string, error) {
 	switch a.lookup {
 	case lookupDisplayName:
-		v, err = resolveDisplayName(g, client)
+		return resolveDisplayName(g, client)
 	case lookupProfilePK:
-		v, err = client.GetProfilePK(g.Context)
+		return client.GetProfilePK(g.Context)
 	case lookupToday:
-		v = nowFn().Format("2006-01-02")
+		return nowFn().Format("2006-01-02"), nil
 	}
-	if err != nil {
-		return "", err
-	}
-	memo[a.lookup] = v
-	return v, nil
+	return in[a.field], nil
 }
 
 func expand(template string, in map[string]string) string {

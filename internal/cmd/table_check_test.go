@@ -152,6 +152,30 @@ func TestCheckTableRejects(t *testing.T) {
 			`activities list: placeholder {limit} of activities.list is required, but In("Limit") may be empty: make the field required, give it a default, or add .Or(...)`,
 		},
 		{
+			"Rows has no Columns", "activities list",
+			func(l *Leaf) { l.Output = Rows{Noun: "activities"} },
+			`activities list: Rows has no Columns`,
+		},
+		{
+			"a column has no Path", "activities list",
+			func(l *Leaf) { l.Output = Rows{Noun: "activities", Columns: []Column{{Label: "ID"}}} },
+			`activities list: Columns[0] (ID) has no Path`,
+		},
+		{
+			"a column has an unknown Format", "activities list",
+			func(l *Leaf) {
+				l.Output = Rows{Noun: "activities", Columns: []Column{{Label: "ID", Path: "activityId", Format: Format(9)}}}
+			},
+			`activities list: Columns[0] (ID) has Format(9), which is not a Format`,
+		},
+		{
+			"an int bound to a placeholder that may be left out", "activities list",
+			func(l *Leaf) {
+				l.Params = Params{"start": In("Offset"), "limit": In("Limit"), "activityType": In("Limit")}
+			},
+			`activities list: Params["activityType"] binds In("Limit") of type int, but {activityType} of activities.list may be left out: the runner sends an int even when it is 0, so use a string field`,
+		},
+		{
 			"In names a field of a named embed", "activities list",
 			func(l *Leaf) {
 				l.Spec = argsOf(&struct {
