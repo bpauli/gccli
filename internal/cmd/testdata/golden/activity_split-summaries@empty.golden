@@ -1,0 +1,20 @@
+-- args --
+activity
+split-summaries
+111
+-- route GET /activity-service/activity/111/split_summaries 204 --
+-- table stdout --
+null
+-- table stderr --
+-- table exit --
+0
+-- plain stdout --
+null
+-- plain stderr --
+-- plain exit --
+0
+-- json stdout --
+null
+-- json stderr --
+-- json exit --
+0
