@@ -72,7 +72,12 @@ func fixtureTree() []Node {
 				Verb:     "list activities",
 				Output: Rows{Noun: "activities", Columns: []Column{
 					{Label: "ID", Path: "activityId"},
+					{Label: "DATE", Path: "startTimeLocal", Format: DateOnly},
+					{Label: "TYPE", Path: "activityType.typeKey"},
 					{Label: "NAME", Path: "activityName"},
+					{Label: "DISTANCE", Path: "distance", Format: Distance},
+					{Label: "DURATION", Path: "duration", Format: Duration},
+					{Label: "CALORIES", Path: "calories", Format: Count},
 				}},
 			},
 		}},
@@ -83,8 +88,29 @@ func fixtureTree() []Node {
 				Params:   Params{"userProfilePK": ProfilePK},
 				Verb:     "get gear", Output: JSON{},
 			},
+			Leaf{
+				Name: "unlink", Help: "Unlink gear from an activity.",
+				Spec: argsOf(&struct {
+					UUID       string `arg:"" help:"Gear UUID."`
+					ActivityID string `arg:"" optional:"" help:"Activity ID."`
+				}{}),
+				Endpoint: "gear.unlink",
+				Params:   Params{"gearUUID": In("UUID"), "activityID": In("ActivityID").Or(DisplayName)},
+				Verb:     "unlink gear",
+				Output:   Write{Done: "Unlinked gear {UUID}", Confirm: "Unlink gear {UUID}?"},
+			},
 		}},
 		Group{Name: "courses", Help: "Manage courses.", Children: []Node{
+			Leaf{
+				Name: "list", Help: "List courses.", Default: true,
+				Endpoint: "courses.list",
+				Verb:     "list courses",
+				Output: Rows{Noun: "courses", Items: "coursesForUser", Columns: []Column{
+					{Label: "ID", Path: "courseId"},
+					{Label: "NAME", Path: "courseName"},
+					{Label: "CREATED", Path: "createdDate", Format: DateOnly},
+				}},
+			},
 			Leaf{
 				Name: "delete", Help: "Delete a course.",
 				Spec: argsOf(&struct {
@@ -125,15 +151,28 @@ type handCLI struct {
 		Solar DeviceSolarCmd `cmd:"" help:"Show solar charging data for a device."`
 	} `cmd:"" help:"Manage devices."`
 	Activities struct {
-		List ActivitiesListCmd `cmd:"" default:"withargs" help:"List recent activities."`
+		List handActivitiesList `cmd:"" default:"withargs" help:"List recent activities."`
 	} `cmd:"" help:"List and search activities."`
 	Gear struct {
-		List GearListCmd `cmd:"" default:"withargs" help:"List gear."`
+		List   GearListCmd    `cmd:"" default:"withargs" help:"List gear."`
+		Unlink handGearUnlink `cmd:"" help:"Unlink gear from an activity."`
 	} `cmd:"" help:"Manage gear."`
 	Courses struct {
+		List   struct{}        `cmd:"" default:"withargs" help:"List courses."`
 		Delete CourseDeleteCmd `cmd:"" help:"Delete a course."`
 	} `cmd:"" help:"Manage courses."`
 	Completion CompletionCmd `cmd:"" help:"Generate shell completion script."`
+}
+
+type handActivitiesList struct {
+	Pagination `embed:"" set:"items=activities"`
+	Type       string `help:"Filter by activity type (e.g. running, cycling)." short:"t"`
+}
+
+type handGearUnlink struct {
+	UUID       string `arg:"" help:"Gear UUID."`
+	ActivityID string `arg:"" optional:"" help:"Activity ID."`
+	Force      bool   `help:"Skip confirmation prompt." short:"f"`
 }
 
 // newParserFor builds a parser with the options execute uses, so help is

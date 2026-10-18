@@ -63,6 +63,19 @@ var v1NullJSON = []string{
 	"workouts detail",
 }
 
+// checkTable reports every defect of the command tree. A Custom needs a
+// Cmd that points to a struct. A Leaf needs an args struct, an endpoint
+// from the table, and Params whose keys are placeholders of that endpoint
+// and whose In sources name exported string, int or Date fields that Kong
+// reads. A required placeholder must be bound to a source that is never
+// empty. An int source cannot bind a placeholder that may be left out,
+// because the runner sends an int even when it is 0. A Kong enum must stay
+// inside the placeholder's Enum. LateDates and JSONNull are allowed only
+// on their frozen paths, and each frozen entry must still name such a
+// row. A GET prints JSON, JSONNull or Rows, with a Noun and Columns that
+// have a Path and a known Format. Any other method prints Write with a
+// Done, with a Confirm on a DELETE, and templates name fields the runner
+// can print. An endpoint with a body stays Custom.
 func checkTable(nodes []Node) []error {
 	var errs []error
 	leaves := map[string]Leaf{}
@@ -165,7 +178,13 @@ func checkLeaf(path string, l Leaf) []error {
 		s, bound := l.Params[p.Name]
 		for _, a := range s.alts {
 			f, ok := argsField(fields, a.field)
-			if !ok || p.Enum == nil {
+			if !ok {
+				continue
+			}
+			if (p.Optional || p.Default != "") && f.Type == reflect.TypeFor[int]() {
+				fail("Params[%q] binds %s of type int, but {%s} of %s may be left out: the runner sends an int even when it is 0, so use a string field", p.Name, a, p.Name, l.Endpoint)
+			}
+			if p.Enum == nil {
 				continue
 			}
 			for _, v := range kongEnum(f) {
@@ -213,6 +232,17 @@ func checkLeaf(path string, l Leaf) []error {
 	case Rows:
 		if out.Noun == "" {
 			fail("Rows has no Noun")
+		}
+		if len(out.Columns) == 0 {
+			fail("Rows has no Columns")
+		}
+		for i, c := range out.Columns {
+			switch {
+			case c.Path == "":
+				fail("Columns[%d] (%s) has no Path", i, c.Label)
+			case int(c.Format) >= len(formatNames):
+				fail("Columns[%d] (%s) has %s, which is not a Format", i, c.Label, c.Format)
+			}
 		}
 	}
 	if _, isWrite := l.Output.(Write); !isWrite && l.Output != nil && e.Method != http.MethodGet {

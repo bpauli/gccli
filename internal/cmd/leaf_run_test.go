@@ -23,10 +23,14 @@ func runTree(t *testing.T, nodes []Node, in harnessInput, args ...string) (stdou
 }
 
 const (
-	profileRoute = "GET /userprofile-service/userprofile/settings"
-	profileBody  = `{"displayName":"tester","profileId":3141592}`
-	socialRoute  = "GET /userprofile-service/socialProfile/tester"
-	value1       = "{\n  \"value\": 1\n}\n"
+	profileRoute    = "GET /userprofile-service/userprofile/settings"
+	profileBody     = `{"displayName":"tester","profileId":3141592}`
+	socialRoute     = "GET /userprofile-service/socialProfile/tester"
+	settingsRoute   = "GET /userprofile-service/userprofile/user-settings"
+	activitiesRoute = "GET /activitylist-service/activities/search/activities?start=0&limit=20"
+	activitiesBody  = `[{"activityId":111,"activityName":"Morning Run","startTimeLocal":"2026-10-14 07:30:00","activityType":{"typeKey":"running"},"distance":10012.5,"duration":3005.2,"calories":712},{"activityId":112,"activityName":"Pool Swim","startTimeLocal":"2026-10-13 18:00:00","activityType":{"typeKey":"lap_swimming"},"distance":1500,"duration":1980,"calories":350}]`
+	coursesRoute    = "GET /web-gateway/course/owner/"
+	value1          = "{\n  \"value\": 1\n}\n"
 )
 
 func TestLeafRun(t *testing.T) {
@@ -147,10 +151,83 @@ func TestLeafRun(t *testing.T) {
 			stderr: "Delete course 42? [y/N]: Cancelled\n",
 		},
 		{
-			name:   "an output that is not wired fails before any request",
-			args:   []string{"activities"},
-			stderr: "cmd.Rows output is not wired yet: keep the command Custom\n",
-			code:   1,
+			name:     "prints columns in table mode",
+			args:     []string{"activities"},
+			routes:   map[string]mockReply{activitiesRoute: {body: activitiesBody}},
+			stdout:   "ID   DATE        TYPE          NAME         DISTANCE  DURATION  CALORIES\n111  2026-10-14  running       Morning Run  10.01 km  50:05     712\n112  2026-10-13  lap_swimming  Pool Swim    1.50 km   33:00     350\n",
+			requests: []string{activitiesRoute},
+		},
+		{
+			name:     "prints the header first with --plain --header",
+			args:     []string{"--plain", "--header", "activities", "list"},
+			routes:   map[string]mockReply{activitiesRoute: {body: activitiesBody}},
+			stdout:   "ID\tDATE\tTYPE\tNAME\tDISTANCE\tDURATION\tCALORIES\n111\t2026-10-14\trunning\tMorning Run\t10.01 km\t50:05\t712\n112\t2026-10-13\tlap_swimming\tPool Swim\t1.50 km\t33:00\t350\n",
+			requests: []string{activitiesRoute},
+		},
+		{
+			name:     "prints null on an empty body in json mode",
+			args:     []string{"--json", "activities"},
+			routes:   map[string]mockReply{activitiesRoute: {status: http.StatusNoContent}},
+			stdout:   "null\n",
+			requests: []string{activitiesRoute},
+		},
+		{
+			name:     "an empty body fails in table mode before the units lookup",
+			args:     []string{"--units", "auto", "activities"},
+			routes:   map[string]mockReply{activitiesRoute: {status: http.StatusNoContent}},
+			stderr:   "parse activities: unexpected end of JSON input\n",
+			code:     1,
+			requests: []string{activitiesRoute},
+		},
+		{
+			name:     "looks the units up after the list",
+			args:     []string{"--units", "auto", "activities"},
+			routes:   map[string]mockReply{activitiesRoute: {body: activitiesBody}, settingsRoute: {body: `{"userData":{"measurementSystem":"statute_us"}}`}},
+			stdout:   "ID   DATE        TYPE          NAME         DISTANCE  DURATION  CALORIES\n111  2026-10-14  running       Morning Run  6.22 mi   50:05     712\n112  2026-10-13  lap_swimming  Pool Swim    0.93 mi   33:00     350\n",
+			requests: []string{activitiesRoute, settingsRoute},
+		},
+		{
+			name:     "skips the units lookup when no column needs them",
+			args:     []string{"--units", "auto", "courses"},
+			routes:   map[string]mockReply{coursesRoute: {body: `{"coursesForUser":[{"courseId":111,"courseName":"Morning Loop","createdDate":"2026-09-01 10:00:00"}]}`}},
+			stdout:   "ID   NAME          CREATED\n111  Morning Loop  2026-09-01\n",
+			requests: []string{coursesRoute},
+		},
+		{
+			name:     "a missing wrapper key gives no rows",
+			args:     []string{"courses"},
+			routes:   map[string]mockReply{coursesRoute: {body: `{"courses":[{"courseId":111}]}`}},
+			stdout:   "ID  NAME  CREATED\n",
+			requests: []string{coursesRoute},
+		},
+		{
+			name:     "a wrapper element that is not an object is skipped",
+			args:     []string{"--plain", "courses"},
+			routes:   map[string]mockReply{coursesRoute: {body: `{"coursesForUser":[5,{"courseId":111,"courseName":"Morning Loop"}]}`}},
+			stdout:   "111\tMorning Loop\t\n",
+			requests: []string{coursesRoute},
+		},
+		{
+			name:     "a root element that is not an object is an error",
+			args:     []string{"activities"},
+			routes:   map[string]mockReply{activitiesRoute: {body: `[5]`}},
+			stderr:   "parse activities: json: cannot unmarshal number into Go value of type map[string]interface {}\n",
+			code:     1,
+			requests: []string{activitiesRoute},
+		},
+		{
+			name:   "a declined write with a lookup sends nothing",
+			args:   []string{"gear", "unlink", "abc"},
+			stdin:  "n\n",
+			stderr: "Unlink gear abc? [y/N]: Cancelled\n",
+		},
+		{
+			name:     "a write looks up only after the prompt",
+			args:     []string{"gear", "unlink", "abc"},
+			stdin:    "y\n",
+			routes:   map[string]mockReply{profileRoute: {body: profileBody}, "PUT /gear-service/gear/unlink/abc/activity/tester": {body: `{"ok":1}`}},
+			stderr:   "Unlink gear abc? [y/N]: Unlinked gear abc\n",
+			requests: []string{profileRoute, "PUT /gear-service/gear/unlink/abc/activity/tester"},
 		},
 	}
 	for _, tc := range cases {
@@ -192,7 +269,7 @@ func TestLeafRowSadPaths(t *testing.T) {
 		}
 		var dataRoutes []string
 		for route := range in.routes {
-			if route != profileRoute && route != socialRoute {
+			if route != profileRoute && route != socialRoute && route != settingsRoute {
 				dataRoutes = append(dataRoutes, route)
 			}
 		}
@@ -201,14 +278,17 @@ func TestLeafRowSadPaths(t *testing.T) {
 			return
 		}
 		data := dataRoutes[0]
+		exec := func(t *testing.T, routes map[string]mockReply, flags, extra []string) (stdout, stderr string, code int, requests []string) {
+			h := newHarness(t, harnessInput{files: in.files, routes: routes, stdin: in.stdin})
+			stdout, stderr, code = h.run(flags, append(slices.Clone(args), extra...))
+			for _, r := range h.requests() {
+				requests = append(requests, r.route)
+			}
+			return stdout, stderr, code, requests
+		}
 		run := func(name string, routes map[string]mockReply, flag string, check func(t *testing.T, stdout, stderr string, code int, requests []string)) {
 			t.Run(path+"/"+name+"/"+strings.TrimPrefix(flag, "--"), func(t *testing.T) {
-				h := newHarness(t, harnessInput{files: in.files, routes: routes, stdin: in.stdin})
-				stdout, stderr, code := h.run([]string{flag}, args)
-				var requests []string
-				for _, r := range h.requests() {
-					requests = append(requests, r.route)
-				}
+				stdout, stderr, code, requests := exec(t, routes, []string{flag}, nil)
 				check(t, stdout, stderr, code, requests)
 			})
 		}
@@ -243,12 +323,39 @@ func TestLeafRowSadPaths(t *testing.T) {
 					}
 				})
 			}
-			if _, isJSON := l.Output.(JSON); isJSON {
-				empty := maps.Clone(in.routes)
-				empty[data] = mockReply{status: http.StatusNoContent}
+			empty := maps.Clone(in.routes)
+			empty[data] = mockReply{status: http.StatusNoContent}
+			switch out := l.Output.(type) {
+			case JSON:
 				run("empty body", empty, flag, func(t *testing.T, stdout, stderr string, code int, _ []string) {
 					if code != 0 || stdout != "{}\n" || stderr != "" {
 						t.Errorf("exit %d, want 0\nstdout %q, want {}\nstderr %q, want empty", code, stdout, stderr)
+					}
+				})
+			case Rows:
+				run("empty body", empty, flag, func(t *testing.T, stdout, stderr string, code int, _ []string) {
+					wantOut, wantErr, wantCode := "", "parse "+out.Noun+": unexpected end of JSON input\n", 1
+					if flag == "--json" {
+						wantOut, wantErr, wantCode = "null\n", "", 0
+					}
+					if code != wantCode || stdout != wantOut || stderr != wantErr {
+						t.Errorf("exit %d, want %d\nstdout %q\nwant   %q\nstderr %q\nwant   %q", code, wantCode, stdout, wantOut, stderr, wantErr)
+					}
+				})
+				if flag == "--json" || !slices.ContainsFunc(out.Columns, func(c Column) bool { return c.Format == Distance }) {
+					continue
+				}
+				t.Run(path+"/units lookup fails/"+strings.TrimPrefix(flag, "--"), func(t *testing.T) {
+					metric, _, _, _ := exec(t, in.routes, []string{flag}, []string{"--units", "metric"})
+					failed := maps.Clone(in.routes)
+					failed[settingsRoute] = mockReply{status: http.StatusInternalServerError, body: "down"}
+					stdout, stderr, code, requests := exec(t, failed, []string{flag}, []string{"--units", "auto"})
+					want := "could not read Garmin unit preference (garmin api: 500 Internal Server Error: down); using metric. Set --units to skip this lookup.\n"
+					if code != 0 || stdout != metric || stderr != want {
+						t.Errorf("exit %d, want 0\nstdout %q\nwant   %q\nstderr %q\nwant   %q", code, stdout, metric, stderr, want)
+					}
+					if len(requests) != len(lookups)+2 || requests[len(requests)-2] != data || requests[len(requests)-1] != settingsRoute {
+						t.Errorf("requests %q, want the lookups, then %q, then %q", requests, data, settingsRoute)
 					}
 				})
 			}

@@ -137,33 +137,12 @@ func formatActivityRows(sys units.System, activities []map[string]any) [][]strin
 
 // jsonString extracts a string (or stringified number) from a JSON map.
 func jsonString(m map[string]any, key string) string {
-	v, ok := m[key]
-	if !ok || v == nil {
-		return ""
-	}
-	switch val := v.(type) {
-	case string:
-		return val
-	case float64:
-		if val == float64(int64(val)) {
-			return fmt.Sprintf("%d", int64(val))
-		}
-		return fmt.Sprintf("%g", val)
-	default:
-		return fmt.Sprintf("%v", val)
-	}
+	return textOf(m[key])
 }
 
 // jsonFloat extracts a float64 from a JSON map.
 func jsonFloat(m map[string]any, key string) float64 {
-	v, ok := m[key]
-	if !ok || v == nil {
-		return 0
-	}
-	if f, ok := v.(float64); ok {
-		return f
-	}
-	return 0
+	return numberOf(m[key])
 }
 
 // jsonBool extracts a bool from a JSON map. The second return value reports
