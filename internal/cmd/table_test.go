@@ -122,6 +122,19 @@ func fixtureTree() []Node {
 				Output:   Write{Done: "Deleted course {ID}", Confirm: "Delete course {ID}?"},
 			},
 		}},
+		Group{Name: "body", Help: "Manage body data.", Children: []Node{
+			Leaf{
+				Name: "delete-weight", Help: "Delete a weigh-in entry.",
+				Spec: argsOf(&struct {
+					PK   string `arg:"" help:"Weigh-in version (primary key)."`
+					Date string `help:"Date of the weigh-in (YYYY-MM-DD)." required:"" name:"date"`
+				}{}),
+				Endpoint: "body.delete-weight",
+				Params:   Params{"date": In("Date"), "version": In("PK")},
+				Verb:     "delete weight",
+				Output:   Write{Done: "Deleted weigh-in {PK}", Confirm: "Delete weigh-in {PK} on {Date}?"},
+			},
+		}},
 		Custom{Name: "completion", Help: "Generate shell completion script.", Cmd: &CompletionCmd{}},
 	}
 }
@@ -158,9 +171,12 @@ type handCLI struct {
 		Unlink handGearUnlink `cmd:"" help:"Unlink gear from an activity."`
 	} `cmd:"" help:"Manage gear."`
 	Courses struct {
-		List   struct{}        `cmd:"" default:"withargs" help:"List courses."`
+		List   struct{}         `cmd:"" default:"withargs" help:"List courses."`
 		Delete CourseDeleteCmd `cmd:"" help:"Delete a course."`
 	} `cmd:"" help:"Manage courses."`
+	Body struct {
+		DeleteWeight handBodyDeleteWeight `cmd:"" name:"delete-weight" help:"Delete a weigh-in entry."`
+	} `cmd:"" help:"Manage body data."`
 	Completion CompletionCmd `cmd:"" help:"Generate shell completion script."`
 }
 
@@ -172,6 +188,12 @@ type handDeviceSolar struct {
 	DeviceID  string `arg:"" help:"Device ID."`
 	StartDate Date   `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"start"`
 	EndDate   Date   `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to start date." name:"end"`
+}
+
+type handBodyDeleteWeight struct {
+	PK    string `arg:"" help:"Weigh-in version (primary key)."`
+	Date  string `help:"Date of the weigh-in (YYYY-MM-DD)." required:"" name:"date"`
+	Force bool   `help:"Skip confirmation prompt." short:"f"`
 }
 
 type handActivitiesList struct {
