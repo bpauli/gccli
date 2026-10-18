@@ -30,6 +30,7 @@ var healthEndpoints = []Endpoint{
 	{Name: "health.max-metrics", Method: http.MethodGet, Host: ConnectAPI, Path: "/metrics-service/metrics/maxmet/daily/{date}/{date}"},
 	{Name: "health.lactate-threshold", Method: http.MethodGet, Host: ConnectAPI, Path: "/biometric-service/biometric/latestLactateThreshold"},
 	{Name: "health.cycling-ftp", Method: http.MethodGet, Host: ConnectAPI, Path: "/biometric-service/biometric/latestFunctionalThresholdPower/CYCLING"},
+	{Name: "health.critical-swim-speed", Method: http.MethodGet, Host: ConnectAPI, Path: "/biometric-service/criticalSwimSpeed/latest/{date}"},
 	{Name: "health.endurance-score", Method: http.MethodGet, Host: ConnectAPI, Path: "/metrics-service/metrics/endurancescore?calendarDate={date}"},
 	{Name: "health.hill-score", Method: http.MethodGet, Host: ConnectAPI, Path: "/metrics-service/metrics/hillscore?calendarDate={date}"},
 	{Name: "health.all-day-events", Method: http.MethodGet, Host: ConnectAPI, Path: "/wellness-service/wellness/dailyEvents?calendarDate={date}"},
