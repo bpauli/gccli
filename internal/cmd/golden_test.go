@@ -66,8 +66,10 @@ func TestGolden(t *testing.T) {
 
 		passed := map[string]string{}
 		requested := map[string]bool{}
+		ran := 0
 		for _, m := range goldenModes {
 			t.Run(path+"/"+m.name, func(t *testing.T) {
+				ran++
 				h := newHarness(t, in)
 				stdout, stderr, code := h.run(m.flags, args)
 				h.mu.Lock()
@@ -101,7 +103,7 @@ func TestGolden(t *testing.T) {
 			})
 		}
 		for _, route := range slices.Sorted(maps.Keys(in.routes)) {
-			if !requested[route] {
+			if ran == len(goldenModes) && !requested[route] {
 				t.Errorf("%s: no mode requests route %q: remove the section", file, route)
 			}
 		}
