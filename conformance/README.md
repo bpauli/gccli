@@ -91,8 +91,8 @@ These tests read `testdata/recorded`, or the directory that `GCCLI_RECORDED_DIR`
 | Test | What it checks |
 | --- | --- |
 | `TestRecordedScrubbed` | Each file is already scrubbed: the scrubber does not change it. |
-| `TestRecordedShapes` | Each route in `readShapes` has a 2xx recording with the JSON shape that the commands which read it need. A failure names those commands, such as `goals list`. It does not need `GCCLI_BIN`. |
-| `TestRecordedReplay` | Each golden case whose routes all have a 2xx recording runs in table mode against the recorded responses and exits 0. |
+| `TestRecordedShapes` | For each golden case in `caseReads`, every recorded route answers 2xx with what the command reads from it in table and plain mode: the fields and their JSON types, or the top-level kind for a command that prints the body as it is. The test fails when a replayable case has no entry. It does not need `GCCLI_BIN`. |
+| `TestRecordedReplay` | Each golden case whose routes all have a 2xx recording checks its `caseReads` entry, then runs in table mode against the recorded responses and must exit 0. |
 
 A request matches a recording by method, host and path. The query is not compared, and a number or date segment matches any number or date.
 

@@ -15,6 +15,10 @@ import (
 	"testing"
 )
 
+// A shape names what the commands that call a route read from its
+// response. The check fails when a field they read is missing or has
+// another JSON type. A null passes anywhere, because Garmin sends null for
+// a value it does not have.
 type shape interface {
 	kind() string
 	check(got any, at string) []string
@@ -31,9 +35,26 @@ type arrayOf struct{ elem shape }
 
 type object map[string]shape
 
-func (s scalar) kind() string { return string(s) }
-func (arrayOf) kind() string  { return "array" }
-func (object) kind() string   { return "object" }
+// A passthrough route is one whose commands print the body as it is in
+// every mode and read nothing beneath the top level. It names the top
+// level kind, object or array.
+type passthrough string
+
+// The unread shape marks a route whose response the commands never read,
+// such as a DELETE that answers 204. The download shape marks a response
+// that is not JSON: the commands write the bytes to a file.
+type special string
+
+const (
+	unread   special = "unread"
+	download special = "download"
+)
+
+func (s scalar) kind() string      { return string(s) }
+func (arrayOf) kind() string       { return "array" }
+func (object) kind() string        { return "object" }
+func (p passthrough) kind() string { return string(p) }
+func (s special) kind() string     { return string(s) }
 
 func jsonKind(v any) string {
 	switch v.(type) {
@@ -65,11 +86,16 @@ func kindProblem(want shape, got any, at string) []string {
 	return nil
 }
 
-func (s scalar) check(got any, at string) []string { return kindProblem(s, got, at) }
+func (s scalar) check(got any, at string) []string      { return kindProblem(s, got, at) }
+func (p passthrough) check(got any, at string) []string { return kindProblem(p, got, at) }
+func (special) check(any, string) []string              { return nil }
 
 func (a arrayOf) check(got any, at string) []string {
 	if p := kindProblem(a, got, at); p != nil || a.elem == nil {
 		return p
+	}
+	if len(got.([]any)) == 0 {
+		return []string{fmt.Sprintf("%s: want at least one element to check its shape, the recording has none", cmp.Or(at, "(body)"))}
 	}
 	var problems []string
 	for _, x := range got.([]any) {
@@ -99,43 +125,81 @@ func (o object) check(got any, at string) []string {
 	return problems
 }
 
-var readShapes = []struct {
+type routeShape struct {
 	route string
 	shape shape
-}{
-	{"GET /activitylist-service/activities/count", object{"totalCount": number}},
-	{"GET /activitylist-service/activities/search/activities", arrayOf{object{
-		"activityId": number, "activityName": text, "startTimeLocal": text,
-		"activityType": object{"typeKey": text}, "distance": number, "duration": number,
+}
+
+var (
+	settingsName = routeShape{"GET /userprofile-service/userprofile/settings", object{"displayName": text}}
+	activityRows = arrayOf{object{
+		"activityId": number, "activityName": text, "startTimeLocal": text, "activityType": object{"typeKey": text},
+		"distance": number, "duration": number, "calories": number,
+	}}
+	courseRows = arrayOf{object{"courseId": number, "courseName": text, "courseType": object{"typeKey": text}, "distanceInMeters": number, "createdDate": text}}
+)
+
+// caseReads names, for each golden case the replay runs, what its command
+// reads from each route in table and plain mode: the fields, or
+// passthrough, unread or download. A field read through a helper, such as
+// displayName through resolveDisplayName, is listed too. The fields come
+// from the command code in internal/cmd. A field that a command reads only
+// when present, and that the golden mock does not send, is not listed:
+// activity summary reads parentTypeId, trainingEffect,
+// anaerobicTrainingEffect, directWorkoutFeel and directWorkoutRpe when
+// present, workouts list reads owner.displayName, and workouts schedule
+// list reads workoutId and sportTypeKey of workout items only.
+var caseReads = map[string][]routeShape{
+	"activities count":            {{"GET /activitylist-service/activities/count", object{"totalCount": number}}},
+	"activities list":             {{"GET /activitylist-service/activities/search/activities", activityRows}},
+	"activities search":           {{"GET /activitylist-service/activities/search/activities", activityRows}},
+	"activity create":             {{"POST /activity-service/activity", object{"activityId": number}}},
+	"activity delete":             {{"DELETE /activity-service/activity/{n}", unread}},
+	"activity exercise-sets set":  {{"PUT /activity-service/activity/{n}/exerciseSets", unread}},
+	"activity exercise-sets show": {{"GET /activity-service/activity/{n}/exerciseSets", passthrough("object")}},
+	"activity hr-zones":           {{"GET /activity-service/activity/{n}/hrTimeInZones", passthrough("array")}},
+	"activity rename":             {{"PUT /activity-service/activity/{n}", unread}},
+	"activity retype":             {{"PUT /activity-service/activity/{n}", unread}},
+	"activity splits":             {{"GET /activity-service/activity/{n}/splits", passthrough("object")}},
+	"activity summary": {{"GET /activity-service/activity/{n}", object{
+		"activityName": text, "activityTypeDTO": object{"typeKey": text},
+		"summaryDTO": object{"startTimeLocal": text, "distance": number, "duration": number, "averageSpeed": number, "averageHR": number, "calories": number},
 	}}},
-	{"GET /activity-service/activity/{n}", object{
-		"activityId": number, "activityName": text, "activityTypeDTO": object{"typeKey": text},
-		"summaryDTO": object{"startTimeLocal": text, "distance": number, "duration": number},
-	}},
-	{"GET /activity-service/activity/{n}/exerciseSets", object{"exerciseSets": arrayOf{object{"setType": text, "exercises": arrayOf{}}}}},
-	{"GET /activity-service/activity/{n}/hrTimeInZones", arrayOf{}},
-	{"GET /activity-service/activity/{n}/splits", object{"lapDTOs": arrayOf{}}},
-	{"GET /calendar-service/events", arrayOf{object{"id": number, "eventName": text, "date": text}}},
-	{"GET /calendar-service/year/{n}/month/{n}/day/{n}/start/{n}", object{"calendarItems": arrayOf{object{"itemType": text, "date": text}}}},
-	{"GET /course-service/course/favorites", arrayOf{object{"courseId": number, "courseName": text}}},
-	{"GET /course-service/course/{n}", object{"courseId": number, "courseName": text}},
-	{"GET /device-service/deviceregistration/devices", arrayOf{object{"deviceId": number}}},
-	{"GET /goal-service/goal/goals", arrayOf{}},
-	{"GET /userprofile-service/userprofile/settings", object{"displayName": text}},
-	{"GET /userprofile-service/userprofile/user-settings", object{"userData": object{"measurementSystem": text}}},
-	{"GET /userstats-service/wellness/daily/tester", object{}},
-	{"GET /usersummary-service/usersummary/daily/tester", object{}},
-	{"GET /web-gateway/course/owner/", object{"coursesForUser": arrayOf{object{"courseId": number, "courseName": text}}}},
-	{"GET /wellness-service/wellness/dailyHeartRate/tester", object{}},
-	{"GET /wellness-service/wellness/dailySleepData/tester", object{}},
-	{"GET /workout-service/workout/{n}", object{"workoutId": number, "workoutName": text}},
-	{"GET /workout-service/workouts", arrayOf{object{"workoutId": number, "workoutName": text}}},
-	{"POST /activity-service/activity", object{"activityId": number}},
-	{"POST /calendar-service/event", object{"id": number}},
-	{"POST /course-service/course", object{"courseId": number}},
-	{"POST /course-service/course/elevation", arrayOf{arrayOf{}}},
-	{"POST /course-service/course/import", object{"geoPoints": arrayOf{object{}}}},
-	{"POST /workout-service/workout", object{"workoutId": number}},
+	"activity weather":  {{"GET /activity-service/activity/{n}/weather", passthrough("object")}},
+	"courses delete":    {{"DELETE /course-service/course/{n}", unread}},
+	"courses detail":    {{"GET /course-service/course/{n}", passthrough("object")}},
+	"courses favorites": {{"GET /course-service/course/favorites", courseRows}},
+	"courses import": {
+		{"POST /course-service/course/import", object{"courseName": text, "geoPoints": arrayOf{object{"latitude": number, "longitude": number}}}},
+		{"POST /course-service/course/elevation", arrayOf{arrayOf{number}}},
+		{"POST /course-service/course", object{"courseId": number, "courseName": text, "distanceMeter": number, "elevationGainMeter": number, "elevationLossMeter": number}},
+	},
+	"courses list": {
+		{"GET /web-gateway/course/owner/", object{"coursesForUser": courseRows}},
+		{"GET /userprofile-service/userprofile/user-settings", object{"userData": object{"measurementSystem": text}}},
+	},
+	"devices list":             {{"GET /device-service/deviceregistration/devices", passthrough("array")}},
+	"events add":               {{"POST /calendar-service/event", object{"id": number, "eventName": text, "date": text}}},
+	"events delete":            {{"DELETE /calendar-service/event/{n}", unread}},
+	"goals list":               {{"GET /goal-service/goal/goals", passthrough("array")}},
+	"health hr":                {settingsName, {"GET /wellness-service/wellness/dailyHeartRate/tester", passthrough("object")}},
+	"health rhr":               {settingsName, {"GET /userstats-service/wellness/daily/tester", passthrough("object")}},
+	"health sleep":             {settingsName, {"GET /wellness-service/wellness/dailySleepData/tester", passthrough("object")}},
+	"health steps view":        {settingsName, {"GET /wellness-service/wellness/dailySummaryChart/tester", passthrough("array")}},
+	"health summary":           {settingsName, {"GET /usersummary-service/usersummary/daily/tester", passthrough("object")}},
+	"profile settings":         {{"GET /userprofile-service/userprofile/user-settings", passthrough("object")}},
+	"profile view":             {{"GET /userprofile-service/userprofile/settings", passthrough("object")}},
+	"records":                  {settingsName, {"GET /personalrecord-service/personalrecord/prs/tester", passthrough("array")}},
+	"workouts create":          {{"POST /workout-service/workout", object{"workoutId": number}}},
+	"workouts delete":          {{"DELETE /workout-service/workout/{n}", unread}},
+	"workouts detail":          {{"GET /workout-service/workout/{n}", passthrough("object")}},
+	"workouts download":        {{"GET /workout-service/workout/FIT/{n}", download}},
+	"workouts list":            {{"GET /workout-service/workouts", arrayOf{object{"workoutId": number, "workoutName": text, "sportType": object{"sportTypeKey": text}}}}},
+	"workouts schedule add":    {{"POST /workout-service/schedule/{n}", unread}},
+	"workouts schedule list":   {{"GET /calendar-service/year/{n}/month/{n}/day/{n}/start/{n}", object{"calendarItems": arrayOf{object{"itemType": text, "date": text, "id": number, "title": text}}}}},
+	"workouts schedule remove": {{"DELETE /workout-service/schedule/{n}", unread}},
+	"workouts update":          {{"PUT /workout-service/workout/{n}", unread}},
+	"workouts upload":          {{"POST /workout-service/workout", unread}},
 }
 
 func replayKey(method, host, uri string) string {
@@ -173,17 +237,29 @@ func succeeded(files []recordedFile) []recordedFile {
 	return ok
 }
 
-func checkShape(want shape, body json.RawMessage) ([]string, error) {
-	if body == nil {
+func checkRecord(want shape, r Record) ([]string, error) {
+	switch {
+	case want == unread:
+		return nil, nil
+	case want == download:
+		if r.NonJSONBytes == 0 {
+			return []string{"(body): want bytes that are not JSON, the recording has none"}, nil
+		}
+		return nil, nil
+	case r.Body == nil:
 		return []string{"(body): want " + want.kind() + ", the recording has no JSON body"}, nil
 	}
-	dec := json.NewDecoder(bytes.NewReader(body))
+	dec := json.NewDecoder(bytes.NewReader(r.Body))
 	dec.UseNumber()
 	var got any
 	if err := dec.Decode(&got); err != nil {
 		return nil, err
 	}
 	return want.check(got, ""), nil
+}
+
+func checkShape(want shape, body json.RawMessage) ([]string, error) {
+	return checkRecord(want, Record{Body: body})
 }
 
 func TestCheckShape(t *testing.T) {
@@ -194,7 +270,7 @@ func TestCheckShape(t *testing.T) {
 	}{
 		{"match", `[{"activityId": 1, "activityType": {"typeKey": "running"}, "extra": "x"}]`, nil},
 		{"null values pass", `[{"activityId": null, "activityType": null}, null]`, nil},
-		{"empty array", `[]`, nil},
+		{"empty array", `[]`, []string{"(body): want at least one element to check its shape, the recording has none"}},
 		{"object for array", `{"activities": []}`, []string{"(body): want array, the recording has object"}},
 		{"null body", `null`, []string{"(body): want array, the recording has null"}},
 		{"missing key", `[{"activityType": {"typeKey": "running"}}]`, []string{"[].activityId: missing"}},
@@ -211,8 +287,23 @@ func TestCheckShape(t *testing.T) {
 			t.Errorf("%s: checkShape = %q, want %q", tc.name, got, tc.want)
 		}
 	}
-	if got, _ := checkShape(object{}, nil); len(got) != 1 {
-		t.Errorf("checkShape of a record without a JSON body = %q, want one problem", got)
+	for _, tc := range []struct {
+		name string
+		want shape
+		rec  Record
+		n    int
+	}{
+		{"an object shape on a record without a body", object{"a": text}, Record{}, 1},
+		{"an empty array where no element shape is named", arrayOf{}, Record{Body: json.RawMessage(`[]`)}, 0},
+		{"a passthrough on an array body", passthrough("object"), Record{Body: json.RawMessage(`[]`)}, 1},
+		{"a passthrough on an object body", passthrough("object"), Record{Body: json.RawMessage(`{}`)}, 0},
+		{"unread on a record without a body", unread, Record{}, 0},
+		{"download on a JSON body", download, Record{Body: json.RawMessage(`{}`)}, 1},
+		{"download on bytes", download, Record{NonJSONBytes: 12}, 0},
+	} {
+		if got, _ := checkRecord(tc.want, tc.rec); len(got) != tc.n {
+			t.Errorf("%s: checkRecord = %q, want %d problems", tc.name, got, tc.n)
+		}
 	}
 }
 
@@ -251,86 +342,147 @@ func recordedByKey(t *testing.T, dir string) map[string][]recordedFile {
 	return m
 }
 
-func goldenReaders(t *testing.T) map[string][]string {
-	t.Helper()
-	readers := map[string][]string{}
-	for _, f := range goldenFiles(t) {
-		for route := range f.routes {
-			k := goldenRouteKey(route)
-			if !slices.Contains(readers[k], f.name) {
-				readers[k] = append(readers[k], f.name)
+// servedRecords picks, for each route key, the first 2xx recording with
+// a JSON body. The replay serves these, and a case is replayable when
+// every route it calls has one.
+func servedRecords(recorded map[string][]recordedFile) map[string]Record {
+	served := map[string]Record{}
+	for key, files := range recorded {
+		for _, f := range succeeded(files) {
+			if f.NonJSONBytes == 0 {
+				served[key] = f.Record
+				break
 			}
 		}
 	}
-	for _, names := range readers {
-		slices.Sort(names)
-	}
-	return readers
+	return served
 }
 
-func shapeProblems(recorded map[string][]recordedFile, readers map[string][]string) ([]string, error) {
+func replayable(f goldenFile, served map[string]Record) bool {
+	if _, skip := skipped[f.name]; skip || len(f.routes) == 0 || f.outputs["table exit"] != "0\n" {
+		return false
+	}
+	for route := range f.routes {
+		if _, ok := served[goldenRouteKey(route)]; !ok {
+			return false
+		}
+	}
+	return true
+}
+
+// caseProblems checks each route of a golden case that has a recording: it
+// wants an entry in reads and a 2xx recording with the shapes of that
+// entry. A route without a recording is not checked, because the e2e
+// suite does not call every route. An entry for a route the case does not
+// call is a problem too.
+func caseProblems(reads []routeShape, c goldenCase, recorded map[string][]recordedFile) ([]string, error) {
+	byKey := map[string][]routeShape{}
+	for _, r := range reads {
+		byKey[routeKey(r.route)] = append(byKey[routeKey(r.route)], r)
+	}
 	var problems []string
-	for _, s := range readShapes {
-		key := routeKey(s.route)
-		if len(readers[key]) == 0 {
-			problems = append(problems, fmt.Sprintf("readShapes names %s, which no golden case in %s calls", s.route, goldenDir))
+	for _, route := range slices.Sorted(maps.Keys(c.routes)) {
+		key := goldenRouteKey(route)
+		entries := byKey[key]
+		delete(byKey, key)
+		files := recorded[key]
+		if len(files) == 0 {
 			continue
 		}
-		cmds := strings.Join(readers[key], ", ")
-		files := recorded[key]
+		if len(entries) == 0 {
+			problems = append(problems, fmt.Sprintf("%s: caseReads has no entry for this route: name the fields the command reads, or passthrough, unread or download", route))
+			continue
+		}
 		ok := succeeded(files)
-		switch {
-		case len(files) == 0:
-			problems = append(problems, fmt.Sprintf("%s: %s has no %s", cmds, recordedDir(), s.route))
-		case len(ok) == 0:
+		if len(ok) == 0 {
 			var statuses []string
 			for _, f := range files {
 				statuses = append(statuses, fmt.Sprintf("%d in %s", f.Status, f.name))
 			}
-			problems = append(problems, fmt.Sprintf("%s: %s answered %s, want 2xx", cmds, s.route, strings.Join(statuses, ", ")))
+			problems = append(problems, fmt.Sprintf("%s answered %s, want 2xx", route, strings.Join(statuses, ", ")))
+			continue
 		}
 		for _, f := range ok {
-			found, err := checkShape(s.shape, f.Body)
-			if err != nil {
-				return nil, fmt.Errorf("%s: %w", f.name, err)
-			}
-			for _, p := range found {
-				problems = append(problems, fmt.Sprintf("%s: %s in %s: %s", cmds, s.route, f.name, p))
+			for _, e := range entries {
+				found, err := checkRecord(e.shape, f.Record)
+				if err != nil {
+					return nil, fmt.Errorf("%s: %w", f.name, err)
+				}
+				for _, p := range found {
+					problems = append(problems, fmt.Sprintf("%s in %s: %s", route, f.name, p))
+				}
 			}
 		}
+	}
+	for _, key := range slices.Sorted(maps.Keys(byKey)) {
+		problems = append(problems, fmt.Sprintf("caseReads names %s, which this case does not call", byKey[key][0].route))
 	}
 	return problems, nil
 }
 
 func TestRecordedShapes(t *testing.T) {
-	problems, err := shapeProblems(recordedByKey(t, recordedDir()), goldenReaders(t))
-	if err != nil {
-		t.Fatal(err)
+	recorded := recordedByKey(t, recordedDir())
+	served := servedRecords(recorded)
+	names := map[string]bool{}
+	for _, f := range goldenFiles(t) {
+		names[f.name] = true
+		reads, listed := caseReads[f.name]
+		if !listed {
+			if replayable(f, served) {
+				t.Errorf("caseReads has no entry for %q, which the replay runs: name what the command reads from each route", f.name)
+			}
+			continue
+		}
+		t.Run(f.name, func(t *testing.T) {
+			problems, err := caseProblems(reads, f.goldenCase, recorded)
+			if err != nil {
+				t.Fatal(err)
+			}
+			for _, p := range problems {
+				t.Error(p)
+			}
+		})
 	}
-	for _, p := range problems {
-		t.Error(p)
+	for name := range caseReads {
+		if !names[name] {
+			t.Errorf("caseReads names %q, which has no golden file in %s", name, goldenDir)
+		}
 	}
 }
 
-func TestShapeProblemsNameTheCommand(t *testing.T) {
-	goals := routeKey("GET /goal-service/goal/goals")
+func TestCaseProblems(t *testing.T) {
+	var goals goldenFile
+	for _, f := range goldenFiles(t) {
+		if f.name == "goals list" {
+			goals = f
+		}
+	}
+	key := routeKey("GET /goal-service/goal/goals")
+	route := "GET connectapi.garmin.com/goal-service/goal/goals?status=active"
 	for _, tc := range []struct {
-		name string
-		rec  Record
-		want string
+		name  string
+		reads []routeShape
+		rec   Record
+		want  []string
 	}{
-		{"object for array", Record{Status: 200, Body: json.RawMessage(`{"goals": []}`)}, "goals list: GET /goal-service/goal/goals in goals.json: (body): want array, the recording has object"},
-		{"bad request", Record{Status: 400, Body: json.RawMessage(`{"message": "status cant be null"}`)}, "goals list: GET /goal-service/goal/goals answered 400 in goals.json, want 2xx"},
+		{"array", caseReads["goals list"], Record{Status: 200, Body: json.RawMessage(`[]`)}, nil},
+		{"object for array", caseReads["goals list"], Record{Status: 200, Body: json.RawMessage(`{"goals": []}`)}, []string{route + " in goals.json: (body): want array, the recording has object"}},
+		{"bad request", caseReads["goals list"], Record{Status: 400, Body: json.RawMessage(`{"message": "status cant be null"}`)}, []string{route + " answered 400 in goals.json, want 2xx"}},
+		{"missing field", []routeShape{{"GET /goal-service/goal/goals", arrayOf{object{"goalType": text}}}}, Record{Status: 200, Body: json.RawMessage(`[{"goalId": 1}]`)}, []string{route + " in goals.json: [].goalType: missing"}},
+		{"no entry", nil, Record{Status: 200, Body: json.RawMessage(`[]`)}, []string{route + ": caseReads has no entry for this route: name the fields the command reads, or passthrough, unread or download"}},
+		{"entry for a route the case does not call", []routeShape{{"GET /goal-service/goal/goals", passthrough("array")}, {"GET /badge-service/badge/earned", passthrough("array")}}, Record{Status: 200, Body: json.RawMessage(`[]`)}, []string{"caseReads names GET /badge-service/badge/earned, which this case does not call"}},
 	} {
-		recorded := recordedByKey(t, "testdata/recorded")
-		recorded[goals] = []recordedFile{{"goals.json", tc.rec}}
-		problems, err := shapeProblems(recorded, goldenReaders(t))
+		recorded := map[string][]recordedFile{key: {{"goals.json", tc.rec}}}
+		problems, err := caseProblems(tc.reads, goals.goldenCase, recorded)
 		if err != nil {
 			t.Fatal(err)
 		}
-		if !slices.Equal(problems, []string{tc.want}) {
-			t.Errorf("%s: shapeProblems = %q, want %q", tc.name, problems, tc.want)
+		if !slices.Equal(problems, tc.want) {
+			t.Errorf("%s: caseProblems = %q, want %q", tc.name, problems, tc.want)
 		}
+	}
+	if problems, _ := caseProblems(nil, goals.goldenCase, map[string][]recordedFile{}); len(problems) != 0 {
+		t.Errorf("caseProblems of a case without a recording = %q, want none", problems)
 	}
 }
 
@@ -360,15 +512,8 @@ func (r *recordedReplay) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 func TestRecordedReplay(t *testing.T) {
 	bin := binary(t)
-	served := map[string]Record{}
-	for key, files := range recordedByKey(t, recordedDir()) {
-		for _, f := range succeeded(files) {
-			if f.NonJSONBytes == 0 {
-				served[key] = f.Record
-				break
-			}
-		}
-	}
+	recorded := recordedByKey(t, recordedDir())
+	served := servedRecords(recorded)
 	token, err := os.ReadFile("testdata/state/token_golden.json")
 	if err != nil {
 		t.Fatal(err)
@@ -378,21 +523,23 @@ func TestRecordedReplay(t *testing.T) {
 
 	ran := 0
 	for _, f := range goldenFiles(t) {
-		if _, skip := skipped[f.name]; skip || len(f.routes) == 0 || f.outputs["table exit"] != "0\n" {
-			continue
-		}
-		covered := true
-		for route := range f.routes {
-			if _, ok := served[goldenRouteKey(route)]; !ok {
-				covered = false
-			}
-		}
-		if !covered {
+		if !replayable(f, served) {
 			continue
 		}
 		ran++
 		t.Run(f.name, func(t *testing.T) {
 			t.Parallel()
+			reads, listed := caseReads[f.name]
+			if !listed {
+				t.Fatalf("caseReads has no entry for %q: name what the command reads from each route", f.name)
+			}
+			problems, err := caseProblems(reads, f.goldenCase, recorded)
+			if err != nil {
+				t.Fatal(err)
+			}
+			for _, p := range problems {
+				t.Error(p)
+			}
 			r := &recordedReplay{served: served}
 			s := newSandbox(t, bin, r)
 			if err := os.CopyFS(s.home, os.DirFS(seed.home)); err != nil {
