@@ -313,12 +313,18 @@ var errorCaseExempt = map[string]string{
 	"auth login":  "the harness stubs the SSO login, so it sends no request",
 	"auth remove": "writes the keyring and sends no request",
 	"auth status": "reads the keyring and sends no request",
-	"auth token":  "reads the keyring and sends no request",
+	"auth token":  "reads the keyring; with an expired token it sends only a refresh, whose error has no verb",
 	"completion":  "prints a script and sends no request",
 }
 
 func TestGoldenErrorCases(t *testing.T) {
-	for _, path := range leafCommands(t) {
+	leaves := leafCommands(t)
+	for _, path := range slices.Sorted(maps.Keys(errorCaseExempt)) {
+		if !slices.Contains(leaves, path) {
+			t.Errorf("errorCaseExempt names %q, which is not a leaf command: remove the entry", path)
+		}
+	}
+	for _, path := range leaves {
 		main := goldenFile(path)
 		cases, _ := filepath.Glob(strings.TrimSuffix(main, ".golden") + "@*.golden")
 		var goldens []golden
