@@ -626,6 +626,7 @@ gccli gear unlink <uuid> <activity-id>
 ```bash
 gccli goals list                  # active goals (default)
 gccli goals list --status past    # active, future or past
+gccli goals weight --start 2026-01-01 --end 2026-06-30
 gccli badges earned
 gccli badges available
 gccli badges in-progress
@@ -1021,6 +1022,9 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 
 - `gccli goals list [flags]`: List goals. Also runs as `gccli goals [flags]`.
   - `--status="active"`: Goal status: active, future, past.
+- `gccli goals weight [flags]`: Show the effective weight goal for a date range.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli badges earned`: Show earned badges. Also runs as `gccli badges`.
 - `gccli badges available`: Show available badges.
 - `gccli badges in-progress`: Show badges in progress.
