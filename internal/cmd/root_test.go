@@ -3,12 +3,15 @@ package cmd
 import (
 	"bytes"
 	"cmp"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"strconv"
 	"strings"
+	"sync"
 	"testing"
 
 	"github.com/bpauli/gccli/internal/garminapi"
@@ -371,5 +374,51 @@ func TestExecuteRejectsBadTable(t *testing.T) {
 	}
 	if stdout.Len() != 0 {
 		t.Errorf("stdout is not empty:\n%s", stdout.String())
+	}
+}
+
+func TestExecuteRunsAreIsolated(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	t.Setenv("XDG_CONFIG_HOME", home)
+	store := newTestSecretsStore(t)
+	overrideLoadSecrets(t, store)
+	storeTestTokens(t, store, harnessAccount, harnessTokens(harnessAccount))
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		enc := json.NewEncoder(w)
+		enc.SetEscapeHTML(false)
+		_ = enc.Encode(map[string]string{"uri": r.URL.RequestURI()})
+	}))
+	t.Cleanup(server.Close)
+	overrideNewClient(t, server)
+
+	const n = 40
+	outs := make([]string, n)
+	var wg sync.WaitGroup
+	for i := range n {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			args := []string{"--account", harnessAccount, "--color", "never", "--units", "metric", "--json", "activities", "list", "--limit", strconv.Itoa(i + 1)}
+			if i%2 == 0 {
+				args = append(args, "--type", "t"+strconv.Itoa(i))
+			}
+			var stdout, stderr bytes.Buffer
+			if code := execute(args, "test", "none", "never", &stdout, &stderr); code != 0 {
+				t.Errorf("run %d: exit %d: %s", i, code, stderr.String())
+			}
+			outs[i] = stdout.String()
+		}()
+	}
+	wg.Wait()
+	for i, out := range outs {
+		want := fmt.Sprintf("/activitylist-service/activities/search/activities?start=0&limit=%d", i+1)
+		if i%2 == 0 {
+			want += "&activityType=t" + strconv.Itoa(i)
+		}
+		if !strings.Contains(out, strconv.Quote(want)) {
+			t.Errorf("run %d requested another run's values: %s\nwant %s", i, strings.TrimSpace(out), want)
+		}
 	}
 }
