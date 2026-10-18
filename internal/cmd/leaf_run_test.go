@@ -2,7 +2,9 @@ package cmd
 
 import (
 	"bytes"
+	"maps"
 	"net/http"
+	"slices"
 	"strings"
 	"testing"
 )
@@ -162,4 +164,94 @@ func TestLeafRun(t *testing.T) {
 			}
 		})
 	}
+}
+
+var lookupRoutes = map[lookup]struct{ route, errPrefix string }{
+	lookupDisplayName: {profileRoute, "resolve display name: "},
+	lookupProfilePK:   {profileRoute, "get user profile: "},
+}
+
+func TestLeafRowSadPaths(t *testing.T) {
+	walkNodes(commands, "", func(path string, n Node) {
+		l, ok := n.(Leaf)
+		if !ok {
+			return
+		}
+		args, in, err := goldenInput(goldenFile(path))
+		if err != nil {
+			t.Errorf("%s: %v", path, err)
+			return
+		}
+		var lookups []lookup
+		for _, s := range l.Params {
+			for _, a := range s.alts {
+				if _, ok := lookupRoutes[a.lookup]; ok && !slices.Contains(lookups, a.lookup) {
+					lookups = append(lookups, a.lookup)
+				}
+			}
+		}
+		var dataRoutes []string
+		for route := range in.routes {
+			if route != profileRoute && route != socialRoute {
+				dataRoutes = append(dataRoutes, route)
+			}
+		}
+		if len(dataRoutes) != 1 {
+			t.Errorf("%s: golden has %d data routes, want 1", path, len(dataRoutes))
+			return
+		}
+		data := dataRoutes[0]
+		run := func(name string, routes map[string]mockReply, flag string, check func(t *testing.T, stdout, stderr string, code int, requests []string)) {
+			t.Run(path+"/"+name+"/"+strings.TrimPrefix(flag, "--"), func(t *testing.T) {
+				h := newHarness(t, harnessInput{files: in.files, routes: routes, stdin: in.stdin})
+				stdout, stderr, code := h.run([]string{flag}, args)
+				var requests []string
+				for _, r := range h.requests() {
+					requests = append(requests, r.route)
+				}
+				check(t, stdout, stderr, code, requests)
+			})
+		}
+		for _, flag := range []string{"--plain", "--json"} {
+			failed := maps.Clone(in.routes)
+			failed[data] = mockReply{status: http.StatusInternalServerError, body: "down"}
+			run("request fails", failed, flag, func(t *testing.T, stdout, stderr string, code int, requests []string) {
+				want := l.Verb + ": garmin api: 500 Internal Server Error: down\n"
+				if flag == "--json" {
+					want = `{"error":{"code":"error","status":500,"message":"` + l.Verb + `: garmin api: 500 Internal Server Error: down"}}` + "\n"
+				}
+				if code != 1 || stdout != "" || stderr != want {
+					t.Errorf("exit %d, want 1\nstdout %q, want empty\nstderr %q\nwant   %q", code, stdout, stderr, want)
+				}
+				if len(requests) != len(lookups)+1 || requests[len(requests)-1] != data {
+					t.Errorf("requests %q, want the lookups then %q", requests, data)
+				}
+			})
+			for _, k := range lookups {
+				failed := maps.Clone(in.routes)
+				failed[lookupRoutes[k].route] = mockReply{status: http.StatusInternalServerError, body: "down"}
+				run("lookup fails", failed, flag, func(t *testing.T, stdout, stderr string, code int, requests []string) {
+					want := lookupRoutes[k].errPrefix + "garmin api: 500 Internal Server Error: down\n"
+					if flag == "--json" {
+						want = `{"error":{"code":"error","status":500,"message":"` + strings.TrimSuffix(want, "\n") + `"}}` + "\n"
+					}
+					if code != 1 || stdout != "" || stderr != want {
+						t.Errorf("exit %d, want 1\nstdout %q, want empty\nstderr %q\nwant   %q", code, stdout, stderr, want)
+					}
+					if len(requests) != 1 || requests[0] != lookupRoutes[k].route {
+						t.Errorf("requests %q, want only %q", requests, lookupRoutes[k].route)
+					}
+				})
+			}
+			if _, isJSON := l.Output.(JSON); isJSON {
+				empty := maps.Clone(in.routes)
+				empty[data] = mockReply{status: http.StatusNoContent}
+				run("empty body", empty, flag, func(t *testing.T, stdout, stderr string, code int, _ []string) {
+					if code != 0 || stdout != "{}\n" || stderr != "" {
+						t.Errorf("exit %d, want 0\nstdout %q, want {}\nstderr %q, want empty", code, stdout, stderr)
+					}
+				})
+			}
+		}
+	})
 }
