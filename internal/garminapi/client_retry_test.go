@@ -185,3 +185,57 @@ func TestNewClient_DefaultClientTimesOutWaitingForHeaders(t *testing.T) {
 		t.Fatal("ConnectAPI still waiting after 3s, want a timeout error")
 	}
 }
+
+func TestWithAttemptTransportKeepsTheStallWatch(t *testing.T) {
+	orig := stallTimeout
+	t.Cleanup(func() { stallTimeout = orig })
+	stallTimeout = 200 * time.Millisecond
+
+	stop := make(chan struct{})
+	srv := httptest.NewServer(http.HandlerFunc(func(_ http.ResponseWriter, r *http.Request) {
+		select {
+		case <-r.Context().Done():
+		case <-stop:
+		}
+	}))
+	t.Cleanup(srv.Close)
+	t.Cleanup(func() { close(stop) })
+
+	var attempts atomic.Int32
+	client := NewClient(testTokens(), WithBaseURL(srv.URL), WithAttemptTransport(func(base http.RoundTripper) http.RoundTripper {
+		return roundTripFunc(func(req *http.Request) (*http.Response, error) {
+			attempts.Add(1)
+			return base.RoundTrip(req)
+		})
+	}))
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	_, err := client.ConnectAPI(ctx, http.MethodGet, "/api/path", nil)
+	var stall *StallError
+	if !errors.As(err, &stall) {
+		t.Fatalf("error = %T (%v), want *StallError: the wrapped transport has no stall watch", err, err)
+	}
+	if got := attempts.Load(); got != 1 {
+		t.Errorf("the wrapper saw %d attempts, want 1", got)
+	}
+}
+
+func TestWithAttemptTransportSeesEachRetry(t *testing.T) {
+	srv, calls := scriptedServer(t, "", http.StatusServiceUnavailable, http.StatusOK)
+	var attempts atomic.Int32
+	client := NewClient(testTokens(), WithBaseURL(srv.URL), WithAttemptTransport(func(base http.RoundTripper) http.RoundTripper {
+		return roundTripFunc(func(req *http.Request) (*http.Response, error) {
+			attempts.Add(1)
+			return base.RoundTrip(req)
+		})
+	}))
+	hookSleep(client, func(context.Context, time.Duration) error { return nil })
+
+	if _, err := client.ConnectAPI(context.Background(), http.MethodGet, "/api/path", nil); err != nil {
+		t.Fatal(err)
+	}
+	if got := attempts.Load(); got != 2 || atomic.LoadInt32(calls) != 2 {
+		t.Errorf("the wrapper saw %d attempts and the server %d requests, want 2 and 2: the wrapper must sit under the retry transport", got, atomic.LoadInt32(calls))
+	}
+}

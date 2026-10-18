@@ -3,7 +3,6 @@
 package e2e
 
 import (
-	"net/http"
 	"os"
 	"sync"
 	"testing"
@@ -24,12 +23,9 @@ func recordOptions(t *testing.T) []garminapi.ClientOption {
 	if dir == "" {
 		return nil
 	}
-	recordOnce.Do(func() {
-		base := http.DefaultTransport.(*http.Transport).Clone()
-		recorder, recordErr = harness.NewRecorder(dir, garminapi.NewStallTransport(base))
-	})
+	recordOnce.Do(func() { recorder, recordErr = harness.NewRecorder(dir) })
 	if recordErr != nil {
 		t.Fatalf("GCCLI_RECORD_DIR: %v", recordErr)
 	}
-	return []garminapi.ClientOption{garminapi.WithHTTPClient(&http.Client{Transport: garminapi.NewRetryTransport(recorder)})}
+	return []garminapi.ClientOption{garminapi.WithAttemptTransport(recorder.Wrap)}
 }

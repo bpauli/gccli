@@ -31,15 +31,15 @@ func answers(list ...answer) http.RoundTripper {
 
 func TestRecorderWritesOneFilePerResponse(t *testing.T) {
 	dir := filepath.Join(t.TempDir(), "rec")
-	rec, err := NewRecorder(dir, answers(
-		answer{200, `{"displayName": "jane"}`},
-		answer{200, "\x0e\x10FIT"},
-		answer{204, ""},
-	))
+	rec, err := NewRecorder(dir)
 	if err != nil {
 		t.Fatal(err)
 	}
-	client := &http.Client{Transport: rec}
+	client := &http.Client{Transport: rec.Wrap(answers(
+		answer{200, `{"displayName": "jane"}`},
+		answer{200, "\x0e\x10FIT"},
+		answer{204, ""},
+	))}
 	for _, uri := range []string{"/userprofile-service/userprofile/settings", "/workout-service/workout/FIT/1?x=1", "/activity-service/activity/1"} {
 		req, err := http.NewRequest(http.MethodPost, "https://connectapi.garmin.com"+uri, strings.NewReader(`{"request":"body-secret"}`))
 		if err != nil {
@@ -95,11 +95,11 @@ func TestRecorderWritesOneFilePerResponse(t *testing.T) {
 }
 
 func TestRecorderGivesTheClientTheBody(t *testing.T) {
-	rec, err := NewRecorder(t.TempDir(), answers(answer{200, `{"a": [1, 2]}`}))
+	rec, err := NewRecorder(t.TempDir())
 	if err != nil {
 		t.Fatal(err)
 	}
-	resp, err := (&http.Client{Transport: rec}).Get("https://connectapi.garmin.com/x")
+	resp, err := (&http.Client{Transport: rec.Wrap(answers(answer{200, `{"a": [1, 2]}`}))}).Get("https://connectapi.garmin.com/x")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -114,7 +114,7 @@ func TestNewRecorderRefusesAFullDir(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(dir, "0001.json"), []byte("{}"), 0o600); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := NewRecorder(dir, http.DefaultTransport); err == nil {
+	if _, err := NewRecorder(dir); err == nil {
 		t.Error("NewRecorder accepted a directory that holds a record from an earlier run")
 	}
 }

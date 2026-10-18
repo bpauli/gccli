@@ -13,13 +13,14 @@ import (
 	"github.com/bpauli/gccli/conformance"
 )
 
+// A Recorder writes each API response to its own file in a directory.
+// Wrap gives the transport that records.
 type Recorder struct {
-	base http.RoundTripper
-	dir  string
-	seq  atomic.Int64
+	dir string
+	seq atomic.Int64
 }
 
-func NewRecorder(dir string, base http.RoundTripper) (*Recorder, error) {
+func NewRecorder(dir string) (*Recorder, error) {
 	if err := os.MkdirAll(dir, 0o700); err != nil {
 		return nil, err
 	}
@@ -30,11 +31,24 @@ func NewRecorder(dir string, base http.RoundTripper) (*Recorder, error) {
 	if len(entries) > 0 {
 		return nil, fmt.Errorf("%s is not empty", dir)
 	}
-	return &Recorder{base: base, dir: dir}, nil
+	return &Recorder{dir: dir}, nil
 }
 
-func (r *Recorder) RoundTrip(req *http.Request) (*http.Response, error) {
-	resp, err := r.base.RoundTrip(req)
+// Wrap returns a transport that sends each request through base and writes
+// the response to the recorder's directory. The record holds the method,
+// the host, the URI, the status and a JSON body, never a request header or
+// a request body.
+func (r *Recorder) Wrap(base http.RoundTripper) http.RoundTripper {
+	return &recording{rec: r, base: base}
+}
+
+type recording struct {
+	rec  *Recorder
+	base http.RoundTripper
+}
+
+func (t *recording) RoundTrip(req *http.Request) (*http.Response, error) {
+	resp, err := t.base.RoundTrip(req)
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +67,7 @@ func (r *Recorder) RoundTrip(req *http.Request) (*http.Response, error) {
 	}
 	data, err := conformance.EncodeRecord(rec)
 	if err == nil {
-		err = os.WriteFile(filepath.Join(r.dir, fmt.Sprintf("%04d.json", r.seq.Add(1))), data, 0o600)
+		err = os.WriteFile(filepath.Join(t.rec.dir, fmt.Sprintf("%04d.json", t.rec.seq.Add(1))), data, 0o600)
 	}
 	if err != nil {
 		return nil, fmt.Errorf("record a %s response: %w", req.Method, err)
