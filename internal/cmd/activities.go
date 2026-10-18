@@ -91,18 +91,6 @@ func jsonBool(m map[string]any, key string) (bool, bool) {
 	return b, ok
 }
 
-// activityTypeKey extracts the activity type key from nested activityType.typeKey.
-func activityTypeKey(a map[string]any) string {
-	at, ok := a["activityType"]
-	if !ok || at == nil {
-		return ""
-	}
-	if m, ok := at.(map[string]any); ok {
-		return jsonString(m, "typeKey")
-	}
-	return ""
-}
-
 // formatDate extracts just the date portion from a datetime string like "2024-01-15 08:30:00".
 func formatDate(s string) string {
 	if s == "" {
@@ -125,14 +113,6 @@ func formatDuration(seconds float64) string {
 		return fmt.Sprintf("%d:%02d:%02d", h, m, s)
 	}
 	return fmt.Sprintf("%d:%02d", m, s)
-}
-
-// formatCalories formats calorie count.
-func formatCalories(cal float64) string {
-	if cal == 0 {
-		return "-"
-	}
-	return fmt.Sprintf("%d", int(cal))
 }
 
 // ActivitiesTypesCmd lists all activity types supported by Garmin.

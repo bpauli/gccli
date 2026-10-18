@@ -104,7 +104,7 @@ func activityTypeName(a map[string]any) string {
 	if dto, ok := a["activityTypeDTO"].(map[string]any); ok {
 		return jsonString(dto, "typeKey")
 	}
-	return activityTypeKey(a)
+	return textOf(valueAt(a, "activityType.typeKey"))
 }
 
 // formatHeartRate formats a heart rate value.

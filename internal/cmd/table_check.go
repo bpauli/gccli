@@ -63,19 +63,11 @@ var v1NullJSON = []string{
 	"workouts detail",
 }
 
-// checkTable reports every defect of the command tree. A Custom needs a
-// Cmd that points to a struct. A Leaf needs an args struct, an endpoint
-// from the table, and Params whose keys are placeholders of that endpoint
-// and whose In sources name exported string, int or Date fields that Kong
-// reads. A required placeholder must be bound to a source that is never
-// empty. An int source cannot bind a placeholder that may be left out,
-// because the runner sends an int even when it is 0. A Kong enum must stay
-// inside the placeholder's Enum. LateDates and JSONNull are allowed only
-// on their frozen paths, and each frozen entry must still name such a
-// row. A GET prints JSON, JSONNull or Rows, with a Noun and Columns that
-// have a Path and a known Format. Any other method prints Write with a
-// Done, with a Confirm on a DELETE, and templates name fields the runner
-// can print. An endpoint with a body stays Custom.
+// checkTable reports every defect of the command tree: a Custom without
+// a struct Cmd; a Leaf whose endpoint, placeholders, In fields, enums,
+// required bindings, int bindings, frozen-list paths, Output type or
+// Rows columns and Write templates do not fit. Each fail message in
+// checkLeaf states one rule.
 func checkTable(nodes []Node) []error {
 	var errs []error
 	leaves := map[string]Leaf{}

@@ -11,7 +11,6 @@ import (
 	"github.com/bpauli/gccli/internal/units"
 )
 
-// Format is how a Rows column renders the value at its Path.
 type Format uint8
 
 const (
@@ -46,7 +45,7 @@ func (f Format) cell(v any, sys units.System) string {
 	case Duration:
 		return formatDuration(numberOf(v))
 	case Count:
-		return formatCalories(numberOf(v))
+		return formatCount(numberOf(v))
 	}
 	return textOf(v)
 }
@@ -78,9 +77,9 @@ func (r Rows) print(g *Globals, client *garminapi.Client, data json.RawMessage) 
 	return outfmt.WriteRows(g.Context, g.Stdout, header, rows)
 }
 
-// items reads the list. A root array must hold objects. Under a wrapper
-// key, a missing key or a value that is not a list gives no rows, and an
-// element that is not an object is skipped.
+// The two parsers keep the behavior of the hand-written commands they
+// replaced: a root array fails on an element that is not an object, a
+// wrapped list skips it, and a missing or non-list key gives no rows.
 func (r Rows) items(data json.RawMessage) ([]map[string]any, error) {
 	if r.Items == "" {
 		var items []map[string]any
@@ -101,8 +100,6 @@ func (r Rows) items(data json.RawMessage) ([]map[string]any, error) {
 	return items, nil
 }
 
-// valueAt follows a dotted path through nested objects. A step that is
-// missing or not an object gives nil.
 func valueAt(m map[string]any, path string) any {
 	key, rest, nested := strings.Cut(path, ".")
 	if !nested {

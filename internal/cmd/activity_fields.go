@@ -53,7 +53,7 @@ var fieldRegistry = map[string]summaryField{
 	},
 	"calories": {
 		Key: "calories", Label: "CALORIES",
-		Format: func(s map[string]any, _ units.System) string { return formatCalories(jsonFloat(s, "calories")) },
+		Format: func(s map[string]any, _ units.System) string { return formatCount(jsonFloat(s, "calories")) },
 	},
 	"sets": {
 		Key: "sets", Label: "SETS",

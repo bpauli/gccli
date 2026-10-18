@@ -214,23 +214,6 @@ func TestFormatDuration(t *testing.T) {
 	}
 }
 
-func TestFormatCalories(t *testing.T) {
-	tests := []struct {
-		cal  float64
-		want string
-	}{
-		{0, "-"},
-		{350, "350"},
-		{600.7, "600"},
-	}
-	for _, tt := range tests {
-		got := formatCalories(tt.cal)
-		if got != tt.want {
-			t.Errorf("formatCalories(%v) = %q, want %q", tt.cal, got, tt.want)
-		}
-	}
-}
-
 func TestFormatDate(t *testing.T) {
 	tests := []struct {
 		input string
@@ -248,7 +231,7 @@ func TestFormatDate(t *testing.T) {
 	}
 }
 
-func TestActivityTypeKey(t *testing.T) {
+func TestValueAt(t *testing.T) {
 	tests := []struct {
 		name string
 		data map[string]any
@@ -258,12 +241,14 @@ func TestActivityTypeKey(t *testing.T) {
 		{"nil type", map[string]any{}, ""},
 		{"missing typeKey", map[string]any{"activityType": map[string]any{}}, ""},
 		{"non-map type", map[string]any{"activityType": "invalid"}, ""},
+		{"null type", map[string]any{"activityType": nil}, ""},
+		{"number key", map[string]any{"activityType": map[string]any{"typeKey": 7.0}}, "7"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := activityTypeKey(tt.data)
+			got := textOf(valueAt(tt.data, "activityType.typeKey"))
 			if got != tt.want {
-				t.Errorf("activityTypeKey() = %q, want %q", got, tt.want)
+				t.Errorf("valueAt() = %q, want %q", got, tt.want)
 			}
 		})
 	}
