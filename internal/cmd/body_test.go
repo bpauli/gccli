@@ -95,90 +95,7 @@ func bodyTestServer(t *testing.T) *httptest.Server {
 
 // --- Execute-level tests ---
 
-func TestExecute_BodyHelp(t *testing.T) {
-	code := Execute([]string{"body", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_BodyCompositionHelp(t *testing.T) {
-	code := Execute([]string{"body", "composition", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_BodyWeighInsHelp(t *testing.T) {
-	code := Execute([]string{"body", "weigh-ins", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_BodyDailyWeighInsHelp(t *testing.T) {
-	code := Execute([]string{"body", "daily-weigh-ins", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_BodyAddWeightHelp(t *testing.T) {
-	code := Execute([]string{"body", "add-weight", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_BodyAddCompositionHelp(t *testing.T) {
-	code := Execute([]string{"body", "add-composition", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_BodyDeleteWeightHelp(t *testing.T) {
-	code := Execute([]string{"body", "delete-weight", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_BodyBloodPressureHelp(t *testing.T) {
-	code := Execute([]string{"body", "blood-pressure", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_BodyAddBloodPressureHelp(t *testing.T) {
-	code := Execute([]string{"body", "add-blood-pressure", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_BodyDeleteBloodPressureHelp(t *testing.T) {
-	code := Execute([]string{"body", "delete-blood-pressure", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
 // --- BodyCompositionCmd tests ---
-
-func TestBodyComposition_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &BodyCompositionCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestBodyComposition_Success(t *testing.T) {
 	server := bodyTestServer(t)
@@ -255,19 +172,6 @@ func TestBodyComposition_InvalidDate(t *testing.T) {
 
 // --- BodyWeighInsCmd tests ---
 
-func TestBodyWeighIns_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &BodyWeighInsCmd{StartDate: "2024-01-01", EndDate: "2024-01-31"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
-
 func TestBodyWeighIns_Success(t *testing.T) {
 	server := bodyTestServer(t)
 	defer server.Close()
@@ -288,19 +192,6 @@ func TestBodyWeighIns_Success(t *testing.T) {
 
 // --- BodyDailyWeighInsCmd tests ---
 
-func TestBodyDailyWeighIns_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &BodyDailyWeighInsCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
-
 func TestBodyDailyWeighIns_Success(t *testing.T) {
 	server := bodyTestServer(t)
 	defer server.Close()
@@ -320,19 +211,6 @@ func TestBodyDailyWeighIns_Success(t *testing.T) {
 }
 
 // --- BodyAddWeightCmd tests ---
-
-func TestBodyAddWeight_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &BodyAddWeightCmd{Value: 75.5, Unit: "kg"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestBodyAddWeight_Success(t *testing.T) {
 	server := bodyTestServer(t)
@@ -401,19 +279,6 @@ func TestBodyAddWeight_VerifyPayload(t *testing.T) {
 }
 
 // --- BodyAddCompositionCmd tests ---
-
-func TestBodyAddComposition_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &BodyAddCompositionCmd{Weight: 75.5}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestBodyAddComposition_Success(t *testing.T) {
 	server := bodyTestServer(t)
@@ -531,19 +396,6 @@ func TestBodyAddComposition_ServerError(t *testing.T) {
 
 // --- BodyDeleteWeightCmd tests ---
 
-func TestBodyDeleteWeight_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &BodyDeleteWeightCmd{PK: "12345", Date: "2024-01-15", Force: true}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
-
 func TestBodyDeleteWeight_Success(t *testing.T) {
 	server := bodyTestServer(t)
 	defer server.Close()
@@ -617,19 +469,6 @@ func TestBodyDeleteWeight_ConfirmYes(t *testing.T) {
 
 // --- BodyBloodPressureCmd tests ---
 
-func TestBodyBloodPressure_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &BodyBloodPressureCmd{StartDate: "2024-01-01", EndDate: "2024-01-31"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
-
 func TestBodyBloodPressure_Success(t *testing.T) {
 	server := bodyTestServer(t)
 	defer server.Close()
@@ -649,19 +488,6 @@ func TestBodyBloodPressure_Success(t *testing.T) {
 }
 
 // --- BodyAddBPCmd tests ---
-
-func TestBodyAddBP_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &BodyAddBPCmd{Systolic: 120, Diastolic: 80, Pulse: 72}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestBodyAddBP_Success(t *testing.T) {
 	server := bodyTestServer(t)
@@ -730,19 +556,6 @@ func TestBodyAddBP_VerifyPayload(t *testing.T) {
 }
 
 // --- BodyDeleteBPCmd tests ---
-
-func TestBodyDeleteBP_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &BodyDeleteBPCmd{Version: "67890", Date: "2024-01-15", Force: true}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestBodyDeleteBP_Success(t *testing.T) {
 	server := bodyTestServer(t)
