@@ -19,7 +19,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Courses** — list courses, view favorites, get full course detail, download as FIT/GPX, import GPX files as new courses, send courses directly to a device, delete courses
 - **Devices** — list registered devices, view settings, solar data, alarms, primary/last-used device
 - **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities
-- **Goals & Badges** — active goals, earned/available/in-progress badges, challenges, personal records
+- **Goals & Badges** — active goals, earned/available/in-progress badges, badge details, challenges, personal records
 - **Training** — browse and view training plans
 - **Profile** — user profile and settings
 - **Hydration** — view and log daily water intake
@@ -629,6 +629,7 @@ gccli goals list --status past    # active, future or past
 gccli badges earned
 gccli badges available
 gccli badges in-progress
+gccli badges detail <id>
 gccli challenges list
 gccli challenges badge
 gccli records
@@ -1023,6 +1024,8 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli badges earned`: Show earned badges. Also runs as `gccli badges`.
 - `gccli badges available`: Show available badges.
 - `gccli badges in-progress`: Show badges in progress.
+- `gccli badges detail <id>`: Show details of a badge.
+  - `<id>`: Badge ID.
 - `gccli challenges list`: Show joined challenges. Also runs as `gccli challenges`.
 - `gccli challenges badge`: Show badge challenges.
 - `gccli records`: View personal records.

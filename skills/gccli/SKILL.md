@@ -316,6 +316,8 @@ Date shortcuts
 - `gccli badges earned`: Show earned badges. Also runs as `gccli badges`.
 - `gccli badges available`: Show available badges.
 - `gccli badges in-progress`: Show badges in progress.
+- `gccli badges detail <id>`: Show details of a badge.
+  - `<id>`: Badge ID.
 - `gccli challenges list`: Show joined challenges. Also runs as `gccli challenges`.
 - `gccli challenges badge`: Show badge challenges.
 - `gccli records`: View personal records.

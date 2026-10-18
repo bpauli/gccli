@@ -16,6 +16,15 @@ var badgesGroup = Group{Name: "badges", Help: "View badges.", Children: []Node{
 	Leaf{Name: "earned", Help: "Show earned badges.", Default: true, Endpoint: "badges.earned", Verb: "get earned badges", Output: JSON{}},
 	Leaf{Name: "available", Help: "Show available badges.", Endpoint: "badges.available", Verb: "get available badges", Output: JSON{}},
 	Leaf{Name: "in-progress", Help: "Show badges in progress.", Endpoint: "badges.in-progress", Verb: "get in-progress badges", Output: JSON{}},
+	Leaf{
+		Name: "detail", Help: "Show details of a badge.",
+		Spec: argsOf(&struct {
+			ID string `arg:"" help:"Badge ID."`
+		}{}),
+		Endpoint: "badges.detail",
+		Params:   Params{"badgeID": In("ID")},
+		Verb:     "get badge detail", Output: JSON{},
+	},
 }}
 
 var challengesGroup = Group{Name: "challenges", Help: "View challenges.", Children: []Node{
