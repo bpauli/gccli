@@ -136,11 +136,7 @@ func runWithoutAccount(t *testing.T, in harnessInput, flag string, args []string
 }
 
 func goldenInput(file string) ([]string, harnessInput, error) {
-	data, err := os.ReadFile(file)
-	if err != nil {
-		return nil, harnessInput{}, err
-	}
-	g, err := parseGolden(string(data))
+	g, err := readGolden(file)
 	if err != nil {
 		return nil, harnessInput{}, err
 	}

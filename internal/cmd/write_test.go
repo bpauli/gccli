@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"go/ast"
 	"go/parser"
 	"go/token"
@@ -483,9 +484,22 @@ func newHarness(t *testing.T, in harnessInput) *harness {
 	stub(t, &refreshFn, func(context.Context, *garminauth.Tokens, garminauth.LoginOptions) (*garminauth.Tokens, error) {
 		return nil, errors.New("the test harness does not refresh tokens")
 	})
+	// Mirrors garminapi.FetchExerciseCatalog, whose URL is fixed, so that the
+	// golden files show the error text of the binary.
 	stub(t, &fetchExerciseCatalogFn, func(ctx context.Context) (json.RawMessage, error) {
-		return garminapi.NewClient(harnessTokens(harnessAccount), garminapi.WithHTTPClient(server.Client()), garminapi.WithBaseURL(server.URL)).
-			ConnectAPI(ctx, http.MethodGet, "/web-data/exercises/Exercises.json", nil)
+		req, err := http.NewRequestWithContext(ctx, http.MethodGet, server.URL+"/web-data/exercises/Exercises.json", nil)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := server.Client().Do(req)
+		if err != nil {
+			return nil, fmt.Errorf("fetch exercise catalog: %w", err)
+		}
+		defer func() { _ = resp.Body.Close() }()
+		if resp.StatusCode != http.StatusOK {
+			return nil, fmt.Errorf("fetch exercise catalog: HTTP %d", resp.StatusCode)
+		}
+		return io.ReadAll(resp.Body)
 	})
 	return h
 }

@@ -1,0 +1,34 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+activities
+count
+-- route GET /activitylist-service/activities/count 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+count activities: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /activitylist-service/activities/count
+-- plain stdout --
+-- plain stderr --
+count activities: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /activitylist-service/activities/count
+-- plain-header stdout --
+-- plain-header stderr --
+count activities: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /activitylist-service/activities/count
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"count activities: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /activitylist-service/activities/count

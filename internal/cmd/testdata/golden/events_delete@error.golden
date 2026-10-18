@@ -1,0 +1,37 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+events
+delete
+111
+-- stdin --
+y
+-- route DELETE /calendar-service/event/111 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+Delete event 111? [y/N]: delete event: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+DELETE /calendar-service/event/111
+-- plain stdout --
+-- plain stderr --
+Delete event 111? [y/N]: delete event: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+DELETE /calendar-service/event/111
+-- plain-header stdout --
+-- plain-header stderr --
+Delete event 111? [y/N]: delete event: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+DELETE /calendar-service/event/111
+-- json stdout --
+-- json stderr --
+Delete event 111? [y/N]: {"error":{"code":"error","status":400,"message":"delete event: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+DELETE /calendar-service/event/111

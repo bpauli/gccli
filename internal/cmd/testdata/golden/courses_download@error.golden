@@ -1,0 +1,35 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+courses
+download
+111
+-- route GET /course-service/course/fit/111/0?elevation=true 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+download course: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /course-service/course/fit/111/0?elevation=true
+-- plain stdout --
+-- plain stderr --
+download course: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /course-service/course/fit/111/0?elevation=true
+-- plain-header stdout --
+-- plain-header stderr --
+download course: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /course-service/course/fit/111/0?elevation=true
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"download course: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /course-service/course/fit/111/0?elevation=true

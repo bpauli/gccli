@@ -1,0 +1,114 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+activity
+exercise-sets
+set
+111
+-e
+BENCH_PRESS/BARBELL_BENCH_PRESS:12@20
+-- route PUT /activity-service/activity/111/exerciseSets 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+set exercise sets: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+PUT /activity-service/activity/111/exerciseSets
+  {
+    "activityId": 111,
+    "exerciseSets": [
+      {
+        "exercises": [
+          {
+            "probability": 100,
+            "category": "BENCH_PRESS",
+            "name": "BARBELL_BENCH_PRESS"
+          }
+        ],
+        "repetitionCount": 12,
+        "duration": null,
+        "weight": 20000,
+        "setType": "ACTIVE",
+        "startTime": null
+      }
+    ]
+  }
+-- plain stdout --
+-- plain stderr --
+set exercise sets: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+PUT /activity-service/activity/111/exerciseSets
+  {
+    "activityId": 111,
+    "exerciseSets": [
+      {
+        "exercises": [
+          {
+            "probability": 100,
+            "category": "BENCH_PRESS",
+            "name": "BARBELL_BENCH_PRESS"
+          }
+        ],
+        "repetitionCount": 12,
+        "duration": null,
+        "weight": 20000,
+        "setType": "ACTIVE",
+        "startTime": null
+      }
+    ]
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+set exercise sets: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+PUT /activity-service/activity/111/exerciseSets
+  {
+    "activityId": 111,
+    "exerciseSets": [
+      {
+        "exercises": [
+          {
+            "probability": 100,
+            "category": "BENCH_PRESS",
+            "name": "BARBELL_BENCH_PRESS"
+          }
+        ],
+        "repetitionCount": 12,
+        "duration": null,
+        "weight": 20000,
+        "setType": "ACTIVE",
+        "startTime": null
+      }
+    ]
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"set exercise sets: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+PUT /activity-service/activity/111/exerciseSets
+  {
+    "activityId": 111,
+    "exerciseSets": [
+      {
+        "exercises": [
+          {
+            "probability": 100,
+            "category": "BENCH_PRESS",
+            "name": "BARBELL_BENCH_PRESS"
+          }
+        ],
+        "repetitionCount": 12,
+        "duration": null,
+        "weight": 20000,
+        "setType": "ACTIVE",
+        "startTime": null
+      }
+    ]
+  }

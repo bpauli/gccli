@@ -1,0 +1,126 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+activity
+create
+--name
+Swim
+--type
+swimming
+--duration
+30m
+--date
+2026-10-15T07:30:00
+-- route POST /activity-service/activity 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+create activity: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+POST /activity-service/activity
+  {
+    "accessControlRuleDTO": {
+      "typeId": 2,
+      "typeKey": "private"
+    },
+    "activityName": "Swim",
+    "activityTypeDTO": {
+      "typeKey": "swimming"
+    },
+    "metadataDTO": {
+      "autoCalcCalories": true
+    },
+    "summaryDTO": {
+      "distance": 0,
+      "duration": 1800,
+      "startTimeLocal": "2026-10-15T07:30:00.000"
+    },
+    "timeZoneUnitDTO": {
+      "unitKey": "UTC"
+    }
+  }
+-- plain stdout --
+-- plain stderr --
+create activity: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+POST /activity-service/activity
+  {
+    "accessControlRuleDTO": {
+      "typeId": 2,
+      "typeKey": "private"
+    },
+    "activityName": "Swim",
+    "activityTypeDTO": {
+      "typeKey": "swimming"
+    },
+    "metadataDTO": {
+      "autoCalcCalories": true
+    },
+    "summaryDTO": {
+      "distance": 0,
+      "duration": 1800,
+      "startTimeLocal": "2026-10-15T07:30:00.000"
+    },
+    "timeZoneUnitDTO": {
+      "unitKey": "UTC"
+    }
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+create activity: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+POST /activity-service/activity
+  {
+    "accessControlRuleDTO": {
+      "typeId": 2,
+      "typeKey": "private"
+    },
+    "activityName": "Swim",
+    "activityTypeDTO": {
+      "typeKey": "swimming"
+    },
+    "metadataDTO": {
+      "autoCalcCalories": true
+    },
+    "summaryDTO": {
+      "distance": 0,
+      "duration": 1800,
+      "startTimeLocal": "2026-10-15T07:30:00.000"
+    },
+    "timeZoneUnitDTO": {
+      "unitKey": "UTC"
+    }
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"create activity: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+POST /activity-service/activity
+  {
+    "accessControlRuleDTO": {
+      "typeId": 2,
+      "typeKey": "private"
+    },
+    "activityName": "Swim",
+    "activityTypeDTO": {
+      "typeKey": "swimming"
+    },
+    "metadataDTO": {
+      "autoCalcCalories": true
+    },
+    "summaryDTO": {
+      "distance": 0,
+      "duration": 1800,
+      "startTimeLocal": "2026-10-15T07:30:00.000"
+    },
+    "timeZoneUnitDTO": {
+      "unitKey": "UTC"
+    }
+  }

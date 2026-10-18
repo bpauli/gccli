@@ -1,0 +1,76 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+body
+add-blood-pressure
+--systolic
+120
+--diastolic
+80
+--pulse
+60
+-- route POST /bloodpressure-service/bloodpressure 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+add blood pressure: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+POST /bloodpressure-service/bloodpressure
+  {
+    "diastolic": 80,
+    "measurementTimestampGMT": "2026-10-15T09:30:00Z",
+    "measurementTimestampLocal": "2026-10-15T09:30:00Z",
+    "notes": "",
+    "pulse": 60,
+    "sourceType": "MANUAL",
+    "systolic": 120
+  }
+-- plain stdout --
+-- plain stderr --
+add blood pressure: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+POST /bloodpressure-service/bloodpressure
+  {
+    "diastolic": 80,
+    "measurementTimestampGMT": "2026-10-15T09:30:00Z",
+    "measurementTimestampLocal": "2026-10-15T09:30:00Z",
+    "notes": "",
+    "pulse": 60,
+    "sourceType": "MANUAL",
+    "systolic": 120
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+add blood pressure: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+POST /bloodpressure-service/bloodpressure
+  {
+    "diastolic": 80,
+    "measurementTimestampGMT": "2026-10-15T09:30:00Z",
+    "measurementTimestampLocal": "2026-10-15T09:30:00Z",
+    "notes": "",
+    "pulse": 60,
+    "sourceType": "MANUAL",
+    "systolic": 120
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"add blood pressure: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+POST /bloodpressure-service/bloodpressure
+  {
+    "diastolic": 80,
+    "measurementTimestampGMT": "2026-10-15T09:30:00Z",
+    "measurementTimestampLocal": "2026-10-15T09:30:00Z",
+    "notes": "",
+    "pulse": 60,
+    "sourceType": "MANUAL",
+    "systolic": 120
+  }

@@ -1,0 +1,70 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+workouts
+update
+111
+workout.json
+-- file workout.json --
+{"workoutId":111,"workoutName":"Intervals","sportType":{"sportTypeId":1,"sportTypeKey":"running"}}
+-- route PUT /workout-service/workout/111 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+update workout: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+PUT /workout-service/workout/111
+  {
+    "sportType": {
+      "sportTypeId": 1,
+      "sportTypeKey": "running"
+    },
+    "workoutId": 111,
+    "workoutName": "Intervals"
+  }
+-- plain stdout --
+-- plain stderr --
+update workout: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+PUT /workout-service/workout/111
+  {
+    "sportType": {
+      "sportTypeId": 1,
+      "sportTypeKey": "running"
+    },
+    "workoutId": 111,
+    "workoutName": "Intervals"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+update workout: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+PUT /workout-service/workout/111
+  {
+    "sportType": {
+      "sportTypeId": 1,
+      "sportTypeKey": "running"
+    },
+    "workoutId": 111,
+    "workoutName": "Intervals"
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"update workout: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+PUT /workout-service/workout/111
+  {
+    "sportType": {
+      "sportTypeId": 1,
+      "sportTypeKey": "running"
+    },
+    "workoutId": 111,
+    "workoutName": "Intervals"
+  }

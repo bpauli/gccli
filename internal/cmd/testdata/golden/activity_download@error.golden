@@ -1,0 +1,37 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+activity
+download
+--format
+gpx
+111
+-- route GET /download-service/export/gpx/activity/111 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+download activity: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /download-service/export/gpx/activity/111
+-- plain stdout --
+-- plain stderr --
+download activity: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /download-service/export/gpx/activity/111
+-- plain-header stdout --
+-- plain-header stderr --
+download activity: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /download-service/export/gpx/activity/111
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"download activity: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /download-service/export/gpx/activity/111

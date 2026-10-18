@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"maps"
+	"net/http"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -62,14 +63,9 @@ func TestGolden(t *testing.T) {
 
 func runGolden(t *testing.T, path, file string) {
 	t.Helper()
-	data, err := os.ReadFile(file)
+	g, err := readGolden(file)
 	if err != nil {
-		t.Errorf("%s: %v", file, err)
-		return
-	}
-	g, err := parseGolden(string(data))
-	if err != nil {
-		t.Errorf("%s: %v", file, err)
+		t.Error(err)
 		return
 	}
 	args, in, err := g.input()
@@ -309,4 +305,101 @@ func lineDiff(want, got string) string {
 		}
 	}
 	return out.String()
+}
+
+var errorCaseExempt = map[string]string{
+	"auth export": "reads the keyring and sends no request",
+	"auth import": "writes the keyring and sends no request",
+	"auth login":  "the harness stubs the SSO login, so it sends no request",
+	"auth remove": "writes the keyring and sends no request",
+	"auth status": "reads the keyring and sends no request",
+	"auth token":  "reads the keyring and sends no request",
+	"completion":  "prints a script and sends no request",
+}
+
+func TestGoldenErrorCases(t *testing.T) {
+	for _, path := range leafCommands(t) {
+		main := goldenFile(path)
+		cases, _ := filepath.Glob(strings.TrimSuffix(main, ".golden") + "@*.golden")
+		var goldens []golden
+		for _, file := range append([]string{main}, cases...) {
+			g, err := readGolden(file)
+			if err != nil {
+				t.Error(err)
+				continue
+			}
+			goldens = append(goldens, g)
+		}
+		var data string
+		for _, g := range goldens {
+			if data = dataRoute(g); data != "" {
+				break
+			}
+		}
+		why, exempt := errorCaseExempt[path]
+		switch {
+		case data == "" && !exempt:
+			t.Errorf("no golden file of %q sends a request: add it to errorCaseExempt with the reason", path)
+		case data == "":
+		case exempt:
+			t.Errorf("errorCaseExempt names %q (%s), but a golden file of it sends %s: remove the entry", path, why, data)
+		case !slices.ContainsFunc(goldens, func(g golden) bool { return endsInError(g, data) }):
+			t.Errorf("no golden file of %q ends in an error from %s, so nothing pins the verb of its error message: copy the input sections of %s to %s@error.golden, give that route status 400 and a short JSON body, drop the routes that the command no longer requests, then run go test ./internal/cmd -run TestGolden -update", path, data, main, strings.TrimSuffix(main, ".golden"))
+		}
+	}
+}
+
+func readGolden(file string) (golden, error) {
+	data, err := os.ReadFile(file)
+	if err != nil {
+		return golden{}, err
+	}
+	g, err := parseGolden(string(data))
+	if err != nil {
+		return golden{}, fmt.Errorf("%s: %v", file, err)
+	}
+	return g, nil
+}
+
+func requestRoutes(section string) []string {
+	var routes []string
+	for _, line := range strings.Split(strings.TrimSuffix(section, "\n"), "\n") {
+		if line != "" && line[0] != ' ' && line[0] != '\t' {
+			routes = append(routes, line)
+		}
+	}
+	return routes
+}
+
+func isLookup(route string) bool {
+	return route == profileRoute || route == socialRoute || route == settingsRoute
+}
+
+func dataRoute(g golden) string {
+	routes := requestRoutes(g.sections["json requests"])
+	for _, r := range routes {
+		if !isLookup(r) {
+			return r
+		}
+	}
+	if len(routes) == 0 {
+		return ""
+	}
+	return routes[len(routes)-1]
+}
+
+func endsInError(g golden, data string) bool {
+	routes := requestRoutes(g.sections["json requests"])
+	if len(routes) == 0 || routes[len(routes)-1] != data {
+		return false
+	}
+	_, in, err := g.input()
+	if err != nil {
+		return false
+	}
+	return verbInMessage(in.routes[data].status)
+}
+
+func verbInMessage(status int) bool {
+	return status >= 400 && status != http.StatusUnauthorized && status != http.StatusTooManyRequests
 }

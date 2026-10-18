@@ -1,0 +1,38 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+workouts
+schedule
+remove
+111
+-- stdin --
+y
+-- route DELETE /workout-service/schedule/111 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+Remove scheduled workout 111? [y/N]: remove scheduled workout: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+DELETE /workout-service/schedule/111
+-- plain stdout --
+-- plain stderr --
+Remove scheduled workout 111? [y/N]: remove scheduled workout: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+DELETE /workout-service/schedule/111
+-- plain-header stdout --
+-- plain-header stderr --
+Remove scheduled workout 111? [y/N]: remove scheduled workout: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+DELETE /workout-service/schedule/111
+-- json stdout --
+-- json stderr --
+Remove scheduled workout 111? [y/N]: {"error":{"code":"error","status":400,"message":"remove scheduled workout: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+DELETE /workout-service/schedule/111

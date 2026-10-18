@@ -1,0 +1,39 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+body
+delete-weight
+3
+--date
+2026-10-15
+-- stdin --
+y
+-- route DELETE /weight-service/weight/2026-10-15/byversion/3 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+Delete weigh-in 3 on 2026-10-15? [y/N]: delete weight: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+DELETE /weight-service/weight/2026-10-15/byversion/3
+-- plain stdout --
+-- plain stderr --
+Delete weigh-in 3 on 2026-10-15? [y/N]: delete weight: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+DELETE /weight-service/weight/2026-10-15/byversion/3
+-- plain-header stdout --
+-- plain-header stderr --
+Delete weigh-in 3 on 2026-10-15? [y/N]: delete weight: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+DELETE /weight-service/weight/2026-10-15/byversion/3
+-- json stdout --
+-- json stderr --
+Delete weigh-in 3 on 2026-10-15? [y/N]: {"error":{"code":"error","status":400,"message":"delete weight: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+DELETE /weight-service/weight/2026-10-15/byversion/3
