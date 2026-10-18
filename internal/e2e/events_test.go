@@ -64,7 +64,6 @@ func TestCreateListDeleteEvent(t *testing.T) {
 			if goal["value"] != float64(3000) {
 				t.Errorf("customGoal value = %v, want 3000", goal["value"])
 			}
-			t.Logf("Event has custom goal: %v seconds", goal["value"])
 		} else {
 			t.Error("eventCustomization.customGoal not present in response")
 		}
