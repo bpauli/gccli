@@ -47,7 +47,14 @@ var stallTimeout = 60 * time.Second
 
 func newHTTPClient() *http.Client {
 	base := http.DefaultTransport.(*http.Transport).Clone()
-	return &http.Client{Transport: NewRetryTransport(&stallTransport{base: base, idle: stallTimeout})}
+	return &http.Client{Transport: NewRetryTransport(NewStallTransport(base))}
+}
+
+// NewStallTransport wraps base so that a request fails with a StallError
+// when no data moves for 60 s. The client puts it under the retry
+// transport, so each attempt gets its own watch.
+func NewStallTransport(base http.RoundTripper) http.RoundTripper {
+	return &stallTransport{base: base, idle: stallTimeout}
 }
 
 // NewClient creates a new Garmin Connect API client.

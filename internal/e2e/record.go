@@ -25,7 +25,8 @@ func recordOptions(t *testing.T) []garminapi.ClientOption {
 		return nil
 	}
 	recordOnce.Do(func() {
-		recorder, recordErr = harness.NewRecorder(dir, http.DefaultTransport.(*http.Transport).Clone())
+		base := http.DefaultTransport.(*http.Transport).Clone()
+		recorder, recordErr = harness.NewRecorder(dir, garminapi.NewStallTransport(base))
 	})
 	if recordErr != nil {
 		t.Fatalf("GCCLI_RECORD_DIR: %v", recordErr)
