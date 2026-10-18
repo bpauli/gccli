@@ -158,7 +158,7 @@ func cutBody(body []byte) string {
 		return string(body)
 	}
 	n := errBodyLimit
-	for !utf8.RuneStart(body[n]) {
+	for n > errBodyLimit-utf8.UTFMax && !utf8.RuneStart(body[n]) {
 		n--
 	}
 	return fmt.Sprintf("%s... (%d bytes cut)", body[:n], len(body)-n)
