@@ -224,6 +224,7 @@ gccli activities list
 - Default: human-friendly tables on stdout.
 - `--json` / `-j`: JSON on stdout (best for scripting).
 - `--plain`: tab-separated values on stdout, with no header row. Only these commands print TSV: `activities list`, `activities search`, `activities types`, `activity summary`, `courses list`, `courses favorites`, `courses import`, `events list`, `workouts list`, `workouts schedule list` and `exercises list` (without `--category`). Most other commands that return data print the same JSON in all modes, also without `--json`. `activities count` prints a single number. Use `--json` when a script parses the output.
+- Table and `--plain` output escape the characters that would break a row or a column. A backslash prints as `\\`, a tab as `\t`, a newline as `\n`, a carriage return as `\r`, a vertical tab as `\v` and a form feed as `\f`. So each record is one line, and in `--plain` output only real tabs separate the fields. `--json` output does not change.
 - Write commands (the commands that add, create, upload, import, update, set, rename, retype, schedule, send, link, unlink, remove or delete data in Garmin Connect) all follow one rule:
   - With `--json`, they print the Garmin response on stdout, indented like all JSON output. When Garmin sends an empty response, they print `{"ok": true}`.
   - Without `--json`, they print one message on stderr and nothing on stdout. `courses import` is the only exception. It prints the saved course as a table on stdout (TSV with `--plain`).
@@ -1121,7 +1122,7 @@ gccli --json activities list --limit 100 | jq '.[] | select(.activityType.typeKe
 
 ### Plain (TSV)
 
-Tab-separated values with no header row. Only the commands listed under [Output](#output) print TSV. Most other commands print JSON, also with `--plain`.
+Tab-separated values with no header row. A tab, newline or backslash in a value is escaped (see [Output](#output)), so each record is one line. Only the commands listed under [Output](#output) print TSV. Most other commands print JSON, also with `--plain`.
 
 ```bash
 $ gccli --plain activities list --limit 3

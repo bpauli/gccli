@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Table and plain output escape values** - A backslash prints as `\\`, a tab as `\t`, a newline as `\n`, a carriage return as `\r`, a vertical tab as `\v` and a form feed as `\f`. Before, a course or activity name with a tab or a newline split its record into more fields or more lines, and a script that read `--plain` output got the wrong columns. A value that holds a backslash also changes, because the backslash is now doubled. `--json` output does not change. (#99)
+
 ### Fixed
 
 - `devices alarms` printed an empty list for a device with a real Garmin device ID. The device ID went through a float and reached Garmin as `3.44203243e+09`, so the settings request failed and the loop skipped the device. The ID now keeps its digits, and the request goes to `.../device-info/settings/3442032430`. (#185)

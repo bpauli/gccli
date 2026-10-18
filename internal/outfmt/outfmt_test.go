@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"strings"
 	"testing"
+	"unicode/utf8"
 )
 
 func TestModeConstants(t *testing.T) {
@@ -117,6 +118,34 @@ func TestWriteRows(t *testing.T) {
 	for _, tt := range tests {
 		if got := writeRows(t, tt.mode, tt.header, tt.rows); got != tt.want {
 			t.Errorf("WriteRows(mode %d, header %q, rows %q) = %q, want %q", tt.mode, tt.header, tt.rows, got, tt.want)
+		}
+	}
+}
+
+func TestWriteRowsEscapes(t *testing.T) {
+	tests := []struct {
+		value string
+		want  string
+	}{
+		{`back\slash`, `back\\slash`},
+		{"tab\there", `tab\there`},
+		{"new\nline", `new\nline`},
+		{"carriage\rreturn", `carriage\rreturn`},
+		{"vertical\vtab", `vertical\vtab`},
+		{"form\ffeed", `form\ffeed`},
+		{"a\\b\tc\nd\re", `a\\b\tc\nd\re`},
+		{`\t`, `\\t`},
+		{"Grüße", "Grüße"},
+	}
+	for _, tt := range tests {
+		rows := [][]string{{"1", tt.value, "x"}}
+		if got, want := writeRows(t, Plain, nil, rows), "1\t"+tt.want+"\tx\n"; got != want {
+			t.Errorf("plain cell %q = %q, want %q", tt.value, got, want)
+		}
+		width := max(utf8.RuneCountInString(tt.want), len("NAME"))
+		pad := func(s string) string { return s + strings.Repeat(" ", width-utf8.RuneCountInString(s)) }
+		if got, want := writeRows(t, Table, []string{"ID", "NAME", "X"}, rows), "ID  "+pad("NAME")+"  X\n1   "+pad(tt.want)+"  x\n"; got != want {
+			t.Errorf("table cell %q = %q, want %q", tt.value, got, want)
 		}
 	}
 }

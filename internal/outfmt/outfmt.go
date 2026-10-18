@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"io"
+	"strings"
 	"text/tabwriter"
 )
 
@@ -50,7 +51,9 @@ func WriteJSON(w io.Writer, v any) error {
 }
 
 // WriteRows writes rows in the table or plain format of the mode in ctx.
-// Table mode aligns the columns under header, and Plain mode does not write it.
+// Table mode aligns the columns under header, and Plain mode does not write
+// it. Each cell is escaped,
+// so a value never adds a column or a line.
 func WriteRows(ctx context.Context, w io.Writer, header []string, rows [][]string) error {
 	mode := ModeFromContext(ctx)
 	if mode == Plain {
@@ -66,6 +69,8 @@ func WriteRows(ctx context.Context, w io.Writer, header []string, rows [][]strin
 	return tw.Flush()
 }
 
+var cellEscaper = strings.NewReplacer(`\`, `\\`, "\t", `\t`, "\n", `\n`, "\r", `\r`, "\v", `\v`, "\f", `\f`)
+
 func writeLines(w io.Writer, rows [][]string) error {
 	var line []byte
 	for _, row := range rows {
@@ -74,7 +79,7 @@ func writeLines(w io.Writer, rows [][]string) error {
 			if i > 0 {
 				line = append(line, '\t')
 			}
-			line = append(line, cell...)
+			line = append(line, cellEscaper.Replace(cell)...)
 		}
 		line = append(line, '\n')
 		if _, err := w.Write(line); err != nil {
