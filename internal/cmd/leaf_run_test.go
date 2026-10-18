@@ -364,7 +364,7 @@ func sadPathInput(path string) (args []string, in harnessInput, data string, err
 		}
 		var dataRoutes []string
 		for route := range in.routes {
-			if route != profileRoute && route != socialRoute && route != settingsRoute {
+			if !isLookup(route) {
 				dataRoutes = append(dataRoutes, route)
 			}
 		}
