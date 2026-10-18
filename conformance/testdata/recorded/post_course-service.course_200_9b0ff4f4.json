@@ -24,12 +24,6 @@
         "latitude": 0.5,
         "longitude": 0.5,
         "timestamp": null
-      },
-      {
-        "elevation": 0.5,
-        "latitude": 0.5,
-        "longitude": 0.5,
-        "timestamp": null
       }
     ],
     "ownerDisplayName": "tester",

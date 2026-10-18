@@ -8,11 +8,6 @@
       "secsInZone": 0.5,
       "zoneLowBoundary": 1,
       "zoneNumber": 1
-    },
-    {
-      "secsInZone": 0.5,
-      "zoneLowBoundary": 1,
-      "zoneNumber": 1
     }
   ]
 }

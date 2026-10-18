@@ -180,16 +180,24 @@ func (s *scrubber) value(path string, v any) any {
 		return out
 	}
 	arr := v.([]any)
-	for i, x := range arr {
-		arr[i] = s.value(fmt.Sprintf("%s[%d]", path, i), x)
+	if len(arr) == 0 {
+		return arr
 	}
-	return arr
+	first := slices.IndexFunc(arr, func(x any) bool { return x != nil })
+	if first < 0 {
+		return []any{nil}
+	}
+	return []any{s.value(fmt.Sprintf("%s[%d]", path, first), arr[first])}
 }
 
-// Scrub replaces every value in r with a fixed one. It fails when the host
-// is not a Garmin API host, when the path matches no template in scrubPaths,
-// or when an object or query key is neither an identifier nor a date. The
-// error names the route and the position, never a key or a value.
+// Scrub replaces every value in r with a fixed one and collapses every
+// array to its first non-null element, so neither a value, nor the length
+// of a series, nor the position of a null in it survives. An empty array
+// stays empty and an all-null array becomes [null]. Scrub fails when the
+// host is not a Garmin API host, when the path matches no template in
+// scrubPaths, or when an object or query key is neither an identifier nor
+// a date. The error names the route and the position, never a key or a
+// value.
 func Scrub(r Record) (Record, error) {
 	if !slices.Contains(garminHosts, r.Host) {
 		return Record{}, fmt.Errorf("%s %s: not a Garmin API host", r.Method, r.Host)

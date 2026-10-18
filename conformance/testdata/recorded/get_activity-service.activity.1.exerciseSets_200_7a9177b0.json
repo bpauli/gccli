@@ -19,14 +19,6 @@
         "setType": "tester",
         "startTime": "2026-01-01T00:00:00.0",
         "weight": 0.5
-      },
-      {
-        "duration": 0.5,
-        "exercises": [],
-        "repetitionCount": null,
-        "setType": "tester",
-        "startTime": "2026-01-01T00:00:00.0",
-        "weight": null
       }
     ]
   }

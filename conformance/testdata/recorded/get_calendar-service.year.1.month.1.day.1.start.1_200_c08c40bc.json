@@ -12,13 +12,6 @@
         "sportTypeKey": "tester",
         "title": "tester",
         "workoutId": 1
-      },
-      {
-        "activityTypeId": 1,
-        "date": "2026-01-01",
-        "id": 1,
-        "itemType": "tester",
-        "title": "tester"
       }
     ],
     "numOfDaysInMonth": 1,

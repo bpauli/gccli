@@ -5,8 +5,10 @@ import (
 	"cmp"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"testing"
 )
@@ -55,7 +57,7 @@ func TestScrubReplacesEveryValue(t *testing.T) {
 		{
 			"nested arrays", "/web-gateway/course/owner/",
 			`{"coursesForUser":[{"courseName":"Jane's loop","geoPoints":[{"latitude":52.5,"longitude":13.4},{"latitude":52.6,"longitude":13.5}]}],"heartRateValues":[[1760738400000,58],[1760738520000,null]]}`,
-			`{"coursesForUser":[{"courseName":"tester","geoPoints":[{"latitude":0.5,"longitude":0.5},{"latitude":0.5,"longitude":0.5}]}],"heartRateValues":[[1,1],[1,null]]}`,
+			`{"coursesForUser":[{"courseName":"tester","geoPoints":[{"latitude":0.5,"longitude":0.5}]}],"heartRateValues":[[1]]}`,
 		},
 		{
 			"enum keys stay and date keys become the fixed date", "/userstats-service/wellness/daily/jane-runner",
@@ -70,6 +72,63 @@ func TestScrubReplacesEveryValue(t *testing.T) {
 			}
 			if string(got.Body) != compactJSON(t, tc.want) {
 				t.Errorf("Scrub body = %s\nwant %s", got.Body, compactJSON(t, tc.want))
+			}
+		})
+	}
+}
+
+func TestScrubCollapsesArrays(t *testing.T) {
+	sleep := func(minutes int) string {
+		var entries []string
+		for i := range minutes {
+			entries = append(entries, fmt.Sprintf(`{"startGMT":"2026-10-17T22:%02d:00.0","endGMT":"2026-10-17T22:%02d:00.0","activityLevel":%d.%d}`, i%60, (i+1)%60, i%4, i%10))
+		}
+		return `{"sleepTimeSeconds":` + strconv.Itoa(minutes*60) + `,"sleepMovement":[` + strings.Join(entries, ",") + `]}`
+	}
+	for _, tc := range []struct {
+		name   string
+		bodies []string
+		want   string
+	}{
+		{
+			"sleep series of 1, 360 and 480 minutes",
+			[]string{sleep(1), sleep(360), sleep(480)},
+			`{"sleepMovement":[{"activityLevel":0.5,"endGMT":"2026-01-01T00:00:00.0","startGMT":"2026-01-01T00:00:00.0"}],"sleepTimeSeconds":1}`,
+		},
+		{
+			"empty series",
+			[]string{sleep(0)},
+			`{"sleepMovement":[],"sleepTimeSeconds":1}`,
+		},
+		{
+			"heart rate with and without off-wrist gaps",
+			[]string{
+				`{"heartRateValues":[[1760738400000,58],[1760738520000,58],[1760738640000,null],[1760738760000,null],[1760738880000,61]]}`,
+				`{"heartRateValues":[[1760738400000,58],[1760738520000,59]]}`,
+				`{"heartRateValues":[[1760738400000,null],[1760738520000,59]]}`,
+			},
+			`{"heartRateValues":[[1]]}`,
+		},
+		{
+			"nulls before, between and after values",
+			[]string{`{"v":[null,null,5,null,7]}`, `{"v":[5]}`, `{"v":[9,null,null]}`},
+			`{"v":[1]}`,
+		},
+		{
+			"only nulls",
+			[]string{`{"v":[null]}`, `{"v":[null,null,null]}`},
+			`{"v":[null]}`,
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			for _, body := range tc.bodies {
+				got, err := scrubBody(t, "GET", "/wellness-service/wellness/dailySleepData/jane", body)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if string(got.Body) != tc.want {
+					t.Errorf("Scrub of %d bytes = %s\nwant %s", len(body), got.Body, tc.want)
+				}
 			}
 		})
 	}
@@ -97,7 +156,7 @@ func TestScrubReplacesPathAndQuery(t *testing.T) {
 
 func TestScrubFailsOnBadKey(t *testing.T) {
 	_, err := scrubBody(t, "GET", "/userprofile-service/userprofile/settings",
-		`{"displayName":"jane","userData":{"nickname":"Janey","Jane Runner":{"x":1},"pets":[{"petName":"Rex"},{"a b":1}]}}`)
+		`{"displayName":"jane","userData":{"nickname":"Janey","Jane Runner":{"x":1},"pets":[null,{"a b":1},{"petName":"Rex"}]}}`)
 	var bad *KeyError
 	if !errors.As(err, &bad) {
 		t.Fatalf("Scrub with a bad key: err = %v, want a KeyError", err)
@@ -274,7 +333,7 @@ func TestRecordedScrubbed(t *testing.T) {
 			t.Fatal(err)
 		}
 		if !bytes.Equal(data, want) {
-			t.Errorf("%s is not scrubbed: the scrubber changes it to\n%s", f.name, data)
+			t.Errorf("%s is not scrubbed: the scrubber changes it from %d to %d bytes", f.name, len(want), len(data))
 		}
 	}
 }

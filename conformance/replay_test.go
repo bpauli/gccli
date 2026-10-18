@@ -405,7 +405,7 @@ func TestRecordedReplay(t *testing.T) {
 			}
 			res := s.run(t, f.stdin, slices.Concat(goldenGlobals, f.args)...)
 			if res.code != 0 {
-				t.Errorf("%q exits %d on the responses in %s, want 0\nstderr: %s", f.name, res.code, recordedDir(), res.stderr)
+				t.Errorf("%q exits %d on the responses in %s, want 0 (its stderr is not shown, because it can echo a response)", f.name, res.code, recordedDir())
 			}
 			for _, u := range r.unexpectedRequests() {
 				t.Errorf("%q sent %s, which %s has no 2xx recording for", f.name, u, recordedDir())
