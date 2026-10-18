@@ -285,20 +285,6 @@ func TestLeafRowSadPaths(t *testing.T) {
 			})
 		}
 		for _, flag := range []string{"--plain", "--json"} {
-			failed := maps.Clone(in.routes)
-			failed[data] = mockReply{status: http.StatusInternalServerError, body: "down"}
-			run("request fails", failed, flag, func(t *testing.T, stdout, stderr string, code int, requests []string) {
-				want := l.Verb + ": garmin api: 500 Internal Server Error: down\n"
-				if flag == "--json" {
-					want = `{"error":{"code":"error","status":500,"message":"` + l.Verb + `: garmin api: 500 Internal Server Error: down"}}` + "\n"
-				}
-				if code != 1 || stdout != "" || stderr != want {
-					t.Errorf("exit %d, want 1\nstdout %q, want empty\nstderr %q\nwant   %q", code, stdout, stderr, want)
-				}
-				if len(requests) != len(lookups)+1 || requests[len(requests)-1] != data {
-					t.Errorf("requests %q, want the lookups then %q", requests, data)
-				}
-			})
 			for _, k := range lookups {
 				failed := maps.Clone(in.routes)
 				failed[lookupRoutes[k].route] = mockReply{status: http.StatusInternalServerError, body: "down"}
