@@ -1,0 +1,46 @@
+-- args --
+training
+plan
+123
+-- route GET /trainingplan-service/trainingplan/plan/123 --
+{"trainingPlanId":123,"name":"5K"}
+-- table stdout --
+{
+  "trainingPlanId": 123,
+  "name": "5K"
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /trainingplan-service/trainingplan/plan/123
+-- plain stdout --
+{
+  "trainingPlanId": 123,
+  "name": "5K"
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /trainingplan-service/trainingplan/plan/123
+-- plain-header stdout --
+{
+  "trainingPlanId": 123,
+  "name": "5K"
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /trainingplan-service/trainingplan/plan/123
+-- json stdout --
+{
+  "trainingPlanId": 123,
+  "name": "5K"
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /trainingplan-service/trainingplan/plan/123

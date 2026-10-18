@@ -5,33 +5,18 @@ import (
 )
 
 var hydrationGroup = Group{Name: "hydration", Help: "Track hydration.", Children: []Node{
-	Custom{Name: "view", Help: "Show hydration data for a date.", Default: true, Cmd: &HydrationViewCmd{}},
+	Leaf{
+		Name: "view", Help: "Show hydration data for a date.", Default: true,
+		Spec: argsOf(&struct {
+			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+		}{}),
+		Endpoint: "hydration.get",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get hydration", Output: JSON{},
+		LateDates: []string{"Date"},
+	},
 	Custom{Name: "add", Help: "Add a hydration log entry.", Cmd: &HydrationAddCmd{}},
 }}
-
-// HydrationViewCmd shows hydration data for a date.
-type HydrationViewCmd struct {
-	Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
-}
-
-func (c *HydrationViewCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	date, err := resolveDate(c.Date)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.Call(g.Context, "hydration.get", map[string]string{"date": date}, nil)
-	if err != nil {
-		return fmt.Errorf("get hydration: %w", err)
-	}
-
-	return writeHealthJSON(g, data)
-}
 
 // HydrationAddCmd adds a hydration log entry.
 type HydrationAddCmd struct {

@@ -21,16 +21,6 @@ func bodyTestServer(t *testing.T) *httptest.Server {
 		_, _ = w.Write([]byte(`{"totalAverage":{"weight":75000.0},"dateWeightList":[{"date":"2024-01-15"}]}`))
 	})
 
-	mux.HandleFunc("/weight-service/weight/range/", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(`{"dailyWeightSummaries":[{"date":"2024-01-15","weight":75.0}]}`))
-	})
-
-	mux.HandleFunc("/weight-service/weight/dayview/", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(`{"dateWeightList":[{"weight":75.0}]}`))
-	})
-
 	mux.HandleFunc("/weight-service/user-weight", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
@@ -46,11 +36,6 @@ func bodyTestServer(t *testing.T) *httptest.Server {
 			return
 		}
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
-	})
-
-	mux.HandleFunc("/bloodpressure-service/bloodpressure/range/", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(`{"measurementSummaries":[{"systolic":120,"diastolic":80}]}`))
 	})
 
 	mux.HandleFunc("/bloodpressure-service/bloodpressure", func(w http.ResponseWriter, r *http.Request) {
@@ -92,10 +77,6 @@ func bodyTestServer(t *testing.T) *httptest.Server {
 
 	return httptest.NewServer(mux)
 }
-
-// --- Execute-level tests ---
-
-// --- BodyCompositionCmd tests ---
 
 func TestBodyComposition_Success(t *testing.T) {
 	server := bodyTestServer(t)
@@ -170,48 +151,6 @@ func TestBodyComposition_InvalidDate(t *testing.T) {
 	}
 }
 
-// --- BodyWeighInsCmd tests ---
-
-func TestBodyWeighIns_Success(t *testing.T) {
-	server := bodyTestServer(t)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &BodyWeighInsCmd{StartDate: "2024-01-01", EndDate: "2024-01-31"}
-	err := cmd.Run(g)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
-	}
-}
-
-// --- BodyDailyWeighInsCmd tests ---
-
-func TestBodyDailyWeighIns_Success(t *testing.T) {
-	server := bodyTestServer(t)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &BodyDailyWeighInsCmd{}
-	err := cmd.Run(g)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
-	}
-}
-
-// --- BodyAddWeightCmd tests ---
-
 func TestBodyAddWeight_Success(t *testing.T) {
 	server := bodyTestServer(t)
 	defer server.Close()
@@ -277,8 +216,6 @@ func TestBodyAddWeight_VerifyPayload(t *testing.T) {
 		t.Error("expected gmtTimestamp to be set")
 	}
 }
-
-// --- BodyAddCompositionCmd tests ---
 
 func TestBodyAddComposition_Success(t *testing.T) {
 	server := bodyTestServer(t)
@@ -394,8 +331,6 @@ func TestBodyAddComposition_ServerError(t *testing.T) {
 	}
 }
 
-// --- BodyDeleteWeightCmd tests ---
-
 func TestBodyDeleteWeight_Success(t *testing.T) {
 	server := bodyTestServer(t)
 	defer server.Close()
@@ -467,28 +402,6 @@ func TestBodyDeleteWeight_ConfirmYes(t *testing.T) {
 	}
 }
 
-// --- BodyBloodPressureCmd tests ---
-
-func TestBodyBloodPressure_Success(t *testing.T) {
-	server := bodyTestServer(t)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &BodyBloodPressureCmd{StartDate: "2024-01-01", EndDate: "2024-01-31"}
-	err := cmd.Run(g)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
-	}
-}
-
-// --- BodyAddBPCmd tests ---
-
 func TestBodyAddBP_Success(t *testing.T) {
 	server := bodyTestServer(t)
 	defer server.Close()
@@ -554,8 +467,6 @@ func TestBodyAddBP_VerifyPayload(t *testing.T) {
 		t.Errorf("sourceType = %v, want MANUAL", receivedPayload["sourceType"])
 	}
 }
-
-// --- BodyDeleteBPCmd tests ---
 
 func TestBodyDeleteBP_Success(t *testing.T) {
 	server := bodyTestServer(t)

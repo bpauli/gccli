@@ -1,0 +1,65 @@
+-- args --
+body
+weigh-ins
+--start
+2026-10-01
+--end
+2026-10-10
+-- route GET /weight-service/weight/range/2026-10-01/2026-10-10?includeAll=true --
+{"dailyWeightSummaries":[{"summaryDate":"2026-10-01","numOfWeightEntries":1}]}
+-- table stdout --
+{
+  "dailyWeightSummaries": [
+    {
+      "summaryDate": "2026-10-01",
+      "numOfWeightEntries": 1
+    }
+  ]
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /weight-service/weight/range/2026-10-01/2026-10-10?includeAll=true
+-- plain stdout --
+{
+  "dailyWeightSummaries": [
+    {
+      "summaryDate": "2026-10-01",
+      "numOfWeightEntries": 1
+    }
+  ]
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /weight-service/weight/range/2026-10-01/2026-10-10?includeAll=true
+-- plain-header stdout --
+{
+  "dailyWeightSummaries": [
+    {
+      "summaryDate": "2026-10-01",
+      "numOfWeightEntries": 1
+    }
+  ]
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /weight-service/weight/range/2026-10-01/2026-10-10?includeAll=true
+-- json stdout --
+{
+  "dailyWeightSummaries": [
+    {
+      "summaryDate": "2026-10-01",
+      "numOfWeightEntries": 1
+    }
+  ]
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /weight-service/weight/range/2026-10-01/2026-10-10?includeAll=true

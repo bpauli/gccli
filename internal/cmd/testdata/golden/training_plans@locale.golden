@@ -1,0 +1,43 @@
+-- args --
+training
+plans
+--locale
+de
+-- route GET /trainingplan-service/trainingplan/plans?locale=de --
+{"value":1}
+-- table stdout --
+{
+  "value": 1
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /trainingplan-service/trainingplan/plans?locale=de
+-- plain stdout --
+{
+  "value": 1
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /trainingplan-service/trainingplan/plans?locale=de
+-- plain-header stdout --
+{
+  "value": 1
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /trainingplan-service/trainingplan/plans?locale=de
+-- json stdout --
+{
+  "value": 1
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /trainingplan-service/trainingplan/plans?locale=de
