@@ -14,5 +14,7 @@ var goalsEndpoints = []Endpoint{
 	{Name: "badges.detail", Method: http.MethodGet, Host: ConnectAPI, Path: "/badge-service/badge/detail/v2/{badgeID}"},
 	{Name: "badges.challenges", Method: http.MethodGet, Host: ConnectAPI, Path: "/badge-service/badge/challenges"},
 	{Name: "challenges.joined", Method: http.MethodGet, Host: ConnectAPI, Path: "/challenge-service/challenge/joined"},
+	{Name: "challenges.available", Method: http.MethodGet, Host: ConnectAPI, Path: "/badgechallenge-service/badgeChallenge/available"},
+	{Name: "challenges.completed", Method: http.MethodGet, Host: ConnectAPI, Path: "/badgechallenge-service/badgeChallenge/completed"},
 	{Name: "records.list", Method: http.MethodGet, Host: ConnectAPI, Path: "/personalrecord-service/personalrecord/prs/{displayName}"},
 }

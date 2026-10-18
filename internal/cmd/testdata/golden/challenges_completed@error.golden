@@ -1,0 +1,34 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+challenges
+completed
+-- route GET /badgechallenge-service/badgeChallenge/completed 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+get completed challenges: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /badgechallenge-service/badgeChallenge/completed
+-- plain stdout --
+-- plain stderr --
+get completed challenges: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /badgechallenge-service/badgeChallenge/completed
+-- plain-header stdout --
+-- plain-header stderr --
+get completed challenges: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /badgechallenge-service/badgeChallenge/completed
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"get completed challenges: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /badgechallenge-service/badgeChallenge/completed
