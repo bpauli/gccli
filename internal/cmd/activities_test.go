@@ -10,6 +10,7 @@ import (
 	"github.com/bpauli/gccli/internal/garminapi"
 	"github.com/bpauli/gccli/internal/garminauth"
 	"github.com/bpauli/gccli/internal/outfmt"
+	"github.com/bpauli/gccli/internal/units"
 )
 
 // sampleActivitiesJSON returns a JSON array of sample activities for testing.
@@ -235,20 +236,24 @@ func TestValueAt(t *testing.T) {
 	tests := []struct {
 		name string
 		data map[string]any
+		path string
 		want string
 	}{
-		{"with type", map[string]any{"activityType": map[string]any{"typeKey": "running"}}, "running"},
-		{"nil type", map[string]any{}, ""},
-		{"missing typeKey", map[string]any{"activityType": map[string]any{}}, ""},
-		{"non-map type", map[string]any{"activityType": "invalid"}, ""},
-		{"null type", map[string]any{"activityType": nil}, ""},
-		{"number key", map[string]any{"activityType": map[string]any{"typeKey": 7.0}}, "7"},
+		{"with type", map[string]any{"activityType": map[string]any{"typeKey": "running"}}, "activityType.typeKey", "running"},
+		{"nil type", map[string]any{}, "activityType.typeKey", ""},
+		{"missing typeKey", map[string]any{"activityType": map[string]any{}}, "activityType.typeKey", ""},
+		{"non-map type", map[string]any{"activityType": "invalid"}, "activityType.typeKey", ""},
+		{"null type", map[string]any{"activityType": nil}, "activityType.typeKey", ""},
+		{"number key", map[string]any{"activityType": map[string]any{"typeKey": 7.0}}, "activityType.typeKey", "7"},
+		{"one segment", map[string]any{"activityType": "running"}, "activityType", "running"},
+		{"three segments", map[string]any{"a": map[string]any{"b": map[string]any{"c": "deep"}}}, "a.b.c", "deep"},
+		{"three segments through a value", map[string]any{"a": map[string]any{"b": "flat"}}, "a.b.c", ""},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := textOf(valueAt(tt.data, "activityType.typeKey"))
+			got := textOf(valueAt(tt.data, tt.path))
 			if got != tt.want {
-				t.Errorf("valueAt() = %q, want %q", got, tt.want)
+				t.Errorf("valueAt(%q) = %q, want %q", tt.path, got, tt.want)
 			}
 		})
 	}
@@ -264,6 +269,8 @@ func TestJsonString(t *testing.T) {
 		{"string value", map[string]any{"k": "hello"}, "k", "hello"},
 		{"integer float", map[string]any{"k": float64(42)}, "k", "42"},
 		{"decimal float", map[string]any{"k": float64(3.14)}, "k", "3.14"},
+		{"long decimal", map[string]any{"k": float64(3.14159)}, "k", "3.14159"},
+		{"large float", map[string]any{"k": float64(1e21)}, "k", "1e+21"},
 		{"missing key", map[string]any{}, "k", ""},
 		{"nil value", map[string]any{"k": nil}, "k", ""},
 		{"bool value", map[string]any{"k": true}, "k", "true"},
@@ -289,12 +296,37 @@ func TestJsonFloat(t *testing.T) {
 		{"missing key", map[string]any{}, "k", 0},
 		{"nil value", map[string]any{"k": nil}, "k", 0},
 		{"string value", map[string]any{"k": "not a number"}, "k", 0},
+		{"numeric string", map[string]any{"k": "12.5"}, "k", 0},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := jsonFloat(tt.m, tt.key)
 			if got != tt.want {
 				t.Errorf("jsonFloat() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestFormatCell(t *testing.T) {
+	tests := []struct {
+		name   string
+		format Format
+		value  any
+		want   string
+	}{
+		{"count of a number", Count, 712.0, "712"},
+		{"count of a numeric string", Count, "712", "-"},
+		{"duration of a numeric string", Duration, "3005", "-"},
+		{"distance of a numeric string", Distance, "10012", "-"},
+		{"text of a numeric string", Text, "712", "712"},
+		{"text of a number", Text, 712.5, "712.5"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.format.cell(tt.value, units.Metric)
+			if got != tt.want {
+				t.Errorf("%s.cell(%#v) = %q, want %q", tt.format, tt.value, got, tt.want)
 			}
 		})
 	}

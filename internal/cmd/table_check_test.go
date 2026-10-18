@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"go/ast"
 	"go/token"
 	"os"
@@ -169,11 +170,29 @@ func TestCheckTableRejects(t *testing.T) {
 			`activities list: Columns[0] (ID) has Format(9), which is not a Format`,
 		},
 		{
+			"a column has the first Format past the last one", "activities list",
+			func(l *Leaf) {
+				l.Output = Rows{Noun: "activities", Columns: []Column{{Label: "ID", Path: "activityId", Format: Format(len(formatNames))}}}
+			},
+			fmt.Sprintf("activities list: Columns[0] (ID) has Format(%d), which is not a Format", len(formatNames)),
+		},
+		{
 			"an int bound to a placeholder that may be left out", "activities list",
 			func(l *Leaf) {
 				l.Params = Params{"start": In("Offset"), "limit": In("Limit"), "activityType": In("Limit")}
 			},
 			`activities list: Params["activityType"] binds In("Limit") of type int, but {activityType} of activities.list may be left out: the runner sends an int even when it is 0, so use a string field`,
+		},
+		{
+			"an int bound to a placeholder with a default", "goals list",
+			func(l *Leaf) {
+				l.Spec = argsOf(&struct {
+					Locale int `help:"Locale number." default:"1"`
+				}{})
+				l.Endpoint = "training.plans"
+				l.Params = Params{"locale": In("Locale")}
+			},
+			`goals list: Params["locale"] binds In("Locale") of type int, but {locale} of training.plans may be left out: the runner sends an int even when it is 0, so use a string field`,
 		},
 		{
 			"In names a field of a named embed", "activities list",
