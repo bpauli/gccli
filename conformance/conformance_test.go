@@ -22,6 +22,8 @@ import (
 	"sync"
 	"testing"
 	"time"
+
+	"github.com/bpauli/gccli/internal/testutil/requestlog"
 )
 
 var failWithoutBinary bool
@@ -234,6 +236,14 @@ var skipped = map[string]string{
 	"health stress weekly": clockSkip,
 }
 
+// clockBodies names the leaves that send a time from the clock in a request
+// body. The suite compares their output, but not their requests.
+var clockBodies = map[string]bool{
+	"body add-blood-pressure": true,
+	"body add-composition":    true,
+	"body add-weight":         true,
+}
+
 var dateInURI = regexp.MustCompile(`\d{4}-\d{2}-\d{2}`)
 
 func (c goldenCase) clockDate() (string, bool) {
@@ -288,6 +298,11 @@ func TestGoldenSkips(t *testing.T) {
 			t.Errorf("%s: a route asks for %s, which the binary takes from its clock: give the date in the args, or add %q to skipped", f.path, d, f.leaf)
 		}
 	}
+	for name := range clockBodies {
+		if _, ok := fromClock[name]; !ok {
+			t.Errorf("clockBodies names %q, which has no golden file in %s", name, goldenDir)
+		}
+	}
 	for name, why := range skipped {
 		clock, ok := fromClock[name]
 		switch {
@@ -329,16 +344,22 @@ func TestGolden(t *testing.T) {
 				res := s.run(t, c.stdin, slices.Concat(goldenGlobals, m.flags, c.args)...)
 				mask := strings.NewReplacer(s.work, "$DIR", s.home, "$HOME")
 				got := map[string]string{
-					"stdout": mask.Replace(res.stdout),
-					"stderr": mask.Replace(res.stderr),
-					"exit":   strconv.Itoa(res.code) + "\n",
+					"stdout":   mask.Replace(res.stdout),
+					"stderr":   mask.Replace(res.stderr),
+					"exit":     strconv.Itoa(res.code) + "\n",
+					"requests": mask.Replace(r.log()),
 				}
-				for _, part := range []string{"stdout", "stderr", "exit"} {
+				for _, part := range []string{"stdout", "stderr", "exit", "requests"} {
 					want, ok := c.outputs[m.name+" "+part]
 					if !ok {
 						t.Fatalf("%s has no %q section", file, m.name+" "+part)
 					}
-					if got[part] != want {
+					switch {
+					case part == "requests" && clockBodies[f.leaf]:
+						if got[part] == want {
+							t.Errorf("%q in %s mode: the requests match %s, so no body takes a time from the clock: remove %q from clockBodies", name, m.name, file, f.leaf)
+						}
+					case got[part] != want:
 						t.Errorf("%q in %s mode: %s differs from %s (- want, + got):\n%s", name, m.name, part, file, lineDiff(want, got[part]))
 					}
 				}
@@ -355,6 +376,7 @@ type replay struct {
 
 	mu         sync.Mutex
 	unexpected []string
+	entries    []string
 }
 
 type reply struct {
@@ -364,11 +386,18 @@ type reply struct {
 
 func (r *replay) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	key := req.Method + " " + req.Host + req.URL.RequestURI()
+	entry, err := requestlog.Format(req)
+	if err != nil {
+		entry = fmt.Sprintf("%s: %v\n", key, err)
+	}
 	rep, ok := r.routes[key]
+	r.mu.Lock()
+	r.entries = append(r.entries, entry)
 	if !ok {
-		r.mu.Lock()
 		r.unexpected = append(r.unexpected, key)
-		r.mu.Unlock()
+	}
+	r.mu.Unlock()
+	if !ok {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
@@ -377,6 +406,12 @@ func (r *replay) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 	w.WriteHeader(cmp.Or(rep.status, http.StatusOK))
 	_, _ = w.Write([]byte(rep.body))
+}
+
+func (r *replay) log() string {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	return strings.Join(r.entries, "")
 }
 
 func (r *replay) unexpectedRequests() []string {
