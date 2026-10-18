@@ -20,7 +20,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Devices** — list registered devices, view settings, solar data, alarms, primary/last-used device
 - **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities
 - **Goals & Badges** — active goals, earned/available/in-progress badges, challenges, personal records
-- **Training** — browse and view training plans
+- **Training** — browse and view training plans, show your active plans
 - **Profile** — user profile and settings
 - **Hydration** — view and log daily water intake
 - **Nutrition** — view daily food logs, meals, and nutrition settings
@@ -662,6 +662,8 @@ gccli nutrition settings [date]        # View nutrition settings
 ```bash
 gccli training plans --locale en
 gccli training plan <id>
+gccli training active
+gccli training active --start 2026-01-01
 ```
 
 ### Events
@@ -1072,6 +1074,8 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `--locale="en"`: Locale for training plans (e.g. en, de, fr).
 - `gccli training plan <id>`: Show a specific training plan.
   - `<id>`: Training plan ID.
+- `gccli training active [flags]`: Show active training plans.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli wellness menstrual-cycle --start=DATE --end=DATE`: Show menstrual cycle data.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).

@@ -9,4 +9,5 @@ var trainingEndpoints = []Endpoint{
 		Params: []Param{{Name: "locale", Default: "en"}},
 	},
 	{Name: "training.plan", Method: http.MethodGet, Host: ConnectAPI, Path: "/trainingplan-service/trainingplan/plan/{planID}"},
+	{Name: "training.active-plans", Method: http.MethodGet, Host: ConnectAPI, Path: "/trainingplan-service/trainingplan/active-plans?startDate={startDate}"},
 }

@@ -19,4 +19,13 @@ var trainingGroup = Group{Name: "training", Help: "View training plans.", Childr
 		Params:   Params{"planID": In("ID")},
 		Verb:     "get training plan", Output: JSON{},
 	},
+	Leaf{
+		Name: "active", Help: "Show active training plans.",
+		Spec: argsOf(&struct {
+			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"start"`
+		}{}),
+		Endpoint: "training.active-plans",
+		Params:   Params{"startDate": In("StartDate").Or(Today)},
+		Verb:     "get active training plans", Output: JSON{},
+	},
 }}

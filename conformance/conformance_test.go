@@ -237,6 +237,7 @@ var skipped = map[string]string{
 	"events list":          clockSkip,
 	"health steps weekly":  clockSkip,
 	"health stress weekly": clockSkip,
+	"training active":      clockSkip,
 }
 
 // clockBodies names the leaves that send a time from the clock in a request
