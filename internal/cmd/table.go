@@ -92,7 +92,9 @@ const (
 	lookupToday
 )
 
-// In reads the args field with this Go name.
+// In reads the args field with this Go name, found by Go's promotion
+// rules: a field of an anonymous embedded struct counts, a field of a
+// named embed:"" struct does not.
 func In(field string) Source { return Source{[]alt{{field: field}}} }
 
 var (

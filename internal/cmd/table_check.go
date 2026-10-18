@@ -107,9 +107,9 @@ func checkLeaf(path string, l Leaf) []error {
 		errs = append(errs, fmt.Errorf(path+": "+format, a...))
 	}
 
-	fields := argsFields(l.spec().fields(), nil)
+	fields := l.spec().fields()
 	for _, name := range l.LateDates {
-		if f, ok := fields[name]; !ok || f.typ != reflect.TypeFor[string]() {
+		if f, ok := argsField(fields, name); !ok || f.Type != reflect.TypeFor[string]() {
 			fail("LateDates names %q, which is not a string field of the args struct", name)
 		}
 	}
@@ -121,7 +121,7 @@ func checkLeaf(path string, l Leaf) []error {
 	}
 	for _, key := range slices.Sorted(maps.Keys(l.Params)) {
 		for _, a := range l.Params[key].alts {
-			if _, ok := fields[a.field]; a.field != "" && !ok {
+			if _, ok := argsField(fields, a.field); a.field != "" && !ok {
 				fail("Params[%q] binds %s, which is not a field of the args struct", key, a)
 			}
 		}
@@ -168,38 +168,31 @@ func checkLeaf(path string, l Leaf) []error {
 }
 
 // A LateDates field is never empty: resolveDate gives today for "".
-func (s Source) sure(fields map[string]argsField, late []string) bool {
+func (s Source) sure(fields reflect.Type, late []string) bool {
 	for _, a := range s.alts {
-		if a.lookup != noLookup || fields[a.field].alwaysSet || slices.Contains(late, a.field) {
+		if a.lookup != noLookup || slices.Contains(late, a.field) {
+			return true
+		}
+		if f, ok := argsField(fields, a.field); ok && alwaysSet(f) {
 			return true
 		}
 	}
 	return false
 }
 
-type argsField struct {
-	typ       reflect.Type
-	alwaysSet bool
+// argsField finds the args field that In(name) reads, by Go's promotion
+// rules: an outer field shadows an embedded one, and a named embed:""
+// field is not promoted. The runner reads the parsed value with
+// FieldByIndex(f.Index), so the check and the runner agree on the field.
+func argsField(t reflect.Type, name string) (reflect.StructField, bool) {
+	f, ok := t.FieldByName(name)
+	return f, ok && f.IsExported()
 }
 
-func argsFields(t reflect.Type, out map[string]argsField) map[string]argsField {
-	if out == nil {
-		out = map[string]argsField{}
-	}
-	for i := range t.NumField() {
-		f := t.Field(i)
-		if !f.IsExported() {
-			continue
-		}
-		if _, embed := f.Tag.Lookup("embed"); embed || f.Anonymous {
-			argsFields(f.Type, out)
-			continue
-		}
-		_, arg := f.Tag.Lookup("arg")
-		_, optional := f.Tag.Lookup("optional")
-		_, required := f.Tag.Lookup("required")
-		_, def := f.Tag.Lookup("default")
-		out[f.Name] = argsField{typ: f.Type, alwaysSet: (arg && !optional) || required || def}
-	}
-	return out
+func alwaysSet(f reflect.StructField) bool {
+	_, arg := f.Tag.Lookup("arg")
+	_, optional := f.Tag.Lookup("optional")
+	_, required := f.Tag.Lookup("required")
+	_, def := f.Tag.Lookup("default")
+	return (arg && !optional) || required || def
 }
