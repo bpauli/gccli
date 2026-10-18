@@ -451,6 +451,60 @@ func TestOpen_Error(t *testing.T) {
 	}
 }
 
+func TestOpen_FallsThroughToNextBackend(t *testing.T) {
+	orig := openKeyringFn
+	t.Cleanup(func() { openKeyringFn = orig })
+
+	backends := keyring.AvailableBackends()
+	if len(backends) < 2 {
+		t.Skipf("AvailableBackends = %v, want at least 2", backends)
+	}
+	second := &memKeyring{items: make(map[string]keyring.Item)}
+	var tried []keyring.BackendType
+	openKeyringFn = func(cfg keyring.Config) (keyring.Keyring, error) {
+		tried = append(tried, cfg.AllowedBackends...)
+		if len(tried) == 1 {
+			return nil, fmt.Errorf("backend %s unavailable", cfg.AllowedBackends[0])
+		}
+		return second, nil
+	}
+
+	store, err := Open("")
+	if err != nil {
+		t.Fatalf("Open: %v", err)
+	}
+	if store.ring != second {
+		t.Errorf("Open returned a store on %v, want the second backend", store.ring)
+	}
+	if len(tried) != 2 || tried[0] != backends[0] || tried[1] != backends[1] {
+		t.Errorf("tried backends %v, want %v", tried, backends[:2])
+	}
+}
+
+func TestOpen_AllBackendsFail(t *testing.T) {
+	orig := openKeyringFn
+	t.Cleanup(func() { openKeyringFn = orig })
+
+	backends := keyring.AvailableBackends()
+	var errs []error
+	openKeyringFn = func(cfg keyring.Config) (keyring.Keyring, error) {
+		err := fmt.Errorf("backend %s unavailable", cfg.AllowedBackends[0])
+		errs = append(errs, err)
+		return nil, err
+	}
+
+	_, err := Open("")
+	if err == nil {
+		t.Fatal("expected error")
+	}
+	if len(errs) != len(backends) {
+		t.Fatalf("tried %d backends, want %d", len(errs), len(backends))
+	}
+	if last := errs[len(errs)-1]; !errors.Is(err, last) {
+		t.Errorf("error = %q, want it to wrap the last error %q", err, last)
+	}
+}
+
 func TestOpen_ConfigFields(t *testing.T) {
 	orig := openKeyringFn
 	t.Cleanup(func() { openKeyringFn = orig })
