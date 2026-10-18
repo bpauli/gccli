@@ -24,7 +24,7 @@ func AuthenticatedClient(t *testing.T) *garminapi.Client {
 	t.Helper()
 
 	s := getOrLogin(t)
-	client := garminapi.NewClient(s.Tokens())
+	client := garminapi.NewClient(s.Tokens(), recordOptions(t)...)
 	client.Refresher = s.Refresh
 	return client
 }

@@ -1,0 +1,18 @@
+{
+  "method": "GET",
+  "host": "connectapi.garmin.com",
+  "uri": "/personalrecord-service/personalrecord/prs/tester",
+  "status": 200,
+  "body": [
+    {
+      "activityId": 1,
+      "activityName": "tester",
+      "activityStartDateTimeLocal": "2026-01-01T00:00:00.0",
+      "activityType": "tester",
+      "id": 1,
+      "prStartTimeGmt": 1,
+      "typeId": 1,
+      "value": 0.5
+    }
+  ]
+}

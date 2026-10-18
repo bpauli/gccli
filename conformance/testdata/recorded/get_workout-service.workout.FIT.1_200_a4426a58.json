@@ -1,0 +1,7 @@
+{
+  "method": "GET",
+  "host": "connectapi.garmin.com",
+  "uri": "/workout-service/workout/FIT/1",
+  "status": 200,
+  "nonJSONBytes": 13
+}

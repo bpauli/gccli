@@ -1,0 +1,24 @@
+{
+  "method": "POST",
+  "host": "connectapi.garmin.com",
+  "uri": "/course-service/course/import",
+  "status": 200,
+  "body": {
+    "coordinateSystem": "tester",
+    "courseName": "tester",
+    "description": null,
+    "geoPoints": [
+      {
+        "elevation": null,
+        "latitude": 0.5,
+        "longitude": 0.5
+      }
+    ],
+    "sourceTypeId": 1,
+    "startPoint": {
+      "elevation": null,
+      "latitude": 0.5,
+      "longitude": 0.5
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "method": "GET",
+  "host": "connectapi.garmin.com",
+  "uri": "/wellness-service/wellness/dailyHeartRate/tester?date=2026-01-01",
+  "status": 200,
+  "body": {
+    "calendarDate": "2026-01-01",
+    "heartRateValueDescriptors": [
+      {
+        "index": 1,
+        "key": "tester"
+      }
+    ],
+    "heartRateValues": [
+      [
+        1
+      ]
+    ],
+    "maxHeartRate": 1,
+    "minHeartRate": 1,
+    "restingHeartRate": 1,
+    "startTimestampGMT": "2026-01-01T00:00:00.0",
+    "userProfilePK": 1
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "method": "GET",
+  "host": "connectapi.garmin.com",
+  "uri": "/calendar-service/year/1/month/1/day/1/start/1",
+  "status": 200,
+  "body": {
+    "calendarItems": [
+      {
+        "activityTypeId": 1,
+        "date": "2026-01-01",
+        "id": 1,
+        "itemType": "tester",
+        "sportTypeKey": "tester",
+        "title": "tester",
+        "workoutId": 1
+      }
+    ],
+    "numOfDaysInMonth": 1,
+    "startDayOfMonth": 1
+  }
+}

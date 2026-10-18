@@ -22,7 +22,7 @@ func FetchExerciseCatalog(ctx context.Context) (json.RawMessage, error) {
 		return nil, fmt.Errorf("create request: %w", err)
 	}
 
-	resp, err := newHTTPClient().Do(req)
+	resp, err := newHTTPClient(nil).Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("fetch exercise catalog: %w", err)
 	}

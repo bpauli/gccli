@@ -43,17 +43,29 @@ func WithBaseURL(u string) ClientOption {
 	return func(cl *Client) { cl.baseURL = u }
 }
 
+// WithAttemptTransport wraps the transport of each attempt with wrap. The
+// result sits under the retry transport and over the stall watch, so the
+// wrapper sees every attempt and a stalled request still fails. The e2e
+// recorder uses it.
+func WithAttemptTransport(wrap func(http.RoundTripper) http.RoundTripper) ClientOption {
+	return func(cl *Client) { cl.httpClient = newHTTPClient(wrap) }
+}
+
 var stallTimeout = 60 * time.Second
 
-func newHTTPClient() *http.Client {
+func newHTTPClient(wrap func(http.RoundTripper) http.RoundTripper) *http.Client {
 	base := http.DefaultTransport.(*http.Transport).Clone()
-	return &http.Client{Transport: NewRetryTransport(&stallTransport{base: base, idle: stallTimeout})}
+	var attempt http.RoundTripper = &stallTransport{base: base, idle: stallTimeout}
+	if wrap != nil {
+		attempt = wrap(attempt)
+	}
+	return &http.Client{Transport: NewRetryTransport(attempt)}
 }
 
 // NewClient creates a new Garmin Connect API client.
 func NewClient(tokens *garminauth.Tokens, opts ...ClientOption) *Client {
 	c := &Client{
-		httpClient: newHTTPClient(),
+		httpClient: newHTTPClient(nil),
 		baseURL:    garminauth.NewEndpoints(tokens.Domain).ConnectAPI,
 		tokens:     tokens,
 		Refresher:  refreshInMemory,

@@ -1,0 +1,6 @@
+{
+  "method": "PUT",
+  "host": "connectapi.garmin.com",
+  "uri": "/activity-service/activity/1/exerciseSets",
+  "status": 204
+}

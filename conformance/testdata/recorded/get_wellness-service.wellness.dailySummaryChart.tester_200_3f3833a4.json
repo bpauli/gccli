@@ -1,0 +1,16 @@
+{
+  "method": "GET",
+  "host": "connectapi.garmin.com",
+  "uri": "/wellness-service/wellness/dailySummaryChart/tester?date=2026-01-01",
+  "status": 200,
+  "body": [
+    {
+      "activityLevelConstant": true,
+      "endGMT": "2026-01-01T00:00:00.0",
+      "primaryActivityLevel": "tester",
+      "pushes": 1,
+      "startGMT": "2026-01-01T00:00:00.0",
+      "steps": 1
+    }
+  ]
+}

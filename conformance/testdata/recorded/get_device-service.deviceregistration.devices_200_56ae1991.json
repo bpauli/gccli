@@ -1,0 +1,22 @@
+{
+  "method": "GET",
+  "host": "connectapi.garmin.com",
+  "uri": "/device-service/deviceregistration/devices",
+  "status": 200,
+  "body": [
+    {
+      "currentFirmwareVersion": "tester",
+      "deviceId": 1,
+      "deviceStatus": "tester",
+      "deviceTypePk": 1,
+      "displayName": "tester",
+      "imageUrl": "tester",
+      "partNumber": "tester",
+      "primary": true,
+      "productDisplayName": "tester",
+      "registeredDate": 1,
+      "serialNumber": "tester",
+      "unitId": 1
+    }
+  ]
+}

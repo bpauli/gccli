@@ -1,0 +1,30 @@
+{
+  "method": "GET",
+  "host": "connectapi.garmin.com",
+  "uri": "/wellness-service/wellness/dailySleepData/tester?date=2026-01-01&nonSleepBufferMinutes=1",
+  "status": 200,
+  "body": {
+    "dailySleepDTO": {
+      "calendarDate": "2026-01-01",
+      "deepSleepSeconds": 1,
+      "id": 1,
+      "sleepScores": {
+        "overall": {
+          "qualifierKey": "tester",
+          "value": 1
+        }
+      },
+      "sleepStartTimestampLocal": 1,
+      "sleepTimeSeconds": 1,
+      "userProfilePK": 1
+    },
+    "remSleepData": true,
+    "sleepLevels": [
+      {
+        "activityLevel": 0.5,
+        "endGMT": "2026-01-01T00:00:00.0",
+        "startGMT": "2026-01-01T00:00:00.0"
+      }
+    ]
+  }
+}

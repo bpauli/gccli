@@ -1,0 +1,6 @@
+{
+  "method": "POST",
+  "host": "connectapi.garmin.com",
+  "uri": "/workout-service/schedule/1",
+  "status": 204
+}

@@ -1,0 +1,39 @@
+{
+  "method": "GET",
+  "host": "connectapi.garmin.com",
+  "uri": "/calendar-service/events?startDate=2026-01-01&pageIndex=1&limit=1&sortOrder=tester",
+  "status": 200,
+  "body": [
+    {
+      "completionTarget": {
+        "unit": "tester",
+        "unitType": "tester",
+        "value": 0.5
+      },
+      "date": "2026-01-01",
+      "eventCustomization": {
+        "customGoal": {
+          "unit": "tester",
+          "unitType": "tester",
+          "value": 0.5
+        },
+        "isPrimaryEvent": true,
+        "isTrainingEvent": true
+      },
+      "eventName": "tester",
+      "eventPrivacy": {
+        "isShareable": true,
+        "label": "tester"
+      },
+      "eventTimeLocal": {
+        "startTimeHhMm": "00:00",
+        "timeZoneId": "tester"
+      },
+      "eventType": "tester",
+      "id": 1,
+      "location": "tester",
+      "race": true,
+      "shareableEventUuid": "tester"
+    }
+  ]
+}

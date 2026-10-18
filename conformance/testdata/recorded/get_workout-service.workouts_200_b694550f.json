@@ -1,0 +1,18 @@
+{
+  "method": "GET",
+  "host": "connectapi.garmin.com",
+  "uri": "/workout-service/workouts?start=1&limit=1",
+  "status": 200,
+  "body": [
+    {
+      "createdDate": "2026-01-01T00:00:00.0",
+      "ownerId": 1,
+      "sportType": {
+        "sportTypeId": 1,
+        "sportTypeKey": "tester"
+      },
+      "workoutId": 1,
+      "workoutName": "tester"
+    }
+  ]
+}

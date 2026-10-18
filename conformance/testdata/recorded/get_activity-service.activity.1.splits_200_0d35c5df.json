@@ -1,0 +1,23 @@
+{
+  "method": "GET",
+  "host": "connectapi.garmin.com",
+  "uri": "/activity-service/activity/1/splits",
+  "status": 200,
+  "body": {
+    "activityId": 1,
+    "eventDTOs": [],
+    "lapDTOs": [
+      {
+        "averageHR": 0.5,
+        "distance": 0.5,
+        "duration": 0.5,
+        "intensityType": "tester",
+        "lapIndex": 1,
+        "messageIndex": 1,
+        "startLatitude": 0.5,
+        "startLongitude": 0.5,
+        "startTimeGMT": "2026-01-01T00:00:00.0"
+      }
+    ]
+  }
+}
