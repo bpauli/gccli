@@ -62,9 +62,15 @@ var v1NullJSON = []string{
 	"workouts detail",
 }
 
-// checkTable reports every Leaf that the runner could not serve as
-// written. Kong rejects an enum with no default and a flag that collides
-// with a root flag itself, so the check does not repeat those.
+// checkTable reports the Leaf rows that break a rule it can read from the
+// row and the endpoint table: the endpoint exists and takes no body; every
+// In, LateDates, Done and Confirm name names an args field; every Params key
+// is a placeholder; every required placeholder is bound to a source that is
+// never empty; the Output fits the method and is complete; LateDates and
+// JSONNull stay on their frozen paths, and the frozen lists name only such
+// rows. It does not run Kong, so it does not see an enum with no default
+// or a flag that collides with a root flag; kong.New rejects those. It does
+// not read Column paths or the response shape.
 func checkTable(nodes []Node) []error {
 	var errs []error
 	leaves := map[string]Leaf{}
