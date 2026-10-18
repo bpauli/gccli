@@ -13,6 +13,7 @@ func TestGoalsEndpoints(t *testing.T) {
 		{"badges.earned", nil, "GET /badge-service/badge/earned"},
 		{"badges.available", nil, "GET /badge-service/badge/available"},
 		{"badges.in-progress", nil, "GET /badge-service/badge/in-progress"},
+		{"badges.detail", map[string]string{"badgeID": "42"}, "GET /badge-service/badge/detail/v2/42"},
 		{"badges.challenges", nil, "GET /badge-service/badge/challenges"},
 		{"challenges.joined", nil, "GET /challenge-service/challenge/joined"},
 		{"records.list", map[string]string{"displayName": "jo/b"}, "GET /personalrecord-service/personalrecord/prs/jo%2Fb"},
