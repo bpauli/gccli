@@ -9,13 +9,19 @@ download
 Downloaded course_111.fit (12 bytes)
 -- table exit --
 0
+-- table requests --
+GET /course-service/course/fit/111/0?elevation=true
 -- plain stdout --
 -- plain stderr --
 Downloaded course_111.fit (12 bytes)
 -- plain exit --
 0
+-- plain requests --
+GET /course-service/course/fit/111/0?elevation=true
 -- json stdout --
 -- json stderr --
 Downloaded course_111.fit (12 bytes)
 -- json exit --
 0
+-- json requests --
+GET /course-service/course/fit/111/0?elevation=true

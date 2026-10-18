@@ -28,7 +28,7 @@ var goldenModes = []goldenMode{
 	{"json", []string{"--json"}},
 }
 
-var goldenOutputs = []string{"stdout", "stderr", "exit"}
+var goldenOutputs = []string{"stdout", "stderr", "exit", "requests"}
 
 func TestGolden(t *testing.T) {
 	leaves := leafCommands(t)
@@ -90,13 +90,16 @@ func runGolden(t *testing.T, path, file string) {
 			ran++
 			h := newHarness(t, in)
 			stdout, stderr, code := h.run(m.flags, args)
-			h.mu.Lock()
-			maps.Copy(requested, h.requested)
-			h.mu.Unlock()
+			var log strings.Builder
+			for _, r := range h.requests() {
+				requested[r.route] = true
+				log.WriteString(r.entry)
+			}
 			out := map[string]string{
-				"stdout": h.mask(stdout),
-				"stderr": h.mask(stderr),
-				"exit":   strconv.Itoa(code) + "\n",
+				"stdout":   h.mask(stdout),
+				"stderr":   h.mask(stderr),
+				"exit":     strconv.Itoa(code) + "\n",
+				"requests": h.mask(log.String()),
 			}
 			for _, part := range goldenOutputs {
 				name := m.name + " " + part
@@ -267,7 +270,7 @@ func (g golden) input() ([]string, harnessInput, error) {
 			in.routes[f[0]+" "+f[1]] = reply
 		case isOutput(name):
 		default:
-			return nil, in, fmt.Errorf("unknown section %q: want args, stdin, file <name>, route <METHOD> <uri> [status], or <mode> stdout|stderr|exit", name)
+			return nil, in, fmt.Errorf("unknown section %q: want args, stdin, file <name>, route <METHOD> <uri> [status], or <mode> stdout|stderr|exit|requests", name)
 		}
 	}
 	if len(args) == 0 {

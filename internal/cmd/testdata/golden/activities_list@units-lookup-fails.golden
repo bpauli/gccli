@@ -14,6 +14,9 @@ ID   DATE        TYPE          NAME         DISTANCE  DURATION  CALORIES
 could not read Garmin unit preference (garmin api: 404 Not Found); using metric. Set --units to skip this lookup.
 -- table exit --
 0
+-- table requests --
+GET /activitylist-service/activities/search/activities?start=0&limit=20
+GET /userprofile-service/userprofile/user-settings
 -- plain stdout --
 111	2026-10-14	running	Morning Run	10.01 km	50:05	712
 112	2026-10-13	lap_swimming	Pool Swim	1.50 km	33:00	350
@@ -21,6 +24,9 @@ could not read Garmin unit preference (garmin api: 404 Not Found); using metric.
 could not read Garmin unit preference (garmin api: 404 Not Found); using metric. Set --units to skip this lookup.
 -- plain exit --
 0
+-- plain requests --
+GET /activitylist-service/activities/search/activities?start=0&limit=20
+GET /userprofile-service/userprofile/user-settings
 -- json stdout --
 [
   {
@@ -49,3 +55,5 @@ could not read Garmin unit preference (garmin api: 404 Not Found); using metric.
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+GET /activitylist-service/activities/search/activities?start=0&limit=20

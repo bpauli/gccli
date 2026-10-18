@@ -10,6 +10,8 @@ primary
 -- table stderr --
 -- table exit --
 0
+-- table requests --
+GET /web-gateway/device-info/primary-training-device
 -- plain stdout --
 {
   "value": 1
@@ -17,6 +19,8 @@ primary
 -- plain stderr --
 -- plain exit --
 0
+-- plain requests --
+GET /web-gateway/device-info/primary-training-device
 -- json stdout --
 {
   "value": 1
@@ -24,3 +28,5 @@ primary
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+GET /web-gateway/device-info/primary-training-device

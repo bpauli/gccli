@@ -11,11 +11,15 @@ y
 Delete workout 111? [y/N]: Deleted workout 111
 -- table exit --
 0
+-- table requests --
+DELETE /workout-service/workout/111
 -- plain stdout --
 -- plain stderr --
 Delete workout 111? [y/N]: Deleted workout 111
 -- plain exit --
 0
+-- plain requests --
+DELETE /workout-service/workout/111
 -- json stdout --
 {
   "deleted": true
@@ -24,3 +28,5 @@ Delete workout 111? [y/N]: Deleted workout 111
 Delete workout 111? [y/N]: 
 -- json exit --
 0
+-- json requests --
+DELETE /workout-service/workout/111

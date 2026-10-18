@@ -14,11 +14,33 @@ add-blood-pressure
 Added blood pressure: 120/80 mmHg, pulse 60 bpm
 -- table exit --
 0
+-- table requests --
+POST /bloodpressure-service/bloodpressure
+  {
+    "diastolic": 80,
+    "measurementTimestampGMT": "2026-10-15T09:30:00Z",
+    "measurementTimestampLocal": "2026-10-15T09:30:00Z",
+    "notes": "",
+    "pulse": 60,
+    "sourceType": "MANUAL",
+    "systolic": 120
+  }
 -- plain stdout --
 -- plain stderr --
 Added blood pressure: 120/80 mmHg, pulse 60 bpm
 -- plain exit --
 0
+-- plain requests --
+POST /bloodpressure-service/bloodpressure
+  {
+    "diastolic": 80,
+    "measurementTimestampGMT": "2026-10-15T09:30:00Z",
+    "measurementTimestampLocal": "2026-10-15T09:30:00Z",
+    "notes": "",
+    "pulse": 60,
+    "sourceType": "MANUAL",
+    "systolic": 120
+  }
 -- json stdout --
 {
   "ok": true
@@ -26,3 +48,14 @@ Added blood pressure: 120/80 mmHg, pulse 60 bpm
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+POST /bloodpressure-service/bloodpressure
+  {
+    "diastolic": 80,
+    "measurementTimestampGMT": "2026-10-15T09:30:00Z",
+    "measurementTimestampLocal": "2026-10-15T09:30:00Z",
+    "notes": "",
+    "pulse": 60,
+    "sourceType": "MANUAL",
+    "systolic": 120
+  }

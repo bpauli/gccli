@@ -11,6 +11,8 @@ typed-splits
 -- table stderr --
 -- table exit --
 0
+-- table requests --
+GET /activity-service/activity/111/typedsplits
 -- plain stdout --
 {
   "value": 1
@@ -18,6 +20,8 @@ typed-splits
 -- plain stderr --
 -- plain exit --
 0
+-- plain requests --
+GET /activity-service/activity/111/typedsplits
 -- json stdout --
 {
   "value": 1
@@ -25,3 +29,5 @@ typed-splits
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+GET /activity-service/activity/111/typedsplits

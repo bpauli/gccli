@@ -12,11 +12,41 @@ send
 Sent course "Morning Loop" to device Forerunner 265 (message 888)
 -- table exit --
 0
+-- table requests --
+GET /course-service/course/111
+POST /device-service/devicemessage/messages
+  [
+    {
+      "deviceId": 3333,
+      "fileType": "FIT",
+      "groupName": null,
+      "messageName": "Morning Loop",
+      "messageType": "courses",
+      "messageUrl": "course-service/course/fit/111/3333?elevation=true",
+      "metaDataId": 111,
+      "priority": 0
+    }
+  ]
 -- plain stdout --
 -- plain stderr --
 Sent course "Morning Loop" to device Forerunner 265 (message 888)
 -- plain exit --
 0
+-- plain requests --
+GET /course-service/course/111
+POST /device-service/devicemessage/messages
+  [
+    {
+      "deviceId": 3333,
+      "fileType": "FIT",
+      "groupName": null,
+      "messageName": "Morning Loop",
+      "messageType": "courses",
+      "messageUrl": "course-service/course/fit/111/3333?elevation=true",
+      "metaDataId": 111,
+      "priority": 0
+    }
+  ]
 -- json stdout --
 [
   {
@@ -27,3 +57,18 @@ Sent course "Morning Loop" to device Forerunner 265 (message 888)
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+GET /course-service/course/111
+POST /device-service/devicemessage/messages
+  [
+    {
+      "deviceId": 3333,
+      "fileType": "FIT",
+      "groupName": null,
+      "messageName": "Morning Loop",
+      "messageType": "courses",
+      "messageUrl": "course-service/course/fit/111/3333?elevation=true",
+      "metaDataId": 111,
+      "priority": 0
+    }
+  ]

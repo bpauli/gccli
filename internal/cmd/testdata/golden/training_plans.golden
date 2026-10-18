@@ -10,6 +10,8 @@ plans
 -- table stderr --
 -- table exit --
 0
+-- table requests --
+GET /trainingplan-service/trainingplan/plans?locale=en
 -- plain stdout --
 {
   "value": 1
@@ -17,6 +19,8 @@ plans
 -- plain stderr --
 -- plain exit --
 0
+-- plain requests --
+GET /trainingplan-service/trainingplan/plans?locale=en
 -- json stdout --
 {
   "value": 1
@@ -24,3 +28,5 @@ plans
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+GET /trainingplan-service/trainingplan/plans?locale=en

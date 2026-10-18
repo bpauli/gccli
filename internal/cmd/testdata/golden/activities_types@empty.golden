@@ -7,13 +7,19 @@ types
 parse activity types: unexpected end of JSON input
 -- table exit --
 1
+-- table requests --
+GET /activity-service/activity/activityTypes
 -- plain stdout --
 -- plain stderr --
 parse activity types: unexpected end of JSON input
 -- plain exit --
 1
+-- plain requests --
+GET /activity-service/activity/activityTypes
 -- json stdout --
 null
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+GET /activity-service/activity/activityTypes
