@@ -403,3 +403,35 @@ func TestRefreshOAuth2_DIHostFollowsTokenDomain(t *testing.T) {
 		})
 	}
 }
+
+func TestPostDIForm_CutsLongErrorBody(t *testing.T) {
+	cases := []struct {
+		name string
+		body string
+		want string
+	}{
+		{"short body stays whole", strings.Repeat("x", 512), strings.Repeat("x", 512)},
+		{"long body is cut at a rune start", strings.Repeat("€", 200), strings.Repeat("€", 170) + "... (90 bytes cut)"},
+		{"body that is not UTF-8 is cut", strings.Repeat("\x80", 600), strings.Repeat("\x80", 508) + "... (92 bytes cut)"},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			mux := http.NewServeMux()
+			mux.HandleFunc("POST /di-oauth2-service/oauth/token", func(w http.ResponseWriter, _ *http.Request) {
+				w.WriteHeader(http.StatusBadGateway)
+				_, _ = w.Write([]byte(tc.body))
+			})
+			srv := httptest.NewServer(mux)
+			t.Cleanup(srv.Close)
+
+			_, err := exchangeServiceTicket(context.Background(), srv.Client(), Endpoints{DIToken: srv.URL + diTokenPath}, "ST-ok", "https://example.com/cb")
+			if err == nil {
+				t.Fatal("expected error")
+			}
+			if want := "HTTP 502: " + tc.want; !strings.HasSuffix(err.Error(), want) {
+				t.Errorf("error = %q, want suffix %q", err.Error(), want)
+			}
+		})
+	}
+}

@@ -6,6 +6,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/99designs/keyring"
 
@@ -18,6 +19,9 @@ const (
 
 	// serviceName is the keyring service name.
 	serviceName = "gccli"
+
+	tempDirPrefix = ".set-"
+	tempLockName  = ".set.lock"
 )
 
 // Store wraps a keyring for reading and writing token data.
@@ -107,10 +111,19 @@ func (s *Store) Set(email string, data []byte) error {
 // The file keyring truncates the file before it writes, so a concurrent
 // reader could see an empty or cut file.
 func (s *Store) replaceFile(item keyring.Item) error {
-	if err := os.MkdirAll(s.fileBackend.FileDir, 0o700); err != nil {
+	dir := s.fileBackend.FileDir
+	if err := os.MkdirAll(dir, 0o700); err != nil {
 		return err
 	}
-	tmp, err := os.MkdirTemp(s.fileBackend.FileDir, ".set-")
+	lock, err := openTempLock(dir)
+	if err != nil {
+		return err
+	}
+	defer func() { _ = lock.Close() }()
+	if err := lockShared(lock); err != nil {
+		return err
+	}
+	tmp, err := os.MkdirTemp(dir, tempDirPrefix)
 	if err != nil {
 		return err
 	}
@@ -133,11 +146,35 @@ func (s *Store) replaceFile(item keyring.Item) error {
 		return fmt.Errorf("file keyring wrote %d files, want 1", len(written))
 	}
 	name := written[0].Name()
-	return os.Rename(filepath.Join(tmp, name), filepath.Join(s.fileBackend.FileDir, name))
+	return os.Rename(filepath.Join(tmp, name), filepath.Join(dir, name))
+}
+
+// openTempLock opens the lock that every write holds shared while its temp
+// dir exists. When it gets the lock exclusively, no write is in flight, so
+// every temp dir left in dir belongs to a write that was killed.
+func openTempLock(dir string) (*os.File, error) {
+	lock, err := os.OpenFile(filepath.Join(dir, tempLockName), os.O_RDWR|os.O_CREATE, 0o600)
+	if err != nil {
+		return nil, err
+	}
+	if tryLockExclusive(lock) {
+		entries, _ := os.ReadDir(dir)
+		for _, e := range entries {
+			if e.IsDir() && strings.HasPrefix(e.Name(), tempDirPrefix) {
+				_ = os.RemoveAll(filepath.Join(dir, e.Name()))
+			}
+		}
+	}
+	return lock, nil
 }
 
 // Delete removes token data for the given email.
 func (s *Store) Delete(email string) error {
+	if s.fileBackend != nil {
+		if lock, err := openTempLock(s.fileBackend.FileDir); err == nil {
+			_ = lock.Close()
+		}
+	}
 	err := s.ring.Remove(keyFor(email))
 	if err != nil {
 		if errors.Is(err, keyring.ErrKeyNotFound) || errors.Is(err, fs.ErrNotExist) {
