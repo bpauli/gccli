@@ -1,0 +1,45 @@
+Error case: in --start/--end range mode the second week answers 400, so the loop stops with exit code 1 (error).
+-- args --
+workouts
+schedule
+list
+--start
+2026-10-01
+--end
+2026-10-15
+-- route GET /calendar-service/year/2026/month/9/day/1/start/0 --
+{"calendarItems":[{"id":21,"itemType":"workout","title":"Tempo","sportTypeKey":"running","date":"2026-10-02","workoutId":901}]}
+-- route GET /calendar-service/year/2026/month/9/day/8/start/0 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+list scheduled workouts: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /calendar-service/year/2026/month/9/day/1/start/0
+GET /calendar-service/year/2026/month/9/day/8/start/0
+-- plain stdout --
+-- plain stderr --
+list scheduled workouts: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /calendar-service/year/2026/month/9/day/1/start/0
+GET /calendar-service/year/2026/month/9/day/8/start/0
+-- plain-header stdout --
+-- plain-header stderr --
+list scheduled workouts: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /calendar-service/year/2026/month/9/day/1/start/0
+GET /calendar-service/year/2026/month/9/day/8/start/0
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"list scheduled workouts: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /calendar-service/year/2026/month/9/day/1/start/0
+GET /calendar-service/year/2026/month/9/day/8/start/0
