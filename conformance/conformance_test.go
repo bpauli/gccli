@@ -235,6 +235,7 @@ var skipped = map[string]string{
 	"auth login":           "the harness stubs the browser SSO login",
 	"devices solar":        clockSkip,
 	"events list":          clockSkip,
+	"goals weight":         clockSkip,
 	"health steps weekly":  clockSkip,
 	"health stress weekly": clockSkip,
 }
