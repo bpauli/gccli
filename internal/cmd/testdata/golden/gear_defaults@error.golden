@@ -1,0 +1,46 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+gear
+defaults
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- route GET /userprofile-service/socialProfile/tester --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- route GET /gear-service/gear/user/3141592/activityTypes 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+get gear defaults: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+GET /gear-service/gear/user/3141592/activityTypes
+-- plain stdout --
+-- plain stderr --
+get gear defaults: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+GET /gear-service/gear/user/3141592/activityTypes
+-- plain-header stdout --
+-- plain-header stderr --
+get gear defaults: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+GET /gear-service/gear/user/3141592/activityTypes
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"get gear defaults: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+GET /gear-service/gear/user/3141592/activityTypes

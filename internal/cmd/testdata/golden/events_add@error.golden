@@ -1,0 +1,64 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+events
+add
+--name
+City Race
+--date
+2026-11-01
+--type
+running
+-- route POST /calendar-service/event 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+add event: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+POST /calendar-service/event
+  {
+    "date": "2026-11-01",
+    "eventName": "City Race",
+    "eventType": "running",
+    "race": false
+  }
+-- plain stdout --
+-- plain stderr --
+add event: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+POST /calendar-service/event
+  {
+    "date": "2026-11-01",
+    "eventName": "City Race",
+    "eventType": "running",
+    "race": false
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+add event: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+POST /calendar-service/event
+  {
+    "date": "2026-11-01",
+    "eventName": "City Race",
+    "eventType": "running",
+    "race": false
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"add event: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+POST /calendar-service/event
+  {
+    "date": "2026-11-01",
+    "eventName": "City Race",
+    "eventType": "running",
+    "race": false
+  }

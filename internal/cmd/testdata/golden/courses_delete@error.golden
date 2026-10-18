@@ -1,0 +1,37 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+courses
+delete
+111
+-- stdin --
+y
+-- route DELETE /course-service/course/111 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+Delete course 111? [y/N]: delete course: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+DELETE /course-service/course/111
+-- plain stdout --
+-- plain stderr --
+Delete course 111? [y/N]: delete course: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+DELETE /course-service/course/111
+-- plain-header stdout --
+-- plain-header stderr --
+Delete course 111? [y/N]: delete course: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+DELETE /course-service/course/111
+-- json stdout --
+-- json stderr --
+Delete course 111? [y/N]: {"error":{"code":"error","status":400,"message":"delete course: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+DELETE /course-service/course/111

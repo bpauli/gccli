@@ -1,0 +1,34 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+workouts
+list
+-- route GET /workout-service/workouts?start=0&limit=20 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+list workouts: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /workout-service/workouts?start=0&limit=20
+-- plain stdout --
+-- plain stderr --
+list workouts: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /workout-service/workouts?start=0&limit=20
+-- plain-header stdout --
+-- plain-header stderr --
+list workouts: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /workout-service/workouts?start=0&limit=20
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"list workouts: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /workout-service/workouts?start=0&limit=20

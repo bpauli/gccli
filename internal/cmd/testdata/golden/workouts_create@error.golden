@@ -1,0 +1,179 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+workouts
+create
+Tempo
+--type
+run
+--step
+warmup:10m
+-- route POST /workout-service/workout 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+create workout: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+POST /workout-service/workout
+  {
+    "sportType": {
+      "sportTypeId": 1,
+      "sportTypeKey": "running"
+    },
+    "workoutName": "Tempo",
+    "workoutSegments": [
+      {
+        "segmentOrder": 1,
+        "sportType": {
+          "sportTypeId": 1,
+          "sportTypeKey": "running"
+        },
+        "workoutSteps": [
+          {
+            "endCondition": {
+              "conditionTypeId": 2,
+              "conditionTypeKey": "time"
+            },
+            "endConditionValue": 600,
+            "stepOrder": 1,
+            "stepType": {
+              "stepTypeId": 1,
+              "stepTypeKey": "warmup"
+            },
+            "targetType": {
+              "workoutTargetTypeId": 1,
+              "workoutTargetTypeKey": "no.target"
+            },
+            "type": "ExecutableStepDTO"
+          }
+        ]
+      }
+    ]
+  }
+-- plain stdout --
+-- plain stderr --
+create workout: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+POST /workout-service/workout
+  {
+    "sportType": {
+      "sportTypeId": 1,
+      "sportTypeKey": "running"
+    },
+    "workoutName": "Tempo",
+    "workoutSegments": [
+      {
+        "segmentOrder": 1,
+        "sportType": {
+          "sportTypeId": 1,
+          "sportTypeKey": "running"
+        },
+        "workoutSteps": [
+          {
+            "endCondition": {
+              "conditionTypeId": 2,
+              "conditionTypeKey": "time"
+            },
+            "endConditionValue": 600,
+            "stepOrder": 1,
+            "stepType": {
+              "stepTypeId": 1,
+              "stepTypeKey": "warmup"
+            },
+            "targetType": {
+              "workoutTargetTypeId": 1,
+              "workoutTargetTypeKey": "no.target"
+            },
+            "type": "ExecutableStepDTO"
+          }
+        ]
+      }
+    ]
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+create workout: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+POST /workout-service/workout
+  {
+    "sportType": {
+      "sportTypeId": 1,
+      "sportTypeKey": "running"
+    },
+    "workoutName": "Tempo",
+    "workoutSegments": [
+      {
+        "segmentOrder": 1,
+        "sportType": {
+          "sportTypeId": 1,
+          "sportTypeKey": "running"
+        },
+        "workoutSteps": [
+          {
+            "endCondition": {
+              "conditionTypeId": 2,
+              "conditionTypeKey": "time"
+            },
+            "endConditionValue": 600,
+            "stepOrder": 1,
+            "stepType": {
+              "stepTypeId": 1,
+              "stepTypeKey": "warmup"
+            },
+            "targetType": {
+              "workoutTargetTypeId": 1,
+              "workoutTargetTypeKey": "no.target"
+            },
+            "type": "ExecutableStepDTO"
+          }
+        ]
+      }
+    ]
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"create workout: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+POST /workout-service/workout
+  {
+    "sportType": {
+      "sportTypeId": 1,
+      "sportTypeKey": "running"
+    },
+    "workoutName": "Tempo",
+    "workoutSegments": [
+      {
+        "segmentOrder": 1,
+        "sportType": {
+          "sportTypeId": 1,
+          "sportTypeKey": "running"
+        },
+        "workoutSteps": [
+          {
+            "endCondition": {
+              "conditionTypeId": 2,
+              "conditionTypeKey": "time"
+            },
+            "endConditionValue": 600,
+            "stepOrder": 1,
+            "stepType": {
+              "stepTypeId": 1,
+              "stepTypeKey": "warmup"
+            },
+            "targetType": {
+              "workoutTargetTypeId": 1,
+              "workoutTargetTypeKey": "no.target"
+            },
+            "type": "ExecutableStepDTO"
+          }
+        ]
+      }
+    ]
+  }

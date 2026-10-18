@@ -1,0 +1,41 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+activity
+upload
+run.fit
+-- file run.fit --
+fit
+-- route POST /upload-service/upload 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+upload activity: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+POST /upload-service/upload
+  part "file" file "run.fit" 4 bytes sha256 245f96285b109ccf
+-- plain stdout --
+-- plain stderr --
+upload activity: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+POST /upload-service/upload
+  part "file" file "run.fit" 4 bytes sha256 245f96285b109ccf
+-- plain-header stdout --
+-- plain-header stderr --
+upload activity: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+POST /upload-service/upload
+  part "file" file "run.fit" 4 bytes sha256 245f96285b109ccf
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"upload activity: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+POST /upload-service/upload
+  part "file" file "run.fit" 4 bytes sha256 245f96285b109ccf

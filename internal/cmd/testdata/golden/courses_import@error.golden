@@ -1,0 +1,45 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+courses
+import
+route.gpx
+-- file route.gpx --
+<gpx/>
+-- route POST /course-service/course/import 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+Importing route.gpx...
+import GPX: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+POST /course-service/course/import
+  part "file" file "route.gpx" 7 bytes sha256 d0d39209dbd3281b
+-- plain stdout --
+-- plain stderr --
+Importing route.gpx...
+import GPX: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+POST /course-service/course/import
+  part "file" file "route.gpx" 7 bytes sha256 d0d39209dbd3281b
+-- plain-header stdout --
+-- plain-header stderr --
+Importing route.gpx...
+import GPX: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+POST /course-service/course/import
+  part "file" file "route.gpx" 7 bytes sha256 d0d39209dbd3281b
+-- json stdout --
+-- json stderr --
+Importing route.gpx...
+{"error":{"code":"error","status":400,"message":"import GPX: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+POST /course-service/course/import
+  part "file" file "route.gpx" 7 bytes sha256 d0d39209dbd3281b

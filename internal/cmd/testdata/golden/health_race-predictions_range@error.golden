@@ -1,0 +1,37 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+health
+race-predictions
+range
+--start=2026-10-01
+--end=2026-10-01
+-- route GET /metrics-service/metrics/racepredictions/range/2026-10-01/2026-10-01?type=daily 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+get race predictions range: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /metrics-service/metrics/racepredictions/range/2026-10-01/2026-10-01?type=daily
+-- plain stdout --
+-- plain stderr --
+get race predictions range: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /metrics-service/metrics/racepredictions/range/2026-10-01/2026-10-01?type=daily
+-- plain-header stdout --
+-- plain-header stderr --
+get race predictions range: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /metrics-service/metrics/racepredictions/range/2026-10-01/2026-10-01?type=daily
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"get race predictions range: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /metrics-service/metrics/racepredictions/range/2026-10-01/2026-10-01?type=daily
