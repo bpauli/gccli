@@ -9,12 +9,39 @@ import (
 
 var bodyGroup = Group{Name: "body", Help: "Body composition and weight data.", Children: []Node{
 	Custom{Name: "composition", Help: "Show body composition data.", Default: true, Cmd: &BodyCompositionCmd{}},
-	Custom{Name: "weigh-ins", Help: "Show weigh-in data for a date range.", Cmd: &BodyWeighInsCmd{}},
-	Custom{Name: "daily-weigh-ins", Help: "Show weigh-in data for a single day.", Cmd: &BodyDailyWeighInsCmd{}},
+	Leaf{
+		Name: "weigh-ins", Help: "Show weigh-in data for a date range.",
+		Spec: argsOf(&struct {
+			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+			EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
+		}{}),
+		Endpoint: "body.weigh-ins",
+		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
+		Verb:     "get weigh-ins", Output: JSON{},
+	},
+	Leaf{
+		Name: "daily-weigh-ins", Help: "Show weigh-in data for a single day.",
+		Spec: argsOf(&struct {
+			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+		}{}),
+		Endpoint: "body.daily-weigh-ins",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get daily weigh-ins", Output: JSON{},
+		LateDates: []string{"Date"},
+	},
 	Custom{Name: "add-weight", Help: "Add a weigh-in entry.", Cmd: &BodyAddWeightCmd{}},
 	Custom{Name: "add-composition", Help: "Add body composition data (weight, body fat, muscle mass, etc.) via FIT upload.", Cmd: &BodyAddCompositionCmd{}},
 	Custom{Name: "delete-weight", Help: "Delete a weigh-in entry.", Cmd: &BodyDeleteWeightCmd{}},
-	Custom{Name: "blood-pressure", Help: "Show blood pressure data.", Cmd: &BodyBloodPressureCmd{}},
+	Leaf{
+		Name: "blood-pressure", Help: "Show blood pressure data.",
+		Spec: argsOf(&struct {
+			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+			EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
+		}{}),
+		Endpoint: "body.blood-pressure",
+		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
+		Verb:     "get blood pressure", Output: JSON{},
+	},
 	Custom{Name: "add-blood-pressure", Help: "Add a blood pressure measurement.", Cmd: &BodyAddBPCmd{}},
 	Custom{Name: "delete-blood-pressure", Help: "Delete a blood pressure entry.", Cmd: &BodyDeleteBPCmd{}},
 }}
@@ -48,50 +75,6 @@ func (c *BodyCompositionCmd) Run(g *Globals) error {
 	data, err := client.Call(g.Context, "body.composition", map[string]string{"startDate": startDate, "endDate": endDate}, nil)
 	if err != nil {
 		return fmt.Errorf("get body composition: %w", err)
-	}
-
-	return writeHealthJSON(g, data)
-}
-
-// BodyWeighInsCmd shows weigh-in data for a date range.
-type BodyWeighInsCmd struct {
-	StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
-	EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
-}
-
-func (c *BodyWeighInsCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.Call(g.Context, "body.weigh-ins", map[string]string{"startDate": string(c.StartDate), "endDate": string(c.EndDate)}, nil)
-	if err != nil {
-		return fmt.Errorf("get weigh-ins: %w", err)
-	}
-
-	return writeHealthJSON(g, data)
-}
-
-// BodyDailyWeighInsCmd shows weigh-in data for a single day.
-type BodyDailyWeighInsCmd struct {
-	Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
-}
-
-func (c *BodyDailyWeighInsCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	date, err := resolveDate(c.Date)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.Call(g.Context, "body.daily-weigh-ins", map[string]string{"date": date}, nil)
-	if err != nil {
-		return fmt.Errorf("get daily weigh-ins: %w", err)
 	}
 
 	return writeHealthJSON(g, data)
@@ -195,26 +178,6 @@ func (c *BodyDeleteWeightCmd) Run(g *Globals) error {
 		return fmt.Errorf("delete weight: %w", err)
 	}
 	return reportWrite(g, data, "Deleted weigh-in %s", c.PK)
-}
-
-// BodyBloodPressureCmd shows blood pressure data for a date range.
-type BodyBloodPressureCmd struct {
-	StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
-	EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
-}
-
-func (c *BodyBloodPressureCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.Call(g.Context, "body.blood-pressure", map[string]string{"startDate": string(c.StartDate), "endDate": string(c.EndDate)}, nil)
-	if err != nil {
-		return fmt.Errorf("get blood pressure: %w", err)
-	}
-
-	return writeHealthJSON(g, data)
 }
 
 // BodyAddBPCmd adds a blood pressure measurement.

@@ -3,8 +3,10 @@ package cmd
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"maps"
 	"net/http"
+	"path/filepath"
 	"slices"
 	"strings"
 	"testing"
@@ -255,7 +257,7 @@ func TestLeafRowSadPaths(t *testing.T) {
 		if !ok {
 			return
 		}
-		args, in, err := goldenInput(goldenFile(path))
+		args, in, data, err := sadPathInput(path)
 		if err != nil {
 			t.Errorf("%s: %v", path, err)
 			return
@@ -268,17 +270,6 @@ func TestLeafRowSadPaths(t *testing.T) {
 				}
 			}
 		}
-		var dataRoutes []string
-		for route := range in.routes {
-			if route != profileRoute && route != socialRoute && route != settingsRoute {
-				dataRoutes = append(dataRoutes, route)
-			}
-		}
-		if len(dataRoutes) != 1 {
-			t.Errorf("%s: golden has %d data routes, want 1", path, len(dataRoutes))
-			return
-		}
-		data := dataRoutes[0]
 		exec := func(t *testing.T, routes map[string]mockReply, flags, extra []string) (stdout, stderr string, code int, requests []string) {
 			h := newHarness(t, harnessInput{files: in.files, routes: routes, stdin: in.stdin})
 			stdout, stderr, code = h.run(flags, append(slices.Clone(args), extra...))
@@ -362,6 +353,26 @@ func TestLeafRowSadPaths(t *testing.T) {
 			}
 		}
 	})
+}
+
+func sadPathInput(path string) (args []string, in harnessInput, data string, err error) {
+	cases, _ := filepath.Glob(strings.TrimSuffix(goldenFile(path), ".golden") + "@*.golden")
+	for _, file := range append([]string{goldenFile(path)}, cases...) {
+		args, in, err = goldenInput(file)
+		if err != nil {
+			return nil, harnessInput{}, "", err
+		}
+		var dataRoutes []string
+		for route := range in.routes {
+			if route != profileRoute && route != socialRoute && route != settingsRoute {
+				dataRoutes = append(dataRoutes, route)
+			}
+		}
+		if len(dataRoutes) == 1 {
+			return args, in, dataRoutes[0], nil
+		}
+	}
+	return nil, harnessInput{}, "", fmt.Errorf("no golden file of %s sends exactly one data request: add a case file that does", path)
 }
 
 // The text of a json.Unmarshal type error changes between Go versions.
