@@ -5,7 +5,7 @@
   "status": 200,
   "body": {
     "activityId": 1,
-    "activityName": "Test",
+    "activityName": "tester",
     "userProfileId": 1
   }
 }

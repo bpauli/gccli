@@ -5,20 +5,20 @@
   "status": 200,
   "body": {
     "displayName": "tester",
-    "fullName": "Test User",
-    "garminGUID": "test-id",
+    "fullName": "tester",
+    "garminGUID": "tester",
     "id": 1,
-    "location": "Test",
+    "location": "tester",
     "profileId": 1,
-    "profileImageUrlLarge": "https://example.com/test",
+    "profileImageUrlLarge": "tester",
     "userData": {
       "birthDate": "2026-01-01",
-      "gender": "MALE",
+      "gender": "tester",
       "height": 0.5,
-      "measurementSystem": "metric",
-      "timeFormat": "time_twenty_four_hr",
+      "measurementSystem": "tester",
+      "timeFormat": "tester",
       "weight": 0.5
     },
-    "userName": "t@example.com"
+    "userName": "tester"
   }
 }

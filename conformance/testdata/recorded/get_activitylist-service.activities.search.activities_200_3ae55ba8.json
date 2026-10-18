@@ -6,11 +6,11 @@
   "body": [
     {
       "activityId": 1,
-      "activityName": "Test",
+      "activityName": "tester",
       "activityType": {
         "parentTypeId": 1,
         "typeId": 1,
-        "typeKey": "running"
+        "typeKey": "tester"
       },
       "averageHR": 0.5,
       "calories": 0.5,
@@ -22,22 +22,22 @@
       "endLongitude": 0.5,
       "eventType": {
         "typeId": 1,
-        "typeKey": "uncategorized"
+        "typeKey": "tester"
       },
-      "favorite": false,
+      "favorite": true,
       "hasPolyline": true,
-      "locationName": "Test",
-      "manufacturer": "GARMIN",
+      "locationName": "tester",
+      "manufacturer": "tester",
       "maxHR": 0.5,
       "movingDuration": 0.5,
       "ownerDisplayName": "tester",
-      "ownerFullName": "Test User",
+      "ownerFullName": "tester",
       "ownerId": 1,
-      "ownerProfileImageUrlSmall": "https://example.com/test",
-      "pr": false,
+      "ownerProfileImageUrlSmall": "tester",
+      "pr": true,
       "privacy": {
         "typeId": 1,
-        "typeKey": "private"
+        "typeKey": "tester"
       },
       "startLatitude": 0.5,
       "startLongitude": 0.5,

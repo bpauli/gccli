@@ -9,10 +9,10 @@
       "ownerId": 1,
       "sportType": {
         "sportTypeId": 1,
-        "sportTypeKey": "running"
+        "sportTypeKey": "tester"
       },
       "workoutId": 1,
-      "workoutName": "Test"
+      "workoutName": "tester"
     }
   ]
 }

@@ -4,8 +4,8 @@
   "uri": "/course-service/course/import",
   "status": 200,
   "body": {
-    "coordinateSystem": "WGS84",
-    "courseName": "",
+    "coordinateSystem": "tester",
+    "courseName": "tester",
     "description": null,
     "geoPoints": [
       {

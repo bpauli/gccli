@@ -7,10 +7,10 @@
     "coursesForUser": [
       {
         "courseId": 1,
-        "courseName": "Test",
+        "courseName": "tester",
         "courseType": {
           "typeId": 1,
-          "typeKey": "running"
+          "typeKey": "tester"
         },
         "createdDate": "2026-01-01T00:00:00.0",
         "distanceInMeters": 0.5,

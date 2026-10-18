@@ -10,13 +10,13 @@
         "duration": 0.5,
         "exercises": [
           {
-            "category": "BENCH_PRESS",
-            "name": "BARBELL_BENCH_PRESS",
+            "category": "tester",
+            "name": "tester",
             "probability": 0.5
           }
         ],
         "repetitionCount": 1,
-        "setType": "ACTIVE",
+        "setType": "tester",
         "startTime": "2026-01-01T00:00:00.0",
         "weight": 0.5
       },
@@ -24,7 +24,7 @@
         "duration": 0.5,
         "exercises": [],
         "repetitionCount": null,
-        "setType": "REST",
+        "setType": "tester",
         "startTime": "2026-01-01T00:00:00.0",
         "weight": null
       }

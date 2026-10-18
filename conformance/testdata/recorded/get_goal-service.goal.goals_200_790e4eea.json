@@ -1,14 +1,14 @@
 {
   "method": "GET",
   "host": "connectapi.garmin.com",
-  "uri": "/goal-service/goal/goals?status=active",
+  "uri": "/goal-service/goal/goals?status=tester",
   "status": 200,
   "body": [
     {
       "createDate": "2026-01-01T00:00:00.0",
       "endDate": null,
-      "goalStatus": "ACTIVE",
-      "goalType": "STEPS",
+      "goalStatus": "tester",
+      "goalType": "tester",
       "goalValue": 0.5,
       "id": 1,
       "startDate": "2026-01-01",

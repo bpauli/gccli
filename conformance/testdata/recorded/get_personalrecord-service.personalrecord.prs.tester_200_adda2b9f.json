@@ -6,9 +6,9 @@
   "body": [
     {
       "activityId": 1,
-      "activityName": "Test",
+      "activityName": "tester",
       "activityStartDateTimeLocal": "2026-01-01T00:00:00.0",
-      "activityType": "running",
+      "activityType": "tester",
       "id": 1,
       "prStartTimeGmt": 1,
       "typeId": 1,

@@ -6,29 +6,29 @@
   "body": {
     "accessControlRuleDTO": {
       "typeId": 1,
-      "typeKey": "private"
+      "typeKey": "tester"
     },
     "activityId": 1,
-    "activityName": "Test",
+    "activityName": "tester",
     "activityTypeDTO": {
       "parentTypeId": 1,
       "typeId": 1,
-      "typeKey": "running"
+      "typeKey": "tester"
     },
     "eventTypeDTO": {
       "typeId": 1,
-      "typeKey": "uncategorized"
+      "typeKey": "tester"
     },
-    "locationName": "Test",
+    "locationName": "tester",
     "metadataDTO": {
       "deviceApplicationInstallationId": 1,
       "deviceMetaDataDTO": {
-        "deviceId": "test-id",
+        "deviceId": "1",
         "deviceTypePk": 1,
         "deviceVersionPk": 1
       },
       "isOriginal": true,
-      "manufacturer": "GARMIN"
+      "manufacturer": "tester"
     },
     "summaryDTO": {
       "averageHR": 0.5,
@@ -47,9 +47,9 @@
       "startTimeLocal": "2026-01-01T00:00:00.0"
     },
     "timeZoneUnitDTO": {
-      "timeZone": "UTC",
+      "timeZone": "tester",
       "unitId": 1,
-      "unitKey": "UTC"
+      "unitKey": "tester"
     },
     "userProfileId": 1
   }

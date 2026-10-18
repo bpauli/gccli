@@ -11,7 +11,7 @@
         "averageHR": 0.5,
         "distance": 0.5,
         "duration": 0.5,
-        "intensityType": "ACTIVE",
+        "intensityType": "tester",
         "lapIndex": 1,
         "messageIndex": 1,
         "startLatitude": 0.5,

@@ -8,11 +8,11 @@
     "heartRateValueDescriptors": [
       {
         "index": 1,
-        "key": "timestamp"
+        "key": "tester"
       },
       {
         "index": 1,
-        "key": "heartrate"
+        "key": "tester"
       }
     ],
     "heartRateValues": [

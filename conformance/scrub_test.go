@@ -25,72 +25,42 @@ func scrubBody(t *testing.T, method, uri, body string) (Record, error) {
 	return Scrub(Record{Method: method, Host: "connectapi.garmin.com", URI: uri, Status: 200, Body: json.RawMessage(body)})
 }
 
-func TestScrubReplacesPersonalFields(t *testing.T) {
+func TestScrubReplacesEveryValue(t *testing.T) {
 	for _, tc := range []struct{ name, uri, body, want string }{
 		{
-			"email", "/userprofile-service/userprofile/settings",
-			`{"email":"jane.doe@mail.example.org","userName":"jane.doe@mail.example.org","contactEmail":"x"}`,
-			`{"contactEmail":"t@example.com","email":"t@example.com","userName":"t@example.com"}`,
+			"strings become the fixed word", "/userprofile-service/userprofile/settings",
+			`{"email":"jane.doe@mail.example.org","displayName":"jane-runner","fullName":"Jane Doe","garminGUID":"8f14e45f-ceea-467f-a0e6-0a1b2c3d4e5f","timeZone":"Europe/Berlin","profileImageUrlLarge":"https://s3.example.com/profile/3141592.png","typeKey":"street_running","gender":"FEMALE","empty":""}`,
+			`{"displayName":"tester","email":"tester","empty":"tester","fullName":"tester","garminGUID":"tester","gender":"tester","profileImageUrlLarge":"tester","timeZone":"tester","typeKey":"tester"}`,
 		},
 		{
-			"display name", "/userprofile-service/userprofile/settings",
-			`{"displayName":"jane-runner","ownerDisplayName":"8f14e45f-ceea-467f"}`,
-			`{"displayName":"tester","ownerDisplayName":"tester"}`,
+			"digit strings stay digits", "/device-service/deviceregistration/devices",
+			`[{"serialNumber":"3QZ123456","unitId":"3312345678","deviceId":"7"}]`,
+			`[{"deviceId":"1","serialNumber":"tester","unitId":"1"}]`,
 		},
 		{
-			"names", "/userprofile-service/userprofile/settings",
-			`{"fullName":"Jane Doe","firstName":"Jane","lastName":"Doe","ownerFullName":"Jane Doe"}`,
-			`{"firstName":"Test User","fullName":"Test User","lastName":"Test User","ownerFullName":"Test User"}`,
+			"dates and times keep their format", "/activity-service/activity/21234567890",
+			`{"birthDate":"1990-05-17","startTimeLocal":"2026-10-14 07:30:00","startTimeGMT":"2026-10-14T05:30:00.0","startTimeHhMm":"09:15","endGMT":"2026-10-14T05:30:00Z","offset":"2026-10-14T07:30:00+02:00"}`,
+			`{"birthDate":"2026-01-01","endGMT":"2026-01-01T00:00:00Z","offset":"2026-01-01T00:00:00+00:00","startTimeGMT":"2026-01-01T00:00:00.0","startTimeHhMm":"00:00","startTimeLocal":"2026-01-01 00:00:00"}`,
 		},
 		{
-			"profile ids", "/userprofile-service/userprofile/settings",
-			`{"profileId":3141592,"userProfilePK":3141592,"garminGUID":"8f14e45f-ceea-467f-a0e6-0a1b2c3d4e5f","id":"3141592"}`,
-			`{"garminGUID":"test-id","id":"test-id","profileId":1,"userProfilePK":1}`,
+			"numbers keep their class", "/userprofile-service/userprofile/settings",
+			`{"weight":61000.0,"height":1.68e2,"steps":8123,"offset":-7200,"profileId":3141592,"startLatitude":52.5163}`,
+			`{"height":0.5,"offset":1,"profileId":1,"startLatitude":0.5,"steps":1,"weight":0.5}`,
 		},
 		{
-			"device serials", "/device-service/deviceregistration/devices",
-			`[{"serialNumber":"3QZ123456","unitId":3312345678,"deviceId":"3312345678"}]`,
-			`[{"deviceId":"test-id","serialNumber":"TEST-SERIAL","unitId":1}]`,
-		},
-		{
-			"GPS coordinates", "/activity-service/activity/21234567890",
-			`{"startLatitude":52.5163,"startLongitude":13.3777,"summaryDTO":{"endLatitude":-33.86,"endLongitude":151.2}}`,
-			`{"startLatitude":0.5,"startLongitude":0.5,"summaryDTO":{"endLatitude":0.5,"endLongitude":0.5}}`,
-		},
-		{
-			"tokens", "/userprofile-service/userprofile/settings",
-			`{"accessToken":"eyJhbGciOi","refresh_token":"RT-secret","sessionId":"abc"}`,
-			`{"accessToken":"test-token","refresh_token":"test-token","sessionId":"test-token"}`,
-		},
-		{
-			"free text and places", "/activity-service/activity/21234567890",
-			`{"activityName":"Run to Anna's house","description":"Meet at Alexanderplatz","locationName":"Berlin"}`,
-			`{"activityName":"Test","description":"Test","locationName":"Test"}`,
-		},
-		{
-			"urls and time zones", "/userprofile-service/userprofile/settings",
-			`{"profileImageUrlLarge":"https://s3.example.com/profile/3141592.png","timeZone":"Europe/Berlin","unitKey":"Europe/Berlin"}`,
-			`{"profileImageUrlLarge":"https://example.com/test","timeZone":"UTC","unitKey":"UTC"}`,
-		},
-		{
-			"dates and times", "/activity-service/activity/21234567890",
-			`{"birthDate":"1990-05-17","startTimeLocal":"2026-10-14 07:30:00","startTimeGMT":"2026-10-14T05:30:00.0","startTimeHhMm":"09:15"}`,
-			`{"birthDate":"2026-01-01","startTimeGMT":"2026-01-01T00:00:00.0","startTimeHhMm":"00:00","startTimeLocal":"2026-01-01 00:00:00"}`,
+			"bools and nulls", "/userprofile-service/userprofile/user-settings",
+			`{"userData":{"pregnant":true,"privacyProtected":false,"note":null}}`,
+			`{"userData":{"note":null,"pregnant":true,"privacyProtected":true}}`,
 		},
 		{
 			"nested arrays", "/web-gateway/course/owner/",
 			`{"coursesForUser":[{"courseName":"Jane's loop","geoPoints":[{"latitude":52.5,"longitude":13.4},{"latitude":52.6,"longitude":13.5}]}],"heartRateValues":[[1760738400000,58],[1760738520000,null]]}`,
-			`{"coursesForUser":[{"courseName":"Test","geoPoints":[{"latitude":0.5,"longitude":0.5},{"latitude":0.5,"longitude":0.5}]}],"heartRateValues":[[1,1],[1,null]]}`,
+			`{"coursesForUser":[{"courseName":"tester","geoPoints":[{"latitude":0.5,"longitude":0.5},{"latitude":0.5,"longitude":0.5}]}],"heartRateValues":[[1,1],[1,null]]}`,
 		},
 		{
-			"enums stay", "/activity-service/activity/21234567890",
-			`{"activityType":{"typeKey":"street_running"},"manufacturer":"GARMIN","measurementSystem":"statute_us","race":true,"note":null,"exerciseSets":[{"setType":"ACTIVE","exercises":[{"category":"BENCH_PRESS","name":"BARBELL_BENCH_PRESS"}]}]}`,
-			`{"activityType":{"typeKey":"street_running"},"exerciseSets":[{"exercises":[{"category":"BENCH_PRESS","name":"BARBELL_BENCH_PRESS"}],"setType":"ACTIVE"}],"manufacturer":"GARMIN","measurementSystem":"statute_us","note":null,"race":true}`,
-		},
-		{
-			"numbers keep their class", "/userprofile-service/userprofile/settings",
-			`{"weight":61000.0,"height":1.68e2,"steps":8123,"offset":-7200}`,
-			`{"height":0.5,"offset":1,"steps":1,"weight":0.5}`,
+			"enum keys stay and date keys become the fixed date", "/userstats-service/wellness/daily/jane-runner",
+			`{"allMetrics":{"metricsMap":{"WELLNESS_RESTING_HEART_RATE":[{"calendarDate":"2026-10-17","value":52.0}],"BODY_BATTERY":[]}},"byDate":{"2026-10-17":58,"2026-10-18":61}}`,
+			`{"allMetrics":{"metricsMap":{"BODY_BATTERY":[],"WELLNESS_RESTING_HEART_RATE":[{"calendarDate":"2026-01-01","value":0.5}]}},"byDate":{"2026-01-01":1}}`,
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -110,9 +80,9 @@ func TestScrubReplacesPathAndQuery(t *testing.T) {
 		{"/usersummary-service/usersummary/daily/jane-runner?calendarDate=2026-10-18", "/usersummary-service/usersummary/daily/tester?calendarDate=2026-01-01"},
 		{"/activity-service/activity/21987654321/splits", "/activity-service/activity/1/splits"},
 		{"/course-service/course/favorites", "/course-service/course/favorites"},
-		{"/calendar-service/events?startDate=2026-10-18&pageIndex=1&limit=100&sortOrder=eventDate_asc", "/calendar-service/events?startDate=2026-01-01&pageIndex=1&limit=1&sortOrder=eventDate_asc"},
-		{"/course-service/course/elevation?smoothingEnabled=true", "/course-service/course/elevation?smoothingEnabled=true"},
-		{"/goal-service/goal/goals?status=active", "/goal-service/goal/goals?status=active"},
+		{"/calendar-service/events?startDate=2026-10-18&pageIndex=1&limit=100&sortOrder=eventDate_asc", "/calendar-service/events?startDate=2026-01-01&pageIndex=1&limit=1&sortOrder=tester"},
+		{"/course-service/course/elevation?smoothingEnabled=true", "/course-service/course/elevation?smoothingEnabled=tester"},
+		{"/personalrecord-service/personalrecord/prs/jane.runner?email=jane%40runner.example", "/personalrecord-service/personalrecord/prs/tester?email=tester"},
 	} {
 		got, err := Scrub(Record{Method: "GET", Host: "connectapi.garmin.com", URI: tc.uri, Status: 200})
 		if err != nil {
@@ -125,30 +95,30 @@ func TestScrubReplacesPathAndQuery(t *testing.T) {
 	}
 }
 
-func TestScrubFailsOnUnknownString(t *testing.T) {
+func TestScrubFailsOnBadKey(t *testing.T) {
 	_, err := scrubBody(t, "GET", "/userprofile-service/userprofile/settings",
-		`{"displayName":"jane","userData":{"nickname":"Janey","pets":[{"petName":"Rex"}]}}`)
-	var unclassified *UnclassifiedError
-	if !errors.As(err, &unclassified) {
-		t.Fatalf("Scrub of an unknown string: err = %v, want an UnclassifiedError", err)
+		`{"displayName":"jane","userData":{"nickname":"Janey","Jane Runner":{"x":1},"pets":[{"petName":"Rex"},{"a b":1}]}}`)
+	var bad *KeyError
+	if !errors.As(err, &bad) {
+		t.Fatalf("Scrub with a bad key: err = %v, want a KeyError", err)
 	}
 	msg := err.Error()
-	for _, want := range []string{"userData.nickname", "userData.pets[].petName", "GET /userprofile-service/userprofile/settings"} {
+	for _, want := range []string{"$.<key 1>.<key 0>:", "$.<key 1>.<key 2>[1].<key 0>:", "GET /userprofile-service/userprofile/settings"} {
 		if !strings.Contains(msg, want) {
 			t.Errorf("the error does not name %q:\n%s", want, msg)
 		}
 	}
-	for _, value := range []string{"Janey", "Rex", "jane"} {
-		if strings.Contains(msg, value) {
-			t.Errorf("the error prints the value %q:\n%s", value, msg)
+	for _, text := range []string{"Jane", "jane", "Rex", "a b", "nickname", "userData", "pets", "displayName"} {
+		if strings.Contains(msg, text) {
+			t.Errorf("the error prints %q from the data:\n%s", text, msg)
 		}
 	}
 }
 
-func TestScrubFailsOnUnknownQueryKey(t *testing.T) {
-	_, err := Scrub(Record{Method: "GET", Host: "connectapi.garmin.com", URI: "/goal-service/goal/goals?owner=jane", Status: 200})
-	if err == nil || !strings.Contains(err.Error(), "?owner") || strings.Contains(err.Error(), "jane") {
-		t.Errorf("Scrub of an unknown query key: err = %v, want one that names ?owner and not its value", err)
+func TestScrubFailsOnBadQueryKey(t *testing.T) {
+	_, err := Scrub(Record{Method: "GET", Host: "connectapi.garmin.com", URI: "/goal-service/goal/goals?status=active&Jane%20Runner=jane", Status: 200})
+	if err == nil || !strings.Contains(err.Error(), "?<key 1>:") || strings.Contains(err.Error(), "Jane") || strings.Contains(err.Error(), "jane") || strings.Contains(err.Error(), "status") {
+		t.Errorf("Scrub with a bad query key: err = %v, want one that names ?<key 1> and nothing from the query", err)
 	}
 }
 
@@ -171,7 +141,7 @@ func TestScrubFailsOnOtherHost(t *testing.T) {
 
 func TestScrubIsIdempotent(t *testing.T) {
 	first, err := scrubBody(t, "GET", "/web-gateway/course/owner/",
-		`{"coursesForUser":[{"courseId":9,"courseName":"Loop","ownerDisplayName":"jane","startLatitude":52.5,"createdDate":"2026-09-01T10:00:00.0","courseType":{"typeKey":"running"}}]}`)
+		`{"coursesForUser":[{"courseId":9,"courseName":"Loop","ownerDisplayName":"jane","startLatitude":52.5,"createdDate":"2026-09-01T10:00:00.0","favorite":false,"courseType":{"typeKey":"running"},"byDate":{"2026-09-01":1}}]}`)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -232,17 +202,22 @@ func TestScrubDirWritesEachRecordOnce(t *testing.T) {
 func TestScrubDirWritesNothingOnFailure(t *testing.T) {
 	in := writeRecords(t,
 		Record{Method: "GET", Host: "connectapi.garmin.com", URI: "/userprofile-service/userprofile/settings", Status: 200, Body: json.RawMessage(`{"displayName":"jane"}`)},
-		Record{Method: "GET", Host: "connectapi.garmin.com", URI: "/userprofile-service/userprofile/settings", Status: 200, Body: json.RawMessage(`{"nickname":"Janey","pets":["Rex"]}`)},
-		Record{Method: "GET", Host: "connectapi.garmin.com", URI: "/goal-service/goal/goals", Status: 200, Body: json.RawMessage(`[{"motto":"go"}]`)},
+		Record{Method: "GET", Host: "connectapi.garmin.com", URI: "/userprofile-service/userprofile/settings", Status: 200, Body: json.RawMessage(`{"userData":{"Jane Runner":1,"jane@runner.example":2}}`)},
+		Record{Method: "GET", Host: "connectapi.garmin.com", URI: "/goal-service/goal/goals", Status: 200, Body: json.RawMessage(`[{"go fast":1}]`)},
 	)
 	out := filepath.Join(t.TempDir(), "out")
 	err := ScrubDir(in, out)
 	if err == nil {
-		t.Fatal("ScrubDir succeeded with unknown strings")
+		t.Fatal("ScrubDir succeeded with bad keys")
 	}
-	for _, want := range []string{"nickname", "pets[]", "[].motto"} {
+	for _, want := range []string{"$.<key 0>.<key 0>: ", "$.<key 0>.<key 1>: ", "$[0].<key 0>: ", "(1 records, first b.json)", "(1 records, first c.json)"} {
 		if !strings.Contains(err.Error(), want) {
-			t.Errorf("the error does not name %s:\n%v", want, err)
+			t.Errorf("the error does not name %q:\n%v", want, err)
+		}
+	}
+	for _, text := range []string{"Jane", "jane", "go fast", "userData"} {
+		if strings.Contains(err.Error(), text) {
+			t.Errorf("the error prints %q from the data:\n%v", text, err)
 		}
 	}
 	if _, statErr := os.Stat(out); !os.IsNotExist(statErr) {

@@ -9,12 +9,12 @@
     "sourceType": null,
     "userData": {
       "birthDate": "2026-01-01",
-      "format": "date_day_month",
-      "gender": "MALE",
+      "format": "tester",
+      "gender": "tester",
       "height": 0.5,
       "lactateThresholdHeartRate": 1,
-      "measurementSystem": "metric",
-      "timeFormat": "time_twenty_four_hr",
+      "measurementSystem": "tester",
+      "timeFormat": "tester",
       "vo2MaxRunning": 0.5,
       "weight": 0.5
     },

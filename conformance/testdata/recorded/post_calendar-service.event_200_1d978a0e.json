@@ -5,33 +5,33 @@
   "status": 200,
   "body": {
     "completionTarget": {
-      "unit": "kilometer",
-      "unitType": "distance",
+      "unit": "tester",
+      "unitType": "tester",
       "value": 0.5
     },
     "date": "2026-01-01",
     "eventCustomization": {
       "customGoal": {
-        "unit": "second",
-        "unitType": "time",
+        "unit": "tester",
+        "unitType": "tester",
         "value": 0.5
       },
-      "isPrimaryEvent": false,
-      "isTrainingEvent": false
+      "isPrimaryEvent": true,
+      "isTrainingEvent": true
     },
-    "eventName": "Test",
+    "eventName": "tester",
     "eventPrivacy": {
-      "isShareable": false,
-      "label": "PRIVATE"
+      "isShareable": true,
+      "label": "tester"
     },
     "eventTimeLocal": {
       "startTimeHhMm": "00:00",
-      "timeZoneId": "UTC"
+      "timeZoneId": "tester"
     },
-    "eventType": "running",
+    "eventType": "tester",
     "id": 1,
-    "location": "Test",
+    "location": "tester",
     "race": true,
-    "shareableEventUuid": "test-id"
+    "shareableEventUuid": "tester"
   }
 }

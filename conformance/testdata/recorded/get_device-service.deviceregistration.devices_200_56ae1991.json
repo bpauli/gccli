@@ -5,17 +5,17 @@
   "status": 200,
   "body": [
     {
-      "currentFirmwareVersion": "19.18",
+      "currentFirmwareVersion": "tester",
       "deviceId": 1,
-      "deviceStatus": "ACTIVE",
+      "deviceStatus": "tester",
       "deviceTypePk": 1,
       "displayName": "tester",
-      "imageUrl": "https://example.com/test",
-      "partNumber": "006-B4257-00",
+      "imageUrl": "tester",
+      "partNumber": "tester",
       "primary": true,
-      "productDisplayName": "Forerunner 265",
+      "productDisplayName": "tester",
       "registeredDate": 1,
-      "serialNumber": "TEST-SERIAL",
+      "serialNumber": "tester",
       "unitId": 1
     }
   ]

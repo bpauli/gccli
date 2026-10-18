@@ -12,17 +12,17 @@
     "relativeHumidity": 1,
     "temp": 1,
     "weatherStationDTO": {
-      "id": "test-id",
-      "name": "Test",
+      "id": "tester",
+      "name": "tester",
       "timezone": null
     },
     "weatherTypeDTO": {
-      "desc": "Test",
+      "desc": "tester",
       "image": null,
       "weatherTypePk": null
     },
     "windDirection": 1,
-    "windDirectionCompassPoint": "wsw",
+    "windDirectionCompassPoint": "tester",
     "windSpeed": 1
   }
 }

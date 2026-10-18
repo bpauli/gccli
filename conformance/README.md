@@ -70,14 +70,18 @@ GCCLI_RECORD_DIR=/tmp/rec make test-e2e
 
 ### Scrub
 
-`go run ./conformance/cmd/scrub <record dir> <out dir>` replaces the personal data in each record and writes the result to a new directory. Records that are the same after the scrub are written once.
+`go run ./conformance/cmd/scrub <record dir> <out dir>` replaces every value in each record with a fixed one and writes the result to a new directory. Records that are the same after the scrub are written once.
 
-Two tables in `scrub.go` decide what happens:
+The scrubber keeps no value, so it never has to guess which value is safe:
 
-- `scrubPaths` lists every request path that the scrubber accepts. A `{name}` segment holds a value, such as a display name or an id, that the rules classify under that name. A path that matches no template fails.
-- `scrubRules` classifies every value in the body, the query and the path. The first rule that matches decides. Every number becomes `1`, or `0.5` when it has a fraction, so ids, coordinates and health values do not stay. Emails, display names, names, string ids, serials, tokens, URLs, free text, time zones and dates become fixed test values. Enum values stay.
+- A string becomes `tester`. A string of digits becomes `1`, and a date or time keeps its format with fixed digits, such as `2026-01-01` or `2026-01-01T00:00:00.0`. The format of the string decides, not its key.
+- A number becomes `1`, or `0.5` when it has a fraction. A bool becomes `true`. `null` stays.
+- An object key stays when it is an identifier, lower camelCase such as `calendarDate` or UPPER_SNAKE such as `WELLNESS_RESTING_HEART_RATE`. A key that is a date, such as `2026-10-17`, becomes `2026-01-01`, so a map keyed by date keeps its shape. Any other key fails the scrub.
+- The path must match a template in `scrubPaths`. A `{name}` segment is a value and is replaced like a string. A query key must be an identifier, and its value is replaced like a string.
 
-The scrubber fails closed. A string that no rule classifies, an unknown path or a host that is not a Garmin API host fails the scrub, and nothing is written. The error names each failing value by its route and JSON path, such as `GET /userprofile-service/userprofile/settings: userData.nickname`, and never prints the value. To fix it, add a rule or a path template, and add a case to `scrub_test.go`.
+Two records that differ only in their values scrub to the same bytes. The replay checks shapes, so the fixed values are enough for it.
+
+The scrubber fails closed. A key that is not an identifier or a date, an unknown path or a host that is not a Garmin API host fails the scrub, and nothing is written. The error names the route and the position of the key, never the key or a value, because the job log is public. The position holds only structure: `$` is the body, `[3]` an array index from 0, `<key 2>` the third key of an object in byte order, and `?<key 1>` the second query pair. To fix it, record the same route locally, find the key at that position, and extend the key rule or the path table with a case in `scrub_test.go`.
 
 ### Replay
 

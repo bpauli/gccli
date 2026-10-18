@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"regexp"
 	"slices"
 	"strings"
 	"sync"
@@ -36,8 +35,31 @@ func (s scalar) kind() string { return string(s) }
 func (arrayOf) kind() string  { return "array" }
 func (object) kind() string   { return "object" }
 
+func jsonKind(v any) string {
+	switch v.(type) {
+	case string:
+		return "string"
+	case json.Number:
+		return "number"
+	case bool:
+		return "bool"
+	case nil:
+		return "null"
+	case map[string]any:
+		return "object"
+	}
+	return "array"
+}
+
+func joinPath(path, key string) string {
+	if path == "" {
+		return key
+	}
+	return path + "." + key
+}
+
 func kindProblem(want shape, got any, at string) []string {
-	if gk := kindOf(got).String(); gk != want.kind() {
+	if gk := jsonKind(got); gk != want.kind() {
 		return []string{fmt.Sprintf("%s: want %s, the recording has %s", cmp.Or(at, "(body)"), want.kind(), gk)}
 	}
 	return nil
@@ -116,19 +138,14 @@ var readShapes = []struct {
 	{"POST /workout-service/workout", object{"workoutId": number}},
 }
 
-var (
-	numberSegment = regexp.MustCompile(`^\d+$`)
-	dateSegment   = regexp.MustCompile(`^\d{4}-\d{2}-\d{2}$`)
-)
-
 func replayKey(method, host, uri string) string {
 	path, _, _ := strings.Cut(uri, "?")
 	segs := strings.Split(path, "/")
 	for i, s := range segs {
 		switch {
-		case numberSegment.MatchString(s):
+		case digitsOnly.MatchString(s):
 			segs[i] = "{n}"
-		case dateSegment.MatchString(s):
+		case dateOnly.MatchString(s):
 			segs[i] = "{date}"
 		}
 	}
