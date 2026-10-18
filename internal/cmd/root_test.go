@@ -177,7 +177,6 @@ func TestExecute_HeaderWithoutPlainIsUsageError(t *testing.T) {
 		{name: "table", args: []string{"--header"}},
 		{name: "json", args: []string{"--json", "--header"}},
 		{name: "json beats plain", args: []string{"--json", "--plain", "--header"}},
-		{name: "env header", env: map[string]string{"GCCLI_HEADER": "1"}},
 		{name: "env json", env: map[string]string{"GCCLI_JSON": "1"}, args: []string{"--plain", "--header"}},
 	}
 	for _, tt := range tests {
@@ -202,6 +201,54 @@ func TestExecute_HeaderWithoutPlainIsUsageError(t *testing.T) {
 			}
 			if !strings.Contains(stderr, "gccli: error: --header works only with --plain\n") || !strings.Contains(stderr, "Usage:") {
 				t.Fatalf("stderr = %q, want the --header error and the usage text", stderr)
+			}
+		})
+	}
+}
+
+func TestExecute_HeaderEnvAppliesOnlyToPlain(t *testing.T) {
+	tests := []struct {
+		name string
+		env  map[string]string
+		args []string
+		want string
+	}{
+		{name: "table", want: "ID   NAME  TYPE     DISTANCE  CREATED\n111  Loop  running  8.20 km   2026-09-01T10:00:00.0\n"},
+		{name: "json", args: []string{"--json"}, want: "{\n  \"coursesForUser\": [\n    {\n      \"courseId\": 111,"},
+		{name: "env json", env: map[string]string{"GCCLI_JSON": "1"}, want: "{\n  \"coursesForUser\": [\n    {\n      \"courseId\": 111,"},
+		{name: "plain", args: []string{"--plain"}, want: "ID\tNAME\tTYPE\tDISTANCE\tCREATED\n111\tLoop\trunning\t8.20 km\t2026-09-01T10:00:00.0\n"},
+		{name: "env plain", env: map[string]string{"GCCLI_PLAIN": "1"}, want: "ID\tNAME\tTYPE\tDISTANCE\tCREATED\n111\tLoop\trunning\t8.20 km\t2026-09-01T10:00:00.0\n"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tmp := t.TempDir()
+			t.Setenv("HOME", tmp)
+			t.Setenv("XDG_CONFIG_HOME", tmp)
+			t.Setenv("GCCLI_HEADER", "1")
+			for _, k := range []string{"GCCLI_JSON", "GCCLI_PLAIN"} {
+				t.Setenv(k, cmp.Or(tt.env[k], "0"))
+			}
+
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+				_, _ = io.WriteString(w, `{"coursesForUser":[{"courseId":111,"courseName":"Loop","courseType":{"typeKey":"running"},"distanceInMeters":8200,"createdDate":"2026-09-01T10:00:00.0"}]}`)
+			}))
+			defer server.Close()
+
+			store := newTestSecretsStore(t)
+			overrideLoadSecrets(t, store)
+			overrideNewClient(t, server)
+			storeTestTokens(t, store, "test@example.com", testTokens())
+
+			args := append([]string{"--account", "test@example.com", "--units", "metric"}, tt.args...)
+			var code int
+			stdout, stderr := captureOutput(t, func() {
+				code = Execute(append(args, "courses", "list"), "1.0.0", "abc123", "2024-01-01")
+			})
+			if code != 0 {
+				t.Fatalf("exit code = %d, want 0; stderr = %q", code, stderr)
+			}
+			if !strings.HasPrefix(stdout, tt.want) {
+				t.Fatalf("stdout = %q, want it to start with %q", stdout, tt.want)
 			}
 		})
 	}
