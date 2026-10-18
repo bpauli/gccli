@@ -5,15 +5,14 @@ import (
 	"strconv"
 )
 
-// GearCmd groups gear subcommands.
-type GearCmd struct {
-	List       GearListCmd       `cmd:"" default:"withargs" help:"List all gear."`
-	Stats      GearStatsCmd      `cmd:"" help:"Show usage statistics for a gear item."`
-	Activities GearActivitiesCmd `cmd:"" help:"Show activities linked to a gear item."`
-	Defaults   GearDefaultsCmd   `cmd:"" help:"Show default gear per activity type."`
-	Link       GearLinkCmd       `cmd:"" help:"Link gear to an activity."`
-	Unlink     GearUnlinkCmd     `cmd:"" help:"Unlink gear from an activity."`
-}
+var gearGroup = Group{Name: "gear", Help: "Manage gear.", Children: []Node{
+	Custom{Name: "list", Help: "List all gear.", Default: true, Cmd: &GearListCmd{}},
+	Custom{Name: "stats", Help: "Show usage statistics for a gear item.", Cmd: &GearStatsCmd{}},
+	Custom{Name: "activities", Help: "Show activities linked to a gear item.", Cmd: &GearActivitiesCmd{}},
+	Custom{Name: "defaults", Help: "Show default gear per activity type.", Cmd: &GearDefaultsCmd{}},
+	Custom{Name: "link", Help: "Link gear to an activity.", Cmd: &GearLinkCmd{}},
+	Custom{Name: "unlink", Help: "Unlink gear from an activity.", Cmd: &GearUnlinkCmd{}},
+}}
 
 // GearListCmd lists all gear for the authenticated user.
 type GearListCmd struct{}

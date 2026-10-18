@@ -4,11 +4,10 @@ import (
 	"fmt"
 )
 
-// ProfileCmd groups profile subcommands.
-type ProfileCmd struct {
-	View     ProfileViewCmd     `cmd:"" default:"withargs" help:"Show user profile."`
-	Settings ProfileSettingsCmd `cmd:"" help:"Show user settings."`
-}
+var profileGroup = Group{Name: "profile", Help: "View user profile.", Children: []Node{
+	Custom{Name: "view", Help: "Show user profile.", Default: true, Cmd: &ProfileViewCmd{}},
+	Custom{Name: "settings", Help: "Show user settings.", Cmd: &ProfileSettingsCmd{}},
+}}
 
 // ProfileViewCmd shows the user profile.
 type ProfileViewCmd struct{}

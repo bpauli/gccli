@@ -4,12 +4,11 @@ import (
 	"fmt"
 )
 
-// NutritionCmd groups nutrition subcommands.
-type NutritionCmd struct {
-	FoodLog  NutritionFoodLogCmd  `cmd:"" default:"withargs" help:"Show daily food log for a date."`
-	Meals    NutritionMealsCmd    `cmd:"" help:"Show meal summaries for a date."`
-	Settings NutritionSettingsCmd `cmd:"" help:"Show nutrition settings for a date."`
-}
+var nutritionGroup = Group{Name: "nutrition", Help: "View nutrition data.", Children: []Node{
+	Custom{Name: "food-log", Help: "Show daily food log for a date.", Default: true, Cmd: &NutritionFoodLogCmd{}},
+	Custom{Name: "meals", Help: "Show meal summaries for a date.", Cmd: &NutritionMealsCmd{}},
+	Custom{Name: "settings", Help: "Show nutrition settings for a date.", Cmd: &NutritionSettingsCmd{}},
+}}
 
 // NutritionFoodLogCmd shows nutrition food log data for a date.
 type NutritionFoodLogCmd struct {

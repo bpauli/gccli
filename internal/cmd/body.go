@@ -7,18 +7,17 @@ import (
 	"github.com/bpauli/gccli/internal/fit"
 )
 
-// BodyCmd groups body composition subcommands.
-type BodyCmd struct {
-	Composition    BodyCompositionCmd    `cmd:"" default:"withargs" help:"Show body composition data."`
-	WeighIns       BodyWeighInsCmd       `cmd:"" name:"weigh-ins" help:"Show weigh-in data for a date range."`
-	DailyWeighIns  BodyDailyWeighInsCmd  `cmd:"" name:"daily-weigh-ins" help:"Show weigh-in data for a single day."`
-	AddWeight      BodyAddWeightCmd      `cmd:"" name:"add-weight" help:"Add a weigh-in entry."`
-	AddComposition BodyAddCompositionCmd `cmd:"" name:"add-composition" help:"Add body composition data (weight, body fat, muscle mass, etc.) via FIT upload."`
-	DeleteWeight   BodyDeleteWeightCmd   `cmd:"" name:"delete-weight" help:"Delete a weigh-in entry."`
-	BloodPressure  BodyBloodPressureCmd  `cmd:"" name:"blood-pressure" help:"Show blood pressure data."`
-	AddBP          BodyAddBPCmd          `cmd:"" name:"add-blood-pressure" help:"Add a blood pressure measurement."`
-	DeleteBP       BodyDeleteBPCmd       `cmd:"" name:"delete-blood-pressure" help:"Delete a blood pressure entry."`
-}
+var bodyGroup = Group{Name: "body", Help: "Body composition and weight data.", Children: []Node{
+	Custom{Name: "composition", Help: "Show body composition data.", Default: true, Cmd: &BodyCompositionCmd{}},
+	Custom{Name: "weigh-ins", Help: "Show weigh-in data for a date range.", Cmd: &BodyWeighInsCmd{}},
+	Custom{Name: "daily-weigh-ins", Help: "Show weigh-in data for a single day.", Cmd: &BodyDailyWeighInsCmd{}},
+	Custom{Name: "add-weight", Help: "Add a weigh-in entry.", Cmd: &BodyAddWeightCmd{}},
+	Custom{Name: "add-composition", Help: "Add body composition data (weight, body fat, muscle mass, etc.) via FIT upload.", Cmd: &BodyAddCompositionCmd{}},
+	Custom{Name: "delete-weight", Help: "Delete a weigh-in entry.", Cmd: &BodyDeleteWeightCmd{}},
+	Custom{Name: "blood-pressure", Help: "Show blood pressure data.", Cmd: &BodyBloodPressureCmd{}},
+	Custom{Name: "add-blood-pressure", Help: "Add a blood pressure measurement.", Cmd: &BodyAddBPCmd{}},
+	Custom{Name: "delete-blood-pressure", Help: "Delete a blood pressure entry.", Cmd: &BodyDeleteBPCmd{}},
+}}
 
 // BodyCompositionCmd shows body composition data for a date or range.
 type BodyCompositionCmd struct {

@@ -13,10 +13,9 @@ import (
 // fetchExerciseCatalogFn is overridable for tests.
 var fetchExerciseCatalogFn = garminapi.FetchExerciseCatalog
 
-// ExercisesCmd groups exercise catalog subcommands.
-type ExercisesCmd struct {
-	List ExercisesListCmd `cmd:"" default:"withargs" help:"List available exercise categories and exercises."`
-}
+var exercisesGroup = Group{Name: "exercises", Help: "Browse the exercise catalog.", Children: []Node{
+	Custom{Name: "list", Help: "List available exercise categories and exercises.", Default: true, Cmd: &ExercisesListCmd{}},
+}}
 
 // ExercisesListCmd lists the Garmin exercise catalog.
 type ExercisesListCmd struct {

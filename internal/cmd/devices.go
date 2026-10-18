@@ -4,15 +4,14 @@ import (
 	"fmt"
 )
 
-// DevicesCmd groups device subcommands.
-type DevicesCmd struct {
-	List     DevicesListCmd    `cmd:"" default:"withargs" help:"List registered devices."`
-	Settings DeviceSettingsCmd `cmd:"" help:"Show settings for a device."`
-	Primary  DevicePrimaryCmd  `cmd:"" help:"Show primary training device."`
-	Solar    DeviceSolarCmd    `cmd:"" help:"Show solar charging data for a device."`
-	Alarms   DeviceAlarmsCmd   `cmd:"" help:"Show alarms from all devices."`
-	LastUsed DeviceLastUsedCmd `cmd:"" name:"last-used" help:"Show last used device."`
-}
+var devicesGroup = Group{Name: "devices", Help: "Manage devices.", Children: []Node{
+	Custom{Name: "list", Help: "List registered devices.", Default: true, Cmd: &DevicesListCmd{}},
+	Custom{Name: "settings", Help: "Show settings for a device.", Cmd: &DeviceSettingsCmd{}},
+	Custom{Name: "primary", Help: "Show primary training device.", Cmd: &DevicePrimaryCmd{}},
+	Custom{Name: "solar", Help: "Show solar charging data for a device.", Cmd: &DeviceSolarCmd{}},
+	Custom{Name: "alarms", Help: "Show alarms from all devices.", Cmd: &DeviceAlarmsCmd{}},
+	Custom{Name: "last-used", Help: "Show last used device.", Cmd: &DeviceLastUsedCmd{}},
+}}
 
 // DevicesListCmd lists registered devices.
 type DevicesListCmd struct{}

@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bytes"
 	"cmp"
 	"fmt"
 	"io"
@@ -353,5 +354,22 @@ func TestExecute_JSONModePrintsErrorObject(t *testing.T) {
 				t.Fatalf("stderr = %s\nwant     %s", got, tt.want)
 			}
 		})
+	}
+}
+
+func TestExecuteRejectsBadTable(t *testing.T) {
+	saved := commands
+	t.Cleanup(func() { commands = saved })
+	commands = []Node{Leaf{Name: "nope", Help: "Nope.", Endpoint: "nope.nope", Output: JSON{}}}
+	var stdout, stderr bytes.Buffer
+	code := execute([]string{"--help"}, "test", "none", "never", &stdout, &stderr)
+	if code != 1 {
+		t.Errorf("exit %d, want 1", code)
+	}
+	if want := "gccli: command table: nope: endpoint \"nope.nope\" is not in the endpoint table\n"; stderr.String() != want {
+		t.Errorf("stderr:\n%s\nwant:\n%s", stderr.String(), want)
+	}
+	if stdout.Len() != 0 {
+		t.Errorf("stdout is not empty:\n%s", stdout.String())
 	}
 }

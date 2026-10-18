@@ -16,7 +16,7 @@ import (
 
 func newTestParser(t *testing.T) *kong.Kong {
 	t.Helper()
-	var cli CLI
+	cli := CLI{Plugins: attach(commands)}
 	parser, err := kong.New(&cli,
 		kong.Name("gccli"),
 		kong.Description("Garmin Connect CLI"),
@@ -32,14 +32,13 @@ func TestCollectCommands(t *testing.T) {
 	parser := newTestParser(t)
 	cmds := collectCommands(parser.Model.Node, nil)
 
-	// Should have top-level commands.
 	found := map[string]bool{}
 	for _, cmd := range cmds {
 		found[cmd.Path[0]] = true
 	}
 
-	for _, want := range []string{"auth", "activities", "activity", "workouts", "health", "body", "devices", "gear", "goals", "badges", "challenges", "records", "profile", "hydration", "nutrition", "training", "wellness", "events", "courses", "exercises", "reload", "completion"} {
-		if !found[want] {
+	for _, n := range commands {
+		if want := n.head().Name; !found[want] {
 			t.Errorf("expected command %q in collectCommands output", want)
 		}
 	}

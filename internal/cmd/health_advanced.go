@@ -50,11 +50,10 @@ func (c *HealthHRVCmd) Run(g *Globals) error {
 	return writeHealthJSON(g, data)
 }
 
-// HealthBodyBatteryCmd shows body battery data with optional date range.
-type HealthBodyBatteryCmd struct {
-	View  HealthBodyBatteryViewCmd  `cmd:"" default:"withargs" help:"Show body battery data for a date."`
-	Range HealthBodyBatteryRangeCmd `cmd:"" help:"Show body battery data for a date range."`
-}
+var healthBodyBatteryGroup = Group{Name: "body-battery", Help: "Show body battery data.", Children: []Node{
+	Custom{Name: "view", Help: "Show body battery data for a date.", Default: true, Cmd: &HealthBodyBatteryViewCmd{}},
+	Custom{Name: "range", Help: "Show body battery data for a date range.", Cmd: &HealthBodyBatteryRangeCmd{}},
+}}
 
 // HealthBodyBatteryViewCmd shows body battery data for a single date.
 type HealthBodyBatteryViewCmd struct {
@@ -100,11 +99,10 @@ func (c *HealthBodyBatteryRangeCmd) Run(g *Globals) error {
 	return writeHealthJSON(g, data)
 }
 
-// HealthIntensityMinutesCmd shows intensity minutes data with weekly subcommand.
-type HealthIntensityMinutesCmd struct {
-	View   HealthIntensityMinutesViewCmd   `cmd:"" default:"withargs" help:"Show intensity minutes for a date."`
-	Weekly HealthIntensityMinutesWeeklyCmd `cmd:"" help:"Show weekly intensity minutes for a date range."`
-}
+var healthIntensityMinutesGroup = Group{Name: "intensity-minutes", Help: "Show intensity minutes data.", Children: []Node{
+	Custom{Name: "view", Help: "Show intensity minutes for a date.", Default: true, Cmd: &HealthIntensityMinutesViewCmd{}},
+	Custom{Name: "weekly", Help: "Show weekly intensity minutes for a date range.", Cmd: &HealthIntensityMinutesWeeklyCmd{}},
+}}
 
 // HealthIntensityMinutesViewCmd shows intensity minutes for a single date.
 type HealthIntensityMinutesViewCmd struct {
@@ -280,11 +278,10 @@ func (c *HealthCyclingFTPCmd) Run(g *Globals) error {
 	return writeHealthJSON(g, data)
 }
 
-// HealthRacePredictionsCmd shows race prediction data.
-type HealthRacePredictionsCmd struct {
-	View  HealthRacePredictionsViewCmd  `cmd:"" default:"withargs" help:"Show current race predictions."`
-	Range HealthRacePredictionsRangeCmd `cmd:"" help:"Show race predictions for a date range."`
-}
+var healthRacePredictionsGroup = Group{Name: "race-predictions", Help: "Show race predictions.", Children: []Node{
+	Custom{Name: "view", Help: "Show current race predictions.", Default: true, Cmd: &HealthRacePredictionsViewCmd{}},
+	Custom{Name: "range", Help: "Show race predictions for a date range.", Cmd: &HealthRacePredictionsRangeCmd{}},
+}}
 
 // HealthRacePredictionsViewCmd shows current race predictions.
 type HealthRacePredictionsViewCmd struct {

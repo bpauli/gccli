@@ -27,34 +27,38 @@ type Globals struct {
 	Units   units.Preference
 }
 
-// CLI is the top-level command structure parsed by Kong.
+// CLI is the root Kong struct.
 type CLI struct {
 	RootFlags
 
 	Version kong.VersionFlag `help:"Print version information." name:"version"`
 
-	Auth       AuthCmd       `cmd:"" help:"Manage authentication."`
-	Activities ActivitiesCmd `cmd:"" help:"List and search activities."`
-	Activity   ActivityCmd   `cmd:"" help:"View activity details."`
-	Workouts   WorkoutsCmd   `cmd:"" help:"Manage workouts."`
-	Health     HealthCmd     `cmd:"" help:"View health data."`
-	Body       BodyCmd       `cmd:"" help:"Body composition and weight data."`
-	Devices    DevicesCmd    `cmd:"" help:"Manage devices."`
-	Gear       GearCmd       `cmd:"" help:"Manage gear."`
-	Goals      GoalsCmd      `cmd:"" help:"View goals."`
-	Badges     BadgesCmd     `cmd:"" help:"View badges."`
-	Courses    CoursesCmd    `cmd:"" help:"Manage courses."`
-	Challenges ChallengesCmd `cmd:"" help:"View challenges."`
-	Records    RecordsCmd    `cmd:"" help:"View personal records."`
-	Profile    ProfileCmd    `cmd:"" help:"View user profile."`
-	Hydration  HydrationCmd  `cmd:"" help:"Track hydration."`
-	Nutrition  NutritionCmd  `cmd:"" help:"View nutrition data."`
-	Training   TrainingCmd   `cmd:"" help:"View training plans."`
-	Events     EventsCmd     `cmd:"" help:"Manage calendar events."`
-	Wellness   WellnessCmd   `cmd:"" help:"View wellness data."`
-	Exercises  ExercisesCmd  `cmd:"" help:"Browse the exercise catalog."`
-	Reload     ReloadCmd     `cmd:"" help:"Request data reload for a date."`
-	Completion CompletionCmd `cmd:"" help:"Generate shell completion script."`
+	kong.Plugins
+}
+
+var commands = []Node{
+	authGroup,
+	activitiesGroup,
+	activityGroup,
+	workoutsGroup,
+	healthGroup,
+	bodyGroup,
+	devicesGroup,
+	gearGroup,
+	goalsGroup,
+	badgesGroup,
+	coursesGroup,
+	challengesGroup,
+	Custom{Name: "records", Help: "View personal records.", Cmd: &RecordsCmd{}},
+	profileGroup,
+	hydrationGroup,
+	nutritionGroup,
+	trainingGroup,
+	eventsGroup,
+	wellnessGroup,
+	exercisesGroup,
+	Custom{Name: "reload", Help: "Request data reload for a date.", Cmd: &ReloadCmd{}},
+	Custom{Name: "completion", Help: "Generate shell completion script.", Cmd: &CompletionCmd{}},
 }
 
 // Execute runs the CLI with the given arguments and version info.
@@ -66,8 +70,14 @@ func Execute(args []string, version, commit, date string) int {
 func execute(args []string, version, commit, date string, stdout, stderr io.Writer) int {
 	versionStr := fmt.Sprintf("gccli %s (%s) built %s", version, commit, date)
 
-	var cli CLI
+	if errs := checkTable(commands); len(errs) > 0 {
+		for _, err := range errs {
+			_, _ = fmt.Fprintf(stderr, "gccli: command table: %s\n", err)
+		}
+		return 1
+	}
 
+	cli := CLI{Plugins: attach(commands)}
 	parser, err := kong.New(&cli,
 		kong.Name("gccli"),
 		kong.Description("Garmin Connect CLI"),

@@ -14,32 +14,31 @@ import (
 // nowFn returns the current time. Variable for testing.
 var nowFn = time.Now
 
-// HealthCmd groups health data subcommands.
-type HealthCmd struct {
-	Summary           HealthSummaryCmd           `cmd:"" default:"withargs" help:"Show daily health summary."`
-	Steps             HealthStepsCmd             `cmd:"" help:"Show step data."`
-	HR                HealthHRCmd                `cmd:"" name:"hr" help:"Show heart rate data."`
-	RHR               HealthRHRCmd               `cmd:"" name:"rhr" help:"Show resting heart rate data."`
-	Floors            HealthFloorsCmd            `cmd:"" help:"Show floors climbed data."`
-	Sleep             HealthSleepCmd             `cmd:"" help:"Show sleep data."`
-	Stress            HealthStressCmd            `cmd:"" help:"Show stress data."`
-	Respiration       HealthRespirationCmd       `cmd:"" help:"Show respiration data."`
-	SPO2              HealthSPO2Cmd              `cmd:"" name:"spo2" help:"Show SpO2 (blood oxygen) data."`
-	HRV               HealthHRVCmd               `cmd:"" name:"hrv" help:"Show heart rate variability data."`
-	BodyBattery       HealthBodyBatteryCmd       `cmd:"" name:"body-battery" help:"Show body battery data."`
-	IntensityMinutes  HealthIntensityMinutesCmd  `cmd:"" name:"intensity-minutes" help:"Show intensity minutes data."`
-	TrainingReadiness HealthTrainingReadinessCmd `cmd:"" name:"training-readiness" help:"Show training readiness data."`
-	TrainingStatus    HealthTrainingStatusCmd    `cmd:"" name:"training-status" help:"Show training status data."`
-	FitnessAge        HealthFitnessAgeCmd        `cmd:"" name:"fitness-age" help:"Show fitness age data."`
-	MaxMetrics        HealthMaxMetricsCmd        `cmd:"" name:"max-metrics" help:"Show VO2max and max metrics data."`
-	LactateThreshold  HealthLactateThresholdCmd  `cmd:"" name:"lactate-threshold" help:"Show latest lactate threshold."`
-	CyclingFTP        HealthCyclingFTPCmd        `cmd:"" name:"cycling-ftp" help:"Show latest cycling FTP."`
-	RacePredictions   HealthRacePredictionsCmd   `cmd:"" name:"race-predictions" help:"Show race predictions."`
-	EnduranceScore    HealthEnduranceScoreCmd    `cmd:"" name:"endurance-score" help:"Show endurance score data."`
-	HillScore         HealthHillScoreCmd         `cmd:"" name:"hill-score" help:"Show hill score data."`
-	Events            HealthEventsCmd            `cmd:"" help:"Show daily wellness events."`
-	Lifestyle         HealthLifestyleCmd         `cmd:"" help:"Show lifestyle logging data."`
-}
+var healthGroup = Group{Name: "health", Help: "View health data.", Children: []Node{
+	Custom{Name: "summary", Help: "Show daily health summary.", Default: true, Cmd: &HealthSummaryCmd{}},
+	healthStepsGroup,
+	Custom{Name: "hr", Help: "Show heart rate data.", Cmd: &HealthHRCmd{}},
+	Custom{Name: "rhr", Help: "Show resting heart rate data.", Cmd: &HealthRHRCmd{}},
+	Custom{Name: "floors", Help: "Show floors climbed data.", Cmd: &HealthFloorsCmd{}},
+	Custom{Name: "sleep", Help: "Show sleep data.", Cmd: &HealthSleepCmd{}},
+	healthStressGroup,
+	Custom{Name: "respiration", Help: "Show respiration data.", Cmd: &HealthRespirationCmd{}},
+	Custom{Name: "spo2", Help: "Show SpO2 (blood oxygen) data.", Cmd: &HealthSPO2Cmd{}},
+	Custom{Name: "hrv", Help: "Show heart rate variability data.", Cmd: &HealthHRVCmd{}},
+	healthBodyBatteryGroup,
+	healthIntensityMinutesGroup,
+	Custom{Name: "training-readiness", Help: "Show training readiness data.", Cmd: &HealthTrainingReadinessCmd{}},
+	Custom{Name: "training-status", Help: "Show training status data.", Cmd: &HealthTrainingStatusCmd{}},
+	Custom{Name: "fitness-age", Help: "Show fitness age data.", Cmd: &HealthFitnessAgeCmd{}},
+	Custom{Name: "max-metrics", Help: "Show VO2max and max metrics data.", Cmd: &HealthMaxMetricsCmd{}},
+	Custom{Name: "lactate-threshold", Help: "Show latest lactate threshold.", Cmd: &HealthLactateThresholdCmd{}},
+	Custom{Name: "cycling-ftp", Help: "Show latest cycling FTP.", Cmd: &HealthCyclingFTPCmd{}},
+	healthRacePredictionsGroup,
+	Custom{Name: "endurance-score", Help: "Show endurance score data.", Cmd: &HealthEnduranceScoreCmd{}},
+	Custom{Name: "hill-score", Help: "Show hill score data.", Cmd: &HealthHillScoreCmd{}},
+	Custom{Name: "events", Help: "Show daily wellness events.", Cmd: &HealthEventsCmd{}},
+	Custom{Name: "lifestyle", Help: "Show lifestyle logging data.", Cmd: &HealthLifestyleCmd{}},
+}}
 
 // HealthSummaryCmd shows the daily health summary.
 type HealthSummaryCmd struct {
@@ -69,12 +68,11 @@ func (c *HealthSummaryCmd) Run(g *Globals) error {
 	return writeHealthJSON(g, data)
 }
 
-// HealthStepsCmd shows step data with daily and weekly subcommands.
-type HealthStepsCmd struct {
-	View   HealthStepsViewCmd   `cmd:"" default:"withargs" help:"Show step chart data for a date."`
-	Daily  HealthStepsDailyCmd  `cmd:"" help:"Show daily step totals for a date range."`
-	Weekly HealthStepsWeeklyCmd `cmd:"" help:"Show weekly step totals."`
-}
+var healthStepsGroup = Group{Name: "steps", Help: "Show step data.", Children: []Node{
+	Custom{Name: "view", Help: "Show step chart data for a date.", Default: true, Cmd: &HealthStepsViewCmd{}},
+	Custom{Name: "daily", Help: "Show daily step totals for a date range.", Cmd: &HealthStepsDailyCmd{}},
+	Custom{Name: "weekly", Help: "Show weekly step totals.", Cmd: &HealthStepsWeeklyCmd{}},
+}}
 
 // HealthStepsViewCmd shows step chart data for a date.
 type HealthStepsViewCmd struct {
@@ -257,11 +255,10 @@ func (c *HealthSleepCmd) Run(g *Globals) error {
 	return writeHealthJSON(g, data)
 }
 
-// HealthStressCmd shows stress data with a weekly subcommand.
-type HealthStressCmd struct {
-	View   HealthStressViewCmd   `cmd:"" default:"withargs" help:"Show stress data for a date."`
-	Weekly HealthStressWeeklyCmd `cmd:"" help:"Show weekly stress data."`
-}
+var healthStressGroup = Group{Name: "stress", Help: "Show stress data.", Children: []Node{
+	Custom{Name: "view", Help: "Show stress data for a date.", Default: true, Cmd: &HealthStressViewCmd{}},
+	Custom{Name: "weekly", Help: "Show weekly stress data.", Cmd: &HealthStressWeeklyCmd{}},
+}}
 
 // HealthStressViewCmd shows stress data for a date.
 type HealthStressViewCmd struct {

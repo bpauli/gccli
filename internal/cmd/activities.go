@@ -11,13 +11,12 @@ import (
 	"github.com/bpauli/gccli/internal/units"
 )
 
-// ActivitiesCmd groups activity listing and search subcommands.
-type ActivitiesCmd struct {
-	List   ActivitiesListCmd   `cmd:"" default:"withargs" help:"List recent activities."`
-	Count  ActivitiesCountCmd  `cmd:"" help:"Show total activity count."`
-	Search ActivitiesSearchCmd `cmd:"" help:"Search activities by date range."`
-	Types  ActivitiesTypesCmd  `cmd:"" help:"List all activity types supported by Garmin."`
-}
+var activitiesGroup = Group{Name: "activities", Help: "List and search activities.", Children: []Node{
+	Custom{Name: "list", Help: "List recent activities.", Default: true, Cmd: &ActivitiesListCmd{}},
+	Custom{Name: "count", Help: "Show total activity count.", Cmd: &ActivitiesCountCmd{}},
+	Custom{Name: "search", Help: "Search activities by date range.", Cmd: &ActivitiesSearchCmd{}},
+	Custom{Name: "types", Help: "List all activity types supported by Garmin.", Cmd: &ActivitiesTypesCmd{}},
+}}
 
 // ActivitiesListCmd lists recent activities.
 type ActivitiesListCmd struct {
