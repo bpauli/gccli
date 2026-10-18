@@ -4,11 +4,10 @@ import (
 	"fmt"
 )
 
-// HydrationCmd groups hydration subcommands.
-type HydrationCmd struct {
-	View HydrationViewCmd `cmd:"" default:"withargs" help:"Show hydration data for a date."`
-	Add  HydrationAddCmd  `cmd:"" help:"Add a hydration log entry."`
-}
+var hydrationGroup = Group{Name: "hydration", Help: "Track hydration.", Children: []Node{
+	Custom{Name: "view", Help: "Show hydration data for a date.", Default: true, Cmd: &HydrationViewCmd{}},
+	Custom{Name: "add", Help: "Add a hydration log entry.", Cmd: &HydrationAddCmd{}},
+}}
 
 // HydrationViewCmd shows hydration data for a date.
 type HydrationViewCmd struct {

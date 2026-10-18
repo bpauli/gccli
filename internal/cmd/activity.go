@@ -10,25 +10,24 @@ import (
 	"github.com/bpauli/gccli/internal/units"
 )
 
-// ActivityCmd groups activity detail subcommands.
-type ActivityCmd struct {
-	Summary        ActivitySummaryCmd        `cmd:"" default:"withargs" help:"Show activity summary."`
-	Details        ActivityDetailsCmd        `cmd:"" help:"Show full activity details."`
-	Splits         ActivitySplitsCmd         `cmd:"" help:"Show activity splits."`
-	TypedSplits    ActivityTypedSplitsCmd    `cmd:"" name:"typed-splits" help:"Show typed splits."`
-	SplitSummaries ActivitySplitSummariesCmd `cmd:"" name:"split-summaries" help:"Show split summaries."`
-	Weather        ActivityWeatherCmd        `cmd:"" help:"Show weather conditions."`
-	HRZones        ActivityHRZonesCmd        `cmd:"" name:"hr-zones" help:"Show heart rate time in zones."`
-	PowerZones     ActivityPowerZonesCmd     `cmd:"" name:"power-zones" help:"Show power time in zones."`
-	ExerciseSets   ActivityExerciseSetsGroup `cmd:"" name:"exercise-sets" help:"Manage exercise sets."`
-	Gear           ActivityGearCmd           `cmd:"" help:"Show linked gear."`
-	Download       ActivityDownloadCmd       `cmd:"" help:"Download activity file."`
-	Upload         ActivityUploadCmd         `cmd:"" help:"Upload an activity file (FIT/GPX/TCX)."`
-	Create         ActivityCreateCmd         `cmd:"" help:"Create a manual activity."`
-	Rename         ActivityRenameCmd         `cmd:"" help:"Rename an activity."`
-	Retype         ActivityRetypeCmd         `cmd:"" help:"Change activity type."`
-	Delete         ActivityDeleteCmd         `cmd:"" help:"Delete an activity."`
-}
+var activityGroup = Group{Name: "activity", Help: "View activity details.", Children: []Node{
+	Custom{Name: "summary", Help: "Show activity summary.", Default: true, Cmd: &ActivitySummaryCmd{}},
+	Custom{Name: "details", Help: "Show full activity details.", Cmd: &ActivityDetailsCmd{}},
+	Custom{Name: "splits", Help: "Show activity splits.", Cmd: &ActivitySplitsCmd{}},
+	Custom{Name: "typed-splits", Help: "Show typed splits.", Cmd: &ActivityTypedSplitsCmd{}},
+	Custom{Name: "split-summaries", Help: "Show split summaries.", Cmd: &ActivitySplitSummariesCmd{}},
+	Custom{Name: "weather", Help: "Show weather conditions.", Cmd: &ActivityWeatherCmd{}},
+	Custom{Name: "hr-zones", Help: "Show heart rate time in zones.", Cmd: &ActivityHRZonesCmd{}},
+	Custom{Name: "power-zones", Help: "Show power time in zones.", Cmd: &ActivityPowerZonesCmd{}},
+	activityExerciseSetsGroup,
+	Custom{Name: "gear", Help: "Show linked gear.", Cmd: &ActivityGearCmd{}},
+	Custom{Name: "download", Help: "Download activity file.", Cmd: &ActivityDownloadCmd{}},
+	Custom{Name: "upload", Help: "Upload an activity file (FIT/GPX/TCX).", Cmd: &ActivityUploadCmd{}},
+	Custom{Name: "create", Help: "Create a manual activity.", Cmd: &ActivityCreateCmd{}},
+	Custom{Name: "rename", Help: "Rename an activity.", Cmd: &ActivityRenameCmd{}},
+	Custom{Name: "retype", Help: "Change activity type.", Cmd: &ActivityRetypeCmd{}},
+	Custom{Name: "delete", Help: "Delete an activity.", Cmd: &ActivityDeleteCmd{}},
+}}
 
 // ActivitySummaryCmd shows an activity summary.
 type ActivitySummaryCmd struct {
@@ -251,11 +250,10 @@ func (c *ActivityPowerZonesCmd) Run(g *Globals) error {
 	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
 }
 
-// ActivityExerciseSetsGroup groups exercise-sets subcommands.
-type ActivityExerciseSetsGroup struct {
-	Show ActivityExerciseSetsShowCmd `cmd:"" default:"withargs" help:"Show exercise sets."`
-	Set  ActivityExerciseSetsSetCmd  `cmd:"" help:"Set exercise sets for a strength training activity."`
-}
+var activityExerciseSetsGroup = Group{Name: "exercise-sets", Help: "Manage exercise sets.", Children: []Node{
+	Custom{Name: "show", Help: "Show exercise sets.", Default: true, Cmd: &ActivityExerciseSetsShowCmd{}},
+	Custom{Name: "set", Help: "Set exercise sets for a strength training activity.", Cmd: &ActivityExerciseSetsSetCmd{}},
+}}
 
 // ActivityExerciseSetsShowCmd shows exercise set data for strength training activities.
 type ActivityExerciseSetsShowCmd struct {

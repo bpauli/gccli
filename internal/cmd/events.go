@@ -9,12 +9,11 @@ import (
 	"github.com/bpauli/gccli/internal/payload"
 )
 
-// EventsCmd groups event subcommands.
-type EventsCmd struct {
-	List   EventsListCmd   `cmd:"" default:"withargs" help:"List calendar events."`
-	Add    EventsAddCmd    `cmd:"" help:"Add a calendar event."`
-	Delete EventsDeleteCmd `cmd:"" help:"Delete a calendar event."`
-}
+var eventsGroup = Group{Name: "events", Help: "Manage calendar events.", Children: []Node{
+	Custom{Name: "list", Help: "List calendar events.", Default: true, Cmd: &EventsListCmd{}},
+	Custom{Name: "add", Help: "Add a calendar event.", Cmd: &EventsAddCmd{}},
+	Custom{Name: "delete", Help: "Delete a calendar event.", Cmd: &EventsDeleteCmd{}},
+}}
 
 // EventsListCmd lists calendar events from a start date.
 type EventsListCmd struct {

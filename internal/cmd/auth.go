@@ -23,15 +23,14 @@ func defaultLoadSecretsStore() (*secrets.Store, error) {
 	return secrets.Open(cfg.KeyringBackendValue())
 }
 
-// AuthCmd groups authentication subcommands.
-type AuthCmd struct {
-	Login  AuthLoginCmd  `cmd:"" help:"Log in to Garmin Connect."`
-	Status AuthStatusCmd `cmd:"" help:"Show authentication status."`
-	Remove AuthRemoveCmd `cmd:"" help:"Remove stored credentials."`
-	Token  AuthTokenCmd  `cmd:"" help:"Print current access token, refreshing it first when expired."`
-	Export AuthExportCmd `cmd:"" help:"Export credentials for transfer to another machine."`
-	Import AuthImportCmd `cmd:"" help:"Import credentials from another machine."`
-}
+var authGroup = Group{Name: "auth", Help: "Manage authentication.", Children: []Node{
+	Custom{Name: "login", Help: "Log in to Garmin Connect.", Cmd: &AuthLoginCmd{}},
+	Custom{Name: "status", Help: "Show authentication status.", Cmd: &AuthStatusCmd{}},
+	Custom{Name: "remove", Help: "Remove stored credentials.", Cmd: &AuthRemoveCmd{}},
+	Custom{Name: "token", Help: "Print current access token, refreshing it first when expired.", Cmd: &AuthTokenCmd{}},
+	Custom{Name: "export", Help: "Export credentials for transfer to another machine.", Cmd: &AuthExportCmd{}},
+	Custom{Name: "import", Help: "Import credentials from another machine.", Cmd: &AuthImportCmd{}},
+}}
 
 // AuthStatusCmd shows the current authentication state.
 type AuthStatusCmd struct{}

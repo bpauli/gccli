@@ -12,16 +12,15 @@ import (
 	"github.com/bpauli/gccli/internal/units"
 )
 
-// CoursesCmd groups course subcommands.
-type CoursesCmd struct {
-	List      CoursesListCmd      `cmd:"" default:"withargs" help:"List courses."`
-	Favorites CoursesFavoritesCmd `cmd:"" help:"List favorite courses."`
-	Detail    CourseDetailCmd     `cmd:"" help:"View course details."`
-	Download  CourseDownloadCmd   `cmd:"" help:"Download course file."`
-	Import    CourseImportCmd     `cmd:"" help:"Import a GPX file as a new course."`
-	Send      CourseSendCmd       `cmd:"" help:"Send a course to a device."`
-	Delete    CourseDeleteCmd     `cmd:"" help:"Delete a course."`
-}
+var coursesGroup = Group{Name: "courses", Help: "Manage courses.", Children: []Node{
+	Custom{Name: "list", Help: "List courses.", Default: true, Cmd: &CoursesListCmd{}},
+	Custom{Name: "favorites", Help: "List favorite courses.", Cmd: &CoursesFavoritesCmd{}},
+	Custom{Name: "detail", Help: "View course details.", Cmd: &CourseDetailCmd{}},
+	Custom{Name: "download", Help: "Download course file.", Cmd: &CourseDownloadCmd{}},
+	Custom{Name: "import", Help: "Import a GPX file as a new course.", Cmd: &CourseImportCmd{}},
+	Custom{Name: "send", Help: "Send a course to a device.", Cmd: &CourseSendCmd{}},
+	Custom{Name: "delete", Help: "Delete a course.", Cmd: &CourseDeleteCmd{}},
+}}
 
 // CoursesListCmd lists the user's courses.
 type CoursesListCmd struct{}

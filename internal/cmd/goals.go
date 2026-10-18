@@ -4,10 +4,9 @@ import (
 	"fmt"
 )
 
-// GoalsCmd groups goal subcommands.
-type GoalsCmd struct {
-	List GoalsListCmd `cmd:"" default:"withargs" help:"List goals."`
-}
+var goalsGroup = Group{Name: "goals", Help: "View goals.", Children: []Node{
+	Custom{Name: "list", Help: "List goals.", Default: true, Cmd: &GoalsListCmd{}},
+}}
 
 // GoalsListCmd lists user goals.
 type GoalsListCmd struct {
@@ -28,12 +27,11 @@ func (c *GoalsListCmd) Run(g *Globals) error {
 	return writeHealthJSON(g, data)
 }
 
-// BadgesCmd groups badge subcommands.
-type BadgesCmd struct {
-	Earned     BadgesEarnedCmd     `cmd:"" default:"withargs" help:"Show earned badges."`
-	Available  BadgesAvailableCmd  `cmd:"" help:"Show available badges."`
-	InProgress BadgesInProgressCmd `cmd:"" name:"in-progress" help:"Show badges in progress."`
-}
+var badgesGroup = Group{Name: "badges", Help: "View badges.", Children: []Node{
+	Custom{Name: "earned", Help: "Show earned badges.", Default: true, Cmd: &BadgesEarnedCmd{}},
+	Custom{Name: "available", Help: "Show available badges.", Cmd: &BadgesAvailableCmd{}},
+	Custom{Name: "in-progress", Help: "Show badges in progress.", Cmd: &BadgesInProgressCmd{}},
+}}
 
 // BadgesEarnedCmd shows earned badges.
 type BadgesEarnedCmd struct{}
@@ -86,11 +84,10 @@ func (c *BadgesInProgressCmd) Run(g *Globals) error {
 	return writeHealthJSON(g, data)
 }
 
-// ChallengesCmd groups challenge subcommands.
-type ChallengesCmd struct {
-	List  ChallengesListCmd  `cmd:"" default:"withargs" help:"Show joined challenges."`
-	Badge ChallengesBadgeCmd `cmd:"" help:"Show badge challenges."`
-}
+var challengesGroup = Group{Name: "challenges", Help: "View challenges.", Children: []Node{
+	Custom{Name: "list", Help: "Show joined challenges.", Default: true, Cmd: &ChallengesListCmd{}},
+	Custom{Name: "badge", Help: "Show badge challenges.", Cmd: &ChallengesBadgeCmd{}},
+}}
 
 // ChallengesListCmd shows joined challenges.
 type ChallengesListCmd struct{}

@@ -92,7 +92,7 @@ The command reference in `README.md`, `skills/gccli/SKILL.md` and `docs/index.ht
 
 ## Shell Completion
 
-Shell completions are **auto-generated** from the Kong parser tree (`internal/cmd/completion*.go`). When you add a new command or subcommand to the `CLI` struct in `root.go`, it is automatically included in all completion scripts (bash, zsh, fish, powershell). However, you MUST verify that the new command appears in `TestCollectCommands` in `completion_test.go`. Update the expected top-level commands list if you add a new top-level command group. The same tree also generates the command reference in the docs (see Documentation Updates).
+Shell completions are **auto-generated** from the Kong parser tree (`internal/cmd/completion*.go`). The tree is the `commands` value in `root.go`: a top-level command is a `Group` or `Custom` node in it, and a subcommand is a child of its area's `Group` literal (for example `healthGroup` in `health.go`). A node in the tree is in every completion script (bash, zsh, fish, powershell). The same tree also generates the command reference in the docs (see Documentation Updates).
 
 ## Releases
 

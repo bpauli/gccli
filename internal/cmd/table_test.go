@@ -105,7 +105,9 @@ type handCLI struct {
 
 	Version kong.VersionFlag `help:"Print version information." name:"version"`
 
-	Goals  GoalsCmd `cmd:"" help:"View goals."`
+	Goals struct {
+		List GoalsListCmd `cmd:"" default:"withargs" help:"List goals."`
+	} `cmd:"" help:"View goals."`
 	Health struct {
 		Sleep HealthSleepCmd `cmd:"" help:"Show sleep data."`
 	} `cmd:"" help:"View health data."`

@@ -11,17 +11,16 @@ import (
 	"github.com/bpauli/gccli/internal/outfmt"
 )
 
-// WorkoutsCmd groups workout subcommands.
-type WorkoutsCmd struct {
-	List     WorkoutsListCmd    `cmd:"" default:"withargs" help:"List workouts."`
-	Detail   WorkoutDetailCmd   `cmd:"" help:"View workout details."`
-	Download WorkoutDownloadCmd `cmd:"" help:"Download workout as FIT file."`
-	Upload   WorkoutUploadCmd   `cmd:"" help:"Upload workout from JSON file."`
-	Update   WorkoutUpdateCmd   `cmd:"" help:"Update an existing workout from a JSON file."`
-	Create   WorkoutCreateCmd   `cmd:"" help:"Create a workout with sport type and optional targets."`
-	Schedule WorkoutScheduleCmd `cmd:"" help:"Manage scheduled workouts."`
-	Delete   WorkoutDeleteCmd   `cmd:"" help:"Delete a workout."`
-}
+var workoutsGroup = Group{Name: "workouts", Help: "Manage workouts.", Children: []Node{
+	Custom{Name: "list", Help: "List workouts.", Default: true, Cmd: &WorkoutsListCmd{}},
+	Custom{Name: "detail", Help: "View workout details.", Cmd: &WorkoutDetailCmd{}},
+	Custom{Name: "download", Help: "Download workout as FIT file.", Cmd: &WorkoutDownloadCmd{}},
+	Custom{Name: "upload", Help: "Upload workout from JSON file.", Cmd: &WorkoutUploadCmd{}},
+	Custom{Name: "update", Help: "Update an existing workout from a JSON file.", Cmd: &WorkoutUpdateCmd{}},
+	Custom{Name: "create", Help: "Create a workout with sport type and optional targets.", Cmd: &WorkoutCreateCmd{}},
+	workoutScheduleGroup,
+	Custom{Name: "delete", Help: "Delete a workout.", Cmd: &WorkoutDeleteCmd{}},
+}}
 
 // WorkoutsListCmd lists workouts.
 type WorkoutsListCmd struct {
@@ -195,12 +194,11 @@ func setWorkoutID(payload []byte, workoutID string) (json.RawMessage, string, er
 	return updated, replaced, nil
 }
 
-// WorkoutScheduleCmd groups schedule subcommands.
-type WorkoutScheduleCmd struct {
-	Add    WorkoutScheduleAddCmd    `cmd:"" help:"Add a workout to the schedule."`
-	List   WorkoutScheduleListCmd   `cmd:"" help:"List scheduled workouts for a date."`
-	Remove WorkoutScheduleRemoveCmd `cmd:"" help:"Remove a scheduled workout from the calendar."`
-}
+var workoutScheduleGroup = Group{Name: "schedule", Help: "Manage scheduled workouts.", Children: []Node{
+	Custom{Name: "add", Help: "Add a workout to the schedule.", Cmd: &WorkoutScheduleAddCmd{}},
+	Custom{Name: "list", Help: "List scheduled workouts for a date.", Cmd: &WorkoutScheduleListCmd{}},
+	Custom{Name: "remove", Help: "Remove a scheduled workout from the calendar.", Cmd: &WorkoutScheduleRemoveCmd{}},
+}}
 
 // WorkoutScheduleAddCmd schedules a workout on a calendar date.
 type WorkoutScheduleAddCmd struct {

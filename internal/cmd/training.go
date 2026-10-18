@@ -4,11 +4,10 @@ import (
 	"fmt"
 )
 
-// TrainingCmd groups training subcommands.
-type TrainingCmd struct {
-	Plans TrainingPlansCmd `cmd:"" default:"withargs" help:"List training plans."`
-	Plan  TrainingPlanCmd  `cmd:"" help:"Show a specific training plan."`
-}
+var trainingGroup = Group{Name: "training", Help: "View training plans.", Children: []Node{
+	Custom{Name: "plans", Help: "List training plans.", Default: true, Cmd: &TrainingPlansCmd{}},
+	Custom{Name: "plan", Help: "Show a specific training plan.", Cmd: &TrainingPlanCmd{}},
+}}
 
 // TrainingPlansCmd lists training plans.
 type TrainingPlansCmd struct {

@@ -4,12 +4,11 @@ import (
 	"fmt"
 )
 
-// WellnessCmd groups wellness subcommands.
-type WellnessCmd struct {
-	MenstrualCycle   WellnessMenstrualCycleCmd   `cmd:"" name:"menstrual-cycle" help:"Show menstrual cycle data."`
-	MenstrualSummary WellnessMenstrualSummaryCmd `cmd:"" name:"menstrual-summary" help:"Show menstrual cycle summary."`
-	PregnancySummary WellnessPregnancySummaryCmd `cmd:"" name:"pregnancy-summary" help:"Show pregnancy summary."`
-}
+var wellnessGroup = Group{Name: "wellness", Help: "View wellness data.", Children: []Node{
+	Custom{Name: "menstrual-cycle", Help: "Show menstrual cycle data.", Cmd: &WellnessMenstrualCycleCmd{}},
+	Custom{Name: "menstrual-summary", Help: "Show menstrual cycle summary.", Cmd: &WellnessMenstrualSummaryCmd{}},
+	Custom{Name: "pregnancy-summary", Help: "Show pregnancy summary.", Cmd: &WellnessPregnancySummaryCmd{}},
+}}
 
 // WellnessMenstrualCycleCmd shows menstrual cycle data.
 type WellnessMenstrualCycleCmd struct {
