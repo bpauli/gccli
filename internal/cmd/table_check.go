@@ -202,8 +202,11 @@ func checkLeaf(path string, l Leaf) []error {
 		}
 		for _, tpl := range []struct{ name, text string }{{"Done", out.Done}, {"Confirm", out.Confirm}} {
 			for _, name := range templateFields(tpl.text) {
-				if _, ok := argsField(fields, name); !ok {
+				f, ok := argsField(fields, name)
+				if !ok {
 					fail("%s names {%s}, which is not a field of the args struct", tpl.name, name)
+				} else if _, sendable := requestValue(reflect.Zero(f.Type)); !sendable {
+					fail("%s names {%s} of type %s: a template takes only string, int and Date", tpl.name, name, f.Type)
 				}
 			}
 		}

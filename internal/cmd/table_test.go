@@ -76,6 +76,14 @@ func fixtureTree() []Node {
 				}},
 			},
 		}},
+		Group{Name: "gear", Help: "Manage gear.", Children: []Node{
+			Leaf{
+				Name: "list", Help: "List gear.", Default: true,
+				Endpoint: "gear.list",
+				Params:   Params{"userProfilePK": ProfilePK},
+				Verb:     "get gear", Output: JSON{},
+			},
+		}},
 		Group{Name: "courses", Help: "Manage courses.", Children: []Node{
 			Leaf{
 				Name: "delete", Help: "Delete a course.",
@@ -106,7 +114,9 @@ type handCLI struct {
 	Version kong.VersionFlag `help:"Print version information." name:"version"`
 
 	Goals struct {
-		List GoalsListCmd `cmd:"" default:"withargs" help:"List goals."`
+		List struct {
+			Status string `help:"Goal status: active, future, past." default:"active" enum:"active,future,past"`
+		} `cmd:"" default:"withargs" help:"List goals."`
 	} `cmd:"" help:"View goals."`
 	Health struct {
 		Sleep HealthSleepCmd `cmd:"" help:"Show sleep data."`
@@ -117,6 +127,9 @@ type handCLI struct {
 	Activities struct {
 		List ActivitiesListCmd `cmd:"" default:"withargs" help:"List recent activities."`
 	} `cmd:"" help:"List and search activities."`
+	Gear struct {
+		List GearListCmd `cmd:"" default:"withargs" help:"List gear."`
+	} `cmd:"" help:"Manage gear."`
 	Courses struct {
 		Delete CourseDeleteCmd `cmd:"" help:"Delete a course."`
 	} `cmd:"" help:"Manage courses."`

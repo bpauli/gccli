@@ -7,7 +7,6 @@ import (
 	"go/parser"
 	"go/token"
 	"io"
-	"maps"
 	"net/http"
 	"path/filepath"
 	"reflect"
@@ -324,6 +323,8 @@ func TestEveryTableIsIndexed(t *testing.T) {
 	}
 }
 
+const runnerFile = "../cmd/leaf.go"
+
 func TestCallSitesMatchTable(t *testing.T) {
 	fset := token.NewFileSet()
 	var files []string
@@ -334,10 +335,9 @@ func TestCallSitesMatchTable(t *testing.T) {
 		}
 		files = append(files, matches...)
 	}
-	called := map[string]bool{}
+	runnerSites := 0
 	for _, file := range files {
-		e2e := strings.HasPrefix(file, "../e2e/")
-		if strings.HasSuffix(file, "_test.go") && !e2e {
+		if strings.HasSuffix(file, "_test.go") && !strings.HasPrefix(file, "../e2e/") {
 			continue
 		}
 		f, err := parser.ParseFile(fset, file, nil, 0)
@@ -355,6 +355,10 @@ func TestCallSitesMatchTable(t *testing.T) {
 			pos := fset.Position(call.Pos())
 			lit, ok := call.Args[1].(*ast.BasicLit)
 			if !ok || lit.Kind != token.STRING {
+				if file == runnerFile {
+					runnerSites++
+					return true
+				}
 				t.Errorf("%s: pass the endpoint name to Client.Call as a string literal, so the write census can read it", pos)
 				return true
 			}
@@ -364,7 +368,6 @@ func TestCallSitesMatchTable(t *testing.T) {
 				t.Errorf("%s: Client.Call names %q, which is not a row of the endpoint table", pos, name)
 				return true
 			}
-			called[name] = called[name] || !e2e
 			id, ok := call.Args[3].(*ast.Ident)
 			switch noBody := ok && id.Name == "nil"; {
 			case noBody && r.Body:
@@ -389,10 +392,8 @@ func TestCallSitesMatchTable(t *testing.T) {
 			return true
 		})
 	}
-	for _, name := range slices.Sorted(maps.Keys(endpoints)) {
-		if !called[name] {
-			t.Errorf("row %s has no caller in internal/cmd or internal/garminapi: delete it or call it", name)
-		}
+	if runnerSites != 1 {
+		t.Errorf("%s has %d Call sites with a non-literal name, want 1: the Leaf runner", runnerFile, runnerSites)
 	}
 }
 

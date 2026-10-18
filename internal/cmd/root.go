@@ -49,7 +49,7 @@ var commands = []Node{
 	badgesGroup,
 	coursesGroup,
 	challengesGroup,
-	Custom{Name: "records", Help: "View personal records.", Cmd: &RecordsCmd{}},
+	recordsLeaf,
 	profileGroup,
 	hydrationGroup,
 	nutritionGroup,
