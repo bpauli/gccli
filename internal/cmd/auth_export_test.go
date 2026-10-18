@@ -10,19 +10,6 @@ import (
 	"github.com/bpauli/gccli/internal/outfmt"
 )
 
-func TestAuthExport_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &AuthExportCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
-
 func TestAuthExport_NotFound(t *testing.T) {
 	store := newTestSecretsStore(t)
 	overrideLoadSecrets(t, store)

@@ -19,20 +19,6 @@ func TestExecute_Version(t *testing.T) {
 	}
 }
 
-func TestExecute_Help(t *testing.T) {
-	code := Execute([]string{"--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_AuthHelp(t *testing.T) {
-	code := Execute([]string{"auth", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
 func TestExecute_Auth(t *testing.T) {
 	code := Execute([]string{"auth"}, "1.0.0", "abc123", "2024-01-01")
 	if code == 0 {

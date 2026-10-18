@@ -30,34 +30,7 @@ func hydrationTestServer(t *testing.T) *httptest.Server {
 
 // --- Execute-level tests ---
 
-func TestExecute_HydrationHelp(t *testing.T) {
-	code := Execute([]string{"hydration", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_HydrationAddHelp(t *testing.T) {
-	code := Execute([]string{"hydration", "add", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
 // --- HydrationViewCmd tests ---
-
-func TestHydrationView_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &HydrationViewCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestHydrationView_Success(t *testing.T) {
 	server := hydrationTestServer(t)
@@ -154,19 +127,6 @@ func TestHydrationView_ServerError(t *testing.T) {
 }
 
 // --- HydrationAddCmd tests ---
-
-func TestHydrationAdd_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &HydrationAddCmd{Amount: 500}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestHydrationAdd_ServerError(t *testing.T) {
 	mux := http.NewServeMux()

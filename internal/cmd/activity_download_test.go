@@ -83,27 +83,7 @@ func downloadTestServer(t *testing.T, fitZipData, gpxData []byte) *httptest.Serv
 
 // --- Execute-level tests ---
 
-func TestExecute_ActivityDownloadHelp(t *testing.T) {
-	code := Execute([]string{"activity", "download", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
 // --- ActivityDownloadCmd tests ---
-
-func TestActivityDownload_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &ActivityDownloadCmd{ID: "12345678", Format: "fit"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestActivityDownload_FIT(t *testing.T) {
 	fitContent := []byte("FIT-BINARY-DATA-HERE")

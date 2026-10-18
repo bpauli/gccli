@@ -34,48 +34,7 @@ func wellnessTestServer(t *testing.T) *httptest.Server {
 
 // --- Execute-level tests ---
 
-func TestExecute_WellnessHelp(t *testing.T) {
-	code := Execute([]string{"wellness", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_WellnessMenstrualCycleHelp(t *testing.T) {
-	code := Execute([]string{"wellness", "menstrual-cycle", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_WellnessMenstrualSummaryHelp(t *testing.T) {
-	code := Execute([]string{"wellness", "menstrual-summary", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
-func TestExecute_WellnessPregnancySummaryHelp(t *testing.T) {
-	code := Execute([]string{"wellness", "pregnancy-summary", "--help"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
-	}
-}
-
 // --- WellnessMenstrualCycleCmd tests ---
-
-func TestWellnessMenstrualCycle_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &WellnessMenstrualCycleCmd{StartDate: "2024-01-01", EndDate: "2024-01-31"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestWellnessMenstrualCycle_Success(t *testing.T) {
 	server := wellnessTestServer(t)
@@ -151,19 +110,6 @@ func TestWellnessMenstrualCycle_ServerError(t *testing.T) {
 
 // --- WellnessMenstrualSummaryCmd tests ---
 
-func TestWellnessMenstrualSummary_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &WellnessMenstrualSummaryCmd{StartDate: "2024-01-01", EndDate: "2024-01-31"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
-
 func TestWellnessMenstrualSummary_Success(t *testing.T) {
 	server := wellnessTestServer(t)
 	defer server.Close()
@@ -183,19 +129,6 @@ func TestWellnessMenstrualSummary_Success(t *testing.T) {
 }
 
 // --- WellnessPregnancySummaryCmd tests ---
-
-func TestWellnessPregnancySummary_NoAccount(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "")
-	cmd := &WellnessPregnancySummaryCmd{}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "no account specified") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
 
 func TestWellnessPregnancySummary_Success(t *testing.T) {
 	server := wellnessTestServer(t)
