@@ -10,8 +10,6 @@ route.gpx
 [[52.5,13.4,34.0],[52.51,13.41,40.0]]
 -- route POST /course-service/course --
 {"courseId":999,"courseName":"route","distanceMeter":10000,"elevationGainMeter":150,"elevationLossMeter":140}
--- route GET /userprofile-service/userprofile/user-settings --
-{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
 -- table stdout --
 ID   NAME   DISTANCE  ELEV GAIN  ELEV LOSS
 999  route  10.00 km  150 m      140 m

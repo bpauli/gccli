@@ -65,10 +65,16 @@ func TestGolden(t *testing.T) {
 		}
 
 		passed := map[string]string{}
+		requested := map[string]bool{}
+		ran := 0
 		for _, m := range goldenModes {
 			t.Run(path+"/"+m.name, func(t *testing.T) {
+				ran++
 				h := newHarness(t, in)
 				stdout, stderr, code := h.run(m.flags, args)
+				h.mu.Lock()
+				maps.Copy(requested, h.requested)
+				h.mu.Unlock()
 				out := map[string]string{
 					"stdout": h.mask(stdout),
 					"stderr": h.mask(stderr),
@@ -80,7 +86,12 @@ func TestGolden(t *testing.T) {
 						passed[name] = out[part]
 						continue
 					}
-					if want := g.sections[name]; out[part] != want {
+					want, ok := g.sections[name]
+					if !ok {
+						t.Errorf("%s has no %q section: run go test ./internal/cmd -run TestGolden -update to write it", file, name)
+						continue
+					}
+					if out[part] != want {
 						t.Errorf("%q in %s mode: %s differs from %s (- want, + got):\n%s", path, m.name, part, file, lineDiff(want, out[part]))
 					}
 				}
@@ -90,6 +101,11 @@ func TestGolden(t *testing.T) {
 					}
 				}
 			})
+		}
+		for _, route := range slices.Sorted(maps.Keys(in.routes)) {
+			if ran == len(goldenModes) && !requested[route] {
+				t.Errorf("%s: no mode requests route %q: remove the section", file, route)
+			}
 		}
 		if *update {
 			for name, body := range passed {
