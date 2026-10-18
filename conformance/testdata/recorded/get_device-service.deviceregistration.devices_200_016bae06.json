@@ -1,0 +1,22 @@
+{
+  "method": "GET",
+  "host": "connectapi.garmin.com",
+  "uri": "/device-service/deviceregistration/devices",
+  "status": 200,
+  "body": [
+    {
+      "currentFirmwareVersion": "19.18",
+      "deviceId": 1,
+      "deviceStatus": "ACTIVE",
+      "deviceTypePk": 1,
+      "displayName": "tester",
+      "imageUrl": "https://example.com/test",
+      "partNumber": "006-B4257-00",
+      "primary": true,
+      "productDisplayName": "Forerunner 265",
+      "registeredDate": 1,
+      "serialNumber": "TEST-SERIAL",
+      "unitId": 1
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "method": "GET",
+  "host": "connectapi.garmin.com",
+  "uri": "/userprofile-service/userprofile/settings",
+  "status": 200,
+  "body": {
+    "displayName": "tester",
+    "fullName": "Test User",
+    "garminGUID": "test-id",
+    "id": 1,
+    "location": "Test",
+    "profileId": 1,
+    "profileImageUrlLarge": "https://example.com/test",
+    "userData": {
+      "birthDate": "2026-01-01",
+      "gender": "MALE",
+      "height": 0.5,
+      "measurementSystem": "metric",
+      "timeFormat": "time_twenty_four_hr",
+      "weight": 0.5
+    },
+    "userName": "t@example.com"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "method": "POST",
+  "host": "connectapi.garmin.com",
+  "uri": "/activity-service/activity",
+  "status": 200,
+  "body": {
+    "activityId": 1,
+    "activityName": "Test",
+    "userProfileId": 1
+  }
+}

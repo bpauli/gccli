@@ -1,0 +1,28 @@
+{
+  "method": "GET",
+  "host": "connectapi.garmin.com",
+  "uri": "/activity-service/activity/1/weather",
+  "status": 200,
+  "body": {
+    "apparentTemp": 1,
+    "dewPoint": 1,
+    "issueDate": "2026-01-01T00:00:00",
+    "latitude": 0.5,
+    "longitude": 0.5,
+    "relativeHumidity": 1,
+    "temp": 1,
+    "weatherStationDTO": {
+      "id": "test-id",
+      "name": "Test",
+      "timezone": null
+    },
+    "weatherTypeDTO": {
+      "desc": "Test",
+      "image": null,
+      "weatherTypePk": null
+    },
+    "windDirection": 1,
+    "windDirectionCompassPoint": "wsw",
+    "windSpeed": 1
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "method": "GET",
+  "host": "connectapi.garmin.com",
+  "uri": "/calendar-service/events?startDate=2026-01-01&pageIndex=1&limit=1&sortOrder=eventDate_asc",
+  "status": 200,
+  "body": [
+    {
+      "completionTarget": {
+        "unit": "kilometer",
+        "unitType": "distance",
+        "value": 0.5
+      },
+      "date": "2026-01-01",
+      "eventCustomization": {
+        "customGoal": {
+          "unit": "second",
+          "unitType": "time",
+          "value": 0.5
+        },
+        "isPrimaryEvent": false,
+        "isTrainingEvent": false
+      },
+      "eventName": "Test",
+      "eventPrivacy": {
+        "isShareable": false,
+        "label": "PRIVATE"
+      },
+      "eventTimeLocal": {
+        "startTimeHhMm": "00:00",
+        "timeZoneId": "UTC"
+      },
+      "eventType": "running",
+      "id": 1,
+      "location": "Test",
+      "race": true,
+      "shareableEventUuid": "test-id"
+    }
+  ]
+}

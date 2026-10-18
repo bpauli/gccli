@@ -1,0 +1,26 @@
+{
+  "method": "GET",
+  "host": "connectapi.garmin.com",
+  "uri": "/userprofile-service/userprofile/user-settings",
+  "status": 200,
+  "body": {
+    "connectDate": null,
+    "id": 1,
+    "sourceType": null,
+    "userData": {
+      "birthDate": "2026-01-01",
+      "format": "date_day_month",
+      "gender": "MALE",
+      "height": 0.5,
+      "lactateThresholdHeartRate": 1,
+      "measurementSystem": "metric",
+      "timeFormat": "time_twenty_four_hr",
+      "vo2MaxRunning": 0.5,
+      "weight": 0.5
+    },
+    "userSleep": {
+      "sleepTime": 1,
+      "wakeTime": 1
+    }
+  }
+}

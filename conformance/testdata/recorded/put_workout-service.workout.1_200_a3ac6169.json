@@ -1,0 +1,47 @@
+{
+  "method": "PUT",
+  "host": "connectapi.garmin.com",
+  "uri": "/workout-service/workout/1",
+  "status": 200,
+  "body": {
+    "author": {
+      "displayName": "tester",
+      "fullName": "Test User"
+    },
+    "createdDate": "2026-01-01T00:00:00.0",
+    "description": null,
+    "ownerId": 1,
+    "sportType": {
+      "sportTypeId": 1,
+      "sportTypeKey": "running"
+    },
+    "updatedDate": "2026-01-01T00:00:00.0",
+    "workoutId": 1,
+    "workoutName": "Test",
+    "workoutSegments": [
+      {
+        "segmentOrder": 1,
+        "sportType": {
+          "sportTypeId": 1,
+          "sportTypeKey": "running"
+        },
+        "workoutSteps": [
+          {
+            "endCondition": {
+              "conditionTypeId": 1,
+              "conditionTypeKey": "distance"
+            },
+            "endConditionValue": 0.5,
+            "stepId": 1,
+            "stepOrder": 1,
+            "stepType": {
+              "stepTypeId": 1,
+              "stepTypeKey": "interval"
+            },
+            "type": "ExecutableStepDTO"
+          }
+        ]
+      }
+    ]
+  }
+}

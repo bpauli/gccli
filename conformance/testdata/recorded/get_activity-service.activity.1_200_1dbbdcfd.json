@@ -1,0 +1,56 @@
+{
+  "method": "GET",
+  "host": "connectapi.garmin.com",
+  "uri": "/activity-service/activity/1",
+  "status": 200,
+  "body": {
+    "accessControlRuleDTO": {
+      "typeId": 1,
+      "typeKey": "private"
+    },
+    "activityId": 1,
+    "activityName": "Test",
+    "activityTypeDTO": {
+      "parentTypeId": 1,
+      "typeId": 1,
+      "typeKey": "running"
+    },
+    "eventTypeDTO": {
+      "typeId": 1,
+      "typeKey": "uncategorized"
+    },
+    "locationName": "Test",
+    "metadataDTO": {
+      "deviceApplicationInstallationId": 1,
+      "deviceMetaDataDTO": {
+        "deviceId": "test-id",
+        "deviceTypePk": 1,
+        "deviceVersionPk": 1
+      },
+      "isOriginal": true,
+      "manufacturer": "GARMIN"
+    },
+    "summaryDTO": {
+      "averageHR": 0.5,
+      "averageSpeed": 0.5,
+      "calories": 0.5,
+      "distance": 0.5,
+      "duration": 0.5,
+      "elevationGain": 0.5,
+      "elevationLoss": 0.5,
+      "maxHR": 0.5,
+      "maxSpeed": 0.5,
+      "movingDuration": 0.5,
+      "startLatitude": 0.5,
+      "startLongitude": 0.5,
+      "startTimeGMT": "2026-01-01T00:00:00.0",
+      "startTimeLocal": "2026-01-01T00:00:00.0"
+    },
+    "timeZoneUnitDTO": {
+      "timeZone": "UTC",
+      "unitId": 1,
+      "unitKey": "UTC"
+    },
+    "userProfileId": 1
+  }
+}

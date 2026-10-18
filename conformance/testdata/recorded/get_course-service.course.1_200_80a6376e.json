@@ -1,0 +1,49 @@
+{
+  "method": "GET",
+  "host": "connectapi.garmin.com",
+  "uri": "/course-service/course/1",
+  "status": 200,
+  "body": {
+    "activityTypePk": 1,
+    "coordinateSystem": "WGS84",
+    "courseId": 1,
+    "courseName": "Test",
+    "courseType": {
+      "typeId": 1,
+      "typeKey": "running"
+    },
+    "createdDate": "2026-01-01T00:00:00.0",
+    "description": "Test",
+    "distanceInMeters": 0.5,
+    "distanceMeter": 0.5,
+    "elevationGainMeter": 0.5,
+    "elevationLossMeter": 0.5,
+    "geoPoints": [
+      {
+        "elevation": 0.5,
+        "latitude": 0.5,
+        "longitude": 0.5,
+        "timestamp": null
+      },
+      {
+        "elevation": 0.5,
+        "latitude": 0.5,
+        "longitude": 0.5,
+        "timestamp": null
+      }
+    ],
+    "ownerDisplayName": "tester",
+    "public": false,
+    "sourceTypeId": 1,
+    "startLatitude": 0.5,
+    "startLongitude": 0.5,
+    "startPoint": {
+      "elevation": 0.5,
+      "latitude": 0.5,
+      "longitude": 0.5
+    },
+    "updatedDate": "2026-01-01T00:00:00.0",
+    "userGroupId": null,
+    "userProfileId": 1
+  }
+}

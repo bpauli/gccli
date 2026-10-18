@@ -1,0 +1,48 @@
+{
+  "method": "GET",
+  "host": "connectapi.garmin.com",
+  "uri": "/activitylist-service/activities/search/activities?start=1&limit=1",
+  "status": 200,
+  "body": [
+    {
+      "activityId": 1,
+      "activityName": "Test",
+      "activityType": {
+        "parentTypeId": 1,
+        "typeId": 1,
+        "typeKey": "running"
+      },
+      "averageHR": 0.5,
+      "calories": 0.5,
+      "description": null,
+      "deviceId": 1,
+      "distance": 0.5,
+      "duration": 0.5,
+      "endLatitude": 0.5,
+      "endLongitude": 0.5,
+      "eventType": {
+        "typeId": 1,
+        "typeKey": "uncategorized"
+      },
+      "favorite": false,
+      "hasPolyline": true,
+      "locationName": "Test",
+      "manufacturer": "GARMIN",
+      "maxHR": 0.5,
+      "movingDuration": 0.5,
+      "ownerDisplayName": "tester",
+      "ownerFullName": "Test User",
+      "ownerId": 1,
+      "ownerProfileImageUrlSmall": "https://example.com/test",
+      "pr": false,
+      "privacy": {
+        "typeId": 1,
+        "typeKey": "private"
+      },
+      "startLatitude": 0.5,
+      "startLongitude": 0.5,
+      "startTimeGMT": "2026-01-01 00:00:00",
+      "startTimeLocal": "2026-01-01 00:00:00"
+    }
+  ]
+}

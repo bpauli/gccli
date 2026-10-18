@@ -1,0 +1,18 @@
+{
+  "method": "GET",
+  "host": "connectapi.garmin.com",
+  "uri": "/activity-service/activity/1/hrTimeInZones",
+  "status": 200,
+  "body": [
+    {
+      "secsInZone": 0.5,
+      "zoneLowBoundary": 1,
+      "zoneNumber": 1
+    },
+    {
+      "secsInZone": 0.5,
+      "zoneLowBoundary": 1,
+      "zoneNumber": 1
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "method": "POST",
+  "host": "connectapi.garmin.com",
+  "uri": "/course-service/course/elevation?smoothingEnabled=true",
+  "status": 200,
+  "body": [
+    [
+      0.5,
+      0.5,
+      0.5
+    ],
+    [
+      0.5,
+      0.5,
+      0.5
+    ]
+  ]
+}

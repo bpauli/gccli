@@ -1,0 +1,23 @@
+{
+  "method": "GET",
+  "host": "connectapi.garmin.com",
+  "uri": "/course-service/course/favorites",
+  "status": 200,
+  "body": [
+    {
+      "courseId": 1,
+      "courseName": "Test",
+      "courseType": {
+        "typeId": 1,
+        "typeKey": "running"
+      },
+      "createdDate": "2026-01-01T00:00:00.0",
+      "distanceInMeters": 0.5,
+      "elevationGainMeter": 0.5,
+      "ownerDisplayName": "tester",
+      "startLatitude": 0.5,
+      "startLongitude": 0.5,
+      "userProfileId": 1
+    }
+  ]
+}

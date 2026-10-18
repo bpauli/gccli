@@ -1,0 +1,33 @@
+{
+  "method": "GET",
+  "host": "connectapi.garmin.com",
+  "uri": "/activity-service/activity/1/exerciseSets",
+  "status": 200,
+  "body": {
+    "activityId": 1,
+    "exerciseSets": [
+      {
+        "duration": 0.5,
+        "exercises": [
+          {
+            "category": "BENCH_PRESS",
+            "name": "BARBELL_BENCH_PRESS",
+            "probability": 0.5
+          }
+        ],
+        "repetitionCount": 1,
+        "setType": "ACTIVE",
+        "startTime": "2026-01-01T00:00:00.0",
+        "weight": 0.5
+      },
+      {
+        "duration": 0.5,
+        "exercises": [],
+        "repetitionCount": null,
+        "setType": "REST",
+        "startTime": "2026-01-01T00:00:00.0",
+        "weight": null
+      }
+    ]
+  }
+}

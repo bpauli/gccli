@@ -2,6 +2,7 @@ package conformance
 
 import (
 	"bytes"
+	"cmp"
 	"encoding/json"
 	"errors"
 	"os"
@@ -246,5 +247,59 @@ func TestScrubDirWritesNothingOnFailure(t *testing.T) {
 	}
 	if _, statErr := os.Stat(out); !os.IsNotExist(statErr) {
 		t.Errorf("ScrubDir created %s although the scrub failed", out)
+	}
+}
+
+func recordedDir() string {
+	return cmp.Or(os.Getenv("GCCLI_RECORDED_DIR"), "testdata/recorded")
+}
+
+type recordedFile struct {
+	name string
+	Record
+}
+
+func recordedFiles(t *testing.T, dir string) []recordedFile {
+	t.Helper()
+	paths, err := filepath.Glob(filepath.Join(dir, "*.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(paths) == 0 {
+		t.Fatalf("no record files in %s", dir)
+	}
+	var out []recordedFile
+	for _, path := range paths {
+		data, err := os.ReadFile(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		r, err := DecodeRecord(data)
+		if err != nil {
+			t.Fatalf("%s: %v", path, err)
+		}
+		out = append(out, recordedFile{filepath.Base(path), r})
+	}
+	return out
+}
+
+func TestRecordedScrubbed(t *testing.T) {
+	for _, f := range recordedFiles(t, recordedDir()) {
+		got, err := Scrub(f.Record)
+		if err != nil {
+			t.Errorf("%s: %v", f.name, err)
+			continue
+		}
+		want, err := os.ReadFile(filepath.Join(recordedDir(), f.name))
+		if err != nil {
+			t.Fatal(err)
+		}
+		data, err := EncodeRecord(got)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !bytes.Equal(data, want) {
+			t.Errorf("%s is not scrubbed: the scrubber changes it to\n%s", f.name, data)
+		}
 	}
 }

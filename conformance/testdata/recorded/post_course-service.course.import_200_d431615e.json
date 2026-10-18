@@ -1,0 +1,29 @@
+{
+  "method": "POST",
+  "host": "connectapi.garmin.com",
+  "uri": "/course-service/course/import",
+  "status": 200,
+  "body": {
+    "coordinateSystem": "WGS84",
+    "courseName": "",
+    "description": null,
+    "geoPoints": [
+      {
+        "elevation": null,
+        "latitude": 0.5,
+        "longitude": 0.5
+      },
+      {
+        "elevation": null,
+        "latitude": 0.5,
+        "longitude": 0.5
+      }
+    ],
+    "sourceTypeId": 1,
+    "startPoint": {
+      "elevation": null,
+      "latitude": 0.5,
+      "longitude": 0.5
+    }
+  }
+}

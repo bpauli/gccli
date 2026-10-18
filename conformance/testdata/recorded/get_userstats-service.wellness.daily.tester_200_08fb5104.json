@@ -1,0 +1,21 @@
+{
+  "method": "GET",
+  "host": "connectapi.garmin.com",
+  "uri": "/userstats-service/wellness/daily/tester?fromDate=2026-01-01&untilDate=2026-01-01&metricId=1",
+  "status": 200,
+  "body": {
+    "allMetrics": {
+      "metricsMap": {
+        "WELLNESS_RESTING_HEART_RATE": [
+          {
+            "calendarDate": "2026-01-01",
+            "value": 0.5
+          }
+        ]
+      }
+    },
+    "statisticsEndDate": "2026-01-01",
+    "statisticsStartDate": "2026-01-01",
+    "userProfileId": 1
+  }
+}

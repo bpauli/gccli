@@ -1,0 +1,9 @@
+{
+  "method": "GET",
+  "host": "connectapi.garmin.com",
+  "uri": "/activitylist-service/activities/count",
+  "status": 200,
+  "body": {
+    "totalCount": 1
+  }
+}
