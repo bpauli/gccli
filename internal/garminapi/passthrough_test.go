@@ -12,9 +12,8 @@ import (
 )
 
 var passthroughMethods = []string{
-	"AddEvent", "DeleteEvent", "GetEvents", "GetGear", "GetGearActivities", "GetGearDefaults", "GetGearStats",
-	"GetHydration", "GetNutritionDailyFoodLog", "GetNutritionDailyMeals", "GetNutritionDailySettings",
-	"GetProfile", "GetUserSettings", "LinkGear", "UnlinkGear",
+	"AddEvent", "DeleteEvent", "GetEvents", "GetHydration", "GetNutritionDailyFoodLog", "GetNutritionDailyMeals",
+	"GetNutritionDailySettings", "GetProfile", "GetUserSettings",
 }
 
 func TestNoNewPassthroughMethods(t *testing.T) {
