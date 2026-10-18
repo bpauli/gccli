@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -12,102 +11,17 @@ import (
 	"github.com/bpauli/gccli/internal/garminauth"
 )
 
-// --- GetWorkouts tests ---
-
-func TestGetWorkouts_Success(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/workout-service/workouts" {
-			t.Errorf("path = %s, want /workout-service/workouts", r.URL.Path)
-		}
-		if r.Method != http.MethodGet {
-			t.Errorf("method = %s, want GET", r.Method)
-		}
-		if got := r.URL.Query().Get("start"); got != "0" {
-			t.Errorf("start = %s, want 0", got)
-		}
-		if got := r.URL.Query().Get("limit"); got != "10" {
-			t.Errorf("limit = %s, want 10", got)
-		}
-		_, _ = w.Write([]byte(`[{"workoutId":1,"workoutName":"Morning Run"}]`))
+func TestWorkoutsEndpoints(t *testing.T) {
+	id := map[string]string{"workoutID": "42"}
+	testEndpoints(t, workoutsEndpoints, []endpointCase{
+		{"workouts.list", map[string]string{"start": "0", "limit": "10"}, "GET /workout-service/workouts?start=0&limit=10"},
+		{"workouts.get", id, "GET /workout-service/workout/42"},
+		{"workouts.upload", nil, "POST /workout-service/workout"},
+		{"workouts.update", id, "PUT /workout-service/workout/42"},
+		{"workouts.schedule", id, "POST /workout-service/schedule/42"},
+		{"workouts.unschedule", map[string]string{"scheduleID": "456"}, "DELETE /workout-service/schedule/456"},
+		{"workouts.delete", id, "DELETE /workout-service/workout/42"},
 	})
-
-	_, client := testServer(t, handler)
-	data, err := client.GetWorkouts(context.Background(), 0, 10)
-	if err != nil {
-		t.Fatalf("GetWorkouts: %v", err)
-	}
-
-	var workouts []map[string]any
-	if err := json.Unmarshal(data, &workouts); err != nil {
-		t.Fatalf("unmarshal: %v", err)
-	}
-	if len(workouts) != 1 {
-		t.Errorf("got %d workouts, want 1", len(workouts))
-	}
-}
-
-func TestGetWorkouts_ServerError(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusInternalServerError)
-		_, _ = w.Write([]byte("error"))
-	})
-
-	_, client := testServer(t, handler)
-	_, err := client.GetWorkouts(context.Background(), 0, 10)
-	if err == nil {
-		t.Fatal("expected error")
-	}
-
-	var apiErr *GarminAPIError
-	if !errors.As(err, &apiErr) {
-		t.Fatalf("expected GarminAPIError, got %T: %v", err, err)
-	}
-}
-
-// --- GetWorkout tests ---
-
-func TestGetWorkout_Success(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/workout-service/workout/42" {
-			t.Errorf("path = %s, want /workout-service/workout/42", r.URL.Path)
-		}
-		_, _ = w.Write([]byte(`{"workoutId":42,"workoutName":"Tempo Run"}`))
-	})
-
-	_, client := testServer(t, handler)
-	data, err := client.GetWorkout(context.Background(), "42")
-	if err != nil {
-		t.Fatalf("GetWorkout: %v", err)
-	}
-
-	var workout map[string]any
-	if err := json.Unmarshal(data, &workout); err != nil {
-		t.Fatalf("unmarshal: %v", err)
-	}
-	if workout["workoutName"] != "Tempo Run" {
-		t.Errorf("workoutName = %v, want Tempo Run", workout["workoutName"])
-	}
-}
-
-func TestGetWorkout_NotFound(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusNotFound)
-		_, _ = w.Write([]byte("not found"))
-	})
-
-	_, client := testServer(t, handler)
-	_, err := client.GetWorkout(context.Background(), "999")
-	if err == nil {
-		t.Fatal("expected error")
-	}
-
-	var apiErr *GarminAPIError
-	if !errors.As(err, &apiErr) {
-		t.Fatalf("expected GarminAPIError, got %T: %v", err, err)
-	}
-	if apiErr.StatusCode != 404 {
-		t.Errorf("status = %d, want 404", apiErr.StatusCode)
-	}
 }
 
 // --- DownloadWorkout tests ---
@@ -141,109 +55,6 @@ func TestDownloadWorkout_ServerError(t *testing.T) {
 	_, err := client.DownloadWorkout(context.Background(), "42")
 	if err == nil {
 		t.Fatal("expected error")
-	}
-}
-
-// --- UploadWorkout tests ---
-
-func TestUploadWorkout_Success(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/workout-service/workout" {
-			t.Errorf("path = %s, want /workout-service/workout", r.URL.Path)
-		}
-		if r.Method != http.MethodPost {
-			t.Errorf("method = %s, want POST", r.Method)
-		}
-
-		body, err := io.ReadAll(r.Body)
-		if err != nil {
-			t.Fatalf("read body: %v", err)
-		}
-
-		var payload map[string]any
-		if err := json.Unmarshal(body, &payload); err != nil {
-			t.Fatalf("unmarshal body: %v", err)
-		}
-		if payload["workoutName"] != "Test Workout" {
-			t.Errorf("workoutName = %v, want Test Workout", payload["workoutName"])
-		}
-
-		_, _ = w.Write([]byte(`{"workoutId":99,"workoutName":"Test Workout"}`))
-	})
-
-	_, client := testServer(t, handler)
-	workoutJSON := json.RawMessage(`{"workoutName":"Test Workout","sportType":{"sportTypeKey":"running"}}`)
-	data, err := client.UploadWorkout(context.Background(), workoutJSON)
-	if err != nil {
-		t.Fatalf("UploadWorkout: %v", err)
-	}
-
-	var result map[string]any
-	if err := json.Unmarshal(data, &result); err != nil {
-		t.Fatalf("unmarshal result: %v", err)
-	}
-	if result["workoutId"] != float64(99) {
-		t.Errorf("workoutId = %v, want 99", result["workoutId"])
-	}
-}
-
-func TestUploadWorkout_ServerError(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusBadRequest)
-		_, _ = w.Write([]byte("invalid workout"))
-	})
-
-	_, client := testServer(t, handler)
-	_, err := client.UploadWorkout(context.Background(), json.RawMessage(`{}`))
-	if err == nil {
-		t.Fatal("expected error")
-	}
-
-	var apiErr *GarminAPIError
-	if !errors.As(err, &apiErr) {
-		t.Fatalf("expected GarminAPIError, got %T: %v", err, err)
-	}
-}
-
-// --- ScheduleWorkout tests ---
-
-func TestScheduleWorkout_Success(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/workout-service/schedule/77" {
-			t.Errorf("path = %s, want /workout-service/schedule/77", r.URL.Path)
-		}
-		if r.Method != http.MethodPost {
-			t.Errorf("method = %s, want POST", r.Method)
-		}
-
-		body, err := io.ReadAll(r.Body)
-		if err != nil {
-			t.Fatalf("read body: %v", err)
-		}
-
-		var payload map[string]string
-		if err := json.Unmarshal(body, &payload); err != nil {
-			t.Fatalf("unmarshal body: %v", err)
-		}
-		if payload["date"] != "2026-02-12" {
-			t.Errorf("date = %s, want 2026-02-12", payload["date"])
-		}
-
-		_, _ = w.Write([]byte(`{"scheduledWorkoutId":123,"calendarDate":"2026-02-12"}`))
-	})
-
-	_, client := testServer(t, handler)
-	data, err := client.ScheduleWorkout(context.Background(), "77", "2026-02-12")
-	if err != nil {
-		t.Fatalf("ScheduleWorkout: %v", err)
-	}
-
-	var scheduled map[string]any
-	if err := json.Unmarshal(data, &scheduled); err != nil {
-		t.Fatalf("unmarshal: %v", err)
-	}
-	if scheduled["scheduledWorkoutId"] != float64(123) {
-		t.Errorf("scheduledWorkoutId = %v, want 123", scheduled["scheduledWorkoutId"])
 	}
 }
 
@@ -302,85 +113,6 @@ func TestGetCalendarWeek_InvalidDate(t *testing.T) {
 	}
 }
 
-// --- UnscheduleWorkout tests ---
-
-func TestUnscheduleWorkout_Success(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/workout-service/schedule/456" {
-			t.Errorf("path = %s, want /workout-service/schedule/456", r.URL.Path)
-		}
-		if r.Method != http.MethodDelete {
-			t.Errorf("method = %s, want DELETE", r.Method)
-		}
-		w.WriteHeader(http.StatusNoContent)
-	})
-
-	_, client := testServer(t, handler)
-	_, err := client.UnscheduleWorkout(context.Background(), "456")
-	if err != nil {
-		t.Fatalf("UnscheduleWorkout: %v", err)
-	}
-}
-
-func TestUnscheduleWorkout_NotFound(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusNotFound)
-		_, _ = w.Write([]byte("not found"))
-	})
-
-	_, client := testServer(t, handler)
-	_, err := client.UnscheduleWorkout(context.Background(), "999")
-	if err == nil {
-		t.Fatal("expected error")
-	}
-
-	var apiErr *GarminAPIError
-	if !errors.As(err, &apiErr) {
-		t.Fatalf("expected GarminAPIError, got %T: %v", err, err)
-	}
-	if apiErr.StatusCode != 404 {
-		t.Errorf("status = %d, want 404", apiErr.StatusCode)
-	}
-}
-
-// --- DeleteWorkout tests ---
-
-func TestDeleteWorkout_Success(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/workout-service/workout/42" {
-			t.Errorf("path = %s, want /workout-service/workout/42", r.URL.Path)
-		}
-		if r.Method != http.MethodDelete {
-			t.Errorf("method = %s, want DELETE", r.Method)
-		}
-		w.WriteHeader(http.StatusNoContent)
-	})
-
-	_, client := testServer(t, handler)
-	_, err := client.DeleteWorkout(context.Background(), "42")
-	if err != nil {
-		t.Fatalf("DeleteWorkout: %v", err)
-	}
-}
-
-func TestDeleteWorkout_NotFound(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusNotFound)
-		_, _ = w.Write([]byte("not found"))
-	})
-
-	_, client := testServer(t, handler)
-	_, err := client.DeleteWorkout(context.Background(), "999")
-	if err == nil {
-		t.Fatal("expected error")
-	}
-
-	var apiErr *GarminAPIError
-	if !errors.As(err, &apiErr) {
-		t.Fatalf("expected GarminAPIError, got %T: %v", err, err)
-	}
-}
-
 // --- Token refresh on 401 ---
 
 func TestDownloadWorkout_401WithRefresh(t *testing.T) {
@@ -416,73 +148,5 @@ func TestDownloadWorkout_401WithRefresh(t *testing.T) {
 	}
 	if calls != 2 {
 		t.Errorf("expected 2 calls, got %d", calls)
-	}
-}
-
-// --- UpdateWorkout tests ---
-
-func TestUpdateWorkout_Success(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/workout-service/workout/42" {
-			t.Errorf("path = %s, want /workout-service/workout/42", r.URL.Path)
-		}
-		if r.Method != http.MethodPut {
-			t.Errorf("method = %s, want PUT", r.Method)
-		}
-
-		body, err := io.ReadAll(r.Body)
-		if err != nil {
-			t.Fatalf("read body: %v", err)
-		}
-
-		var payload map[string]any
-		if err := json.Unmarshal(body, &payload); err != nil {
-			t.Fatalf("unmarshal body: %v", err)
-		}
-		if payload["workoutName"] != "Updated Workout" {
-			t.Errorf("workoutName = %v, want Updated Workout", payload["workoutName"])
-		}
-		// The body must name the same workout as the path.
-		if payload["workoutId"] != float64(42) {
-			t.Errorf("workoutId = %v, want 42", payload["workoutId"])
-		}
-
-		// Garmin answers an update with 204 and no body.
-		w.WriteHeader(http.StatusNoContent)
-	})
-
-	_, client := testServer(t, handler)
-	data, err := client.UpdateWorkout(context.Background(), "42", json.RawMessage(`{"workoutId":42,"workoutName":"Updated Workout"}`))
-	if err != nil {
-		t.Fatalf("UpdateWorkout: %v", err)
-	}
-	if len(data) != 0 {
-		t.Errorf("data = %s, want empty response", data)
-	}
-}
-
-func TestUpdateWorkout_ServerError(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusInternalServerError)
-		_, _ = w.Write([]byte("error"))
-	})
-
-	_, client := testServer(t, handler)
-	_, err := client.UpdateWorkout(context.Background(), "42", json.RawMessage(`{}`))
-	if err == nil {
-		t.Fatal("expected error")
-	}
-}
-
-func TestUpdateWorkout_NotFound(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusNotFound)
-		_, _ = w.Write([]byte(`{"message":"workout not found"}`))
-	})
-
-	_, client := testServer(t, handler)
-	_, err := client.UpdateWorkout(context.Background(), "999", json.RawMessage(`{}`))
-	if err == nil {
-		t.Fatal("expected error for unknown workout")
 	}
 }

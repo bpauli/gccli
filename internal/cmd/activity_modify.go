@@ -65,7 +65,7 @@ func (c *ActivityDeleteCmd) Run(g *Globals) error {
 		return nil
 	}
 
-	data, err := client.DeleteActivity(g.Context, c.ID)
+	data, err := client.Call(g.Context, "activities.delete", map[string]string{"activityID": c.ID}, nil)
 	if err != nil {
 		return fmt.Errorf("delete activity: %w", err)
 	}

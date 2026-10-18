@@ -9,12 +9,17 @@
 // returns one ConnectAPI call whose path is a literal, a concatenation of
 // literals and arguments, or a fmt.Sprintf with %s and %d verbs. An optional
 // `if arg == "" { arg = "x" }` before it becomes the Default of that Param.
+// An `if arg != "" { path += "&key=" + arg }` after the path becomes an
+// Optional query pair. The body is nil, or bytes.NewReader of one
+// json.RawMessage argument, which makes a Body row.
 // Each method becomes a row of <area>Endpoints named <area>.<action>, where
-// action is the method name in kebab case without Get and without the area.
+// action is the method name in kebab case without Get and without the area
+// word; a Get of only the area word is list (plural) or get (singular).
 // Every call of the method in the module becomes a Client.Call with the same
 // argument expressions; an int argument is passed through strconv.Itoa,
-// which prints it as %d did. The method is deleted, the table is registered
-// in endpoint.go and the name leaves the passthroughMethods list.
+// which prints it as %d did, and the json.RawMessage argument is the body.
+// The method is deleted, the table is registered in endpoint.go and the
+// name leaves the passthroughMethods list.
 //
 // Methods of any other shape are left alone. A second run changes nothing.
 package main
@@ -60,6 +65,7 @@ func main() {
 type arg struct {
 	name string
 	conv string
+	body bool
 }
 
 type moved struct {
@@ -69,6 +75,8 @@ type moved struct {
 	verb     string
 	path     string
 	defaults map[string]string
+	optional map[string]bool
+	body     bool
 	decl     *ast.FuncDecl
 }
 
@@ -240,7 +248,7 @@ func passthrough(fn *ast.FuncDecl) *moved {
 		return nil
 	}
 
-	m := &moved{method: fn.Name.Name, decl: fn, defaults: map[string]string{}}
+	m := &moved{method: fn.Name.Name, decl: fn, defaults: map[string]string{}, optional: map[string]bool{}}
 	types := map[string]string{}
 	var ctx string
 	for i, field := range fn.Type.Params.List {
@@ -253,6 +261,9 @@ func passthrough(fn *ast.FuncDecl) *moved {
 				m.args = append(m.args, arg{name: n.Name})
 			case typ == "int":
 				m.args = append(m.args, arg{name: n.Name, conv: "strconv.Itoa"})
+			case typ == "json.RawMessage" && !m.body:
+				m.args = append(m.args, arg{name: n.Name, body: true})
+				m.body = true
 			default:
 				return nil
 			}
@@ -274,9 +285,8 @@ func passthrough(fn *ast.FuncDecl) *moved {
 	}
 	var pathVar string
 	var pathExpr ast.Expr
-	if len(stmts) == 2 {
-		as, ok := stmts[0].(*ast.AssignStmt)
-		if !ok || as.Tok != token.DEFINE || len(as.Lhs) != 1 || len(as.Rhs) != 1 {
+	if as, ok := stmts[0].(*ast.AssignStmt); ok && len(stmts) > 1 {
+		if as.Tok != token.DEFINE || len(as.Lhs) != 1 || len(as.Rhs) != 1 {
 			return nil
 		}
 		id, ok := as.Lhs[0].(*ast.Ident)
@@ -284,6 +294,16 @@ func passthrough(fn *ast.FuncDecl) *moved {
 			return nil
 		}
 		pathVar, pathExpr = id.Name, as.Rhs[0]
+		stmts = stmts[1:]
+	}
+	var suffixes []suffix
+	for pathVar != "" && len(stmts) > 1 {
+		sf, ok := optionalStmt(stmts[0], pathVar)
+		if !ok || types[sf.name] != "string" || m.defaults[sf.name] != "" || m.optional[sf.name] {
+			return nil
+		}
+		m.optional[sf.name] = true
+		suffixes = append(suffixes, sf)
 		stmts = stmts[1:]
 	}
 	if len(stmts) != 1 {
@@ -298,7 +318,7 @@ func passthrough(fn *ast.FuncDecl) *moved {
 		return nil
 	}
 	sel, ok := call.Fun.(*ast.SelectorExpr)
-	if !ok || !isIdent(sel.X, recv) || sel.Sel.Name != "ConnectAPI" || !isIdent(call.Args[0], ctx) || !isIdent(call.Args[3], "nil") {
+	if !ok || !isIdent(sel.X, recv) || sel.Sel.Name != "ConnectAPI" || !isIdent(call.Args[0], ctx) || !bodyArg(call.Args[3], m) {
 		return nil
 	}
 	verb, ok := call.Args[1].(*ast.SelectorExpr)
@@ -316,16 +336,78 @@ func passthrough(fn *ast.FuncDecl) *moved {
 
 	used := map[string]bool{}
 	path, ok := template(pathExpr, types, used)
-	if !ok || !validTemplate(path) {
+	if !ok {
+		return nil
+	}
+	for _, sf := range suffixes {
+		if used[sf.name] {
+			return nil
+		}
+		used[sf.name] = true
+		path += sf.lit + "{" + sf.name + "}"
+	}
+	if !validTemplate(path) {
 		return nil
 	}
 	for _, a := range m.args {
-		if !used[a.name] {
+		if !a.body && !used[a.name] {
 			return nil
 		}
 	}
 	m.path = path
 	return m
+}
+
+func bodyArg(e ast.Expr, m *moved) bool {
+	if isIdent(e, "nil") {
+		return !m.body
+	}
+	call, ok := e.(*ast.CallExpr)
+	if !ok || len(call.Args) != 1 || exprString(call.Fun) != "bytes.NewReader" {
+		return false
+	}
+	for _, a := range m.args {
+		if a.body {
+			return isIdent(call.Args[0], a.name)
+		}
+	}
+	return false
+}
+
+type suffix struct {
+	lit, name string
+}
+
+func optionalStmt(s ast.Stmt, pathVar string) (suffix, bool) {
+	is, ok := s.(*ast.IfStmt)
+	if !ok || is.Init != nil || is.Else != nil || len(is.Body.List) != 1 {
+		return suffix{}, false
+	}
+	cond, ok := is.Cond.(*ast.BinaryExpr)
+	if !ok || cond.Op != token.NEQ || !isString(cond.Y, "") {
+		return suffix{}, false
+	}
+	id, ok := cond.X.(*ast.Ident)
+	if !ok {
+		return suffix{}, false
+	}
+	as, ok := is.Body.List[0].(*ast.AssignStmt)
+	if !ok || as.Tok != token.ADD_ASSIGN || len(as.Lhs) != 1 || len(as.Rhs) != 1 || !isIdent(as.Lhs[0], pathVar) {
+		return suffix{}, false
+	}
+	add, ok := as.Rhs[0].(*ast.BinaryExpr)
+	if !ok || add.Op != token.ADD || !isIdent(add.Y, id.Name) {
+		return suffix{}, false
+	}
+	lit, ok := add.X.(*ast.BasicLit)
+	if !ok || lit.Kind != token.STRING {
+		return suffix{}, false
+	}
+	v, err := strconv.Unquote(lit.Value)
+	if err != nil || len(v) < 3 || (v[0] != '&' && v[0] != '?') || !strings.HasSuffix(v, "=") {
+		return suffix{}, false
+	}
+	return suffix{lit: v, name: id.Name}, true
 }
 
 func returnsRawJSON(res *ast.FieldList) bool {
@@ -455,11 +537,37 @@ func validTemplate(p string) bool {
 }
 
 func action(method, area string) string {
-	words := splitCamel(strings.TrimPrefix(method, "Get"))
-	if len(words) > 1 && strings.EqualFold(words[0], area) {
+	words := splitCamel(method)
+	get := words[0] == "Get" && len(words) > 1
+	if get {
 		words = words[1:]
 	}
+	var rest []string
+	plural := false
+	for _, w := range words {
+		if singular(w) == singular(area) {
+			plural = plural || singular(w) != strings.ToLower(w)
+			continue
+		}
+		rest = append(rest, w)
+	}
+	switch {
+	case len(rest) > 0:
+		return strings.ToLower(strings.Join(rest, "-"))
+	case get && plural:
+		return "list"
+	case get:
+		return "get"
+	}
 	return strings.ToLower(strings.Join(words, "-"))
+}
+
+func singular(word string) string {
+	w := strings.ToLower(word)
+	if s, ok := strings.CutSuffix(w, "ies"); ok {
+		return s + "y"
+	}
+	return strings.TrimSuffix(w, "s")
 }
 
 func splitCamel(s string) []string {
@@ -478,17 +586,24 @@ func splitCamel(s string) []string {
 }
 
 func rowText(m *moved) string {
-	if len(m.defaults) == 0 {
-		return fmt.Sprintf("\t{Name: %q, Method: %s, Host: ConnectAPI, Path: %q},\n", m.endpoint, m.verb, m.path)
+	body := ""
+	if m.body {
+		body = ", Body: true"
 	}
 	var params []string
 	for _, a := range m.args {
 		if v, ok := m.defaults[a.name]; ok {
 			params = append(params, fmt.Sprintf("{Name: %q, Default: %q}", a.name, v))
 		}
+		if m.optional[a.name] {
+			params = append(params, fmt.Sprintf("{Name: %q, Optional: true}", a.name))
+		}
 	}
-	return fmt.Sprintf("\t{\n\t\tName: %q, Method: %s, Host: ConnectAPI,\n\t\tPath:   %q,\n\t\tParams: []Param{%s},\n\t},\n",
-		m.endpoint, m.verb, m.path, strings.Join(params, ", "))
+	if len(params) == 0 {
+		return fmt.Sprintf("\t{Name: %q, Method: %s, Host: ConnectAPI, Path: %q%s},\n", m.endpoint, m.verb, m.path, body)
+	}
+	return fmt.Sprintf("\t{\n\t\tName: %q, Method: %s, Host: ConnectAPI,\n\t\tPath:   %q,\n\t\tParams: []Param{%s},%s\n\t},\n",
+		m.endpoint, m.verb, m.path, strings.Join(params, ", "), body)
 }
 
 func rewriteService(fset *token.FileSet, f *ast.File, src []byte, moves []*moved, area string) ([]byte, error) {
@@ -665,23 +780,29 @@ func rewriteCallers(path string, src []byte, moves map[string]*moved, modPath st
 		if m == nil || len(call.Args) != 1+len(m.args) || call.Ellipsis.IsValid() {
 			return true
 		}
-		values := "nil"
-		if len(m.args) > 0 {
-			var kv []string
-			for i, a := range m.args {
-				v := text(call.Args[i+1])
-				if a.conv != "" {
-					v = a.conv + "(" + v + ")"
-					needStrconv = true
-				}
-				kv = append(kv, strconv.Quote(a.name)+": "+v)
+		values, body := "nil", "nil"
+		var kv []string
+		for i, a := range m.args {
+			v := text(call.Args[i+1])
+			switch {
+			case a.body:
+				body = v
+				continue
+			case a.conv != "" && decimalRe.MatchString(v):
+				v = strconv.Quote(v)
+			case a.conv != "":
+				v = a.conv + "(" + v + ")"
+				needStrconv = true
 			}
+			kv = append(kv, strconv.Quote(a.name)+": "+v)
+		}
+		if len(kv) > 0 {
 			values = "map[string]string{" + strings.Join(kv, ", ") + "}"
 		}
 		edits = append(edits, edit{
 			start: fset.Position(call.Pos()).Offset,
 			end:   fset.Position(call.End()).Offset,
-			text:  fmt.Sprintf("%s.Call(%s, %q, %s, nil)", text(sel.X), text(call.Args[0]), m.endpoint, values),
+			text:  fmt.Sprintf("%s.Call(%s, %q, %s, %s)", text(sel.X), text(call.Args[0]), m.endpoint, values, body),
 		})
 		return false
 	})
@@ -786,7 +907,10 @@ func fixImports(src []byte, need []string, modPath string) ([]byte, error) {
 	return apply(src, []edit{{start: start, end: end, text: b.String()}}), nil
 }
 
-var versionRe = regexp.MustCompile(`^v[0-9]+$`)
+var (
+	versionRe = regexp.MustCompile(`^v[0-9]+$`)
+	decimalRe = regexp.MustCompile(`^(0|[1-9][0-9]*)$`)
+)
 
 func pkgName(path string) string {
 	parts := strings.Split(path, "/")

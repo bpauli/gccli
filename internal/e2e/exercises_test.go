@@ -96,7 +96,7 @@ func TestStrengthActivityWithExercises(t *testing.T) {
 
 	// Register cleanup to delete the activity.
 	RegisterCleanup(t, func() {
-		if _, delErr := client.DeleteActivity(context.Background(), activityID); delErr != nil {
+		if _, delErr := client.Call(context.Background(), "activities.delete", map[string]string{"activityID": activityID}, nil); delErr != nil {
 			t.Logf("WARNING: failed to clean up activity %s: %v", activityID, delErr)
 		} else {
 			t.Logf("Cleaned up activity %s", activityID)
@@ -151,13 +151,13 @@ func TestStrengthActivityWithExercises(t *testing.T) {
 	}
 
 	t.Logf("Setting %d exercise sets (5 active + 4 rest)...", len(sets))
-	if _, err := client.SetExerciseSets(ctx, activityID, body); err != nil {
+	if _, err := client.Call(ctx, "activities.set-exercise-sets", map[string]string{"activityID": activityID}, body); err != nil {
 		t.Fatalf("SetExerciseSets failed: %v", err)
 	}
 	t.Log("Exercise sets saved successfully")
 
 	// --- Step 5: Verify exercise sets on the activity ---
-	esData, err := client.GetActivityExerciseSets(ctx, activityID)
+	esData, err := client.Call(ctx, "activities.exercise-sets", map[string]string{"activityID": activityID}, nil)
 	if err != nil {
 		t.Fatalf("GetActivityExerciseSets failed: %v", err)
 	}

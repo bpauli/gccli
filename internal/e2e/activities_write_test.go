@@ -50,7 +50,7 @@ func TestCreateManualActivity(t *testing.T) {
 
 	// Register cleanup to delete the activity — runs even on test failure.
 	RegisterCleanup(t, func() {
-		if _, delErr := client.DeleteActivity(context.Background(), activityID); delErr != nil {
+		if _, delErr := client.Call(context.Background(), "activities.delete", map[string]string{"activityID": activityID}, nil); delErr != nil {
 			t.Logf("WARNING: failed to clean up activity %s: %v", activityID, delErr)
 		} else {
 			t.Logf("Cleaned up activity %s", activityID)
@@ -72,7 +72,7 @@ func TestCreateManualActivity(t *testing.T) {
 	}
 
 	// Verify the name changed.
-	detail, err := client.GetActivity(ctx, activityID)
+	detail, err := client.Call(ctx, "activities.get", map[string]string{"activityID": activityID}, nil)
 	if err != nil {
 		t.Fatalf("GetActivity(%s) after rename failed: %v", activityID, err)
 	}
@@ -96,7 +96,7 @@ func findActivityByID(t *testing.T, client *garminapi.Client, activityID string)
 	t.Helper()
 	ctx := context.Background()
 
-	data, err := client.GetActivities(ctx, 0, 50, "")
+	data, err := client.Call(ctx, "activities.list", map[string]string{"start": "0", "limit": "50"}, nil)
 	if err != nil {
 		t.Fatalf("GetActivities failed while searching for activity %s: %v", activityID, err)
 	}
@@ -120,7 +120,7 @@ func cleanupOrphanActivities(t *testing.T, client *garminapi.Client) {
 	t.Helper()
 	ctx := context.Background()
 
-	data, err := client.GetActivities(ctx, 0, 50, "")
+	data, err := client.Call(ctx, "activities.list", map[string]string{"start": "0", "limit": "50"}, nil)
 	if err != nil {
 		t.Logf("WARNING: could not list activities for orphan cleanup: %v", err)
 		return
@@ -136,7 +136,7 @@ func cleanupOrphanActivities(t *testing.T, client *garminapi.Client) {
 		name, _ := a["activityName"].(string)
 		if strings.HasPrefix(name, e2eActivityPrefix) {
 			id := formatID(a["activityId"])
-			if _, delErr := client.DeleteActivity(ctx, id); delErr != nil {
+			if _, delErr := client.Call(ctx, "activities.delete", map[string]string{"activityID": id}, nil); delErr != nil {
 				t.Logf("WARNING: failed to delete orphaned activity %s (%s): %v", id, name, delErr)
 			} else {
 				t.Logf("Cleaned up orphaned activity %s (%s)", id, name)

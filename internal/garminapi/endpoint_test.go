@@ -49,7 +49,11 @@ func testEndpoints(t *testing.T, table []Endpoint, cases []endpointCase) {
 				got = r.Method + " " + r.URL.RequestURI()
 				_, _ = w.Write([]byte(`[{"id":1}]`))
 			}))
-			data, err := client.Call(context.Background(), tc.name, tc.args, nil)
+			var body []byte
+			if r, ok := endpoints[tc.name]; ok && r.Body {
+				body = []byte(`{}`)
+			}
+			data, err := client.Call(context.Background(), tc.name, tc.args, body)
 			if err != nil || got != tc.want || string(data) != `[{"id":1}]` {
 				t.Errorf("Call = %q, %v; sent %q, want %q", data, err, got, tc.want)
 			}

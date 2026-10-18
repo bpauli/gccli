@@ -14,19 +14,14 @@ import (
 	"strings"
 )
 
-// GetCourses returns all courses owned by the current user.
-func (c *Client) GetCourses(ctx context.Context) (json.RawMessage, error) {
-	return c.ConnectAPI(ctx, http.MethodGet, "/web-gateway/course/owner/", nil)
-}
-
-// GetCourse returns details for a specific course.
-func (c *Client) GetCourse(ctx context.Context, courseID string) (json.RawMessage, error) {
-	return c.ConnectAPI(ctx, http.MethodGet, "/course-service/course/"+courseID, nil)
-}
-
-// GetCourseFavorites returns the user's favorite courses.
-func (c *Client) GetCourseFavorites(ctx context.Context) (json.RawMessage, error) {
-	return c.ConnectAPI(ctx, http.MethodGet, "/course-service/course/favorites", nil)
+var coursesEndpoints = []Endpoint{
+	{Name: "courses.list", Method: http.MethodGet, Host: ConnectAPI, Path: "/web-gateway/course/owner/"},
+	{Name: "courses.get", Method: http.MethodGet, Host: ConnectAPI, Path: "/course-service/course/{courseID}"},
+	{Name: "courses.favorites", Method: http.MethodGet, Host: ConnectAPI, Path: "/course-service/course/favorites"},
+	{Name: "courses.elevation", Method: http.MethodPost, Host: ConnectAPI, Path: "/course-service/course/elevation?smoothingEnabled=true", Body: true},
+	{Name: "courses.save", Method: http.MethodPost, Host: ConnectAPI, Path: "/course-service/course", Body: true},
+	{Name: "courses.delete", Method: http.MethodDelete, Host: ConnectAPI, Path: "/course-service/course/{courseID}"},
+	{Name: "courses.send-to-device", Method: http.MethodPost, Host: ConnectAPI, Path: "/device-service/devicemessage/messages", Body: true},
 }
 
 // downloadCoursePath returns the API path for downloading a course in the given format.
@@ -77,18 +72,6 @@ func (c *Client) ImportCourseGPX(ctx context.Context, filePath string) (json.Raw
 	}
 
 	return c.doUpload(ctx, "/course-service/course/import", writer.FormDataContentType(), &buf, true)
-}
-
-// GetCourseElevation enriches geo points with elevation data.
-func (c *Client) GetCourseElevation(ctx context.Context, points json.RawMessage) (json.RawMessage, error) {
-	return c.ConnectAPI(ctx, http.MethodPost, "/course-service/course/elevation?smoothingEnabled=true", bytes.NewReader(points))
-}
-
-// SaveCourse creates a new course from enriched course data.
-// The course payload must include coursePrivacy (1=public, 2=private, 4=group)
-// and rulePK (must not be null, typically 2).
-func (c *Client) SaveCourse(ctx context.Context, course json.RawMessage) (json.RawMessage, error) {
-	return c.ConnectAPI(ctx, http.MethodPost, "/course-service/course", bytes.NewReader(course))
 }
 
 // CourseImportOptions are the course fields that ImportCourse sets on the
@@ -144,7 +127,7 @@ func (c *Client) ImportCourse(ctx context.Context, path string, opts CourseImpor
 		return nil, fmt.Errorf("marshal elevation input: %w", err)
 	}
 
-	elevData, err := c.GetCourseElevation(ctx, elevJSON)
+	elevData, err := c.Call(ctx, "courses.elevation", nil, elevJSON)
 	if err != nil {
 		return nil, fmt.Errorf("get elevation: %w", err)
 	}
@@ -191,7 +174,7 @@ func (c *Client) ImportCourse(ctx context.Context, path string, opts CourseImpor
 		return nil, fmt.Errorf("marshal course: %w", err)
 	}
 
-	saved, err := c.SaveCourse(ctx, payload)
+	saved, err := c.Call(ctx, "courses.save", nil, payload)
 	if err != nil {
 		return nil, fmt.Errorf("save course: %w", err)
 	}
@@ -215,11 +198,6 @@ func filterCourseFields(course map[string]any) map[string]any {
 		}
 	}
 	return save
-}
-
-// DeleteCourse deletes a course by ID.
-func (c *Client) DeleteCourse(ctx context.Context, courseID string) (json.RawMessage, error) {
-	return c.ConnectAPI(ctx, http.MethodDelete, "/course-service/course/"+courseID, nil)
 }
 
 // SendCourseToDevice sends a course to a device via the device message API.
@@ -252,5 +230,5 @@ func (c *Client) SendCourseToDevice(ctx context.Context, courseID, deviceID, cou
 		return nil, fmt.Errorf("marshal send payload: %w", err)
 	}
 
-	return c.ConnectAPI(ctx, http.MethodPost, "/device-service/devicemessage/messages", bytes.NewReader(body))
+	return c.Call(ctx, "courses.send-to-device", nil, body)
 }
