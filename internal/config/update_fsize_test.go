@@ -4,6 +4,7 @@ package config
 
 import (
 	"errors"
+	"flag"
 	"fmt"
 	"os"
 	"os/exec"
@@ -13,11 +14,11 @@ import (
 	"testing"
 )
 
-const fsizeHelperEnv = "GCCLI_CONFIG_FSIZE_HELPER"
+const fsizeHelperArg = "fsize-helper"
 
 func TestUpdate_InterruptedWriteKeepsOldFile(t *testing.T) {
-	if os.Getenv(fsizeHelperEnv) == "1" {
-		runFsizeLimitedUpdate()
+	if flag.Arg(0) == fsizeHelperArg {
+		runFsizeLimitedUpdate(flag.Arg(1))
 		return
 	}
 
@@ -25,8 +26,7 @@ func TestUpdate_InterruptedWriteKeepsOldFile(t *testing.T) {
 	old := `{"default_account": "old@example.com", "future_key": 1}` + "\n"
 	writeConfig(t, path, old)
 
-	cmd := exec.Command(os.Args[0], "-test.run=^TestUpdate_InterruptedWriteKeepsOldFile$")
-	cmd.Env = append(os.Environ(), fsizeHelperEnv+"=1")
+	cmd := exec.Command(os.Args[0], "-test.run=^TestUpdate_InterruptedWriteKeepsOldFile$", fsizeHelperArg, os.Getenv("HOME"))
 	out, err := cmd.CombinedOutput()
 	var exitErr *exec.ExitError
 	if !errors.As(err, &exitErr) || exitErr.ExitCode() != 7 {
@@ -34,6 +34,9 @@ func TestUpdate_InterruptedWriteKeepsOldFile(t *testing.T) {
 	}
 	if !strings.Contains(string(out), "file too large") {
 		t.Fatalf("helper write failed for another reason:\n%s", out)
+	}
+	if !strings.Contains(string(out), filepath.Dir(path)) {
+		t.Fatalf("helper did not write to %s:\n%s", filepath.Dir(path), out)
 	}
 
 	data, err := os.ReadFile(path)
@@ -55,7 +58,10 @@ func TestUpdate_InterruptedWriteKeepsOldFile(t *testing.T) {
 	}
 }
 
-func runFsizeLimitedUpdate() {
+func runFsizeLimitedUpdate(home string) {
+	// IsolatedMain in this child moved HOME away from the parent's config.
+	_ = os.Setenv("HOME", home)
+	_ = os.Setenv("XDG_CONFIG_HOME", home)
 	var lim syscall.Rlimit
 	if err := syscall.Getrlimit(syscall.RLIMIT_FSIZE, &lim); err != nil {
 		fmt.Println("getrlimit:", err)

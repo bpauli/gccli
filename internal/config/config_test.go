@@ -161,15 +161,15 @@ func TestColorMode(t *testing.T) {
 	}
 }
 
-func TestRead_ReturnsFileOrZeroValue(t *testing.T) {
-	// Read() uses the real config path. It should either find a config
-	// file and parse it, or return a zero-value File if none exists.
+func TestRead_LoadsConfigFilePath(t *testing.T) {
+	path := tempConfigPath(t)
+	writeConfig(t, path, `{"default_account": "read@example.com"}`)
 	f, err := Read()
 	if err != nil {
 		t.Fatalf("Read: %v", err)
 	}
-	if f == nil {
-		t.Fatal("Read returned nil")
+	if f.DefaultAccount != "read@example.com" {
+		t.Errorf("Read().DefaultAccount = %q, want read@example.com", f.DefaultAccount)
 	}
 }
 
