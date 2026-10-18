@@ -20,6 +20,8 @@ RPE                        -
 -- table stderr --
 -- table exit --
 0
+-- table requests --
+GET /activity-service/activity/111
 -- plain stdout --
 NAME	Morning Run
 TYPE	running
@@ -36,6 +38,8 @@ RPE	-
 -- plain stderr --
 -- plain exit --
 0
+-- plain requests --
+GET /activity-service/activity/111
 -- json stdout --
 {
   "activityId": 111,
@@ -60,3 +64,5 @@ RPE	-
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+GET /activity-service/activity/111

@@ -28,6 +28,7 @@ import (
 
 	"github.com/bpauli/gccli/internal/garminapi"
 	"github.com/bpauli/gccli/internal/garminauth"
+	"github.com/bpauli/gccli/internal/testutil/requestlog"
 )
 
 type writeCase struct {
@@ -414,11 +415,16 @@ func harnessTokens(email string) *garminauth.Tokens {
 }
 
 type harness struct {
-	dir       string
-	home      string
-	mu        sync.Mutex
-	sent      []string
-	requested map[string]bool
+	dir  string
+	home string
+	mu   sync.Mutex
+	log  []loggedRequest
+}
+
+type loggedRequest struct {
+	method string
+	route  string
+	entry  string
 }
 
 func newHarness(t *testing.T, in harnessInput) *harness {
@@ -434,14 +440,15 @@ func newHarness(t *testing.T, in harnessInput) *harness {
 		}
 	}
 
-	h := &harness{dir: dir, home: home, requested: map[string]bool{}}
+	h := &harness{dir: dir, home: home}
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		route := r.Method + " " + r.URL.RequestURI()
-		h.mu.Lock()
-		h.requested[route] = true
-		if r.Method != http.MethodGet {
-			h.sent = append(h.sent, r.Method+" "+r.URL.Path)
+		entry, err := requestlog.Format(r)
+		if err != nil {
+			t.Errorf("%s: %v", route, err)
 		}
+		h.mu.Lock()
+		h.log = append(h.log, loggedRequest{r.Method, route, entry})
 		h.mu.Unlock()
 		reply, ok := in.routes[route]
 		switch {
@@ -499,7 +506,19 @@ func (h *harness) run(mode, args []string) (stdout, stderr string, code int) {
 func (h *harness) writes() []string {
 	h.mu.Lock()
 	defer h.mu.Unlock()
-	return slices.Clone(h.sent)
+	var writes []string
+	for _, r := range h.log {
+		if r.method != http.MethodGet {
+			writes = append(writes, r.route)
+		}
+	}
+	return writes
+}
+
+func (h *harness) requests() []loggedRequest {
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	return slices.Clone(h.log)
 }
 
 func TestWriteCensus(t *testing.T) {

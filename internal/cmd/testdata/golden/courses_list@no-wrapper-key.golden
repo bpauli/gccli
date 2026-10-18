@@ -12,10 +12,16 @@ ID  NAME  TYPE  DISTANCE  CREATED
 -- table stderr --
 -- table exit --
 0
+-- table requests --
+GET /web-gateway/course/owner/
+GET /userprofile-service/userprofile/user-settings
 -- plain stdout --
 -- plain stderr --
 -- plain exit --
 0
+-- plain requests --
+GET /web-gateway/course/owner/
+GET /userprofile-service/userprofile/user-settings
 -- json stdout --
 {
   "courses": [
@@ -28,3 +34,5 @@ ID  NAME  TYPE  DISTANCE  CREATED
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+GET /web-gateway/course/owner/

@@ -9,11 +9,15 @@ ID    DATE        NAME       TYPE     LOCATION
 -- table stderr --
 -- table exit --
 0
+-- table requests --
+GET /calendar-service/events?startDate=2026-10-15&pageIndex=1&limit=20&sortOrder=eventDate_asc
 -- plain stdout --
 4242	2026-11-01	City Race	running	Berlin
 -- plain stderr --
 -- plain exit --
 0
+-- plain requests --
+GET /calendar-service/events?startDate=2026-10-15&pageIndex=1&limit=20&sortOrder=eventDate_asc
 -- json stdout --
 [
   {
@@ -27,3 +31,5 @@ ID    DATE        NAME       TYPE     LOCATION
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+GET /calendar-service/events?startDate=2026-10-15&pageIndex=1&limit=20&sortOrder=eventDate_asc

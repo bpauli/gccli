@@ -8,11 +8,15 @@ count
 -- table stderr --
 -- table exit --
 0
+-- table requests --
+GET /activitylist-service/activities/count
 -- plain stdout --
 42
 -- plain stderr --
 -- plain exit --
 0
+-- plain requests --
+GET /activitylist-service/activities/count
 -- json stdout --
 {
   "count": 42
@@ -20,3 +24,5 @@ count
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+GET /activitylist-service/activities/count

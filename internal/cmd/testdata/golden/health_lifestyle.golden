@@ -10,13 +10,19 @@ lifestyle
 get lifestyle: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- table exit --
 1
+-- table requests --
+GET /lifestylelogging-service/dailyLog/2026-10-15
 -- plain stdout --
 -- plain stderr --
 get lifestyle: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- plain exit --
 1
+-- plain requests --
+GET /lifestylelogging-service/dailyLog/2026-10-15
 -- json stdout --
 -- json stderr --
 {"error":{"code":"error","status":400,"message":"get lifestyle: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
 -- json exit --
 1
+-- json requests --
+GET /lifestylelogging-service/dailyLog/2026-10-15

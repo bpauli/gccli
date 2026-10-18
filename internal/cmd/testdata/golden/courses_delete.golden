@@ -11,11 +11,15 @@ y
 Delete course 111? [y/N]: Deleted course 111
 -- table exit --
 0
+-- table requests --
+DELETE /course-service/course/111
 -- plain stdout --
 -- plain stderr --
 Delete course 111? [y/N]: Deleted course 111
 -- plain exit --
 0
+-- plain requests --
+DELETE /course-service/course/111
 -- json stdout --
 {
   "deleted": true
@@ -24,3 +28,5 @@ Delete course 111? [y/N]: Deleted course 111
 Delete course 111? [y/N]: 
 -- json exit --
 0
+-- json requests --
+DELETE /course-service/course/111

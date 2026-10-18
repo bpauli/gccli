@@ -14,12 +14,18 @@ ID   DATE        TYPE          NAME         DISTANCE  DURATION  CALORIES
 -- table stderr --
 -- table exit --
 0
+-- table requests --
+GET /activitylist-service/activities/search/activities?start=0&limit=20
+GET /userprofile-service/userprofile/user-settings
 -- plain stdout --
 111	2026-10-14	running	Morning Run	6.22 mi	50:05	712
 112	2026-10-13	lap_swimming	Pool Swim	0.93 mi	33:00	350
 -- plain stderr --
 -- plain exit --
 0
+-- plain requests --
+GET /activitylist-service/activities/search/activities?start=0&limit=20
+GET /userprofile-service/userprofile/user-settings
 -- json stdout --
 [
   {
@@ -48,3 +54,5 @@ ID   DATE        TYPE          NAME         DISTANCE  DURATION  CALORIES
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+GET /activitylist-service/activities/search/activities?start=0&limit=20

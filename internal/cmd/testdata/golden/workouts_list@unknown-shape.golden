@@ -8,11 +8,15 @@ list
 parse workouts: unexpected response format
 -- table exit --
 1
+-- table requests --
+GET /workout-service/workouts?start=0&limit=20
 -- plain stdout --
 -- plain stderr --
 parse workouts: unexpected response format
 -- plain exit --
 1
+-- plain requests --
+GET /workout-service/workouts?start=0&limit=20
 -- json stdout --
 {
   "items": [
@@ -25,3 +29,5 @@ parse workouts: unexpected response format
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+GET /workout-service/workouts?start=0&limit=20

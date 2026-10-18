@@ -103,8 +103,8 @@ func TestEveryLeafNeedsAccount(t *testing.T) {
 				if stdout.Len() != 0 {
 					t.Errorf("stdout is not empty:\n%s", stdout.String())
 				}
-				if len(h.requested) != 0 {
-					t.Errorf("sent requests without an account: %v", h.requested)
+				if len(h.log) != 0 {
+					t.Errorf("sent %d requests without an account, first: %s", len(h.log), h.log[0].route)
 				}
 			})
 		}

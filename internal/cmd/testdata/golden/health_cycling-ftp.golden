@@ -10,6 +10,8 @@ cycling-ftp
 -- table stderr --
 -- table exit --
 0
+-- table requests --
+GET /biometric-service/biometric/latestFunctionalThresholdPower/CYCLING
 -- plain stdout --
 {
   "value": 1
@@ -17,6 +19,8 @@ cycling-ftp
 -- plain stderr --
 -- plain exit --
 0
+-- plain requests --
+GET /biometric-service/biometric/latestFunctionalThresholdPower/CYCLING
 -- json stdout --
 {
   "value": 1
@@ -24,3 +28,5 @@ cycling-ftp
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+GET /biometric-service/biometric/latestFunctionalThresholdPower/CYCLING

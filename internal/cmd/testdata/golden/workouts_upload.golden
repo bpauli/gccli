@@ -11,11 +11,31 @@ workout.json
 Uploaded workout from $DIR/workout.json
 -- table exit --
 0
+-- table requests --
+POST /workout-service/workout
+  {
+    "workoutName": "Intervals",
+    "sportType": {
+      "sportTypeId": 1,
+      "sportTypeKey": "running"
+    }
+  }
+
 -- plain stdout --
 -- plain stderr --
 Uploaded workout from $DIR/workout.json
 -- plain exit --
 0
+-- plain requests --
+POST /workout-service/workout
+  {
+    "workoutName": "Intervals",
+    "sportType": {
+      "sportTypeId": 1,
+      "sportTypeKey": "running"
+    }
+  }
+
 -- json stdout --
 {
   "workoutId": 902,
@@ -24,3 +44,13 @@ Uploaded workout from $DIR/workout.json
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+POST /workout-service/workout
+  {
+    "workoutName": "Intervals",
+    "sportType": {
+      "sportTypeId": 1,
+      "sportTypeKey": "running"
+    }
+  }
+

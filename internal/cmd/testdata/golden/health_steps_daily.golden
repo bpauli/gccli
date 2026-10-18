@@ -13,6 +13,8 @@ daily
 -- table stderr --
 -- table exit --
 0
+-- table requests --
+GET /usersummary-service/stats/steps/daily/2026-10-01/2026-10-01
 -- plain stdout --
 {
   "value": 1
@@ -20,6 +22,8 @@ daily
 -- plain stderr --
 -- plain exit --
 0
+-- plain requests --
+GET /usersummary-service/stats/steps/daily/2026-10-01/2026-10-01
 -- json stdout --
 {
   "value": 1
@@ -27,3 +31,5 @@ daily
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+GET /usersummary-service/stats/steps/daily/2026-10-01/2026-10-01

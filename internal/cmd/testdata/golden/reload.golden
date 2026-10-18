@@ -10,6 +10,8 @@ reload
 -- table stderr --
 -- table exit --
 0
+-- table requests --
+GET /wellness-service/wellness/epoch/request/2026-10-15
 -- plain stdout --
 {
   "value": 1
@@ -17,6 +19,8 @@ reload
 -- plain stderr --
 -- plain exit --
 0
+-- plain requests --
+GET /wellness-service/wellness/epoch/request/2026-10-15
 -- json stdout --
 {
   "value": 1
@@ -24,3 +28,5 @@ reload
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+GET /wellness-service/wellness/epoch/request/2026-10-15

@@ -11,6 +11,8 @@ gear
 -- table stderr --
 -- table exit --
 0
+-- table requests --
+GET /gear-service/gear?activityId=111
 -- plain stdout --
 {
   "value": 1
@@ -18,6 +20,8 @@ gear
 -- plain stderr --
 -- plain exit --
 0
+-- plain requests --
+GET /gear-service/gear?activityId=111
 -- json stdout --
 {
   "value": 1
@@ -25,3 +29,5 @@ gear
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+GET /gear-service/gear?activityId=111

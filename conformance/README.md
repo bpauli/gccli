@@ -1,6 +1,6 @@
 # Conformance suite
 
-This suite runs a built `gccli` binary as a black box. It compares stdout, stderr and the exit code with golden files, and it checks the token and config state that the binary leaves behind. Use it to check a release build, or any binary that claims to behave like `gccli`.
+This suite runs a built `gccli` binary as a black box. It compares stdout, stderr, the exit code and the requests that the binary sends with golden files, and it checks the token and config state that the binary leaves behind. Use it to check a release build, or any binary that claims to behave like `gccli`.
 
 ## Run it
 
@@ -33,14 +33,16 @@ The binary uses its real URLs. Nothing overrides a base URL.
 
 The suite runs each case with `--account test@example.com --units metric`, like the in-process harness. It leaves `--color` at its default, because output to a pipe must have no color. When a case has stdin, the suite gives it a pseudo-terminal, so a confirmation prompt reads the answer as typed input.
 
-A case fails when the output differs, or when the binary sends a request that the file has no route for. A route matches the method, the host and the URI. The golden files do not name a host, so the suite expects `connect.garmin.com` for the `/web-data/` routes and `connectapi.garmin.com` for all other routes. A call that moves to another host fails.
+A case fails when the output differs, when the requests differ from the `<mode> requests` section, or when the binary sends a request that the file has no route for. The suite and the in-process harness write the requests with the same function, `requestlog.Format` in `internal/testutil/requestlog`. A route matches the method, the host and the URI. The golden files do not name a host, so the suite expects `connect.garmin.com` for the `/web-data/` routes and `connectapi.garmin.com` for all other routes. A call that moves to another host fails.
 
 The suite skips these cases:
 
 - `auth login`, because the in-process harness stubs the browser login.
 - `devices solar`, `events list`, `health steps weekly` and `health stress weekly`. Their routes ask for a date that the args do not give. The binary takes that date from its clock, and the in-process harness pins its clock to 2026-10-15.
 
-The `skipped` map in `conformance_test.go` holds this list. `TestGoldenSkips` fails when a golden case asks for a date from the clock and is not in the list, when a case in the list no longer asks for one, and when the list names a case that has no golden file. So a new skip cannot pass unseen. This test does not need `GCCLI_BIN`.
+The suite compares the output of `body add-blood-pressure`, `body add-composition` and `body add-weight`, but not their requests. Their request bodies hold a time that the binary takes from its clock. The `clockBodies` map holds this list, and a case in it fails when its requests match, because then the entry is stale.
+
+The `skipped` map in `conformance_test.go` holds the list of skipped cases. `TestGoldenSkips` fails when a golden case asks for a date from the clock and is not in the list, when a case in the list no longer asks for one, and when the list names a case that has no golden file. So a new skip cannot pass unseen. This test does not need `GCCLI_BIN`.
 
 ## State cases
 

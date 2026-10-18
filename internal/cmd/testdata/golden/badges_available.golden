@@ -9,13 +9,19 @@ available
 Token expired. Run: gccli auth login test@example.com
 -- table exit --
 3
+-- table requests --
+GET /badge-service/badge/available
 -- plain stdout --
 -- plain stderr --
 Token expired. Run: gccli auth login test@example.com
 -- plain exit --
 3
+-- plain requests --
+GET /badge-service/badge/available
 -- json stdout --
 -- json stderr --
 {"error":{"code":"auth_required","status":401,"message":"Token expired. Run: gccli auth login test@example.com"}}
 -- json exit --
 3
+-- json requests --
+GET /badge-service/badge/available

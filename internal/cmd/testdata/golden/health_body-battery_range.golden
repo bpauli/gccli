@@ -13,6 +13,8 @@ range
 -- table stderr --
 -- table exit --
 0
+-- table requests --
+GET /wellness-service/wellness/bodyBattery/reports/daily?startDate=2026-10-01&endDate=2026-10-01
 -- plain stdout --
 {
   "value": 1
@@ -20,6 +22,8 @@ range
 -- plain stderr --
 -- plain exit --
 0
+-- plain requests --
+GET /wellness-service/wellness/bodyBattery/reports/daily?startDate=2026-10-01&endDate=2026-10-01
 -- json stdout --
 {
   "value": 1
@@ -27,3 +31,5 @@ range
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+GET /wellness-service/wellness/bodyBattery/reports/daily?startDate=2026-10-01&endDate=2026-10-01

@@ -10,6 +10,8 @@ list
 -- table stderr --
 -- table exit --
 0
+-- table requests --
+GET /challenge-service/challenge/joined
 -- plain stdout --
 {
   "value": 1
@@ -17,6 +19,8 @@ list
 -- plain stderr --
 -- plain exit --
 0
+-- plain requests --
+GET /challenge-service/challenge/joined
 -- json stdout --
 {
   "value": 1
@@ -24,3 +28,5 @@ list
 -- json stderr --
 -- json exit --
 0
+-- json requests --
+GET /challenge-service/challenge/joined
