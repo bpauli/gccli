@@ -45,18 +45,7 @@ jobs:
         id: scrub
         if: github.event_name == 'schedule' && !cancelled()
         run: go run ./conformance/cmd/scrub "$RUNNER_TEMP/recorded-raw" "$RUNNER_TEMP/recorded"
-      - name: Pack recorded fixtures
-        if: ${{ !cancelled() && steps.scrub.outcome == 'success' }}
-        run: tar -czf "$RUNNER_TEMP/recorded-fixtures.tgz" -C "$RUNNER_TEMP" recorded
-      - name: Upload recorded fixtures
-        if: ${{ !cancelled() && steps.scrub.outcome == 'success' }}
-        uses: actions/upload-artifact@v7
-        with:
-          name: recorded-fixtures
-          path: ${{ runner.temp }}/recorded-fixtures.tgz
-          if-no-files-found: error
-          retention-days: 7
-      - name: Replay recorded fixtures
+      - name: Replay recorded responses
         if: ${{ !cancelled() && steps.scrub.outcome == 'success' }}
         env:
           GCCLI_RECORDED_DIR: ${{ runner.temp }}/recorded

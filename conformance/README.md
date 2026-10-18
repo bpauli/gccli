@@ -76,10 +76,11 @@ The scrubber keeps no value, so it never has to guess which value is safe:
 
 - A string becomes `tester`. A string of digits becomes `1`, and a date or time keeps its format with fixed digits, such as `2026-01-01` or `2026-01-01T00:00:00.0`. The format of the string decides, not its key.
 - A number becomes `1`, or `0.5` when it has a fraction. A bool becomes `true`. `null` stays.
+- An array keeps at most one element: the scrubbed form of its first non-null element. `[]` stays `[]`, and an array that holds only `null` becomes `[null]`. So the length of a series, such as one entry per minute of sleep, and the position of each `null`, such as a gap while the watch was off, do not survive.
 - An object key stays when it is an identifier, lower camelCase such as `calendarDate` or UPPER_SNAKE such as `WELLNESS_RESTING_HEART_RATE`. A key that is a date, such as `2026-10-17`, becomes `2026-01-01`, so a map keyed by date keeps its shape. Any other key fails the scrub.
 - The path must match a template in `scrubPaths`. A `{name}` segment is a value and is replaced like a string. A query key must be an identifier, and its value is replaced like a string.
 
-Two records that differ only in their values scrub to the same bytes. The replay checks shapes, so the fixed values are enough for it.
+Two records that differ only in their values, in the length of an array or in the position of a null scrub to the same bytes. The replay checks shapes, so the fixed values and one element per array are enough for it. What survives is the set of keys in each response and the JSON type of each value.
 
 The scrubber fails closed. A key that is not an identifier or a date, an unknown path or a host that is not a Garmin API host fails the scrub, and nothing is written. The error names the route and the position of the key, never the key or a value, because the job log is public. The position holds only structure: `$` is the body, `[3]` an array index from 0, `<key 2>` the third key of an object in byte order, and `?<key 1>` the second query pair. To fix it, record the same route locally, find the key at that position, and extend the key rule or the path table with a case in `scrub_test.go`.
 
@@ -95,8 +96,21 @@ These tests read `testdata/recorded`, or the directory that `GCCLI_RECORDED_DIR`
 
 A request matches a recording by method, host and path. The query is not compared, and a number or date segment matches any number or date.
 
+### The scheduled job
+
+The daily scheduled e2e run records, scrubs and replays inside the runner, so a change in what Garmin sends turns the job red. It uploads nothing and commits nothing. The scrubbed set still shows which keys each response of the account holds, and the repository is public, so nothing derived from the account leaves the runner. The job log names only structure: a route, a position, a file name, a command and an exit code.
+
 ### Refresh the recorded set
 
-The daily scheduled e2e run records, scrubs, replays and uploads the scrubbed set as the workflow artifact `recorded-fixtures`, which holds `recorded-fixtures.tgz`. It never commits. To refresh `testdata/recorded`, download the artifact, read every file, then replace the directory with its `recorded` folder in a pull request.
+A maintainer refreshes `testdata/recorded` on their own machine:
+
+```bash
+GCCLI_RECORD_DIR=/tmp/rec make test-e2e
+go run ./conformance/cmd/scrub /tmp/rec /tmp/scrubbed
+rm -r conformance/testdata/recorded && mv /tmp/scrubbed conformance/testdata/recorded
+make build && make conformance GCCLI_BIN=bin/gccli
+```
+
+Review the diff file by file before you commit. The repository is public, and the scrubber keeps the keys of each response, so a key that names something about you must not go in. Commit the set in a pull request.
 
 The committed set comes from the e2e suite against a mock with synthetic responses. It holds no data from a real account.
