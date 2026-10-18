@@ -80,7 +80,12 @@ func TestGolden(t *testing.T) {
 						passed[name] = out[part]
 						continue
 					}
-					if want := g.sections[name]; out[part] != want {
+					want, ok := g.sections[name]
+					if !ok {
+						t.Errorf("%s has no %q section: run go test ./internal/cmd -run TestGolden -update to write it", file, name)
+						continue
+					}
+					if out[part] != want {
 						t.Errorf("%q in %s mode: %s differs from %s (- want, + got):\n%s", path, m.name, part, file, lineDiff(want, out[part]))
 					}
 				}
