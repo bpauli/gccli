@@ -1,0 +1,21 @@
+-- args --
+workouts
+schedule
+list
+2026-10-15
+-- route GET /calendar-service/year/2026/month/9/day/15/start/0 --
+{"items":[{"id":10,"itemType":"workout","date":"2026-10-15"}]}
+-- table stdout --
+SCHEDULE ID  WORKOUT ID  TITLE  SPORT  DATE
+-- table stderr --
+-- table exit --
+0
+-- plain stdout --
+-- plain stderr --
+-- plain exit --
+0
+-- json stdout --
+null
+-- json stderr --
+-- json exit --
+0
