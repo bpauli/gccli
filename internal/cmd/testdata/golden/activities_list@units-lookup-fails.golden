@@ -1,0 +1,51 @@
+-- args --
+activities
+list
+--units
+auto
+-- route GET /activitylist-service/activities/search/activities?start=0&limit=20 --
+[{"activityId":111,"activityName":"Morning Run","startTimeLocal":"2026-10-14 07:30:00","activityType":{"typeKey":"running"},"distance":10012.5,"duration":3005.2,"calories":712},{"activityId":112,"activityName":"Pool Swim","startTimeLocal":"2026-10-13 18:00:00","activityType":{"typeKey":"lap_swimming"},"distance":1500,"duration":1980,"calories":350}]
+-- route GET /userprofile-service/userprofile/user-settings 404 --
+-- table stdout --
+ID   DATE        TYPE          NAME         DISTANCE  DURATION  CALORIES
+111  2026-10-14  running       Morning Run  10.01 km  50:05     712
+112  2026-10-13  lap_swimming  Pool Swim    1.50 km   33:00     350
+-- table stderr --
+could not read Garmin unit preference (garmin api: 404 Not Found); using metric. Set --units to skip this lookup.
+-- table exit --
+0
+-- plain stdout --
+111	2026-10-14	running	Morning Run	10.01 km	50:05	712
+112	2026-10-13	lap_swimming	Pool Swim	1.50 km	33:00	350
+-- plain stderr --
+could not read Garmin unit preference (garmin api: 404 Not Found); using metric. Set --units to skip this lookup.
+-- plain exit --
+0
+-- json stdout --
+[
+  {
+    "activityId": 111,
+    "activityName": "Morning Run",
+    "startTimeLocal": "2026-10-14 07:30:00",
+    "activityType": {
+      "typeKey": "running"
+    },
+    "distance": 10012.5,
+    "duration": 3005.2,
+    "calories": 712
+  },
+  {
+    "activityId": 112,
+    "activityName": "Pool Swim",
+    "startTimeLocal": "2026-10-13 18:00:00",
+    "activityType": {
+      "typeKey": "lap_swimming"
+    },
+    "distance": 1500,
+    "duration": 1980,
+    "calories": 350
+  }
+]
+-- json stderr --
+-- json exit --
+0
