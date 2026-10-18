@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"slices"
 	"strings"
 	"testing"
 )
@@ -52,6 +53,41 @@ func TestGetDeviceAlarms_Success(t *testing.T) {
 	}
 	if callCount != 2 {
 		t.Errorf("expected 2 settings calls, got %d", callCount)
+	}
+}
+
+func TestGetDeviceAlarms_TenDigitDeviceID(t *testing.T) {
+	var settingsPaths []string
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case "/device-service/deviceregistration/devices":
+			_, _ = w.Write([]byte(`[{"deviceId":3442032430}]`))
+		case "/device-service/deviceservice/device-info/settings/3442032430":
+			settingsPaths = append(settingsPaths, r.URL.Path)
+			_, _ = w.Write([]byte(`{"alarms":[{"time":"07:00"}]}`))
+		default:
+			settingsPaths = append(settingsPaths, r.URL.Path)
+			w.WriteHeader(http.StatusNotFound)
+		}
+	})
+
+	_, client := testServer(t, handler)
+	data, err := client.GetDeviceAlarms(context.Background())
+	if err != nil {
+		t.Fatalf("GetDeviceAlarms: %v", err)
+	}
+
+	want := []string{"/device-service/deviceservice/device-info/settings/3442032430"}
+	if !slices.Equal(settingsPaths, want) {
+		t.Errorf("settings paths = %q, want %q", settingsPaths, want)
+	}
+
+	var result []any
+	if err := json.Unmarshal(data, &result); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+	if len(result) != 1 {
+		t.Errorf("expected 1 alarm, got %d", len(result))
 	}
 }
 

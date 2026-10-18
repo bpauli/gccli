@@ -2,8 +2,8 @@
 devices
 alarms
 -- route GET /device-service/deviceregistration/devices --
-[{"deviceId":3333,"productDisplayName":"Forerunner 265"}]
--- route GET /device-service/deviceservice/device-info/settings/3333 --
+[{"deviceId":3442032430,"productDisplayName":"Forerunner 265"}]
+-- route GET /device-service/deviceservice/device-info/settings/3442032430 --
 {"alarms":[{"alarmId":1,"alarmTime":420,"alarmDays":["MONDAY","FRIDAY"],"alarmMode":"ON"}]}
 -- table stdout --
 [
