@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- `devices alarms` printed an empty list for a device with a real Garmin device ID. The device ID went through a float and reached Garmin as `3.44203243e+09`, so the settings request failed and the loop skipped the device. The ID now keeps its digits, and the request goes to `.../device-info/settings/3442032430`. (#185)
+
 ## [2.1.0] - 2026-10-18
 
 v2.1 keeps the stored login safe when several gccli processes run at the same time, and it checks command input before it sends a request. No flag or command name changes. Read the `Changed` list if a script checks the exit code of `auth token` or passes `events add --time` with seconds.
@@ -437,6 +443,7 @@ Initial release of gccli — a fast, script-friendly CLI for Garmin Connect.
 - **CI pipeline** — GitHub Actions for fmt-check, lint, and test
 - **Cross-platform builds** — macOS (amd64/arm64) and Linux (amd64/arm64) via goreleaser
 
+[Unreleased]: https://github.com/bpauli/gccli/compare/v2.1.0...HEAD
 [2.1.0]: https://github.com/bpauli/gccli/releases/tag/v2.1.0
 [2.0.0]: https://github.com/bpauli/gccli/releases/tag/v2.0.0
 [1.13.0]: https://github.com/bpauli/gccli/releases/tag/v1.13.0
