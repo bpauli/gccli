@@ -27,7 +27,7 @@ func TestGetProfile(t *testing.T) {
 		t.Error("profile response missing displayName field")
 	}
 
-	t.Logf("GetProfile returned profile for: %v", profile["displayName"])
+	t.Log("GetProfile returned a profile with a display name")
 }
 
 func TestGetMeasurementSystem(t *testing.T) {

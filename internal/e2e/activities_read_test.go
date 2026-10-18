@@ -88,7 +88,7 @@ func TestActivityDetails(t *testing.T) {
 		t.Error("activity detail response missing activityId field")
 	}
 
-	t.Logf("GetActivity(%s) returned activity: %v", activityID, detailMap["activityName"])
+	t.Logf("GetActivity(%s) returned the activity", activityID)
 }
 
 // TestActivitySubResources fetches splits, weather, and HR zones for the first
