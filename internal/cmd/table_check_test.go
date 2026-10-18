@@ -1,0 +1,272 @@
+package cmd
+
+import (
+	"os"
+	"path/filepath"
+	"slices"
+	"strings"
+	"testing"
+)
+
+// fixtureLeaf returns the fixture leaf at path, or a zero Leaf for a path
+// outside the fixture tree.
+func fixtureLeaf(path string) Leaf {
+	var found Leaf
+	walkLeaves(fixtureTree(), "", func(p string, l Leaf) {
+		if p == path {
+			found = l
+		}
+	})
+	return found
+}
+
+func leafAt(path string, l Leaf) []Node {
+	words := strings.Fields(path)
+	l.Name = words[len(words)-1]
+	node := Node(l)
+	for i := len(words) - 2; i >= 0; i-- {
+		node = Group{Name: words[i], Children: []Node{node}}
+	}
+	return []Node{node}
+}
+
+func TestCheckTableAcceptsFixture(t *testing.T) {
+	if errs := checkTable(fixtureTree()); len(errs) > 0 {
+		t.Errorf("checkTable = %v", errs)
+	}
+}
+
+func TestCheckTableRejects(t *testing.T) {
+	cases := []struct {
+		name string
+		path string
+		edit func(l *Leaf)
+		want string
+	}{
+		{
+			"unknown endpoint", "goals list",
+			func(l *Leaf) { l.Endpoint = "goals.lsit" },
+			`goals list: endpoint "goals.lsit" is not in the endpoint table`,
+		},
+		{
+			"In names no field", "goals list",
+			func(l *Leaf) { l.Params = Params{"status": In("Stat")} },
+			`goals list: Params["status"] binds In("Stat"), which is not a field of the args struct`,
+		},
+		{
+			"In reads the outer field that shadows an embedded one", "activities list",
+			func(l *Leaf) {
+				l.Spec = argsOf(&struct {
+					Limit      string `help:"Cap." name:"cap"`
+					Pagination `embed:"" set:"items=activities"`
+					Type       string `help:"Filter by activity type." short:"t"`
+				}{})
+			},
+			`activities list: placeholder {limit} of activities.list is required, but In("Limit") may be empty: make the field required, give it a default, or add .Or(...)`,
+		},
+		{
+			"In names a field of a named embed", "activities list",
+			func(l *Leaf) {
+				l.Spec = argsOf(&struct {
+					Page Pagination `embed:"" set:"items=activities"`
+					Type string     `help:"Filter by activity type." short:"t"`
+				}{})
+			},
+			`activities list: Params["limit"] binds In("Limit"), which is not a field of the args struct`,
+		},
+		{
+			"LateDates names a Date field", "health sleep",
+			func(l *Leaf) {
+				l.Spec = argsOf(&struct {
+					Date Date `arg:"" optional:""`
+				}{})
+			},
+			`health sleep: LateDates names "Date", which is not a string field of the args struct`,
+		},
+		{
+			"LateDates off the frozen list", "goals list",
+			func(l *Leaf) { l.LateDates = []string{"Status"} },
+			`goals list: LateDates is allowed only on the paths in v1LateDates`,
+		},
+		{
+			"JSONNull off the frozen list", "goals list",
+			func(l *Leaf) { l.Output = JSONNull{} },
+			`goals list: JSONNull is allowed only on the paths in v1NullJSON`,
+		},
+		{
+			"stale v1LateDates entry", "health sleep",
+			func(l *Leaf) {
+				l.LateDates = nil
+				l.Spec = argsOf(&struct {
+					Date Date `arg:"" optional:"" default:"today"`
+				}{})
+			},
+			`health sleep: v1LateDates names this path, but the row has no LateDates: remove the entry`,
+		},
+		{
+			"stale v1NullJSON entry", "courses detail",
+			func(l *Leaf) {
+				*l = Leaf{
+					Spec: argsOf(&struct {
+						ID string `arg:""`
+					}{}),
+					Endpoint: "courses.get", Params: Params{"courseID": In("ID")}, Output: JSON{},
+				}
+			},
+			`courses detail: v1NullJSON names this path, but the row's Output is not JSONNull: remove the entry`,
+		},
+		{
+			"Params key is no placeholder", "goals list",
+			func(l *Leaf) { l.Params = Params{"state": In("Status")} },
+			`goals list: Params["state"] is not a placeholder of goals.list`,
+		},
+		{
+			"required placeholder unbound", "goals list",
+			func(l *Leaf) { l.Params = nil },
+			`goals list: placeholder {status} of goals.list is required, but Params does not bind it`,
+		},
+		{
+			"required placeholder may be empty", "devices solar",
+			func(l *Leaf) { l.Params["startDate"] = In("StartDate") },
+			`devices solar: placeholder {startDate} of devices.solar is required, but In("StartDate") may be empty: make the field required, give it a default, or add .Or(...)`,
+		},
+		{
+			"Write on a GET", "goals list",
+			func(l *Leaf) { l.Output = Write{Done: "Listed goals"} },
+			`goals list: Output is Write, but goals.list is a GET`,
+		},
+		{
+			"read output on a write", "courses delete",
+			func(l *Leaf) { l.Output = JSON{} },
+			`courses delete: courses.delete is a DELETE: Output must be Write`,
+		},
+		{
+			"Write without Done", "courses delete",
+			func(l *Leaf) { l.Output = Write{Confirm: "Delete course {ID}?"} },
+			`courses delete: Write has no Done`,
+		},
+		{
+			"DELETE without Confirm", "courses delete",
+			func(l *Leaf) { l.Output = Write{Done: "Deleted course {ID}"} },
+			`courses delete: courses.delete is a DELETE: Write needs Confirm`,
+		},
+		{
+			"endpoint takes a body", "hydration log",
+			func(l *Leaf) { *l = Leaf{Endpoint: "hydration.log", Output: Write{Done: "Logged hydration"}} },
+			`hydration log: hydration.log takes a request body, which no Source gives: keep the command Custom`,
+		},
+		{
+			"nil Output", "goals list",
+			func(l *Leaf) { l.Output = nil },
+			`goals list: Output is nil`,
+		},
+		{
+			"Done names no field", "courses delete",
+			func(l *Leaf) { l.Output = Write{Done: "Deleted course {Idd}", Confirm: "Delete course {ID}?"} },
+			`courses delete: Done names {Idd}, which is not a field of the args struct`,
+		},
+		{
+			"Confirm names no field", "courses delete",
+			func(l *Leaf) { l.Output = Write{Done: "Deleted course {ID}", Confirm: "Delete course {Idd}?"} },
+			`courses delete: Confirm names {Idd}, which is not a field of the args struct`,
+		},
+		{
+			"Rows without Noun", "activities list",
+			func(l *Leaf) { l.Output = Rows{Columns: []Column{{Label: "ID", Path: "activityId"}}} },
+			`activities list: Rows has no Noun`,
+		},
+		{
+			"required placeholder bound to an empty default", "goals list",
+			func(l *Leaf) {
+				l.Spec = argsOf(&struct {
+					Status string `help:"Goal status." default:""`
+				}{})
+			},
+			`goals list: placeholder {status} of goals.list is required, but In("Status") may be empty: make the field required, give it a default, or add .Or(...)`,
+		},
+		{
+			"required placeholder bound to a required field in an xor group", "goals list",
+			func(l *Leaf) {
+				l.Spec = argsOf(&struct {
+					Status string `help:"Goal status." required:"" xor:"filter"`
+					Other  string `help:"Other filter." required:"" xor:"filter"`
+				}{})
+			},
+			`goals list: placeholder {status} of goals.list is required, but In("Status") may be empty: make the field required, give it a default, or add .Or(...)`,
+		},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			l := fixtureLeaf(tc.path)
+			tc.edit(&l)
+			errs := checkTable(leafAt(tc.path, l))
+			if !slices.ContainsFunc(errs, func(err error) bool { return err.Error() == tc.want }) {
+				t.Errorf("checkTable = %v\nwant %s", errs, tc.want)
+			}
+		})
+	}
+}
+
+// The frozen lists must match the golden files that pin each quirk, so a
+// new entry and a stale entry both fail here.
+func TestFrozenListsMatchGoldens(t *testing.T) {
+	t.Run("v1NullJSON", func(t *testing.T) {
+		pinned := goldenLeaves(t, "@empty.golden", func(g golden) bool {
+			return slices.IndexFunc(goldenModes, func(m goldenMode) bool {
+				return strings.TrimSpace(g.sections[m.name+" stdout"]) != "null"
+			}) < 0
+		})
+		compareFrozen(t, "v1NullJSON", v1NullJSON, pinned, "<leaf>@empty.golden prints null in every mode")
+	})
+	t.Run("v1LateDates", func(t *testing.T) {
+		if files, _ := filepath.Glob(filepath.Join(goldenDir, "*@bad-date.golden")); len(files) == 0 {
+			t.Skip("no @bad-date.golden file yet: PR #194 adds them, and this check starts when it is merged")
+		}
+		pinned := goldenLeaves(t, "@bad-date.golden", func(g golden) bool {
+			return slices.IndexFunc(goldenModes, func(m goldenMode) bool {
+				return strings.TrimSpace(g.sections[m.name+" exit"]) != "1"
+			}) < 0
+		})
+		compareFrozen(t, "v1LateDates", v1LateDates, pinned, "<leaf>@bad-date.golden exits 1 in every mode")
+	})
+}
+
+// goldenLeaves returns the leaf path of every golden file with the suffix
+// whose sections pass keep.
+func goldenLeaves(t *testing.T, suffix string, keep func(golden) bool) []string {
+	t.Helper()
+	files, err := filepath.Glob(filepath.Join(goldenDir, "*"+suffix))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var leaves []string
+	for _, file := range files {
+		data, err := os.ReadFile(file)
+		if err != nil {
+			t.Fatal(err)
+		}
+		g, err := parseGolden(string(data))
+		if err != nil {
+			t.Fatalf("%s: %v", file, err)
+		}
+		if keep(g) {
+			path, _ := goldenCommand(file)
+			leaves = append(leaves, path)
+		}
+	}
+	return leaves
+}
+
+func compareFrozen(t *testing.T, list string, entries, pinned []string, rule string) {
+	t.Helper()
+	for _, path := range entries {
+		if !slices.Contains(pinned, path) {
+			t.Errorf("%s names %q, but no %s: remove the entry", list, path, rule)
+		}
+	}
+	for _, path := range pinned {
+		if !slices.Contains(entries, path) {
+			t.Errorf("%s does not name %q, but its %s: add the entry", list, path, rule)
+		}
+	}
+}
