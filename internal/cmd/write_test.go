@@ -414,10 +414,11 @@ func harnessTokens(email string) *garminauth.Tokens {
 }
 
 type harness struct {
-	dir  string
-	home string
-	mu   sync.Mutex
-	sent []string
+	dir       string
+	home      string
+	mu        sync.Mutex
+	sent      []string
+	requested map[string]bool
 }
 
 func newHarness(t *testing.T, in harnessInput) *harness {
@@ -433,14 +434,15 @@ func newHarness(t *testing.T, in harnessInput) *harness {
 		}
 	}
 
-	h := &harness{dir: dir, home: home}
+	h := &harness{dir: dir, home: home, requested: map[string]bool{}}
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			h.mu.Lock()
-			h.sent = append(h.sent, r.Method+" "+r.URL.Path)
-			h.mu.Unlock()
-		}
 		route := r.Method + " " + r.URL.RequestURI()
+		h.mu.Lock()
+		h.requested[route] = true
+		if r.Method != http.MethodGet {
+			h.sent = append(h.sent, r.Method+" "+r.URL.Path)
+		}
+		h.mu.Unlock()
 		reply, ok := in.routes[route]
 		switch {
 		case !ok:

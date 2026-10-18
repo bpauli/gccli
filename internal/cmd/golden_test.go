@@ -65,10 +65,14 @@ func TestGolden(t *testing.T) {
 		}
 
 		passed := map[string]string{}
+		requested := map[string]bool{}
 		for _, m := range goldenModes {
 			t.Run(path+"/"+m.name, func(t *testing.T) {
 				h := newHarness(t, in)
 				stdout, stderr, code := h.run(m.flags, args)
+				h.mu.Lock()
+				maps.Copy(requested, h.requested)
+				h.mu.Unlock()
 				out := map[string]string{
 					"stdout": h.mask(stdout),
 					"stderr": h.mask(stderr),
@@ -95,6 +99,11 @@ func TestGolden(t *testing.T) {
 					}
 				}
 			})
+		}
+		for _, route := range slices.Sorted(maps.Keys(in.routes)) {
+			if !requested[route] {
+				t.Errorf("%s: no mode requests route %q: remove the section", file, route)
+			}
 		}
 		if *update {
 			for name, body := range passed {
