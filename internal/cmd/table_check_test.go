@@ -6,18 +6,16 @@ import (
 	"testing"
 )
 
-func fixtureLeaf(t *testing.T, path string) Leaf {
-	t.Helper()
-	var found *Leaf
+// fixtureLeaf returns the fixture leaf at path, or a zero Leaf for a path
+// outside the fixture tree.
+func fixtureLeaf(path string) Leaf {
+	var found Leaf
 	walkLeaves(fixtureTree(), "", func(p string, l Leaf) {
 		if p == path {
-			found = &l
+			found = l
 		}
 	})
-	if found == nil {
-		t.Fatalf("fixture tree has no leaf %q", path)
-	}
-	return *found
+	return found
 }
 
 func leafAt(path string, l Leaf) []Node {
@@ -150,13 +148,54 @@ func TestCheckTableRejects(t *testing.T) {
 			func(l *Leaf) { l.Output = Write{Done: "Deleted course {ID}"} },
 			`courses delete: courses.delete is a DELETE: Write needs Confirm`,
 		},
+		{
+			"endpoint takes a body", "hydration log",
+			func(l *Leaf) { *l = Leaf{Endpoint: "hydration.log", Output: Write{Done: "Logged hydration"}} },
+			`hydration log: hydration.log takes a request body, which no Source gives: keep the command Custom`,
+		},
+		{
+			"nil Output", "goals list",
+			func(l *Leaf) { l.Output = nil },
+			`goals list: Output is nil`,
+		},
+		{
+			"Done names no field", "courses delete",
+			func(l *Leaf) { l.Output = Write{Done: "Deleted course {Idd}", Confirm: "Delete course {ID}?"} },
+			`courses delete: Done names {Idd}, which is not a field of the args struct`,
+		},
+		{
+			"Confirm names no field", "courses delete",
+			func(l *Leaf) { l.Output = Write{Done: "Deleted course {ID}", Confirm: "Delete course {Idd}?"} },
+			`courses delete: Confirm names {Idd}, which is not a field of the args struct`,
+		},
+		{
+			"Rows without Noun", "activities list",
+			func(l *Leaf) { l.Output = Rows{Columns: []Column{{Label: "ID", Path: "activityId"}}} },
+			`activities list: Rows has no Noun`,
+		},
+		{
+			"required placeholder bound to an empty default", "goals list",
+			func(l *Leaf) {
+				l.Spec = argsOf(&struct {
+					Status string `help:"Goal status." default:""`
+				}{})
+			},
+			`goals list: placeholder {status} of goals.list is required, but In("Status") may be empty: make the field required, give it a default, or add .Or(...)`,
+		},
+		{
+			"required placeholder bound to a required field in an xor group", "goals list",
+			func(l *Leaf) {
+				l.Spec = argsOf(&struct {
+					Status string `help:"Goal status." required:"" xor:"filter"`
+					Other  string `help:"Other filter." required:"" xor:"filter"`
+				}{})
+			},
+			`goals list: placeholder {status} of goals.list is required, but In("Status") may be empty: make the field required, give it a default, or add .Or(...)`,
+		},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			var l Leaf
-			if tc.name != "stale v1NullJSON entry" {
-				l = fixtureLeaf(t, tc.path)
-			}
+			l := fixtureLeaf(tc.path)
 			tc.edit(&l)
 			errs := checkTable(leafAt(tc.path, l))
 			if !slices.ContainsFunc(errs, func(err error) bool { return err.Error() == tc.want }) {
