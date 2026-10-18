@@ -37,6 +37,8 @@ func TestHealthEndpoints(t *testing.T) {
 		{"health.hill-score", day, "GET /metrics-service/metrics/hillscore?calendarDate=2024-01-15"},
 		{"health.all-day-events", day, "GET /wellness-service/wellness/dailyEvents?calendarDate=2024-01-15"},
 		{"health.lifestyle-logging", day, "GET /lifestylelogging-service/dailyLog/2024-01-15"},
+		{"health.power-curve", span, "GET /fitnessstats-service/powerCurve?startDate=2024-01-01&endDate=2024-01-31"},
+		{"health.running-economy", day, "GET /metrics-service/metrics/runningeconomy/latest/2024-01-15"},
 	})
 }
 

@@ -34,6 +34,8 @@ var healthEndpoints = []Endpoint{
 	{Name: "health.hill-score", Method: http.MethodGet, Host: ConnectAPI, Path: "/metrics-service/metrics/hillscore?calendarDate={date}"},
 	{Name: "health.all-day-events", Method: http.MethodGet, Host: ConnectAPI, Path: "/wellness-service/wellness/dailyEvents?calendarDate={date}"},
 	{Name: "health.lifestyle-logging", Method: http.MethodGet, Host: ConnectAPI, Path: "/lifestylelogging-service/dailyLog/{date}"},
+	{Name: "health.power-curve", Method: http.MethodGet, Host: ConnectAPI, Path: "/fitnessstats-service/powerCurve?startDate={startDate}&endDate={endDate}"},
+	{Name: "health.running-economy", Method: http.MethodGet, Host: ConnectAPI, Path: "/metrics-service/metrics/runningeconomy/latest/{date}"},
 }
 
 // GetRacePredictions returns race prediction data.

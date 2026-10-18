@@ -468,7 +468,7 @@ gccli activities list --limit 5</pre>
           <div class="feature-card fade-in">
             <div class="feature-icon blue">&#x2764;</div>
             <h3>Health Data</h3>
-            <p>Steps, heart rate, sleep, stress, HRV, SpO2, respiration, body battery, floors, training readiness, VO2max, fitness age, race predictions.</p>
+            <p>Steps, heart rate, sleep, stress, HRV, SpO2, respiration, body battery, floors, training readiness, VO2max, fitness age, race predictions, power curve, running economy.</p>
           </div>
           <div class="feature-card fade-in">
             <div class="feature-icon orange">&#x1f4aa;</div>
@@ -696,6 +696,8 @@ gccli activities list --limit 5</pre>
               <div class="cmd-row"><div class="cmd">gccli health <span class="nowrap">race-predictions</span> range <span class="nowrap">--start=DATE</span> <span class="nowrap">--end=DATE</span></div><div class="desc">Show race predictions for a date range.<br><code><span class="nowrap">--start=</span><wbr>DATE</code> Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).<br><code><span class="nowrap">--end=</span><wbr>DATE</code> End date (YYYY-MM-DD, today, yesterday, 3d, +30d).</div></div>
               <div class="cmd-row"><div class="cmd">gccli health <span class="nowrap">endurance-score</span> [&lt;date&gt;]</div><div class="desc">Show endurance score data.<br><code>[&lt;date&gt;]</code> Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.</div></div>
               <div class="cmd-row"><div class="cmd">gccli health <span class="nowrap">hill-score</span> [&lt;date&gt;]</div><div class="desc">Show hill score data.<br><code>[&lt;date&gt;]</code> Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli health <span class="nowrap">power-curve</span> <span class="nowrap">--start=DATE</span> <span class="nowrap">--end=DATE</span></div><div class="desc">Show power curve for a date range.<br><code><span class="nowrap">--start=</span><wbr>DATE</code> Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).<br><code><span class="nowrap">--end=</span><wbr>DATE</code> End date (YYYY-MM-DD, today, yesterday, 3d, +30d).</div></div>
+              <div class="cmd-row"><div class="cmd">gccli health <span class="nowrap">running-economy</span> [&lt;date&gt;]</div><div class="desc">Show latest running economy as of a date.<br><code>[&lt;date&gt;]</code> Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.</div></div>
               <div class="cmd-row"><div class="cmd">gccli health events [&lt;date&gt;]</div><div class="desc">Show daily wellness events.<br><code>[&lt;date&gt;]</code> Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.</div></div>
               <div class="cmd-row"><div class="cmd">gccli health lifestyle [&lt;date&gt;]</div><div class="desc">Show lifestyle logging data.<br><code>[&lt;date&gt;]</code> Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.</div></div>
             </div>
