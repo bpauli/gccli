@@ -11,19 +11,15 @@ import (
 	"github.com/bpauli/gccli/internal/units"
 )
 
-// GetProfile returns the authenticated user's profile settings.
-func (c *Client) GetProfile(ctx context.Context) (json.RawMessage, error) {
-	return c.ConnectAPI(ctx, http.MethodGet, "/userprofile-service/userprofile/settings", nil)
-}
-
-// GetUserSettings returns the authenticated user's settings.
-func (c *Client) GetUserSettings(ctx context.Context) (json.RawMessage, error) {
-	return c.ConnectAPI(ctx, http.MethodGet, "/userprofile-service/userprofile/user-settings", nil)
+var profileEndpoints = []Endpoint{
+	{Name: "profile.get", Method: http.MethodGet, Host: ConnectAPI, Path: "/userprofile-service/userprofile/settings"},
+	{Name: "profile.user-settings", Method: http.MethodGet, Host: ConnectAPI, Path: "/userprofile-service/userprofile/user-settings"},
+	{Name: "profile.social", Method: http.MethodGet, Host: ConnectAPI, Path: "/userprofile-service/socialProfile/{displayName}"},
 }
 
 // GetDisplayName returns the authenticated user's display name from profile settings.
 func (c *Client) GetDisplayName(ctx context.Context) (string, error) {
-	data, err := c.ConnectAPI(ctx, http.MethodGet, "/userprofile-service/userprofile/settings", nil)
+	data, err := c.Call(ctx, "profile.get", nil, nil)
 	if err != nil {
 		return "", err
 	}
@@ -38,6 +34,15 @@ func (c *Client) GetDisplayName(ctx context.Context) (string, error) {
 		return "", fmt.Errorf("profile settings missing displayName")
 	}
 	return settings.DisplayName, nil
+}
+
+// GetSocialProfile returns the authenticated user's social profile.
+func (c *Client) GetSocialProfile(ctx context.Context) (json.RawMessage, error) {
+	displayName, err := c.GetDisplayName(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("resolve display name: %w", err)
+	}
+	return c.Call(ctx, "profile.social", map[string]string{"displayName": displayName}, nil)
 }
 
 // GetProfilePK returns the profileId of the authenticated user's social
@@ -77,7 +82,7 @@ func (c *Client) GetProfilePK(ctx context.Context) (string, error) {
 // GetMeasurementSystem returns the unit system from userData.measurementSystem
 // in the user settings. A missing or unknown value is an error.
 func (c *Client) GetMeasurementSystem(ctx context.Context) (units.System, error) {
-	data, err := c.GetUserSettings(ctx)
+	data, err := c.Call(ctx, "profile.user-settings", nil, nil)
 	if err != nil {
 		return units.Metric, err
 	}

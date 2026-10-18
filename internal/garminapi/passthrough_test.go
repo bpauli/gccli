@@ -13,7 +13,7 @@ import (
 
 var passthroughMethods = []string{
 	"AddEvent", "DeleteEvent", "GetEvents", "GetHydration", "GetNutritionDailyFoodLog", "GetNutritionDailyMeals",
-	"GetNutritionDailySettings", "GetProfile", "GetUserSettings",
+	"GetNutritionDailySettings",
 }
 
 func TestNoNewPassthroughMethods(t *testing.T) {

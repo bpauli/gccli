@@ -19,7 +19,7 @@ func (c *ProfileViewCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetProfile(g.Context)
+	data, err := client.Call(g.Context, "profile.get", nil, nil)
 	if err != nil {
 		return fmt.Errorf("get profile: %w", err)
 	}
@@ -36,7 +36,7 @@ func (c *ProfileSettingsCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetUserSettings(g.Context)
+	data, err := client.Call(g.Context, "profile.user-settings", nil, nil)
 	if err != nil {
 		return fmt.Errorf("get user settings: %w", err)
 	}
