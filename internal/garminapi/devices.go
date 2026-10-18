@@ -23,20 +23,20 @@ func (c *Client) GetDeviceAlarms(ctx context.Context) (json.RawMessage, error) {
 		return nil, fmt.Errorf("get devices: %w", err)
 	}
 
-	var devices []map[string]any
+	var devices []struct {
+		DeviceID json.Number `json:"deviceId"`
+	}
 	if err := json.Unmarshal(devicesData, &devices); err != nil {
 		return nil, fmt.Errorf("parse devices: %w", err)
 	}
 
 	var allAlarms []any
 	for _, device := range devices {
-		deviceID, ok := device["deviceId"]
-		if !ok {
+		if device.DeviceID == "" {
 			continue
 		}
-		idStr := fmt.Sprintf("%v", deviceID)
 
-		settings, err := c.Call(ctx, "devices.settings", map[string]string{"deviceID": idStr}, nil)
+		settings, err := c.Call(ctx, "devices.settings", map[string]string{"deviceID": device.DeviceID.String()}, nil)
 		if err != nil {
 			continue // skip devices that fail
 		}
