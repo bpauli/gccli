@@ -11,7 +11,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 
 ## Features
 
-- **Activities** — list, search, view details, download (FIT/GPX/TCX/KML/CSV), upload, create manual entries (with date), rename, retype, delete, set exercise sets for strength training, list activity types
+- **Activities** — list, search, view details, download (FIT/GPX/TCX/KML/CSV), upload, create manual entries (with date), rename, retype, delete, set exercise sets for strength training, list activity types, list pending activities
 - **Exercise Catalog** — browse Garmin's exercise categories and exercises for strength training
 - **Health Data** — daily summaries, steps, heart rate, resting HR, sleep, stress, HRV, SpO2, respiration, body battery, floors, training readiness/status, VO2max, fitness age, race predictions, endurance/hill scores, intensity minutes, lactate threshold, cycling FTP
 - **Body Composition** — weight tracking, body fat, muscle mass, blood pressure, FIT file encoding for composition uploads
@@ -353,6 +353,7 @@ gccli activities list --limit 20 --offset 20
 gccli activities list --type running
 gccli activities count
 gccli activities search --start 2024-01-01 --end 2024-12-31
+gccli activities pending
 
 # View details
 gccli activity summary <id>
@@ -776,6 +777,7 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
 - `gccli activities types`: List all activity types supported by Garmin.
+- `gccli activities pending`: List pending activities.
 - `gccli activity summary <id>`: Show activity summary. Also runs as `gccli activity <id>`.
   - `<id>`: Activity ID.
 - `gccli activity details <id> [flags]`: Show full activity details.

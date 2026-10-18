@@ -45,6 +45,7 @@ var activitiesGroup = Group{Name: "activities", Help: "List and search activitie
 		Output:   Rows{Noun: "activities", Columns: activityColumns},
 	},
 	Custom{Name: "types", Help: "List all activity types supported by Garmin.", Cmd: &ActivitiesTypesCmd{}},
+	Leaf{Name: "pending", Help: "List pending activities.", Endpoint: "activities.pending", Verb: "get pending activities", Output: JSON{}},
 }}
 
 // ActivitiesCountCmd shows the total activity count.

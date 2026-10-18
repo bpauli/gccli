@@ -463,7 +463,7 @@ gccli activities list --limit 5</pre>
           <div class="feature-card fade-in">
             <div class="feature-icon">&#x1f3c3;</div>
             <h3>Activities</h3>
-            <p>List, search, view details, splits, weather, HR/power zones. Download FIT/GPX/TCX/KML/CSV. Upload, create (with date), rename, retype, delete. Set exercise sets for strength training.</p>
+            <p>List, search, view details, splits, weather, HR/power zones. Download FIT/GPX/TCX/KML/CSV. Upload, create (with date), rename, retype, delete. Set exercise sets for strength training. List pending activities.</p>
           </div>
           <div class="feature-card fade-in">
             <div class="feature-icon blue">&#x2764;</div>
@@ -645,6 +645,7 @@ gccli activities list --limit 5</pre>
               <div class="cmd-row"><div class="cmd">gccli activities count</div><div class="desc">Show total activity count.</div></div>
               <div class="cmd-row"><div class="cmd">gccli activities search <span class="nowrap">--start=DATE</span> [flags]</div><div class="desc">Search activities by date range.<br><code><span class="nowrap">-l,</span> <span class="nowrap">--limit=</span><wbr>20</code> Maximum number of activities to return.<br><code><span class="nowrap">--offset=</span><wbr>0</code> Number of activities to skip.<br><code><span class="nowrap">--start=</span><wbr>DATE</code> Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).<br><code><span class="nowrap">--end=</span><wbr>DATE</code> End date (YYYY-MM-DD, today, yesterday, 3d, +30d).</div></div>
               <div class="cmd-row"><div class="cmd">gccli activities types</div><div class="desc">List all activity types supported by Garmin.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli activities pending</div><div class="desc">List pending activities.</div></div>
               <div class="cmd-row"><div class="cmd">gccli activity summary &lt;id&gt;</div><div class="desc">Show activity summary. Also runs as <span class="whole"><code>gccli activity &lt;id&gt;</code>.</span><br><code>&lt;id&gt;</code> Activity ID.</div></div>
               <div class="cmd-row"><div class="cmd">gccli activity details &lt;id&gt; [flags]</div><div class="desc">Show full activity details.<br><code>&lt;id&gt;</code> Activity ID.<br><code><span class="nowrap">--max-chart=</span><wbr>2000</code> Maximum chart data points.<br><code><span class="nowrap">--max-poly=</span><wbr>4000</code> Maximum polyline data points.</div></div>
               <div class="cmd-row"><div class="cmd">gccli activity splits &lt;id&gt;</div><div class="desc">Show activity splits.<br><code>&lt;id&gt;</code> Activity ID.</div></div>

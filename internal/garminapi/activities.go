@@ -40,6 +40,7 @@ var activitiesEndpoints = []Endpoint{
 	{Name: "activities.update", Method: http.MethodPut, Host: ConnectAPI, Path: "/activity-service/activity/{activityID}", Body: true},
 	{Name: "activities.delete", Method: http.MethodDelete, Host: ConnectAPI, Path: "/activity-service/activity/{activityID}"},
 	{Name: "activities.types", Method: http.MethodGet, Host: ConnectAPI, Path: "/activity-service/activity/activityTypes"},
+	{Name: "activities.pending", Method: http.MethodGet, Host: ConnectAPI, Path: "/pendingactivity-service/pending-activities"},
 }
 
 // CountActivities returns the total number of activities for the authenticated user.
