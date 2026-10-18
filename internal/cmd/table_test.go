@@ -172,7 +172,7 @@ type handCLI struct {
 	} `cmd:"" help:"Manage gear."`
 	Courses struct {
 		List   struct{}         `cmd:"" default:"withargs" help:"List courses."`
-		Delete CourseDeleteCmd `cmd:"" help:"Delete a course."`
+		Delete handCourseDelete `cmd:"" help:"Delete a course."`
 	} `cmd:"" help:"Manage courses."`
 	Body struct {
 		DeleteWeight handBodyDeleteWeight `cmd:"" name:"delete-weight" help:"Delete a weigh-in entry."`
@@ -188,6 +188,11 @@ type handDeviceSolar struct {
 	DeviceID  string `arg:"" help:"Device ID."`
 	StartDate Date   `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"start"`
 	EndDate   Date   `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to start date." name:"end"`
+}
+
+type handCourseDelete struct {
+	ID    string `arg:"" help:"Course ID."`
+	Force bool   `help:"Skip confirmation prompt." short:"f"`
 }
 
 type handBodyDeleteWeight struct {

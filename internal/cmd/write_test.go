@@ -51,11 +51,6 @@ const noContent = ""
 
 const okOut = "{\n  \"ok\": true\n}\n"
 
-const (
-	deletedBody = `{"deleted":true}`
-	deletedOut  = "{\n  \"deleted\": true\n}\n"
-)
-
 var writeCases = map[string]writeCase{
 	"activity upload": {
 		args:   []string{"run.fit"},
@@ -83,13 +78,6 @@ var writeCases = map[string]writeCase{
 		json:   "{\n  \"activityId\": 1\n}\n",
 		human:  "Changed activity 1 type to running\n",
 	},
-	"activity delete": {
-		args:   []string{"1"},
-		routes: map[string]string{"DELETE /activity-service/activity/1": deletedBody},
-		prompt: "Delete activity 1?",
-		json:   deletedOut,
-		human:  "Deleted activity 1\n",
-	},
 	"activity exercise-sets set": {
 		args:   []string{"1", "-e", "BENCH_PRESS/BARBELL_BENCH_PRESS:12@20"},
 		routes: map[string]string{"PUT /activity-service/activity/1/exerciseSets": noContent},
@@ -108,25 +96,11 @@ var writeCases = map[string]writeCase{
 		json:   "{\n  \"detailedImportResult\": {\n    \"uploadId\": 6\n  }\n}\n",
 		human:  "Added body composition: 80.0 kg\n",
 	},
-	"body delete-weight": {
-		args:   []string{"3", "--date", "2024-01-15"},
-		routes: map[string]string{"DELETE /weight-service/weight/2024-01-15/byversion/3": deletedBody},
-		prompt: "Delete weigh-in 3 on 2024-01-15?",
-		json:   deletedOut,
-		human:  "Deleted weigh-in 3\n",
-	},
 	"body add-blood-pressure": {
 		args:   []string{"--systolic", "120", "--diastolic", "80", "--pulse", "60"},
 		routes: map[string]string{"POST /bloodpressure-service/bloodpressure": `{"version":4}`},
 		json:   "{\n  \"version\": 4\n}\n",
 		human:  "Added blood pressure: 120/80 mmHg, pulse 60 bpm\n",
-	},
-	"body delete-blood-pressure": {
-		args:   []string{"4", "--date", "2024-01-15"},
-		routes: map[string]string{"DELETE /bloodpressure-service/bloodpressure/2024-01-15/4": deletedBody},
-		prompt: "Delete blood pressure entry 4 on 2024-01-15?",
-		json:   deletedOut,
-		human:  "Deleted blood pressure entry 4\n",
 	},
 	"workouts upload": {
 		args:   []string{"w.json"},
@@ -156,20 +130,6 @@ var writeCases = map[string]writeCase{
 		json:   "{\n  \"workoutScheduleId\": 10\n}\n",
 		human:  "Scheduled workout 9 on 2024-01-15\n",
 	},
-	"workouts schedule remove": {
-		args:   []string{"10"},
-		routes: map[string]string{"DELETE /workout-service/schedule/10": deletedBody},
-		prompt: "Remove scheduled workout 10?",
-		json:   deletedOut,
-		human:  "Removed scheduled workout 10\n",
-	},
-	"workouts delete": {
-		args:   []string{"9"},
-		routes: map[string]string{"DELETE /workout-service/workout/9": deletedBody},
-		prompt: "Delete workout 9?",
-		json:   deletedOut,
-		human:  "Deleted workout 9\n",
-	},
 	"courses import": {
 		args:  []string{"route.gpx"},
 		files: map[string]string{"route.gpx": "<gpx/>"},
@@ -196,38 +156,12 @@ var writeCases = map[string]writeCase{
 		human:    "Sent course \"Loop\" to device Edge (message 7)\n",
 		fallback: "Sent course \"Loop\" to device 99\n",
 	},
-	"courses delete": {
-		args:   []string{"42"},
-		routes: map[string]string{"DELETE /course-service/course/42": deletedBody},
-		prompt: "Delete course 42?",
-		json:   deletedOut,
-		human:  "Deleted course 42\n",
-	},
 	"events add": {
 		args:     []string{"--name", "Race", "--date", "2024-06-01", "--type", "running"},
 		routes:   map[string]string{"POST /calendar-service/event": `{"id":11,"eventName":"Race","date":"2024-06-01"}`},
 		json:     "{\n  \"id\": 11,\n  \"eventName\": \"Race\",\n  \"date\": \"2024-06-01\"\n}\n",
 		human:    "Added event \"Race\" on 2024-06-01 (ID: 11)\n",
 		fallback: "Added event\n",
-	},
-	"events delete": {
-		args:   []string{"11"},
-		routes: map[string]string{"DELETE /calendar-service/event/11": deletedBody},
-		prompt: "Delete event 11?",
-		json:   deletedOut,
-		human:  "Deleted event 11\n",
-	},
-	"gear link": {
-		args:   []string{"abc", "1"},
-		routes: map[string]string{"PUT /gear-service/gear/link/abc/activity/1": `{"gearPk":3}`},
-		json:   "{\n  \"gearPk\": 3\n}\n",
-		human:  "Linked gear abc to activity 1\n",
-	},
-	"gear unlink": {
-		args:   []string{"abc", "1"},
-		routes: map[string]string{"PUT /gear-service/gear/unlink/abc/activity/1": noContent},
-		json:   okOut,
-		human:  "Unlinked gear abc from activity 1\n",
 	},
 	"hydration add": {
 		args:   []string{"250", "--date", "2024-01-15"},

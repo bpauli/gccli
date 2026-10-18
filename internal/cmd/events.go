@@ -12,7 +12,16 @@ import (
 var eventsGroup = Group{Name: "events", Help: "Manage calendar events.", Children: []Node{
 	Custom{Name: "list", Help: "List calendar events.", Default: true, Cmd: &EventsListCmd{}},
 	Custom{Name: "add", Help: "Add a calendar event.", Cmd: &EventsAddCmd{}},
-	Custom{Name: "delete", Help: "Delete a calendar event.", Cmd: &EventsDeleteCmd{}},
+	Leaf{
+		Name: "delete", Help: "Delete a calendar event.",
+		Spec: argsOf(&struct {
+			ID string `arg:"" help:"Event ID."`
+		}{}),
+		Endpoint: "events.delete",
+		Params:   Params{"eventID": In("ID")},
+		Verb:     "delete event",
+		Output:   Write{Done: "Deleted event {ID}", Confirm: "Delete event {ID}?"},
+	},
 }}
 
 // EventsListCmd lists calendar events from a start date.
@@ -169,32 +178,4 @@ func (c *EventsAddCmd) Run(g *Globals) error {
 		return reportWrite(g, data, "Added event %q on %s (ID: %s)", jsonString(resp, "eventName"), jsonString(resp, "date"), id)
 	}
 	return reportWrite(g, data, "Added event")
-}
-
-// EventsDeleteCmd deletes a calendar event.
-type EventsDeleteCmd struct {
-	ID    string `arg:"" help:"Event ID."`
-	Force bool   `help:"Skip confirmation prompt." short:"f"`
-}
-
-func (c *EventsDeleteCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	ok, err := confirm(g.Stderr, fmt.Sprintf("Delete event %s?", c.ID), c.Force)
-	if err != nil {
-		return err
-	}
-	if !ok {
-		g.UI.Infof("Cancelled")
-		return nil
-	}
-
-	data, err := client.Call(g.Context, "events.delete", map[string]string{"eventID": c.ID}, nil)
-	if err != nil {
-		return fmt.Errorf("delete event: %w", err)
-	}
-	return reportWrite(g, data, "Deleted event %s", c.ID)
 }

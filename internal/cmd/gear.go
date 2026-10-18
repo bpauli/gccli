@@ -1,9 +1,5 @@
 package cmd
 
-import (
-	"fmt"
-)
-
 var gearGroup = Group{Name: "gear", Help: "Manage gear.", Children: []Node{
 	Leaf{
 		Name: "list", Help: "List all gear.", Default: true,
@@ -36,44 +32,26 @@ var gearGroup = Group{Name: "gear", Help: "Manage gear.", Children: []Node{
 		Params:   Params{"userProfileNumber": ProfilePK},
 		Verb:     "get gear defaults", Output: JSON{},
 	},
-	Custom{Name: "link", Help: "Link gear to an activity.", Cmd: &GearLinkCmd{}},
-	Custom{Name: "unlink", Help: "Unlink gear from an activity.", Cmd: &GearUnlinkCmd{}},
+	Leaf{
+		Name: "link", Help: "Link gear to an activity.",
+		Spec: argsOf(&struct {
+			UUID       string `arg:"" help:"Gear UUID."`
+			ActivityID string `arg:"" help:"Activity ID." name:"activity-id"`
+		}{}),
+		Endpoint: "gear.link",
+		Params:   Params{"gearUUID": In("UUID"), "activityID": In("ActivityID")},
+		Verb:     "link gear",
+		Output:   Write{Done: "Linked gear {UUID} to activity {ActivityID}"},
+	},
+	Leaf{
+		Name: "unlink", Help: "Unlink gear from an activity.",
+		Spec: argsOf(&struct {
+			UUID       string `arg:"" help:"Gear UUID."`
+			ActivityID string `arg:"" help:"Activity ID." name:"activity-id"`
+		}{}),
+		Endpoint: "gear.unlink",
+		Params:   Params{"gearUUID": In("UUID"), "activityID": In("ActivityID")},
+		Verb:     "unlink gear",
+		Output:   Write{Done: "Unlinked gear {UUID} from activity {ActivityID}"},
+	},
 }}
-
-// GearLinkCmd links a gear item to an activity.
-type GearLinkCmd struct {
-	UUID       string `arg:"" help:"Gear UUID."`
-	ActivityID string `arg:"" help:"Activity ID." name:"activity-id"`
-}
-
-func (c *GearLinkCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.Call(g.Context, "gear.link", map[string]string{"gearUUID": c.UUID, "activityID": c.ActivityID}, nil)
-	if err != nil {
-		return fmt.Errorf("link gear: %w", err)
-	}
-	return reportWrite(g, data, "Linked gear %s to activity %s", c.UUID, c.ActivityID)
-}
-
-// GearUnlinkCmd unlinks a gear item from an activity.
-type GearUnlinkCmd struct {
-	UUID       string `arg:"" help:"Gear UUID."`
-	ActivityID string `arg:"" help:"Activity ID." name:"activity-id"`
-}
-
-func (c *GearUnlinkCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.Call(g.Context, "gear.unlink", map[string]string{"gearUUID": c.UUID, "activityID": c.ActivityID}, nil)
-	if err != nil {
-		return fmt.Errorf("unlink gear: %w", err)
-	}
-	return reportWrite(g, data, "Unlinked gear %s from activity %s", c.UUID, c.ActivityID)
-}
