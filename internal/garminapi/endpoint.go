@@ -20,6 +20,7 @@ var endpoints = mustIndex(
 	activitiesEndpoints,
 	coursesEndpoints,
 	workoutsEndpoints,
+	bodyEndpoints,
 )
 
 // Host is the Garmin server an endpoint lives on.

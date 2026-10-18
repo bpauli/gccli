@@ -9,25 +9,15 @@ import (
 	"net/http"
 )
 
-// GetBodyComposition returns body composition data for a date range.
-// Date format: YYYY-MM-DD.
-func (c *Client) GetBodyComposition(ctx context.Context, startDate, endDate string) (json.RawMessage, error) {
-	path := fmt.Sprintf("/weight-service/weight/dateRange?startDate=%s&endDate=%s", startDate, endDate)
-	return c.ConnectAPI(ctx, http.MethodGet, path, nil)
-}
-
-// GetWeighIns returns weigh-in data for a date range.
-// Date format: YYYY-MM-DD.
-func (c *Client) GetWeighIns(ctx context.Context, startDate, endDate string) (json.RawMessage, error) {
-	path := fmt.Sprintf("/weight-service/weight/range/%s/%s?includeAll=true", startDate, endDate)
-	return c.ConnectAPI(ctx, http.MethodGet, path, nil)
-}
-
-// GetDailyWeighIns returns weigh-in data for a single day.
-// Date format: YYYY-MM-DD.
-func (c *Client) GetDailyWeighIns(ctx context.Context, date string) (json.RawMessage, error) {
-	path := fmt.Sprintf("/weight-service/weight/dayview/%s?includeAll=true", date)
-	return c.ConnectAPI(ctx, http.MethodGet, path, nil)
+var bodyEndpoints = []Endpoint{
+	{Name: "body.composition", Method: http.MethodGet, Host: ConnectAPI, Path: "/weight-service/weight/dateRange?startDate={startDate}&endDate={endDate}"},
+	{Name: "body.weigh-ins", Method: http.MethodGet, Host: ConnectAPI, Path: "/weight-service/weight/range/{startDate}/{endDate}?includeAll=true"},
+	{Name: "body.daily-weigh-ins", Method: http.MethodGet, Host: ConnectAPI, Path: "/weight-service/weight/dayview/{date}?includeAll=true"},
+	{Name: "body.delete-weight", Method: http.MethodDelete, Host: ConnectAPI, Path: "/weight-service/weight/{date}/byversion/{version}"},
+	{Name: "body.blood-pressure", Method: http.MethodGet, Host: ConnectAPI, Path: "/bloodpressure-service/bloodpressure/range/{startDate}/{endDate}?includeAll=true"},
+	{Name: "body.delete-blood-pressure", Method: http.MethodDelete, Host: ConnectAPI, Path: "/bloodpressure-service/bloodpressure/{date}/{version}"},
+	{Name: "body.add-weight", Method: http.MethodPost, Host: ConnectAPI, Path: "/weight-service/user-weight", Body: true},
+	{Name: "body.add-blood-pressure", Method: http.MethodPost, Host: ConnectAPI, Path: "/bloodpressure-service/bloodpressure", Body: true},
 }
 
 // AddWeight adds a weigh-in entry.
@@ -45,21 +35,7 @@ func (c *Client) AddWeight(ctx context.Context, weight float64, unitKey string, 
 		return nil, fmt.Errorf("marshal weight: %w", err)
 	}
 
-	return c.ConnectAPI(ctx, http.MethodPost, "/weight-service/user-weight", bytes.NewReader(body))
-}
-
-// DeleteWeight deletes a weigh-in entry by date and version (primary key).
-// Date format: YYYY-MM-DD.
-func (c *Client) DeleteWeight(ctx context.Context, date string, version string) (json.RawMessage, error) {
-	path := fmt.Sprintf("/weight-service/weight/%s/byversion/%s", date, version)
-	return c.ConnectAPI(ctx, http.MethodDelete, path, nil)
-}
-
-// GetBloodPressure returns blood pressure data for a date range.
-// Date format: YYYY-MM-DD.
-func (c *Client) GetBloodPressure(ctx context.Context, startDate, endDate string) (json.RawMessage, error) {
-	path := fmt.Sprintf("/bloodpressure-service/bloodpressure/range/%s/%s?includeAll=true", startDate, endDate)
-	return c.ConnectAPI(ctx, http.MethodGet, path, nil)
+	return c.Call(ctx, "body.add-weight", nil, body)
 }
 
 // AddBloodPressure adds a blood pressure measurement.
@@ -79,14 +55,7 @@ func (c *Client) AddBloodPressure(ctx context.Context, systolic, diastolic, puls
 		return nil, fmt.Errorf("marshal blood pressure: %w", err)
 	}
 
-	return c.ConnectAPI(ctx, http.MethodPost, "/bloodpressure-service/bloodpressure", bytes.NewReader(body))
-}
-
-// DeleteBloodPressure deletes a blood pressure entry by date and version.
-// Date format: YYYY-MM-DD.
-func (c *Client) DeleteBloodPressure(ctx context.Context, date string, version string) (json.RawMessage, error) {
-	path := fmt.Sprintf("/bloodpressure-service/bloodpressure/%s/%s", date, version)
-	return c.ConnectAPI(ctx, http.MethodDelete, path, nil)
+	return c.Call(ctx, "body.add-blood-pressure", nil, body)
 }
 
 // UploadBodyComposition uploads a FIT-encoded body composition file.

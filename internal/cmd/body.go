@@ -46,7 +46,7 @@ func (c *BodyCompositionCmd) Run(g *Globals) error {
 		endDate = date
 	}
 
-	data, err := client.GetBodyComposition(g.Context, startDate, endDate)
+	data, err := client.Call(g.Context, "body.composition", map[string]string{"startDate": startDate, "endDate": endDate}, nil)
 	if err != nil {
 		return fmt.Errorf("get body composition: %w", err)
 	}
@@ -66,7 +66,7 @@ func (c *BodyWeighInsCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetWeighIns(g.Context, string(c.StartDate), string(c.EndDate))
+	data, err := client.Call(g.Context, "body.weigh-ins", map[string]string{"startDate": string(c.StartDate), "endDate": string(c.EndDate)}, nil)
 	if err != nil {
 		return fmt.Errorf("get weigh-ins: %w", err)
 	}
@@ -90,7 +90,7 @@ func (c *BodyDailyWeighInsCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetDailyWeighIns(g.Context, date)
+	data, err := client.Call(g.Context, "body.daily-weigh-ins", map[string]string{"date": date}, nil)
 	if err != nil {
 		return fmt.Errorf("get daily weigh-ins: %w", err)
 	}
@@ -191,7 +191,7 @@ func (c *BodyDeleteWeightCmd) Run(g *Globals) error {
 		return nil
 	}
 
-	data, err := client.DeleteWeight(g.Context, c.Date, c.PK)
+	data, err := client.Call(g.Context, "body.delete-weight", map[string]string{"date": c.Date, "version": c.PK}, nil)
 	if err != nil {
 		return fmt.Errorf("delete weight: %w", err)
 	}
@@ -210,7 +210,7 @@ func (c *BodyBloodPressureCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.GetBloodPressure(g.Context, string(c.StartDate), string(c.EndDate))
+	data, err := client.Call(g.Context, "body.blood-pressure", map[string]string{"startDate": string(c.StartDate), "endDate": string(c.EndDate)}, nil)
 	if err != nil {
 		return fmt.Errorf("get blood pressure: %w", err)
 	}
@@ -265,7 +265,7 @@ func (c *BodyDeleteBPCmd) Run(g *Globals) error {
 		return nil
 	}
 
-	data, err := client.DeleteBloodPressure(g.Context, c.Date, c.Version)
+	data, err := client.Call(g.Context, "body.delete-blood-pressure", map[string]string{"date": c.Date, "version": c.Version}, nil)
 	if err != nil {
 		return fmt.Errorf("delete blood pressure: %w", err)
 	}
