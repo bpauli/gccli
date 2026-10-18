@@ -48,10 +48,7 @@ func (c *ActivitiesListCmd) Run(g *Globals) error {
 	rows := formatActivityRows(resolveUnits(g, client), activities)
 	header := activityHeader()
 
-	if outfmt.IsPlain(g.Context) {
-		return outfmt.WritePlain(g.Stdout, rows)
-	}
-	return outfmt.WriteTable(g.Stdout, header, rows)
+	return outfmt.WriteRows(g.Context, g.Stdout, header, rows)
 }
 
 // ActivitiesCountCmd shows the total activity count.
@@ -106,10 +103,7 @@ func (c *ActivitiesSearchCmd) Run(g *Globals) error {
 	rows := formatActivityRows(resolveUnits(g, client), activities)
 	header := activityHeader()
 
-	if outfmt.IsPlain(g.Context) {
-		return outfmt.WritePlain(g.Stdout, rows)
-	}
-	return outfmt.WriteTable(g.Stdout, header, rows)
+	return outfmt.WriteRows(g.Context, g.Stdout, header, rows)
 }
 
 func activityHeader() []string {
@@ -255,10 +249,7 @@ func (c *ActivitiesTypesCmd) Run(g *Globals) error {
 	rows := formatActivityTypeRows(types)
 	header := activityTypesHeader()
 
-	if outfmt.IsPlain(g.Context) {
-		return outfmt.WritePlain(g.Stdout, rows)
-	}
-	return outfmt.WriteTable(g.Stdout, header, rows)
+	return outfmt.WriteRows(g.Context, g.Stdout, header, rows)
 }
 
 func activityTypesHeader() []string {

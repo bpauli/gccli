@@ -51,10 +51,7 @@ func (c *WorkoutsListCmd) Run(g *Globals) error {
 	rows := formatWorkoutRows(workouts)
 	header := []string{"ID", "NAME", "TYPE", "OWNER"}
 
-	if outfmt.IsPlain(g.Context) {
-		return outfmt.WritePlain(g.Stdout, rows)
-	}
-	return outfmt.WriteTable(g.Stdout, header, rows)
+	return outfmt.WriteRows(g.Context, g.Stdout, header, rows)
 }
 
 // WorkoutDetailCmd shows workout details.
@@ -325,10 +322,7 @@ func writeScheduledWorkouts(g *Globals, items []map[string]any) error {
 	rows := formatCalendarWorkoutRows(items)
 	header := []string{"SCHEDULE ID", "WORKOUT ID", "TITLE", "SPORT", "DATE"}
 
-	if outfmt.IsPlain(g.Context) {
-		return outfmt.WritePlain(g.Stdout, rows)
-	}
-	return outfmt.WriteTable(g.Stdout, header, rows)
+	return outfmt.WriteRows(g.Context, g.Stdout, header, rows)
 }
 
 // filterCalendarWorkouts extracts workout items matching the given date from calendar data.

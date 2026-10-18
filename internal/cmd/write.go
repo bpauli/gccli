@@ -31,10 +31,7 @@ func reportWriteTable(g *Globals, body json.RawMessage, empty string, header []s
 	if err != nil {
 		return err
 	}
-	if outfmt.IsPlain(g.Context) {
-		return outfmt.WritePlain(g.Stdout, r)
-	}
-	return outfmt.WriteTable(g.Stdout, header, r)
+	return outfmt.WriteRows(g.Context, g.Stdout, header, r)
 }
 
 func writeResponseJSON(w io.Writer, body json.RawMessage) error {

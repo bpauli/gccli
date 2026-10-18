@@ -49,10 +49,7 @@ func (c *CoursesListCmd) Run(g *Globals) error {
 	rows := formatCourseRows(resolveUnits(g, client), courses)
 	header := []string{"ID", "NAME", "TYPE", "DISTANCE", "CREATED"}
 
-	if outfmt.IsPlain(g.Context) {
-		return outfmt.WritePlain(g.Stdout, rows)
-	}
-	return outfmt.WriteTable(g.Stdout, header, rows)
+	return outfmt.WriteRows(g.Context, g.Stdout, header, rows)
 }
 
 // CoursesFavoritesCmd lists favorite courses.
@@ -81,10 +78,7 @@ func (c *CoursesFavoritesCmd) Run(g *Globals) error {
 	rows := formatCourseRows(resolveUnits(g, client), courses)
 	header := []string{"ID", "NAME", "TYPE", "DISTANCE", "CREATED"}
 
-	if outfmt.IsPlain(g.Context) {
-		return outfmt.WritePlain(g.Stdout, rows)
-	}
-	return outfmt.WriteTable(g.Stdout, header, rows)
+	return outfmt.WriteRows(g.Context, g.Stdout, header, rows)
 }
 
 // CourseDetailCmd shows details for a course.
