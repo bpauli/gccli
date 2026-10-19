@@ -1,0 +1,45 @@
+The start date defaults to today, not to the end date, so the route holds the clock date 2026-10-15 before the end date.
+-- args --
+devices
+solar
+3333
+--end
+2026-10-20
+-- route GET /web-gateway/solar/3333/2026-10-15/2026-10-20 --
+{"value":1}
+-- table stdout --
+{
+  "value": 1
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /web-gateway/solar/3333/2026-10-15/2026-10-20
+-- plain stdout --
+{
+  "value": 1
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /web-gateway/solar/3333/2026-10-15/2026-10-20
+-- plain-header stdout --
+{
+  "value": 1
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /web-gateway/solar/3333/2026-10-15/2026-10-20
+-- json stdout --
+{
+  "value": 1
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /web-gateway/solar/3333/2026-10-15/2026-10-20

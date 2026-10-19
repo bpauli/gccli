@@ -235,6 +235,22 @@ func tableWriteCases(t *testing.T) map[string]writeCase {
 	return cases
 }
 
+func TestTableWriteCasesCoverWriteRows(t *testing.T) {
+	var want []string
+	walkNodes(commands, "", func(path string, n Node) {
+		if l, ok := n.(Leaf); ok {
+			if _, ok := l.Output.(Write); ok {
+				want = append(want, path)
+			}
+		}
+	})
+	slices.Sort(want)
+	got := slices.Sorted(maps.Keys(tableWriteCases(t)))
+	if !slices.Equal(got, want) {
+		t.Errorf("tableWriteCases covers %q\nwant the Leaf rows with a Write output %q", got, want)
+	}
+}
+
 func allWriteCases(t *testing.T) map[string]writeCase {
 	t.Helper()
 	cases := maps.Clone(writeCases)

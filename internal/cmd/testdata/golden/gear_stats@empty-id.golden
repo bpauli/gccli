@@ -1,0 +1,29 @@
+Error case: the gear UUID is an empty string, so the endpoint table refuses the request and the exit code is 1 (error). The third args line is the empty argument.
+-- args --
+gear
+stats
+
+-- table stdout --
+-- table stderr --
+get gear stats: endpoint gear.stats: gearUUID: required
+-- table exit --
+1
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+get gear stats: endpoint gear.stats: gearUUID: required
+-- plain exit --
+1
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+get gear stats: endpoint gear.stats: gearUUID: required
+-- plain-header exit --
+1
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"get gear stats: endpoint gear.stats: gearUUID: required"}}
+-- json exit --
+1
+-- json requests --
