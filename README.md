@@ -18,7 +18,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Workouts** — list, view, download as FIT, upload from JSON, update in place from JSON, create with sport types and targets (pace/HR/power/cadence), schedule (add/list/remove/export), list workout types, strength benchmarks, delete
 - **Courses** — list courses, view favorites, get full course detail, download as FIT/GPX, import GPX files as new courses, send courses directly to a device, delete courses
 - **Devices** - list registered devices, view settings, solar data, alarms, primary/last-used device, paired sensors, backup summary, historical devices, device messages
-- **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities, gear types, gear collections
+- **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities, gear types, gear collections, add, update, retire, unretire and delete gear
 - **Goals & Badges** — active goals, earned/available/in-progress badges, badge details, challenges, personal records
 - **Training** - browse and view training plans, show your active plans, list adaptive coaching workout types
 - **Profile** — user profile and settings, privacy settings and zones, heart rate and power zones
@@ -662,6 +662,10 @@ gccli gear defaults
 gccli gear link <uuid> <activity-id>
 gccli gear unlink <uuid> <activity-id>
 gccli gear types
+gccli gear add "Pegasus 41" --brand Nike --model Pegasus --type shoes
+gccli gear update <uuid> --name "Pegasus 41 (old)"
+gccli gear retire <uuid>          # gear unretire <uuid> undoes it
+gccli gear delete <uuid> --force
 gccli gear collections list
 ```
 
@@ -1191,6 +1195,26 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `<uuid>`: Gear UUID.
   - `<activity-id>`: Activity ID.
 - `gccli gear types`: List gear types.
+- `gccli gear add --brand=STRING --model=STRING <name> [flags]`: Add a gear item.
+  - `<name>`: Gear name.
+  - `--type="shoes"`: Gear type. One of: shoes, bike, other.
+  - `--brand=STRING`: Brand.
+  - `--model=STRING`: Model.
+  - `--notes=STRING`: Notes (1 to 2000 characters). Defaults to the name, because Garmin requires notes.
+  - `--first-use="today"`: Date of first use (YYYY-MM-DD, today, yesterday, 3d).
+- `gccli gear update <uuid> [flags]`: Change the name, brand, model or notes of a gear item.
+  - `<uuid>`: Gear UUID, with or without dashes.
+  - `--name=STRING`: New name.
+  - `--brand=STRING`: New brand.
+  - `--model=STRING`: New model.
+  - `--notes=STRING`: New notes (1 to 2000 characters).
+- `gccli gear retire <uuid>`: Retire a gear item.
+  - `<uuid>`: Gear UUID, with or without dashes.
+- `gccli gear unretire <uuid>`: Make a retired gear item active again.
+  - `<uuid>`: Gear UUID, with or without dashes.
+- `gccli gear delete <uuid> [flags]`: Delete a gear item.
+  - `<uuid>`: Gear UUID, with or without dashes.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli gear collections list`: List gear collections. Also runs as `gccli gear collections`.
 
 ### Goals, Badges & Challenges

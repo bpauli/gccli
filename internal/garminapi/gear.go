@@ -1,6 +1,11 @@
 package garminapi
 
-import "net/http"
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"net/http"
+)
 
 var gearEndpoints = []Endpoint{
 	{Name: "gear.list", Method: http.MethodGet, Host: ConnectAPI, Path: "/gear-service/gear/filterGear?userProfilePk={userProfilePK}"},
@@ -11,4 +16,85 @@ var gearEndpoints = []Endpoint{
 	{Name: "gear.unlink", Method: http.MethodPut, Host: ConnectAPI, Path: "/gear-service/gear/unlink/{gearUUID}/activity/{activityID}"},
 	{Name: "gear.types", Method: http.MethodGet, Host: ConnectAPI, Path: "/gear-service/gear/types"},
 	{Name: "gear.collections", Method: http.MethodGet, Host: ConnectAPI, Path: "/gear-service/collection"},
+	{Name: "gear.get", Method: http.MethodGet, Host: ConnectAPI, Path: "/gear-service/gear/v2/{gearUUID}"},
+	{Name: "gear.create", Method: http.MethodPost, Host: ConnectAPI, Path: "/gear-service/gear/v2", Body: true},
+	{Name: "gear.update", Method: http.MethodPut, Host: ConnectAPI, Path: "/gear-service/gear/v2/{gearUUID}", Body: true},
+	{Name: "gear.retire", Method: http.MethodPut, Host: ConnectAPI, Path: "/gear-service/gear/v2/{gearUUID}/status/RETIRED"},
+	{Name: "gear.unretire", Method: http.MethodPut, Host: ConnectAPI, Path: "/gear-service/gear/v2/{gearUUID}/status/ACTIVE"},
+	{Name: "gear.delete", Method: http.MethodDelete, Host: ConnectAPI, Path: "/gear-service/gear/v2/{gearUUID}"},
+}
+
+// NewGear is the input of a new gear item. Type is a Garmin gear type such as
+// SHOES, and FirstUseDate is YYYY-MM-DD.
+type NewGear struct {
+	Name         string
+	Type         string
+	Brand        string
+	Model        string
+	Notes        string
+	FirstUseDate string
+}
+
+// CreateGear adds a gear item. Garmin requires notes of 1 to 2000 characters,
+// so the name is sent as the notes when Notes is empty.
+func (c *Client) CreateGear(ctx context.Context, g NewGear) (json.RawMessage, error) {
+	notes := g.Notes
+	if notes == "" {
+		notes = g.Name
+	}
+	body, err := json.Marshal(map[string]any{
+		"uuid":                    nil,
+		"gearType":                g.Type,
+		"brand":                   g.Brand,
+		"model":                   g.Model,
+		"name":                    g.Name,
+		"firstUseDate":            g.FirstUseDate,
+		"maxUsageDate":            nil,
+		"maxUsageDistanceMeters":  0,
+		"maxUsageDurationSeconds": 0,
+		"usageType":               "DISTANCE",
+		"notes":                   notes,
+		"associatedActivityTypes": []any{},
+	})
+	if err != nil {
+		return nil, fmt.Errorf("marshal gear: %w", err)
+	}
+	return c.Call(ctx, "gear.create", nil, body)
+}
+
+// GearEdit holds the new values of a gear update. An empty field keeps the
+// saved value.
+type GearEdit struct {
+	Name  string
+	Brand string
+	Model string
+	Notes string
+}
+
+// UpdateGear reads the gear item, sets the fields of e and sends the full
+// object back, because Garmin rejects a partial body.
+func (c *Client) UpdateGear(ctx context.Context, uuid string, e GearEdit) (json.RawMessage, error) {
+	params := map[string]string{"gearUUID": uuid}
+	data, err := c.Call(ctx, "gear.get", params, nil)
+	if err != nil {
+		return nil, err
+	}
+	var gear map[string]json.RawMessage
+	if err := json.Unmarshal(data, &gear); err != nil || gear == nil {
+		return nil, fmt.Errorf("parse gear %s: not a JSON object", uuid)
+	}
+	for key, value := range map[string]string{"name": e.Name, "brand": e.Brand, "model": e.Model, "notes": e.Notes} {
+		if value == "" {
+			continue
+		}
+		gear[key], err = json.Marshal(value)
+		if err != nil {
+			return nil, err
+		}
+	}
+	body, err := json.Marshal(gear)
+	if err != nil {
+		return nil, fmt.Errorf("marshal gear: %w", err)
+	}
+	return c.Call(ctx, "gear.update", params, body)
 }

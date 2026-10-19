@@ -1,0 +1,35 @@
+-- args --
+gear
+unretire
+0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+-- route PUT /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e/status/ACTIVE 204 --
+-- table stdout --
+-- table stderr --
+Unretired gear 0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+-- table exit --
+0
+-- table requests --
+PUT /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e/status/ACTIVE
+-- plain stdout --
+-- plain stderr --
+Unretired gear 0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+-- plain exit --
+0
+-- plain requests --
+PUT /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e/status/ACTIVE
+-- plain-header stdout --
+-- plain-header stderr --
+Unretired gear 0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+-- plain-header exit --
+0
+-- plain-header requests --
+PUT /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e/status/ACTIVE
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+PUT /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e/status/ACTIVE

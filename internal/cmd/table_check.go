@@ -265,6 +265,8 @@ func requestValue(v reflect.Value) (value string, ok bool) {
 		return x, true
 	case Date:
 		return string(x), true
+	case GearUUID:
+		return string(x), true
 	case int:
 		return strconv.Itoa(x), true
 	}

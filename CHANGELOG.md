@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Wellness** - `wellness jet-lag status [DATE]` shows the jet lag status of a date (default today). `wellness menstrual-calendar` shows the menstrual cycle calendar for a date range (`--start` and `--end`, both required). (#94)
 - **Training** - `training coach-workouts` lists adaptive coaching workout types. (#83)
 - **Notifications** - `notifications preferences` shows your notification preferences. (#86)
+- **Gear writes** - `gear add <name> --brand --model` adds a gear item (`--type` shoes, bike or other, default shoes; `--notes` defaults to the name, because Garmin requires notes). `gear update <uuid>` changes `--name`, `--brand`, `--model` or `--notes`. `gear retire <uuid>` and `gear unretire <uuid>` change the gear status, and `gear delete <uuid>` deletes a gear item after a prompt (`--force` skips it). These commands take the UUID with or without dashes. (#69)
 
 ### Changed
 

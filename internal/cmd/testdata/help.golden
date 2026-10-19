@@ -171,6 +171,12 @@ Commands:
   gear link                        Link gear to an activity.
   gear unlink                      Unlink gear from an activity.
   gear types                       List gear types.
+  gear add                         Add a gear item.
+  gear update                      Change the name, brand, model or notes of a
+                                   gear item.
+  gear retire                      Retire a gear item.
+  gear unretire                    Make a retired gear item active again.
+  gear delete                      Delete a gear item.
   gear collections list            List gear collections.
   goals list                       List goals.
   goals weight                     Show the effective weight goal for a date
@@ -997,6 +1003,12 @@ Commands:
   gear link                Link gear to an activity.
   gear unlink              Unlink gear from an activity.
   gear types               List gear types.
+  gear add                 Add a gear item.
+  gear update              Change the name, brand, model or notes of a gear
+                           item.
+  gear retire              Retire a gear item.
+  gear unretire            Make a retired gear item active again.
+  gear delete              Delete a gear item.
   gear collections list    List gear collections.
 
 $ gccli gear collections --help

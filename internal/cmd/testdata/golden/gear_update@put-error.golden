@@ -1,0 +1,111 @@
+Error case: the PUT answers 400, so the exit code is 1 (error).
+-- args --
+gear
+update
+0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+--name
+Trail
+-- route GET /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e --
+{"uuid":"0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e","userProfilePk":3141592,"gearType":"SHOES","status":"active","name":"Pegasus 41","brand":"Nike","model":"Pegasus","usageType":"DISTANCE","maxUsageDurationSeconds":0,"firstUseDate":"2026-10-01","distanceUsedMeters":0.0,"processing":false,"notes":"Pegasus 41","images":[],"collections":[]}
+-- route PUT /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+update gear: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+PUT /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+  {
+    "brand": "Nike",
+    "collections": [],
+    "distanceUsedMeters": 0.0,
+    "firstUseDate": "2026-10-01",
+    "gearType": "SHOES",
+    "images": [],
+    "maxUsageDurationSeconds": 0,
+    "model": "Pegasus",
+    "name": "Trail",
+    "notes": "Pegasus 41",
+    "processing": false,
+    "status": "active",
+    "usageType": "DISTANCE",
+    "userProfilePk": 3141592,
+    "uuid": "0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e"
+  }
+-- plain stdout --
+-- plain stderr --
+update gear: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+PUT /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+  {
+    "brand": "Nike",
+    "collections": [],
+    "distanceUsedMeters": 0.0,
+    "firstUseDate": "2026-10-01",
+    "gearType": "SHOES",
+    "images": [],
+    "maxUsageDurationSeconds": 0,
+    "model": "Pegasus",
+    "name": "Trail",
+    "notes": "Pegasus 41",
+    "processing": false,
+    "status": "active",
+    "usageType": "DISTANCE",
+    "userProfilePk": 3141592,
+    "uuid": "0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+update gear: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+PUT /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+  {
+    "brand": "Nike",
+    "collections": [],
+    "distanceUsedMeters": 0.0,
+    "firstUseDate": "2026-10-01",
+    "gearType": "SHOES",
+    "images": [],
+    "maxUsageDurationSeconds": 0,
+    "model": "Pegasus",
+    "name": "Trail",
+    "notes": "Pegasus 41",
+    "processing": false,
+    "status": "active",
+    "usageType": "DISTANCE",
+    "userProfilePk": 3141592,
+    "uuid": "0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e"
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"update gear: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+PUT /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+  {
+    "brand": "Nike",
+    "collections": [],
+    "distanceUsedMeters": 0.0,
+    "firstUseDate": "2026-10-01",
+    "gearType": "SHOES",
+    "images": [],
+    "maxUsageDurationSeconds": 0,
+    "model": "Pegasus",
+    "name": "Trail",
+    "notes": "Pegasus 41",
+    "processing": false,
+    "status": "active",
+    "usageType": "DISTANCE",
+    "userProfilePk": 3141592,
+    "uuid": "0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e"
+  }
