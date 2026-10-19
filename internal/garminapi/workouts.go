@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"time"
 )
 
@@ -24,6 +25,20 @@ var workoutsEndpoints = []Endpoint{
 // DownloadWorkout downloads a workout as a FIT file.
 func (c *Client) DownloadWorkout(ctx context.Context, workoutID string) ([]byte, error) {
 	return c.Download(ctx, "/workout-service/workout/FIT/"+workoutID)
+}
+
+// CopyWorkout copies a workout and returns the new one. Garmin takes the raw
+// request body as the name of the copy, so the name goes as text/plain: a JSON
+// string would keep its quotes.
+func (c *Client) CopyWorkout(ctx context.Context, workoutID, name string) (json.RawMessage, error) {
+	resp, err := c.do(ctx, request{
+		kind: kindJSON, method: http.MethodPost, path: "/workout-service/workout/copy/" + url.PathEscape(workoutID),
+		body: []byte(name), contentType: "text/plain; charset=utf-8",
+	})
+	if err != nil {
+		return nil, err
+	}
+	return jsonResult(resp), nil
 }
 
 // GetCalendarWeek returns the calendar data for the week containing the given date.

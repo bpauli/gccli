@@ -18,6 +18,7 @@ var workoutsGroup = Group{Name: "workouts", Help: "Manage workouts.", Children: 
 	Custom{Name: "upload", Help: "Upload workout from JSON file.", Cmd: &WorkoutUploadCmd{}},
 	Custom{Name: "update", Help: "Update an existing workout from a JSON file.", Cmd: &WorkoutUpdateCmd{}},
 	Custom{Name: "create", Help: "Create a workout with sport type and optional targets.", Cmd: &WorkoutCreateCmd{}},
+	Custom{Name: "copy", Help: "Copy a workout.", Cmd: &WorkoutCopyCmd{}},
 	Leaf{Name: "types", Help: "List workout types.", Endpoint: "workouts.types", Verb: "get workout types", Output: JSON{}},
 	workoutScheduleGroup,
 	workoutBenchmarksGroup,
@@ -177,6 +178,31 @@ func (c *WorkoutUpdateCmd) Run(g *Globals) error {
 	}
 
 	return reportWrite(g, data, "Updated workout %s from %s", c.ID, c.File)
+}
+
+// WorkoutCopyCmd copies a workout.
+type WorkoutCopyCmd struct {
+	ID   string `arg:"" help:"Workout ID."`
+	Name string `arg:"" optional:"" help:"Name of the copy. Without it, the copy gets the name of the original."`
+}
+
+func (c *WorkoutCopyCmd) Run(g *Globals) error {
+	client, err := resolveClient(g)
+	if err != nil {
+		return err
+	}
+
+	data, err := client.CopyWorkout(g.Context, c.ID, c.Name)
+	if err != nil {
+		return fmt.Errorf("copy workout: %w", err)
+	}
+
+	var resp map[string]any
+	_ = json.Unmarshal(data, &resp)
+	if id := jsonString(resp, "workoutId"); id != "" {
+		return reportWrite(g, data, "Copied workout %s to %q (ID: %s)", c.ID, jsonString(resp, "workoutName"), id)
+	}
+	return reportWrite(g, data, "Copied workout %s", c.ID)
 }
 
 // setWorkoutID returns the payload with workoutId set to workoutID. Garmin

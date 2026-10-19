@@ -1,0 +1,37 @@
+-- args --
+workouts
+copy
+9
+-- route POST /workout-service/workout/copy/9 --
+{"workoutId":10,"workoutName":"Tempo"}
+-- table stdout --
+-- table stderr --
+Copied workout 9 to "Tempo" (ID: 10)
+-- table exit --
+0
+-- table requests --
+POST /workout-service/workout/copy/9
+-- plain stdout --
+-- plain stderr --
+Copied workout 9 to "Tempo" (ID: 10)
+-- plain exit --
+0
+-- plain requests --
+POST /workout-service/workout/copy/9
+-- plain-header stdout --
+-- plain-header stderr --
+Copied workout 9 to "Tempo" (ID: 10)
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /workout-service/workout/copy/9
+-- json stdout --
+{
+  "workoutId": 10,
+  "workoutName": "Tempo"
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /workout-service/workout/copy/9
