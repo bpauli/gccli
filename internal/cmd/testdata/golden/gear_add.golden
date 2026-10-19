@@ -1,0 +1,101 @@
+-- args --
+gear
+add
+Pegasus 41
+--brand
+Nike
+--model
+Pegasus
+--first-use
+2026-10-01
+-- route POST /gear-service/gear/v2 --
+{"uuid":"0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e","name":"Pegasus 41","gearType":"SHOES","notes":"Pegasus 41"}
+-- table stdout --
+-- table stderr --
+Added gear "Pegasus 41" (UUID: 0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e)
+-- table exit --
+0
+-- table requests --
+POST /gear-service/gear/v2
+  {
+    "associatedActivityTypes": [],
+    "brand": "Nike",
+    "firstUseDate": "2026-10-01",
+    "gearType": "SHOES",
+    "maxUsageDate": null,
+    "maxUsageDistanceMeters": 0,
+    "maxUsageDurationSeconds": 0,
+    "model": "Pegasus",
+    "name": "Pegasus 41",
+    "notes": "Pegasus 41",
+    "usageType": "DISTANCE",
+    "uuid": null
+  }
+-- plain stdout --
+-- plain stderr --
+Added gear "Pegasus 41" (UUID: 0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e)
+-- plain exit --
+0
+-- plain requests --
+POST /gear-service/gear/v2
+  {
+    "associatedActivityTypes": [],
+    "brand": "Nike",
+    "firstUseDate": "2026-10-01",
+    "gearType": "SHOES",
+    "maxUsageDate": null,
+    "maxUsageDistanceMeters": 0,
+    "maxUsageDurationSeconds": 0,
+    "model": "Pegasus",
+    "name": "Pegasus 41",
+    "notes": "Pegasus 41",
+    "usageType": "DISTANCE",
+    "uuid": null
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Added gear "Pegasus 41" (UUID: 0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e)
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /gear-service/gear/v2
+  {
+    "associatedActivityTypes": [],
+    "brand": "Nike",
+    "firstUseDate": "2026-10-01",
+    "gearType": "SHOES",
+    "maxUsageDate": null,
+    "maxUsageDistanceMeters": 0,
+    "maxUsageDurationSeconds": 0,
+    "model": "Pegasus",
+    "name": "Pegasus 41",
+    "notes": "Pegasus 41",
+    "usageType": "DISTANCE",
+    "uuid": null
+  }
+-- json stdout --
+{
+  "uuid": "0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e",
+  "name": "Pegasus 41",
+  "gearType": "SHOES",
+  "notes": "Pegasus 41"
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /gear-service/gear/v2
+  {
+    "associatedActivityTypes": [],
+    "brand": "Nike",
+    "firstUseDate": "2026-10-01",
+    "gearType": "SHOES",
+    "maxUsageDate": null,
+    "maxUsageDistanceMeters": 0,
+    "maxUsageDurationSeconds": 0,
+    "model": "Pegasus",
+    "name": "Pegasus 41",
+    "notes": "Pegasus 41",
+    "usageType": "DISTANCE",
+    "uuid": null
+  }

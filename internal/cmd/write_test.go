@@ -163,6 +163,24 @@ var writeCases = map[string]writeCase{
 		human:    "Added event \"Race\" on 2024-06-01 (ID: 11)\n",
 		fallback: "Added event\n",
 	},
+	"gear add": {
+		args:     []string{"Pegasus", "--brand", "Nike", "--model", "Pegasus", "--first-use", "2024-06-01"},
+		routes:   map[string]string{"POST /gear-service/gear/v2": `{"uuid":"0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e","name":"Pegasus"}`},
+		json:     "{\n  \"uuid\": \"0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e\",\n  \"name\": \"Pegasus\"\n}\n",
+		human:    "Added gear \"Pegasus\" (UUID: 0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e)\n",
+		fallback: "Added gear \"Pegasus\"\n",
+	},
+	"gear update": {
+		args: []string{"0b5c3d2e1f4a4b6c8d7e9f0a1b2c3d4e", "--name", "Old"},
+		routes: map[string]string{
+			"GET /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e": `{"uuid":"0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e","name":"Pegasus"}`,
+			"PUT /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e": noContent,
+		},
+		result:   "PUT /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e",
+		json:     okOut,
+		human:    "Updated gear 0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e\n",
+		fallback: "Updated gear 0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e\n",
+	},
 	"hydration add": {
 		args:   []string{"250", "--date", "2024-01-15"},
 		routes: map[string]string{"PUT /usersummary-service/usersummary/hydration/log": `{"valueInML":250}`},

@@ -1,0 +1,35 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+gear
+retire
+0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+-- route PUT /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e/status/RETIRED 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+retire gear: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+PUT /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e/status/RETIRED
+-- plain stdout --
+-- plain stderr --
+retire gear: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+PUT /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e/status/RETIRED
+-- plain-header stdout --
+-- plain-header stderr --
+retire gear: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+PUT /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e/status/RETIRED
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"retire gear: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+PUT /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e/status/RETIRED

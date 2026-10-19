@@ -400,6 +400,26 @@ Date shortcuts
   - `<uuid>`: Gear UUID.
   - `<activity-id>`: Activity ID.
 - `gccli gear types`: List gear types.
+- `gccli gear add --brand=STRING --model=STRING <name> [flags]`: Add a gear item.
+  - `<name>`: Gear name.
+  - `--type="shoes"`: Gear type. One of: shoes, bike, other.
+  - `--brand=STRING`: Brand.
+  - `--model=STRING`: Model.
+  - `--notes=STRING`: Notes (1 to 2000 characters). Defaults to the name, because Garmin requires notes.
+  - `--first-use="today"`: Date of first use (YYYY-MM-DD, today, yesterday, 3d).
+- `gccli gear update <uuid> [flags]`: Change the name, brand, model or notes of a gear item.
+  - `<uuid>`: Gear UUID, with or without dashes.
+  - `--name=STRING`: New name.
+  - `--brand=STRING`: New brand.
+  - `--model=STRING`: New model.
+  - `--notes=STRING`: New notes (1 to 2000 characters).
+- `gccli gear retire <uuid>`: Retire a gear item.
+  - `<uuid>`: Gear UUID, with or without dashes.
+- `gccli gear unretire <uuid>`: Make a retired gear item active again.
+  - `<uuid>`: Gear UUID, with or without dashes.
+- `gccli gear delete <uuid> [flags]`: Delete a gear item.
+  - `<uuid>`: Gear UUID, with or without dashes.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli gear collections list`: List gear collections. Also runs as `gccli gear collections`.
 
 ### Goals, Badges & Challenges

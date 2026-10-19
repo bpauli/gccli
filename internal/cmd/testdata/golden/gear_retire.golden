@@ -1,0 +1,36 @@
+The arg is the UUID without dashes, as gear list prints it. The requests use the dashed form, because the v2 gear endpoints answer 404 for the other one.
+-- args --
+gear
+retire
+0b5c3d2e1f4a4b6c8d7e9f0a1b2c3d4e
+-- route PUT /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e/status/RETIRED 204 --
+-- table stdout --
+-- table stderr --
+Retired gear 0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+-- table exit --
+0
+-- table requests --
+PUT /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e/status/RETIRED
+-- plain stdout --
+-- plain stderr --
+Retired gear 0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+-- plain exit --
+0
+-- plain requests --
+PUT /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e/status/RETIRED
+-- plain-header stdout --
+-- plain-header stderr --
+Retired gear 0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+-- plain-header exit --
+0
+-- plain-header requests --
+PUT /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e/status/RETIRED
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+PUT /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e/status/RETIRED
