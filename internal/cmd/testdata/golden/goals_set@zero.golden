@@ -1,0 +1,136 @@
+A goal below 1 is a usage error, so no request is sent.
+-- args --
+goals
+set
+floors-climbed
+0
+--date
+2026-10-12
+-- table stdout --
+-- table stderr --
+Usage: gccli goals set <type> <value> [flags]
+
+Set the daily goal for floors climbed, intensity minutes or hydration.
+
+Arguments:
+  <type>     Goal type: floors-climbed, intensity-minutes or hydration.
+  <value>    Daily goal: floors for floors-climbed, minutes for
+             intensity-minutes, milliliters for hydration.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --date="today"      First day of the goal (YYYY-MM-DD, today, yesterday,
+                          3d). The goal stays for the days after it.
+
+gccli: error: goals set: goal must be 1 or more
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli goals set <type> <value> [flags]
+
+Set the daily goal for floors climbed, intensity minutes or hydration.
+
+Arguments:
+  <type>     Goal type: floors-climbed, intensity-minutes or hydration.
+  <value>    Daily goal: floors for floors-climbed, minutes for
+             intensity-minutes, milliliters for hydration.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --date="today"      First day of the goal (YYYY-MM-DD, today, yesterday,
+                          3d). The goal stays for the days after it.
+
+gccli: error: goals set: goal must be 1 or more
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli goals set <type> <value> [flags]
+
+Set the daily goal for floors climbed, intensity minutes or hydration.
+
+Arguments:
+  <type>     Goal type: floors-climbed, intensity-minutes or hydration.
+  <value>    Daily goal: floors for floors-climbed, minutes for
+             intensity-minutes, milliliters for hydration.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --date="today"      First day of the goal (YYYY-MM-DD, today, yesterday,
+                          3d). The goal stays for the days after it.
+
+gccli: error: goals set: goal must be 1 or more
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli goals set <type> <value> [flags]
+
+Set the daily goal for floors climbed, intensity minutes or hydration.
+
+Arguments:
+  <type>     Goal type: floors-climbed, intensity-minutes or hydration.
+  <value>    Daily goal: floors for floors-climbed, minutes for
+             intensity-minutes, milliliters for hydration.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --date="today"      First day of the goal (YYYY-MM-DD, today, yesterday,
+                          3d). The goal stays for the days after it.
+
+gccli: error: goals set: goal must be 1 or more
+-- json exit --
+2
+-- json requests --

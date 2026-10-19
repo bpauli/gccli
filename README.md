@@ -19,7 +19,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Courses** — list courses, view favorites, get full course detail, download as FIT/GPX, import GPX files as new courses, send courses directly to a device, delete courses
 - **Devices** - list registered devices, view settings, solar data, alarms, primary/last-used device, paired sensors, backup summary, historical devices, device messages
 - **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities, gear types, add, update, retire, unretire and delete gear, list, create, rename and delete gear collections, add gear to a collection
-- **Goals & Badges** — active goals, earned/available/in-progress badges, badge details, challenges, personal records
+- **Goals & Badges** — active goals, set daily goals for steps, floors, intensity minutes and hydration, earned/available/in-progress badges, badge details, challenges, personal records
 - **Training** - browse and view training plans, show your active plans, list adaptive coaching workout types
 - **Profile** — user profile and settings, privacy settings and zones, heart rate and power zones
 - **Hydration** — view and log daily water intake
@@ -677,6 +677,10 @@ gccli gear collections add <collection-uuid> <gear-uuid>
 gccli goals list                  # active goals (default)
 gccli goals list --status past    # active, future or past
 gccli goals weight --start 2026-01-01 --end 2026-06-30
+gccli goals set floors-climbed 12   # also intensity-minutes (minutes) and hydration (ml)
+gccli goals set hydration 2500 --date 2026-11-01
+gccli goals steps set 9000
+gccli goals steps auto            # Garmin's automatic steps goal
 gccli badges earned
 gccli badges available
 gccli badges in-progress
@@ -1251,6 +1255,15 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli goals weight [flags]`: Show the effective weight goal for a date range.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli goals set <type> <value> [flags]`: Set the daily goal for floors climbed, intensity minutes or hydration.
+  - `<type>`: Goal type: floors-climbed, intensity-minutes or hydration.
+  - `<value>`: Daily goal: floors for floors-climbed, minutes for intensity-minutes, milliliters for hydration.
+  - `--date="today"`: First day of the goal (YYYY-MM-DD, today, yesterday, 3d). The goal stays for the days after it.
+- `gccli goals steps set <steps> [flags]`: Set a fixed daily steps goal.
+  - `<steps>`: Steps per day.
+  - `--date="today"`: First day of the goal (YYYY-MM-DD, today, yesterday, 3d). The goal stays for the days after it.
+- `gccli goals steps auto [flags]`: Set Garmin's automatic steps goal.
+  - `--date="today"`: First day of the goal (YYYY-MM-DD, today, yesterday, 3d). The goal stays for the days after it.
 - `gccli badges earned`: Show earned badges. Also runs as `gccli badges`.
 - `gccli badges available`: Show available badges.
 - `gccli badges in-progress`: Show badges in progress.
