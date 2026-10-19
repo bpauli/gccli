@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Workout copy** - `workouts copy <id> [<name>]` copies a workout and prints the ID of the copy. Without a name, the copy gets the name of the original. (#81)
 - **Goal writes** - `goals set <type> <value>` sets the daily goal for `floors-climbed` (floors), `intensity-minutes` (minutes) or `hydration` (milliliters). `goals steps set <steps>` sets a fixed daily steps goal, and `goals steps auto` sets Garmin's automatic steps goal. Each goal starts on `--date` (default today) and stays for the days after it. (#68)
 - **Calendar notes** - a new `calendar` group. `calendar notes add <date> <name> [--content TEXT]` adds a note to a calendar day and prints its ID. `calendar notes update <id>` changes `--name` or `--content` (an empty `--content` clears the text). `calendar notes move <id> <date>` moves a note to another day, and `calendar notes delete <id>` deletes a note after a prompt (`--force` skips it). (#82)
+- **Nap writes** - `health sleep naps add <start> <end>` adds a nap for today. The times are HH:MM in the time zone of your Garmin profile, and the nap must end by now, because Garmin takes only naps that end today. `health sleep naps delete <date> <start>` deletes the nap that starts at that minute after a prompt (`--force` skips it). (#70)
 
 ### Changed
 
@@ -40,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Training status** - `health training-status` is now a command group. The old command is the default child `view`, so `health training-status [<date>]` still works and gives the same output and exit codes. The help and the shell completion now list the children. (#73)
 - **Critical swim speed** - `health critical-swim-speed` is now a command group. The old command is the default child `view`, so `health critical-swim-speed [<date>]` still works and gives the same output and exit codes. The help and the shell completion now list the children. For a bad date, the usage block above the error line now names `health critical-swim-speed view`. (#74)
 - **Personal records** - `records` is now a command group. The old command is the default child `list`, so `records` still works and gives the same output and exit codes. The help and the shell completion now list the children. For an extra argument, the usage line above the error now names `records list`. (#87)
+- **Naps** - `health sleep naps` is now a command group. The old command is the default child `view`, so `health sleep naps [<date>]` still works and gives the same output and exit codes. The help and the shell completion now list the children. For a bad date, the usage block above the error line now names `health sleep naps view`. (#70)
 
 ## [2.3.0] - 2026-10-19
 

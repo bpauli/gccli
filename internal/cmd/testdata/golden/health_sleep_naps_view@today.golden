@@ -2,6 +2,7 @@
 health
 sleep
 naps
+view
 -- route GET /sleep-service/sleep/naps/2026-10-15 --
 []
 -- table stdout --

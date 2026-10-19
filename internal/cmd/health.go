@@ -339,15 +339,7 @@ var healthSleepGroup = Group{Name: "sleep", Help: "Show sleep data.", Children: 
 		Verb:     "get sleep", Output: JSON{},
 		LateDates: []string{"Date"},
 	},
-	Leaf{
-		Name: "naps", Help: "Show naps for a date.",
-		Spec: argsOf(&struct {
-			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today."`
-		}{}),
-		Endpoint: "health.sleep-naps",
-		Params:   Params{"date": In("Date")},
-		Verb:     "get naps", Output: JSON{},
-	},
+	healthSleepNapsGroup,
 	Leaf{
 		Name: "daily", Help: "Show daily sleep statistics for a date range (at most 28 days).",
 		Spec: argsOf(&struct {

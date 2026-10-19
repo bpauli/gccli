@@ -11,6 +11,7 @@
     "location": "tester",
     "profileId": 1,
     "profileImageUrlLarge": "tester",
+    "timeZone": "tester",
     "userData": {
       "birthDate": "2026-01-01",
       "gender": "tester",

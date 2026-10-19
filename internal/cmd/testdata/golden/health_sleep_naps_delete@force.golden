@@ -1,0 +1,52 @@
+--force skips the prompt.
+-- args --
+health
+sleep
+naps
+delete
+2026-10-14
+12:00
+--force
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","timeZone":"Europe/Berlin"}
+-- route GET /sleep-service/sleep/naps/2026-10-14 --
+[{"napStartTimestampGMT":"2026-10-14T07:15:00","napTimeSec":600},{"napStartTimestampGMT":"2026-10-14T10:00:37","napTimeSec":1200}]
+-- route DELETE /sleep-service/sleep/nap/2026-10-14/1791972037000 204 --
+-- table stdout --
+-- table stderr --
+Deleted nap on 2026-10-14 at 12:00
+-- table exit --
+0
+-- table requests --
+GET /userprofile-service/userprofile/settings
+GET /sleep-service/sleep/naps/2026-10-14
+DELETE /sleep-service/sleep/nap/2026-10-14/1791972037000
+-- plain stdout --
+-- plain stderr --
+Deleted nap on 2026-10-14 at 12:00
+-- plain exit --
+0
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+GET /sleep-service/sleep/naps/2026-10-14
+DELETE /sleep-service/sleep/nap/2026-10-14/1791972037000
+-- plain-header stdout --
+-- plain-header stderr --
+Deleted nap on 2026-10-14 at 12:00
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /sleep-service/sleep/naps/2026-10-14
+DELETE /sleep-service/sleep/nap/2026-10-14/1791972037000
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /userprofile-service/userprofile/settings
+GET /sleep-service/sleep/naps/2026-10-14
+DELETE /sleep-service/sleep/nap/2026-10-14/1791972037000

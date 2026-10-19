@@ -1,0 +1,78 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+health
+sleep
+naps
+add
+10:00
+10:20
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","timeZone":"Europe/Berlin"}
+-- route GET /userprofile-service/socialProfile/tester --
+{"profileId":3141592}
+-- route POST /sleep-service/sleep/nap 400 noeol --
+{"message":"When resolved to the user's timezone, requestBody.napEndTimestampGMT must be today."}
+-- table stdout --
+-- table stderr --
+add nap: garmin api: 400 Bad Request: {"message":"When resolved to the user's timezone, requestBody.napEndTimestampGMT must be today."}
+-- table exit --
+1
+-- table requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+POST /sleep-service/sleep/nap
+  {
+    "calendarDate": "2026-10-15",
+    "napEndTimestampGMT": "2026-10-15T08:20:00.000",
+    "napStartTimestampGMT": "2026-10-15T08:00:00.000",
+    "userProfilePK": 3141592
+  }
+-- plain stdout --
+-- plain stderr --
+add nap: garmin api: 400 Bad Request: {"message":"When resolved to the user's timezone, requestBody.napEndTimestampGMT must be today."}
+-- plain exit --
+1
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+POST /sleep-service/sleep/nap
+  {
+    "calendarDate": "2026-10-15",
+    "napEndTimestampGMT": "2026-10-15T08:20:00.000",
+    "napStartTimestampGMT": "2026-10-15T08:00:00.000",
+    "userProfilePK": 3141592
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+add nap: garmin api: 400 Bad Request: {"message":"When resolved to the user's timezone, requestBody.napEndTimestampGMT must be today."}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+POST /sleep-service/sleep/nap
+  {
+    "calendarDate": "2026-10-15",
+    "napEndTimestampGMT": "2026-10-15T08:20:00.000",
+    "napStartTimestampGMT": "2026-10-15T08:00:00.000",
+    "userProfilePK": 3141592
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"add nap: garmin api: 400 Bad Request: {\"message\":\"When resolved to the user's timezone, requestBody.napEndTimestampGMT must be today.\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+POST /sleep-service/sleep/nap
+  {
+    "calendarDate": "2026-10-15",
+    "napEndTimestampGMT": "2026-10-15T08:20:00.000",
+    "napStartTimestampGMT": "2026-10-15T08:00:00.000",
+    "userProfilePK": 3141592
+  }

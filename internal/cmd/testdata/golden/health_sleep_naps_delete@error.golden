@@ -1,0 +1,45 @@
+Error case: Garmin answers 400 to the nap list, so the exit code is 1 (error).
+-- args --
+health
+sleep
+naps
+delete
+2026-10-14
+12:00
+--force
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","timeZone":"Europe/Berlin"}
+-- route GET /sleep-service/sleep/naps/2026-10-14 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+get naps: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /userprofile-service/userprofile/settings
+GET /sleep-service/sleep/naps/2026-10-14
+-- plain stdout --
+-- plain stderr --
+get naps: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+GET /sleep-service/sleep/naps/2026-10-14
+-- plain-header stdout --
+-- plain-header stderr --
+get naps: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /sleep-service/sleep/naps/2026-10-14
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"get naps: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /userprofile-service/userprofile/settings
+GET /sleep-service/sleep/naps/2026-10-14

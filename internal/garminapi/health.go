@@ -26,6 +26,8 @@ var healthEndpoints = []Endpoint{
 	{Name: "health.weekly-floors", Method: http.MethodGet, Host: ConnectAPI, Path: "/usersummary-service/stats/floors/weekly/{endDate}/{weeks}"},
 	{Name: "health.sleep", Method: http.MethodGet, Host: ConnectAPI, Path: "/wellness-service/wellness/dailySleepData/{displayName}?date={date}&nonSleepBufferMinutes=60"},
 	{Name: "health.sleep-naps", Method: http.MethodGet, Host: ConnectAPI, Path: "/sleep-service/sleep/naps/{date}"},
+	{Name: "health.add-nap", Method: http.MethodPost, Host: ConnectAPI, Path: "/sleep-service/sleep/nap", Body: true},
+	{Name: "health.delete-nap", Method: http.MethodDelete, Host: ConnectAPI, Path: "/sleep-service/sleep/nap/{date}/{startMillis}"},
 	{Name: "health.daily-sleep", Method: http.MethodGet, Host: ConnectAPI, Path: "/sleep-service/stats/sleep/daily/{startDate}/{endDate}"},
 	{Name: "health.weekly-sleep", Method: http.MethodGet, Host: ConnectAPI, Path: "/sleep-service/stats/sleep/weekly/{endDate}/52"},
 	{Name: "health.overall-sleep", Method: http.MethodGet, Host: ConnectAPI, Path: "/sleep-service/stats/sleep/overall/{startDate}/{endDate}"},
