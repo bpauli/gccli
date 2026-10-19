@@ -1,0 +1,44 @@
+-- args --
+workouts
+schedule
+export
+--start
+2026-10-12
+-- route GET /workout-service/schedule/export/JSON?startDate=2026-10-12 --
+{"value":1}
+-- table stdout --
+{
+  "value": 1
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /workout-service/schedule/export/JSON?startDate=2026-10-12
+-- plain stdout --
+{
+  "value": 1
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /workout-service/schedule/export/JSON?startDate=2026-10-12
+-- plain-header stdout --
+{
+  "value": 1
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /workout-service/schedule/export/JSON?startDate=2026-10-12
+-- json stdout --
+{
+  "value": 1
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /workout-service/schedule/export/JSON?startDate=2026-10-12

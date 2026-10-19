@@ -21,6 +21,9 @@ func TestWorkoutsEndpoints(t *testing.T) {
 		{"workouts.schedule", id, "POST /workout-service/schedule/42"},
 		{"workouts.unschedule", map[string]string{"scheduleID": "456"}, "DELETE /workout-service/schedule/456"},
 		{"workouts.delete", id, "DELETE /workout-service/workout/42"},
+		{"workouts.types", nil, "GET /workout-service/workout/types"},
+		{"workouts.export-schedule", map[string]string{"startDate": "2024-01-15"}, "GET /workout-service/schedule/export/JSON?startDate=2024-01-15"},
+		{"workouts.benchmarks", nil, "GET /workout-service/benchmarks"},
 	})
 }
 

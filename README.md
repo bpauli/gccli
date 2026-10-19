@@ -15,7 +15,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Exercise Catalog** — browse Garmin's exercise categories and exercises for strength training
 - **Health Data** — daily summaries, steps, heart rate, resting HR, sleep, stress, HRV, SpO2, respiration, body battery, floors, training readiness/status, VO2max, fitness age, race predictions, endurance/hill scores, intensity minutes, lactate threshold, cycling FTP, critical swim speed, power curve, running economy
 - **Body Composition** — weight tracking, latest weigh-in, body fat, muscle mass, blood pressure, glucose, FIT file encoding for composition uploads
-- **Workouts** — list, view, download as FIT, upload from JSON, update in place from JSON, create with sport types and targets (pace/HR/power/cadence), schedule (add/list/remove), delete
+- **Workouts** — list, view, download as FIT, upload from JSON, update in place from JSON, create with sport types and targets (pace/HR/power/cadence), schedule (add/list/remove/export), list workout types, strength benchmarks, delete
 - **Courses** — list courses, view favorites, get full course detail, download as FIT/GPX, import GPX files as new courses, send courses directly to a device, delete courses
 - **Devices** — list registered devices, view settings, solar data, alarms, primary/last-used device, paired sensors, backup summary
 - **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities, gear types, gear collections
@@ -472,6 +472,9 @@ gccli workouts schedule list <YYYY-MM-DD>
 gccli workouts schedule list --start 2024-06-01 --end 2024-06-30
 gccli workouts schedule remove <schedule-id>
 gccli workouts schedule remove <schedule-id> --force
+gccli workouts schedule export --start 2024-06-01
+gccli workouts types
+gccli workouts benchmarks list
 gccli workouts delete <id>
 
 # Create a running workout with pace targets
@@ -993,6 +996,7 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `--type=STRING`: Sport type. One of: run, bike, swim, strength, cardio, hiit, yoga, pilates, mobility, multisport, custom.
   - `-s, --step=STEP,...`: Workout step (type:duration[@target:values]).
   - `--unit="km"`: Pace unit: km or mi.
+- `gccli workouts types`: List workout types.
 - `gccli workouts schedule add <id> <date>`: Add a workout to the schedule.
   - `<id>`: Workout ID.
   - `<date>`: Date to schedule (YYYY-MM-DD, today, yesterday, 3d).
@@ -1003,6 +1007,9 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli workouts schedule remove <id> [flags]`: Remove a scheduled workout from the calendar.
   - `<id>`: Schedule ID (from 'workouts schedule list').
   - `-f, --force`: Skip confirmation prompt.
+- `gccli workouts schedule export [flags]`: Export the workout schedule from a start date.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli workouts benchmarks list`: List strength benchmarks. Also runs as `gccli workouts benchmarks`.
 - `gccli workouts delete <id> [flags]`: Delete a workout.
   - `<id>`: Workout ID.
   - `-f, --force`: Skip confirmation prompt.

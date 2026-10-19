@@ -256,6 +256,7 @@ Date shortcuts
   - `--type=STRING`: Sport type. One of: run, bike, swim, strength, cardio, hiit, yoga, pilates, mobility, multisport, custom.
   - `-s, --step=STEP,...`: Workout step (type:duration[@target:values]).
   - `--unit="km"`: Pace unit: km or mi.
+- `gccli workouts types`: List workout types.
 - `gccli workouts schedule add <id> <date>`: Add a workout to the schedule.
   - `<id>`: Workout ID.
   - `<date>`: Date to schedule (YYYY-MM-DD, today, yesterday, 3d).
@@ -266,6 +267,9 @@ Date shortcuts
 - `gccli workouts schedule remove <id> [flags]`: Remove a scheduled workout from the calendar.
   - `<id>`: Schedule ID (from 'workouts schedule list').
   - `-f, --force`: Skip confirmation prompt.
+- `gccli workouts schedule export [flags]`: Export the workout schedule from a start date.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli workouts benchmarks list`: List strength benchmarks. Also runs as `gccli workouts benchmarks`.
 - `gccli workouts delete <id> [flags]`: Delete a workout.
   - `<id>`: Workout ID.
   - `-f, --force`: Skip confirmation prompt.
