@@ -26,6 +26,14 @@ var healthGroup = Group{Name: "health", Help: "View health data.", Children: []N
 		LateDates: []string{"Date"},
 	},
 	healthStepsGroup,
+	healthCaloriesGroup,
+	healthPushesGroup,
+	Leaf{
+		Name: "lifetime-totals", Help: "Show lifetime totals.",
+		Endpoint: "health.lifetime-totals",
+		Params:   Params{"displayName": DisplayName},
+		Verb:     "get lifetime totals", Output: JSON{},
+	},
 	Leaf{
 		Name: "hr", Help: "Show heart rate data.",
 		Spec: argsOf(&struct {
@@ -243,6 +251,52 @@ var healthStepsGroup = Group{Name: "steps", Help: "Show step data.", Children: [
 		Params:   Params{"endDate": In("EndDate").Or(Today), "weeks": In("Weeks")},
 		Verb:     "get weekly steps", Output: JSON{},
 	},
+	Leaf{
+		Name: "monthly", Help: "Show monthly step totals.",
+		Spec: argsOf(&struct {
+			EndDate Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"end"`
+			Months  int  `help:"Number of months." default:"6" name:"months"`
+		}{}),
+		Endpoint: "health.monthly-steps",
+		Params:   Params{"endDate": In("EndDate").Or(Today), "months": In("Months")},
+		Verb:     "get monthly steps", Output: JSON{},
+	},
+}}
+
+var healthCaloriesGroup = Group{Name: "calories", Help: "Show calorie statistics.", Children: []Node{
+	Leaf{
+		Name: "weekly", Help: "Show weekly calorie totals.",
+		Spec: argsOf(&struct {
+			EndDate Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"end"`
+			Weeks   int  `help:"Number of weeks." default:"4" name:"weeks"`
+		}{}),
+		Endpoint: "health.weekly-calories",
+		Params:   Params{"endDate": In("EndDate").Or(Today), "weeks": In("Weeks")},
+		Verb:     "get weekly calories", Output: JSON{},
+	},
+}}
+
+var healthPushesGroup = Group{Name: "pushes", Help: "Show wheelchair push statistics.", Children: []Node{
+	Leaf{
+		Name: "weekly", Help: "Show weekly wheelchair push totals.",
+		Spec: argsOf(&struct {
+			EndDate Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"end"`
+			Weeks   int  `help:"Number of weeks." default:"4" name:"weeks"`
+		}{}),
+		Endpoint: "health.weekly-pushes",
+		Params:   Params{"endDate": In("EndDate").Or(Today), "weeks": In("Weeks")},
+		Verb:     "get weekly pushes", Output: JSON{},
+	},
+	Leaf{
+		Name: "monthly", Help: "Show monthly wheelchair push totals.",
+		Spec: argsOf(&struct {
+			EndDate Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"end"`
+			Months  int  `help:"Number of months." default:"6" name:"months"`
+		}{}),
+		Endpoint: "health.monthly-pushes",
+		Params:   Params{"endDate": In("EndDate").Or(Today), "months": In("Months")},
+		Verb:     "get monthly pushes", Output: JSON{},
+	},
 }}
 
 var healthStressGroup = Group{Name: "stress", Help: "Show stress data.", Children: []Node{
@@ -255,6 +309,16 @@ var healthStressGroup = Group{Name: "stress", Help: "Show stress data.", Childre
 		Params:   Params{"date": In("Date")},
 		Verb:     "get stress", Output: JSON{},
 		LateDates: []string{"Date"},
+	},
+	Leaf{
+		Name: "daily", Help: "Show daily stress statistics for a date range.",
+		Spec: argsOf(&struct {
+			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+			EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
+		}{}),
+		Endpoint: "health.daily-stress",
+		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
+		Verb:     "get daily stress", Output: JSON{},
 	},
 	Leaf{
 		Name: "weekly", Help: "Show weekly stress data.",

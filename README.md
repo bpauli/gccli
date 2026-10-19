@@ -399,6 +399,11 @@ gccli health summary 3d                # 3 days ago
 gccli health steps                     # Step chart for today
 gccli health steps daily --start 2024-01-01 --end 2024-01-31
 gccli health steps weekly --weeks 4
+gccli health steps monthly --months 6
+gccli health calories weekly --weeks 4
+gccli health pushes weekly --weeks 4    # Wheelchair pushes
+gccli health pushes monthly --months 6
+gccli health lifetime-totals
 gccli health hr [date]                 # Heart rate
 gccli health rhr [date]                # Resting heart rate
 gccli health floors [date]             # Floors climbed
@@ -409,6 +414,7 @@ gccli health hrv [date]                # Heart rate variability
 
 # Stress and recovery
 gccli health stress                    # Stress for today
+gccli health stress daily --start 2024-01-01 --end 2024-01-31
 gccli health stress weekly --weeks 4
 gccli health body-battery [date]
 gccli health body-battery range --start 2024-01-01 --end 2024-01-07
@@ -871,6 +877,19 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli health steps weekly [flags]`: Show weekly step totals.
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
   - `--weeks=4`: Number of weeks.
+- `gccli health steps monthly [flags]`: Show monthly step totals.
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+  - `--months=6`: Number of months.
+- `gccli health calories weekly [flags]`: Show weekly calorie totals.
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+  - `--weeks=4`: Number of weeks.
+- `gccli health pushes weekly [flags]`: Show weekly wheelchair push totals.
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+  - `--weeks=4`: Number of weeks.
+- `gccli health pushes monthly [flags]`: Show monthly wheelchair push totals.
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+  - `--months=6`: Number of months.
+- `gccli health lifetime-totals`: Show lifetime totals.
 - `gccli health hr [<date>]`: Show heart rate data.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli health rhr [<date>]`: Show resting heart rate data.
@@ -881,6 +900,9 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli health stress view [<date>]`: Show stress data for a date. Also runs as `gccli health stress [<date>]`.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
+- `gccli health stress daily --start=DATE --end=DATE`: Show daily stress statistics for a date range.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
 - `gccli health stress weekly [flags]`: Show weekly stress data.
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
   - `--weeks=4`: Number of weeks.

@@ -1,0 +1,46 @@
+-- args --
+health
+pushes
+monthly
+--end
+2026-10-01
+--months
+3
+-- route GET /usersummary-service/stats/pushes/monthly/2026-10-01/3 --
+{"value":1}
+-- table stdout --
+{
+  "value": 1
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /usersummary-service/stats/pushes/monthly/2026-10-01/3
+-- plain stdout --
+{
+  "value": 1
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /usersummary-service/stats/pushes/monthly/2026-10-01/3
+-- plain-header stdout --
+{
+  "value": 1
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /usersummary-service/stats/pushes/monthly/2026-10-01/3
+-- json stdout --
+{
+  "value": 1
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /usersummary-service/stats/pushes/monthly/2026-10-01/3

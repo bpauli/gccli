@@ -128,6 +128,19 @@ Date shortcuts
 - `gccli health steps weekly [flags]`: Show weekly step totals.
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
   - `--weeks=4`: Number of weeks.
+- `gccli health steps monthly [flags]`: Show monthly step totals.
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+  - `--months=6`: Number of months.
+- `gccli health calories weekly [flags]`: Show weekly calorie totals.
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+  - `--weeks=4`: Number of weeks.
+- `gccli health pushes weekly [flags]`: Show weekly wheelchair push totals.
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+  - `--weeks=4`: Number of weeks.
+- `gccli health pushes monthly [flags]`: Show monthly wheelchair push totals.
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+  - `--months=6`: Number of months.
+- `gccli health lifetime-totals`: Show lifetime totals.
 - `gccli health hr [<date>]`: Show heart rate data.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli health rhr [<date>]`: Show resting heart rate data.
@@ -138,6 +151,9 @@ Date shortcuts
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli health stress view [<date>]`: Show stress data for a date. Also runs as `gccli health stress [<date>]`.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
+- `gccli health stress daily --start=DATE --end=DATE`: Show daily stress statistics for a date range.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
 - `gccli health stress weekly [flags]`: Show weekly stress data.
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
   - `--weeks=4`: Number of weeks.
