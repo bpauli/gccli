@@ -39,15 +39,6 @@ var activityGroup = Group{Name: "activity", Help: "View activity details.", Chil
 		Params:   Params{"activityID": In("ID")},
 		Verb:     "get likes", Output: JSON{},
 	},
-	Leaf{
-		Name: "segments", Help: "Show the segment service track of an activity.",
-		Spec: argsOf(&struct {
-			ID string `arg:"" help:"Activity ID."`
-		}{}),
-		Endpoint: "activities.segments",
-		Params:   Params{"activityID": In("ID")},
-		Verb:     "get activity segments", Output: JSON{},
-	},
 	Custom{Name: "download", Help: "Download activity file.", Cmd: &ActivityDownloadCmd{}},
 	Custom{Name: "upload", Help: "Upload an activity file (FIT/GPX/TCX).", Cmd: &ActivityUploadCmd{}},
 	Custom{Name: "create", Help: "Create a manual activity.", Cmd: &ActivityCreateCmd{}},

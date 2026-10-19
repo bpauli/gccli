@@ -51,7 +51,6 @@ func TestActivitiesEndpoints(t *testing.T) {
 		{"activities.monthly-statistics", map[string]string{"displayName": "jo"}, "GET /userstats-service/statistics/monthly/jo?ByParentType=true"},
 		{"activities.comments", id, "GET /conversation-service/conversation/comments/ACTIVITY/123?start=0&limit=20"},
 		{"activities.likes", id, "GET /conversation-service/conversation/likes/ACTIVITY/123"},
-		{"activities.segments", id, "GET /segment-service/segment/activity/123"},
 	})
 }
 

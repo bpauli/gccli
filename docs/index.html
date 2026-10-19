@@ -463,7 +463,7 @@ gccli activities list --limit 5</pre>
           <div class="feature-card fade-in">
             <div class="feature-icon">&#x1f3c3;</div>
             <h3>Activities</h3>
-            <p>List, search, view details, splits, weather, HR/power zones. Download FIT/GPX/TCX/KML/CSV. Upload, create (with date), rename, retype, delete. Set exercise sets for strength training. List pending activities. Activity totals by type, overall and per month. Comments, likes and the segment service track of an activity.</p>
+            <p>List, search, view details, splits, weather, HR/power zones. Download FIT/GPX/TCX/KML/CSV. Upload, create (with date), rename, retype, delete. Set exercise sets for strength training. List pending activities. Activity totals by type, overall and per month. Comments and likes of an activity.</p>
           </div>
           <div class="feature-card fade-in">
             <div class="feature-icon blue">&#x2764;</div>
@@ -666,7 +666,6 @@ gccli activities list --limit 5</pre>
               <div class="cmd-row"><div class="cmd">gccli activity gear &lt;id&gt;</div><div class="desc">Show linked gear.<br><code>&lt;id&gt;</code> Activity ID.</div></div>
               <div class="cmd-row"><div class="cmd">gccli activity comments &lt;id&gt;</div><div class="desc">List the comments on an activity.<br><code>&lt;id&gt;</code> Activity ID.</div></div>
               <div class="cmd-row"><div class="cmd">gccli activity likes &lt;id&gt;</div><div class="desc">List the likes of an activity.<br><code>&lt;id&gt;</code> Activity ID.</div></div>
-              <div class="cmd-row"><div class="cmd">gccli activity segments &lt;id&gt;</div><div class="desc">Show the segment service track of an activity.<br><code>&lt;id&gt;</code> Activity ID.</div></div>
               <div class="cmd-row"><div class="cmd">gccli activity download &lt;id&gt; [flags]</div><div class="desc">Download activity file.<br><code>&lt;id&gt;</code> Activity ID.<br><code><span class="nowrap">--format=</span><wbr>&#34;fit&#34;</code> Download format: fit, gpx, tcx, kml, csv.<br><code><span class="nowrap">-o,</span> <span class="nowrap">--output=</span><wbr>STRING</code> Output file path (default: activity_{id}.{format}).</div></div>
               <div class="cmd-row"><div class="cmd">gccli activity upload &lt;file&gt;</div><div class="desc">Upload an activity file (FIT/GPX/TCX).<br><code>&lt;file&gt;</code> Path to activity file (FIT, GPX, or TCX).</div></div>
               <div class="cmd-row"><div class="cmd">gccli activity create <span class="nowrap">--name=STRING</span> <span class="nowrap">--type=STRING</span> <span class="nowrap">--duration=DURATION</span> [flags]</div><div class="desc">Create a manual activity.<br><code><span class="nowrap">--name=</span><wbr>STRING</code> Activity name.<br><code><span class="nowrap">--type=</span><wbr>STRING</code> Activity type key (e.g. running, cycling, swimming).<br><code><span class="nowrap">--distance=</span><wbr><span class="nowrap">FLOAT-64</span></code> Distance in meters.<br><code><span class="nowrap">--duration=</span><wbr>DURATION</code> Duration (e.g. 30m, 1h15m).<br><code><span class="nowrap">--date=</span><wbr>STRING</code> Start date/time (e.g. 2024-06-15T07:30:00). Defaults to now.</div></div>

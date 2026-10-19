@@ -372,7 +372,6 @@ gccli activity exercise-sets set <id> -e "BENCH_PRESS/BARBELL_BENCH_PRESS:12@20:
 gccli activity gear <id>
 gccli activity comments <id>
 gccli activity likes <id>
-gccli activity segments <id>
 
 # Download and upload
 gccli activity download <id> --format fit
@@ -870,8 +869,6 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli activity comments <id>`: List the comments on an activity.
   - `<id>`: Activity ID.
 - `gccli activity likes <id>`: List the likes of an activity.
-  - `<id>`: Activity ID.
-- `gccli activity segments <id>`: Show the segment service track of an activity.
   - `<id>`: Activity ID.
 - `gccli activity download <id> [flags]`: Download activity file.
   - `<id>`: Activity ID.

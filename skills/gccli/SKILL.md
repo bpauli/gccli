@@ -96,8 +96,6 @@ Date shortcuts
   - `<id>`: Activity ID.
 - `gccli activity likes <id>`: List the likes of an activity.
   - `<id>`: Activity ID.
-- `gccli activity segments <id>`: Show the segment service track of an activity.
-  - `<id>`: Activity ID.
 - `gccli activity download <id> [flags]`: Download activity file.
   - `<id>`: Activity ID.
   - `--format="fit"`: Download format: fit, gpx, tcx, kml, csv.

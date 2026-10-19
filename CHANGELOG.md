@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Power-to-weight and thresholds** - `health power-to-weight [DATE]` shows the latest power-to-weight data as of a date. `health thresholds cycling-ftp`, `health thresholds lactate-heart-rate`, `health thresholds lactate-speed` and `health thresholds power-to-weight` show each value for a date range, and `health critical-swim-speed range` shows critical swim speed for a date range (`--start` and `--end`, both required). (#74)
 - **Hydration statistics** - `hydration daily` shows daily hydration statistics for a date range (`--start` and `--end`, both required). `hydration weekly` shows weekly hydration statistics (`--end`, default today, and `--weeks`, default 4). (#72)
 - **Activity statistics** - `activities stats` shows your activity totals by activity type, and `activities stats monthly` shows them per month. (#72)
-- **Activity comments, likes and segments** - `activity comments <id>` lists the comments on an activity. It always sends `start=0&limit=20`, the values of the live check. `activity likes <id>` lists the likes of an activity. `activity segments <id>` shows the name, elevation profile and track points that the segment service returns for an activity. (#75, #80)
+- **Activity comments and likes** - `activity comments <id>` lists the comments on an activity. It always sends `start=0&limit=20`, the values of the live check. `activity likes <id>` lists the likes of an activity. (#75)
 
 ### Changed
 
