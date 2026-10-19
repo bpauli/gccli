@@ -1,0 +1,62 @@
+-- args --
+health
+sleep
+overall
+--start
+2026-10-01
+--end
+2026-10-10
+-- route GET /sleep-service/stats/sleep/overall/2026-10-01/2026-10-10 --
+{"individualStats":[],"overallStats":{"averageSleepSeconds":26100,"sleepCount":10}}
+-- table stdout --
+{
+  "individualStats": [],
+  "overallStats": {
+    "averageSleepSeconds": 26100,
+    "sleepCount": 10
+  }
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /sleep-service/stats/sleep/overall/2026-10-01/2026-10-10
+-- plain stdout --
+{
+  "individualStats": [],
+  "overallStats": {
+    "averageSleepSeconds": 26100,
+    "sleepCount": 10
+  }
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /sleep-service/stats/sleep/overall/2026-10-01/2026-10-10
+-- plain-header stdout --
+{
+  "individualStats": [],
+  "overallStats": {
+    "averageSleepSeconds": 26100,
+    "sleepCount": 10
+  }
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /sleep-service/stats/sleep/overall/2026-10-01/2026-10-10
+-- json stdout --
+{
+  "individualStats": [],
+  "overallStats": {
+    "averageSleepSeconds": 26100,
+    "sleepCount": 10
+  }
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /sleep-service/stats/sleep/overall/2026-10-01/2026-10-10
