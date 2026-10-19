@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Hydration statistics** - `hydration daily` shows daily hydration statistics for a date range (`--start` and `--end`, both required). `hydration weekly` shows weekly hydration statistics (`--end`, default today, and `--weeks`, default 4). (#72)
 - **Activity statistics** - `activities stats` shows your activity totals by activity type, and `activities stats monthly` shows them per month. (#72)
 - **Activity comments and likes** - `activity comments <id>` lists the comments on an activity. It always sends `start=0&limit=20`, the values of the live check. `activity likes <id>` lists the likes of an activity. (#75)
+- **Personal records** - `records types` lists the personal record types. `records activity <id>` lists the personal records set in an activity. (#87)
 
 ### Changed
 
@@ -25,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Sleep** - `health sleep` is now a command group. The old command is the default child `view`, so `health sleep [<date>]` still works and gives the same output and exit codes. The help and the shell completion now list the children. (#70)
 - **Training status** - `health training-status` is now a command group. The old command is the default child `view`, so `health training-status [<date>]` still works and gives the same output and exit codes. The help and the shell completion now list the children. (#73)
 - **Critical swim speed** - `health critical-swim-speed` is now a command group. The old command is the default child `view`, so `health critical-swim-speed [<date>]` still works and gives the same output and exit codes. The help and the shell completion now list the children. For a bad date, the usage block above the error line now names `health critical-swim-speed view`. (#74)
+- **Personal records** - `records` is now a command group. The old command is the default child `list`, so `records` still works and gives the same output and exit codes. The help and the shell completion now list the children. For an extra argument, the usage line above the error now names `records list`. (#87)
 
 ## [2.3.0] - 2026-10-19
 

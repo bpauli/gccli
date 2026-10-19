@@ -1,0 +1,58 @@
+-- args --
+records
+activity
+111
+-- route GET /personalrecord-service/personalrecord/prByActivityId/111 --
+[{"activityId":111,"id":7,"typeId":1}]
+-- table stdout --
+[
+  {
+    "activityId": 111,
+    "id": 7,
+    "typeId": 1
+  }
+]
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /personalrecord-service/personalrecord/prByActivityId/111
+-- plain stdout --
+[
+  {
+    "activityId": 111,
+    "id": 7,
+    "typeId": 1
+  }
+]
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /personalrecord-service/personalrecord/prByActivityId/111
+-- plain-header stdout --
+[
+  {
+    "activityId": 111,
+    "id": 7,
+    "typeId": 1
+  }
+]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /personalrecord-service/personalrecord/prByActivityId/111
+-- json stdout --
+[
+  {
+    "activityId": 111,
+    "id": 7,
+    "typeId": 1
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /personalrecord-service/personalrecord/prByActivityId/111

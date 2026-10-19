@@ -49,7 +49,7 @@ var commands = []Node{
 	badgesGroup,
 	coursesGroup,
 	challengesGroup,
-	recordsLeaf,
+	recordsGroup,
 	profileGroup,
 	hydrationGroup,
 	nutritionGroup,
