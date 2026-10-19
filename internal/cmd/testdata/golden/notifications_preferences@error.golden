@@ -1,0 +1,34 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+notifications
+preferences
+-- route GET /notification-service/preference/userPreference 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+get notification preferences: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /notification-service/preference/userPreference
+-- plain stdout --
+-- plain stderr --
+get notification preferences: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /notification-service/preference/userPreference
+-- plain-header stdout --
+-- plain-header stderr --
+get notification preferences: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /notification-service/preference/userPreference
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"get notification preferences: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /notification-service/preference/userPreference

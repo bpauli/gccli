@@ -1,0 +1,45 @@
+-- args --
+devices
+messages
+-- route GET /device-service/devicemessage/messages --
+{"messages":[],"numOfMessages":0}
+-- table stdout --
+{
+  "messages": [],
+  "numOfMessages": 0
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /device-service/devicemessage/messages
+-- plain stdout --
+{
+  "messages": [],
+  "numOfMessages": 0
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /device-service/devicemessage/messages
+-- plain-header stdout --
+{
+  "messages": [],
+  "numOfMessages": 0
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /device-service/devicemessage/messages
+-- json stdout --
+{
+  "messages": [],
+  "numOfMessages": 0
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /device-service/devicemessage/messages

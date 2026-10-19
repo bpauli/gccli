@@ -1,0 +1,53 @@
+-- args --
+training
+coach-workouts
+-- route GET /userprofile-service/userprofile/adaptive-coaching-workouts --
+[{"adaptiveCoachingWorkoutType":"value","sport":"value"}]
+-- table stdout --
+[
+  {
+    "adaptiveCoachingWorkoutType": "value",
+    "sport": "value"
+  }
+]
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /userprofile-service/userprofile/adaptive-coaching-workouts
+-- plain stdout --
+[
+  {
+    "adaptiveCoachingWorkoutType": "value",
+    "sport": "value"
+  }
+]
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /userprofile-service/userprofile/adaptive-coaching-workouts
+-- plain-header stdout --
+[
+  {
+    "adaptiveCoachingWorkoutType": "value",
+    "sport": "value"
+  }
+]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /userprofile-service/userprofile/adaptive-coaching-workouts
+-- json stdout --
+[
+  {
+    "adaptiveCoachingWorkoutType": "value",
+    "sport": "value"
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /userprofile-service/userprofile/adaptive-coaching-workouts

@@ -17,16 +17,16 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Body Composition** — weight tracking, latest weigh-in, body fat, muscle mass, blood pressure, glucose, FIT file encoding for composition uploads
 - **Workouts** — list, view, download as FIT, upload from JSON, update in place from JSON, create with sport types and targets (pace/HR/power/cadence), schedule (add/list/remove/export), list workout types, strength benchmarks, delete
 - **Courses** — list courses, view favorites, get full course detail, download as FIT/GPX, import GPX files as new courses, send courses directly to a device, delete courses
-- **Devices** — list registered devices, view settings, solar data, alarms, primary/last-used device, paired sensors, backup summary
+- **Devices** - list registered devices, view settings, solar data, alarms, primary/last-used device, paired sensors, backup summary, historical devices, device messages
 - **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities, gear types, gear collections
 - **Goals & Badges** — active goals, earned/available/in-progress badges, badge details, challenges, personal records
-- **Training** — browse and view training plans, show your active plans
+- **Training** - browse and view training plans, show your active plans, list adaptive coaching workout types
 - **Profile** — user profile and settings, privacy settings and zones, heart rate and power zones
 - **Hydration** — view and log daily water intake
 - **Nutrition** — view daily food logs, meals, and nutrition settings
 - **Events** — list, list upcoming, add, and delete calendar events (races, group rides, etc.) with goals and training priority support
-- **Wellness** — menstrual cycle data, pregnancy summary, jet lag trips
-- **Social** - notifications, connections, connection requests, followers, following, newsfeed, groups
+- **Wellness** - menstrual cycle data and calendar, pregnancy summary, jet lag trips and status
+- **Social** - notifications, notification preferences, connections, connection requests, followers, following, newsfeed, groups
 - **Agent-ready** - ships a bundled agent skill (`skills/gccli/`) that plugs into AI assistants like Claude Code, Codex, Hermes, and OpenClaw so you can drive Garmin Connect in plain language
 - **Multiple accounts** — manage multiple Garmin accounts via `--account` flag
 - **Credential storage** in the OS keyring (macOS Keychain, Linux Secret Service), with a file fallback (see [Credential Storage](#credential-storage))
@@ -648,6 +648,8 @@ gccli devices alarms
 gccli devices solar <device-id> --start 2024-06-01 --end 2024-06-30
 gccli devices sensors
 gccli devices backups
+gccli devices historical
+gccli devices messages
 ```
 
 ### Gear
@@ -723,6 +725,7 @@ gccli training plans --locale en
 gccli training plan <id>
 gccli training active
 gccli training active --start 2026-01-01
+gccli training coach-workouts
 ```
 
 ### Events
@@ -757,14 +760,17 @@ gccli events add --name "Spring 10K" --date 2026-05-10 --type running \
 ```bash
 gccli wellness menstrual-cycle --start 2024-01-01 --end 2024-03-31
 gccli wellness menstrual-summary --start 2024-01-01 --end 2024-03-31
+gccli wellness menstrual-calendar --start 2024-01-01 --end 2024-03-31
 gccli wellness pregnancy-summary
 gccli wellness jet-lag list
+gccli wellness jet-lag status 2024-03-15
 ```
 
 ### Social
 
 ```bash
 gccli notifications list               # List your notifications
+gccli notifications preferences        # Show your notification preferences
 gccli social connections               # List your connections
 gccli social connections --limit 50 --offset 50
 gccli social followers                 # List your followers
@@ -1166,6 +1172,8 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli devices last-used`: Show last used device.
 - `gccli devices sensors`: List paired sensors.
 - `gccli devices backups`: Show device backup summary.
+- `gccli devices historical`: List historical devices.
+- `gccli devices messages`: List device messages.
 
 ### Gear
 
@@ -1252,6 +1260,7 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli social feed`: Show your newsfeed.
 - `gccli groups list`: List your groups. Also runs as `gccli groups`.
 - `gccli notifications list`: List notifications. Also runs as `gccli notifications`.
+- `gccli notifications preferences`: Show notification preferences.
 
 ### Hydration, Nutrition, Profile, Training, Wellness & Utilities
 
@@ -1284,14 +1293,20 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `<id>`: Training plan ID.
 - `gccli training active [flags]`: Show active training plans.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli training coach-workouts`: List adaptive coaching workout types.
 - `gccli wellness menstrual-cycle --start=DATE --end=DATE`: Show menstrual cycle data.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
 - `gccli wellness menstrual-summary --start=DATE --end=DATE`: Show menstrual cycle summary.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli wellness menstrual-calendar --start=DATE --end=DATE`: Show the menstrual cycle calendar for a date range.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
 - `gccli wellness pregnancy-summary`: Show pregnancy summary.
 - `gccli wellness jet-lag list`: List jet lag trips. Also runs as `gccli wellness jet-lag`.
+- `gccli wellness jet-lag status [<date>]`: Show jet lag status for a date.
+  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli reload [<date>]`: Request data reload for a date.
   - `[<date>]`: Date to reload (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli completion <shell>`: Generate shell completion script.

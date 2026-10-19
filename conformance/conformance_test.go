@@ -255,6 +255,7 @@ var skipped = map[string]string{
 	"health training-status daily":    clockSkip,
 	"hydration weekly":                clockSkip,
 	"training active":                 clockSkip,
+	"wellness jet-lag status":         clockSkip,
 	"workouts schedule export":        clockSkip,
 }
 

@@ -381,6 +381,8 @@ Date shortcuts
 - `gccli devices last-used`: Show last used device.
 - `gccli devices sensors`: List paired sensors.
 - `gccli devices backups`: Show device backup summary.
+- `gccli devices historical`: List historical devices.
+- `gccli devices messages`: List device messages.
 
 ### Gear
 
@@ -467,6 +469,7 @@ Date shortcuts
 - `gccli social feed`: Show your newsfeed.
 - `gccli groups list`: List your groups. Also runs as `gccli groups`.
 - `gccli notifications list`: List notifications. Also runs as `gccli notifications`.
+- `gccli notifications preferences`: Show notification preferences.
 
 ### Hydration, Nutrition, Profile, Training, Wellness & Utilities
 
@@ -499,14 +502,20 @@ Date shortcuts
   - `<id>`: Training plan ID.
 - `gccli training active [flags]`: Show active training plans.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli training coach-workouts`: List adaptive coaching workout types.
 - `gccli wellness menstrual-cycle --start=DATE --end=DATE`: Show menstrual cycle data.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
 - `gccli wellness menstrual-summary --start=DATE --end=DATE`: Show menstrual cycle summary.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli wellness menstrual-calendar --start=DATE --end=DATE`: Show the menstrual cycle calendar for a date range.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
 - `gccli wellness pregnancy-summary`: Show pregnancy summary.
 - `gccli wellness jet-lag list`: List jet lag trips. Also runs as `gccli wellness jet-lag`.
+- `gccli wellness jet-lag status [<date>]`: Show jet lag status for a date.
+  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli reload [<date>]`: Request data reload for a date.
   - `[<date>]`: Date to reload (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli completion <shell>`: Generate shell completion script.
