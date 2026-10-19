@@ -210,6 +210,59 @@ func TestUpdateWorkoutKeepsSchedule(t *testing.T) {
 	}
 }
 
+// TestCopyWorkout copies a workout with a name and without one, reads each
+// copy back and deletes it. The name goes as text/plain, so it must come back
+// without quotes, and a copy without a name keeps the name of the original.
+func TestCopyWorkout(t *testing.T) {
+	client := AuthenticatedClient(t)
+	ctx := context.Background()
+
+	cleanupOrphanWorkouts(t, client)
+
+	workoutName := fmt.Sprintf("%sCOPY_%d", e2eWorkoutPrefix, time.Now().UnixNano())
+	workoutID := createE2EWorkout(t, client, workoutName)
+
+	for _, tc := range []struct{ name, want string }{
+		{workoutName + "_2", workoutName + "_2"},
+		{"", workoutName},
+	} {
+		data, err := client.CopyWorkout(ctx, workoutID, tc.name)
+		if err != nil {
+			t.Fatalf("CopyWorkout(name %q) failed: %v", tc.name, err)
+		}
+		var created map[string]any
+		if err := json.Unmarshal(data, &created); err != nil {
+			t.Fatalf("unmarshal copy: %v", err)
+		}
+		copyID := formatID(created["workoutId"])
+		if copyID == "" || copyID == "0" || copyID == workoutID {
+			t.Fatalf("copy has no new workoutId")
+		}
+		deleted := false
+		RegisterCleanup(t, func() {
+			if deleted {
+				return
+			}
+			if _, err := client.Call(context.Background(), "workouts.delete", map[string]string{"workoutID": copyID}, nil); err != nil && !isNotFound(err) {
+				t.Logf("WARNING: failed to clean up a workout copy: %v", err)
+			}
+		})
+
+		if got, _ := fetchWorkout(t, client, copyID)["workoutName"].(string); got != tc.want {
+			t.Errorf("copy name with name %q = %q, want %q", tc.name, got, tc.want)
+		}
+
+		if _, err := client.Call(ctx, "workouts.delete", map[string]string{"workoutID": copyID}, nil); err != nil {
+			t.Fatalf("delete copy failed: %v", err)
+		}
+		deleted = true
+		if _, err := client.Call(ctx, "workouts.get", map[string]string{"workoutID": copyID}, nil); !isNotFound(err) {
+			t.Errorf("GET of the deleted copy: err = %v, want 404", err)
+		}
+	}
+	t.Log("Copied a workout with and without a name, then deleted both copies")
+}
+
 // fetchWorkout reads a single workout from the server.
 func fetchWorkout(t *testing.T, client *garminapi.Client, workoutID string) map[string]any {
 	t.Helper()

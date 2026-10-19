@@ -1,0 +1,42 @@
+-- args --
+workouts
+copy
+9
+Tempo B
+-- route POST /workout-service/workout/copy/9 400 --
+{"message":"bad request"}
+-- table stdout --
+-- table stderr --
+copy workout: garmin api: 400 Bad Request: {"message":"bad request"}
+
+-- table exit --
+1
+-- table requests --
+POST /workout-service/workout/copy/9
+  "Tempo B"
+-- plain stdout --
+-- plain stderr --
+copy workout: garmin api: 400 Bad Request: {"message":"bad request"}
+
+-- plain exit --
+1
+-- plain requests --
+POST /workout-service/workout/copy/9
+  "Tempo B"
+-- plain-header stdout --
+-- plain-header stderr --
+copy workout: garmin api: 400 Bad Request: {"message":"bad request"}
+
+-- plain-header exit --
+1
+-- plain-header requests --
+POST /workout-service/workout/copy/9
+  "Tempo B"
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"copy workout: garmin api: 400 Bad Request: {\"message\":\"bad request\"}\n"}}
+-- json exit --
+1
+-- json requests --
+POST /workout-service/workout/copy/9
+  "Tempo B"

@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -58,6 +59,55 @@ func TestDownloadWorkout_ServerError(t *testing.T) {
 	_, err := client.DownloadWorkout(context.Background(), "42")
 	if err == nil {
 		t.Fatal("expected error")
+	}
+}
+
+func TestCopyWorkout(t *testing.T) {
+	tests := []struct {
+		name, id, copyName string
+		wantPath, wantBody string
+	}{
+		{"named", "42", `Tempo "B" ü`, "/workout-service/workout/copy/42", `Tempo "B" ü`},
+		{"no name", "42", "", "/workout-service/workout/copy/42", ""},
+		{"id escaped", "4/2", "x", "/workout-service/workout/copy/4%2F2", "x"},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			var method, path, contentType, body string
+			_, client := testServer(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				method, path, contentType = r.Method, r.URL.EscapedPath(), r.Header.Get("Content-Type")
+				b, _ := io.ReadAll(r.Body)
+				body = string(b)
+				_, _ = w.Write([]byte(`{"workoutId":43}`))
+			}))
+			data, err := client.CopyWorkout(context.Background(), tc.id, tc.copyName)
+			if err != nil {
+				t.Fatalf("CopyWorkout: %v", err)
+			}
+			if string(data) != `{"workoutId":43}` {
+				t.Errorf("data = %s, want the response body", data)
+			}
+			if method != http.MethodPost || path != tc.wantPath {
+				t.Errorf("request = %s %s, want POST %s", method, path, tc.wantPath)
+			}
+			if contentType != "text/plain; charset=utf-8" {
+				t.Errorf("Content-Type = %q, want text/plain; charset=utf-8: Garmin keeps the quotes of a JSON string in the name", contentType)
+			}
+			if body != tc.wantBody {
+				t.Errorf("body = %q, want the raw name %q", body, tc.wantBody)
+			}
+		})
+	}
+}
+
+func TestCopyWorkout_ServerError(t *testing.T) {
+	_, client := testServer(t, http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusBadRequest)
+	}))
+	_, err := client.CopyWorkout(context.Background(), "42", "x")
+	var apiErr *GarminAPIError
+	if !errors.As(err, &apiErr) || apiErr.StatusCode != http.StatusBadRequest {
+		t.Fatalf("err = %v, want a GarminAPIError with status 400", err)
 	}
 }
 

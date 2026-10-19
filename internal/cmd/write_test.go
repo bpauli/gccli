@@ -152,6 +152,13 @@ var writeCases = map[string]writeCase{
 		human:    "Created workout \"Tempo\" (ID: 9)\n",
 		fallback: "Created workout \"Tempo\"\n",
 	},
+	"workouts copy": {
+		args:     []string{"9", "Tempo B"},
+		routes:   map[string]string{"POST /workout-service/workout/copy/9": `{"workoutId":10,"workoutName":"Tempo B"}`},
+		json:     "{\n  \"workoutId\": 10,\n  \"workoutName\": \"Tempo B\"\n}\n",
+		human:    "Copied workout 9 to \"Tempo B\" (ID: 10)\n",
+		fallback: "Copied workout 9\n",
+	},
 	"workouts schedule add": {
 		args:   []string{"9", "2024-01-15"},
 		routes: map[string]string{"POST /workout-service/schedule/9": `{"workoutScheduleId":10}`},

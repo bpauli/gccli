@@ -337,6 +337,9 @@ Date shortcuts
   - `--type=STRING`: Sport type. One of: run, bike, swim, strength, cardio, hiit, yoga, pilates, mobility, multisport, custom.
   - `-s, --step=STEP,...`: Workout step (type:duration[@target:values]).
   - `--unit="km"`: Pace unit: km or mi.
+- `gccli workouts copy <id> [<name>]`: Copy a workout.
+  - `<id>`: Workout ID.
+  - `[<name>]`: Name of the copy. Without it, the copy gets the name of the original.
 - `gccli workouts types`: List workout types.
 - `gccli workouts schedule add <id> <date>`: Add a workout to the schedule.
   - `<id>`: Workout ID.

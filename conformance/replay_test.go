@@ -194,6 +194,7 @@ var caseReads = map[string][]routeShape{
 	"profile settings":         {{"GET /userprofile-service/userprofile/user-settings", passthrough("object")}},
 	"profile view":             {{"GET /userprofile-service/userprofile/settings", passthrough("object")}},
 	"records list":             {settingsName, {"GET /personalrecord-service/personalrecord/prs/tester", passthrough("array")}},
+	"workouts copy":            {{"POST /workout-service/workout/copy/{n}", object{"workoutId": number, "workoutName": text}}},
 	"workouts create":          {{"POST /workout-service/workout", object{"workoutId": number}}},
 	"workouts delete":          {{"DELETE /workout-service/workout/{n}", unread}},
 	"workouts detail":          {{"GET /workout-service/workout/{n}", passthrough("object")}},
