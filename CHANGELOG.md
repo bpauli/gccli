@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Challenges** - `challenges available` lists the badge challenges that you can join. `challenges completed` lists the badge challenges that you finished. (#210, #79)
+
 ## [2.3.0] - 2026-10-19
 
 ### Added
