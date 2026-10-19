@@ -21,7 +21,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities, gear types, gear collections
 - **Goals & Badges** — active goals, earned/available/in-progress badges, badge details, challenges, personal records
 - **Training** — browse and view training plans, show your active plans
-- **Profile** — user profile and settings
+- **Profile** — user profile and settings, privacy settings and zones, heart rate and power zones
 - **Hydration** — view and log daily water intake
 - **Nutrition** — view daily food logs, meals, and nutrition settings
 - **Events** — list, add, and delete calendar events (races, group rides, etc.) with goals and training priority support
@@ -647,6 +647,10 @@ gccli records
 ```bash
 gccli profile
 gccli profile settings
+gccli profile privacy
+gccli profile privacy-zones
+gccli profile hr-zones
+gccli profile power-zones
 ```
 
 ### Hydration
@@ -1117,6 +1121,10 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli profile view`: Show user profile. Also runs as `gccli profile`.
 - `gccli profile settings`: Show user settings.
+- `gccli profile privacy view`: Show privacy settings. Also runs as `gccli profile privacy`.
+- `gccli profile privacy-zones list`: List privacy zones. Also runs as `gccli profile privacy-zones`.
+- `gccli profile hr-zones`: Show heart rate zones.
+- `gccli profile power-zones`: Show power zones for all sports.
 - `gccli training plans [flags]`: List training plans. Also runs as `gccli training [flags]`.
   - `--locale="en"`: Locale for training plans (e.g. en, de, fr).
 - `gccli training plan <id>`: Show a specific training plan.
