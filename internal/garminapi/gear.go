@@ -107,17 +107,25 @@ func (c *Client) RenameGearCollection(ctx context.Context, uuid, name string) (j
 }
 
 // withFields sets each non-empty value of fields in the JSON object data.
-// The other values go back as Garmin sent them, so unknown keys and number
-// text such as 0.0 stay the same.
 func withFields(data json.RawMessage, what string, fields map[string]string) ([]byte, error) {
+	set := map[string]any{}
+	for key, value := range fields {
+		if value != "" {
+			set[key] = value
+		}
+	}
+	return setFields(data, what, set)
+}
+
+// setFields sets each value of fields in the JSON object data. The other
+// values go back as Garmin sent them, so unknown keys and number text such
+// as 0.0 stay the same.
+func setFields(data json.RawMessage, what string, fields map[string]any) ([]byte, error) {
 	var obj map[string]json.RawMessage
 	if err := json.Unmarshal(data, &obj); err != nil || obj == nil {
 		return nil, fmt.Errorf("parse %s: not a JSON object", what)
 	}
 	for key, value := range fields {
-		if value == "" {
-			continue
-		}
 		v, err := json.Marshal(value)
 		if err != nil {
 			return nil, err

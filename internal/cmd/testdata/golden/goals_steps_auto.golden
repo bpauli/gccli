@@ -1,0 +1,82 @@
+Reads the steps goal of 2026-10-12, sets Garmin's automatic goal (goal 0, category my-auto) and sends the full object back.
+-- args --
+goals
+steps
+auto
+--date
+2026-10-12
+-- route GET /wellness-service/wellness/wellness-goals/consolidated/steps/2026-10-12 --
+{"userGoal":9000,"deviceGoal":7500,"effective":"2026-10-12","goalType":"STEPS","syncedToDevice":true,"userGoalCategory":"manual"}
+-- route PUT /wellness-service/wellness/wellness-goals/consolidated/steps/2026-10-12 --
+{"userGoal":0,"deviceGoal":7500,"effective":"2026-10-12","goalType":"STEPS","syncedToDevice":true,"userGoalCategory":"my-auto"}
+-- table stdout --
+-- table stderr --
+Set automatic steps goal from 2026-10-12
+-- table exit --
+0
+-- table requests --
+GET /wellness-service/wellness/wellness-goals/consolidated/steps/2026-10-12
+PUT /wellness-service/wellness/wellness-goals/consolidated/steps/2026-10-12
+  {
+    "deviceGoal": 7500,
+    "effective": "2026-10-12",
+    "goalType": "STEPS",
+    "syncedToDevice": true,
+    "userGoal": 0,
+    "userGoalCategory": "my-auto"
+  }
+-- plain stdout --
+-- plain stderr --
+Set automatic steps goal from 2026-10-12
+-- plain exit --
+0
+-- plain requests --
+GET /wellness-service/wellness/wellness-goals/consolidated/steps/2026-10-12
+PUT /wellness-service/wellness/wellness-goals/consolidated/steps/2026-10-12
+  {
+    "deviceGoal": 7500,
+    "effective": "2026-10-12",
+    "goalType": "STEPS",
+    "syncedToDevice": true,
+    "userGoal": 0,
+    "userGoalCategory": "my-auto"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Set automatic steps goal from 2026-10-12
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /wellness-service/wellness/wellness-goals/consolidated/steps/2026-10-12
+PUT /wellness-service/wellness/wellness-goals/consolidated/steps/2026-10-12
+  {
+    "deviceGoal": 7500,
+    "effective": "2026-10-12",
+    "goalType": "STEPS",
+    "syncedToDevice": true,
+    "userGoal": 0,
+    "userGoalCategory": "my-auto"
+  }
+-- json stdout --
+{
+  "userGoal": 0,
+  "deviceGoal": 7500,
+  "effective": "2026-10-12",
+  "goalType": "STEPS",
+  "syncedToDevice": true,
+  "userGoalCategory": "my-auto"
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /wellness-service/wellness/wellness-goals/consolidated/steps/2026-10-12
+PUT /wellness-service/wellness/wellness-goals/consolidated/steps/2026-10-12
+  {
+    "deviceGoal": 7500,
+    "effective": "2026-10-12",
+    "goalType": "STEPS",
+    "syncedToDevice": true,
+    "userGoal": 0,
+    "userGoalCategory": "my-auto"
+  }

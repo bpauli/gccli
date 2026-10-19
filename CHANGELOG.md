@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Gear collection writes** - `gear collections create <name>` creates a gear collection (`--first-use`, default today). `gear collections rename <uuid> <name>` renames it, and `gear collections add <uuid> <gear-uuid>` adds a gear item to it (the gear UUID with or without dashes). `gear collections delete <uuid>` deletes a collection after a prompt (`--force` skips it); its gear items stay. (#69)
 - **Activity edits** - `activity describe <id> <text>` sets the description of an activity, and an empty text (`""`) clears it. `activity privacy <id> <level>` changes who can see the activity (`public`, `private` or `connections`). `activity favorite <id>` and `activity unfavorite <id>` add the activity to your favorites and remove it. (#76)
 - **Workout copy** - `workouts copy <id> [<name>]` copies a workout and prints the ID of the copy. Without a name, the copy gets the name of the original. (#81)
+- **Goal writes** - `goals set <type> <value>` sets the daily goal for `floors-climbed` (floors), `intensity-minutes` (minutes) or `hydration` (milliliters). `goals steps set <steps>` sets a fixed daily steps goal, and `goals steps auto` sets Garmin's automatic steps goal. Each goal starts on `--date` (default today) and stays for the days after it. (#68)
 
 ### Changed
 

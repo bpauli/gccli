@@ -1,0 +1,76 @@
+Error case: the PUT answers 400, so the exit code is 1 (error).
+-- args --
+goals
+steps
+set
+9000
+--date
+2026-10-12
+-- route GET /wellness-service/wellness/wellness-goals/consolidated/steps/2026-10-12 --
+{"userGoal":0,"deviceGoal":7500,"effective":"2026-10-12","goalType":"STEPS","syncedToDevice":true,"userGoalCategory":"my-auto"}
+-- route PUT /wellness-service/wellness/wellness-goals/consolidated/steps/2026-10-12 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+set steps goal: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /wellness-service/wellness/wellness-goals/consolidated/steps/2026-10-12
+PUT /wellness-service/wellness/wellness-goals/consolidated/steps/2026-10-12
+  {
+    "deviceGoal": 7500,
+    "effective": "2026-10-12",
+    "goalType": "STEPS",
+    "syncedToDevice": true,
+    "userGoal": 9000,
+    "userGoalCategory": "manual"
+  }
+-- plain stdout --
+-- plain stderr --
+set steps goal: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /wellness-service/wellness/wellness-goals/consolidated/steps/2026-10-12
+PUT /wellness-service/wellness/wellness-goals/consolidated/steps/2026-10-12
+  {
+    "deviceGoal": 7500,
+    "effective": "2026-10-12",
+    "goalType": "STEPS",
+    "syncedToDevice": true,
+    "userGoal": 9000,
+    "userGoalCategory": "manual"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+set steps goal: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /wellness-service/wellness/wellness-goals/consolidated/steps/2026-10-12
+PUT /wellness-service/wellness/wellness-goals/consolidated/steps/2026-10-12
+  {
+    "deviceGoal": 7500,
+    "effective": "2026-10-12",
+    "goalType": "STEPS",
+    "syncedToDevice": true,
+    "userGoal": 9000,
+    "userGoalCategory": "manual"
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"set steps goal: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /wellness-service/wellness/wellness-goals/consolidated/steps/2026-10-12
+PUT /wellness-service/wellness/wellness-goals/consolidated/steps/2026-10-12
+  {
+    "deviceGoal": 7500,
+    "effective": "2026-10-12",
+    "goalType": "STEPS",
+    "syncedToDevice": true,
+    "userGoal": 9000,
+    "userGoalCategory": "manual"
+  }

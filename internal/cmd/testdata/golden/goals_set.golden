@@ -1,0 +1,57 @@
+Sets the intensity minutes goal from 2026-10-12. The type goes into the path with dashes and into the body in Garmin's upper case form.
+-- args --
+goals
+set
+intensity-minutes
+150
+--date
+2026-10-12
+-- route PUT /goal-service/goal/user/effective/intensity-minutes/2026-10-12 --
+{"goalType":"INTENSITY_MINUTES","goalValue":150}
+-- table stdout --
+-- table stderr --
+Set intensity-minutes goal to 150 from 2026-10-12
+-- table exit --
+0
+-- table requests --
+PUT /goal-service/goal/user/effective/intensity-minutes/2026-10-12
+  {
+    "goalType": "INTENSITY_MINUTES",
+    "goalValue": 150
+  }
+-- plain stdout --
+-- plain stderr --
+Set intensity-minutes goal to 150 from 2026-10-12
+-- plain exit --
+0
+-- plain requests --
+PUT /goal-service/goal/user/effective/intensity-minutes/2026-10-12
+  {
+    "goalType": "INTENSITY_MINUTES",
+    "goalValue": 150
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Set intensity-minutes goal to 150 from 2026-10-12
+-- plain-header exit --
+0
+-- plain-header requests --
+PUT /goal-service/goal/user/effective/intensity-minutes/2026-10-12
+  {
+    "goalType": "INTENSITY_MINUTES",
+    "goalValue": 150
+  }
+-- json stdout --
+{
+  "goalType": "INTENSITY_MINUTES",
+  "goalValue": 150
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+PUT /goal-service/goal/user/effective/intensity-minutes/2026-10-12
+  {
+    "goalType": "INTENSITY_MINUTES",
+    "goalValue": 150
+  }
