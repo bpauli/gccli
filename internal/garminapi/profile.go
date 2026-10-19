@@ -15,6 +15,8 @@ var profileEndpoints = []Endpoint{
 	{Name: "profile.get", Method: http.MethodGet, Host: ConnectAPI, Path: "/userprofile-service/userprofile/settings"},
 	{Name: "profile.user-settings", Method: http.MethodGet, Host: ConnectAPI, Path: "/userprofile-service/userprofile/user-settings"},
 	{Name: "profile.social", Method: http.MethodGet, Host: ConnectAPI, Path: "/userprofile-service/socialProfile/{displayName}"},
+	{Name: "profile.privacy-settings", Method: http.MethodGet, Host: ConnectAPI, Path: "/privacysettings-service/privacy-settings"},
+	{Name: "profile.privacy-zones", Method: http.MethodGet, Host: ConnectAPI, Path: "/privacyzone-service/privacyZones"},
 }
 
 // GetDisplayName returns the authenticated user's display name from profile settings.

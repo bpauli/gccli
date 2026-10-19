@@ -16,6 +16,8 @@ func TestProfileEndpoints(t *testing.T) {
 		{"profile.get", nil, "GET /userprofile-service/userprofile/settings"},
 		{"profile.user-settings", nil, "GET /userprofile-service/userprofile/user-settings"},
 		{"profile.social", map[string]string{"displayName": "testuser"}, "GET /userprofile-service/socialProfile/testuser"},
+		{"profile.privacy-settings", nil, "GET /privacysettings-service/privacy-settings"},
+		{"profile.privacy-zones", nil, "GET /privacyzone-service/privacyZones"},
 	})
 }
 
