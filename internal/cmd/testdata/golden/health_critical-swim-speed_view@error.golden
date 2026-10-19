@@ -1,6 +1,7 @@
 -- args --
 health
 critical-swim-speed
+view
 2026-10-15
 -- route GET /biometric-service/criticalSwimSpeed/latest/2026-10-15 400 noeol --
 {"message":"Bad Request"}

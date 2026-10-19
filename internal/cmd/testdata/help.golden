@@ -111,7 +111,21 @@ Commands:
   health max-metrics               Show VO2max and max metrics data.
   health lactate-threshold         Show latest lactate threshold.
   health cycling-ftp               Show latest cycling FTP.
-  health critical-swim-speed       Show latest critical swim speed as of a date.
+  health critical-swim-speed view
+                                   Show latest critical swim speed as of a date.
+  health critical-swim-speed range
+                                   Show critical swim speed for a date range.
+  health power-to-weight           Show latest power-to-weight data as of a
+                                   date.
+  health thresholds cycling-ftp    Show cycling FTP for a date range.
+  health thresholds lactate-heart-rate
+                                   Show lactate threshold heart rate for a date
+                                   range.
+  health thresholds lactate-speed
+                                   Show lactate threshold speed for a date
+                                   range.
+  health thresholds power-to-weight
+                                   Show power-to-weight data for a date range.
   health race-predictions view     Show current race predictions.
   health race-predictions range    Show race predictions for a date range.
   health endurance-score           Show endurance score data.
@@ -468,7 +482,21 @@ Commands:
   health max-metrics               Show VO2max and max metrics data.
   health lactate-threshold         Show latest lactate threshold.
   health cycling-ftp               Show latest cycling FTP.
-  health critical-swim-speed       Show latest critical swim speed as of a date.
+  health critical-swim-speed view
+                                   Show latest critical swim speed as of a date.
+  health critical-swim-speed range
+                                   Show critical swim speed for a date range.
+  health power-to-weight           Show latest power-to-weight data as of a
+                                   date.
+  health thresholds cycling-ftp    Show cycling FTP for a date range.
+  health thresholds lactate-heart-rate
+                                   Show lactate threshold heart rate for a date
+                                   range.
+  health thresholds lactate-speed
+                                   Show lactate threshold speed for a date
+                                   range.
+  health thresholds power-to-weight
+                                   Show power-to-weight data for a date range.
   health race-predictions view     Show current race predictions.
   health race-predictions range    Show race predictions for a date range.
   health endurance-score           Show endurance score data.
@@ -745,6 +773,61 @@ Flags:
 Commands:
   health training-status view     Show aggregated training status for a date.
   health training-status daily    Show daily training status for a date.
+
+$ gccli health critical-swim-speed --help
+Usage: gccli health critical-swim-speed <command>
+
+Show critical swim speed data.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  health critical-swim-speed view
+      Show latest critical swim speed as of a date.
+  health critical-swim-speed range
+      Show critical swim speed for a date range.
+
+$ gccli health thresholds --help
+Usage: gccli health thresholds <command>
+
+Show threshold and power-to-weight data for a date range.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  health thresholds cycling-ftp    Show cycling FTP for a date range.
+  health thresholds lactate-heart-rate
+                                   Show lactate threshold heart rate for a date
+                                   range.
+  health thresholds lactate-speed
+                                   Show lactate threshold speed for a date
+                                   range.
+  health thresholds power-to-weight
+                                   Show power-to-weight data for a date range.
 
 $ gccli health race-predictions --help
 Usage: gccli health race-predictions <command>

@@ -104,15 +104,17 @@ var healthGroup = Group{Name: "health", Help: "View health data.", Children: []N
 	},
 	Leaf{Name: "lactate-threshold", Help: "Show latest lactate threshold.", Endpoint: "health.lactate-threshold", Verb: "get lactate threshold", Output: JSON{}},
 	Leaf{Name: "cycling-ftp", Help: "Show latest cycling FTP.", Endpoint: "health.cycling-ftp", Verb: "get cycling ftp", Output: JSON{}},
+	healthCriticalSwimSpeedGroup,
 	Leaf{
-		Name: "critical-swim-speed", Help: "Show latest critical swim speed as of a date.",
+		Name: "power-to-weight", Help: "Show latest power-to-weight data as of a date.",
 		Spec: argsOf(&struct {
 			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today."`
 		}{}),
-		Endpoint: "health.critical-swim-speed",
+		Endpoint: "health.power-to-weight",
 		Params:   Params{"date": In("Date")},
-		Verb:     "get critical swim speed", Output: JSON{},
+		Verb:     "get power to weight", Output: JSON{},
 	},
+	healthThresholdsGroup,
 	healthRacePredictionsGroup,
 	Leaf{
 		Name: "endurance-score", Help: "Show endurance score data.",
@@ -396,6 +398,71 @@ var healthTrainingStatusGroup = Group{Name: "training-status", Help: "Show train
 		Endpoint: "health.daily-training-status",
 		Params:   Params{"date": In("Date")},
 		Verb:     "get daily training status", Output: JSON{},
+	},
+}}
+
+var healthCriticalSwimSpeedGroup = Group{Name: "critical-swim-speed", Help: "Show critical swim speed data.", Children: []Node{
+	Leaf{
+		Name: "view", Help: "Show latest critical swim speed as of a date.", Default: true,
+		Spec: argsOf(&struct {
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today."`
+		}{}),
+		Endpoint: "health.critical-swim-speed",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get critical swim speed", Output: JSON{},
+	},
+	Leaf{
+		Name: "range", Help: "Show critical swim speed for a date range.",
+		Spec: argsOf(&struct {
+			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+			EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
+		}{}),
+		Endpoint: "health.critical-swim-speed-range",
+		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
+		Verb:     "get critical swim speed range", Output: JSON{},
+	},
+}}
+
+var healthThresholdsGroup = Group{Name: "thresholds", Help: "Show threshold and power-to-weight data for a date range.", Children: []Node{
+	Leaf{
+		Name: "cycling-ftp", Help: "Show cycling FTP for a date range.",
+		Spec: argsOf(&struct {
+			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+			EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
+		}{}),
+		Endpoint: "health.cycling-ftp-range",
+		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
+		Verb:     "get cycling ftp range", Output: JSON{},
+	},
+	Leaf{
+		Name: "lactate-heart-rate", Help: "Show lactate threshold heart rate for a date range.",
+		Spec: argsOf(&struct {
+			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+			EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
+		}{}),
+		Endpoint: "health.lactate-heart-rate-range",
+		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
+		Verb:     "get lactate threshold heart rate range", Output: JSON{},
+	},
+	Leaf{
+		Name: "lactate-speed", Help: "Show lactate threshold speed for a date range.",
+		Spec: argsOf(&struct {
+			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+			EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
+		}{}),
+		Endpoint: "health.lactate-speed-range",
+		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
+		Verb:     "get lactate threshold speed range", Output: JSON{},
+	},
+	Leaf{
+		Name: "power-to-weight", Help: "Show power-to-weight data for a date range.",
+		Spec: argsOf(&struct {
+			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+			EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
+		}{}),
+		Endpoint: "health.power-to-weight-range",
+		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
+		Verb:     "get power to weight range", Output: JSON{},
 	},
 }}
 
