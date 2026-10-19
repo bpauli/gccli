@@ -1,0 +1,64 @@
+-- args --
+activity
+privacy
+111
+public
+-- route PUT /activity-service/activity/111 204 --
+-- table stdout --
+-- table stderr --
+Changed activity 111 privacy to public
+-- table exit --
+0
+-- table requests --
+PUT /activity-service/activity/111
+  {
+    "accessControlRuleDTO": {
+      "typeId": 1,
+      "typeKey": "public"
+    },
+    "activityId": 111
+  }
+-- plain stdout --
+-- plain stderr --
+Changed activity 111 privacy to public
+-- plain exit --
+0
+-- plain requests --
+PUT /activity-service/activity/111
+  {
+    "accessControlRuleDTO": {
+      "typeId": 1,
+      "typeKey": "public"
+    },
+    "activityId": 111
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Changed activity 111 privacy to public
+-- plain-header exit --
+0
+-- plain-header requests --
+PUT /activity-service/activity/111
+  {
+    "accessControlRuleDTO": {
+      "typeId": 1,
+      "typeKey": "public"
+    },
+    "activityId": 111
+  }
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+PUT /activity-service/activity/111
+  {
+    "accessControlRuleDTO": {
+      "typeId": 1,
+      "typeKey": "public"
+    },
+    "activityId": 111
+  }

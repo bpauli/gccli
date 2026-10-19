@@ -1,0 +1,53 @@
+An empty text sends description null, which removes the description (probe w024).
+-- args --
+activity
+describe
+111
+
+-- route PUT /activity-service/activity/111 204 --
+-- table stdout --
+-- table stderr --
+Cleared activity 111 description
+-- table exit --
+0
+-- table requests --
+PUT /activity-service/activity/111
+  {
+    "activityId": 111,
+    "description": null
+  }
+-- plain stdout --
+-- plain stderr --
+Cleared activity 111 description
+-- plain exit --
+0
+-- plain requests --
+PUT /activity-service/activity/111
+  {
+    "activityId": 111,
+    "description": null
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Cleared activity 111 description
+-- plain-header exit --
+0
+-- plain-header requests --
+PUT /activity-service/activity/111
+  {
+    "activityId": 111,
+    "description": null
+  }
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+PUT /activity-service/activity/111
+  {
+    "activityId": 111,
+    "description": null
+  }

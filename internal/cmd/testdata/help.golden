@@ -53,6 +53,10 @@ Commands:
   activity create                  Create a manual activity.
   activity rename                  Rename an activity.
   activity retype                  Change activity type.
+  activity describe                Set or clear the description of an activity.
+  activity privacy                 Change who can see an activity.
+  activity favorite                Mark an activity as a favorite.
+  activity unfavorite              Remove the favorite mark from an activity.
   activity delete                  Delete an activity.
   workouts list                    List workouts.
   workouts detail                  View workout details.
@@ -372,6 +376,10 @@ Commands:
   activity create                Create a manual activity.
   activity rename                Rename an activity.
   activity retype                Change activity type.
+  activity describe              Set or clear the description of an activity.
+  activity privacy               Change who can see an activity.
+  activity favorite              Mark an activity as a favorite.
+  activity unfavorite            Remove the favorite mark from an activity.
   activity delete                Delete an activity.
 
 $ gccli activity exercise-sets --help

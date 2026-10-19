@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"maps"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -164,45 +165,21 @@ func (c *Client) CreateManualActivity(ctx context.Context, name, activityType, t
 	return c.Call(ctx, "activities.create", nil, body)
 }
 
-// RenameActivity updates the name of an activity.
-func (c *Client) RenameActivity(ctx context.Context, activityID string, name string) (json.RawMessage, error) {
+// UpdateActivity sends a partial update of an activity: Garmin changes only
+// the fields in the body, so fields holds just the keys to change.
+func (c *Client) UpdateActivity(ctx context.Context, activityID string, fields map[string]any) (json.RawMessage, error) {
 	id, err := strconv.ParseInt(activityID, 10, 64)
 	if err != nil {
 		return nil, fmt.Errorf("invalid activity ID: %w", err)
 	}
 
-	payload := map[string]any{
-		"activityId":   id,
-		"activityName": name,
-	}
+	payload := map[string]any{}
+	maps.Copy(payload, fields)
+	payload["activityId"] = id
 
 	body, err := json.Marshal(payload)
 	if err != nil {
-		return nil, fmt.Errorf("marshal rename: %w", err)
-	}
-
-	return c.Call(ctx, "activities.update", map[string]string{"activityID": activityID}, body)
-}
-
-// RetypeActivity changes the activity type.
-func (c *Client) RetypeActivity(ctx context.Context, activityID string, typeID int, typeKey string, parentTypeID int) (json.RawMessage, error) {
-	id, err := strconv.ParseInt(activityID, 10, 64)
-	if err != nil {
-		return nil, fmt.Errorf("invalid activity ID: %w", err)
-	}
-
-	payload := map[string]any{
-		"activityId": id,
-		"activityTypeDTO": map[string]any{
-			"typeId":       typeID,
-			"typeKey":      typeKey,
-			"parentTypeId": parentTypeID,
-		},
-	}
-
-	body, err := json.Marshal(payload)
-	if err != nil {
-		return nil, fmt.Errorf("marshal retype: %w", err)
+		return nil, fmt.Errorf("marshal activity update: %w", err)
 	}
 
 	return c.Call(ctx, "activities.update", map[string]string{"activityID": activityID}, body)
