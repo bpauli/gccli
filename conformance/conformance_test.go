@@ -233,6 +233,7 @@ const clockSkip = "a route asks for a date that the binary takes from its clock"
 
 var skipped = map[string]string{
 	"auth login":                 "the harness stubs the browser SSO login",
+	"body latest":                clockSkip,
 	"devices solar":              clockSkip,
 	"events list":                clockSkip,
 	"goals weight":               clockSkip,

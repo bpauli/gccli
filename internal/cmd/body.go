@@ -29,6 +29,15 @@ var bodyGroup = Group{Name: "body", Help: "Body composition and weight data.", C
 		Verb:     "get daily weigh-ins", Output: JSON{},
 		LateDates: []string{"Date"},
 	},
+	Leaf{
+		Name: "latest", Help: "Show the latest weigh-in as of a date.",
+		Spec: argsOf(&struct {
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today."`
+		}{}),
+		Endpoint: "body.latest-weight",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get latest weigh-in", Output: JSON{},
+	},
 	Custom{Name: "add-weight", Help: "Add a weigh-in entry.", Cmd: &BodyAddWeightCmd{}},
 	Custom{Name: "add-composition", Help: "Add body composition data (weight, body fat, muscle mass, etc.) via FIT upload.", Cmd: &BodyAddCompositionCmd{}},
 	Leaf{

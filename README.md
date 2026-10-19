@@ -14,7 +14,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Activities** — list, search, view details, download (FIT/GPX/TCX/KML/CSV), upload, create manual entries (with date), rename, retype, delete, set exercise sets for strength training, list activity types, list pending activities
 - **Exercise Catalog** — browse Garmin's exercise categories and exercises for strength training
 - **Health Data** — daily summaries, steps, heart rate, resting HR, sleep, stress, HRV, SpO2, respiration, body battery, floors, training readiness/status, VO2max, fitness age, race predictions, endurance/hill scores, intensity minutes, lactate threshold, cycling FTP, critical swim speed, power curve, running economy
-- **Body Composition** — weight tracking, body fat, muscle mass, blood pressure, FIT file encoding for composition uploads
+- **Body Composition** — weight tracking, latest weigh-in, body fat, muscle mass, blood pressure, FIT file encoding for composition uploads
 - **Workouts** — list, view, download as FIT, upload from JSON, update in place from JSON, create with sport types and targets (pace/HR/power/cadence), schedule (add/list/remove), delete
 - **Courses** — list courses, view favorites, get full course detail, download as FIT/GPX, import GPX files as new courses, send courses directly to a device, delete courses
 - **Devices** — list registered devices, view settings, solar data, alarms, primary/last-used device, paired sensors, backup summary
@@ -440,6 +440,7 @@ gccli body composition                 # Today
 gccli body composition --start 2024-01-01 --end 2024-01-31
 gccli body weigh-ins --start 2024-01-01 --end 2024-01-31
 gccli body daily-weigh-ins [date]
+gccli body latest [date]
 
 # Add data
 gccli body add-weight 75.5 --unit kg
@@ -932,6 +933,8 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
 - `gccli body daily-weigh-ins [<date>]`: Show weigh-in data for a single day.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
+- `gccli body latest [<date>]`: Show the latest weigh-in as of a date.
+  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli body add-weight <value> [flags]`: Add a weigh-in entry.
   - `<value>`: Weight value.
   - `--unit="kg"`: Unit: kg or lbs.
