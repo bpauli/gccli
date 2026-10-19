@@ -228,6 +228,9 @@ Commands:
   notifications list               List notifications.
   social connections               List your connections.
   social followers                 List the followers of a user.
+  social following                 List the users that a user follows.
+  social requests                  List pending connection requests.
+  social feed                      Show your newsfeed.
   groups list                      List your groups.
   reload                           Request data reload for a date.
   completion                       Generate shell completion script.
@@ -1428,7 +1431,7 @@ Commands:
 $ gccli social --help
 Usage: gccli social <command> [flags]
 
-View connections and followers.
+View connections, followers, following and the newsfeed.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -1447,6 +1450,9 @@ Flags:
 Commands:
   social connections    List your connections.
   social followers      List the followers of a user.
+  social following      List the users that a user follows.
+  social requests       List pending connection requests.
+  social feed           Show your newsfeed.
 
 $ gccli groups --help
 Usage: gccli groups <command> [flags]
