@@ -9,6 +9,8 @@ func TestWellnessEndpoints(t *testing.T) {
 		{"wellness.menstrual-cycle-summary", span, "GET /periodichealth-service/menstrualcycle/summary/2024-01-01/2024-01-31"},
 		{"wellness.pregnancy-summary", nil, "GET /periodichealth-service/pregnancy/summary"},
 		{"wellness.jet-lag-trips", nil, "GET /jetlag-service/jetlag/trip/all"},
+		{"wellness.jet-lag-status", map[string]string{"date": "2024-01-15"}, "GET /jetlag-service/jetlag/status/daily/2024-01-15"},
+		{"wellness.menstrual-calendar", span, "GET /periodichealth-service/menstrualcycle/calendar/2024-01-01/2024-01-31"},
 		{"wellness.request-reload", map[string]string{"date": "2024-01-15"}, "GET /wellness-service/wellness/epoch/request/2024-01-15"},
 	})
 }

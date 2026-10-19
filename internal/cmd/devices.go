@@ -35,6 +35,8 @@ var devicesGroup = Group{Name: "devices", Help: "Manage devices.", Children: []N
 	Leaf{Name: "last-used", Help: "Show last used device.", Endpoint: "devices.last-used", Verb: "get last used device", Output: JSON{}},
 	Leaf{Name: "sensors", Help: "List paired sensors.", Endpoint: "devices.sensors", Verb: "get sensors", Output: JSON{}},
 	Leaf{Name: "backups", Help: "Show device backup summary.", Endpoint: "devices.backup-summary", Verb: "get device backup summary", Output: JSON{}},
+	Leaf{Name: "historical", Help: "List historical devices.", Endpoint: "devices.historical", Verb: "get historical devices", Output: JSON{}},
+	Leaf{Name: "messages", Help: "List device messages.", Endpoint: "devices.messages", Verb: "get device messages", Output: JSON{}},
 }}
 
 // DeviceAlarmsCmd shows alarms from all devices.

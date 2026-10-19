@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Badges** - `badges compare <display-name>` compares your badges with those of a connection. `badges leaderboard` shows the badge points leaderboard of your connections. (#92)
 - **Virtual challenges** - `challenges virtual available`, `challenges virtual completed` and `challenges virtual in-progress` list the available, completed and in-progress virtual challenges. (#79)
 - **Social** - `social requests` lists pending connection requests. `social following [<display-name>]` lists the users that a user follows (default: you). `social feed` shows your newsfeed. (#77)
+- **Devices** - `devices historical` lists historical devices. `devices messages` lists device messages. (#85)
+- **Wellness** - `wellness jet-lag status [DATE]` shows the jet lag status of a date (default today). `wellness menstrual-calendar` shows the menstrual cycle calendar for a date range (`--start` and `--end`, both required). (#94)
+- **Training** - `training coach-workouts` lists adaptive coaching workout types. (#83)
+- **Notifications** - `notifications preferences` shows your notification preferences. (#86)
 
 ### Changed
 

@@ -21,10 +21,29 @@ var wellnessGroup = Group{Name: "wellness", Help: "View wellness data.", Childre
 		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
 		Verb:     "get menstrual cycle summary", Output: JSON{},
 	},
+	Leaf{
+		Name: "menstrual-calendar", Help: "Show the menstrual cycle calendar for a date range.",
+		Spec: argsOf(&struct {
+			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+			EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
+		}{}),
+		Endpoint: "wellness.menstrual-calendar",
+		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
+		Verb:     "get menstrual calendar", Output: JSON{},
+	},
 	Leaf{Name: "pregnancy-summary", Help: "Show pregnancy summary.", Endpoint: "wellness.pregnancy-summary", Verb: "get pregnancy summary", Output: JSON{}},
 	wellnessJetLagGroup,
 }}
 
-var wellnessJetLagGroup = Group{Name: "jet-lag", Help: "View jet lag trips.", Children: []Node{
+var wellnessJetLagGroup = Group{Name: "jet-lag", Help: "View jet lag trips and status.", Children: []Node{
 	Leaf{Name: "list", Help: "List jet lag trips.", Default: true, Endpoint: "wellness.jet-lag-trips", Verb: "get jet lag trips", Output: JSON{}},
+	Leaf{
+		Name: "status", Help: "Show jet lag status for a date.",
+		Spec: argsOf(&struct {
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today."`
+		}{}),
+		Endpoint: "wellness.jet-lag-status",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get jet lag status", Output: JSON{},
+	},
 }}

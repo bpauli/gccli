@@ -18,6 +18,8 @@ func TestDevicesEndpoints(t *testing.T) {
 		{"devices.last-used", nil, "GET /device-service/deviceservice/mylastused"},
 		{"devices.sensors", nil, "GET /device-service/sensors"},
 		{"devices.backup-summary", nil, "GET /devicebackup-service/backup/summary"},
+		{"devices.historical", nil, "GET /device-service/deviceregistration/devices/historical"},
+		{"devices.messages", nil, "GET /device-service/devicemessage/messages"},
 	})
 }
 

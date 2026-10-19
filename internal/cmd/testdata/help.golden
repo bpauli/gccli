@@ -162,6 +162,8 @@ Commands:
   devices last-used                Show last used device.
   devices sensors                  List paired sensors.
   devices backups                  Show device backup summary.
+  devices historical               List historical devices.
+  devices messages                 List device messages.
   gear list                        List all gear.
   gear stats                       Show usage statistics for a gear item.
   gear activities                  Show activities linked to a gear item.
@@ -215,17 +217,22 @@ Commands:
   training plans                   List training plans.
   training plan                    Show a specific training plan.
   training active                  Show active training plans.
+  training coach-workouts          List adaptive coaching workout types.
   events list                      List calendar events.
   events upcoming                  List upcoming events.
   events add                       Add a calendar event.
   events delete                    Delete a calendar event.
   wellness menstrual-cycle         Show menstrual cycle data.
   wellness menstrual-summary       Show menstrual cycle summary.
+  wellness menstrual-calendar      Show the menstrual cycle calendar for a date
+                                   range.
   wellness pregnancy-summary       Show pregnancy summary.
   wellness jet-lag list            List jet lag trips.
+  wellness jet-lag status          Show jet lag status for a date.
   exercises list                   List available exercise categories and
                                    exercises.
   notifications list               List notifications.
+  notifications preferences        Show notification preferences.
   social connections               List your connections.
   social followers                 List the followers of a user.
   social following                 List the users that a user follows.
@@ -952,14 +959,16 @@ Flags:
       --version           Print version information.
 
 Commands:
-  devices list         List registered devices.
-  devices settings     Show settings for a device.
-  devices primary      Show primary training device.
-  devices solar        Show solar charging data for a device.
-  devices alarms       Show alarms from all devices.
-  devices last-used    Show last used device.
-  devices sensors      List paired sensors.
-  devices backups      Show device backup summary.
+  devices list          List registered devices.
+  devices settings      Show settings for a device.
+  devices primary       Show primary training device.
+  devices solar         Show solar charging data for a device.
+  devices alarms        Show alarms from all devices.
+  devices last-used     Show last used device.
+  devices sensors       List paired sensors.
+  devices backups       Show device backup summary.
+  devices historical    List historical devices.
+  devices messages      List device messages.
 
 $ gccli gear --help
 Usage: gccli gear <command> [flags]
@@ -1291,7 +1300,7 @@ Commands:
 $ gccli training --help
 Usage: gccli training <command> [flags]
 
-View training plans.
+View training plans and adaptive coaching workouts.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -1308,9 +1317,10 @@ Flags:
       --version           Print version information.
 
 Commands:
-  training plans     List training plans.
-  training plan      Show a specific training plan.
-  training active    Show active training plans.
+  training plans             List training plans.
+  training plan              Show a specific training plan.
+  training active            Show active training plans.
+  training coach-workouts    List adaptive coaching workout types.
 
 $ gccli events --help
 Usage: gccli events <command> [flags]
@@ -1357,15 +1367,18 @@ Flags:
       --version           Print version information.
 
 Commands:
-  wellness menstrual-cycle      Show menstrual cycle data.
-  wellness menstrual-summary    Show menstrual cycle summary.
-  wellness pregnancy-summary    Show pregnancy summary.
-  wellness jet-lag list         List jet lag trips.
+  wellness menstrual-cycle       Show menstrual cycle data.
+  wellness menstrual-summary     Show menstrual cycle summary.
+  wellness menstrual-calendar    Show the menstrual cycle calendar for a date
+                                 range.
+  wellness pregnancy-summary     Show pregnancy summary.
+  wellness jet-lag list          List jet lag trips.
+  wellness jet-lag status        Show jet lag status for a date.
 
 $ gccli wellness jet-lag --help
 Usage: gccli wellness jet-lag <command>
 
-View jet lag trips.
+View jet lag trips and status.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -1382,7 +1395,8 @@ Flags:
       --version           Print version information.
 
 Commands:
-  wellness jet-lag list    List jet lag trips.
+  wellness jet-lag list      List jet lag trips.
+  wellness jet-lag status    Show jet lag status for a date.
 
 $ gccli exercises --help
 Usage: gccli exercises <command> [flags]
@@ -1409,7 +1423,7 @@ Commands:
 $ gccli notifications --help
 Usage: gccli notifications <command> [flags]
 
-View notifications.
+View notifications and notification preferences.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -1426,7 +1440,8 @@ Flags:
       --version           Print version information.
 
 Commands:
-  notifications list    List notifications.
+  notifications list           List notifications.
+  notifications preferences    Show notification preferences.
 
 $ gccli social --help
 Usage: gccli social <command> [flags]
