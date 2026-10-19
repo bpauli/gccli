@@ -142,6 +142,8 @@ Commands:
   courses delete                   Delete a course.
   challenges list                  Show joined challenges.
   challenges badge                 Show badge challenges.
+  challenges available             Show available badge challenges.
+  challenges completed             Show completed badge challenges.
   records                          View personal records.
   profile view                     Show user profile.
   profile settings                 Show user settings.
@@ -756,8 +758,10 @@ Flags:
       --version           Print version information.
 
 Commands:
-  challenges list     Show joined challenges.
-  challenges badge    Show badge challenges.
+  challenges list         Show joined challenges.
+  challenges badge        Show badge challenges.
+  challenges available    Show available badge challenges.
+  challenges completed    Show completed badge challenges.
 
 $ gccli profile --help
 Usage: gccli profile <command> [flags]

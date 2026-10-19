@@ -343,6 +343,8 @@ Date shortcuts
   - `<id>`: Badge ID.
 - `gccli challenges list`: Show joined challenges. Also runs as `gccli challenges`.
 - `gccli challenges badge`: Show badge challenges.
+- `gccli challenges available`: Show available badge challenges.
+- `gccli challenges completed`: Show completed badge challenges.
 - `gccli records`: View personal records.
 
 ### Events

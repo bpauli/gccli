@@ -646,6 +646,8 @@ gccli badges in-progress
 gccli badges detail <id>
 gccli challenges list
 gccli challenges badge
+gccli challenges available
+gccli challenges completed
 gccli records
 ```
 
@@ -1084,6 +1086,8 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `<id>`: Badge ID.
 - `gccli challenges list`: Show joined challenges. Also runs as `gccli challenges`.
 - `gccli challenges badge`: Show badge challenges.
+- `gccli challenges available`: Show available badge challenges.
+- `gccli challenges completed`: Show completed badge challenges.
 - `gccli records`: View personal records.
 
 ### Events

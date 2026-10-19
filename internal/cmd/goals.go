@@ -40,6 +40,8 @@ var badgesGroup = Group{Name: "badges", Help: "View badges.", Children: []Node{
 var challengesGroup = Group{Name: "challenges", Help: "View challenges.", Children: []Node{
 	Leaf{Name: "list", Help: "Show joined challenges.", Default: true, Endpoint: "challenges.joined", Verb: "get challenges", Output: JSON{}},
 	Leaf{Name: "badge", Help: "Show badge challenges.", Endpoint: "badges.challenges", Verb: "get badge challenges", Output: JSON{}},
+	Leaf{Name: "available", Help: "Show available badge challenges.", Endpoint: "challenges.available", Verb: "get available challenges", Output: JSON{}},
+	Leaf{Name: "completed", Help: "Show completed badge challenges.", Endpoint: "challenges.completed", Verb: "get completed challenges", Output: JSON{}},
 }}
 
 var recordsLeaf = Leaf{
