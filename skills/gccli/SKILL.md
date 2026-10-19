@@ -416,7 +416,10 @@ Date shortcuts
 - `gccli challenges badge`: Show badge challenges.
 - `gccli challenges available`: Show available badge challenges.
 - `gccli challenges completed`: Show completed badge challenges.
-- `gccli records`: View personal records.
+- `gccli records list`: View personal records. Also runs as `gccli records`.
+- `gccli records types`: List personal record types.
+- `gccli records activity <id>`: List the personal records set in an activity.
+  - `<id>`: Activity ID.
 
 ### Events
 

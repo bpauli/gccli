@@ -44,9 +44,26 @@ var challengesGroup = Group{Name: "challenges", Help: "View challenges.", Childr
 	Leaf{Name: "completed", Help: "Show completed badge challenges.", Endpoint: "challenges.completed", Verb: "get completed challenges", Output: JSON{}},
 }}
 
-var recordsLeaf = Leaf{
-	Name: "records", Help: "View personal records.",
-	Endpoint: "records.list",
-	Params:   Params{"displayName": DisplayName},
-	Verb:     "get personal records", Output: JSON{},
-}
+var recordsGroup = Group{Name: "records", Help: "View personal records.", Children: []Node{
+	Leaf{
+		Name: "list", Help: "View personal records.", Default: true,
+		Endpoint: "records.list",
+		Params:   Params{"displayName": DisplayName},
+		Verb:     "get personal records", Output: JSON{},
+	},
+	Leaf{
+		Name: "types", Help: "List personal record types.",
+		Endpoint: "records.types",
+		Params:   Params{"displayName": DisplayName},
+		Verb:     "get personal record types", Output: JSON{},
+	},
+	Leaf{
+		Name: "activity", Help: "List the personal records set in an activity.",
+		Spec: argsOf(&struct {
+			ID string `arg:"" help:"Activity ID."`
+		}{}),
+		Endpoint: "records.activity",
+		Params:   Params{"activityID": In("ID")},
+		Verb:     "get activity records", Output: JSON{},
+	},
+}}

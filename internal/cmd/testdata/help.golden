@@ -188,7 +188,9 @@ Commands:
   challenges badge                 Show badge challenges.
   challenges available             Show available badge challenges.
   challenges completed             Show completed badge challenges.
-  records                          View personal records.
+  records list                     View personal records.
+  records types                    List personal record types.
+  records activity                 List the personal records set in an activity.
   profile view                     Show user profile.
   profile settings                 Show user settings.
   profile privacy view             Show privacy settings.
@@ -1100,6 +1102,30 @@ Commands:
   challenges badge        Show badge challenges.
   challenges available    Show available badge challenges.
   challenges completed    Show completed badge challenges.
+
+$ gccli records --help
+Usage: gccli records <command> [flags]
+
+View personal records.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  records list        View personal records.
+  records types       List personal record types.
+  records activity    List the personal records set in an activity.
 
 $ gccli profile --help
 Usage: gccli profile <command> [flags]

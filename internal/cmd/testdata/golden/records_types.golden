@@ -1,0 +1,59 @@
+-- args --
+records
+types
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- route GET /personalrecord-service/personalrecordtype/prtypes/tester --
+[{"id":1,"key":"pr.label.fastest.1000"}]
+-- table stdout --
+[
+  {
+    "id": 1,
+    "key": "pr.label.fastest.1000"
+  }
+]
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /userprofile-service/userprofile/settings
+GET /personalrecord-service/personalrecordtype/prtypes/tester
+-- plain stdout --
+[
+  {
+    "id": 1,
+    "key": "pr.label.fastest.1000"
+  }
+]
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+GET /personalrecord-service/personalrecordtype/prtypes/tester
+-- plain-header stdout --
+[
+  {
+    "id": 1,
+    "key": "pr.label.fastest.1000"
+  }
+]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /personalrecord-service/personalrecordtype/prtypes/tester
+-- json stdout --
+[
+  {
+    "id": 1,
+    "key": "pr.label.fastest.1000"
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /userprofile-service/userprofile/settings
+GET /personalrecord-service/personalrecordtype/prtypes/tester

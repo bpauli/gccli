@@ -189,7 +189,7 @@ var caseReads = map[string][]routeShape{
 	"health summary":           {settingsName, {"GET /usersummary-service/usersummary/daily/tester", passthrough("object")}},
 	"profile settings":         {{"GET /userprofile-service/userprofile/user-settings", passthrough("object")}},
 	"profile view":             {{"GET /userprofile-service/userprofile/settings", passthrough("object")}},
-	"records":                  {settingsName, {"GET /personalrecord-service/personalrecord/prs/tester", passthrough("array")}},
+	"records list":             {settingsName, {"GET /personalrecord-service/personalrecord/prs/tester", passthrough("array")}},
 	"workouts create":          {{"POST /workout-service/workout", object{"workoutId": number}}},
 	"workouts delete":          {{"DELETE /workout-service/workout/{n}", unread}},
 	"workouts detail":          {{"GET /workout-service/workout/{n}", passthrough("object")}},

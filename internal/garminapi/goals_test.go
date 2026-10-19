@@ -20,6 +20,8 @@ func TestGoalsEndpoints(t *testing.T) {
 		{"challenges.available", nil, "GET /badgechallenge-service/badgeChallenge/available"},
 		{"challenges.completed", nil, "GET /badgechallenge-service/badgeChallenge/completed"},
 		{"records.list", map[string]string{"displayName": "jo/b"}, "GET /personalrecord-service/personalrecord/prs/jo%2Fb"},
+		{"records.types", map[string]string{"displayName": "jo/b"}, "GET /personalrecord-service/personalrecordtype/prtypes/jo%2Fb"},
+		{"records.activity", map[string]string{"activityID": "42"}, "GET /personalrecord-service/personalrecord/prByActivityId/42"},
 	})
 }
 
