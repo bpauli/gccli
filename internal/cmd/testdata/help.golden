@@ -191,6 +191,9 @@ Commands:
   profile hr-zones                 Show heart rate zones.
   profile power-zones              Show power zones for all sports.
   hydration view                   Show hydration data for a date.
+  hydration daily                  Show daily hydration statistics for a date
+                                   range.
+  hydration weekly                 Show weekly hydration statistics.
   hydration add                    Add a hydration log entry.
   nutrition food-log               Show daily food log for a date.
   nutrition meals                  Show meal summaries for a date.
@@ -1157,8 +1160,10 @@ Flags:
       --version           Print version information.
 
 Commands:
-  hydration view    Show hydration data for a date.
-  hydration add     Add a hydration log entry.
+  hydration view      Show hydration data for a date.
+  hydration daily     Show daily hydration statistics for a date range.
+  hydration weekly    Show weekly hydration statistics.
+  hydration add       Add a hydration log entry.
 
 $ gccli nutrition --help
 Usage: gccli nutrition <command> [flags]

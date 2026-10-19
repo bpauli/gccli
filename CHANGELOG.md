@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Sleep** - `health sleep naps [DATE]` shows the naps of a date. `health sleep daily` shows daily sleep statistics for a date range of at most 28 days, and `health sleep overall` shows overall sleep statistics for a date range (`--start` and `--end`, both required). `health sleep weekly` shows weekly sleep statistics for the 52 weeks up to `--end` (default today). (#70)
 - **Training status, acclimation and one-rep max** - `health training-status daily [DATE]` shows the daily training status of a date. `health acclimation` shows acclimation data for a date range (`--start` and `--end`, both required). `health one-rep-max [DATE]` shows the current estimated one-rep max values as of a date. (#73)
 - **Power-to-weight and thresholds** - `health power-to-weight [DATE]` shows the latest power-to-weight data as of a date. `health thresholds cycling-ftp`, `health thresholds lactate-heart-rate`, `health thresholds lactate-speed` and `health thresholds power-to-weight` show each value for a date range, and `health critical-swim-speed range` shows critical swim speed for a date range (`--start` and `--end`, both required). (#74)
+- **Hydration statistics** - `hydration daily` shows daily hydration statistics for a date range (`--start` and `--end`, both required). `hydration weekly` shows weekly hydration statistics (`--end`, default today, and `--weeks`, default 4). (#72)
 
 ### Changed
 
