@@ -1,0 +1,29 @@
+Error case: the device ID is an empty string, so the endpoint table refuses the request and the exit code is 1 (error). The third args line is the empty argument.
+-- args --
+devices
+solar
+
+-- table stdout --
+-- table stderr --
+get device solar: endpoint devices.solar: deviceID: required
+-- table exit --
+1
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+get device solar: endpoint devices.solar: deviceID: required
+-- plain exit --
+1
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+get device solar: endpoint devices.solar: deviceID: required
+-- plain-header exit --
+1
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"get device solar: endpoint devices.solar: deviceID: required"}}
+-- json exit --
+1
+-- json requests --
