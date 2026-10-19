@@ -498,7 +498,7 @@ gccli activities list --limit 5</pre>
           <div class="feature-card fade-in">
             <div class="feature-icon yellow">&#x1f3af;</div>
             <h3>Goals &amp; Badges</h3>
-            <p>Active goals, earned/available/in-progress badges, badge details, challenges, personal records, record types and the records of an activity.</p>
+            <p>Active goals, earned/available/in-progress badges, badge details, badge comparison with a connection, the badge points leaderboard, challenges, virtual challenges, personal records, record types and the records of an activity.</p>
           </div>
           <div class="feature-card fade-in">
             <div class="feature-icon yellow">&#x1f4c5;</div>
@@ -824,10 +824,15 @@ gccli activities list --limit 5</pre>
               <div class="cmd-row"><div class="cmd">gccli badges available</div><div class="desc">Show available badges.</div></div>
               <div class="cmd-row"><div class="cmd">gccli badges <span class="nowrap">in-progress</span></div><div class="desc">Show badges in progress.</div></div>
               <div class="cmd-row"><div class="cmd">gccli badges detail &lt;id&gt;</div><div class="desc">Show details of a badge.<br><code>&lt;id&gt;</code> Badge ID.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli badges compare <span class="nowrap">&lt;display-name&gt;</span></div><div class="desc">Compare your badges with a connection.<br><code><span class="nowrap">&lt;display-name&gt;</span></code> Display name of the connection.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli badges leaderboard</div><div class="desc">Show the badge points leaderboard of your connections.</div></div>
               <div class="cmd-row"><div class="cmd">gccli challenges list</div><div class="desc">Show joined challenges. Also runs as <span class="whole"><code>gccli challenges</code>.</span></div></div>
               <div class="cmd-row"><div class="cmd">gccli challenges badge</div><div class="desc">Show badge challenges.</div></div>
               <div class="cmd-row"><div class="cmd">gccli challenges available</div><div class="desc">Show available badge challenges.</div></div>
               <div class="cmd-row"><div class="cmd">gccli challenges completed</div><div class="desc">Show completed badge challenges.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli challenges virtual available</div><div class="desc">Show available virtual challenges.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli challenges virtual completed</div><div class="desc">Show completed virtual challenges.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli challenges virtual <span class="nowrap">in-progress</span></div><div class="desc">Show virtual challenges in progress.</div></div>
               <div class="cmd-row"><div class="cmd">gccli records list</div><div class="desc">View personal records. Also runs as <span class="whole"><code>gccli records</code>.</span></div></div>
               <div class="cmd-row"><div class="cmd">gccli records types</div><div class="desc">List personal record types.</div></div>
               <div class="cmd-row"><div class="cmd">gccli records activity &lt;id&gt;</div><div class="desc">List the personal records set in an activity.<br><code>&lt;id&gt;</code> Activity ID.</div></div>

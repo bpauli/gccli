@@ -673,10 +673,15 @@ gccli badges earned
 gccli badges available
 gccli badges in-progress
 gccli badges detail <id>
+gccli badges compare <display-name>
+gccli badges leaderboard
 gccli challenges list
 gccli challenges badge
 gccli challenges available
 gccli challenges completed
+gccli challenges virtual available
+gccli challenges virtual completed
+gccli challenges virtual in-progress
 gccli records                     # personal records (same as records list)
 gccli records types
 gccli records activity <activityId>
@@ -1188,10 +1193,16 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli badges in-progress`: Show badges in progress.
 - `gccli badges detail <id>`: Show details of a badge.
   - `<id>`: Badge ID.
+- `gccli badges compare <display-name>`: Compare your badges with a connection.
+  - `<display-name>`: Display name of the connection.
+- `gccli badges leaderboard`: Show the badge points leaderboard of your connections.
 - `gccli challenges list`: Show joined challenges. Also runs as `gccli challenges`.
 - `gccli challenges badge`: Show badge challenges.
 - `gccli challenges available`: Show available badge challenges.
 - `gccli challenges completed`: Show completed badge challenges.
+- `gccli challenges virtual available`: Show available virtual challenges.
+- `gccli challenges virtual completed`: Show completed virtual challenges.
+- `gccli challenges virtual in-progress`: Show virtual challenges in progress.
 - `gccli records list`: View personal records. Also runs as `gccli records`.
 - `gccli records types`: List personal record types.
 - `gccli records activity <id>`: List the personal records set in an activity.

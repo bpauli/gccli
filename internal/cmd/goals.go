@@ -35,6 +35,16 @@ var badgesGroup = Group{Name: "badges", Help: "View badges.", Children: []Node{
 		Params:   Params{"badgeID": In("ID")},
 		Verb:     "get badge detail", Output: JSON{},
 	},
+	Leaf{
+		Name: "compare", Help: "Compare your badges with a connection.",
+		Spec: argsOf(&struct {
+			DisplayName string `arg:"" help:"Display name of the connection."`
+		}{}),
+		Endpoint: "badges.compare",
+		Params:   Params{"displayName": In("DisplayName")},
+		Verb:     "compare badges", Output: JSON{},
+	},
+	Leaf{Name: "leaderboard", Help: "Show the badge points leaderboard of your connections.", Endpoint: "badges.leaderboard", Verb: "get badge leaderboard", Output: JSON{}},
 }}
 
 var challengesGroup = Group{Name: "challenges", Help: "View challenges.", Children: []Node{
@@ -42,6 +52,11 @@ var challengesGroup = Group{Name: "challenges", Help: "View challenges.", Childr
 	Leaf{Name: "badge", Help: "Show badge challenges.", Endpoint: "badges.challenges", Verb: "get badge challenges", Output: JSON{}},
 	Leaf{Name: "available", Help: "Show available badge challenges.", Endpoint: "challenges.available", Verb: "get available challenges", Output: JSON{}},
 	Leaf{Name: "completed", Help: "Show completed badge challenges.", Endpoint: "challenges.completed", Verb: "get completed challenges", Output: JSON{}},
+	Group{Name: "virtual", Help: "View virtual challenges.", Children: []Node{
+		Leaf{Name: "available", Help: "Show available virtual challenges.", Endpoint: "challenges.virtual-available", Verb: "get available virtual challenges", Output: JSON{}},
+		Leaf{Name: "completed", Help: "Show completed virtual challenges.", Endpoint: "challenges.virtual-completed", Verb: "get completed virtual challenges", Output: JSON{}},
+		Leaf{Name: "in-progress", Help: "Show virtual challenges in progress.", Endpoint: "challenges.virtual-in-progress", Verb: "get in-progress virtual challenges", Output: JSON{}},
+	}},
 }}
 
 var recordsGroup = Group{Name: "records", Help: "View personal records.", Children: []Node{
