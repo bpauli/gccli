@@ -1,0 +1,44 @@
+-- args --
+health
+hr
+daily
+--start=2026-10-01
+--end=2026-10-01
+-- route GET /usersummary-service/stats/heartRate/daily/2026-10-01/2026-10-01 --
+{"value":1}
+-- table stdout --
+{
+  "value": 1
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /usersummary-service/stats/heartRate/daily/2026-10-01/2026-10-01
+-- plain stdout --
+{
+  "value": 1
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /usersummary-service/stats/heartRate/daily/2026-10-01/2026-10-01
+-- plain-header stdout --
+{
+  "value": 1
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /usersummary-service/stats/heartRate/daily/2026-10-01/2026-10-01
+-- json stdout --
+{
+  "value": 1
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /usersummary-service/stats/heartRate/daily/2026-10-01/2026-10-01

@@ -182,7 +182,7 @@ var caseReads = map[string][]routeShape{
 	"events add":               {{"POST /calendar-service/event", object{"id": number, "eventName": text, "date": text}}},
 	"events delete":            {{"DELETE /calendar-service/event/{n}", unread}},
 	"goals list":               {{"GET /goal-service/goal/goals", passthrough("array")}},
-	"health hr":                {settingsName, {"GET /wellness-service/wellness/dailyHeartRate/tester", passthrough("object")}},
+	"health hr view":           {settingsName, {"GET /wellness-service/wellness/dailyHeartRate/tester", passthrough("object")}},
 	"health rhr":               {settingsName, {"GET /userstats-service/wellness/daily/tester", passthrough("object")}},
 	"health sleep":             {settingsName, {"GET /wellness-service/wellness/dailySleepData/tester", passthrough("object")}},
 	"health steps view":        {settingsName, {"GET /wellness-service/wellness/dailySummaryChart/tester", passthrough("array")}},

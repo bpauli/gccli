@@ -34,16 +34,7 @@ var healthGroup = Group{Name: "health", Help: "View health data.", Children: []N
 		Params:   Params{"displayName": DisplayName},
 		Verb:     "get lifetime totals", Output: JSON{},
 	},
-	Leaf{
-		Name: "hr", Help: "Show heart rate data.",
-		Spec: argsOf(&struct {
-			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
-		}{}),
-		Endpoint: "health.heart-rate",
-		Params:   Params{"displayName": DisplayName, "date": In("Date")},
-		Verb:     "get heart rate", Output: JSON{},
-		LateDates: []string{"Date"},
-	},
+	healthHeartRateGroup,
 	Leaf{
 		Name: "rhr", Help: "Show resting heart rate data.",
 		Spec: argsOf(&struct {
@@ -54,16 +45,7 @@ var healthGroup = Group{Name: "health", Help: "View health data.", Children: []N
 		Verb:     "get resting heart rate", Output: JSON{},
 		LateDates: []string{"Date"},
 	},
-	Leaf{
-		Name: "floors", Help: "Show floors climbed data.",
-		Spec: argsOf(&struct {
-			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
-		}{}),
-		Endpoint: "health.floors",
-		Params:   Params{"date": In("Date")},
-		Verb:     "get floors", Output: JSON{},
-		LateDates: []string{"Date"},
-	},
+	healthFloorsGroup,
 	Leaf{
 		Name: "sleep", Help: "Show sleep data.",
 		Spec: argsOf(&struct {
@@ -75,16 +57,7 @@ var healthGroup = Group{Name: "health", Help: "View health data.", Children: []N
 		LateDates: []string{"Date"},
 	},
 	healthStressGroup,
-	Leaf{
-		Name: "respiration", Help: "Show respiration data.",
-		Spec: argsOf(&struct {
-			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
-		}{}),
-		Endpoint: "health.respiration",
-		Params:   Params{"date": In("Date")},
-		Verb:     "get respiration", Output: JSON{},
-		LateDates: []string{"Date"},
-	},
+	healthRespirationGroup,
 	Leaf{
 		Name: "spo2", Help: "Show SpO2 (blood oxygen) data.",
 		Spec: argsOf(&struct {
@@ -260,6 +233,95 @@ var healthStepsGroup = Group{Name: "steps", Help: "Show step data.", Children: [
 		Endpoint: "health.monthly-steps",
 		Params:   Params{"endDate": In("EndDate").Or(Today), "months": In("Months")},
 		Verb:     "get monthly steps", Output: JSON{},
+	},
+}}
+
+var healthHeartRateGroup = Group{Name: "hr", Help: "Show heart rate data.", Children: []Node{
+	Leaf{
+		Name: "view", Help: "Show heart rate data for a date.", Default: true,
+		Spec: argsOf(&struct {
+			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+		}{}),
+		Endpoint: "health.heart-rate",
+		Params:   Params{"displayName": DisplayName, "date": In("Date")},
+		Verb:     "get heart rate", Output: JSON{},
+		LateDates: []string{"Date"},
+	},
+	Leaf{
+		Name: "daily", Help: "Show daily heart rate statistics for a date range.",
+		Spec: argsOf(&struct {
+			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+			EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
+		}{}),
+		Endpoint: "health.daily-heart-rate",
+		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
+		Verb:     "get daily heart rate", Output: JSON{},
+	},
+	Leaf{
+		Name: "weekly", Help: "Show weekly heart rate statistics.",
+		Spec: argsOf(&struct {
+			EndDate Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"end"`
+			Weeks   int  `help:"Number of weeks." default:"4" name:"weeks"`
+		}{}),
+		Endpoint: "health.weekly-heart-rate",
+		Params:   Params{"endDate": In("EndDate").Or(Today), "weeks": In("Weeks")},
+		Verb:     "get weekly heart rate", Output: JSON{},
+	},
+}}
+
+var healthFloorsGroup = Group{Name: "floors", Help: "Show floors climbed data.", Children: []Node{
+	Leaf{
+		Name: "view", Help: "Show floors climbed for a date.", Default: true,
+		Spec: argsOf(&struct {
+			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+		}{}),
+		Endpoint: "health.floors",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get floors", Output: JSON{},
+		LateDates: []string{"Date"},
+	},
+	Leaf{
+		Name: "daily", Help: "Show daily floors climbed for a date range.",
+		Spec: argsOf(&struct {
+			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+			EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
+		}{}),
+		Endpoint: "health.daily-floors",
+		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
+		Verb:     "get daily floors", Output: JSON{},
+	},
+	Leaf{
+		Name: "weekly", Help: "Show weekly floors climbed.",
+		Spec: argsOf(&struct {
+			EndDate Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"end"`
+			Weeks   int  `help:"Number of weeks." default:"4" name:"weeks"`
+		}{}),
+		Endpoint: "health.weekly-floors",
+		Params:   Params{"endDate": In("EndDate").Or(Today), "weeks": In("Weeks")},
+		Verb:     "get weekly floors", Output: JSON{},
+	},
+}}
+
+var healthRespirationGroup = Group{Name: "respiration", Help: "Show respiration data.", Children: []Node{
+	Leaf{
+		Name: "view", Help: "Show respiration data for a date.", Default: true,
+		Spec: argsOf(&struct {
+			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+		}{}),
+		Endpoint: "health.respiration",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get respiration", Output: JSON{},
+		LateDates: []string{"Date"},
+	},
+	Leaf{
+		Name: "daily", Help: "Show daily respiration statistics for a date range.",
+		Spec: argsOf(&struct {
+			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+			EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
+		}{}),
+		Endpoint: "health.daily-respiration",
+		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
+		Verb:     "get daily respiration", Output: JSON{},
 	},
 }}
 

@@ -73,15 +73,22 @@ Commands:
   health pushes weekly             Show weekly wheelchair push totals.
   health pushes monthly            Show monthly wheelchair push totals.
   health lifetime-totals           Show lifetime totals.
-  health hr                        Show heart rate data.
+  health hr view                   Show heart rate data for a date.
+  health hr daily                  Show daily heart rate statistics for a date
+                                   range.
+  health hr weekly                 Show weekly heart rate statistics.
   health rhr                       Show resting heart rate data.
-  health floors                    Show floors climbed data.
+  health floors view               Show floors climbed for a date.
+  health floors daily              Show daily floors climbed for a date range.
+  health floors weekly             Show weekly floors climbed.
   health sleep                     Show sleep data.
   health stress view               Show stress data for a date.
   health stress daily              Show daily stress statistics for a date
                                    range.
   health stress weekly             Show weekly stress data.
-  health respiration               Show respiration data.
+  health respiration view          Show respiration data for a date.
+  health respiration daily         Show daily respiration statistics for a date
+                                   range.
   health spo2                      Show SpO2 (blood oxygen) data.
   health hrv                       Show heart rate variability data.
   health body-battery view         Show body battery data for a date.
@@ -412,15 +419,22 @@ Commands:
   health pushes weekly             Show weekly wheelchair push totals.
   health pushes monthly            Show monthly wheelchair push totals.
   health lifetime-totals           Show lifetime totals.
-  health hr                        Show heart rate data.
+  health hr view                   Show heart rate data for a date.
+  health hr daily                  Show daily heart rate statistics for a date
+                                   range.
+  health hr weekly                 Show weekly heart rate statistics.
   health rhr                       Show resting heart rate data.
-  health floors                    Show floors climbed data.
+  health floors view               Show floors climbed for a date.
+  health floors daily              Show daily floors climbed for a date range.
+  health floors weekly             Show weekly floors climbed.
   health sleep                     Show sleep data.
   health stress view               Show stress data for a date.
   health stress daily              Show daily stress statistics for a date
                                    range.
   health stress weekly             Show weekly stress data.
-  health respiration               Show respiration data.
+  health respiration view          Show respiration data for a date.
+  health respiration daily         Show daily respiration statistics for a date
+                                   range.
   health spo2                      Show SpO2 (blood oxygen) data.
   health hrv                       Show heart rate variability data.
   health body-battery view         Show body battery data for a date.
@@ -515,6 +529,54 @@ Commands:
   health pushes weekly     Show weekly wheelchair push totals.
   health pushes monthly    Show monthly wheelchair push totals.
 
+$ gccli health hr --help
+Usage: gccli health hr <command>
+
+Show heart rate data.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  health hr view      Show heart rate data for a date.
+  health hr daily     Show daily heart rate statistics for a date range.
+  health hr weekly    Show weekly heart rate statistics.
+
+$ gccli health floors --help
+Usage: gccli health floors <command>
+
+Show floors climbed data.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  health floors view      Show floors climbed for a date.
+  health floors daily     Show daily floors climbed for a date range.
+  health floors weekly    Show weekly floors climbed.
+
 $ gccli health stress --help
 Usage: gccli health stress <command>
 
@@ -538,6 +600,30 @@ Commands:
   health stress view      Show stress data for a date.
   health stress daily     Show daily stress statistics for a date range.
   health stress weekly    Show weekly stress data.
+
+$ gccli health respiration --help
+Usage: gccli health respiration <command>
+
+Show respiration data.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  health respiration view     Show respiration data for a date.
+  health respiration daily    Show daily respiration statistics for a date
+                              range.
 
 $ gccli health body-battery --help
 Usage: gccli health body-battery <command>
