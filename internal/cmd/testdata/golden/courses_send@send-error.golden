@@ -1,0 +1,90 @@
+Error case: the course lookup succeeds and the send answers 400, so the exit code is 1 (error).
+-- args --
+courses
+send
+111
+3333
+-- route GET /course-service/course/111 --
+{"courseId":111,"courseName":"Morning Loop"}
+-- route POST /device-service/devicemessage/messages 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+send course to device: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /course-service/course/111
+POST /device-service/devicemessage/messages
+  [
+    {
+      "deviceId": 3333,
+      "fileType": "FIT",
+      "groupName": null,
+      "messageName": "Morning Loop",
+      "messageType": "courses",
+      "messageUrl": "course-service/course/fit/111/3333?elevation=true",
+      "metaDataId": 111,
+      "priority": 0
+    }
+  ]
+-- plain stdout --
+-- plain stderr --
+send course to device: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /course-service/course/111
+POST /device-service/devicemessage/messages
+  [
+    {
+      "deviceId": 3333,
+      "fileType": "FIT",
+      "groupName": null,
+      "messageName": "Morning Loop",
+      "messageType": "courses",
+      "messageUrl": "course-service/course/fit/111/3333?elevation=true",
+      "metaDataId": 111,
+      "priority": 0
+    }
+  ]
+-- plain-header stdout --
+-- plain-header stderr --
+send course to device: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /course-service/course/111
+POST /device-service/devicemessage/messages
+  [
+    {
+      "deviceId": 3333,
+      "fileType": "FIT",
+      "groupName": null,
+      "messageName": "Morning Loop",
+      "messageType": "courses",
+      "messageUrl": "course-service/course/fit/111/3333?elevation=true",
+      "metaDataId": 111,
+      "priority": 0
+    }
+  ]
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"send course to device: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /course-service/course/111
+POST /device-service/devicemessage/messages
+  [
+    {
+      "deviceId": 3333,
+      "fileType": "FIT",
+      "groupName": null,
+      "messageName": "Morning Loop",
+      "messageType": "courses",
+      "messageUrl": "course-service/course/fit/111/3333?elevation=true",
+      "metaDataId": 111,
+      "priority": 0
+    }
+  ]

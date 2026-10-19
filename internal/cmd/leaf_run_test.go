@@ -246,9 +246,9 @@ func TestLeafRun(t *testing.T) {
 	}
 }
 
-var lookupRoutes = map[lookup]struct{ route, errPrefix string }{
-	lookupDisplayName: {profileRoute, "resolve display name: "},
-	lookupProfilePK:   {profileRoute, "get user profile: "},
+var lookupRoutes = map[lookup][]struct{ route, errPrefix string }{
+	lookupDisplayName: {{profileRoute, "resolve display name: "}},
+	lookupProfilePK:   {{profileRoute, "get user profile: resolve display name: "}, {socialRoute, "get user profile: "}},
 }
 
 func TestLeafRowSadPaths(t *testing.T) {
@@ -263,10 +263,12 @@ func TestLeafRowSadPaths(t *testing.T) {
 			return
 		}
 		var lookups []lookup
+		lookupRequests := 0
 		for _, s := range l.Params {
 			for _, a := range s.alts {
 				if _, ok := lookupRoutes[a.lookup]; ok && !slices.Contains(lookups, a.lookup) {
 					lookups = append(lookups, a.lookup)
+					lookupRequests += len(lookupRoutes[a.lookup])
 				}
 			}
 		}
@@ -286,20 +288,26 @@ func TestLeafRowSadPaths(t *testing.T) {
 		}
 		for _, flag := range []string{"--plain", "--json"} {
 			for _, k := range lookups {
-				failed := maps.Clone(in.routes)
-				failed[lookupRoutes[k].route] = mockReply{status: http.StatusInternalServerError, body: "down"}
-				run("lookup fails", failed, flag, func(t *testing.T, stdout, stderr string, code int, requests []string) {
-					want := lookupRoutes[k].errPrefix + "garmin api: 500 Internal Server Error: down\n"
-					if flag == "--json" {
-						want = `{"error":{"code":"error","status":500,"message":"` + strings.TrimSuffix(want, "\n") + `"}}` + "\n"
+				for i, step := range lookupRoutes[k] {
+					failed := maps.Clone(in.routes)
+					failed[step.route] = mockReply{status: http.StatusInternalServerError, body: "down"}
+					var sent []string
+					for _, s := range lookupRoutes[k][:i+1] {
+						sent = append(sent, s.route)
 					}
-					if code != 1 || stdout != "" || stderr != want {
-						t.Errorf("exit %d, want 1\nstdout %q, want empty\nstderr %q\nwant   %q", code, stdout, stderr, want)
-					}
-					if len(requests) != 1 || requests[0] != lookupRoutes[k].route {
-						t.Errorf("requests %q, want only %q", requests, lookupRoutes[k].route)
-					}
-				})
+					run("lookup fails at "+step.route, failed, flag, func(t *testing.T, stdout, stderr string, code int, requests []string) {
+						want := step.errPrefix + "garmin api: 500 Internal Server Error: down\n"
+						if flag == "--json" {
+							want = `{"error":{"code":"error","status":500,"message":"` + strings.TrimSuffix(want, "\n") + `"}}` + "\n"
+						}
+						if code != 1 || stdout != "" || stderr != want {
+							t.Errorf("exit %d, want 1\nstdout %q, want empty\nstderr %q\nwant   %q", code, stdout, stderr, want)
+						}
+						if !slices.Equal(requests, sent) {
+							t.Errorf("requests %q, want %q", requests, sent)
+						}
+					})
+				}
 			}
 			empty := maps.Clone(in.routes)
 			empty[data] = mockReply{status: http.StatusNoContent}
@@ -332,7 +340,7 @@ func TestLeafRowSadPaths(t *testing.T) {
 					if code != 0 || stdout != metric || stderr != want {
 						t.Errorf("exit %d, want 0\nstdout %q\nwant   %q\nstderr %q\nwant   %q", code, stdout, metric, stderr, want)
 					}
-					if len(requests) != len(lookups)+2 || requests[len(requests)-2] != data || requests[len(requests)-1] != settingsRoute {
+					if len(requests) != lookupRequests+2 || requests[len(requests)-2] != data || requests[len(requests)-1] != settingsRoute {
 						t.Errorf("requests %q, want the lookups, then %q, then %q", requests, data, settingsRoute)
 					}
 				})
@@ -353,6 +361,9 @@ func sadPathInput(path string) (args []string, in harnessInput, data string, err
 			if !isLookup(route) {
 				dataRoutes = append(dataRoutes, route)
 			}
+		}
+		if len(dataRoutes) == 0 && len(in.routes) == 1 {
+			dataRoutes = slices.Collect(maps.Keys(in.routes))
 		}
 		if len(dataRoutes) == 1 {
 			return args, in, dataRoutes[0], nil
