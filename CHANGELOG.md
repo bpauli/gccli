@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+26 new read commands. Each one prints the Garmin response as JSON in table, `--plain` and `--json` mode. A date argument or a date flag accepts `YYYY-MM-DD`, `today`, `yesterday`, `3d` and `+30d`.
+
+- **Activities** - `activities pending` lists the pending activities. (#219, #76)
+- **Badges** - `badges detail <id>` shows the details of one badge. (#209, #92)
+- **Body** - `body latest [<date>]` shows the latest weigh-in as of a date. `body glucose [<date>]` shows the glucose readings for a date. Both dates default to today. (#228, #93, #74)
+- **Devices** - `devices sensors` lists the paired sensors. `devices backups` shows the device backup summary. (#225, #85)
+- **Events** - `events upcoming` lists the upcoming events. (#230, #82)
+- **Gear** - `gear types` lists the gear types. `gear collections list` lists the gear collections, and `gear collections` runs it too. (#226, #69)
+- **Goals** - `goals weight` shows the effective weight goal for a date range. `--start` and `--end` default to today. (#219, #68)
+- **Groups** - The new `groups` command group. `groups list` lists your groups, and `groups` runs it too. (#224, #78)
+- **Health** - `health power-curve --start DATE --end DATE` shows the power curve for a date range. Both flags are required. `health running-economy [<date>]` shows the latest running economy as of a date, and `health critical-swim-speed [<date>]` shows the latest critical swim speed as of a date. Both dates default to today. (#219, #73, #74)
+- **Notifications** - The new `notifications` command group. `notifications list` lists the notifications, and `notifications` runs it too. (#222, #86)
+- **Profile** - `profile privacy view` shows the privacy settings, and `profile privacy` runs it too. `profile privacy-zones list` lists the privacy zones, and `profile privacy-zones` runs it too. `profile hr-zones` shows the heart rate zones. `profile power-zones` shows the power zones for all sports. (#227, #88, #74)
+- **Social** - The new `social` command group. `social connections` lists your connections, 20 at a time. Use `--limit` (`-l`) and `--offset` to get more. `social followers [<display-name>]` lists the followers of a user. Without a display name, it lists your followers. (#223, #77)
+- **Training** - `training active` shows the active training plans. `--start` sets the start date and defaults to today. (#219, #83)
+- **Wellness** - `wellness jet-lag list` lists the jet lag trips, and `wellness jet-lag` runs it too. (#219, #89)
+- **Workouts** - `workouts types` lists the workout types. `workouts schedule export` exports the workout schedule from the `--start` date, today by default. `workouts benchmarks list` lists the strength benchmarks, and `workouts benchmarks` runs it too. (#229, #81)
+
 ## [2.2.0] - 2026-10-18
 
 ### Added
