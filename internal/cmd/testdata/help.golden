@@ -1,0 +1,1068 @@
+$ gccli --help
+Usage: gccli <command> [flags]
+
+Garmin Connect CLI
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  auth login                       Log in to Garmin Connect.
+  auth status                      Show authentication status.
+  auth remove                      Remove stored credentials.
+  auth token                       Print current access token, refreshing it
+                                   first when expired.
+  auth export                      Export credentials for transfer to another
+                                   machine.
+  auth import                      Import credentials from another machine.
+  activities list                  List recent activities.
+  activities count                 Show total activity count.
+  activities search                Search activities by date range.
+  activities types                 List all activity types supported by Garmin.
+  activities pending               List pending activities.
+  activity summary                 Show activity summary.
+  activity details                 Show full activity details.
+  activity splits                  Show activity splits.
+  activity typed-splits            Show typed splits.
+  activity split-summaries         Show split summaries.
+  activity weather                 Show weather conditions.
+  activity hr-zones                Show heart rate time in zones.
+  activity power-zones             Show power time in zones.
+  activity exercise-sets show      Show exercise sets.
+  activity exercise-sets set       Set exercise sets for a strength training
+                                   activity.
+  activity gear                    Show linked gear.
+  activity download                Download activity file.
+  activity upload                  Upload an activity file (FIT/GPX/TCX).
+  activity create                  Create a manual activity.
+  activity rename                  Rename an activity.
+  activity retype                  Change activity type.
+  activity delete                  Delete an activity.
+  workouts list                    List workouts.
+  workouts detail                  View workout details.
+  workouts download                Download workout as FIT file.
+  workouts upload                  Upload workout from JSON file.
+  workouts update                  Update an existing workout from a JSON file.
+  workouts create                  Create a workout with sport type and optional
+                                   targets.
+  workouts types                   List workout types.
+  workouts schedule add            Add a workout to the schedule.
+  workouts schedule list           List scheduled workouts for a date.
+  workouts schedule remove         Remove a scheduled workout from the calendar.
+  workouts schedule export         Export the workout schedule from a start
+                                   date.
+  workouts benchmarks list         List strength benchmarks.
+  workouts delete                  Delete a workout.
+  health summary                   Show daily health summary.
+  health steps view                Show step chart data for a date.
+  health steps daily               Show daily step totals for a date range.
+  health steps weekly              Show weekly step totals.
+  health hr                        Show heart rate data.
+  health rhr                       Show resting heart rate data.
+  health floors                    Show floors climbed data.
+  health sleep                     Show sleep data.
+  health stress view               Show stress data for a date.
+  health stress weekly             Show weekly stress data.
+  health respiration               Show respiration data.
+  health spo2                      Show SpO2 (blood oxygen) data.
+  health hrv                       Show heart rate variability data.
+  health body-battery view         Show body battery data for a date.
+  health body-battery range        Show body battery data for a date range.
+  health intensity-minutes view    Show intensity minutes for a date.
+  health intensity-minutes weekly
+                                   Show weekly intensity minutes for a date
+                                   range.
+  health training-readiness        Show training readiness data.
+  health training-status           Show training status data.
+  health fitness-age               Show fitness age data.
+  health max-metrics               Show VO2max and max metrics data.
+  health lactate-threshold         Show latest lactate threshold.
+  health cycling-ftp               Show latest cycling FTP.
+  health critical-swim-speed       Show latest critical swim speed as of a date.
+  health race-predictions view     Show current race predictions.
+  health race-predictions range    Show race predictions for a date range.
+  health endurance-score           Show endurance score data.
+  health hill-score                Show hill score data.
+  health power-curve               Show power curve for a date range.
+  health running-economy           Show latest running economy as of a date.
+  health events                    Show daily wellness events.
+  health lifestyle                 Show lifestyle logging data.
+  body composition                 Show body composition data.
+  body weigh-ins                   Show weigh-in data for a date range.
+  body daily-weigh-ins             Show weigh-in data for a single day.
+  body latest                      Show the latest weigh-in as of a date.
+  body add-weight                  Add a weigh-in entry.
+  body add-composition             Add body composition data (weight, body fat,
+                                   muscle mass, etc.) via FIT upload.
+  body delete-weight               Delete a weigh-in entry.
+  body blood-pressure              Show blood pressure data.
+  body add-blood-pressure          Add a blood pressure measurement.
+  body delete-blood-pressure       Delete a blood pressure entry.
+  body glucose                     Show glucose readings for a date.
+  devices list                     List registered devices.
+  devices settings                 Show settings for a device.
+  devices primary                  Show primary training device.
+  devices solar                    Show solar charging data for a device.
+  devices alarms                   Show alarms from all devices.
+  devices last-used                Show last used device.
+  devices sensors                  List paired sensors.
+  devices backups                  Show device backup summary.
+  gear list                        List all gear.
+  gear stats                       Show usage statistics for a gear item.
+  gear activities                  Show activities linked to a gear item.
+  gear defaults                    Show default gear per activity type.
+  gear link                        Link gear to an activity.
+  gear unlink                      Unlink gear from an activity.
+  gear types                       List gear types.
+  gear collections list            List gear collections.
+  goals list                       List goals.
+  goals weight                     Show the effective weight goal for a date
+                                   range.
+  badges earned                    Show earned badges.
+  badges available                 Show available badges.
+  badges in-progress               Show badges in progress.
+  badges detail                    Show details of a badge.
+  courses list                     List courses.
+  courses favorites                List favorite courses.
+  courses detail                   View course details.
+  courses download                 Download course file.
+  courses import                   Import a GPX file as a new course.
+  courses send                     Send a course to a device.
+  courses delete                   Delete a course.
+  challenges list                  Show joined challenges.
+  challenges badge                 Show badge challenges.
+  challenges available             Show available badge challenges.
+  challenges completed             Show completed badge challenges.
+  records                          View personal records.
+  profile view                     Show user profile.
+  profile settings                 Show user settings.
+  profile privacy view             Show privacy settings.
+  profile privacy-zones list       List privacy zones.
+  profile hr-zones                 Show heart rate zones.
+  profile power-zones              Show power zones for all sports.
+  hydration view                   Show hydration data for a date.
+  hydration add                    Add a hydration log entry.
+  nutrition food-log               Show daily food log for a date.
+  nutrition meals                  Show meal summaries for a date.
+  nutrition settings               Show nutrition settings for a date.
+  training plans                   List training plans.
+  training plan                    Show a specific training plan.
+  training active                  Show active training plans.
+  events list                      List calendar events.
+  events upcoming                  List upcoming events.
+  events add                       Add a calendar event.
+  events delete                    Delete a calendar event.
+  wellness menstrual-cycle         Show menstrual cycle data.
+  wellness menstrual-summary       Show menstrual cycle summary.
+  wellness pregnancy-summary       Show pregnancy summary.
+  wellness jet-lag list            List jet lag trips.
+  exercises list                   List available exercise categories and
+                                   exercises.
+  notifications list               List notifications.
+  social connections               List your connections.
+  social followers                 List the followers of a user.
+  groups list                      List your groups.
+  reload                           Request data reload for a date.
+  completion                       Generate shell completion script.
+
+Run "gccli <command> --help" for more information on a command.
+
+$ gccli auth --help
+Usage: gccli auth <command> [flags]
+
+Manage authentication.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  auth login     Log in to Garmin Connect.
+  auth status    Show authentication status.
+  auth remove    Remove stored credentials.
+  auth token     Print current access token, refreshing it first when expired.
+  auth export    Export credentials for transfer to another machine.
+  auth import    Import credentials from another machine.
+
+$ gccli activities --help
+Usage: gccli activities <command> [flags]
+
+List and search activities.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  activities list       List recent activities.
+  activities count      Show total activity count.
+  activities search     Search activities by date range.
+  activities types      List all activity types supported by Garmin.
+  activities pending    List pending activities.
+
+$ gccli activity --help
+Usage: gccli activity <command> [flags]
+
+View activity details.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  activity summary               Show activity summary.
+  activity details               Show full activity details.
+  activity splits                Show activity splits.
+  activity typed-splits          Show typed splits.
+  activity split-summaries       Show split summaries.
+  activity weather               Show weather conditions.
+  activity hr-zones              Show heart rate time in zones.
+  activity power-zones           Show power time in zones.
+  activity exercise-sets show    Show exercise sets.
+  activity exercise-sets set     Set exercise sets for a strength training
+                                 activity.
+  activity gear                  Show linked gear.
+  activity download              Download activity file.
+  activity upload                Upload an activity file (FIT/GPX/TCX).
+  activity create                Create a manual activity.
+  activity rename                Rename an activity.
+  activity retype                Change activity type.
+  activity delete                Delete an activity.
+
+$ gccli activity exercise-sets --help
+Usage: gccli activity exercise-sets <command>
+
+Manage exercise sets.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  activity exercise-sets show    Show exercise sets.
+  activity exercise-sets set     Set exercise sets for a strength training
+                                 activity.
+
+$ gccli workouts --help
+Usage: gccli workouts <command> [flags]
+
+Manage workouts.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  workouts list               List workouts.
+  workouts detail             View workout details.
+  workouts download           Download workout as FIT file.
+  workouts upload             Upload workout from JSON file.
+  workouts update             Update an existing workout from a JSON file.
+  workouts create             Create a workout with sport type and optional
+                              targets.
+  workouts types              List workout types.
+  workouts schedule add       Add a workout to the schedule.
+  workouts schedule list      List scheduled workouts for a date.
+  workouts schedule remove    Remove a scheduled workout from the calendar.
+  workouts schedule export    Export the workout schedule from a start date.
+  workouts benchmarks list    List strength benchmarks.
+  workouts delete             Delete a workout.
+
+$ gccli workouts schedule --help
+Usage: gccli workouts schedule <command>
+
+Manage scheduled workouts.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  workouts schedule add       Add a workout to the schedule.
+  workouts schedule list      List scheduled workouts for a date.
+  workouts schedule remove    Remove a scheduled workout from the calendar.
+  workouts schedule export    Export the workout schedule from a start date.
+
+$ gccli workouts benchmarks --help
+Usage: gccli workouts benchmarks <command>
+
+View strength benchmarks.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  workouts benchmarks list    List strength benchmarks.
+
+$ gccli health --help
+Usage: gccli health <command> [flags]
+
+View health data.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  health summary                   Show daily health summary.
+  health steps view                Show step chart data for a date.
+  health steps daily               Show daily step totals for a date range.
+  health steps weekly              Show weekly step totals.
+  health hr                        Show heart rate data.
+  health rhr                       Show resting heart rate data.
+  health floors                    Show floors climbed data.
+  health sleep                     Show sleep data.
+  health stress view               Show stress data for a date.
+  health stress weekly             Show weekly stress data.
+  health respiration               Show respiration data.
+  health spo2                      Show SpO2 (blood oxygen) data.
+  health hrv                       Show heart rate variability data.
+  health body-battery view         Show body battery data for a date.
+  health body-battery range        Show body battery data for a date range.
+  health intensity-minutes view    Show intensity minutes for a date.
+  health intensity-minutes weekly
+                                   Show weekly intensity minutes for a date
+                                   range.
+  health training-readiness        Show training readiness data.
+  health training-status           Show training status data.
+  health fitness-age               Show fitness age data.
+  health max-metrics               Show VO2max and max metrics data.
+  health lactate-threshold         Show latest lactate threshold.
+  health cycling-ftp               Show latest cycling FTP.
+  health critical-swim-speed       Show latest critical swim speed as of a date.
+  health race-predictions view     Show current race predictions.
+  health race-predictions range    Show race predictions for a date range.
+  health endurance-score           Show endurance score data.
+  health hill-score                Show hill score data.
+  health power-curve               Show power curve for a date range.
+  health running-economy           Show latest running economy as of a date.
+  health events                    Show daily wellness events.
+  health lifestyle                 Show lifestyle logging data.
+
+$ gccli health steps --help
+Usage: gccli health steps <command>
+
+Show step data.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  health steps view      Show step chart data for a date.
+  health steps daily     Show daily step totals for a date range.
+  health steps weekly    Show weekly step totals.
+
+$ gccli health stress --help
+Usage: gccli health stress <command>
+
+Show stress data.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  health stress view      Show stress data for a date.
+  health stress weekly    Show weekly stress data.
+
+$ gccli health body-battery --help
+Usage: gccli health body-battery <command>
+
+Show body battery data.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  health body-battery view     Show body battery data for a date.
+  health body-battery range    Show body battery data for a date range.
+
+$ gccli health intensity-minutes --help
+Usage: gccli health intensity-minutes <command>
+
+Show intensity minutes data.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  health intensity-minutes view    Show intensity minutes for a date.
+  health intensity-minutes weekly
+                                   Show weekly intensity minutes for a date
+                                   range.
+
+$ gccli health race-predictions --help
+Usage: gccli health race-predictions <command>
+
+Show race predictions.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  health race-predictions view     Show current race predictions.
+  health race-predictions range    Show race predictions for a date range.
+
+$ gccli body --help
+Usage: gccli body <command> [flags]
+
+Body composition and weight data.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  body composition              Show body composition data.
+  body weigh-ins                Show weigh-in data for a date range.
+  body daily-weigh-ins          Show weigh-in data for a single day.
+  body latest                   Show the latest weigh-in as of a date.
+  body add-weight               Add a weigh-in entry.
+  body add-composition          Add body composition data (weight, body fat,
+                                muscle mass, etc.) via FIT upload.
+  body delete-weight            Delete a weigh-in entry.
+  body blood-pressure           Show blood pressure data.
+  body add-blood-pressure       Add a blood pressure measurement.
+  body delete-blood-pressure    Delete a blood pressure entry.
+  body glucose                  Show glucose readings for a date.
+
+$ gccli devices --help
+Usage: gccli devices <command> [flags]
+
+Manage devices.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  devices list         List registered devices.
+  devices settings     Show settings for a device.
+  devices primary      Show primary training device.
+  devices solar        Show solar charging data for a device.
+  devices alarms       Show alarms from all devices.
+  devices last-used    Show last used device.
+  devices sensors      List paired sensors.
+  devices backups      Show device backup summary.
+
+$ gccli gear --help
+Usage: gccli gear <command> [flags]
+
+Manage gear.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  gear list                List all gear.
+  gear stats               Show usage statistics for a gear item.
+  gear activities          Show activities linked to a gear item.
+  gear defaults            Show default gear per activity type.
+  gear link                Link gear to an activity.
+  gear unlink              Unlink gear from an activity.
+  gear types               List gear types.
+  gear collections list    List gear collections.
+
+$ gccli gear collections --help
+Usage: gccli gear collections <command>
+
+View gear collections.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  gear collections list    List gear collections.
+
+$ gccli goals --help
+Usage: gccli goals <command> [flags]
+
+View goals.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  goals list      List goals.
+  goals weight    Show the effective weight goal for a date range.
+
+$ gccli badges --help
+Usage: gccli badges <command> [flags]
+
+View badges.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  badges earned         Show earned badges.
+  badges available      Show available badges.
+  badges in-progress    Show badges in progress.
+  badges detail         Show details of a badge.
+
+$ gccli courses --help
+Usage: gccli courses <command> [flags]
+
+Manage courses.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  courses list         List courses.
+  courses favorites    List favorite courses.
+  courses detail       View course details.
+  courses download     Download course file.
+  courses import       Import a GPX file as a new course.
+  courses send         Send a course to a device.
+  courses delete       Delete a course.
+
+$ gccli challenges --help
+Usage: gccli challenges <command> [flags]
+
+View challenges.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  challenges list         Show joined challenges.
+  challenges badge        Show badge challenges.
+  challenges available    Show available badge challenges.
+  challenges completed    Show completed badge challenges.
+
+$ gccli profile --help
+Usage: gccli profile <command> [flags]
+
+View user profile.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  profile view                  Show user profile.
+  profile settings              Show user settings.
+  profile privacy view          Show privacy settings.
+  profile privacy-zones list    List privacy zones.
+  profile hr-zones              Show heart rate zones.
+  profile power-zones           Show power zones for all sports.
+
+$ gccli profile privacy --help
+Usage: gccli profile privacy <command>
+
+View privacy settings.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  profile privacy view    Show privacy settings.
+
+$ gccli profile privacy-zones --help
+Usage: gccli profile privacy-zones <command>
+
+View privacy zones.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  profile privacy-zones list    List privacy zones.
+
+$ gccli hydration --help
+Usage: gccli hydration <command> [flags]
+
+Track hydration.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  hydration view    Show hydration data for a date.
+  hydration add     Add a hydration log entry.
+
+$ gccli nutrition --help
+Usage: gccli nutrition <command> [flags]
+
+View nutrition data.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  nutrition food-log    Show daily food log for a date.
+  nutrition meals       Show meal summaries for a date.
+  nutrition settings    Show nutrition settings for a date.
+
+$ gccli training --help
+Usage: gccli training <command> [flags]
+
+View training plans.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  training plans     List training plans.
+  training plan      Show a specific training plan.
+  training active    Show active training plans.
+
+$ gccli events --help
+Usage: gccli events <command> [flags]
+
+Manage calendar events.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  events list        List calendar events.
+  events upcoming    List upcoming events.
+  events add         Add a calendar event.
+  events delete      Delete a calendar event.
+
+$ gccli wellness --help
+Usage: gccli wellness <command> [flags]
+
+View wellness data.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  wellness menstrual-cycle      Show menstrual cycle data.
+  wellness menstrual-summary    Show menstrual cycle summary.
+  wellness pregnancy-summary    Show pregnancy summary.
+  wellness jet-lag list         List jet lag trips.
+
+$ gccli wellness jet-lag --help
+Usage: gccli wellness jet-lag <command>
+
+View jet lag trips.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  wellness jet-lag list    List jet lag trips.
+
+$ gccli exercises --help
+Usage: gccli exercises <command> [flags]
+
+Browse the exercise catalog.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  exercises list    List available exercise categories and exercises.
+
+$ gccli notifications --help
+Usage: gccli notifications <command> [flags]
+
+View notifications.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  notifications list    List notifications.
+
+$ gccli social --help
+Usage: gccli social <command> [flags]
+
+View connections and followers.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  social connections    List your connections.
+  social followers      List the followers of a user.
+
+$ gccli groups --help
+Usage: gccli groups <command> [flags]
+
+View groups.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  groups list    List your groups.
+

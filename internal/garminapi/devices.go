@@ -13,6 +13,8 @@ var devicesEndpoints = []Endpoint{
 	{Name: "devices.primary-training", Method: http.MethodGet, Host: ConnectAPI, Path: "/web-gateway/device-info/primary-training-device"},
 	{Name: "devices.solar", Method: http.MethodGet, Host: ConnectAPI, Path: "/web-gateway/solar/{deviceID}/{startDate}/{endDate}"},
 	{Name: "devices.last-used", Method: http.MethodGet, Host: ConnectAPI, Path: "/device-service/deviceservice/mylastused"},
+	{Name: "devices.sensors", Method: http.MethodGet, Host: ConnectAPI, Path: "/device-service/sensors"},
+	{Name: "devices.backup-summary", Method: http.MethodGet, Host: ConnectAPI, Path: "/devicebackup-service/backup/summary"},
 }
 
 // GetDeviceAlarms returns alarms from all devices by fetching device settings

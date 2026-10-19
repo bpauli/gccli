@@ -10,6 +10,16 @@ var goalsGroup = Group{Name: "goals", Help: "View goals.", Children: []Node{
 		Params:   Params{"status": In("Status")},
 		Verb:     "get goals", Output: JSON{},
 	},
+	Leaf{
+		Name: "weight", Help: "Show the effective weight goal for a date range.",
+		Spec: argsOf(&struct {
+			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"start"`
+			EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"end"`
+		}{}),
+		Endpoint: "goals.effective-weight-goal",
+		Params:   Params{"startDate": In("StartDate").Or(Today), "endDate": In("EndDate").Or(Today)},
+		Verb:     "get weight goal", Output: JSON{},
+	},
 }}
 
 var badgesGroup = Group{Name: "badges", Help: "View badges.", Children: []Node{

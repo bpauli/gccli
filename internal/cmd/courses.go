@@ -34,7 +34,16 @@ var coursesGroup = Group{Name: "courses", Help: "Manage courses.", Children: []N
 	Custom{Name: "download", Help: "Download course file.", Cmd: &CourseDownloadCmd{}},
 	Custom{Name: "import", Help: "Import a GPX file as a new course.", Cmd: &CourseImportCmd{}},
 	Custom{Name: "send", Help: "Send a course to a device.", Cmd: &CourseSendCmd{}},
-	Custom{Name: "delete", Help: "Delete a course.", Cmd: &CourseDeleteCmd{}},
+	Leaf{
+		Name: "delete", Help: "Delete a course.",
+		Spec: argsOf(&struct {
+			ID string `arg:"" help:"Course ID."`
+		}{}),
+		Endpoint: "courses.delete",
+		Params:   Params{"courseID": In("ID")},
+		Verb:     "delete course",
+		Output:   Write{Done: "Deleted course {ID}", Confirm: "Delete course {ID}?"},
+	},
 }}
 
 // CourseDetailCmd shows details for a course.
@@ -171,32 +180,4 @@ func (c *CourseSendCmd) Run(g *Globals) error {
 		return reportWrite(g, data, "Sent course %q to device %s (message %s)", courseName, deviceName, messageID)
 	}
 	return reportWrite(g, data, "Sent course %q to device %s", courseName, c.DeviceID)
-}
-
-// CourseDeleteCmd deletes a course.
-type CourseDeleteCmd struct {
-	ID    string `arg:"" help:"Course ID."`
-	Force bool   `help:"Skip confirmation prompt." short:"f"`
-}
-
-func (c *CourseDeleteCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	ok, err := confirm(g.Stderr, fmt.Sprintf("Delete course %s?", c.ID), c.Force)
-	if err != nil {
-		return err
-	}
-	if !ok {
-		g.UI.Infof("Cancelled")
-		return nil
-	}
-
-	data, err := client.Call(g.Context, "courses.delete", map[string]string{"courseID": c.ID}, nil)
-	if err != nil {
-		return fmt.Errorf("delete course: %w", err)
-	}
-	return reportWrite(g, data, "Deleted course %s", c.ID)
 }

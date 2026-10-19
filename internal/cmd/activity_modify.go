@@ -43,31 +43,3 @@ func (c *ActivityRetypeCmd) Run(g *Globals) error {
 
 	return reportWrite(g, data, "Changed activity %s type to %s", c.ID, c.TypeKey)
 }
-
-// ActivityDeleteCmd deletes an activity.
-type ActivityDeleteCmd struct {
-	ID    string `arg:"" help:"Activity ID."`
-	Force bool   `help:"Skip confirmation prompt." short:"f"`
-}
-
-func (c *ActivityDeleteCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	ok, err := confirm(g.Stderr, fmt.Sprintf("Delete activity %s?", c.ID), c.Force)
-	if err != nil {
-		return err
-	}
-	if !ok {
-		g.UI.Infof("Cancelled")
-		return nil
-	}
-
-	data, err := client.Call(g.Context, "activities.delete", map[string]string{"activityID": c.ID}, nil)
-	if err != nil {
-		return fmt.Errorf("delete activity: %w", err)
-	}
-	return reportWrite(g, data, "Deleted activity %s", c.ID)
-}

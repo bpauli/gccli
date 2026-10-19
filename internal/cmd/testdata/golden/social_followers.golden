@@ -1,0 +1,55 @@
+-- args --
+social
+followers
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- route GET /follower-service/follow/followers/tester --
+[{"displayName":"fan"}]
+-- table stdout --
+[
+  {
+    "displayName": "fan"
+  }
+]
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /userprofile-service/userprofile/settings
+GET /follower-service/follow/followers/tester
+-- plain stdout --
+[
+  {
+    "displayName": "fan"
+  }
+]
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+GET /follower-service/follow/followers/tester
+-- plain-header stdout --
+[
+  {
+    "displayName": "fan"
+  }
+]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /follower-service/follow/followers/tester
+-- json stdout --
+[
+  {
+    "displayName": "fan"
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /userprofile-service/userprofile/settings
+GET /follower-service/follow/followers/tester

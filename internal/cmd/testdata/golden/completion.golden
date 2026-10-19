@@ -74,13 +74,14 @@ _gccli_completions() {
             -*) ;;
             *)
                 case "${cmd_path:+$cmd_path }$w" in
-                    "auth"|"auth login"|"auth status"|"auth remove"|"auth token"|"auth export"|"auth import"|"activities"|"activities list"|"activities count"|"activities search"|"activities types"|"activity"|"activity summary"|"activity details"|"activity splits"|"activity typed-splits"|"activity split-summaries"|"activity weather"|"activity hr-zones"|"activity power-zones"|"activity exercise-sets"|"activity exercise-sets show"|"activity exercise-sets set"|"activity gear"|"activity download"|"activity upload"|"activity create"|"activity rename"|"activity retype"|"activity delete"|"workouts"|"workouts list"|"workouts detail"|"workouts download"|"workouts upload"|"workouts update"|"workouts create"|"workouts schedule"|"workouts schedule add"|"workouts schedule list"|"workouts schedule remove"|"workouts delete"|"health"|"health summary"|"health steps"|"health steps view"|"health steps daily"|"health steps weekly"|"health hr"|"health rhr"|"health floors"|"health sleep"|"health stress"|"health stress view"|"health stress weekly"|"health respiration"|"health spo2"|"health hrv"|"health body-battery"|"health body-battery view"|"health body-battery range"|"health intensity-minutes"|"health intensity-minutes view"|"health intensity-minutes weekly"|"health training-readiness"|"health training-status"|"health fitness-age"|"health max-metrics"|"health lactate-threshold"|"health cycling-ftp"|"health race-predictions"|"health race-predictions view"|"health race-predictions range"|"health endurance-score"|"health hill-score"|"health events"|"health lifestyle"|"body"|"body composition"|"body weigh-ins"|"body daily-weigh-ins"|"body add-weight"|"body add-composition"|"body delete-weight"|"body blood-pressure"|"body add-blood-pressure"|"body delete-blood-pressure"|"devices"|"devices list"|"devices settings"|"devices primary"|"devices solar"|"devices alarms"|"devices last-used"|"gear"|"gear list"|"gear stats"|"gear activities"|"gear defaults"|"gear link"|"gear unlink"|"goals"|"goals list"|"badges"|"badges earned"|"badges available"|"badges in-progress"|"badges detail"|"courses"|"courses list"|"courses favorites"|"courses detail"|"courses download"|"courses import"|"courses send"|"courses delete"|"challenges"|"challenges list"|"challenges badge"|"challenges available"|"challenges completed"|"records"|"profile"|"profile view"|"profile settings"|"hydration"|"hydration view"|"hydration add"|"nutrition"|"nutrition food-log"|"nutrition meals"|"nutrition settings"|"training"|"training plans"|"training plan"|"events"|"events list"|"events add"|"events delete"|"wellness"|"wellness menstrual-cycle"|"wellness menstrual-summary"|"wellness pregnancy-summary"|"exercises"|"exercises list"|"reload"|"completion") cmd_path=${cmd_path:+$cmd_path }$w ;;
+                    "auth"|"auth login"|"auth status"|"auth remove"|"auth token"|"auth export"|"auth import"|"activities"|"activities list"|"activities count"|"activities search"|"activities types"|"activities pending"|"activity"|"activity summary"|"activity details"|"activity splits"|"activity typed-splits"|"activity split-summaries"|"activity weather"|"activity hr-zones"|"activity power-zones"|"activity exercise-sets"|"activity exercise-sets show"|"activity exercise-sets set"|"activity gear"|"activity download"|"activity upload"|"activity create"|"activity rename"|"activity retype"|"activity delete"|"workouts"|"workouts list"|"workouts detail"|"workouts download"|"workouts upload"|"workouts update"|"workouts create"|"workouts types"|"workouts schedule"|"workouts schedule add"|"workouts schedule list"|"workouts schedule remove"|"workouts schedule export"|"workouts benchmarks"|"workouts benchmarks list"|"workouts delete"|"health"|"health summary"|"health steps"|"health steps view"|"health steps daily"|"health steps weekly"|"health hr"|"health rhr"|"health floors"|"health sleep"|"health stress"|"health stress view"|"health stress weekly"|"health respiration"|"health spo2"|"health hrv"|"health body-battery"|"health body-battery view"|"health body-battery range"|"health intensity-minutes"|"health intensity-minutes view"|"health intensity-minutes weekly"|"health training-readiness"|"health training-status"|"health fitness-age"|"health max-metrics"|"health lactate-threshold"|"health cycling-ftp"|"health critical-swim-speed"|"health race-predictions"|"health race-predictions view"|"health race-predictions range"|"health endurance-score"|"health hill-score"|"health power-curve"|"health running-economy"|"health events"|"health lifestyle"|"body"|"body composition"|"body weigh-ins"|"body daily-weigh-ins"|"body latest"|"body add-weight"|"body add-composition"|"body delete-weight"|"body blood-pressure"|"body add-blood-pressure"|"body delete-blood-pressure"|"body glucose"|"devices"|"devices list"|"devices settings"|"devices primary"|"devices solar"|"devices alarms"|"devices last-used"|"devices sensors"|"devices backups"|"gear"|"gear list"|"gear stats"|"gear activities"|"gear defaults"|"gear link"|"gear unlink"|"gear types"|"gear collections"|"gear collections list"|"goals"|"goals list"|"goals weight"|"badges"|"badges earned"|"badges available"|"badges in-progress"|"badges detail"|"courses"|"courses list"|"courses favorites"|"courses detail"|"courses download"|"courses import"|"courses send"|"courses delete"|"challenges"|"challenges list"|"challenges badge"|"challenges available"|"challenges completed"|"records"|"profile"|"profile view"|"profile settings"|"profile privacy"|"profile privacy view"|"profile privacy-zones"|"profile privacy-zones list"|"profile hr-zones"|"profile power-zones"|"hydration"|"hydration view"|"hydration add"|"nutrition"|"nutrition food-log"|"nutrition meals"|"nutrition settings"|"training"|"training plans"|"training plan"|"training active"|"events"|"events list"|"events upcoming"|"events add"|"events delete"|"wellness"|"wellness menstrual-cycle"|"wellness menstrual-summary"|"wellness pregnancy-summary"|"wellness jet-lag"|"wellness jet-lag list"|"exercises"|"exercises list"|"notifications"|"notifications list"|"social"|"social connections"|"social followers"|"groups"|"groups list"|"reload"|"completion") cmd_path=${cmd_path:+$cmd_path }$w ;;
                     *)
                         case $cmd_path in
                             "activities") cmd_path="activities list" ;;
                             "activity") cmd_path="activity summary" ;;
                             "activity exercise-sets") cmd_path="activity exercise-sets show" ;;
                             "workouts") cmd_path="workouts list" ;;
+                            "workouts benchmarks") cmd_path="workouts benchmarks list" ;;
                             "health") cmd_path="health summary" ;;
                             "health steps") cmd_path="health steps view" ;;
                             "health stress") cmd_path="health stress view" ;;
@@ -90,16 +91,22 @@ _gccli_completions() {
                             "body") cmd_path="body composition" ;;
                             "devices") cmd_path="devices list" ;;
                             "gear") cmd_path="gear list" ;;
+                            "gear collections") cmd_path="gear collections list" ;;
                             "goals") cmd_path="goals list" ;;
                             "badges") cmd_path="badges earned" ;;
                             "courses") cmd_path="courses list" ;;
                             "challenges") cmd_path="challenges list" ;;
                             "profile") cmd_path="profile view" ;;
+                            "profile privacy") cmd_path="profile privacy view" ;;
+                            "profile privacy-zones") cmd_path="profile privacy-zones list" ;;
                             "hydration") cmd_path="hydration view" ;;
                             "nutrition") cmd_path="nutrition food-log" ;;
                             "training") cmd_path="training plans" ;;
                             "events") cmd_path="events list" ;;
+                            "wellness jet-lag") cmd_path="wellness jet-lag list" ;;
                             "exercises") cmd_path="exercises list" ;;
+                            "notifications") cmd_path="notifications list" ;;
+                            "groups") cmd_path="groups list" ;;
                         esac
                         ;;
                 esac ;;
@@ -135,10 +142,10 @@ _gccli_completions() {
     fi
 
     case $cmd_path in
-        "") COMPREPLY=($(compgen -W 'auth activities activity workouts health body devices gear goals badges courses challenges records profile hydration nutrition training events wellness exercises reload completion --json -j --plain --header --color --account --units --version' -- "$cur")) ;;
+        "") COMPREPLY=($(compgen -W 'auth activities activity workouts health body devices gear goals badges courses challenges records profile hydration nutrition training events wellness exercises notifications social groups reload completion --json -j --plain --header --color --account --units --version' -- "$cur")) ;;
         "auth") COMPREPLY=($(compgen -W 'login status remove token export import' -- "$cur")) ;;
         "auth login") COMPREPLY=($(compgen -W '--headless --mfa-code' -- "$cur")) ;;
-        "activities") COMPREPLY=($(compgen -W 'list count search types' -- "$cur")) ;;
+        "activities") COMPREPLY=($(compgen -W 'list count search types pending' -- "$cur")) ;;
         "activities list") COMPREPLY=($(compgen -W '--limit -l --offset --type -t' -- "$cur")) ;;
         "activities search") COMPREPLY=($(compgen -W '--limit -l --offset --start --end' -- "$cur")) ;;
         "activity") COMPREPLY=($(compgen -W 'summary details splits typed-splits split-summaries weather hr-zones power-zones exercise-sets gear download upload create rename retype delete' -- "$cur")) ;;
@@ -149,15 +156,17 @@ _gccli_completions() {
         "activity create") COMPREPLY=($(compgen -W '--name --type --distance --duration --date' -- "$cur")) ;;
         "activity retype") COMPREPLY=($(compgen -W '--type-id --type-key --parent-type-id' -- "$cur")) ;;
         "activity delete") COMPREPLY=($(compgen -W '--force -f' -- "$cur")) ;;
-        "workouts") COMPREPLY=($(compgen -W 'list detail download upload update create schedule delete' -- "$cur")) ;;
+        "workouts") COMPREPLY=($(compgen -W 'list detail download upload update create types schedule benchmarks delete' -- "$cur")) ;;
         "workouts list") COMPREPLY=($(compgen -W '--limit -l --offset' -- "$cur")) ;;
         "workouts download") COMPREPLY=($(compgen -W '--output -o' -- "$cur")) ;;
         "workouts create") COMPREPLY=($(compgen -W '--type --step -s --unit' -- "$cur")) ;;
-        "workouts schedule") COMPREPLY=($(compgen -W 'add list remove' -- "$cur")) ;;
+        "workouts schedule") COMPREPLY=($(compgen -W 'add list remove export' -- "$cur")) ;;
         "workouts schedule list") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "workouts schedule remove") COMPREPLY=($(compgen -W '--force -f' -- "$cur")) ;;
+        "workouts schedule export") COMPREPLY=($(compgen -W '--start' -- "$cur")) ;;
+        "workouts benchmarks") COMPREPLY=($(compgen -W 'list' -- "$cur")) ;;
         "workouts delete") COMPREPLY=($(compgen -W '--force -f' -- "$cur")) ;;
-        "health") COMPREPLY=($(compgen -W 'summary steps hr rhr floors sleep stress respiration spo2 hrv body-battery intensity-minutes training-readiness training-status fitness-age max-metrics lactate-threshold cycling-ftp race-predictions endurance-score hill-score events lifestyle' -- "$cur")) ;;
+        "health") COMPREPLY=($(compgen -W 'summary steps hr rhr floors sleep stress respiration spo2 hrv body-battery intensity-minutes training-readiness training-status fitness-age max-metrics lactate-threshold cycling-ftp critical-swim-speed race-predictions endurance-score hill-score power-curve running-economy events lifestyle' -- "$cur")) ;;
         "health steps") COMPREPLY=($(compgen -W 'view daily weekly' -- "$cur")) ;;
         "health steps daily") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "health steps weekly") COMPREPLY=($(compgen -W '--end --weeks' -- "$cur")) ;;
@@ -169,7 +178,8 @@ _gccli_completions() {
         "health intensity-minutes weekly") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "health race-predictions") COMPREPLY=($(compgen -W 'view range' -- "$cur")) ;;
         "health race-predictions range") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
-        "body") COMPREPLY=($(compgen -W 'composition weigh-ins daily-weigh-ins add-weight add-composition delete-weight blood-pressure add-blood-pressure delete-blood-pressure' -- "$cur")) ;;
+        "health power-curve") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
+        "body") COMPREPLY=($(compgen -W 'composition weigh-ins daily-weigh-ins latest add-weight add-composition delete-weight blood-pressure add-blood-pressure delete-blood-pressure glucose' -- "$cur")) ;;
         "body composition") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "body weigh-ins") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "body add-weight") COMPREPLY=($(compgen -W '--unit' -- "$cur")) ;;
@@ -178,33 +188,43 @@ _gccli_completions() {
         "body blood-pressure") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "body add-blood-pressure") COMPREPLY=($(compgen -W '--systolic --diastolic --pulse --notes' -- "$cur")) ;;
         "body delete-blood-pressure") COMPREPLY=($(compgen -W '--date --force -f' -- "$cur")) ;;
-        "devices") COMPREPLY=($(compgen -W 'list settings primary solar alarms last-used' -- "$cur")) ;;
+        "devices") COMPREPLY=($(compgen -W 'list settings primary solar alarms last-used sensors backups' -- "$cur")) ;;
         "devices solar") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
-        "gear") COMPREPLY=($(compgen -W 'list stats activities defaults link unlink' -- "$cur")) ;;
+        "gear") COMPREPLY=($(compgen -W 'list stats activities defaults link unlink types collections' -- "$cur")) ;;
         "gear activities") COMPREPLY=($(compgen -W '--limit' -- "$cur")) ;;
-        "goals") COMPREPLY=($(compgen -W 'list' -- "$cur")) ;;
+        "gear collections") COMPREPLY=($(compgen -W 'list' -- "$cur")) ;;
+        "goals") COMPREPLY=($(compgen -W 'list weight' -- "$cur")) ;;
         "goals list") COMPREPLY=($(compgen -W '--status' -- "$cur")) ;;
+        "goals weight") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "badges") COMPREPLY=($(compgen -W 'earned available in-progress detail' -- "$cur")) ;;
         "courses") COMPREPLY=($(compgen -W 'list favorites detail download import send delete' -- "$cur")) ;;
         "courses download") COMPREPLY=($(compgen -W '--format --output -o' -- "$cur")) ;;
         "courses import") COMPREPLY=($(compgen -W '--name -n --type -t --privacy -p' -- "$cur")) ;;
         "courses delete") COMPREPLY=($(compgen -W '--force -f' -- "$cur")) ;;
         "challenges") COMPREPLY=($(compgen -W 'list badge available completed' -- "$cur")) ;;
-        "profile") COMPREPLY=($(compgen -W 'view settings' -- "$cur")) ;;
+        "profile") COMPREPLY=($(compgen -W 'view settings privacy privacy-zones hr-zones power-zones' -- "$cur")) ;;
+        "profile privacy") COMPREPLY=($(compgen -W 'view' -- "$cur")) ;;
+        "profile privacy-zones") COMPREPLY=($(compgen -W 'list' -- "$cur")) ;;
         "hydration") COMPREPLY=($(compgen -W 'view add' -- "$cur")) ;;
         "hydration add") COMPREPLY=($(compgen -W '--date' -- "$cur")) ;;
         "nutrition") COMPREPLY=($(compgen -W 'food-log meals settings' -- "$cur")) ;;
-        "training") COMPREPLY=($(compgen -W 'plans plan' -- "$cur")) ;;
+        "training") COMPREPLY=($(compgen -W 'plans plan active' -- "$cur")) ;;
         "training plans") COMPREPLY=($(compgen -W '--locale' -- "$cur")) ;;
-        "events") COMPREPLY=($(compgen -W 'list add delete' -- "$cur")) ;;
+        "training active") COMPREPLY=($(compgen -W '--start' -- "$cur")) ;;
+        "events") COMPREPLY=($(compgen -W 'list upcoming add delete' -- "$cur")) ;;
         "events list") COMPREPLY=($(compgen -W '--start --limit -l --offset --sort' -- "$cur")) ;;
         "events add") COMPREPLY=($(compgen -W '--name -n --date -d --type -t --race --location --time --timezone --distance --goal --primary --training --private --note --url' -- "$cur")) ;;
         "events delete") COMPREPLY=($(compgen -W '--force -f' -- "$cur")) ;;
-        "wellness") COMPREPLY=($(compgen -W 'menstrual-cycle menstrual-summary pregnancy-summary' -- "$cur")) ;;
+        "wellness") COMPREPLY=($(compgen -W 'menstrual-cycle menstrual-summary pregnancy-summary jet-lag' -- "$cur")) ;;
         "wellness menstrual-cycle") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "wellness menstrual-summary") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
+        "wellness jet-lag") COMPREPLY=($(compgen -W 'list' -- "$cur")) ;;
         "exercises") COMPREPLY=($(compgen -W 'list' -- "$cur")) ;;
         "exercises list") COMPREPLY=($(compgen -W '--category -c' -- "$cur")) ;;
+        "notifications") COMPREPLY=($(compgen -W 'list' -- "$cur")) ;;
+        "social") COMPREPLY=($(compgen -W 'connections followers' -- "$cur")) ;;
+        "social connections") COMPREPLY=($(compgen -W '--limit -l --offset' -- "$cur")) ;;
+        "groups") COMPREPLY=($(compgen -W 'list' -- "$cur")) ;;
     esac
 }
 
@@ -286,13 +306,14 @@ _gccli_completions() {
             -*) ;;
             *)
                 case "${cmd_path:+$cmd_path }$w" in
-                    "auth"|"auth login"|"auth status"|"auth remove"|"auth token"|"auth export"|"auth import"|"activities"|"activities list"|"activities count"|"activities search"|"activities types"|"activity"|"activity summary"|"activity details"|"activity splits"|"activity typed-splits"|"activity split-summaries"|"activity weather"|"activity hr-zones"|"activity power-zones"|"activity exercise-sets"|"activity exercise-sets show"|"activity exercise-sets set"|"activity gear"|"activity download"|"activity upload"|"activity create"|"activity rename"|"activity retype"|"activity delete"|"workouts"|"workouts list"|"workouts detail"|"workouts download"|"workouts upload"|"workouts update"|"workouts create"|"workouts schedule"|"workouts schedule add"|"workouts schedule list"|"workouts schedule remove"|"workouts delete"|"health"|"health summary"|"health steps"|"health steps view"|"health steps daily"|"health steps weekly"|"health hr"|"health rhr"|"health floors"|"health sleep"|"health stress"|"health stress view"|"health stress weekly"|"health respiration"|"health spo2"|"health hrv"|"health body-battery"|"health body-battery view"|"health body-battery range"|"health intensity-minutes"|"health intensity-minutes view"|"health intensity-minutes weekly"|"health training-readiness"|"health training-status"|"health fitness-age"|"health max-metrics"|"health lactate-threshold"|"health cycling-ftp"|"health race-predictions"|"health race-predictions view"|"health race-predictions range"|"health endurance-score"|"health hill-score"|"health events"|"health lifestyle"|"body"|"body composition"|"body weigh-ins"|"body daily-weigh-ins"|"body add-weight"|"body add-composition"|"body delete-weight"|"body blood-pressure"|"body add-blood-pressure"|"body delete-blood-pressure"|"devices"|"devices list"|"devices settings"|"devices primary"|"devices solar"|"devices alarms"|"devices last-used"|"gear"|"gear list"|"gear stats"|"gear activities"|"gear defaults"|"gear link"|"gear unlink"|"goals"|"goals list"|"badges"|"badges earned"|"badges available"|"badges in-progress"|"badges detail"|"courses"|"courses list"|"courses favorites"|"courses detail"|"courses download"|"courses import"|"courses send"|"courses delete"|"challenges"|"challenges list"|"challenges badge"|"challenges available"|"challenges completed"|"records"|"profile"|"profile view"|"profile settings"|"hydration"|"hydration view"|"hydration add"|"nutrition"|"nutrition food-log"|"nutrition meals"|"nutrition settings"|"training"|"training plans"|"training plan"|"events"|"events list"|"events add"|"events delete"|"wellness"|"wellness menstrual-cycle"|"wellness menstrual-summary"|"wellness pregnancy-summary"|"exercises"|"exercises list"|"reload"|"completion") cmd_path=${cmd_path:+$cmd_path }$w ;;
+                    "auth"|"auth login"|"auth status"|"auth remove"|"auth token"|"auth export"|"auth import"|"activities"|"activities list"|"activities count"|"activities search"|"activities types"|"activities pending"|"activity"|"activity summary"|"activity details"|"activity splits"|"activity typed-splits"|"activity split-summaries"|"activity weather"|"activity hr-zones"|"activity power-zones"|"activity exercise-sets"|"activity exercise-sets show"|"activity exercise-sets set"|"activity gear"|"activity download"|"activity upload"|"activity create"|"activity rename"|"activity retype"|"activity delete"|"workouts"|"workouts list"|"workouts detail"|"workouts download"|"workouts upload"|"workouts update"|"workouts create"|"workouts types"|"workouts schedule"|"workouts schedule add"|"workouts schedule list"|"workouts schedule remove"|"workouts schedule export"|"workouts benchmarks"|"workouts benchmarks list"|"workouts delete"|"health"|"health summary"|"health steps"|"health steps view"|"health steps daily"|"health steps weekly"|"health hr"|"health rhr"|"health floors"|"health sleep"|"health stress"|"health stress view"|"health stress weekly"|"health respiration"|"health spo2"|"health hrv"|"health body-battery"|"health body-battery view"|"health body-battery range"|"health intensity-minutes"|"health intensity-minutes view"|"health intensity-minutes weekly"|"health training-readiness"|"health training-status"|"health fitness-age"|"health max-metrics"|"health lactate-threshold"|"health cycling-ftp"|"health critical-swim-speed"|"health race-predictions"|"health race-predictions view"|"health race-predictions range"|"health endurance-score"|"health hill-score"|"health power-curve"|"health running-economy"|"health events"|"health lifestyle"|"body"|"body composition"|"body weigh-ins"|"body daily-weigh-ins"|"body latest"|"body add-weight"|"body add-composition"|"body delete-weight"|"body blood-pressure"|"body add-blood-pressure"|"body delete-blood-pressure"|"body glucose"|"devices"|"devices list"|"devices settings"|"devices primary"|"devices solar"|"devices alarms"|"devices last-used"|"devices sensors"|"devices backups"|"gear"|"gear list"|"gear stats"|"gear activities"|"gear defaults"|"gear link"|"gear unlink"|"gear types"|"gear collections"|"gear collections list"|"goals"|"goals list"|"goals weight"|"badges"|"badges earned"|"badges available"|"badges in-progress"|"badges detail"|"courses"|"courses list"|"courses favorites"|"courses detail"|"courses download"|"courses import"|"courses send"|"courses delete"|"challenges"|"challenges list"|"challenges badge"|"challenges available"|"challenges completed"|"records"|"profile"|"profile view"|"profile settings"|"profile privacy"|"profile privacy view"|"profile privacy-zones"|"profile privacy-zones list"|"profile hr-zones"|"profile power-zones"|"hydration"|"hydration view"|"hydration add"|"nutrition"|"nutrition food-log"|"nutrition meals"|"nutrition settings"|"training"|"training plans"|"training plan"|"training active"|"events"|"events list"|"events upcoming"|"events add"|"events delete"|"wellness"|"wellness menstrual-cycle"|"wellness menstrual-summary"|"wellness pregnancy-summary"|"wellness jet-lag"|"wellness jet-lag list"|"exercises"|"exercises list"|"notifications"|"notifications list"|"social"|"social connections"|"social followers"|"groups"|"groups list"|"reload"|"completion") cmd_path=${cmd_path:+$cmd_path }$w ;;
                     *)
                         case $cmd_path in
                             "activities") cmd_path="activities list" ;;
                             "activity") cmd_path="activity summary" ;;
                             "activity exercise-sets") cmd_path="activity exercise-sets show" ;;
                             "workouts") cmd_path="workouts list" ;;
+                            "workouts benchmarks") cmd_path="workouts benchmarks list" ;;
                             "health") cmd_path="health summary" ;;
                             "health steps") cmd_path="health steps view" ;;
                             "health stress") cmd_path="health stress view" ;;
@@ -302,16 +323,22 @@ _gccli_completions() {
                             "body") cmd_path="body composition" ;;
                             "devices") cmd_path="devices list" ;;
                             "gear") cmd_path="gear list" ;;
+                            "gear collections") cmd_path="gear collections list" ;;
                             "goals") cmd_path="goals list" ;;
                             "badges") cmd_path="badges earned" ;;
                             "courses") cmd_path="courses list" ;;
                             "challenges") cmd_path="challenges list" ;;
                             "profile") cmd_path="profile view" ;;
+                            "profile privacy") cmd_path="profile privacy view" ;;
+                            "profile privacy-zones") cmd_path="profile privacy-zones list" ;;
                             "hydration") cmd_path="hydration view" ;;
                             "nutrition") cmd_path="nutrition food-log" ;;
                             "training") cmd_path="training plans" ;;
                             "events") cmd_path="events list" ;;
+                            "wellness jet-lag") cmd_path="wellness jet-lag list" ;;
                             "exercises") cmd_path="exercises list" ;;
+                            "notifications") cmd_path="notifications list" ;;
+                            "groups") cmd_path="groups list" ;;
                         esac
                         ;;
                 esac ;;
@@ -347,10 +374,10 @@ _gccli_completions() {
     fi
 
     case $cmd_path in
-        "") COMPREPLY=($(compgen -W 'auth activities activity workouts health body devices gear goals badges courses challenges records profile hydration nutrition training events wellness exercises reload completion --json -j --plain --header --color --account --units --version' -- "$cur")) ;;
+        "") COMPREPLY=($(compgen -W 'auth activities activity workouts health body devices gear goals badges courses challenges records profile hydration nutrition training events wellness exercises notifications social groups reload completion --json -j --plain --header --color --account --units --version' -- "$cur")) ;;
         "auth") COMPREPLY=($(compgen -W 'login status remove token export import' -- "$cur")) ;;
         "auth login") COMPREPLY=($(compgen -W '--headless --mfa-code' -- "$cur")) ;;
-        "activities") COMPREPLY=($(compgen -W 'list count search types' -- "$cur")) ;;
+        "activities") COMPREPLY=($(compgen -W 'list count search types pending' -- "$cur")) ;;
         "activities list") COMPREPLY=($(compgen -W '--limit -l --offset --type -t' -- "$cur")) ;;
         "activities search") COMPREPLY=($(compgen -W '--limit -l --offset --start --end' -- "$cur")) ;;
         "activity") COMPREPLY=($(compgen -W 'summary details splits typed-splits split-summaries weather hr-zones power-zones exercise-sets gear download upload create rename retype delete' -- "$cur")) ;;
@@ -361,15 +388,17 @@ _gccli_completions() {
         "activity create") COMPREPLY=($(compgen -W '--name --type --distance --duration --date' -- "$cur")) ;;
         "activity retype") COMPREPLY=($(compgen -W '--type-id --type-key --parent-type-id' -- "$cur")) ;;
         "activity delete") COMPREPLY=($(compgen -W '--force -f' -- "$cur")) ;;
-        "workouts") COMPREPLY=($(compgen -W 'list detail download upload update create schedule delete' -- "$cur")) ;;
+        "workouts") COMPREPLY=($(compgen -W 'list detail download upload update create types schedule benchmarks delete' -- "$cur")) ;;
         "workouts list") COMPREPLY=($(compgen -W '--limit -l --offset' -- "$cur")) ;;
         "workouts download") COMPREPLY=($(compgen -W '--output -o' -- "$cur")) ;;
         "workouts create") COMPREPLY=($(compgen -W '--type --step -s --unit' -- "$cur")) ;;
-        "workouts schedule") COMPREPLY=($(compgen -W 'add list remove' -- "$cur")) ;;
+        "workouts schedule") COMPREPLY=($(compgen -W 'add list remove export' -- "$cur")) ;;
         "workouts schedule list") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "workouts schedule remove") COMPREPLY=($(compgen -W '--force -f' -- "$cur")) ;;
+        "workouts schedule export") COMPREPLY=($(compgen -W '--start' -- "$cur")) ;;
+        "workouts benchmarks") COMPREPLY=($(compgen -W 'list' -- "$cur")) ;;
         "workouts delete") COMPREPLY=($(compgen -W '--force -f' -- "$cur")) ;;
-        "health") COMPREPLY=($(compgen -W 'summary steps hr rhr floors sleep stress respiration spo2 hrv body-battery intensity-minutes training-readiness training-status fitness-age max-metrics lactate-threshold cycling-ftp race-predictions endurance-score hill-score events lifestyle' -- "$cur")) ;;
+        "health") COMPREPLY=($(compgen -W 'summary steps hr rhr floors sleep stress respiration spo2 hrv body-battery intensity-minutes training-readiness training-status fitness-age max-metrics lactate-threshold cycling-ftp critical-swim-speed race-predictions endurance-score hill-score power-curve running-economy events lifestyle' -- "$cur")) ;;
         "health steps") COMPREPLY=($(compgen -W 'view daily weekly' -- "$cur")) ;;
         "health steps daily") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "health steps weekly") COMPREPLY=($(compgen -W '--end --weeks' -- "$cur")) ;;
@@ -381,7 +410,8 @@ _gccli_completions() {
         "health intensity-minutes weekly") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "health race-predictions") COMPREPLY=($(compgen -W 'view range' -- "$cur")) ;;
         "health race-predictions range") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
-        "body") COMPREPLY=($(compgen -W 'composition weigh-ins daily-weigh-ins add-weight add-composition delete-weight blood-pressure add-blood-pressure delete-blood-pressure' -- "$cur")) ;;
+        "health power-curve") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
+        "body") COMPREPLY=($(compgen -W 'composition weigh-ins daily-weigh-ins latest add-weight add-composition delete-weight blood-pressure add-blood-pressure delete-blood-pressure glucose' -- "$cur")) ;;
         "body composition") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "body weigh-ins") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "body add-weight") COMPREPLY=($(compgen -W '--unit' -- "$cur")) ;;
@@ -390,33 +420,43 @@ _gccli_completions() {
         "body blood-pressure") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "body add-blood-pressure") COMPREPLY=($(compgen -W '--systolic --diastolic --pulse --notes' -- "$cur")) ;;
         "body delete-blood-pressure") COMPREPLY=($(compgen -W '--date --force -f' -- "$cur")) ;;
-        "devices") COMPREPLY=($(compgen -W 'list settings primary solar alarms last-used' -- "$cur")) ;;
+        "devices") COMPREPLY=($(compgen -W 'list settings primary solar alarms last-used sensors backups' -- "$cur")) ;;
         "devices solar") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
-        "gear") COMPREPLY=($(compgen -W 'list stats activities defaults link unlink' -- "$cur")) ;;
+        "gear") COMPREPLY=($(compgen -W 'list stats activities defaults link unlink types collections' -- "$cur")) ;;
         "gear activities") COMPREPLY=($(compgen -W '--limit' -- "$cur")) ;;
-        "goals") COMPREPLY=($(compgen -W 'list' -- "$cur")) ;;
+        "gear collections") COMPREPLY=($(compgen -W 'list' -- "$cur")) ;;
+        "goals") COMPREPLY=($(compgen -W 'list weight' -- "$cur")) ;;
         "goals list") COMPREPLY=($(compgen -W '--status' -- "$cur")) ;;
+        "goals weight") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "badges") COMPREPLY=($(compgen -W 'earned available in-progress detail' -- "$cur")) ;;
         "courses") COMPREPLY=($(compgen -W 'list favorites detail download import send delete' -- "$cur")) ;;
         "courses download") COMPREPLY=($(compgen -W '--format --output -o' -- "$cur")) ;;
         "courses import") COMPREPLY=($(compgen -W '--name -n --type -t --privacy -p' -- "$cur")) ;;
         "courses delete") COMPREPLY=($(compgen -W '--force -f' -- "$cur")) ;;
         "challenges") COMPREPLY=($(compgen -W 'list badge available completed' -- "$cur")) ;;
-        "profile") COMPREPLY=($(compgen -W 'view settings' -- "$cur")) ;;
+        "profile") COMPREPLY=($(compgen -W 'view settings privacy privacy-zones hr-zones power-zones' -- "$cur")) ;;
+        "profile privacy") COMPREPLY=($(compgen -W 'view' -- "$cur")) ;;
+        "profile privacy-zones") COMPREPLY=($(compgen -W 'list' -- "$cur")) ;;
         "hydration") COMPREPLY=($(compgen -W 'view add' -- "$cur")) ;;
         "hydration add") COMPREPLY=($(compgen -W '--date' -- "$cur")) ;;
         "nutrition") COMPREPLY=($(compgen -W 'food-log meals settings' -- "$cur")) ;;
-        "training") COMPREPLY=($(compgen -W 'plans plan' -- "$cur")) ;;
+        "training") COMPREPLY=($(compgen -W 'plans plan active' -- "$cur")) ;;
         "training plans") COMPREPLY=($(compgen -W '--locale' -- "$cur")) ;;
-        "events") COMPREPLY=($(compgen -W 'list add delete' -- "$cur")) ;;
+        "training active") COMPREPLY=($(compgen -W '--start' -- "$cur")) ;;
+        "events") COMPREPLY=($(compgen -W 'list upcoming add delete' -- "$cur")) ;;
         "events list") COMPREPLY=($(compgen -W '--start --limit -l --offset --sort' -- "$cur")) ;;
         "events add") COMPREPLY=($(compgen -W '--name -n --date -d --type -t --race --location --time --timezone --distance --goal --primary --training --private --note --url' -- "$cur")) ;;
         "events delete") COMPREPLY=($(compgen -W '--force -f' -- "$cur")) ;;
-        "wellness") COMPREPLY=($(compgen -W 'menstrual-cycle menstrual-summary pregnancy-summary' -- "$cur")) ;;
+        "wellness") COMPREPLY=($(compgen -W 'menstrual-cycle menstrual-summary pregnancy-summary jet-lag' -- "$cur")) ;;
         "wellness menstrual-cycle") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "wellness menstrual-summary") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
+        "wellness jet-lag") COMPREPLY=($(compgen -W 'list' -- "$cur")) ;;
         "exercises") COMPREPLY=($(compgen -W 'list' -- "$cur")) ;;
         "exercises list") COMPREPLY=($(compgen -W '--category -c' -- "$cur")) ;;
+        "notifications") COMPREPLY=($(compgen -W 'list' -- "$cur")) ;;
+        "social") COMPREPLY=($(compgen -W 'connections followers' -- "$cur")) ;;
+        "social connections") COMPREPLY=($(compgen -W '--limit -l --offset' -- "$cur")) ;;
+        "groups") COMPREPLY=($(compgen -W 'list' -- "$cur")) ;;
     esac
 }
 
@@ -498,13 +538,14 @@ _gccli_completions() {
             -*) ;;
             *)
                 case "${cmd_path:+$cmd_path }$w" in
-                    "auth"|"auth login"|"auth status"|"auth remove"|"auth token"|"auth export"|"auth import"|"activities"|"activities list"|"activities count"|"activities search"|"activities types"|"activity"|"activity summary"|"activity details"|"activity splits"|"activity typed-splits"|"activity split-summaries"|"activity weather"|"activity hr-zones"|"activity power-zones"|"activity exercise-sets"|"activity exercise-sets show"|"activity exercise-sets set"|"activity gear"|"activity download"|"activity upload"|"activity create"|"activity rename"|"activity retype"|"activity delete"|"workouts"|"workouts list"|"workouts detail"|"workouts download"|"workouts upload"|"workouts update"|"workouts create"|"workouts schedule"|"workouts schedule add"|"workouts schedule list"|"workouts schedule remove"|"workouts delete"|"health"|"health summary"|"health steps"|"health steps view"|"health steps daily"|"health steps weekly"|"health hr"|"health rhr"|"health floors"|"health sleep"|"health stress"|"health stress view"|"health stress weekly"|"health respiration"|"health spo2"|"health hrv"|"health body-battery"|"health body-battery view"|"health body-battery range"|"health intensity-minutes"|"health intensity-minutes view"|"health intensity-minutes weekly"|"health training-readiness"|"health training-status"|"health fitness-age"|"health max-metrics"|"health lactate-threshold"|"health cycling-ftp"|"health race-predictions"|"health race-predictions view"|"health race-predictions range"|"health endurance-score"|"health hill-score"|"health events"|"health lifestyle"|"body"|"body composition"|"body weigh-ins"|"body daily-weigh-ins"|"body add-weight"|"body add-composition"|"body delete-weight"|"body blood-pressure"|"body add-blood-pressure"|"body delete-blood-pressure"|"devices"|"devices list"|"devices settings"|"devices primary"|"devices solar"|"devices alarms"|"devices last-used"|"gear"|"gear list"|"gear stats"|"gear activities"|"gear defaults"|"gear link"|"gear unlink"|"goals"|"goals list"|"badges"|"badges earned"|"badges available"|"badges in-progress"|"badges detail"|"courses"|"courses list"|"courses favorites"|"courses detail"|"courses download"|"courses import"|"courses send"|"courses delete"|"challenges"|"challenges list"|"challenges badge"|"challenges available"|"challenges completed"|"records"|"profile"|"profile view"|"profile settings"|"hydration"|"hydration view"|"hydration add"|"nutrition"|"nutrition food-log"|"nutrition meals"|"nutrition settings"|"training"|"training plans"|"training plan"|"events"|"events list"|"events add"|"events delete"|"wellness"|"wellness menstrual-cycle"|"wellness menstrual-summary"|"wellness pregnancy-summary"|"exercises"|"exercises list"|"reload"|"completion") cmd_path=${cmd_path:+$cmd_path }$w ;;
+                    "auth"|"auth login"|"auth status"|"auth remove"|"auth token"|"auth export"|"auth import"|"activities"|"activities list"|"activities count"|"activities search"|"activities types"|"activities pending"|"activity"|"activity summary"|"activity details"|"activity splits"|"activity typed-splits"|"activity split-summaries"|"activity weather"|"activity hr-zones"|"activity power-zones"|"activity exercise-sets"|"activity exercise-sets show"|"activity exercise-sets set"|"activity gear"|"activity download"|"activity upload"|"activity create"|"activity rename"|"activity retype"|"activity delete"|"workouts"|"workouts list"|"workouts detail"|"workouts download"|"workouts upload"|"workouts update"|"workouts create"|"workouts types"|"workouts schedule"|"workouts schedule add"|"workouts schedule list"|"workouts schedule remove"|"workouts schedule export"|"workouts benchmarks"|"workouts benchmarks list"|"workouts delete"|"health"|"health summary"|"health steps"|"health steps view"|"health steps daily"|"health steps weekly"|"health hr"|"health rhr"|"health floors"|"health sleep"|"health stress"|"health stress view"|"health stress weekly"|"health respiration"|"health spo2"|"health hrv"|"health body-battery"|"health body-battery view"|"health body-battery range"|"health intensity-minutes"|"health intensity-minutes view"|"health intensity-minutes weekly"|"health training-readiness"|"health training-status"|"health fitness-age"|"health max-metrics"|"health lactate-threshold"|"health cycling-ftp"|"health critical-swim-speed"|"health race-predictions"|"health race-predictions view"|"health race-predictions range"|"health endurance-score"|"health hill-score"|"health power-curve"|"health running-economy"|"health events"|"health lifestyle"|"body"|"body composition"|"body weigh-ins"|"body daily-weigh-ins"|"body latest"|"body add-weight"|"body add-composition"|"body delete-weight"|"body blood-pressure"|"body add-blood-pressure"|"body delete-blood-pressure"|"body glucose"|"devices"|"devices list"|"devices settings"|"devices primary"|"devices solar"|"devices alarms"|"devices last-used"|"devices sensors"|"devices backups"|"gear"|"gear list"|"gear stats"|"gear activities"|"gear defaults"|"gear link"|"gear unlink"|"gear types"|"gear collections"|"gear collections list"|"goals"|"goals list"|"goals weight"|"badges"|"badges earned"|"badges available"|"badges in-progress"|"badges detail"|"courses"|"courses list"|"courses favorites"|"courses detail"|"courses download"|"courses import"|"courses send"|"courses delete"|"challenges"|"challenges list"|"challenges badge"|"challenges available"|"challenges completed"|"records"|"profile"|"profile view"|"profile settings"|"profile privacy"|"profile privacy view"|"profile privacy-zones"|"profile privacy-zones list"|"profile hr-zones"|"profile power-zones"|"hydration"|"hydration view"|"hydration add"|"nutrition"|"nutrition food-log"|"nutrition meals"|"nutrition settings"|"training"|"training plans"|"training plan"|"training active"|"events"|"events list"|"events upcoming"|"events add"|"events delete"|"wellness"|"wellness menstrual-cycle"|"wellness menstrual-summary"|"wellness pregnancy-summary"|"wellness jet-lag"|"wellness jet-lag list"|"exercises"|"exercises list"|"notifications"|"notifications list"|"social"|"social connections"|"social followers"|"groups"|"groups list"|"reload"|"completion") cmd_path=${cmd_path:+$cmd_path }$w ;;
                     *)
                         case $cmd_path in
                             "activities") cmd_path="activities list" ;;
                             "activity") cmd_path="activity summary" ;;
                             "activity exercise-sets") cmd_path="activity exercise-sets show" ;;
                             "workouts") cmd_path="workouts list" ;;
+                            "workouts benchmarks") cmd_path="workouts benchmarks list" ;;
                             "health") cmd_path="health summary" ;;
                             "health steps") cmd_path="health steps view" ;;
                             "health stress") cmd_path="health stress view" ;;
@@ -514,16 +555,22 @@ _gccli_completions() {
                             "body") cmd_path="body composition" ;;
                             "devices") cmd_path="devices list" ;;
                             "gear") cmd_path="gear list" ;;
+                            "gear collections") cmd_path="gear collections list" ;;
                             "goals") cmd_path="goals list" ;;
                             "badges") cmd_path="badges earned" ;;
                             "courses") cmd_path="courses list" ;;
                             "challenges") cmd_path="challenges list" ;;
                             "profile") cmd_path="profile view" ;;
+                            "profile privacy") cmd_path="profile privacy view" ;;
+                            "profile privacy-zones") cmd_path="profile privacy-zones list" ;;
                             "hydration") cmd_path="hydration view" ;;
                             "nutrition") cmd_path="nutrition food-log" ;;
                             "training") cmd_path="training plans" ;;
                             "events") cmd_path="events list" ;;
+                            "wellness jet-lag") cmd_path="wellness jet-lag list" ;;
                             "exercises") cmd_path="exercises list" ;;
+                            "notifications") cmd_path="notifications list" ;;
+                            "groups") cmd_path="groups list" ;;
                         esac
                         ;;
                 esac ;;
@@ -559,10 +606,10 @@ _gccli_completions() {
     fi
 
     case $cmd_path in
-        "") COMPREPLY=($(compgen -W 'auth activities activity workouts health body devices gear goals badges courses challenges records profile hydration nutrition training events wellness exercises reload completion --json -j --plain --header --color --account --units --version' -- "$cur")) ;;
+        "") COMPREPLY=($(compgen -W 'auth activities activity workouts health body devices gear goals badges courses challenges records profile hydration nutrition training events wellness exercises notifications social groups reload completion --json -j --plain --header --color --account --units --version' -- "$cur")) ;;
         "auth") COMPREPLY=($(compgen -W 'login status remove token export import' -- "$cur")) ;;
         "auth login") COMPREPLY=($(compgen -W '--headless --mfa-code' -- "$cur")) ;;
-        "activities") COMPREPLY=($(compgen -W 'list count search types' -- "$cur")) ;;
+        "activities") COMPREPLY=($(compgen -W 'list count search types pending' -- "$cur")) ;;
         "activities list") COMPREPLY=($(compgen -W '--limit -l --offset --type -t' -- "$cur")) ;;
         "activities search") COMPREPLY=($(compgen -W '--limit -l --offset --start --end' -- "$cur")) ;;
         "activity") COMPREPLY=($(compgen -W 'summary details splits typed-splits split-summaries weather hr-zones power-zones exercise-sets gear download upload create rename retype delete' -- "$cur")) ;;
@@ -573,15 +620,17 @@ _gccli_completions() {
         "activity create") COMPREPLY=($(compgen -W '--name --type --distance --duration --date' -- "$cur")) ;;
         "activity retype") COMPREPLY=($(compgen -W '--type-id --type-key --parent-type-id' -- "$cur")) ;;
         "activity delete") COMPREPLY=($(compgen -W '--force -f' -- "$cur")) ;;
-        "workouts") COMPREPLY=($(compgen -W 'list detail download upload update create schedule delete' -- "$cur")) ;;
+        "workouts") COMPREPLY=($(compgen -W 'list detail download upload update create types schedule benchmarks delete' -- "$cur")) ;;
         "workouts list") COMPREPLY=($(compgen -W '--limit -l --offset' -- "$cur")) ;;
         "workouts download") COMPREPLY=($(compgen -W '--output -o' -- "$cur")) ;;
         "workouts create") COMPREPLY=($(compgen -W '--type --step -s --unit' -- "$cur")) ;;
-        "workouts schedule") COMPREPLY=($(compgen -W 'add list remove' -- "$cur")) ;;
+        "workouts schedule") COMPREPLY=($(compgen -W 'add list remove export' -- "$cur")) ;;
         "workouts schedule list") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "workouts schedule remove") COMPREPLY=($(compgen -W '--force -f' -- "$cur")) ;;
+        "workouts schedule export") COMPREPLY=($(compgen -W '--start' -- "$cur")) ;;
+        "workouts benchmarks") COMPREPLY=($(compgen -W 'list' -- "$cur")) ;;
         "workouts delete") COMPREPLY=($(compgen -W '--force -f' -- "$cur")) ;;
-        "health") COMPREPLY=($(compgen -W 'summary steps hr rhr floors sleep stress respiration spo2 hrv body-battery intensity-minutes training-readiness training-status fitness-age max-metrics lactate-threshold cycling-ftp race-predictions endurance-score hill-score events lifestyle' -- "$cur")) ;;
+        "health") COMPREPLY=($(compgen -W 'summary steps hr rhr floors sleep stress respiration spo2 hrv body-battery intensity-minutes training-readiness training-status fitness-age max-metrics lactate-threshold cycling-ftp critical-swim-speed race-predictions endurance-score hill-score power-curve running-economy events lifestyle' -- "$cur")) ;;
         "health steps") COMPREPLY=($(compgen -W 'view daily weekly' -- "$cur")) ;;
         "health steps daily") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "health steps weekly") COMPREPLY=($(compgen -W '--end --weeks' -- "$cur")) ;;
@@ -593,7 +642,8 @@ _gccli_completions() {
         "health intensity-minutes weekly") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "health race-predictions") COMPREPLY=($(compgen -W 'view range' -- "$cur")) ;;
         "health race-predictions range") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
-        "body") COMPREPLY=($(compgen -W 'composition weigh-ins daily-weigh-ins add-weight add-composition delete-weight blood-pressure add-blood-pressure delete-blood-pressure' -- "$cur")) ;;
+        "health power-curve") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
+        "body") COMPREPLY=($(compgen -W 'composition weigh-ins daily-weigh-ins latest add-weight add-composition delete-weight blood-pressure add-blood-pressure delete-blood-pressure glucose' -- "$cur")) ;;
         "body composition") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "body weigh-ins") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "body add-weight") COMPREPLY=($(compgen -W '--unit' -- "$cur")) ;;
@@ -602,33 +652,43 @@ _gccli_completions() {
         "body blood-pressure") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "body add-blood-pressure") COMPREPLY=($(compgen -W '--systolic --diastolic --pulse --notes' -- "$cur")) ;;
         "body delete-blood-pressure") COMPREPLY=($(compgen -W '--date --force -f' -- "$cur")) ;;
-        "devices") COMPREPLY=($(compgen -W 'list settings primary solar alarms last-used' -- "$cur")) ;;
+        "devices") COMPREPLY=($(compgen -W 'list settings primary solar alarms last-used sensors backups' -- "$cur")) ;;
         "devices solar") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
-        "gear") COMPREPLY=($(compgen -W 'list stats activities defaults link unlink' -- "$cur")) ;;
+        "gear") COMPREPLY=($(compgen -W 'list stats activities defaults link unlink types collections' -- "$cur")) ;;
         "gear activities") COMPREPLY=($(compgen -W '--limit' -- "$cur")) ;;
-        "goals") COMPREPLY=($(compgen -W 'list' -- "$cur")) ;;
+        "gear collections") COMPREPLY=($(compgen -W 'list' -- "$cur")) ;;
+        "goals") COMPREPLY=($(compgen -W 'list weight' -- "$cur")) ;;
         "goals list") COMPREPLY=($(compgen -W '--status' -- "$cur")) ;;
+        "goals weight") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "badges") COMPREPLY=($(compgen -W 'earned available in-progress detail' -- "$cur")) ;;
         "courses") COMPREPLY=($(compgen -W 'list favorites detail download import send delete' -- "$cur")) ;;
         "courses download") COMPREPLY=($(compgen -W '--format --output -o' -- "$cur")) ;;
         "courses import") COMPREPLY=($(compgen -W '--name -n --type -t --privacy -p' -- "$cur")) ;;
         "courses delete") COMPREPLY=($(compgen -W '--force -f' -- "$cur")) ;;
         "challenges") COMPREPLY=($(compgen -W 'list badge available completed' -- "$cur")) ;;
-        "profile") COMPREPLY=($(compgen -W 'view settings' -- "$cur")) ;;
+        "profile") COMPREPLY=($(compgen -W 'view settings privacy privacy-zones hr-zones power-zones' -- "$cur")) ;;
+        "profile privacy") COMPREPLY=($(compgen -W 'view' -- "$cur")) ;;
+        "profile privacy-zones") COMPREPLY=($(compgen -W 'list' -- "$cur")) ;;
         "hydration") COMPREPLY=($(compgen -W 'view add' -- "$cur")) ;;
         "hydration add") COMPREPLY=($(compgen -W '--date' -- "$cur")) ;;
         "nutrition") COMPREPLY=($(compgen -W 'food-log meals settings' -- "$cur")) ;;
-        "training") COMPREPLY=($(compgen -W 'plans plan' -- "$cur")) ;;
+        "training") COMPREPLY=($(compgen -W 'plans plan active' -- "$cur")) ;;
         "training plans") COMPREPLY=($(compgen -W '--locale' -- "$cur")) ;;
-        "events") COMPREPLY=($(compgen -W 'list add delete' -- "$cur")) ;;
+        "training active") COMPREPLY=($(compgen -W '--start' -- "$cur")) ;;
+        "events") COMPREPLY=($(compgen -W 'list upcoming add delete' -- "$cur")) ;;
         "events list") COMPREPLY=($(compgen -W '--start --limit -l --offset --sort' -- "$cur")) ;;
         "events add") COMPREPLY=($(compgen -W '--name -n --date -d --type -t --race --location --time --timezone --distance --goal --primary --training --private --note --url' -- "$cur")) ;;
         "events delete") COMPREPLY=($(compgen -W '--force -f' -- "$cur")) ;;
-        "wellness") COMPREPLY=($(compgen -W 'menstrual-cycle menstrual-summary pregnancy-summary' -- "$cur")) ;;
+        "wellness") COMPREPLY=($(compgen -W 'menstrual-cycle menstrual-summary pregnancy-summary jet-lag' -- "$cur")) ;;
         "wellness menstrual-cycle") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "wellness menstrual-summary") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
+        "wellness jet-lag") COMPREPLY=($(compgen -W 'list' -- "$cur")) ;;
         "exercises") COMPREPLY=($(compgen -W 'list' -- "$cur")) ;;
         "exercises list") COMPREPLY=($(compgen -W '--category -c' -- "$cur")) ;;
+        "notifications") COMPREPLY=($(compgen -W 'list' -- "$cur")) ;;
+        "social") COMPREPLY=($(compgen -W 'connections followers' -- "$cur")) ;;
+        "social connections") COMPREPLY=($(compgen -W '--limit -l --offset' -- "$cur")) ;;
+        "groups") COMPREPLY=($(compgen -W 'list' -- "$cur")) ;;
     esac
 }
 
@@ -710,13 +770,14 @@ _gccli_completions() {
             -*) ;;
             *)
                 case "${cmd_path:+$cmd_path }$w" in
-                    "auth"|"auth login"|"auth status"|"auth remove"|"auth token"|"auth export"|"auth import"|"activities"|"activities list"|"activities count"|"activities search"|"activities types"|"activity"|"activity summary"|"activity details"|"activity splits"|"activity typed-splits"|"activity split-summaries"|"activity weather"|"activity hr-zones"|"activity power-zones"|"activity exercise-sets"|"activity exercise-sets show"|"activity exercise-sets set"|"activity gear"|"activity download"|"activity upload"|"activity create"|"activity rename"|"activity retype"|"activity delete"|"workouts"|"workouts list"|"workouts detail"|"workouts download"|"workouts upload"|"workouts update"|"workouts create"|"workouts schedule"|"workouts schedule add"|"workouts schedule list"|"workouts schedule remove"|"workouts delete"|"health"|"health summary"|"health steps"|"health steps view"|"health steps daily"|"health steps weekly"|"health hr"|"health rhr"|"health floors"|"health sleep"|"health stress"|"health stress view"|"health stress weekly"|"health respiration"|"health spo2"|"health hrv"|"health body-battery"|"health body-battery view"|"health body-battery range"|"health intensity-minutes"|"health intensity-minutes view"|"health intensity-minutes weekly"|"health training-readiness"|"health training-status"|"health fitness-age"|"health max-metrics"|"health lactate-threshold"|"health cycling-ftp"|"health race-predictions"|"health race-predictions view"|"health race-predictions range"|"health endurance-score"|"health hill-score"|"health events"|"health lifestyle"|"body"|"body composition"|"body weigh-ins"|"body daily-weigh-ins"|"body add-weight"|"body add-composition"|"body delete-weight"|"body blood-pressure"|"body add-blood-pressure"|"body delete-blood-pressure"|"devices"|"devices list"|"devices settings"|"devices primary"|"devices solar"|"devices alarms"|"devices last-used"|"gear"|"gear list"|"gear stats"|"gear activities"|"gear defaults"|"gear link"|"gear unlink"|"goals"|"goals list"|"badges"|"badges earned"|"badges available"|"badges in-progress"|"badges detail"|"courses"|"courses list"|"courses favorites"|"courses detail"|"courses download"|"courses import"|"courses send"|"courses delete"|"challenges"|"challenges list"|"challenges badge"|"challenges available"|"challenges completed"|"records"|"profile"|"profile view"|"profile settings"|"hydration"|"hydration view"|"hydration add"|"nutrition"|"nutrition food-log"|"nutrition meals"|"nutrition settings"|"training"|"training plans"|"training plan"|"events"|"events list"|"events add"|"events delete"|"wellness"|"wellness menstrual-cycle"|"wellness menstrual-summary"|"wellness pregnancy-summary"|"exercises"|"exercises list"|"reload"|"completion") cmd_path=${cmd_path:+$cmd_path }$w ;;
+                    "auth"|"auth login"|"auth status"|"auth remove"|"auth token"|"auth export"|"auth import"|"activities"|"activities list"|"activities count"|"activities search"|"activities types"|"activities pending"|"activity"|"activity summary"|"activity details"|"activity splits"|"activity typed-splits"|"activity split-summaries"|"activity weather"|"activity hr-zones"|"activity power-zones"|"activity exercise-sets"|"activity exercise-sets show"|"activity exercise-sets set"|"activity gear"|"activity download"|"activity upload"|"activity create"|"activity rename"|"activity retype"|"activity delete"|"workouts"|"workouts list"|"workouts detail"|"workouts download"|"workouts upload"|"workouts update"|"workouts create"|"workouts types"|"workouts schedule"|"workouts schedule add"|"workouts schedule list"|"workouts schedule remove"|"workouts schedule export"|"workouts benchmarks"|"workouts benchmarks list"|"workouts delete"|"health"|"health summary"|"health steps"|"health steps view"|"health steps daily"|"health steps weekly"|"health hr"|"health rhr"|"health floors"|"health sleep"|"health stress"|"health stress view"|"health stress weekly"|"health respiration"|"health spo2"|"health hrv"|"health body-battery"|"health body-battery view"|"health body-battery range"|"health intensity-minutes"|"health intensity-minutes view"|"health intensity-minutes weekly"|"health training-readiness"|"health training-status"|"health fitness-age"|"health max-metrics"|"health lactate-threshold"|"health cycling-ftp"|"health critical-swim-speed"|"health race-predictions"|"health race-predictions view"|"health race-predictions range"|"health endurance-score"|"health hill-score"|"health power-curve"|"health running-economy"|"health events"|"health lifestyle"|"body"|"body composition"|"body weigh-ins"|"body daily-weigh-ins"|"body latest"|"body add-weight"|"body add-composition"|"body delete-weight"|"body blood-pressure"|"body add-blood-pressure"|"body delete-blood-pressure"|"body glucose"|"devices"|"devices list"|"devices settings"|"devices primary"|"devices solar"|"devices alarms"|"devices last-used"|"devices sensors"|"devices backups"|"gear"|"gear list"|"gear stats"|"gear activities"|"gear defaults"|"gear link"|"gear unlink"|"gear types"|"gear collections"|"gear collections list"|"goals"|"goals list"|"goals weight"|"badges"|"badges earned"|"badges available"|"badges in-progress"|"badges detail"|"courses"|"courses list"|"courses favorites"|"courses detail"|"courses download"|"courses import"|"courses send"|"courses delete"|"challenges"|"challenges list"|"challenges badge"|"challenges available"|"challenges completed"|"records"|"profile"|"profile view"|"profile settings"|"profile privacy"|"profile privacy view"|"profile privacy-zones"|"profile privacy-zones list"|"profile hr-zones"|"profile power-zones"|"hydration"|"hydration view"|"hydration add"|"nutrition"|"nutrition food-log"|"nutrition meals"|"nutrition settings"|"training"|"training plans"|"training plan"|"training active"|"events"|"events list"|"events upcoming"|"events add"|"events delete"|"wellness"|"wellness menstrual-cycle"|"wellness menstrual-summary"|"wellness pregnancy-summary"|"wellness jet-lag"|"wellness jet-lag list"|"exercises"|"exercises list"|"notifications"|"notifications list"|"social"|"social connections"|"social followers"|"groups"|"groups list"|"reload"|"completion") cmd_path=${cmd_path:+$cmd_path }$w ;;
                     *)
                         case $cmd_path in
                             "activities") cmd_path="activities list" ;;
                             "activity") cmd_path="activity summary" ;;
                             "activity exercise-sets") cmd_path="activity exercise-sets show" ;;
                             "workouts") cmd_path="workouts list" ;;
+                            "workouts benchmarks") cmd_path="workouts benchmarks list" ;;
                             "health") cmd_path="health summary" ;;
                             "health steps") cmd_path="health steps view" ;;
                             "health stress") cmd_path="health stress view" ;;
@@ -726,16 +787,22 @@ _gccli_completions() {
                             "body") cmd_path="body composition" ;;
                             "devices") cmd_path="devices list" ;;
                             "gear") cmd_path="gear list" ;;
+                            "gear collections") cmd_path="gear collections list" ;;
                             "goals") cmd_path="goals list" ;;
                             "badges") cmd_path="badges earned" ;;
                             "courses") cmd_path="courses list" ;;
                             "challenges") cmd_path="challenges list" ;;
                             "profile") cmd_path="profile view" ;;
+                            "profile privacy") cmd_path="profile privacy view" ;;
+                            "profile privacy-zones") cmd_path="profile privacy-zones list" ;;
                             "hydration") cmd_path="hydration view" ;;
                             "nutrition") cmd_path="nutrition food-log" ;;
                             "training") cmd_path="training plans" ;;
                             "events") cmd_path="events list" ;;
+                            "wellness jet-lag") cmd_path="wellness jet-lag list" ;;
                             "exercises") cmd_path="exercises list" ;;
+                            "notifications") cmd_path="notifications list" ;;
+                            "groups") cmd_path="groups list" ;;
                         esac
                         ;;
                 esac ;;
@@ -771,10 +838,10 @@ _gccli_completions() {
     fi
 
     case $cmd_path in
-        "") COMPREPLY=($(compgen -W 'auth activities activity workouts health body devices gear goals badges courses challenges records profile hydration nutrition training events wellness exercises reload completion --json -j --plain --header --color --account --units --version' -- "$cur")) ;;
+        "") COMPREPLY=($(compgen -W 'auth activities activity workouts health body devices gear goals badges courses challenges records profile hydration nutrition training events wellness exercises notifications social groups reload completion --json -j --plain --header --color --account --units --version' -- "$cur")) ;;
         "auth") COMPREPLY=($(compgen -W 'login status remove token export import' -- "$cur")) ;;
         "auth login") COMPREPLY=($(compgen -W '--headless --mfa-code' -- "$cur")) ;;
-        "activities") COMPREPLY=($(compgen -W 'list count search types' -- "$cur")) ;;
+        "activities") COMPREPLY=($(compgen -W 'list count search types pending' -- "$cur")) ;;
         "activities list") COMPREPLY=($(compgen -W '--limit -l --offset --type -t' -- "$cur")) ;;
         "activities search") COMPREPLY=($(compgen -W '--limit -l --offset --start --end' -- "$cur")) ;;
         "activity") COMPREPLY=($(compgen -W 'summary details splits typed-splits split-summaries weather hr-zones power-zones exercise-sets gear download upload create rename retype delete' -- "$cur")) ;;
@@ -785,15 +852,17 @@ _gccli_completions() {
         "activity create") COMPREPLY=($(compgen -W '--name --type --distance --duration --date' -- "$cur")) ;;
         "activity retype") COMPREPLY=($(compgen -W '--type-id --type-key --parent-type-id' -- "$cur")) ;;
         "activity delete") COMPREPLY=($(compgen -W '--force -f' -- "$cur")) ;;
-        "workouts") COMPREPLY=($(compgen -W 'list detail download upload update create schedule delete' -- "$cur")) ;;
+        "workouts") COMPREPLY=($(compgen -W 'list detail download upload update create types schedule benchmarks delete' -- "$cur")) ;;
         "workouts list") COMPREPLY=($(compgen -W '--limit -l --offset' -- "$cur")) ;;
         "workouts download") COMPREPLY=($(compgen -W '--output -o' -- "$cur")) ;;
         "workouts create") COMPREPLY=($(compgen -W '--type --step -s --unit' -- "$cur")) ;;
-        "workouts schedule") COMPREPLY=($(compgen -W 'add list remove' -- "$cur")) ;;
+        "workouts schedule") COMPREPLY=($(compgen -W 'add list remove export' -- "$cur")) ;;
         "workouts schedule list") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "workouts schedule remove") COMPREPLY=($(compgen -W '--force -f' -- "$cur")) ;;
+        "workouts schedule export") COMPREPLY=($(compgen -W '--start' -- "$cur")) ;;
+        "workouts benchmarks") COMPREPLY=($(compgen -W 'list' -- "$cur")) ;;
         "workouts delete") COMPREPLY=($(compgen -W '--force -f' -- "$cur")) ;;
-        "health") COMPREPLY=($(compgen -W 'summary steps hr rhr floors sleep stress respiration spo2 hrv body-battery intensity-minutes training-readiness training-status fitness-age max-metrics lactate-threshold cycling-ftp race-predictions endurance-score hill-score events lifestyle' -- "$cur")) ;;
+        "health") COMPREPLY=($(compgen -W 'summary steps hr rhr floors sleep stress respiration spo2 hrv body-battery intensity-minutes training-readiness training-status fitness-age max-metrics lactate-threshold cycling-ftp critical-swim-speed race-predictions endurance-score hill-score power-curve running-economy events lifestyle' -- "$cur")) ;;
         "health steps") COMPREPLY=($(compgen -W 'view daily weekly' -- "$cur")) ;;
         "health steps daily") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "health steps weekly") COMPREPLY=($(compgen -W '--end --weeks' -- "$cur")) ;;
@@ -805,7 +874,8 @@ _gccli_completions() {
         "health intensity-minutes weekly") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "health race-predictions") COMPREPLY=($(compgen -W 'view range' -- "$cur")) ;;
         "health race-predictions range") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
-        "body") COMPREPLY=($(compgen -W 'composition weigh-ins daily-weigh-ins add-weight add-composition delete-weight blood-pressure add-blood-pressure delete-blood-pressure' -- "$cur")) ;;
+        "health power-curve") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
+        "body") COMPREPLY=($(compgen -W 'composition weigh-ins daily-weigh-ins latest add-weight add-composition delete-weight blood-pressure add-blood-pressure delete-blood-pressure glucose' -- "$cur")) ;;
         "body composition") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "body weigh-ins") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "body add-weight") COMPREPLY=($(compgen -W '--unit' -- "$cur")) ;;
@@ -814,33 +884,43 @@ _gccli_completions() {
         "body blood-pressure") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "body add-blood-pressure") COMPREPLY=($(compgen -W '--systolic --diastolic --pulse --notes' -- "$cur")) ;;
         "body delete-blood-pressure") COMPREPLY=($(compgen -W '--date --force -f' -- "$cur")) ;;
-        "devices") COMPREPLY=($(compgen -W 'list settings primary solar alarms last-used' -- "$cur")) ;;
+        "devices") COMPREPLY=($(compgen -W 'list settings primary solar alarms last-used sensors backups' -- "$cur")) ;;
         "devices solar") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
-        "gear") COMPREPLY=($(compgen -W 'list stats activities defaults link unlink' -- "$cur")) ;;
+        "gear") COMPREPLY=($(compgen -W 'list stats activities defaults link unlink types collections' -- "$cur")) ;;
         "gear activities") COMPREPLY=($(compgen -W '--limit' -- "$cur")) ;;
-        "goals") COMPREPLY=($(compgen -W 'list' -- "$cur")) ;;
+        "gear collections") COMPREPLY=($(compgen -W 'list' -- "$cur")) ;;
+        "goals") COMPREPLY=($(compgen -W 'list weight' -- "$cur")) ;;
         "goals list") COMPREPLY=($(compgen -W '--status' -- "$cur")) ;;
+        "goals weight") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "badges") COMPREPLY=($(compgen -W 'earned available in-progress detail' -- "$cur")) ;;
         "courses") COMPREPLY=($(compgen -W 'list favorites detail download import send delete' -- "$cur")) ;;
         "courses download") COMPREPLY=($(compgen -W '--format --output -o' -- "$cur")) ;;
         "courses import") COMPREPLY=($(compgen -W '--name -n --type -t --privacy -p' -- "$cur")) ;;
         "courses delete") COMPREPLY=($(compgen -W '--force -f' -- "$cur")) ;;
         "challenges") COMPREPLY=($(compgen -W 'list badge available completed' -- "$cur")) ;;
-        "profile") COMPREPLY=($(compgen -W 'view settings' -- "$cur")) ;;
+        "profile") COMPREPLY=($(compgen -W 'view settings privacy privacy-zones hr-zones power-zones' -- "$cur")) ;;
+        "profile privacy") COMPREPLY=($(compgen -W 'view' -- "$cur")) ;;
+        "profile privacy-zones") COMPREPLY=($(compgen -W 'list' -- "$cur")) ;;
         "hydration") COMPREPLY=($(compgen -W 'view add' -- "$cur")) ;;
         "hydration add") COMPREPLY=($(compgen -W '--date' -- "$cur")) ;;
         "nutrition") COMPREPLY=($(compgen -W 'food-log meals settings' -- "$cur")) ;;
-        "training") COMPREPLY=($(compgen -W 'plans plan' -- "$cur")) ;;
+        "training") COMPREPLY=($(compgen -W 'plans plan active' -- "$cur")) ;;
         "training plans") COMPREPLY=($(compgen -W '--locale' -- "$cur")) ;;
-        "events") COMPREPLY=($(compgen -W 'list add delete' -- "$cur")) ;;
+        "training active") COMPREPLY=($(compgen -W '--start' -- "$cur")) ;;
+        "events") COMPREPLY=($(compgen -W 'list upcoming add delete' -- "$cur")) ;;
         "events list") COMPREPLY=($(compgen -W '--start --limit -l --offset --sort' -- "$cur")) ;;
         "events add") COMPREPLY=($(compgen -W '--name -n --date -d --type -t --race --location --time --timezone --distance --goal --primary --training --private --note --url' -- "$cur")) ;;
         "events delete") COMPREPLY=($(compgen -W '--force -f' -- "$cur")) ;;
-        "wellness") COMPREPLY=($(compgen -W 'menstrual-cycle menstrual-summary pregnancy-summary' -- "$cur")) ;;
+        "wellness") COMPREPLY=($(compgen -W 'menstrual-cycle menstrual-summary pregnancy-summary jet-lag' -- "$cur")) ;;
         "wellness menstrual-cycle") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "wellness menstrual-summary") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
+        "wellness jet-lag") COMPREPLY=($(compgen -W 'list' -- "$cur")) ;;
         "exercises") COMPREPLY=($(compgen -W 'list' -- "$cur")) ;;
         "exercises list") COMPREPLY=($(compgen -W '--category -c' -- "$cur")) ;;
+        "notifications") COMPREPLY=($(compgen -W 'list' -- "$cur")) ;;
+        "social") COMPREPLY=($(compgen -W 'connections followers' -- "$cur")) ;;
+        "social connections") COMPREPLY=($(compgen -W '--limit -l --offset' -- "$cur")) ;;
+        "groups") COMPREPLY=($(compgen -W 'list' -- "$cur")) ;;
     esac
 }
 

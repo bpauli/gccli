@@ -10,6 +10,7 @@ import (
 func TestGoalsEndpoints(t *testing.T) {
 	testEndpoints(t, goalsEndpoints, []endpointCase{
 		{"goals.list", map[string]string{"status": "past"}, "GET /goal-service/goal/goals?status=past"},
+		{"goals.effective-weight-goal", map[string]string{"startDate": "2026-01-01", "endDate": "2026-06-30"}, "GET /goal-service/goal/user/effective/weightgoal/2026-01-01/2026-06-30"},
 		{"badges.earned", nil, "GET /badge-service/badge/earned"},
 		{"badges.available", nil, "GET /badge-service/badge/available"},
 		{"badges.in-progress", nil, "GET /badge-service/badge/in-progress"},

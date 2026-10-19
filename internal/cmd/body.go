@@ -29,9 +29,28 @@ var bodyGroup = Group{Name: "body", Help: "Body composition and weight data.", C
 		Verb:     "get daily weigh-ins", Output: JSON{},
 		LateDates: []string{"Date"},
 	},
+	Leaf{
+		Name: "latest", Help: "Show the latest weigh-in as of a date.",
+		Spec: argsOf(&struct {
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today."`
+		}{}),
+		Endpoint: "body.latest-weight",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get latest weigh-in", Output: JSON{},
+	},
 	Custom{Name: "add-weight", Help: "Add a weigh-in entry.", Cmd: &BodyAddWeightCmd{}},
 	Custom{Name: "add-composition", Help: "Add body composition data (weight, body fat, muscle mass, etc.) via FIT upload.", Cmd: &BodyAddCompositionCmd{}},
-	Custom{Name: "delete-weight", Help: "Delete a weigh-in entry.", Cmd: &BodyDeleteWeightCmd{}},
+	Leaf{
+		Name: "delete-weight", Help: "Delete a weigh-in entry.",
+		Spec: argsOf(&struct {
+			PK   string `arg:"" help:"Weigh-in version (primary key)."`
+			Date string `help:"Date of the weigh-in (YYYY-MM-DD)." required:"" name:"date"`
+		}{}),
+		Endpoint: "body.delete-weight",
+		Params:   Params{"date": In("Date"), "version": In("PK")},
+		Verb:     "delete weight",
+		Output:   Write{Done: "Deleted weigh-in {PK}", Confirm: "Delete weigh-in {PK} on {Date}?"},
+	},
 	Leaf{
 		Name: "blood-pressure", Help: "Show blood pressure data.",
 		Spec: argsOf(&struct {
@@ -43,7 +62,26 @@ var bodyGroup = Group{Name: "body", Help: "Body composition and weight data.", C
 		Verb:     "get blood pressure", Output: JSON{},
 	},
 	Custom{Name: "add-blood-pressure", Help: "Add a blood pressure measurement.", Cmd: &BodyAddBPCmd{}},
-	Custom{Name: "delete-blood-pressure", Help: "Delete a blood pressure entry.", Cmd: &BodyDeleteBPCmd{}},
+	Leaf{
+		Name: "delete-blood-pressure", Help: "Delete a blood pressure entry.",
+		Spec: argsOf(&struct {
+			Version string `arg:"" help:"Blood pressure entry version."`
+			Date    string `help:"Date of the measurement (YYYY-MM-DD)." required:"" name:"date"`
+		}{}),
+		Endpoint: "body.delete-blood-pressure",
+		Params:   Params{"date": In("Date"), "version": In("Version")},
+		Verb:     "delete blood pressure",
+		Output:   Write{Done: "Deleted blood pressure entry {Version}", Confirm: "Delete blood pressure entry {Version} on {Date}?"},
+	},
+	Leaf{
+		Name: "glucose", Help: "Show glucose readings for a date.",
+		Spec: argsOf(&struct {
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today."`
+		}{}),
+		Endpoint: "body.glucose",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get glucose", Output: JSON{},
+	},
 }}
 
 // BodyCompositionCmd shows body composition data for a date or range.
@@ -151,35 +189,6 @@ func (c *BodyAddCompositionCmd) Run(g *Globals) error {
 	return reportWrite(g, data, "Added body composition: %.1f kg", c.Weight)
 }
 
-// BodyDeleteWeightCmd deletes a weigh-in entry.
-type BodyDeleteWeightCmd struct {
-	PK    string `arg:"" help:"Weigh-in version (primary key)."`
-	Date  string `help:"Date of the weigh-in (YYYY-MM-DD)." required:"" name:"date"`
-	Force bool   `help:"Skip confirmation prompt." short:"f"`
-}
-
-func (c *BodyDeleteWeightCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	ok, err := confirm(g.Stderr, fmt.Sprintf("Delete weigh-in %s on %s?", c.PK, c.Date), c.Force)
-	if err != nil {
-		return err
-	}
-	if !ok {
-		g.UI.Infof("Cancelled")
-		return nil
-	}
-
-	data, err := client.Call(g.Context, "body.delete-weight", map[string]string{"date": c.Date, "version": c.PK}, nil)
-	if err != nil {
-		return fmt.Errorf("delete weight: %w", err)
-	}
-	return reportWrite(g, data, "Deleted weigh-in %s", c.PK)
-}
-
 // BodyAddBPCmd adds a blood pressure measurement.
 type BodyAddBPCmd struct {
 	Systolic  int    `help:"Systolic pressure (mmHg)." required:"" name:"systolic"`
@@ -203,33 +212,4 @@ func (c *BodyAddBPCmd) Run(g *Globals) error {
 	}
 
 	return reportWrite(g, data, "Added blood pressure: %d/%d mmHg, pulse %d bpm", c.Systolic, c.Diastolic, c.Pulse)
-}
-
-// BodyDeleteBPCmd deletes a blood pressure entry.
-type BodyDeleteBPCmd struct {
-	Version string `arg:"" help:"Blood pressure entry version."`
-	Date    string `help:"Date of the measurement (YYYY-MM-DD)." required:"" name:"date"`
-	Force   bool   `help:"Skip confirmation prompt." short:"f"`
-}
-
-func (c *BodyDeleteBPCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	ok, err := confirm(g.Stderr, fmt.Sprintf("Delete blood pressure entry %s on %s?", c.Version, c.Date), c.Force)
-	if err != nil {
-		return err
-	}
-	if !ok {
-		g.UI.Infof("Cancelled")
-		return nil
-	}
-
-	data, err := client.Call(g.Context, "body.delete-blood-pressure", map[string]string{"date": c.Date, "version": c.Version}, nil)
-	if err != nil {
-		return fmt.Errorf("delete blood pressure: %w", err)
-	}
-	return reportWrite(g, data, "Deleted blood pressure entry %s", c.Version)
 }

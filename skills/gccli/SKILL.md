@@ -64,6 +64,7 @@ Date shortcuts
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
 - `gccli activities types`: List all activity types supported by Garmin.
+- `gccli activities pending`: List pending activities.
 - `gccli activity summary <id>`: Show activity summary. Also runs as `gccli activity <id>`.
   - `<id>`: Activity ID.
 - `gccli activity details <id> [flags]`: Show full activity details.
@@ -166,6 +167,8 @@ Date shortcuts
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli health lactate-threshold`: Show latest lactate threshold.
 - `gccli health cycling-ftp`: Show latest cycling FTP.
+- `gccli health critical-swim-speed [<date>]`: Show latest critical swim speed as of a date.
+  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli health race-predictions view [<date>]`: Show current race predictions. Also runs as `gccli health race-predictions [<date>]`.
   - `[<date>]`: Unused. Current predictions are always returned.
 - `gccli health race-predictions range --start=DATE --end=DATE`: Show race predictions for a date range.
@@ -175,6 +178,11 @@ Date shortcuts
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli health hill-score [<date>]`: Show hill score data.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
+- `gccli health power-curve --start=DATE --end=DATE`: Show power curve for a date range.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli health running-economy [<date>]`: Show latest running economy as of a date.
+  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli health events [<date>]`: Show daily wellness events.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli health lifestyle [<date>]`: Show lifestyle logging data.
@@ -191,6 +199,8 @@ Date shortcuts
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
 - `gccli body daily-weigh-ins [<date>]`: Show weigh-in data for a single day.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
+- `gccli body latest [<date>]`: Show the latest weigh-in as of a date.
+  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli body add-weight <value> [flags]`: Add a weigh-in entry.
   - `<value>`: Weight value.
   - `--unit="kg"`: Unit: kg or lbs.
@@ -223,6 +233,8 @@ Date shortcuts
   - `<version>`: Blood pressure entry version.
   - `--date=STRING`: Date of the measurement (YYYY-MM-DD).
   - `-f, --force`: Skip confirmation prompt.
+- `gccli body glucose [<date>]`: Show glucose readings for a date.
+  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 
 ### Workouts
 
@@ -244,6 +256,7 @@ Date shortcuts
   - `--type=STRING`: Sport type. One of: run, bike, swim, strength, cardio, hiit, yoga, pilates, mobility, multisport, custom.
   - `-s, --step=STEP,...`: Workout step (type:duration[@target:values]).
   - `--unit="km"`: Pace unit: km or mi.
+- `gccli workouts types`: List workout types.
 - `gccli workouts schedule add <id> <date>`: Add a workout to the schedule.
   - `<id>`: Workout ID.
   - `<date>`: Date to schedule (YYYY-MM-DD, today, yesterday, 3d).
@@ -254,6 +267,9 @@ Date shortcuts
 - `gccli workouts schedule remove <id> [flags]`: Remove a scheduled workout from the calendar.
   - `<id>`: Schedule ID (from 'workouts schedule list').
   - `-f, --force`: Skip confirmation prompt.
+- `gccli workouts schedule export [flags]`: Export the workout schedule from a start date.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli workouts benchmarks list`: List strength benchmarks. Also runs as `gccli workouts benchmarks`.
 - `gccli workouts delete <id> [flags]`: Delete a workout.
   - `<id>`: Workout ID.
   - `-f, --force`: Skip confirmation prompt.
@@ -292,6 +308,8 @@ Date shortcuts
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to start date.
 - `gccli devices alarms`: Show alarms from all devices.
 - `gccli devices last-used`: Show last used device.
+- `gccli devices sensors`: List paired sensors.
+- `gccli devices backups`: Show device backup summary.
 
 ### Gear
 
@@ -308,11 +326,16 @@ Date shortcuts
 - `gccli gear unlink <uuid> <activity-id>`: Unlink gear from an activity.
   - `<uuid>`: Gear UUID.
   - `<activity-id>`: Activity ID.
+- `gccli gear types`: List gear types.
+- `gccli gear collections list`: List gear collections. Also runs as `gccli gear collections`.
 
 ### Goals, Badges & Challenges
 
 - `gccli goals list [flags]`: List goals. Also runs as `gccli goals [flags]`.
   - `--status="active"`: Goal status: active, future, past.
+- `gccli goals weight [flags]`: Show the effective weight goal for a date range.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli badges earned`: Show earned badges. Also runs as `gccli badges`.
 - `gccli badges available`: Show available badges.
 - `gccli badges in-progress`: Show badges in progress.
@@ -331,6 +354,7 @@ Date shortcuts
   - `-l, --limit=20`: Maximum number of events to return.
   - `--offset=0`: Number of events to skip.
   - `--sort="eventDate_asc"`: Sort order. One of: eventDate_asc, eventDate_desc.
+- `gccli events upcoming`: List upcoming events.
 - `gccli events add --name=STRING --date=STRING --type=STRING [flags]`: Add a calendar event.
   - `-n, --name=STRING`: Event name.
   - `-d, --date=STRING`: Event date (YYYY-MM-DD, today, +30d).
@@ -350,6 +374,16 @@ Date shortcuts
   - `<id>`: Event ID.
   - `-f, --force`: Skip confirmation prompt.
 
+### Social
+
+- `gccli social connections [flags]`: List your connections.
+  - `-l, --limit=20`: Maximum number of connections to return.
+  - `--offset=0`: Number of connections to skip.
+- `gccli social followers [<display-name>]`: List the followers of a user.
+  - `[<display-name>]`: Display name of the user. Defaults to your display name.
+- `gccli groups list`: List your groups. Also runs as `gccli groups`.
+- `gccli notifications list`: List notifications. Also runs as `gccli notifications`.
+
 ### Hydration, Nutrition, Profile, Training, Wellness & Utilities
 
 - `gccli hydration view [<date>]`: Show hydration data for a date. Also runs as `gccli hydration [<date>]`.
@@ -365,10 +399,16 @@ Date shortcuts
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli profile view`: Show user profile. Also runs as `gccli profile`.
 - `gccli profile settings`: Show user settings.
+- `gccli profile privacy view`: Show privacy settings. Also runs as `gccli profile privacy`.
+- `gccli profile privacy-zones list`: List privacy zones. Also runs as `gccli profile privacy-zones`.
+- `gccli profile hr-zones`: Show heart rate zones.
+- `gccli profile power-zones`: Show power zones for all sports.
 - `gccli training plans [flags]`: List training plans. Also runs as `gccli training [flags]`.
   - `--locale="en"`: Locale for training plans (e.g. en, de, fr).
 - `gccli training plan <id>`: Show a specific training plan.
   - `<id>`: Training plan ID.
+- `gccli training active [flags]`: Show active training plans.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli wellness menstrual-cycle --start=DATE --end=DATE`: Show menstrual cycle data.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
@@ -376,6 +416,7 @@ Date shortcuts
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
 - `gccli wellness pregnancy-summary`: Show pregnancy summary.
+- `gccli wellness jet-lag list`: List jet lag trips. Also runs as `gccli wellness jet-lag`.
 - `gccli reload [<date>]`: Request data reload for a date.
   - `[<date>]`: Date to reload (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli completion <shell>`: Generate shell completion script.

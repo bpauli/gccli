@@ -1,0 +1,29 @@
+Error case: the plan ID is an empty string, so the endpoint table refuses the request and the exit code is 1 (error). The third args line is the empty argument.
+-- args --
+training
+plan
+
+-- table stdout --
+-- table stderr --
+get training plan: endpoint training.plan: planID: required
+-- table exit --
+1
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+get training plan: endpoint training.plan: planID: required
+-- plain exit --
+1
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+get training plan: endpoint training.plan: planID: required
+-- plain-header exit --
+1
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"get training plan: endpoint training.plan: planID: required"}}
+-- json exit --
+1
+-- json requests --

@@ -14,7 +14,7 @@ import (
 	"testing"
 )
 
-var update = flag.Bool("update", false, "rewrite the outputs in testdata/golden and the command reference in the docs")
+var update = flag.Bool("update", false, "rewrite the outputs in testdata/golden, the group help in testdata/help.golden and the command reference in the docs")
 
 const goldenDir = "testdata/golden"
 
@@ -142,12 +142,17 @@ func leafCommands(t *testing.T) []string {
 	cmds := collectCommands(newTestParser(t).Model.Node, nil)
 	var leaves []string
 	for i, c := range cmds {
-		if i+1 < len(cmds) && len(cmds[i+1].Path) > len(c.Path) {
-			continue
+		if !hasChildren(cmds, i) {
+			leaves = append(leaves, strings.Join(c.Path, " "))
 		}
-		leaves = append(leaves, strings.Join(c.Path, " "))
 	}
 	return leaves
+}
+
+// hasChildren reports whether cmds[i] is a group. collectCommands lists the
+// children of a command right after it.
+func hasChildren(cmds []commandInfo, i int) bool {
+	return i+1 < len(cmds) && len(cmds[i+1].Path) > len(cmds[i].Path)
 }
 
 func goldenFile(path string) string {
@@ -313,12 +318,18 @@ var errorCaseExempt = map[string]string{
 	"auth login":  "the harness stubs the SSO login, so it sends no request",
 	"auth remove": "writes the keyring and sends no request",
 	"auth status": "reads the keyring and sends no request",
-	"auth token":  "reads the keyring and sends no request",
+	"auth token":  "reads the keyring; with an expired token it sends only a refresh, whose error has no verb",
 	"completion":  "prints a script and sends no request",
 }
 
 func TestGoldenErrorCases(t *testing.T) {
-	for _, path := range leafCommands(t) {
+	leaves := leafCommands(t)
+	for _, path := range slices.Sorted(maps.Keys(errorCaseExempt)) {
+		if !slices.Contains(leaves, path) {
+			t.Errorf("errorCaseExempt names %q, which is not a leaf command: remove the entry", path)
+		}
+	}
+	for _, path := range leaves {
 		main := goldenFile(path)
 		cases, _ := filepath.Glob(strings.TrimSuffix(main, ".golden") + "@*.golden")
 		var goldens []golden

@@ -1,0 +1,41 @@
+-- args --
+activities
+pending
+-- route GET /pendingactivity-service/pending-activities --
+{"value":1}
+-- table stdout --
+{
+  "value": 1
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /pendingactivity-service/pending-activities
+-- plain stdout --
+{
+  "value": 1
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /pendingactivity-service/pending-activities
+-- plain-header stdout --
+{
+  "value": 1
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /pendingactivity-service/pending-activities
+-- json stdout --
+{
+  "value": 1
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /pendingactivity-service/pending-activities

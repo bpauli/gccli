@@ -1,0 +1,34 @@
+-- args --
+profile
+privacy-zones
+list
+-- route GET /privacyzone-service/privacyZones 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+get privacy zones: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /privacyzone-service/privacyZones
+-- plain stdout --
+-- plain stderr --
+get privacy zones: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /privacyzone-service/privacyZones
+-- plain-header stdout --
+-- plain-header stderr --
+get privacy zones: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /privacyzone-service/privacyZones
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"get privacy zones: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /privacyzone-service/privacyZones

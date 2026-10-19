@@ -463,22 +463,22 @@ gccli activities list --limit 5</pre>
           <div class="feature-card fade-in">
             <div class="feature-icon">&#x1f3c3;</div>
             <h3>Activities</h3>
-            <p>List, search, view details, splits, weather, HR/power zones. Download FIT/GPX/TCX/KML/CSV. Upload, create (with date), rename, retype, delete. Set exercise sets for strength training.</p>
+            <p>List, search, view details, splits, weather, HR/power zones. Download FIT/GPX/TCX/KML/CSV. Upload, create (with date), rename, retype, delete. Set exercise sets for strength training. List pending activities.</p>
           </div>
           <div class="feature-card fade-in">
             <div class="feature-icon blue">&#x2764;</div>
             <h3>Health Data</h3>
-            <p>Steps, heart rate, sleep, stress, HRV, SpO2, respiration, body battery, floors, training readiness, VO2max, fitness age, race predictions.</p>
+            <p>Steps, heart rate, sleep, stress, HRV, SpO2, respiration, body battery, floors, training readiness, VO2max, fitness age, race predictions, critical swim speed, power curve, running economy.</p>
           </div>
           <div class="feature-card fade-in">
             <div class="feature-icon orange">&#x1f4aa;</div>
             <h3>Workouts</h3>
-            <p>Create with pace/HR/power/cadence targets, schedule to calendar, download as FIT, upload from JSON, update in place without losing the ID or schedule. Running, cycling, strength, and more.</p>
+            <p>Create with pace/HR/power/cadence targets, schedule to calendar, download as FIT, upload from JSON, update in place without losing the ID or schedule. Export the schedule, list workout types and strength benchmarks. Running, cycling, strength, and more.</p>
           </div>
           <div class="feature-card fade-in">
             <div class="feature-icon rose">&#x2696;</div>
             <h3>Body Composition</h3>
-            <p>Weight tracking, body fat, muscle mass, weigh-in history, blood pressure. Add entries and upload via FIT encoding.</p>
+            <p>Weight tracking, body fat, muscle mass, weigh-in history, latest weigh-in, blood pressure, glucose. Add entries and upload via FIT encoding.</p>
           </div>
           <div class="feature-card fade-in">
             <div class="feature-icon violet">&#x1f5fa;</div>
@@ -488,12 +488,12 @@ gccli activities list --limit 5</pre>
           <div class="feature-card fade-in">
             <div class="feature-icon violet">&#x231a;</div>
             <h3>Devices</h3>
-            <p>List registered devices, view settings, solar data, alarms. Query primary and last-used device.</p>
+            <p>List registered devices, view settings, solar data, alarms. Query primary and last-used device. List paired sensors and the backup summary.</p>
           </div>
           <div class="feature-card fade-in">
             <div class="feature-icon">&#x1f45f;</div>
             <h3>Gear</h3>
-            <p>List gear, usage stats, linked activities, defaults per activity type. Link and unlink gear to activities.</p>
+            <p>List gear, usage stats, linked activities, defaults per activity type. Link and unlink gear to activities. List gear types and gear collections.</p>
           </div>
           <div class="feature-card fade-in">
             <div class="feature-icon yellow">&#x1f3af;</div>
@@ -503,12 +503,12 @@ gccli activities list --limit 5</pre>
           <div class="feature-card fade-in">
             <div class="feature-icon yellow">&#x1f4c5;</div>
             <h3>Events</h3>
-            <p>List, add, and delete calendar events, such as races and group rides. Set custom goals and training priority.</p>
+            <p>List, add, and delete calendar events, such as races and group rides. Set custom goals and training priority. List upcoming events.</p>
           </div>
           <div class="feature-card fade-in">
             <div class="feature-icon blue">&#x1f4c5;</div>
             <h3>Training Plans</h3>
-            <p>Browse and view training plans from the Garmin training catalog.</p>
+            <p>Browse and view training plans from the Garmin training catalog. Show your active plans.</p>
           </div>
           <div class="feature-card fade-in">
             <div class="feature-icon orange">&#x1f4a7;</div>
@@ -523,12 +523,17 @@ gccli activities list --limit 5</pre>
           <div class="feature-card fade-in">
             <div class="feature-icon rose">&#x1f33f;</div>
             <h3>Wellness</h3>
-            <p>Menstrual cycle tracking, menstrual summaries, and pregnancy summary data.</p>
+            <p>Menstrual cycle tracking, menstrual summaries, pregnancy summary data, and jet lag trips.</p>
+          </div>
+          <div class="feature-card fade-in">
+            <div class="feature-icon violet">&#x1f465;</div>
+            <h3>Social</h3>
+            <p>Read your notifications. List your connections, the followers of a user, and your groups.</p>
           </div>
           <div class="feature-card fade-in">
             <div class="feature-icon violet">&#x1f464;</div>
             <h3>Profile</h3>
-            <p>View user profile information and account settings.</p>
+            <p>View user profile information and account settings. View privacy settings and privacy zones. Show heart rate and power zones.</p>
           </div>
           <div class="feature-card fade-in">
             <div class="feature-icon orange">&#x1f4cf;</div>
@@ -645,6 +650,7 @@ gccli activities list --limit 5</pre>
               <div class="cmd-row"><div class="cmd">gccli activities count</div><div class="desc">Show total activity count.</div></div>
               <div class="cmd-row"><div class="cmd">gccli activities search <span class="nowrap">--start=DATE</span> [flags]</div><div class="desc">Search activities by date range.<br><code><span class="nowrap">-l,</span> <span class="nowrap">--limit=</span><wbr>20</code> Maximum number of activities to return.<br><code><span class="nowrap">--offset=</span><wbr>0</code> Number of activities to skip.<br><code><span class="nowrap">--start=</span><wbr>DATE</code> Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).<br><code><span class="nowrap">--end=</span><wbr>DATE</code> End date (YYYY-MM-DD, today, yesterday, 3d, +30d).</div></div>
               <div class="cmd-row"><div class="cmd">gccli activities types</div><div class="desc">List all activity types supported by Garmin.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli activities pending</div><div class="desc">List pending activities.</div></div>
               <div class="cmd-row"><div class="cmd">gccli activity summary &lt;id&gt;</div><div class="desc">Show activity summary. Also runs as <span class="whole"><code>gccli activity &lt;id&gt;</code>.</span><br><code>&lt;id&gt;</code> Activity ID.</div></div>
               <div class="cmd-row"><div class="cmd">gccli activity details &lt;id&gt; [flags]</div><div class="desc">Show full activity details.<br><code>&lt;id&gt;</code> Activity ID.<br><code><span class="nowrap">--max-chart=</span><wbr>2000</code> Maximum chart data points.<br><code><span class="nowrap">--max-poly=</span><wbr>4000</code> Maximum polyline data points.</div></div>
               <div class="cmd-row"><div class="cmd">gccli activity splits &lt;id&gt;</div><div class="desc">Show activity splits.<br><code>&lt;id&gt;</code> Activity ID.</div></div>
@@ -692,10 +698,13 @@ gccli activities list --limit 5</pre>
               <div class="cmd-row"><div class="cmd">gccli health <span class="nowrap">max-metrics</span> [&lt;date&gt;]</div><div class="desc">Show VO2max and max metrics data.<br><code>[&lt;date&gt;]</code> Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.</div></div>
               <div class="cmd-row"><div class="cmd">gccli health <span class="nowrap">lactate-threshold</span></div><div class="desc">Show latest lactate threshold.</div></div>
               <div class="cmd-row"><div class="cmd">gccli health <span class="nowrap">cycling-ftp</span></div><div class="desc">Show latest cycling FTP.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli health <span class="nowrap">critical-swim-speed</span> [&lt;date&gt;]</div><div class="desc">Show latest critical swim speed as of a date.<br><code>[&lt;date&gt;]</code> Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.</div></div>
               <div class="cmd-row"><div class="cmd">gccli health <span class="nowrap">race-predictions</span> view [&lt;date&gt;]</div><div class="desc">Show current race predictions. Also runs as <span class="whole"><code>gccli health <span class="nowrap">race-predictions</span> [&lt;date&gt;]</code>.</span><br><code>[&lt;date&gt;]</code> Unused. Current predictions are always returned.</div></div>
               <div class="cmd-row"><div class="cmd">gccli health <span class="nowrap">race-predictions</span> range <span class="nowrap">--start=DATE</span> <span class="nowrap">--end=DATE</span></div><div class="desc">Show race predictions for a date range.<br><code><span class="nowrap">--start=</span><wbr>DATE</code> Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).<br><code><span class="nowrap">--end=</span><wbr>DATE</code> End date (YYYY-MM-DD, today, yesterday, 3d, +30d).</div></div>
               <div class="cmd-row"><div class="cmd">gccli health <span class="nowrap">endurance-score</span> [&lt;date&gt;]</div><div class="desc">Show endurance score data.<br><code>[&lt;date&gt;]</code> Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.</div></div>
               <div class="cmd-row"><div class="cmd">gccli health <span class="nowrap">hill-score</span> [&lt;date&gt;]</div><div class="desc">Show hill score data.<br><code>[&lt;date&gt;]</code> Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli health <span class="nowrap">power-curve</span> <span class="nowrap">--start=DATE</span> <span class="nowrap">--end=DATE</span></div><div class="desc">Show power curve for a date range.<br><code><span class="nowrap">--start=</span><wbr>DATE</code> Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).<br><code><span class="nowrap">--end=</span><wbr>DATE</code> End date (YYYY-MM-DD, today, yesterday, 3d, +30d).</div></div>
+              <div class="cmd-row"><div class="cmd">gccli health <span class="nowrap">running-economy</span> [&lt;date&gt;]</div><div class="desc">Show latest running economy as of a date.<br><code>[&lt;date&gt;]</code> Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.</div></div>
               <div class="cmd-row"><div class="cmd">gccli health events [&lt;date&gt;]</div><div class="desc">Show daily wellness events.<br><code>[&lt;date&gt;]</code> Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.</div></div>
               <div class="cmd-row"><div class="cmd">gccli health lifestyle [&lt;date&gt;]</div><div class="desc">Show lifestyle logging data.<br><code>[&lt;date&gt;]</code> Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.</div></div>
             </div>
@@ -707,12 +716,14 @@ gccli activities list --limit 5</pre>
               <div class="cmd-row"><div class="cmd">gccli body composition [&lt;date&gt;] [flags]</div><div class="desc">Show body composition data. Also runs as <span class="whole"><code>gccli body [&lt;date&gt;] [flags]</code>.</span><br><code>[&lt;date&gt;]</code> Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.<br><code><span class="nowrap">--start=</span><wbr>DATE</code> Start date for range query (YYYY-MM-DD, today, yesterday, 3d, +30d).<br><code><span class="nowrap">--end=</span><wbr>DATE</code> End date for range query (YYYY-MM-DD, today, yesterday, 3d, +30d).</div></div>
               <div class="cmd-row"><div class="cmd">gccli body <span class="nowrap">weigh-ins</span> <span class="nowrap">--start=DATE</span> <span class="nowrap">--end=DATE</span></div><div class="desc">Show weigh-in data for a date range.<br><code><span class="nowrap">--start=</span><wbr>DATE</code> Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).<br><code><span class="nowrap">--end=</span><wbr>DATE</code> End date (YYYY-MM-DD, today, yesterday, 3d, +30d).</div></div>
               <div class="cmd-row"><div class="cmd">gccli body <span class="nowrap">daily-weigh-ins</span> [&lt;date&gt;]</div><div class="desc">Show weigh-in data for a single day.<br><code>[&lt;date&gt;]</code> Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli body latest [&lt;date&gt;]</div><div class="desc">Show the latest weigh-in as of a date.<br><code>[&lt;date&gt;]</code> Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.</div></div>
               <div class="cmd-row"><div class="cmd">gccli body <span class="nowrap">add-weight</span> &lt;value&gt; [flags]</div><div class="desc">Add a weigh-in entry.<br><code>&lt;value&gt;</code> Weight value.<br><code><span class="nowrap">--unit=</span><wbr>&#34;kg&#34;</code> Unit: kg or lbs.</div></div>
               <div class="cmd-row"><div class="cmd">gccli body <span class="nowrap">add-composition</span> &lt;weight&gt; [flags]</div><div class="desc">Add body composition data (weight, body fat, muscle mass, etc.) via FIT upload.<br><code>&lt;weight&gt;</code> Weight in kg.<br><code><span class="nowrap">--body-fat=</span><wbr><span class="nowrap">BODY-FAT</span></code> Body fat percentage.<br><code><span class="nowrap">--percent-hydration=</span><wbr><span class="nowrap">PERCENT-HYDRATION</span></code> Hydration percentage.<br><code><span class="nowrap">--visceral-fat-mass=</span><wbr><span class="nowrap">VISCERAL-FAT-MASS</span></code> Visceral fat mass in kg.<br><code><span class="nowrap">--bone-mass=</span><wbr><span class="nowrap">BONE-MASS</span></code> Bone mass in kg.<br><code><span class="nowrap">--muscle-mass=</span><wbr><span class="nowrap">MUSCLE-MASS</span></code> Muscle mass in kg.<br><code><span class="nowrap">--basal-met=</span><wbr><span class="nowrap">BASAL-MET</span></code> Basal metabolic rate (kcal/day).<br><code><span class="nowrap">--active-met=</span><wbr><span class="nowrap">ACTIVE-MET</span></code> Active metabolic rate (kcal/day).<br><code><span class="nowrap">--physique-rating=</span><wbr><span class="nowrap">PHYSIQUE-RATING</span></code> Physique rating.<br><code><span class="nowrap">--metabolic-age=</span><wbr><span class="nowrap">METABOLIC-AGE</span></code> Metabolic age.<br><code><span class="nowrap">--visceral-fat-rating=</span><wbr><span class="nowrap">VISCERAL-FAT-RATING</span></code> Visceral fat rating.<br><code><span class="nowrap">--bmi=</span><wbr>BMI</code> Body mass index.</div></div>
               <div class="cmd-row"><div class="cmd">gccli body <span class="nowrap">delete-weight</span> <span class="nowrap">--date=STRING</span> &lt;pk&gt; [flags]</div><div class="desc">Delete a weigh-in entry.<br><code>&lt;pk&gt;</code> Weigh-in version (primary key).<br><code><span class="nowrap">--date=</span><wbr>STRING</code> Date of the weigh-in (YYYY-MM-DD).<br><code><span class="nowrap">-f,</span> <span class="nowrap">--force</span></code> Skip confirmation prompt.</div></div>
               <div class="cmd-row"><div class="cmd">gccli body <span class="nowrap">blood-pressure</span> <span class="nowrap">--start=DATE</span> <span class="nowrap">--end=DATE</span></div><div class="desc">Show blood pressure data.<br><code><span class="nowrap">--start=</span><wbr>DATE</code> Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).<br><code><span class="nowrap">--end=</span><wbr>DATE</code> End date (YYYY-MM-DD, today, yesterday, 3d, +30d).</div></div>
               <div class="cmd-row"><div class="cmd">gccli body <span class="nowrap">add-blood-pressure</span> <span class="nowrap">--systolic=INT</span> <span class="nowrap">--diastolic=INT</span> <span class="nowrap">--pulse=INT</span> [flags]</div><div class="desc">Add a blood pressure measurement.<br><code><span class="nowrap">--systolic=</span><wbr>INT</code> Systolic pressure (mmHg).<br><code><span class="nowrap">--diastolic=</span><wbr>INT</code> Diastolic pressure (mmHg).<br><code><span class="nowrap">--pulse=</span><wbr>INT</code> Pulse rate (bpm).<br><code><span class="nowrap">--notes=</span><wbr>STRING</code> Optional notes.</div></div>
               <div class="cmd-row"><div class="cmd">gccli body <span class="nowrap">delete-blood-pressure</span> <span class="nowrap">--date=STRING</span> &lt;version&gt; [flags]</div><div class="desc">Delete a blood pressure entry.<br><code>&lt;version&gt;</code> Blood pressure entry version.<br><code><span class="nowrap">--date=</span><wbr>STRING</code> Date of the measurement (YYYY-MM-DD).<br><code><span class="nowrap">-f,</span> <span class="nowrap">--force</span></code> Skip confirmation prompt.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli body glucose [&lt;date&gt;]</div><div class="desc">Show glucose readings for a date.<br><code>[&lt;date&gt;]</code> Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.</div></div>
             </div>
           </div>
 
@@ -725,9 +736,12 @@ gccli activities list --limit 5</pre>
               <div class="cmd-row"><div class="cmd">gccli workouts upload &lt;file&gt;</div><div class="desc">Upload workout from JSON file.<br><code>&lt;file&gt;</code> Path to workout JSON file.</div></div>
               <div class="cmd-row"><div class="cmd">gccli workouts update &lt;id&gt; &lt;file&gt;</div><div class="desc">Update an existing workout from a JSON file.<br><code>&lt;id&gt;</code> Workout ID to update.<br><code>&lt;file&gt;</code> Path to workout JSON file.</div></div>
               <div class="cmd-row"><div class="cmd">gccli workouts create <span class="nowrap">--type=STRING</span> <span class="nowrap">--step=STEP,...</span> &lt;name&gt; [flags]</div><div class="desc">Create a workout with sport type and optional targets.<br><code>&lt;name&gt;</code> Workout name.<br><code><span class="nowrap">--type=</span><wbr>STRING</code> Sport type. One of: run, bike, swim, strength, cardio, hiit, yoga, pilates, mobility, multisport, custom.<br><code><span class="nowrap">-s,</span> <span class="nowrap">--step=</span><wbr>STEP,...</code> Workout step (type:duration[@target:values]).<br><code><span class="nowrap">--unit=</span><wbr>&#34;km&#34;</code> Pace unit: km or mi.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli workouts types</div><div class="desc">List workout types.</div></div>
               <div class="cmd-row"><div class="cmd">gccli workouts schedule add &lt;id&gt; &lt;date&gt;</div><div class="desc">Add a workout to the schedule.<br><code>&lt;id&gt;</code> Workout ID.<br><code>&lt;date&gt;</code> Date to schedule (YYYY-MM-DD, today, yesterday, 3d).</div></div>
               <div class="cmd-row"><div class="cmd">gccli workouts schedule list [&lt;date&gt;] [flags]</div><div class="desc">List scheduled workouts for a date.<br><code>[&lt;date&gt;]</code> Date to list (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.<br><code><span class="nowrap">--start=</span><wbr>DATE</code> Start date for range (YYYY-MM-DD, today, yesterday, 3d, +30d).<br><code><span class="nowrap">--end=</span><wbr>DATE</code> End date for range (YYYY-MM-DD, today, yesterday, 3d, +30d).</div></div>
               <div class="cmd-row"><div class="cmd">gccli workouts schedule remove &lt;id&gt; [flags]</div><div class="desc">Remove a scheduled workout from the calendar.<br><code>&lt;id&gt;</code> Schedule ID (from &#39;workouts schedule list&#39;).<br><code><span class="nowrap">-f,</span> <span class="nowrap">--force</span></code> Skip confirmation prompt.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli workouts schedule export [flags]</div><div class="desc">Export the workout schedule from a start date.<br><code><span class="nowrap">--start=</span><wbr>DATE</code> Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli workouts benchmarks list</div><div class="desc">List strength benchmarks. Also runs as <span class="whole"><code>gccli workouts benchmarks</code>.</span></div></div>
               <div class="cmd-row"><div class="cmd">gccli workouts delete &lt;id&gt; [flags]</div><div class="desc">Delete a workout.<br><code>&lt;id&gt;</code> Workout ID.<br><code><span class="nowrap">-f,</span> <span class="nowrap">--force</span></code> Skip confirmation prompt.</div></div>
             </div>
           </div>
@@ -754,6 +768,8 @@ gccli activities list --limit 5</pre>
               <div class="cmd-row"><div class="cmd">gccli devices solar <span class="nowrap">&lt;device-id&gt;</span> [flags]</div><div class="desc">Show solar charging data for a device.<br><code><span class="nowrap">&lt;device-id&gt;</span></code> Device ID.<br><code><span class="nowrap">--start=</span><wbr>DATE</code> Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.<br><code><span class="nowrap">--end=</span><wbr>DATE</code> End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to start date.</div></div>
               <div class="cmd-row"><div class="cmd">gccli devices alarms</div><div class="desc">Show alarms from all devices.</div></div>
               <div class="cmd-row"><div class="cmd">gccli devices <span class="nowrap">last-used</span></div><div class="desc">Show last used device.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli devices sensors</div><div class="desc">List paired sensors.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli devices backups</div><div class="desc">Show device backup summary.</div></div>
             </div>
           </div>
 
@@ -766,6 +782,8 @@ gccli activities list --limit 5</pre>
               <div class="cmd-row"><div class="cmd">gccli gear defaults</div><div class="desc">Show default gear per activity type.</div></div>
               <div class="cmd-row"><div class="cmd">gccli gear link &lt;uuid&gt; <span class="nowrap">&lt;activity-id&gt;</span></div><div class="desc">Link gear to an activity.<br><code>&lt;uuid&gt;</code> Gear UUID.<br><code><span class="nowrap">&lt;activity-id&gt;</span></code> Activity ID.</div></div>
               <div class="cmd-row"><div class="cmd">gccli gear unlink &lt;uuid&gt; <span class="nowrap">&lt;activity-id&gt;</span></div><div class="desc">Unlink gear from an activity.<br><code>&lt;uuid&gt;</code> Gear UUID.<br><code><span class="nowrap">&lt;activity-id&gt;</span></code> Activity ID.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli gear types</div><div class="desc">List gear types.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli gear collections list</div><div class="desc">List gear collections. Also runs as <span class="whole"><code>gccli gear collections</code>.</span></div></div>
             </div>
           </div>
 
@@ -773,6 +791,7 @@ gccli activities list --limit 5</pre>
             <div class="cmd-header"><h3>Goals, Badges &amp; Challenges</h3><span class="cmd-arrow">&#x25B6;</span></div>
             <div class="cmd-body">
               <div class="cmd-row"><div class="cmd">gccli goals list [flags]</div><div class="desc">List goals. Also runs as <span class="whole"><code>gccli goals [flags]</code>.</span><br><code><span class="nowrap">--status=</span><wbr>&#34;active&#34;</code> Goal status: active, future, past.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli goals weight [flags]</div><div class="desc">Show the effective weight goal for a date range.<br><code><span class="nowrap">--start=</span><wbr>DATE</code> Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.<br><code><span class="nowrap">--end=</span><wbr>DATE</code> End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.</div></div>
               <div class="cmd-row"><div class="cmd">gccli badges earned</div><div class="desc">Show earned badges. Also runs as <span class="whole"><code>gccli badges</code>.</span></div></div>
               <div class="cmd-row"><div class="cmd">gccli badges available</div><div class="desc">Show available badges.</div></div>
               <div class="cmd-row"><div class="cmd">gccli badges <span class="nowrap">in-progress</span></div><div class="desc">Show badges in progress.</div></div>
@@ -789,8 +808,19 @@ gccli activities list --limit 5</pre>
             <div class="cmd-header"><h3>Events</h3><span class="cmd-arrow">&#x25B6;</span></div>
             <div class="cmd-body">
               <div class="cmd-row"><div class="cmd">gccli events list [flags]</div><div class="desc">List calendar events. Also runs as <span class="whole"><code>gccli events [flags]</code>.</span><br><code><span class="nowrap">--start=</span><wbr>DATE</code> Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.<br><code><span class="nowrap">-l,</span> <span class="nowrap">--limit=</span><wbr>20</code> Maximum number of events to return.<br><code><span class="nowrap">--offset=</span><wbr>0</code> Number of events to skip.<br><code><span class="nowrap">--sort=</span><wbr>&#34;eventDate_asc&#34;</code> Sort order. One of: eventDate_asc, eventDate_desc.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli events upcoming</div><div class="desc">List upcoming events.</div></div>
               <div class="cmd-row"><div class="cmd">gccli events add <span class="nowrap">--name=STRING</span> <span class="nowrap">--date=STRING</span> <span class="nowrap">--type=STRING</span> [flags]</div><div class="desc">Add a calendar event.<br><code><span class="nowrap">-n,</span> <span class="nowrap">--name=</span><wbr>STRING</code> Event name.<br><code><span class="nowrap">-d,</span> <span class="nowrap">--date=</span><wbr>STRING</code> Event date (YYYY-MM-DD, today, +30d).<br><code><span class="nowrap">-t,</span> <span class="nowrap">--type=</span><wbr>STRING</code> Event type. One of: running, trail_running, cycling, gravel_cycling, mountain_biking, swimming, triathlon, multi_sport, hiking, walking, fitness_equipment, motorcycling, winter_sport, other.<br><code><span class="nowrap">--race</span></code> Mark as a race.<br><code><span class="nowrap">--location=</span><wbr>STRING</code> Event location.<br><code><span class="nowrap">--time=</span><wbr>STRING</code> Start time (HH:MM).<br><code><span class="nowrap">--timezone=</span><wbr>STRING</code> Time zone ID (e.g. Europe/Berlin).<br><code><span class="nowrap">--distance=</span><wbr>STRING</code> Target distance (e.g. 10km, 26.2mi, 400m).<br><code><span class="nowrap">--goal=</span><wbr>STRING</code> Time goal duration (e.g. 50m, 1h30m, 2400s).<br><code><span class="nowrap">--primary</span></code> Set as primary training event.<br><code><span class="nowrap">--training</span></code> Set as supporting training event.<br><code><span class="nowrap">--private</span></code> Make event private.<br><code><span class="nowrap">--note=</span><wbr>STRING</code> Event note.<br><code><span class="nowrap">--url=</span><wbr>STRING</code> Event URL.</div></div>
               <div class="cmd-row"><div class="cmd">gccli events delete &lt;id&gt; [flags]</div><div class="desc">Delete a calendar event.<br><code>&lt;id&gt;</code> Event ID.<br><code><span class="nowrap">-f,</span> <span class="nowrap">--force</span></code> Skip confirmation prompt.</div></div>
+            </div>
+          </div>
+
+          <div class="cmd-group fade-in">
+            <div class="cmd-header"><h3>Social</h3><span class="cmd-arrow">&#x25B6;</span></div>
+            <div class="cmd-body">
+              <div class="cmd-row"><div class="cmd">gccli social connections [flags]</div><div class="desc">List your connections.<br><code><span class="nowrap">-l,</span> <span class="nowrap">--limit=</span><wbr>20</code> Maximum number of connections to return.<br><code><span class="nowrap">--offset=</span><wbr>0</code> Number of connections to skip.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli social followers <span class="nowrap">[&lt;display-name&gt;]</span></div><div class="desc">List the followers of a user.<br><code><span class="nowrap">[&lt;display-name&gt;]</span></code> Display name of the user. Defaults to your display name.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli groups list</div><div class="desc">List your groups. Also runs as <span class="whole"><code>gccli groups</code>.</span></div></div>
+              <div class="cmd-row"><div class="cmd">gccli notifications list</div><div class="desc">List notifications. Also runs as <span class="whole"><code>gccli notifications</code>.</span></div></div>
             </div>
           </div>
 
@@ -804,11 +834,17 @@ gccli activities list --limit 5</pre>
               <div class="cmd-row"><div class="cmd">gccli nutrition settings [&lt;date&gt;]</div><div class="desc">Show nutrition settings for a date.<br><code>[&lt;date&gt;]</code> Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.</div></div>
               <div class="cmd-row"><div class="cmd">gccli profile view</div><div class="desc">Show user profile. Also runs as <span class="whole"><code>gccli profile</code>.</span></div></div>
               <div class="cmd-row"><div class="cmd">gccli profile settings</div><div class="desc">Show user settings.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli profile privacy view</div><div class="desc">Show privacy settings. Also runs as <span class="whole"><code>gccli profile privacy</code>.</span></div></div>
+              <div class="cmd-row"><div class="cmd">gccli profile <span class="nowrap">privacy-zones</span> list</div><div class="desc">List privacy zones. Also runs as <span class="whole"><code>gccli profile <span class="nowrap">privacy-zones</span></code>.</span></div></div>
+              <div class="cmd-row"><div class="cmd">gccli profile <span class="nowrap">hr-zones</span></div><div class="desc">Show heart rate zones.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli profile <span class="nowrap">power-zones</span></div><div class="desc">Show power zones for all sports.</div></div>
               <div class="cmd-row"><div class="cmd">gccli training plans [flags]</div><div class="desc">List training plans. Also runs as <span class="whole"><code>gccli training [flags]</code>.</span><br><code><span class="nowrap">--locale=</span><wbr>&#34;en&#34;</code> Locale for training plans (e.g. en, de, fr).</div></div>
               <div class="cmd-row"><div class="cmd">gccli training plan &lt;id&gt;</div><div class="desc">Show a specific training plan.<br><code>&lt;id&gt;</code> Training plan ID.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli training active [flags]</div><div class="desc">Show active training plans.<br><code><span class="nowrap">--start=</span><wbr>DATE</code> Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.</div></div>
               <div class="cmd-row"><div class="cmd">gccli wellness <span class="nowrap">menstrual-cycle</span> <span class="nowrap">--start=DATE</span> <span class="nowrap">--end=DATE</span></div><div class="desc">Show menstrual cycle data.<br><code><span class="nowrap">--start=</span><wbr>DATE</code> Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).<br><code><span class="nowrap">--end=</span><wbr>DATE</code> End date (YYYY-MM-DD, today, yesterday, 3d, +30d).</div></div>
               <div class="cmd-row"><div class="cmd">gccli wellness <span class="nowrap">menstrual-summary</span> <span class="nowrap">--start=DATE</span> <span class="nowrap">--end=DATE</span></div><div class="desc">Show menstrual cycle summary.<br><code><span class="nowrap">--start=</span><wbr>DATE</code> Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).<br><code><span class="nowrap">--end=</span><wbr>DATE</code> End date (YYYY-MM-DD, today, yesterday, 3d, +30d).</div></div>
               <div class="cmd-row"><div class="cmd">gccli wellness <span class="nowrap">pregnancy-summary</span></div><div class="desc">Show pregnancy summary.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli wellness <span class="nowrap">jet-lag</span> list</div><div class="desc">List jet lag trips. Also runs as <span class="whole"><code>gccli wellness <span class="nowrap">jet-lag</span></code>.</span></div></div>
               <div class="cmd-row"><div class="cmd">gccli reload [&lt;date&gt;]</div><div class="desc">Request data reload for a date.<br><code>[&lt;date&gt;]</code> Date to reload (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.</div></div>
               <div class="cmd-row"><div class="cmd">gccli completion &lt;shell&gt;</div><div class="desc">Generate shell completion script.<br><code>&lt;shell&gt;</code> Shell type (bash, zsh, fish, powershell).</div></div>
             </div>

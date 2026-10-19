@@ -8,6 +8,7 @@ var goalsEndpoints = []Endpoint{
 		Path:   "/goal-service/goal/goals?status={status}",
 		Params: []Param{{Name: "status", Enum: []string{"active", "future", "past"}}},
 	},
+	{Name: "goals.effective-weight-goal", Method: http.MethodGet, Host: ConnectAPI, Path: "/goal-service/goal/user/effective/weightgoal/{startDate}/{endDate}"},
 	{Name: "badges.earned", Method: http.MethodGet, Host: ConnectAPI, Path: "/badge-service/badge/earned"},
 	{Name: "badges.available", Method: http.MethodGet, Host: ConnectAPI, Path: "/badge-service/badge/available"},
 	{Name: "badges.in-progress", Method: http.MethodGet, Host: ConnectAPI, Path: "/badge-service/badge/in-progress"},

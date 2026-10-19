@@ -1,0 +1,42 @@
+-- args --
+profile
+privacy
+view
+-- route GET /privacysettings-service/privacy-settings --
+{"value":1}
+-- table stdout --
+{
+  "value": 1
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /privacysettings-service/privacy-settings
+-- plain stdout --
+{
+  "value": 1
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /privacysettings-service/privacy-settings
+-- plain-header stdout --
+{
+  "value": 1
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /privacysettings-service/privacy-settings
+-- json stdout --
+{
+  "value": 1
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /privacysettings-service/privacy-settings

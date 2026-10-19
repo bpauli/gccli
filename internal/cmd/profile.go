@@ -1,44 +1,18 @@
 package cmd
 
-import (
-	"fmt"
-)
-
 var profileGroup = Group{Name: "profile", Help: "View user profile.", Children: []Node{
-	Custom{Name: "view", Help: "Show user profile.", Default: true, Cmd: &ProfileViewCmd{}},
-	Custom{Name: "settings", Help: "Show user settings.", Cmd: &ProfileSettingsCmd{}},
+	Leaf{Name: "view", Help: "Show user profile.", Default: true, Endpoint: "profile.get", Verb: "get profile", Output: JSON{}},
+	Leaf{Name: "settings", Help: "Show user settings.", Endpoint: "profile.user-settings", Verb: "get user settings", Output: JSON{}},
+	profilePrivacyGroup,
+	profilePrivacyZonesGroup,
+	Leaf{Name: "hr-zones", Help: "Show heart rate zones.", Endpoint: "profile.hr-zones", Verb: "get heart rate zones", Output: JSON{}},
+	Leaf{Name: "power-zones", Help: "Show power zones for all sports.", Endpoint: "profile.power-zones", Verb: "get power zones", Output: JSON{}},
 }}
 
-// ProfileViewCmd shows the user profile.
-type ProfileViewCmd struct{}
+var profilePrivacyGroup = Group{Name: "privacy", Help: "View privacy settings.", Children: []Node{
+	Leaf{Name: "view", Help: "Show privacy settings.", Default: true, Endpoint: "profile.privacy-settings", Verb: "get privacy settings", Output: JSON{}},
+}}
 
-func (c *ProfileViewCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.Call(g.Context, "profile.get", nil, nil)
-	if err != nil {
-		return fmt.Errorf("get profile: %w", err)
-	}
-
-	return writeHealthJSON(g, data)
-}
-
-// ProfileSettingsCmd shows user settings.
-type ProfileSettingsCmd struct{}
-
-func (c *ProfileSettingsCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.Call(g.Context, "profile.user-settings", nil, nil)
-	if err != nil {
-		return fmt.Errorf("get user settings: %w", err)
-	}
-
-	return writeHealthJSON(g, data)
-}
+var profilePrivacyZonesGroup = Group{Name: "privacy-zones", Help: "View privacy zones.", Children: []Node{
+	Leaf{Name: "list", Help: "List privacy zones.", Default: true, Endpoint: "profile.privacy-zones", Verb: "get privacy zones", Output: JSON{}},
+}}

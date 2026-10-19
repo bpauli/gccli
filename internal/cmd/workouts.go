@@ -18,8 +18,19 @@ var workoutsGroup = Group{Name: "workouts", Help: "Manage workouts.", Children: 
 	Custom{Name: "upload", Help: "Upload workout from JSON file.", Cmd: &WorkoutUploadCmd{}},
 	Custom{Name: "update", Help: "Update an existing workout from a JSON file.", Cmd: &WorkoutUpdateCmd{}},
 	Custom{Name: "create", Help: "Create a workout with sport type and optional targets.", Cmd: &WorkoutCreateCmd{}},
+	Leaf{Name: "types", Help: "List workout types.", Endpoint: "workouts.types", Verb: "get workout types", Output: JSON{}},
 	workoutScheduleGroup,
-	Custom{Name: "delete", Help: "Delete a workout.", Cmd: &WorkoutDeleteCmd{}},
+	workoutBenchmarksGroup,
+	Leaf{
+		Name: "delete", Help: "Delete a workout.",
+		Spec: argsOf(&struct {
+			ID string `arg:"" help:"Workout ID."`
+		}{}),
+		Endpoint: "workouts.delete",
+		Params:   Params{"workoutID": In("ID")},
+		Verb:     "delete workout",
+		Output:   Write{Done: "Deleted workout {ID}", Confirm: "Delete workout {ID}?"},
+	},
 }}
 
 // WorkoutsListCmd lists workouts.
@@ -197,7 +208,29 @@ func setWorkoutID(payload []byte, workoutID string) (json.RawMessage, string, er
 var workoutScheduleGroup = Group{Name: "schedule", Help: "Manage scheduled workouts.", Children: []Node{
 	Custom{Name: "add", Help: "Add a workout to the schedule.", Cmd: &WorkoutScheduleAddCmd{}},
 	Custom{Name: "list", Help: "List scheduled workouts for a date.", Cmd: &WorkoutScheduleListCmd{}},
-	Custom{Name: "remove", Help: "Remove a scheduled workout from the calendar.", Cmd: &WorkoutScheduleRemoveCmd{}},
+	Leaf{
+		Name: "remove", Help: "Remove a scheduled workout from the calendar.",
+		Spec: argsOf(&struct {
+			ID string `arg:"" help:"Schedule ID (from 'workouts schedule list')."`
+		}{}),
+		Endpoint: "workouts.unschedule",
+		Params:   Params{"scheduleID": In("ID")},
+		Verb:     "remove scheduled workout",
+		Output:   Write{Done: "Removed scheduled workout {ID}", Confirm: "Remove scheduled workout {ID}?"},
+	},
+	Leaf{
+		Name: "export", Help: "Export the workout schedule from a start date.",
+		Spec: argsOf(&struct {
+			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"start"`
+		}{}),
+		Endpoint: "workouts.export-schedule",
+		Params:   Params{"startDate": In("StartDate").Or(Today)},
+		Verb:     "export workout schedule", Output: JSON{},
+	},
+}}
+
+var workoutBenchmarksGroup = Group{Name: "benchmarks", Help: "View strength benchmarks.", Children: []Node{
+	Leaf{Name: "list", Help: "List strength benchmarks.", Default: true, Endpoint: "workouts.benchmarks", Verb: "get benchmarks", Output: JSON{}},
 }}
 
 // WorkoutScheduleAddCmd schedules a workout on a calendar date.
@@ -405,62 +438,6 @@ func formatCalendarWorkoutRows(items []map[string]any) [][]string {
 		})
 	}
 	return rows
-}
-
-// WorkoutScheduleRemoveCmd removes a scheduled workout from the calendar.
-type WorkoutScheduleRemoveCmd struct {
-	ID    string `arg:"" help:"Schedule ID (from 'workouts schedule list')."`
-	Force bool   `help:"Skip confirmation prompt." short:"f"`
-}
-
-func (c *WorkoutScheduleRemoveCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	ok, err := confirm(g.Stderr, fmt.Sprintf("Remove scheduled workout %s?", c.ID), c.Force)
-	if err != nil {
-		return err
-	}
-	if !ok {
-		g.UI.Infof("Cancelled")
-		return nil
-	}
-
-	data, err := client.Call(g.Context, "workouts.unschedule", map[string]string{"scheduleID": c.ID}, nil)
-	if err != nil {
-		return fmt.Errorf("remove scheduled workout: %w", err)
-	}
-	return reportWrite(g, data, "Removed scheduled workout %s", c.ID)
-}
-
-// WorkoutDeleteCmd deletes a workout.
-type WorkoutDeleteCmd struct {
-	ID    string `arg:"" help:"Workout ID."`
-	Force bool   `help:"Skip confirmation prompt." short:"f"`
-}
-
-func (c *WorkoutDeleteCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	ok, err := confirm(g.Stderr, fmt.Sprintf("Delete workout %s?", c.ID), c.Force)
-	if err != nil {
-		return err
-	}
-	if !ok {
-		g.UI.Infof("Cancelled")
-		return nil
-	}
-
-	data, err := client.Call(g.Context, "workouts.delete", map[string]string{"workoutID": c.ID}, nil)
-	if err != nil {
-		return fmt.Errorf("delete workout: %w", err)
-	}
-	return reportWrite(g, data, "Deleted workout %s", c.ID)
 }
 
 // parseWorkouts unmarshals workout list data.

@@ -141,6 +141,15 @@ var healthGroup = Group{Name: "health", Help: "View health data.", Children: []N
 	},
 	Leaf{Name: "lactate-threshold", Help: "Show latest lactate threshold.", Endpoint: "health.lactate-threshold", Verb: "get lactate threshold", Output: JSON{}},
 	Leaf{Name: "cycling-ftp", Help: "Show latest cycling FTP.", Endpoint: "health.cycling-ftp", Verb: "get cycling ftp", Output: JSON{}},
+	Leaf{
+		Name: "critical-swim-speed", Help: "Show latest critical swim speed as of a date.",
+		Spec: argsOf(&struct {
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today."`
+		}{}),
+		Endpoint: "health.critical-swim-speed",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get critical swim speed", Output: JSON{},
+	},
 	healthRacePredictionsGroup,
 	Leaf{
 		Name: "endurance-score", Help: "Show endurance score data.",
@@ -161,6 +170,25 @@ var healthGroup = Group{Name: "health", Help: "View health data.", Children: []N
 		Params:   Params{"date": In("Date")},
 		Verb:     "get hill score", Output: JSON{},
 		LateDates: []string{"Date"},
+	},
+	Leaf{
+		Name: "power-curve", Help: "Show power curve for a date range.",
+		Spec: argsOf(&struct {
+			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+			EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
+		}{}),
+		Endpoint: "health.power-curve",
+		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
+		Verb:     "get power curve", Output: JSON{},
+	},
+	Leaf{
+		Name: "running-economy", Help: "Show latest running economy as of a date.",
+		Spec: argsOf(&struct {
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today."`
+		}{}),
+		Endpoint: "health.running-economy",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get running economy", Output: JSON{},
 	},
 	Leaf{
 		Name: "events", Help: "Show daily wellness events.",

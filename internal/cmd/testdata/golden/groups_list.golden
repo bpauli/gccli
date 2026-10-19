@@ -1,0 +1,59 @@
+-- args --
+groups
+list
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- route GET /group-service/groups/tester?includeMembership=true --
+[{"groupId":5,"groupName":"Run Club"}]
+-- table stdout --
+[
+  {
+    "groupId": 5,
+    "groupName": "Run Club"
+  }
+]
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /userprofile-service/userprofile/settings
+GET /group-service/groups/tester?includeMembership=true
+-- plain stdout --
+[
+  {
+    "groupId": 5,
+    "groupName": "Run Club"
+  }
+]
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+GET /group-service/groups/tester?includeMembership=true
+-- plain-header stdout --
+[
+  {
+    "groupId": 5,
+    "groupName": "Run Club"
+  }
+]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /group-service/groups/tester?includeMembership=true
+-- json stdout --
+[
+  {
+    "groupId": 5,
+    "groupName": "Run Club"
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /userprofile-service/userprofile/settings
+GET /group-service/groups/tester?includeMembership=true

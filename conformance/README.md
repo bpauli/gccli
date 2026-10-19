@@ -38,7 +38,7 @@ A case fails when the output differs, when the requests differ from the `<mode> 
 The suite skips these cases:
 
 - `auth login`, because the in-process harness stubs the browser login.
-- `devices solar`, `events list`, `health steps weekly` and `health stress weekly`. Their routes ask for a date that the args do not give. The binary takes that date from its clock, and the in-process harness pins its clock to 2026-10-15.
+- `body glucose`, `body latest`, `devices solar`, `events list`, `goals weight`, `health critical-swim-speed`, `health running-economy`, `health steps weekly`, `health stress weekly`, `training active` and `workouts schedule export`. Their routes ask for a date that the args do not give. The binary takes that date from its clock, and the in-process harness pins its clock to 2026-10-15.
 
 The suite compares the output of `body add-blood-pressure`, `body add-composition` and `body add-weight`, but not their requests. Their request bodies hold a time that the binary takes from its clock. The `clockBodies` map holds this list, and a case in it fails when its requests match, because then the entry is stale.
 
