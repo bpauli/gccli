@@ -25,6 +25,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Hydration** — view and log daily water intake
 - **Nutrition** — view daily food logs, meals, and nutrition settings
 - **Events** — list, list upcoming, add, and delete calendar events (races, group rides, etc.) with goals and training priority support
+- **Calendar** - add, update, move and delete calendar notes
 - **Wellness** - menstrual cycle data and calendar, pregnancy summary, jet lag trips and status
 - **Social** - notifications, notification preferences, connections, connection requests, followers, following, newsfeed, groups
 - **Agent-ready** - ships a bundled agent skill (`skills/gccli/`) that plugs into AI assistants like Claude Code, Codex, Hermes, and OpenClaw so you can drive Garmin Connect in plain language
@@ -765,6 +766,18 @@ gccli events add --name "Spring 10K" --date 2026-05-10 --type running \
 - **Optional:** `--race`, `--location`, `--time` (HH:MM), `--timezone`, `--distance` (e.g. 10km, 26.2mi, 400m), `--private`, `--note`, `--url`
 - **Goal & training priority:** `--goal` (duration, e.g. 50m, 1h30m, 2400s), `--primary` or `--training` (mutually exclusive)
 
+### Calendar notes
+
+```bash
+gccli calendar notes add 2026-10-20 "Long run" --content "Easy pace, 25 km"
+gccli calendar notes update <id> --name "Tempo run"
+gccli calendar notes update <id> --content ""   # Clear the note text
+gccli calendar notes move <id> +1d             # Move the note to tomorrow
+gccli calendar notes delete <id>               # Delete a note (with confirmation)
+```
+
+`calendar notes add` prints the note ID. `calendar notes update` reads the note first and sends it back with your changes, so the fields you do not give stay as they are.
+
 ### Wellness
 
 ```bash
@@ -1309,6 +1322,23 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `--url=STRING`: Event URL.
 - `gccli events delete <id> [flags]`: Delete a calendar event.
   - `<id>`: Event ID.
+  - `-f, --force`: Skip confirmation prompt.
+
+### Calendar
+
+- `gccli calendar notes add <date> <name> [flags]`: Add a note to a calendar day.
+  - `<date>`: Date of the note (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `<name>`: Note name.
+  - `--content=STRING`: Note text.
+- `gccli calendar notes update <id> [flags]`: Change the name or text of a calendar note.
+  - `<id>`: Note ID.
+  - `--name=STRING`: New name.
+  - `--content=STRING`: New text. An empty text clears it.
+- `gccli calendar notes move <id> <date>`: Move a calendar note to another day.
+  - `<id>`: Note ID.
+  - `<date>`: New date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli calendar notes delete <id> [flags]`: Delete a calendar note.
+  - `<id>`: Note ID.
   - `-f, --force`: Skip confirmation prompt.
 
 ### Social

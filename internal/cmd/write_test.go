@@ -198,6 +198,24 @@ var writeCases = map[string]writeCase{
 		human:    "Added event \"Race\" on 2024-06-01 (ID: 11)\n",
 		fallback: "Added event\n",
 	},
+	"calendar notes add": {
+		args:     []string{"2026-10-20", "Long run", "--content", "Easy pace"},
+		routes:   map[string]string{"POST /calendar-service/note": `{"id":118934,"noteName":"Long run","date":"2026-10-20"}`},
+		json:     "{\n  \"id\": 118934,\n  \"noteName\": \"Long run\",\n  \"date\": \"2026-10-20\"\n}\n",
+		human:    "Added note \"Long run\" on 2026-10-20 (ID: 118934)\n",
+		fallback: "Added note \"Long run\" on 2026-10-20\n",
+	},
+	"calendar notes update": {
+		args: []string{"118934", "--name", "Tempo run"},
+		routes: map[string]string{
+			"GET /calendar-service/note/118934": `{"id":118934,"noteName":"Long run","date":"2026-10-20"}`,
+			"PUT /calendar-service/note/118934": noContent,
+		},
+		result:   "PUT /calendar-service/note/118934",
+		json:     okOut,
+		human:    "Updated note 118934\n",
+		fallback: "Updated note 118934\n",
+	},
 	"gear add": {
 		args:     []string{"Pegasus", "--brand", "Nike", "--model", "Pegasus", "--first-use", "2024-06-01"},
 		routes:   map[string]string{"POST /gear-service/gear/v2": `{"uuid":"0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e","name":"Pegasus"}`},

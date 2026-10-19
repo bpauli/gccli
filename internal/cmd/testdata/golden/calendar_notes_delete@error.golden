@@ -1,0 +1,37 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+calendar
+notes
+delete
+118934
+--force
+-- route DELETE /calendar-service/note/118934 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+delete note: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+DELETE /calendar-service/note/118934
+-- plain stdout --
+-- plain stderr --
+delete note: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+DELETE /calendar-service/note/118934
+-- plain-header stdout --
+-- plain-header stderr --
+delete note: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+DELETE /calendar-service/note/118934
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"delete note: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+DELETE /calendar-service/note/118934

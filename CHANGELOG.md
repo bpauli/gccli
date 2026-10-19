@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Activity edits** - `activity describe <id> <text>` sets the description of an activity, and an empty text (`""`) clears it. `activity privacy <id> <level>` changes who can see the activity (`public`, `private` or `connections`). `activity favorite <id>` and `activity unfavorite <id>` add the activity to your favorites and remove it. (#76)
 - **Workout copy** - `workouts copy <id> [<name>]` copies a workout and prints the ID of the copy. Without a name, the copy gets the name of the original. (#81)
 - **Goal writes** - `goals set <type> <value>` sets the daily goal for `floors-climbed` (floors), `intensity-minutes` (minutes) or `hydration` (milliliters). `goals steps set <steps>` sets a fixed daily steps goal, and `goals steps auto` sets Garmin's automatic steps goal. Each goal starts on `--date` (default today) and stays for the days after it. (#68)
+- **Calendar notes** - a new `calendar` group. `calendar notes add <date> <name> [--content TEXT]` adds a note to a calendar day and prints its ID. `calendar notes update <id>` changes `--name` or `--content` (an empty `--content` clears the text). `calendar notes move <id> <date>` moves a note to another day, and `calendar notes delete <id>` deletes a note after a prompt (`--force` skips it). (#82)
 
 ### Changed
 

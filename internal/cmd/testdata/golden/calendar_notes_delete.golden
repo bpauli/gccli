@@ -1,0 +1,39 @@
+-- args --
+calendar
+notes
+delete
+118934
+-- stdin --
+y
+-- route DELETE /calendar-service/note/118934 204 --
+-- table stdout --
+-- table stderr --
+Delete note 118934? [y/N]: Deleted note 118934
+-- table exit --
+0
+-- table requests --
+DELETE /calendar-service/note/118934
+-- plain stdout --
+-- plain stderr --
+Delete note 118934? [y/N]: Deleted note 118934
+-- plain exit --
+0
+-- plain requests --
+DELETE /calendar-service/note/118934
+-- plain-header stdout --
+-- plain-header stderr --
+Delete note 118934? [y/N]: Deleted note 118934
+-- plain-header exit --
+0
+-- plain-header requests --
+DELETE /calendar-service/note/118934
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr noeol --
+Delete note 118934? [y/N]: 
+-- json exit --
+0
+-- json requests --
+DELETE /calendar-service/note/118934

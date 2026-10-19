@@ -55,6 +55,7 @@ var commands = []Node{
 	nutritionGroup,
 	trainingGroup,
 	eventsGroup,
+	calendarGroup,
 	wellnessGroup,
 	exercisesGroup,
 	notificationsGroup,

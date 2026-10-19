@@ -1,0 +1,37 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+calendar
+notes
+move
+118934
+2026-10-21
+-- route PUT /calendar-service/calendarItem/note/118934/date/2026-10-21 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+move note: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+PUT /calendar-service/calendarItem/note/118934/date/2026-10-21
+-- plain stdout --
+-- plain stderr --
+move note: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+PUT /calendar-service/calendarItem/note/118934/date/2026-10-21
+-- plain-header stdout --
+-- plain-header stderr --
+move note: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+PUT /calendar-service/calendarItem/note/118934/date/2026-10-21
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"move note: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+PUT /calendar-service/calendarItem/note/118934/date/2026-10-21

@@ -1,0 +1,38 @@
+--force skips the prompt.
+-- args --
+calendar
+notes
+delete
+118934
+--force
+-- route DELETE /calendar-service/note/118934 204 --
+-- table stdout --
+-- table stderr --
+Deleted note 118934
+-- table exit --
+0
+-- table requests --
+DELETE /calendar-service/note/118934
+-- plain stdout --
+-- plain stderr --
+Deleted note 118934
+-- plain exit --
+0
+-- plain requests --
+DELETE /calendar-service/note/118934
+-- plain-header stdout --
+-- plain-header stderr --
+Deleted note 118934
+-- plain-header exit --
+0
+-- plain-header requests --
+DELETE /calendar-service/note/118934
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+DELETE /calendar-service/note/118934

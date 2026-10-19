@@ -1,0 +1,38 @@
+The PUT has no body: the path carries the note ID and the new date.
+-- args --
+calendar
+notes
+move
+118934
+2026-10-21
+-- route PUT /calendar-service/calendarItem/note/118934/date/2026-10-21 204 --
+-- table stdout --
+-- table stderr --
+Moved note 118934 to 2026-10-21
+-- table exit --
+0
+-- table requests --
+PUT /calendar-service/calendarItem/note/118934/date/2026-10-21
+-- plain stdout --
+-- plain stderr --
+Moved note 118934 to 2026-10-21
+-- plain exit --
+0
+-- plain requests --
+PUT /calendar-service/calendarItem/note/118934/date/2026-10-21
+-- plain-header stdout --
+-- plain-header stderr --
+Moved note 118934 to 2026-10-21
+-- plain-header exit --
+0
+-- plain-header requests --
+PUT /calendar-service/calendarItem/note/118934/date/2026-10-21
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+PUT /calendar-service/calendarItem/note/118934/date/2026-10-21
