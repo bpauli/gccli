@@ -26,7 +26,16 @@ var activityGroup = Group{Name: "activity", Help: "View activity details.", Chil
 	Custom{Name: "create", Help: "Create a manual activity.", Cmd: &ActivityCreateCmd{}},
 	Custom{Name: "rename", Help: "Rename an activity.", Cmd: &ActivityRenameCmd{}},
 	Custom{Name: "retype", Help: "Change activity type.", Cmd: &ActivityRetypeCmd{}},
-	Custom{Name: "delete", Help: "Delete an activity.", Cmd: &ActivityDeleteCmd{}},
+	Leaf{
+		Name: "delete", Help: "Delete an activity.",
+		Spec: argsOf(&struct {
+			ID string `arg:"" help:"Activity ID."`
+		}{}),
+		Endpoint: "activities.delete",
+		Params:   Params{"activityID": In("ID")},
+		Verb:     "delete activity",
+		Output:   Write{Done: "Deleted activity {ID}", Confirm: "Delete activity {ID}?"},
+	},
 }}
 
 // ActivitySummaryCmd shows an activity summary.

@@ -148,6 +148,14 @@ func TestLeafRun(t *testing.T) {
 			requests: []string{"DELETE /course-service/course/%7BID%7D"},
 		},
 		{
+			name:     "expands two fields in one Confirm",
+			args:     []string{"body", "delete-weight", "3", "--date", "2024-01-15"},
+			stdin:    "y\n",
+			routes:   map[string]mockReply{"DELETE /weight-service/weight/2024-01-15/byversion/3": {body: `{"deleted":true}`}},
+			stderr:   "Delete weigh-in 3 on 2024-01-15? [y/N]: Deleted weigh-in 3\n",
+			requests: []string{"DELETE /weight-service/weight/2024-01-15/byversion/3"},
+		},
+		{
 			name:   "a declined write sends nothing",
 			args:   []string{"courses", "delete", "42"},
 			stdin:  "n\n",

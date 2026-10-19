@@ -1,0 +1,41 @@
+-- args --
+body
+delete-weight
+3
+--date
+2024-01-15
+-- stdin --
+y
+-- route DELETE /weight-service/weight/2024-01-15/byversion/3 --
+{"deleted":true}
+-- table stdout --
+-- table stderr --
+Delete weigh-in 3 on 2024-01-15? [y/N]: Deleted weigh-in 3
+-- table exit --
+0
+-- table requests --
+DELETE /weight-service/weight/2024-01-15/byversion/3
+-- plain stdout --
+-- plain stderr --
+Delete weigh-in 3 on 2024-01-15? [y/N]: Deleted weigh-in 3
+-- plain exit --
+0
+-- plain requests --
+DELETE /weight-service/weight/2024-01-15/byversion/3
+-- plain-header stdout --
+-- plain-header stderr --
+Delete weigh-in 3 on 2024-01-15? [y/N]: Deleted weigh-in 3
+-- plain-header exit --
+0
+-- plain-header requests --
+DELETE /weight-service/weight/2024-01-15/byversion/3
+-- json stdout --
+{
+  "deleted": true
+}
+-- json stderr noeol --
+Delete weigh-in 3 on 2024-01-15? [y/N]: 
+-- json exit --
+0
+-- json requests --
+DELETE /weight-service/weight/2024-01-15/byversion/3
