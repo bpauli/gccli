@@ -199,6 +199,8 @@ Date shortcuts
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
 - `gccli body daily-weigh-ins [<date>]`: Show weigh-in data for a single day.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
+- `gccli body latest [<date>]`: Show the latest weigh-in as of a date.
+  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli body add-weight <value> [flags]`: Add a weigh-in entry.
   - `<value>`: Weight value.
   - `--unit="kg"`: Unit: kg or lbs.
@@ -231,6 +233,8 @@ Date shortcuts
   - `<version>`: Blood pressure entry version.
   - `--date=STRING`: Date of the measurement (YYYY-MM-DD).
   - `-f, --force`: Skip confirmation prompt.
+- `gccli body glucose [<date>]`: Show glucose readings for a date.
+  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 
 ### Workouts
 
