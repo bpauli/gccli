@@ -12,6 +12,8 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+
+	"github.com/alecthomas/kong"
 )
 
 var update = flag.Bool("update", false, "rewrite the outputs in testdata/golden, the group help in testdata/help.golden and the command reference in the docs")
@@ -34,13 +36,15 @@ var goldenOutputs = []string{"stdout", "stderr", "exit", "requests"}
 
 func TestGolden(t *testing.T) {
 	leaves := leafCommands(t)
+	defaults := map[string]bool{}
+	defaultChildren(newTestParser(t).Model.Node, nil, defaults)
 	files, err := filepath.Glob(filepath.Join(goldenDir, "*.golden"))
 	if err != nil {
 		t.Fatal(err)
 	}
 	cases := map[string][]string{}
 	for _, file := range files {
-		path, isCase := goldenCommand(file)
+		path, _, isCase := goldenCommand(file)
 		switch {
 		case !slices.Contains(leaves, path):
 			t.Errorf("%s names no leaf command: remove the file", file)
@@ -56,12 +60,12 @@ func TestGolden(t *testing.T) {
 			continue
 		}
 		for _, f := range append([]string{file}, cases[path]...) {
-			runGolden(t, path, f)
+			runGolden(t, path, f, defaults[path])
 		}
 	}
 }
 
-func runGolden(t *testing.T, path, file string) {
+func runGolden(t *testing.T, path, file string, isDefault bool) {
 	t.Helper()
 	g, err := readGolden(file)
 	if err != nil {
@@ -73,8 +77,9 @@ func runGolden(t *testing.T, path, file string) {
 		t.Errorf("%s: %v", file, err)
 		return
 	}
-	if !slices.Equal(args[:min(len(args), len(strings.Fields(path)))], strings.Fields(path)) {
-		t.Errorf("%s: args must start with %q", file, path)
+	_, caseName, _ := goldenCommand(file)
+	if err := goldenArgs(path, caseName, isDefault, args); err != nil {
+		t.Errorf("%s: %v", file, err)
 		return
 	}
 
@@ -137,6 +142,44 @@ func runGolden(t *testing.T, path, file string) {
 	}
 }
 
+func TestGoldenArgs(t *testing.T) {
+	tests := []struct {
+		name      string
+		caseName  string
+		isDefault bool
+		args      string
+		ok        bool
+	}{
+		{"main file names the leaf", "", true, "health steps view 2026-10-15", true},
+		{"main file omits the default child", "", true, "health steps 2026-10-15", false},
+		{"other case omits the default child", "date", true, "health steps 2026-10-15", false},
+		{"bare case omits the default child", "bare", true, "health steps 2026-10-15", true},
+		{"bare case with no more args", "bare", true, "health steps", true},
+		{"bare-bad-date case omits the default child", "bare-bad-date", true, "health steps 2026-02-30", true},
+		{"bare case names the default child", "bare", true, "health steps view 2026-10-15", false},
+		{"bare case of another group", "bare", true, "health hr 2026-10-15", false},
+		{"bare case of a leaf that is not default", "bare", false, "health steps 2026-10-15", false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := goldenArgs("health steps view", tt.caseName, tt.isDefault, strings.Fields(tt.args))
+			if (err == nil) != tt.ok {
+				t.Errorf("goldenArgs(%q) = %v, want ok %v", tt.args, err, tt.ok)
+			}
+		})
+	}
+}
+
+func TestDefaultChildren(t *testing.T) {
+	defaults := map[string]bool{}
+	defaultChildren(newTestParser(t).Model.Node, nil, defaults)
+	for path, want := range map[string]bool{"health steps view": true, "health steps daily": false, "health steps": false} {
+		if defaults[path] != want {
+			t.Errorf("defaults[%q] = %v, want %v", path, defaults[path], want)
+		}
+	}
+}
+
 func leafCommands(t *testing.T) []string {
 	t.Helper()
 	cmds := collectCommands(newTestParser(t).Model.Node, nil)
@@ -159,9 +202,47 @@ func goldenFile(path string) string {
 	return filepath.Join(goldenDir, strings.ReplaceAll(path, " ", "_")+".golden")
 }
 
-func goldenCommand(file string) (path string, isCase bool) {
-	leaf, _, isCase := strings.Cut(strings.TrimSuffix(filepath.Base(file), ".golden"), "@")
-	return strings.ReplaceAll(leaf, "_", " "), isCase
+func goldenCommand(file string) (path, caseName string, isCase bool) {
+	leaf, caseName, isCase := strings.Cut(strings.TrimSuffix(filepath.Base(file), ".golden"), "@")
+	return strings.ReplaceAll(leaf, "_", " "), caseName, isCase
+}
+
+func defaultChildren(node *kong.Node, path []string, into map[string]bool) {
+	for _, child := range node.Children {
+		if child.Type != kong.CommandNode {
+			continue
+		}
+		childPath := append(slices.Clone(path), child.Name)
+		if child == node.DefaultCmd {
+			into[strings.Join(childPath, " ")] = true
+		}
+		defaultChildren(child, childPath, into)
+	}
+}
+
+// goldenArgs checks the args of a golden file of leaf path. A case named
+// bare* pins the call of a Default child without its name, so its args start
+// with the group path and do not name the child next.
+func goldenArgs(path, caseName string, isDefault bool, args []string) error {
+	words := strings.Fields(path)
+	if !strings.HasPrefix(caseName, "bare") {
+		if !hasWords(args, words) {
+			return fmt.Errorf("args must start with %q", path)
+		}
+		return nil
+	}
+	group, child := words[:len(words)-1], words[len(words)-1]
+	switch {
+	case !isDefault:
+		return fmt.Errorf("case %q pins a bare group call, but %q is not the default command of its group: rename the case or remove the file", caseName, path)
+	case !hasWords(args, group) || hasWords(args, words):
+		return fmt.Errorf("case %q pins a bare group call: args must start with %q and must not name %q next", caseName, strings.Join(group, " "), child)
+	}
+	return nil
+}
+
+func hasWords(args, words []string) bool {
+	return slices.Equal(args[:min(len(args), len(words))], words)
 }
 
 func (h *harness) mask(s string) string {
