@@ -1,6 +1,6 @@
 package cmd
 
-var socialGroup = Group{Name: "social", Help: "View connections and followers.", Children: []Node{
+var socialGroup = Group{Name: "social", Help: "View connections, followers, following and the newsfeed.", Children: []Node{
 	Leaf{
 		Name: "connections", Help: "List your connections.",
 		Spec: argsOf(&struct {
@@ -19,4 +19,15 @@ var socialGroup = Group{Name: "social", Help: "View connections and followers.",
 		Params:   Params{"displayName": In("DisplayName").Or(DisplayName)},
 		Verb:     "get followers", Output: JSON{},
 	},
+	Leaf{
+		Name: "following", Help: "List the users that a user follows.",
+		Spec: argsOf(&struct {
+			DisplayName string `arg:"" optional:"" help:"Display name of the user. Defaults to your display name."`
+		}{}),
+		Endpoint: "following.list",
+		Params:   Params{"displayName": In("DisplayName").Or(DisplayName)},
+		Verb:     "get following", Output: JSON{},
+	},
+	Leaf{Name: "requests", Help: "List pending connection requests.", Endpoint: "connections.pending", Verb: "get connection requests", Output: JSON{}},
+	Leaf{Name: "feed", Help: "Show your newsfeed.", Endpoint: "newsfeed.list", Verb: "get newsfeed", Output: JSON{}},
 }}

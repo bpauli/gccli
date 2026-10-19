@@ -1,0 +1,49 @@
+-- args --
+social
+requests
+-- route GET /connection-service/connection/pending --
+[{"displayName":"friend"}]
+-- table stdout --
+[
+  {
+    "displayName": "friend"
+  }
+]
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /connection-service/connection/pending
+-- plain stdout --
+[
+  {
+    "displayName": "friend"
+  }
+]
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /connection-service/connection/pending
+-- plain-header stdout --
+[
+  {
+    "displayName": "friend"
+  }
+]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /connection-service/connection/pending
+-- json stdout --
+[
+  {
+    "displayName": "friend"
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /connection-service/connection/pending

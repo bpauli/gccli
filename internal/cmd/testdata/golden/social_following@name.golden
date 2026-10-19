@@ -1,0 +1,50 @@
+-- args --
+social
+following
+Jane Doe
+-- route GET /follower-service/follow/followings/Jane%20Doe --
+[{"displayName":"idol"}]
+-- table stdout --
+[
+  {
+    "displayName": "idol"
+  }
+]
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /follower-service/follow/followings/Jane%20Doe
+-- plain stdout --
+[
+  {
+    "displayName": "idol"
+  }
+]
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /follower-service/follow/followings/Jane%20Doe
+-- plain-header stdout --
+[
+  {
+    "displayName": "idol"
+  }
+]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /follower-service/follow/followings/Jane%20Doe
+-- json stdout --
+[
+  {
+    "displayName": "idol"
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /follower-service/follow/followings/Jane%20Doe
