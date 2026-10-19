@@ -1,0 +1,39 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+health
+thresholds
+cycling-ftp
+--start
+2026-10-01
+--end
+2026-10-10
+-- route GET /biometric-service/stats/functionalThresholdPower/range/2026-10-01/2026-10-10?sport=CYCLING 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+get cycling ftp range: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /biometric-service/stats/functionalThresholdPower/range/2026-10-01/2026-10-10?sport=CYCLING
+-- plain stdout --
+-- plain stderr --
+get cycling ftp range: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /biometric-service/stats/functionalThresholdPower/range/2026-10-01/2026-10-10?sport=CYCLING
+-- plain-header stdout --
+-- plain-header stderr --
+get cycling ftp range: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /biometric-service/stats/functionalThresholdPower/range/2026-10-01/2026-10-10?sport=CYCLING
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"get cycling ftp range: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /biometric-service/stats/functionalThresholdPower/range/2026-10-01/2026-10-10?sport=CYCLING

@@ -1,6 +1,7 @@
 -- args --
 health
 critical-swim-speed
+view
 -- route GET /biometric-service/criticalSwimSpeed/latest/2026-10-15 --
 {"value":1}
 -- table stdout --

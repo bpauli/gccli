@@ -1,0 +1,54 @@
+-- args --
+health
+thresholds
+cycling-ftp
+--start
+2026-10-01
+--end
+2026-10-10
+-- route GET /biometric-service/stats/functionalThresholdPower/range/2026-10-01/2026-10-10?sport=CYCLING --
+[{"value":1}]
+-- table stdout --
+[
+  {
+    "value": 1
+  }
+]
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /biometric-service/stats/functionalThresholdPower/range/2026-10-01/2026-10-10?sport=CYCLING
+-- plain stdout --
+[
+  {
+    "value": 1
+  }
+]
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /biometric-service/stats/functionalThresholdPower/range/2026-10-01/2026-10-10?sport=CYCLING
+-- plain-header stdout --
+[
+  {
+    "value": 1
+  }
+]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /biometric-service/stats/functionalThresholdPower/range/2026-10-01/2026-10-10?sport=CYCLING
+-- json stdout --
+[
+  {
+    "value": 1
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /biometric-service/stats/functionalThresholdPower/range/2026-10-01/2026-10-10?sport=CYCLING

@@ -210,8 +210,25 @@ Date shortcuts
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli health lactate-threshold`: Show latest lactate threshold.
 - `gccli health cycling-ftp`: Show latest cycling FTP.
-- `gccli health critical-swim-speed [<date>]`: Show latest critical swim speed as of a date.
+- `gccli health critical-swim-speed view [<date>]`: Show latest critical swim speed as of a date. Also runs as `gccli health critical-swim-speed [<date>]`.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli health critical-swim-speed range --start=DATE --end=DATE`: Show critical swim speed for a date range.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli health power-to-weight [<date>]`: Show latest power-to-weight data as of a date.
+  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli health thresholds cycling-ftp --start=DATE --end=DATE`: Show cycling FTP for a date range.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli health thresholds lactate-heart-rate --start=DATE --end=DATE`: Show lactate threshold heart rate for a date range.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli health thresholds lactate-speed --start=DATE --end=DATE`: Show lactate threshold speed for a date range.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli health thresholds power-to-weight --start=DATE --end=DATE`: Show power-to-weight data for a date range.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
 - `gccli health race-predictions view [<date>]`: Show current race predictions. Also runs as `gccli health race-predictions [<date>]`.
   - `[<date>]`: Unused. Current predictions are always returned.
 - `gccli health race-predictions range --start=DATE --end=DATE`: Show race predictions for a date range.
