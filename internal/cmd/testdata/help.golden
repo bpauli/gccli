@@ -105,7 +105,8 @@ Commands:
                                    Show weekly intensity minutes for a date
                                    range.
   health training-readiness        Show training readiness data.
-  health training-status           Show training status data.
+  health training-status view      Show aggregated training status for a date.
+  health training-status daily     Show daily training status for a date.
   health fitness-age               Show fitness age data.
   health max-metrics               Show VO2max and max metrics data.
   health lactate-threshold         Show latest lactate threshold.
@@ -117,6 +118,9 @@ Commands:
   health hill-score                Show hill score data.
   health power-curve               Show power curve for a date range.
   health running-economy           Show latest running economy as of a date.
+  health acclimation               Show acclimation data for a date range.
+  health one-rep-max               Show current estimated one-rep max values as
+                                   of a date.
   health events                    Show daily wellness events.
   health lifestyle                 Show lifestyle logging data.
   body composition                 Show body composition data.
@@ -458,7 +462,8 @@ Commands:
                                    Show weekly intensity minutes for a date
                                    range.
   health training-readiness        Show training readiness data.
-  health training-status           Show training status data.
+  health training-status view      Show aggregated training status for a date.
+  health training-status daily     Show daily training status for a date.
   health fitness-age               Show fitness age data.
   health max-metrics               Show VO2max and max metrics data.
   health lactate-threshold         Show latest lactate threshold.
@@ -470,6 +475,9 @@ Commands:
   health hill-score                Show hill score data.
   health power-curve               Show power curve for a date range.
   health running-economy           Show latest running economy as of a date.
+  health acclimation               Show acclimation data for a date range.
+  health one-rep-max               Show current estimated one-rep max values as
+                                   of a date.
   health events                    Show daily wellness events.
   health lifestyle                 Show lifestyle logging data.
 
@@ -714,6 +722,29 @@ Commands:
   health intensity-minutes weekly
                                    Show weekly intensity minutes for a date
                                    range.
+
+$ gccli health training-status --help
+Usage: gccli health training-status <command>
+
+Show training status data.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  health training-status view     Show aggregated training status for a date.
+  health training-status daily    Show daily training status for a date.
 
 $ gccli health race-predictions --help
 Usage: gccli health race-predictions <command>

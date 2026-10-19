@@ -41,6 +41,7 @@ var healthEndpoints = []Endpoint{
 	{Name: "health.weekly-intensity-minutes", Method: http.MethodGet, Host: ConnectAPI, Path: "/usersummary-service/stats/im/weekly/{startDate}/{endDate}"},
 	{Name: "health.training-readiness", Method: http.MethodGet, Host: ConnectAPI, Path: "/metrics-service/metrics/trainingreadiness/{date}"},
 	{Name: "health.training-status", Method: http.MethodGet, Host: ConnectAPI, Path: "/metrics-service/metrics/trainingstatus/aggregated/{date}"},
+	{Name: "health.daily-training-status", Method: http.MethodGet, Host: ConnectAPI, Path: "/metrics-service/metrics/trainingstatus/daily/{date}"},
 	{Name: "health.fitness-age", Method: http.MethodGet, Host: ConnectAPI, Path: "/fitnessage-service/fitnessage/{date}"},
 	{Name: "health.max-metrics", Method: http.MethodGet, Host: ConnectAPI, Path: "/metrics-service/metrics/maxmet/daily/{date}/{date}"},
 	{Name: "health.lactate-threshold", Method: http.MethodGet, Host: ConnectAPI, Path: "/biometric-service/biometric/latestLactateThreshold"},
@@ -52,6 +53,8 @@ var healthEndpoints = []Endpoint{
 	{Name: "health.lifestyle-logging", Method: http.MethodGet, Host: ConnectAPI, Path: "/lifestylelogging-service/dailyLog/{date}"},
 	{Name: "health.power-curve", Method: http.MethodGet, Host: ConnectAPI, Path: "/fitnessstats-service/powerCurve?startDate={startDate}&endDate={endDate}"},
 	{Name: "health.running-economy", Method: http.MethodGet, Host: ConnectAPI, Path: "/metrics-service/metrics/runningeconomy/latest/{date}"},
+	{Name: "health.acclimation", Method: http.MethodGet, Host: ConnectAPI, Path: "/wellness-service/stats/daily/acclimation?fromDate={startDate}&untilDate={endDate}"},
+	{Name: "health.one-rep-max", Method: http.MethodGet, Host: ConnectAPI, Path: "/fitnessstats-service/vbt-stats/one-rep-max/current/{date}"},
 }
 
 // GetRacePredictions returns race prediction data.

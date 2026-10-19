@@ -44,6 +44,7 @@ func TestHealthEndpoints(t *testing.T) {
 		{"health.weekly-intensity-minutes", span, "GET /usersummary-service/stats/im/weekly/2024-01-01/2024-01-31"},
 		{"health.training-readiness", day, "GET /metrics-service/metrics/trainingreadiness/2024-01-15"},
 		{"health.training-status", day, "GET /metrics-service/metrics/trainingstatus/aggregated/2024-01-15"},
+		{"health.daily-training-status", day, "GET /metrics-service/metrics/trainingstatus/daily/2024-01-15"},
 		{"health.fitness-age", day, "GET /fitnessage-service/fitnessage/2024-01-15"},
 		{"health.max-metrics", day, "GET /metrics-service/metrics/maxmet/daily/2024-01-15/2024-01-15"},
 		{"health.lactate-threshold", nil, "GET /biometric-service/biometric/latestLactateThreshold"},
@@ -55,6 +56,8 @@ func TestHealthEndpoints(t *testing.T) {
 		{"health.lifestyle-logging", day, "GET /lifestylelogging-service/dailyLog/2024-01-15"},
 		{"health.power-curve", span, "GET /fitnessstats-service/powerCurve?startDate=2024-01-01&endDate=2024-01-31"},
 		{"health.running-economy", day, "GET /metrics-service/metrics/runningeconomy/latest/2024-01-15"},
+		{"health.acclimation", span, "GET /wellness-service/stats/daily/acclimation?fromDate=2024-01-01&untilDate=2024-01-31"},
+		{"health.one-rep-max", day, "GET /fitnessstats-service/vbt-stats/one-rep-max/current/2024-01-15"},
 	})
 }
 

@@ -1,35 +1,43 @@
-Error case: Garmin answers 400, so the exit code is 1 (error).
 -- args --
 health
 training-status
+view
 2026-10-15
--- route GET /metrics-service/metrics/trainingstatus/aggregated/2026-10-15 400 noeol --
-{"message":"Bad Request"}
+-- route GET /metrics-service/metrics/trainingstatus/aggregated/2026-10-15 --
+{"value":1}
 -- table stdout --
+{
+  "value": 1
+}
 -- table stderr --
-get training status: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- table exit --
-1
+0
 -- table requests --
 GET /metrics-service/metrics/trainingstatus/aggregated/2026-10-15
 -- plain stdout --
+{
+  "value": 1
+}
 -- plain stderr --
-get training status: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- plain exit --
-1
+0
 -- plain requests --
 GET /metrics-service/metrics/trainingstatus/aggregated/2026-10-15
 -- plain-header stdout --
+{
+  "value": 1
+}
 -- plain-header stderr --
-get training status: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- plain-header exit --
-1
+0
 -- plain-header requests --
 GET /metrics-service/metrics/trainingstatus/aggregated/2026-10-15
 -- json stdout --
+{
+  "value": 1
+}
 -- json stderr --
-{"error":{"code":"error","status":400,"message":"get training status: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
 -- json exit --
-1
+0
 -- json requests --
 GET /metrics-service/metrics/trainingstatus/aggregated/2026-10-15
