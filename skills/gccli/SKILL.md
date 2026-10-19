@@ -226,7 +226,7 @@ Date shortcuts
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
 - `gccli health running-economy [<date>]`: Show latest running economy as of a date.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
-- `gccli health acclimation --start=DATE --end=DATE`: Show heat and altitude acclimation for a date range.
+- `gccli health acclimation --start=DATE --end=DATE`: Show acclimation data for a date range.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
 - `gccli health one-rep-max [<date>]`: Show current estimated one-rep max values as of a date.

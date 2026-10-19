@@ -154,7 +154,7 @@ var healthGroup = Group{Name: "health", Help: "View health data.", Children: []N
 		Verb:     "get running economy", Output: JSON{},
 	},
 	Leaf{
-		Name: "acclimation", Help: "Show heat and altitude acclimation for a date range.",
+		Name: "acclimation", Help: "Show acclimation data for a date range.",
 		Spec: argsOf(&struct {
 			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
 			EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
