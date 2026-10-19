@@ -26,6 +26,7 @@ var referenceGroups = []groupSpec{
 	{"Gear", []string{"gear"}},
 	{"Goals, Badges & Challenges", []string{"goals", "badges", "challenges", "records"}},
 	{"Events", []string{"events"}},
+	{"Social", []string{"notifications"}},
 	{"Hydration, Nutrition, Profile, Training, Wellness & Utilities", []string{"hydration", "nutrition", "profile", "training", "wellness", "reload", "completion"}},
 }
 

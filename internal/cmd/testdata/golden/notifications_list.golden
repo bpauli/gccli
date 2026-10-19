@@ -1,0 +1,61 @@
+-- args --
+notifications
+list
+-- route GET /notification-service/notification/notification/cursor --
+{"notifications":[{"notificationId":1,"type":"BADGE_EARNED"}]}
+-- table stdout --
+{
+  "notifications": [
+    {
+      "notificationId": 1,
+      "type": "BADGE_EARNED"
+    }
+  ]
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /notification-service/notification/notification/cursor
+-- plain stdout --
+{
+  "notifications": [
+    {
+      "notificationId": 1,
+      "type": "BADGE_EARNED"
+    }
+  ]
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /notification-service/notification/notification/cursor
+-- plain-header stdout --
+{
+  "notifications": [
+    {
+      "notificationId": 1,
+      "type": "BADGE_EARNED"
+    }
+  ]
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /notification-service/notification/notification/cursor
+-- json stdout --
+{
+  "notifications": [
+    {
+      "notificationId": 1,
+      "type": "BADGE_EARNED"
+    }
+  ]
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /notification-service/notification/notification/cursor
