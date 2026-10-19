@@ -1,0 +1,37 @@
+-- args --
+social
+connections
+--limit
+5
+--offset
+10
+-- route GET /connection-service/connection/v2/connections/pagination?start=10&limit=5 --
+[]
+-- table stdout --
+[]
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /connection-service/connection/v2/connections/pagination?start=10&limit=5
+-- plain stdout --
+[]
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /connection-service/connection/v2/connections/pagination?start=10&limit=5
+-- plain-header stdout --
+[]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /connection-service/connection/v2/connections/pagination?start=10&limit=5
+-- json stdout --
+[]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /connection-service/connection/v2/connections/pagination?start=10&limit=5
