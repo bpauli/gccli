@@ -13,5 +13,7 @@ func TestGearEndpoints(t *testing.T) {
 		{"gear.defaults", map[string]string{"userProfileNumber": "12345"}, "GET /gear-service/gear/user/12345/activityTypes"},
 		{"gear.link", link, "PUT /gear-service/gear/link/abc-123/activity/456"},
 		{"gear.unlink", link, "PUT /gear-service/gear/unlink/abc-123/activity/456"},
+		{"gear.types", nil, "GET /gear-service/gear/types"},
+		{"gear.collections", nil, "GET /gear-service/collection"},
 	})
 }

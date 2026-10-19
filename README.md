@@ -18,7 +18,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Workouts** — list, view, download as FIT, upload from JSON, update in place from JSON, create with sport types and targets (pace/HR/power/cadence), schedule (add/list/remove), delete
 - **Courses** — list courses, view favorites, get full course detail, download as FIT/GPX, import GPX files as new courses, send courses directly to a device, delete courses
 - **Devices** — list registered devices, view settings, solar data, alarms, primary/last-used device, paired sensors, backup summary
-- **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities
+- **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities, gear types, gear collections
 - **Goals & Badges** — active goals, earned/available/in-progress badges, badge details, challenges, personal records
 - **Training** — browse and view training plans, show your active plans
 - **Profile** — user profile and settings
@@ -623,6 +623,8 @@ gccli gear activities <uuid> --limit 20
 gccli gear defaults
 gccli gear link <uuid> <activity-id>
 gccli gear unlink <uuid> <activity-id>
+gccli gear types
+gccli gear collections list
 ```
 
 ### Goals, Badges & Challenges
@@ -1045,6 +1047,8 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli gear unlink <uuid> <activity-id>`: Unlink gear from an activity.
   - `<uuid>`: Gear UUID.
   - `<activity-id>`: Activity ID.
+- `gccli gear types`: List gear types.
+- `gccli gear collections list`: List gear collections. Also runs as `gccli gear collections`.
 
 ### Goals, Badges & Challenges
 

@@ -9,4 +9,6 @@ var gearEndpoints = []Endpoint{
 	{Name: "gear.defaults", Method: http.MethodGet, Host: ConnectAPI, Path: "/gear-service/gear/user/{userProfileNumber}/activityTypes"},
 	{Name: "gear.link", Method: http.MethodPut, Host: ConnectAPI, Path: "/gear-service/gear/link/{gearUUID}/activity/{activityID}"},
 	{Name: "gear.unlink", Method: http.MethodPut, Host: ConnectAPI, Path: "/gear-service/gear/unlink/{gearUUID}/activity/{activityID}"},
+	{Name: "gear.types", Method: http.MethodGet, Host: ConnectAPI, Path: "/gear-service/gear/types"},
+	{Name: "gear.collections", Method: http.MethodGet, Host: ConnectAPI, Path: "/gear-service/collection"},
 }

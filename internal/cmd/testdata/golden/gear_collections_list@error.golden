@@ -1,0 +1,34 @@
+-- args --
+gear
+collections
+list
+-- route GET /gear-service/collection 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+get gear collections: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /gear-service/collection
+-- plain stdout --
+-- plain stderr --
+get gear collections: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /gear-service/collection
+-- plain-header stdout --
+-- plain-header stderr --
+get gear collections: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /gear-service/collection
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"get gear collections: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /gear-service/collection
