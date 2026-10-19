@@ -181,6 +181,24 @@ var writeCases = map[string]writeCase{
 		human:    "Updated gear 0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e\n",
 		fallback: "Updated gear 0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e\n",
 	},
+	"gear collections create": {
+		args:     []string{"Road shoes", "--first-use", "2024-06-01"},
+		routes:   map[string]string{"POST /gear-service/collection": `{"uuid":"7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b","name":"Road shoes"}`},
+		json:     "{\n  \"uuid\": \"7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b\",\n  \"name\": \"Road shoes\"\n}\n",
+		human:    "Created gear collection \"Road shoes\" (UUID: 7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b)\n",
+		fallback: "Created gear collection \"Road shoes\"\n",
+	},
+	"gear collections rename": {
+		args: []string{"7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b", "Trail shoes"},
+		routes: map[string]string{
+			"GET /gear-service/collection/7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b": `{"uuid":"7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b","name":"Road shoes"}`,
+			"PUT /gear-service/collection/7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b": noContent,
+		},
+		result:   "PUT /gear-service/collection/7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b",
+		json:     okOut,
+		human:    "Renamed gear collection 7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b to \"Trail shoes\"\n",
+		fallback: "Renamed gear collection 7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b to \"Trail shoes\"\n",
+	},
 	"hydration add": {
 		args:   []string{"250", "--date", "2024-01-15"},
 		routes: map[string]string{"PUT /usersummary-service/usersummary/hydration/log": `{"valueInML":250}`},

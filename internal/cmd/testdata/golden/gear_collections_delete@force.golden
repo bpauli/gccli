@@ -1,0 +1,38 @@
+--force skips the prompt.
+-- args --
+gear
+collections
+delete
+7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b
+--force
+-- route DELETE /gear-service/collection/7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b 204 --
+-- table stdout --
+-- table stderr --
+Deleted gear collection 7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b
+-- table exit --
+0
+-- table requests --
+DELETE /gear-service/collection/7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b
+-- plain stdout --
+-- plain stderr --
+Deleted gear collection 7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b
+-- plain exit --
+0
+-- plain requests --
+DELETE /gear-service/collection/7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b
+-- plain-header stdout --
+-- plain-header stderr --
+Deleted gear collection 7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b
+-- plain-header exit --
+0
+-- plain-header requests --
+DELETE /gear-service/collection/7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+DELETE /gear-service/collection/7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b

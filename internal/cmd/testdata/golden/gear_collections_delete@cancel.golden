@@ -1,0 +1,32 @@
+Any answer other than y or yes cancels, so no request is sent.
+-- args --
+gear
+collections
+delete
+7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b
+-- stdin --
+n
+-- table stdout --
+-- table stderr --
+Delete gear collection 7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b? [y/N]: Cancelled
+-- table exit --
+0
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Delete gear collection 7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b? [y/N]: Cancelled
+-- plain exit --
+0
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Delete gear collection 7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b? [y/N]: Cancelled
+-- plain-header exit --
+0
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Delete gear collection 7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b? [y/N]: Cancelled
+-- json exit --
+0
+-- json requests --

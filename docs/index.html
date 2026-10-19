@@ -493,7 +493,7 @@ gccli activities list --limit 5</pre>
           <div class="feature-card fade-in">
             <div class="feature-icon">&#x1f45f;</div>
             <h3>Gear</h3>
-            <p>List gear, usage stats, linked activities, defaults per activity type. Link and unlink gear to activities. List gear types and gear collections. Add, update, retire, unretire and delete gear.</p>
+            <p>List gear, usage stats, linked activities, defaults per activity type. Link and unlink gear to activities. List gear types and gear collections. Add, update, retire, unretire and delete gear. Create, rename and delete gear collections, and add gear to them.</p>
           </div>
           <div class="feature-card fade-in">
             <div class="feature-icon yellow">&#x1f3af;</div>
@@ -819,6 +819,10 @@ gccli activities list --limit 5</pre>
               <div class="cmd-row"><div class="cmd">gccli gear unretire &lt;uuid&gt;</div><div class="desc">Make a retired gear item active again.<br><code>&lt;uuid&gt;</code> Gear UUID, with or without dashes.</div></div>
               <div class="cmd-row"><div class="cmd">gccli gear delete &lt;uuid&gt; [flags]</div><div class="desc">Delete a gear item.<br><code>&lt;uuid&gt;</code> Gear UUID, with or without dashes.<br><code><span class="nowrap">-f,</span> <span class="nowrap">--force</span></code> Skip confirmation prompt.</div></div>
               <div class="cmd-row"><div class="cmd">gccli gear collections list</div><div class="desc">List gear collections. Also runs as <span class="whole"><code>gccli gear collections</code>.</span></div></div>
+              <div class="cmd-row"><div class="cmd">gccli gear collections create &lt;name&gt; [flags]</div><div class="desc">Create a gear collection.<br><code>&lt;name&gt;</code> Collection name.<br><code><span class="nowrap">--first-use=</span><wbr>&#34;today&#34;</code> Date of first use (YYYY-MM-DD, today, yesterday, 3d).</div></div>
+              <div class="cmd-row"><div class="cmd">gccli gear collections rename &lt;uuid&gt; &lt;name&gt;</div><div class="desc">Rename a gear collection.<br><code>&lt;uuid&gt;</code> Collection UUID.<br><code>&lt;name&gt;</code> New name.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli gear collections add &lt;uuid&gt; <span class="nowrap">&lt;gear-uuid&gt;</span></div><div class="desc">Add a gear item to a gear collection.<br><code>&lt;uuid&gt;</code> Collection UUID.<br><code><span class="nowrap">&lt;gear-uuid&gt;</span></code> Gear UUID, with or without dashes.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli gear collections delete &lt;uuid&gt; [flags]</div><div class="desc">Delete a gear collection. The gear items stay.<br><code>&lt;uuid&gt;</code> Collection UUID.<br><code><span class="nowrap">-f,</span> <span class="nowrap">--force</span></code> Skip confirmation prompt.</div></div>
             </div>
           </div>
 

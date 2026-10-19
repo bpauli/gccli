@@ -421,6 +421,18 @@ Date shortcuts
   - `<uuid>`: Gear UUID, with or without dashes.
   - `-f, --force`: Skip confirmation prompt.
 - `gccli gear collections list`: List gear collections. Also runs as `gccli gear collections`.
+- `gccli gear collections create <name> [flags]`: Create a gear collection.
+  - `<name>`: Collection name.
+  - `--first-use="today"`: Date of first use (YYYY-MM-DD, today, yesterday, 3d).
+- `gccli gear collections rename <uuid> <name>`: Rename a gear collection.
+  - `<uuid>`: Collection UUID.
+  - `<name>`: New name.
+- `gccli gear collections add <uuid> <gear-uuid>`: Add a gear item to a gear collection.
+  - `<uuid>`: Collection UUID.
+  - `<gear-uuid>`: Gear UUID, with or without dashes.
+- `gccli gear collections delete <uuid> [flags]`: Delete a gear collection. The gear items stay.
+  - `<uuid>`: Collection UUID.
+  - `-f, --force`: Skip confirmation prompt.
 
 ### Goals, Badges & Challenges
 

@@ -21,5 +21,10 @@ func TestGearEndpoints(t *testing.T) {
 		{"gear.retire", map[string]string{"gearUUID": "abc-123"}, "PUT /gear-service/gear/v2/abc-123/status/RETIRED"},
 		{"gear.unretire", map[string]string{"gearUUID": "abc-123"}, "PUT /gear-service/gear/v2/abc-123/status/ACTIVE"},
 		{"gear.delete", map[string]string{"gearUUID": "abc-123"}, "DELETE /gear-service/gear/v2/abc-123"},
+		{"gear.collection.get", map[string]string{"collectionUUID": "c-1"}, "GET /gear-service/collection/c-1"},
+		{"gear.collection.create", nil, "POST /gear-service/collection"},
+		{"gear.collection.update", map[string]string{"collectionUUID": "c-1"}, "PUT /gear-service/collection/c-1"},
+		{"gear.collection.add-gear", map[string]string{"collectionUUID": "c-1", "gearUUID": "abc-123"}, "POST /gear-service/collection/c-1/gear/abc-123"},
+		{"gear.collection.delete", map[string]string{"collectionUUID": "c-1"}, "DELETE /gear-service/collection/c-1"},
 	})
 }

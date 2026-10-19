@@ -178,6 +178,11 @@ Commands:
   gear unretire                    Make a retired gear item active again.
   gear delete                      Delete a gear item.
   gear collections list            List gear collections.
+  gear collections create          Create a gear collection.
+  gear collections rename          Rename a gear collection.
+  gear collections add             Add a gear item to a gear collection.
+  gear collections delete          Delete a gear collection. The gear items
+                                   stay.
   goals list                       List goals.
   goals weight                     Show the effective weight goal for a date
                                    range.
@@ -996,25 +1001,29 @@ Flags:
       --version           Print version information.
 
 Commands:
-  gear list                List all gear.
-  gear stats               Show usage statistics for a gear item.
-  gear activities          Show activities linked to a gear item.
-  gear defaults            Show default gear per activity type.
-  gear link                Link gear to an activity.
-  gear unlink              Unlink gear from an activity.
-  gear types               List gear types.
-  gear add                 Add a gear item.
-  gear update              Change the name, brand, model or notes of a gear
-                           item.
-  gear retire              Retire a gear item.
-  gear unretire            Make a retired gear item active again.
-  gear delete              Delete a gear item.
-  gear collections list    List gear collections.
+  gear list                  List all gear.
+  gear stats                 Show usage statistics for a gear item.
+  gear activities            Show activities linked to a gear item.
+  gear defaults              Show default gear per activity type.
+  gear link                  Link gear to an activity.
+  gear unlink                Unlink gear from an activity.
+  gear types                 List gear types.
+  gear add                   Add a gear item.
+  gear update                Change the name, brand, model or notes of a gear
+                             item.
+  gear retire                Retire a gear item.
+  gear unretire              Make a retired gear item active again.
+  gear delete                Delete a gear item.
+  gear collections list      List gear collections.
+  gear collections create    Create a gear collection.
+  gear collections rename    Rename a gear collection.
+  gear collections add       Add a gear item to a gear collection.
+  gear collections delete    Delete a gear collection. The gear items stay.
 
 $ gccli gear collections --help
 Usage: gccli gear collections <command>
 
-View gear collections.
+Manage gear collections.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -1031,7 +1040,11 @@ Flags:
       --version           Print version information.
 
 Commands:
-  gear collections list    List gear collections.
+  gear collections list      List gear collections.
+  gear collections create    Create a gear collection.
+  gear collections rename    Rename a gear collection.
+  gear collections add       Add a gear item to a gear collection.
+  gear collections delete    Delete a gear collection. The gear items stay.
 
 $ gccli goals --help
 Usage: gccli goals <command> [flags]
