@@ -12,6 +12,8 @@ import (
 func TestHydrationEndpoints(t *testing.T) {
 	testEndpoints(t, hydrationEndpoints, []endpointCase{
 		{"hydration.get", map[string]string{"date": "2024-01-15"}, "GET /usersummary-service/usersummary/hydration/daily/2024-01-15"},
+		{"hydration.daily", map[string]string{"startDate": "2024-01-01", "endDate": "2024-01-31"}, "GET /usersummary-service/stats/hydration/daily/2024-01-01/2024-01-31"},
+		{"hydration.weekly", map[string]string{"endDate": "2024-01-31", "weeks": "4"}, "GET /usersummary-service/stats/hydration/weekly/2024-01-31/4"},
 		{"hydration.log", nil, "PUT /usersummary-service/usersummary/hydration/log"},
 	})
 }

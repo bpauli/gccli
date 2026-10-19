@@ -691,6 +691,8 @@ gccli profile power-zones
 
 ```bash
 gccli hydration [date]                 # View hydration data
+gccli hydration daily --start 2024-01-01 --end 2024-01-31
+gccli hydration weekly --weeks 4
 gccli hydration add 500                # Log 500ml of water
 gccli hydration add 500 --date 2024-06-15
 ```
@@ -1221,6 +1223,12 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 
 - `gccli hydration view [<date>]`: Show hydration data for a date. Also runs as `gccli hydration [<date>]`.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
+- `gccli hydration daily --start=DATE --end=DATE`: Show daily hydration statistics for a date range.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli hydration weekly [flags]`: Show weekly hydration statistics.
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+  - `--weeks=4`: Number of weeks.
 - `gccli hydration add <amount> [flags]`: Add a hydration log entry.
   - `<amount>`: Amount of water in milliliters.
   - `--date=""`: Date to log for (YYYY-MM-DD). Defaults to today.

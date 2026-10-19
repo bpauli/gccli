@@ -453,6 +453,12 @@ Date shortcuts
 
 - `gccli hydration view [<date>]`: Show hydration data for a date. Also runs as `gccli hydration [<date>]`.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
+- `gccli hydration daily --start=DATE --end=DATE`: Show daily hydration statistics for a date range.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli hydration weekly [flags]`: Show weekly hydration statistics.
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+  - `--weeks=4`: Number of weeks.
 - `gccli hydration add <amount> [flags]`: Add a hydration log entry.
   - `<amount>`: Amount of water in milliliters.
   - `--date=""`: Date to log for (YYYY-MM-DD). Defaults to today.

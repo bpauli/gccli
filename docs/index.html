@@ -513,7 +513,7 @@ gccli activities list --limit 5</pre>
           <div class="feature-card fade-in">
             <div class="feature-icon orange">&#x1f4a7;</div>
             <h3>Hydration</h3>
-            <p>View and log daily water intake. Track hydration by date.</p>
+            <p>View and log daily water intake. Track hydration by date, with daily and weekly statistics.</p>
           </div>
           <div class="feature-card fade-in">
             <div class="feature-icon yellow">&#x1f372;</div>
@@ -852,6 +852,8 @@ gccli activities list --limit 5</pre>
             <div class="cmd-header"><h3>Hydration, Nutrition, Profile, Training, Wellness &amp; Utilities</h3><span class="cmd-arrow">&#x25B6;</span></div>
             <div class="cmd-body">
               <div class="cmd-row"><div class="cmd">gccli hydration view [&lt;date&gt;]</div><div class="desc">Show hydration data for a date. Also runs as <span class="whole"><code>gccli hydration [&lt;date&gt;]</code>.</span><br><code>[&lt;date&gt;]</code> Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli hydration daily <span class="nowrap">--start=DATE</span> <span class="nowrap">--end=DATE</span></div><div class="desc">Show daily hydration statistics for a date range.<br><code><span class="nowrap">--start=</span><wbr>DATE</code> Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).<br><code><span class="nowrap">--end=</span><wbr>DATE</code> End date (YYYY-MM-DD, today, yesterday, 3d, +30d).</div></div>
+              <div class="cmd-row"><div class="cmd">gccli hydration weekly [flags]</div><div class="desc">Show weekly hydration statistics.<br><code><span class="nowrap">--end=</span><wbr>DATE</code> End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.<br><code><span class="nowrap">--weeks=</span><wbr>4</code> Number of weeks.</div></div>
               <div class="cmd-row"><div class="cmd">gccli hydration add &lt;amount&gt; [flags]</div><div class="desc">Add a hydration log entry.<br><code>&lt;amount&gt;</code> Amount of water in milliliters.<br><code><span class="nowrap">--date=</span><wbr>&#34;&#34;</code> Date to log for (YYYY-MM-DD). Defaults to today.</div></div>
               <div class="cmd-row"><div class="cmd">gccli nutrition <span class="nowrap">food-log</span> [&lt;date&gt;]</div><div class="desc">Show daily food log for a date. Also runs as <span class="whole"><code>gccli nutrition [&lt;date&gt;]</code>.</span><br><code>[&lt;date&gt;]</code> Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.</div></div>
               <div class="cmd-row"><div class="cmd">gccli nutrition meals [&lt;date&gt;]</div><div class="desc">Show meal summaries for a date.<br><code>[&lt;date&gt;]</code> Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.</div></div>

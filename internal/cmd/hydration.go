@@ -15,6 +15,26 @@ var hydrationGroup = Group{Name: "hydration", Help: "Track hydration.", Children
 		Verb:     "get hydration", Output: JSON{},
 		LateDates: []string{"Date"},
 	},
+	Leaf{
+		Name: "daily", Help: "Show daily hydration statistics for a date range.",
+		Spec: argsOf(&struct {
+			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+			EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
+		}{}),
+		Endpoint: "hydration.daily",
+		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
+		Verb:     "get daily hydration", Output: JSON{},
+	},
+	Leaf{
+		Name: "weekly", Help: "Show weekly hydration statistics.",
+		Spec: argsOf(&struct {
+			EndDate Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"end"`
+			Weeks   int  `help:"Number of weeks." default:"4" name:"weeks"`
+		}{}),
+		Endpoint: "hydration.weekly",
+		Params:   Params{"endDate": In("EndDate").Or(Today), "weeks": In("Weeks")},
+		Verb:     "get weekly hydration", Output: JSON{},
+	},
 	Custom{Name: "add", Help: "Add a hydration log entry.", Cmd: &HydrationAddCmd{}},
 }}
 
