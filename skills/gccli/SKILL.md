@@ -177,8 +177,15 @@ Date shortcuts
   - `--weeks=4`: Number of weeks.
 - `gccli health sleep view [<date>]`: Show sleep data for a date. Also runs as `gccli health sleep [<date>]`.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
-- `gccli health sleep naps [<date>]`: Show naps for a date.
+- `gccli health sleep naps view [<date>]`: Show naps for a date. Also runs as `gccli health sleep naps [<date>]`.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli health sleep naps add <start> <end>`: Add a nap for today. Garmin takes naps only for the current day.
+  - `<start>`: Start time (HH:MM) in your Garmin time zone.
+  - `<end>`: End time (HH:MM) in your Garmin time zone. Must not be later than now.
+- `gccli health sleep naps delete <date> <start> [flags]`: Delete a nap.
+  - `<date>`: Date of the nap (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `<start>`: Start time of the nap (HH:MM) in your Garmin time zone.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli health sleep daily --start=DATE --end=DATE`: Show daily sleep statistics for a date range (at most 28 days).
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
@@ -610,6 +617,7 @@ Worked examples
 - Cycling workout with a power target: `gccli workouts create "FTP Intervals" --type bike --step "warmup:10m" --step "run:5m@power:250-280" --step "recovery:3m" --step "run:5m@power:250-280" --step "cooldown:10m"`
 - Race event: `gccli events add --name "Berlin Marathon" --date 2026-09-27 --type running --race --location "Berlin, Germany" --distance 42.195km --time 09:15 --timezone Europe/Berlin`
 - Calendar note: `gccli calendar notes add 2026-10-20 "Long run" --content "Easy pace"` prints the note ID. Then `gccli calendar notes move <id> 2026-10-21`, `gccli calendar notes update <id> --content ""` (clears the text) and `gccli calendar notes delete <id> --force`.
+- Nap: `gccli health sleep naps add 13:30 13:50` adds a nap for today. Garmin takes only naps that end today, and the times are in the time zone of the Garmin profile, not of the machine. `gccli health sleep naps delete today 13:30 --force` deletes the nap that starts at 13:30.
 - Notification preference: `gccli notifications preferences` shows the keys. `gccli notifications preferences set allowEmailWeeklySummary false` turns one off. A key that is not in the preferences fails before any write, and the error lists the keys.
 - Privacy zone: `gccli profile privacy-zones add --lat 51.5 --lon=-0.12 --radius 500` prints the zone ID. A negative value needs the `=` form. The radius is 500 to 1500 meters. `gccli profile privacy-zones delete <id> --force` deletes it.
 - Race event with a goal time and training priority: `gccli events add --name "Spring 10K" --date 2026-05-10 --type running --race --distance 10km --goal 40m --training`

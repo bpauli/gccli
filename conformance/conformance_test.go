@@ -231,8 +231,11 @@ var (
 
 const clockSkip = "a route asks for a date that the binary takes from its clock"
 
+const napClockSkip = "the nap is for today and must end by now, which the binary takes from its clock"
+
 var skipped = map[string]string{
 	"auth login":                      "the harness stubs the browser SSO login",
+	"health sleep naps add":           napClockSkip,
 	"body glucose":                    clockSkip,
 	"body latest":                     clockSkip,
 	"devices solar":                   clockSkip,
@@ -247,7 +250,7 @@ var skipped = map[string]string{
 	"health pushes monthly":           clockSkip,
 	"health pushes weekly":            clockSkip,
 	"health running-economy":          clockSkip,
-	"health sleep naps":               clockSkip,
+	"health sleep naps view":          clockSkip,
 	"health sleep weekly":             clockSkip,
 	"health steps monthly":            clockSkip,
 	"health steps weekly":             clockSkip,

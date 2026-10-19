@@ -1,0 +1,38 @@
+Error case: the nap ends after now (11:30 in Berlin), so no write is sent and the exit code is 1.
+-- args --
+health
+sleep
+naps
+add
+11:00
+11:31
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","timeZone":"Europe/Berlin"}
+-- table stdout --
+-- table stderr --
+the end time 11:31 is later than now (11:30 in your Garmin time zone)
+-- table exit --
+1
+-- table requests --
+GET /userprofile-service/userprofile/settings
+-- plain stdout --
+-- plain stderr --
+the end time 11:31 is later than now (11:30 in your Garmin time zone)
+-- plain exit --
+1
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+-- plain-header stdout --
+-- plain-header stderr --
+the end time 11:31 is later than now (11:30 in your Garmin time zone)
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"the end time 11:31 is later than now (11:30 in your Garmin time zone)"}}
+-- json exit --
+1
+-- json requests --
+GET /userprofile-service/userprofile/settings

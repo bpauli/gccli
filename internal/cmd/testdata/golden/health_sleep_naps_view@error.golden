@@ -1,51 +1,37 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
 -- args --
 health
 sleep
 naps
+view
 2026-10-14
--- route GET /sleep-service/sleep/naps/2026-10-14 --
-[{"napTimeSec":1200}]
+-- route GET /sleep-service/sleep/naps/2026-10-14 400 noeol --
+{"message":"Bad Request"}
 -- table stdout --
-[
-  {
-    "napTimeSec": 1200
-  }
-]
 -- table stderr --
+get naps: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- table exit --
-0
+1
 -- table requests --
 GET /sleep-service/sleep/naps/2026-10-14
 -- plain stdout --
-[
-  {
-    "napTimeSec": 1200
-  }
-]
 -- plain stderr --
+get naps: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- plain exit --
-0
+1
 -- plain requests --
 GET /sleep-service/sleep/naps/2026-10-14
 -- plain-header stdout --
-[
-  {
-    "napTimeSec": 1200
-  }
-]
 -- plain-header stderr --
+get naps: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- plain-header exit --
-0
+1
 -- plain-header requests --
 GET /sleep-service/sleep/naps/2026-10-14
 -- json stdout --
-[
-  {
-    "napTimeSec": 1200
-  }
-]
 -- json stderr --
+{"error":{"code":"error","status":400,"message":"get naps: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
 -- json exit --
-0
+1
 -- json requests --
 GET /sleep-service/sleep/naps/2026-10-14

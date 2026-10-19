@@ -1,16 +1,21 @@
+Error case: the end is not after the start. It fails before any request, and the exit code is 2 (usage).
 -- args --
 health
 sleep
 naps
-2026-02-30
+add
+10:20
+10:20
 -- table stdout --
 -- table stderr --
-Usage: gccli health sleep naps [<date>]
+Usage: gccli health sleep naps add <start> <end>
 
-Show naps for a date.
+Add a nap for today. Garmin takes naps only for the current day.
 
 Arguments:
-  [<date>]    Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+  <start>    Start time (HH:MM) in your Garmin time zone.
+  <end>      End time (HH:MM) in your Garmin time zone. Must not be later than
+             now.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -26,18 +31,20 @@ Flags:
                           ($GCCLI_UNITS).
       --version           Print version information.
 
-gccli: error: [<date>]: invalid date "2026-02-30": expected YYYY-MM-DD, today, yesterday, Nd (e.g. 3d), or +Nd (e.g. +30d)
+gccli: error: health sleep naps add: the end time 10:20 must be after the start time 10:20
 -- table exit --
 2
 -- table requests --
 -- plain stdout --
 -- plain stderr --
-Usage: gccli health sleep naps [<date>]
+Usage: gccli health sleep naps add <start> <end>
 
-Show naps for a date.
+Add a nap for today. Garmin takes naps only for the current day.
 
 Arguments:
-  [<date>]    Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+  <start>    Start time (HH:MM) in your Garmin time zone.
+  <end>      End time (HH:MM) in your Garmin time zone. Must not be later than
+             now.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -53,18 +60,20 @@ Flags:
                           ($GCCLI_UNITS).
       --version           Print version information.
 
-gccli: error: [<date>]: invalid date "2026-02-30": expected YYYY-MM-DD, today, yesterday, Nd (e.g. 3d), or +Nd (e.g. +30d)
+gccli: error: health sleep naps add: the end time 10:20 must be after the start time 10:20
 -- plain exit --
 2
 -- plain requests --
 -- plain-header stdout --
 -- plain-header stderr --
-Usage: gccli health sleep naps [<date>]
+Usage: gccli health sleep naps add <start> <end>
 
-Show naps for a date.
+Add a nap for today. Garmin takes naps only for the current day.
 
 Arguments:
-  [<date>]    Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+  <start>    Start time (HH:MM) in your Garmin time zone.
+  <end>      End time (HH:MM) in your Garmin time zone. Must not be later than
+             now.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -80,18 +89,20 @@ Flags:
                           ($GCCLI_UNITS).
       --version           Print version information.
 
-gccli: error: [<date>]: invalid date "2026-02-30": expected YYYY-MM-DD, today, yesterday, Nd (e.g. 3d), or +Nd (e.g. +30d)
+gccli: error: health sleep naps add: the end time 10:20 must be after the start time 10:20
 -- plain-header exit --
 2
 -- plain-header requests --
 -- json stdout --
 -- json stderr --
-Usage: gccli health sleep naps [<date>]
+Usage: gccli health sleep naps add <start> <end>
 
-Show naps for a date.
+Add a nap for today. Garmin takes naps only for the current day.
 
 Arguments:
-  [<date>]    Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+  <start>    Start time (HH:MM) in your Garmin time zone.
+  <end>      End time (HH:MM) in your Garmin time zone. Must not be later than
+             now.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -107,7 +118,7 @@ Flags:
                           ($GCCLI_UNITS).
       --version           Print version information.
 
-gccli: error: [<date>]: invalid date "2026-02-30": expected YYYY-MM-DD, today, yesterday, Nd (e.g. 3d), or +Nd (e.g. +30d)
+gccli: error: health sleep naps add: the end time 10:20 must be after the start time 10:20
 -- json exit --
 2
 -- json requests --

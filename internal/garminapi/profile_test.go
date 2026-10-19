@@ -208,3 +208,43 @@ func TestGetProfilePK(t *testing.T) {
 		})
 	}
 }
+
+func TestGetTimeZone(t *testing.T) {
+	tests := []struct {
+		body    string
+		want    string
+		wantErr bool
+	}{
+		{`{"timeZone":"gmt"}`, "UTC", false},
+		{`{"timeZone":"GMT"}`, "UTC", false},
+		{`{"timeZone":"Europe/Berlin"}`, "Europe/Berlin", false},
+		{`{"timeZone":"Mars/Olympus"}`, "", true},
+		{`{"displayName":"jo"}`, "", true},
+		{`<html>`, "", true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.body, func(t *testing.T) {
+			mux := http.NewServeMux()
+			mux.HandleFunc("/userprofile-service/userprofile/settings", func(w http.ResponseWriter, _ *http.Request) {
+				_, _ = w.Write([]byte(tt.body))
+			})
+			server := httptest.NewServer(mux)
+			t.Cleanup(server.Close)
+			client := NewClient(testTokens(), WithHTTPClient(server.Client()), WithBaseURL(server.URL))
+
+			loc, err := client.GetTimeZone(context.Background())
+			if tt.wantErr {
+				if err == nil {
+					t.Fatalf("GetTimeZone() = %v, want an error", loc)
+				}
+				return
+			}
+			if err != nil {
+				t.Fatal(err)
+			}
+			if loc.String() != tt.want {
+				t.Errorf("GetTimeZone() = %q, want %q", loc, tt.want)
+			}
+		})
+	}
+}

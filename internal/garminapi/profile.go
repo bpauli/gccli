@@ -7,6 +7,10 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
+
+	// LoadLocation needs a zone database, and Windows has none.
+	_ "time/tzdata"
 
 	"github.com/bpauli/gccli/internal/units"
 )
@@ -83,6 +87,33 @@ func (c *Client) GetProfilePK(ctx context.Context) (string, error) {
 		return "", fmt.Errorf("user profile profileId field is not an unsigned integer")
 	}
 	return s, nil
+}
+
+// GetTimeZone returns the time zone of the profile settings. Garmin names
+// UTC "gmt", which is not an IANA name.
+func (c *Client) GetTimeZone(ctx context.Context) (*time.Location, error) {
+	data, err := c.Call(ctx, "profile.get", nil, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var settings struct {
+		TimeZone string `json:"timeZone"`
+	}
+	if err := json.Unmarshal(data, &settings); err != nil {
+		return nil, fmt.Errorf("parse profile settings: %w", err)
+	}
+	switch {
+	case settings.TimeZone == "":
+		return nil, fmt.Errorf("profile settings missing timeZone")
+	case strings.EqualFold(settings.TimeZone, "gmt"):
+		return time.UTC, nil
+	}
+	loc, err := time.LoadLocation(settings.TimeZone)
+	if err != nil {
+		return nil, fmt.Errorf("unknown time zone %q in profile settings", settings.TimeZone)
+	}
+	return loc, nil
 }
 
 // GetMeasurementSystem returns the unit system from userData.measurementSystem

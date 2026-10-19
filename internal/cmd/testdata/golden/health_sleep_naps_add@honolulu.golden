@@ -1,0 +1,80 @@
+At 09:30 UTC it is still 2026-10-14 in Honolulu (UTC-10), so the nap is on that day and ends at 08:20 UTC on 2026-10-15.
+-- args --
+health
+sleep
+naps
+add
+22:00
+22:20
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","timeZone":"Pacific/Honolulu"}
+-- route GET /userprofile-service/socialProfile/tester --
+{"profileId":3141592}
+-- route POST /sleep-service/sleep/nap --
+{"calendarDate":"2026-10-14"}
+-- table stdout --
+-- table stderr --
+Added nap on 2026-10-14 from 22:00 to 22:20
+-- table exit --
+0
+-- table requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+POST /sleep-service/sleep/nap
+  {
+    "calendarDate": "2026-10-14",
+    "napEndTimestampGMT": "2026-10-15T08:20:00.000",
+    "napStartTimestampGMT": "2026-10-15T08:00:00.000",
+    "userProfilePK": 3141592
+  }
+-- plain stdout --
+-- plain stderr --
+Added nap on 2026-10-14 from 22:00 to 22:20
+-- plain exit --
+0
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+POST /sleep-service/sleep/nap
+  {
+    "calendarDate": "2026-10-14",
+    "napEndTimestampGMT": "2026-10-15T08:20:00.000",
+    "napStartTimestampGMT": "2026-10-15T08:00:00.000",
+    "userProfilePK": 3141592
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Added nap on 2026-10-14 from 22:00 to 22:20
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+POST /sleep-service/sleep/nap
+  {
+    "calendarDate": "2026-10-14",
+    "napEndTimestampGMT": "2026-10-15T08:20:00.000",
+    "napStartTimestampGMT": "2026-10-15T08:00:00.000",
+    "userProfilePK": 3141592
+  }
+-- json stdout --
+{
+  "calendarDate": "2026-10-14"
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+POST /sleep-service/sleep/nap
+  {
+    "calendarDate": "2026-10-14",
+    "napEndTimestampGMT": "2026-10-15T08:20:00.000",
+    "napStartTimestampGMT": "2026-10-15T08:00:00.000",
+    "userProfilePK": 3141592
+  }

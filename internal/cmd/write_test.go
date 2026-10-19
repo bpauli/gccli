@@ -282,6 +282,30 @@ var writeCases = map[string]writeCase{
 		human:    "Set automatic steps goal from 2026-10-15\n",
 		fallback: "Set automatic steps goal from 2026-10-15\n",
 	},
+	"health sleep naps add": {
+		args: []string{"09:00", "09:20"},
+		routes: map[string]string{
+			profileRoute:                    `{"displayName":"tester","timeZone":"gmt"}`,
+			socialRoute:                     `{"profileId":3141592}`,
+			"POST /sleep-service/sleep/nap": `{"calendarDate":"2026-10-15","napTimeSec":1200}`,
+		},
+		json:     "{\n  \"calendarDate\": \"2026-10-15\",\n  \"napTimeSec\": 1200\n}\n",
+		human:    "Added nap on 2026-10-15 from 09:00 to 09:20\n",
+		fallback: "Added nap on 2026-10-15 from 09:00 to 09:20\n",
+	},
+	"health sleep naps delete": {
+		args: []string{"2026-10-15", "09:00"},
+		routes: map[string]string{
+			profileRoute: `{"displayName":"tester","timeZone":"gmt"}`,
+			"GET /sleep-service/sleep/naps/2026-10-15":                 `[{"napStartTimestampGMT":"2026-10-15T09:00:00"}]`,
+			"DELETE /sleep-service/sleep/nap/2026-10-15/1792054800000": noContent,
+		},
+		result:   "DELETE /sleep-service/sleep/nap/2026-10-15/1792054800000",
+		prompt:   "Delete nap on 2026-10-15 at 09:00?",
+		json:     okOut,
+		human:    "Deleted nap on 2026-10-15 at 09:00\n",
+		fallback: "Deleted nap on 2026-10-15 at 09:00\n",
+	},
 	"notifications preferences set": {
 		args: []string{"allowEmailWeeklySummary", "false"},
 		routes: map[string]string{

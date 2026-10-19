@@ -1,0 +1,124 @@
+Error case: 24:00 is not a time of day. It fails before any request, and the exit code is 2 (usage).
+-- args --
+health
+sleep
+naps
+add
+10:00
+24:00
+-- table stdout --
+-- table stderr --
+Usage: gccli health sleep naps add <start> <end>
+
+Add a nap for today. Garmin takes naps only for the current day.
+
+Arguments:
+  <start>    Start time (HH:MM) in your Garmin time zone.
+  <end>      End time (HH:MM) in your Garmin time zone. Must not be later than
+             now.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+gccli: error: <end>: invalid time "24:00": expected HH:MM (00:00 to 23:59)
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli health sleep naps add <start> <end>
+
+Add a nap for today. Garmin takes naps only for the current day.
+
+Arguments:
+  <start>    Start time (HH:MM) in your Garmin time zone.
+  <end>      End time (HH:MM) in your Garmin time zone. Must not be later than
+             now.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+gccli: error: <end>: invalid time "24:00": expected HH:MM (00:00 to 23:59)
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli health sleep naps add <start> <end>
+
+Add a nap for today. Garmin takes naps only for the current day.
+
+Arguments:
+  <start>    Start time (HH:MM) in your Garmin time zone.
+  <end>      End time (HH:MM) in your Garmin time zone. Must not be later than
+             now.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+gccli: error: <end>: invalid time "24:00": expected HH:MM (00:00 to 23:59)
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli health sleep naps add <start> <end>
+
+Add a nap for today. Garmin takes naps only for the current day.
+
+Arguments:
+  <start>    Start time (HH:MM) in your Garmin time zone.
+  <end>      End time (HH:MM) in your Garmin time zone. Must not be later than
+             now.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+gccli: error: <end>: invalid time "24:00": expected HH:MM (00:00 to 23:59)
+-- json exit --
+2
+-- json requests --
