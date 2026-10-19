@@ -414,7 +414,7 @@ func goldenLeaves(t *testing.T, suffix string, keep func(golden) bool) []string 
 			t.Fatalf("%s: %v", file, err)
 		}
 		if keep(g) {
-			path, _ := goldenCommand(file)
+			path, _, _ := goldenCommand(file)
 			leaves = append(leaves, path)
 		}
 	}
