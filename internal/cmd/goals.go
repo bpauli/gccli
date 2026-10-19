@@ -1,6 +1,15 @@
 package cmd
 
-var goalsGroup = Group{Name: "goals", Help: "View goals.", Children: []Node{
+import (
+	"encoding/json"
+	"errors"
+	"fmt"
+	"strings"
+
+	"github.com/bpauli/gccli/internal/garminapi"
+)
+
+var goalsGroup = Group{Name: "goals", Help: "View and set goals.", Children: []Node{
 	Leaf{
 		Name: "list", Help: "List goals.", Default: true,
 		Spec: argsOf(&struct {
@@ -20,7 +29,91 @@ var goalsGroup = Group{Name: "goals", Help: "View goals.", Children: []Node{
 		Params:   Params{"startDate": In("StartDate").Or(Today), "endDate": In("EndDate").Or(Today)},
 		Verb:     "get weight goal", Output: JSON{},
 	},
+	Custom{Name: "set", Help: "Set the daily goal for floors climbed, intensity minutes or hydration.", Cmd: &GoalsSetCmd{}},
+	Group{Name: "steps", Help: "Set the daily steps goal.", Children: []Node{
+		Custom{Name: "set", Help: "Set a fixed daily steps goal.", Cmd: &GoalsStepsSetCmd{}},
+		Custom{Name: "auto", Help: "Set Garmin's automatic steps goal.", Cmd: &GoalsStepsAutoCmd{}},
+	}},
 }}
+
+// GoalsSetCmd sets the daily goal of one type.
+type GoalsSetCmd struct {
+	Type  string `arg:"" help:"Goal type: floors-climbed, intensity-minutes or hydration." enum:"floors-climbed,intensity-minutes,hydration"`
+	Value int    `arg:"" help:"Daily goal: floors for floors-climbed, minutes for intensity-minutes, milliliters for hydration."`
+	Date  Date   `help:"First day of the goal (YYYY-MM-DD, today, yesterday, 3d). The goal stays for the days after it." default:"today"`
+}
+
+func (c *GoalsSetCmd) Validate() error {
+	if c.Value < 1 {
+		return errors.New("goal must be 1 or more")
+	}
+	return nil
+}
+
+func (c *GoalsSetCmd) Run(g *Globals) error {
+	body, err := json.Marshal(map[string]any{
+		"goalType":  strings.ToUpper(strings.ReplaceAll(c.Type, "-", "_")),
+		"goalValue": c.Value,
+	})
+	if err != nil {
+		return err
+	}
+	client, err := resolveClient(g)
+	if err != nil {
+		return err
+	}
+	data, err := client.Call(g.Context, "goals.set-effective", map[string]string{"goalType": c.Type, "date": string(c.Date)}, body)
+	if err != nil {
+		return fmt.Errorf("set goal: %w", err)
+	}
+	return reportWrite(g, data, "Set %s goal to %d from %s", c.Type, c.Value, c.Date)
+}
+
+// GoalsStepsSetCmd sets a fixed daily steps goal.
+type GoalsStepsSetCmd struct {
+	Steps int  `arg:"" help:"Steps per day."`
+	Date  Date `help:"First day of the goal (YYYY-MM-DD, today, yesterday, 3d). The goal stays for the days after it." default:"today"`
+}
+
+func (c *GoalsStepsSetCmd) Validate() error {
+	if c.Steps < 1 {
+		return errors.New("steps goal must be 1 or more")
+	}
+	return nil
+}
+
+func (c *GoalsStepsSetCmd) Run(g *Globals) error {
+	data, err := setStepGoal(g, c.Date, garminapi.ManualStepGoal(c.Steps))
+	if err != nil {
+		return err
+	}
+	return reportWrite(g, data, "Set steps goal to %d from %s", c.Steps, c.Date)
+}
+
+// GoalsStepsAutoCmd sets Garmin's automatic steps goal.
+type GoalsStepsAutoCmd struct {
+	Date Date `help:"First day of the goal (YYYY-MM-DD, today, yesterday, 3d). The goal stays for the days after it." default:"today"`
+}
+
+func (c *GoalsStepsAutoCmd) Run(g *Globals) error {
+	data, err := setStepGoal(g, c.Date, garminapi.AutoStepGoal)
+	if err != nil {
+		return err
+	}
+	return reportWrite(g, data, "Set automatic steps goal from %s", c.Date)
+}
+
+func setStepGoal(g *Globals, date Date, goal garminapi.StepGoal) (json.RawMessage, error) {
+	client, err := resolveClient(g)
+	if err != nil {
+		return nil, err
+	}
+	data, err := client.SetStepGoal(g.Context, string(date), goal)
+	if err != nil {
+		return nil, fmt.Errorf("set steps goal: %w", err)
+	}
+	return data, nil
+}
 
 var badgesGroup = Group{Name: "badges", Help: "View badges.", Children: []Node{
 	Leaf{Name: "earned", Help: "Show earned badges.", Default: true, Endpoint: "badges.earned", Verb: "get earned badges", Output: JSON{}},

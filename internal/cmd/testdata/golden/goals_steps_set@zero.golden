@@ -1,0 +1,128 @@
+A steps goal below 1 is a usage error, so no request is sent. Use goals steps auto for Garmin's automatic goal.
+-- args --
+goals
+steps
+set
+0
+--date
+2026-10-12
+-- table stdout --
+-- table stderr --
+Usage: gccli goals steps set <steps> [flags]
+
+Set a fixed daily steps goal.
+
+Arguments:
+  <steps>    Steps per day.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --date="today"      First day of the goal (YYYY-MM-DD, today, yesterday,
+                          3d). The goal stays for the days after it.
+
+gccli: error: goals steps set: steps goal must be 1 or more
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli goals steps set <steps> [flags]
+
+Set a fixed daily steps goal.
+
+Arguments:
+  <steps>    Steps per day.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --date="today"      First day of the goal (YYYY-MM-DD, today, yesterday,
+                          3d). The goal stays for the days after it.
+
+gccli: error: goals steps set: steps goal must be 1 or more
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli goals steps set <steps> [flags]
+
+Set a fixed daily steps goal.
+
+Arguments:
+  <steps>    Steps per day.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --date="today"      First day of the goal (YYYY-MM-DD, today, yesterday,
+                          3d). The goal stays for the days after it.
+
+gccli: error: goals steps set: steps goal must be 1 or more
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli goals steps set <steps> [flags]
+
+Set a fixed daily steps goal.
+
+Arguments:
+  <steps>    Steps per day.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --date="today"      First day of the goal (YYYY-MM-DD, today, yesterday,
+                          3d). The goal stays for the days after it.
+
+gccli: error: goals steps set: steps goal must be 1 or more
+-- json exit --
+2
+-- json requests --

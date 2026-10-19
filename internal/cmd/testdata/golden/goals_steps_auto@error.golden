@@ -1,0 +1,37 @@
+Error case: the GET of the steps goal answers 400, so no PUT is sent and the exit code is 1 (error).
+-- args --
+goals
+steps
+auto
+--date
+2026-10-12
+-- route GET /wellness-service/wellness/wellness-goals/consolidated/steps/2026-10-12 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+set steps goal: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /wellness-service/wellness/wellness-goals/consolidated/steps/2026-10-12
+-- plain stdout --
+-- plain stderr --
+set steps goal: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /wellness-service/wellness/wellness-goals/consolidated/steps/2026-10-12
+-- plain-header stdout --
+-- plain-header stderr --
+set steps goal: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /wellness-service/wellness/wellness-goals/consolidated/steps/2026-10-12
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"set steps goal: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /wellness-service/wellness/wellness-goals/consolidated/steps/2026-10-12

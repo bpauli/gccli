@@ -252,6 +252,36 @@ var writeCases = map[string]writeCase{
 		human:    "Renamed gear collection 7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b to \"Trail shoes\"\n",
 		fallback: "Renamed gear collection 7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b to \"Trail shoes\"\n",
 	},
+	// The goals rows give no --date, so their routes pin the default date,
+	// today on the harness clock.
+	"goals set": {
+		args:     []string{"floors-climbed", "10"},
+		routes:   map[string]string{"PUT /goal-service/goal/user/effective/floors-climbed/2026-10-15": `{"goalType":"FLOORS_CLIMBED","goalValue":10}`},
+		json:     "{\n  \"goalType\": \"FLOORS_CLIMBED\",\n  \"goalValue\": 10\n}\n",
+		human:    "Set floors-climbed goal to 10 from 2026-10-15\n",
+		fallback: "Set floors-climbed goal to 10 from 2026-10-15\n",
+	},
+	"goals steps set": {
+		args: []string{"9000"},
+		routes: map[string]string{
+			"GET /wellness-service/wellness/wellness-goals/consolidated/steps/2026-10-15": `{"userGoal":0,"userGoalCategory":"my-auto"}`,
+			"PUT /wellness-service/wellness/wellness-goals/consolidated/steps/2026-10-15": `{"userGoal":9000,"userGoalCategory":"manual"}`,
+		},
+		result:   "PUT /wellness-service/wellness/wellness-goals/consolidated/steps/2026-10-15",
+		json:     "{\n  \"userGoal\": 9000,\n  \"userGoalCategory\": \"manual\"\n}\n",
+		human:    "Set steps goal to 9000 from 2026-10-15\n",
+		fallback: "Set steps goal to 9000 from 2026-10-15\n",
+	},
+	"goals steps auto": {
+		routes: map[string]string{
+			"GET /wellness-service/wellness/wellness-goals/consolidated/steps/2026-10-15": `{"userGoal":9000,"userGoalCategory":"manual"}`,
+			"PUT /wellness-service/wellness/wellness-goals/consolidated/steps/2026-10-15": `{"userGoal":0,"userGoalCategory":"my-auto"}`,
+		},
+		result:   "PUT /wellness-service/wellness/wellness-goals/consolidated/steps/2026-10-15",
+		json:     "{\n  \"userGoal\": 0,\n  \"userGoalCategory\": \"my-auto\"\n}\n",
+		human:    "Set automatic steps goal from 2026-10-15\n",
+		fallback: "Set automatic steps goal from 2026-10-15\n",
+	},
 	"hydration add": {
 		args:   []string{"250", "--date", "2024-01-15"},
 		routes: map[string]string{"PUT /usersummary-service/usersummary/hydration/log": `{"valueInML":250}`},

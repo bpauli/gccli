@@ -1,0 +1,57 @@
+Sets the hydration goal in milliliters from 2026-10-12.
+-- args --
+goals
+set
+hydration
+2500
+--date
+2026-10-12
+-- route PUT /goal-service/goal/user/effective/hydration/2026-10-12 --
+{"goalType":"HYDRATION","goalValue":2500}
+-- table stdout --
+-- table stderr --
+Set hydration goal to 2500 from 2026-10-12
+-- table exit --
+0
+-- table requests --
+PUT /goal-service/goal/user/effective/hydration/2026-10-12
+  {
+    "goalType": "HYDRATION",
+    "goalValue": 2500
+  }
+-- plain stdout --
+-- plain stderr --
+Set hydration goal to 2500 from 2026-10-12
+-- plain exit --
+0
+-- plain requests --
+PUT /goal-service/goal/user/effective/hydration/2026-10-12
+  {
+    "goalType": "HYDRATION",
+    "goalValue": 2500
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Set hydration goal to 2500 from 2026-10-12
+-- plain-header exit --
+0
+-- plain-header requests --
+PUT /goal-service/goal/user/effective/hydration/2026-10-12
+  {
+    "goalType": "HYDRATION",
+    "goalValue": 2500
+  }
+-- json stdout --
+{
+  "goalType": "HYDRATION",
+  "goalValue": 2500
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+PUT /goal-service/goal/user/effective/hydration/2026-10-12
+  {
+    "goalType": "HYDRATION",
+    "goalValue": 2500
+  }

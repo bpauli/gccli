@@ -191,6 +191,10 @@ Commands:
   goals list                       List goals.
   goals weight                     Show the effective weight goal for a date
                                    range.
+  goals set                        Set the daily goal for floors climbed,
+                                   intensity minutes or hydration.
+  goals steps set                  Set a fixed daily steps goal.
+  goals steps auto                 Set Garmin's automatic steps goal.
   badges earned                    Show earned badges.
   badges available                 Show available badges.
   badges in-progress               Show badges in progress.
@@ -1063,7 +1067,7 @@ Commands:
 $ gccli goals --help
 Usage: gccli goals <command> [flags]
 
-View goals.
+View and set goals.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -1080,8 +1084,35 @@ Flags:
       --version           Print version information.
 
 Commands:
-  goals list      List goals.
-  goals weight    Show the effective weight goal for a date range.
+  goals list          List goals.
+  goals weight        Show the effective weight goal for a date range.
+  goals set           Set the daily goal for floors climbed, intensity minutes
+                      or hydration.
+  goals steps set     Set a fixed daily steps goal.
+  goals steps auto    Set Garmin's automatic steps goal.
+
+$ gccli goals steps --help
+Usage: gccli goals steps <command>
+
+Set the daily steps goal.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  goals steps set     Set a fixed daily steps goal.
+  goals steps auto    Set Garmin's automatic steps goal.
 
 $ gccli badges --help
 Usage: gccli badges <command> [flags]

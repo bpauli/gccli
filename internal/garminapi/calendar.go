@@ -29,14 +29,14 @@ func (c *Client) UpdateNote(ctx context.Context, id string, e NoteEdit) (json.Ra
 	if err != nil {
 		return nil, err
 	}
-	fields := map[string]string{}
+	fields := map[string]any{}
 	if e.Name != nil {
 		fields["noteName"] = *e.Name
 	}
 	if e.Content != nil {
 		fields["content"] = *e.Content
 	}
-	body, err := withFields(data, "note "+id, fields)
+	body, err := setFields(data, "note "+id, fields)
 	if err != nil {
 		return nil, err
 	}

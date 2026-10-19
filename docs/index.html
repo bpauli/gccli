@@ -499,7 +499,7 @@ gccli activities list --limit 5</pre>
           <div class="feature-card fade-in">
             <div class="feature-icon yellow">&#x1f3af;</div>
             <h3>Goals &amp; Badges</h3>
-            <p>Active goals, earned/available/in-progress badges, badge details, badge comparison with a connection, the badge points leaderboard, challenges, virtual challenges, personal records, record types and the records of an activity.</p>
+            <p>Active goals. Set the daily goal for steps, floors, intensity minutes and hydration. Earned/available/in-progress badges, badge details, badge comparison with a connection, the badge points leaderboard, challenges, virtual challenges, personal records, record types and the records of an activity.</p>
           </div>
           <div class="feature-card fade-in">
             <div class="feature-icon yellow">&#x1f4c5;</div>
@@ -842,6 +842,9 @@ gccli activities list --limit 5</pre>
             <div class="cmd-body">
               <div class="cmd-row"><div class="cmd">gccli goals list [flags]</div><div class="desc">List goals. Also runs as <span class="whole"><code>gccli goals [flags]</code>.</span><br><code><span class="nowrap">--status=</span><wbr>&#34;active&#34;</code> Goal status: active, future, past.</div></div>
               <div class="cmd-row"><div class="cmd">gccli goals weight [flags]</div><div class="desc">Show the effective weight goal for a date range.<br><code><span class="nowrap">--start=</span><wbr>DATE</code> Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.<br><code><span class="nowrap">--end=</span><wbr>DATE</code> End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli goals set &lt;type&gt; &lt;value&gt; [flags]</div><div class="desc">Set the daily goal for floors climbed, intensity minutes or hydration.<br><code>&lt;type&gt;</code> Goal type: floors-climbed, intensity-minutes or hydration.<br><code>&lt;value&gt;</code> Daily goal: floors for floors-climbed, minutes for intensity-minutes, milliliters for hydration.<br><code><span class="nowrap">--date=</span><wbr>&#34;today&#34;</code> First day of the goal (YYYY-MM-DD, today, yesterday, 3d). The goal stays for the days after it.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli goals steps set &lt;steps&gt; [flags]</div><div class="desc">Set a fixed daily steps goal.<br><code>&lt;steps&gt;</code> Steps per day.<br><code><span class="nowrap">--date=</span><wbr>&#34;today&#34;</code> First day of the goal (YYYY-MM-DD, today, yesterday, 3d). The goal stays for the days after it.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli goals steps auto [flags]</div><div class="desc">Set Garmin&#39;s automatic steps goal.<br><code><span class="nowrap">--date=</span><wbr>&#34;today&#34;</code> First day of the goal (YYYY-MM-DD, today, yesterday, 3d). The goal stays for the days after it.</div></div>
               <div class="cmd-row"><div class="cmd">gccli badges earned</div><div class="desc">Show earned badges. Also runs as <span class="whole"><code>gccli badges</code>.</span></div></div>
               <div class="cmd-row"><div class="cmd">gccli badges available</div><div class="desc">Show available badges.</div></div>
               <div class="cmd-row"><div class="cmd">gccli badges <span class="nowrap">in-progress</span></div><div class="desc">Show badges in progress.</div></div>

@@ -1,0 +1,54 @@
+Error case: the PUT answers 400, so the exit code is 1 (error).
+-- args --
+goals
+set
+intensity-minutes
+150
+--date
+2026-10-12
+-- route PUT /goal-service/goal/user/effective/intensity-minutes/2026-10-12 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+set goal: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+PUT /goal-service/goal/user/effective/intensity-minutes/2026-10-12
+  {
+    "goalType": "INTENSITY_MINUTES",
+    "goalValue": 150
+  }
+-- plain stdout --
+-- plain stderr --
+set goal: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+PUT /goal-service/goal/user/effective/intensity-minutes/2026-10-12
+  {
+    "goalType": "INTENSITY_MINUTES",
+    "goalValue": 150
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+set goal: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+PUT /goal-service/goal/user/effective/intensity-minutes/2026-10-12
+  {
+    "goalType": "INTENSITY_MINUTES",
+    "goalValue": 150
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"set goal: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+PUT /goal-service/goal/user/effective/intensity-minutes/2026-10-12
+  {
+    "goalType": "INTENSITY_MINUTES",
+    "goalValue": 150
+  }
