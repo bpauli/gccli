@@ -17,7 +17,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Body Composition** — weight tracking, body fat, muscle mass, blood pressure, FIT file encoding for composition uploads
 - **Workouts** — list, view, download as FIT, upload from JSON, update in place from JSON, create with sport types and targets (pace/HR/power/cadence), schedule (add/list/remove), delete
 - **Courses** — list courses, view favorites, get full course detail, download as FIT/GPX, import GPX files as new courses, send courses directly to a device, delete courses
-- **Devices** — list registered devices, view settings, solar data, alarms, primary/last-used device
+- **Devices** — list registered devices, view settings, solar data, alarms, primary/last-used device, paired sensors, backup summary
 - **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities
 - **Goals & Badges** — active goals, earned/available/in-progress badges, badge details, challenges, personal records
 - **Training** — browse and view training plans, show your active plans
@@ -610,6 +610,8 @@ gccli devices primary
 gccli devices last-used
 gccli devices alarms
 gccli devices solar <device-id> --start 2024-06-01 --end 2024-06-30
+gccli devices sensors
+gccli devices backups
 ```
 
 ### Gear
@@ -1025,6 +1027,8 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to start date.
 - `gccli devices alarms`: Show alarms from all devices.
 - `gccli devices last-used`: Show last used device.
+- `gccli devices sensors`: List paired sensors.
+- `gccli devices backups`: Show device backup summary.
 
 ### Gear
 

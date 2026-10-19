@@ -1,0 +1,33 @@
+-- args --
+devices
+backups
+-- route GET /devicebackup-service/backup/summary 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+get device backup summary: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /devicebackup-service/backup/summary
+-- plain stdout --
+-- plain stderr --
+get device backup summary: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /devicebackup-service/backup/summary
+-- plain-header stdout --
+-- plain-header stderr --
+get device backup summary: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /devicebackup-service/backup/summary
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"get device backup summary: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /devicebackup-service/backup/summary

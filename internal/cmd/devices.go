@@ -33,6 +33,8 @@ var devicesGroup = Group{Name: "devices", Help: "Manage devices.", Children: []N
 	},
 	Custom{Name: "alarms", Help: "Show alarms from all devices.", Cmd: &DeviceAlarmsCmd{}},
 	Leaf{Name: "last-used", Help: "Show last used device.", Endpoint: "devices.last-used", Verb: "get last used device", Output: JSON{}},
+	Leaf{Name: "sensors", Help: "List paired sensors.", Endpoint: "devices.sensors", Verb: "get sensors", Output: JSON{}},
+	Leaf{Name: "backups", Help: "Show device backup summary.", Endpoint: "devices.backup-summary", Verb: "get device backup summary", Output: JSON{}},
 }}
 
 // DeviceAlarmsCmd shows alarms from all devices.
