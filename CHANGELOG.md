@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.0] - 2026-10-19
+
 ### Added
 
 26 new read commands. Each one prints the Garmin response as JSON in table, `--plain` and `--json` mode. A date argument or a date flag accepts `YYYY-MM-DD`, `today`, `yesterday`, `3d` and `+30d`.
@@ -474,7 +476,8 @@ Initial release of gccli — a fast, script-friendly CLI for Garmin Connect.
 - **CI pipeline** — GitHub Actions for fmt-check, lint, and test
 - **Cross-platform builds** — macOS (amd64/arm64) and Linux (amd64/arm64) via goreleaser
 
-[Unreleased]: https://github.com/bpauli/gccli/compare/v2.2.0...HEAD
+[Unreleased]: https://github.com/bpauli/gccli/compare/v2.3.0...HEAD
+[2.3.0]: https://github.com/bpauli/gccli/releases/tag/v2.3.0
 [2.2.0]: https://github.com/bpauli/gccli/releases/tag/v2.2.0
 [2.1.0]: https://github.com/bpauli/gccli/releases/tag/v2.1.0
 [2.0.0]: https://github.com/bpauli/gccli/releases/tag/v2.0.0
