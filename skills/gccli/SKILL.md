@@ -390,6 +390,8 @@ Date shortcuts
 - `gccli profile settings`: Show user settings.
 - `gccli profile privacy view`: Show privacy settings. Also runs as `gccli profile privacy`.
 - `gccli profile privacy-zones list`: List privacy zones. Also runs as `gccli profile privacy-zones`.
+- `gccli profile hr-zones`: Show heart rate zones.
+- `gccli profile power-zones`: Show power zones for all sports.
 - `gccli training plans [flags]`: List training plans. Also runs as `gccli training [flags]`.
   - `--locale="en"`: Locale for training plans (e.g. en, de, fr).
 - `gccli training plan <id>`: Show a specific training plan.

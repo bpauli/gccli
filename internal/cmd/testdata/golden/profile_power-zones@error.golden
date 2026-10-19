@@ -1,0 +1,33 @@
+-- args --
+profile
+power-zones
+-- route GET /biometric-service/powerZones/sports/all 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+get power zones: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /biometric-service/powerZones/sports/all
+-- plain stdout --
+-- plain stderr --
+get power zones: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /biometric-service/powerZones/sports/all
+-- plain-header stdout --
+-- plain-header stderr --
+get power zones: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /biometric-service/powerZones/sports/all
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"get power zones: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /biometric-service/powerZones/sports/all
