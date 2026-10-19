@@ -1,0 +1,36 @@
+-- args --
+workouts
+schedule
+export
+--start
+2026-10-12
+-- route GET /workout-service/schedule/export/JSON?startDate=2026-10-12 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+export workout schedule: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /workout-service/schedule/export/JSON?startDate=2026-10-12
+-- plain stdout --
+-- plain stderr --
+export workout schedule: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /workout-service/schedule/export/JSON?startDate=2026-10-12
+-- plain-header stdout --
+-- plain-header stderr --
+export workout schedule: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /workout-service/schedule/export/JSON?startDate=2026-10-12
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"export workout schedule: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /workout-service/schedule/export/JSON?startDate=2026-10-12

@@ -18,7 +18,9 @@ var workoutsGroup = Group{Name: "workouts", Help: "Manage workouts.", Children: 
 	Custom{Name: "upload", Help: "Upload workout from JSON file.", Cmd: &WorkoutUploadCmd{}},
 	Custom{Name: "update", Help: "Update an existing workout from a JSON file.", Cmd: &WorkoutUpdateCmd{}},
 	Custom{Name: "create", Help: "Create a workout with sport type and optional targets.", Cmd: &WorkoutCreateCmd{}},
+	Leaf{Name: "types", Help: "List workout types.", Endpoint: "workouts.types", Verb: "get workout types", Output: JSON{}},
 	workoutScheduleGroup,
+	workoutBenchmarksGroup,
 	Leaf{
 		Name: "delete", Help: "Delete a workout.",
 		Spec: argsOf(&struct {
@@ -216,6 +218,19 @@ var workoutScheduleGroup = Group{Name: "schedule", Help: "Manage scheduled worko
 		Verb:     "remove scheduled workout",
 		Output:   Write{Done: "Removed scheduled workout {ID}", Confirm: "Remove scheduled workout {ID}?"},
 	},
+	Leaf{
+		Name: "export", Help: "Export the workout schedule from a start date.",
+		Spec: argsOf(&struct {
+			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"start"`
+		}{}),
+		Endpoint: "workouts.export-schedule",
+		Params:   Params{"startDate": In("StartDate").Or(Today)},
+		Verb:     "export workout schedule", Output: JSON{},
+	},
+}}
+
+var workoutBenchmarksGroup = Group{Name: "benchmarks", Help: "View strength benchmarks.", Children: []Node{
+	Leaf{Name: "list", Help: "List strength benchmarks.", Default: true, Endpoint: "workouts.benchmarks", Verb: "get benchmarks", Output: JSON{}},
 }}
 
 // WorkoutScheduleAddCmd schedules a workout on a calendar date.
