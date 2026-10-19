@@ -418,6 +418,8 @@ gccli health floors daily --start 2024-01-01 --end 2024-01-31
 gccli health floors weekly --weeks 4
 gccli health sleep [date]              # Sleep data
 gccli health sleep naps [date]
+gccli health sleep naps add 13:30 13:50   # Add a nap for today (times in your Garmin time zone)
+gccli health sleep naps delete today 13:30  # Delete the nap that starts at 13:30 (with confirmation)
 gccli health sleep daily --start 2024-01-01 --end 2024-01-28
 gccli health sleep weekly
 gccli health sleep overall --start 2024-01-01 --end 2024-01-31
@@ -991,8 +993,15 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `--weeks=4`: Number of weeks.
 - `gccli health sleep view [<date>]`: Show sleep data for a date. Also runs as `gccli health sleep [<date>]`.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
-- `gccli health sleep naps [<date>]`: Show naps for a date.
+- `gccli health sleep naps view [<date>]`: Show naps for a date. Also runs as `gccli health sleep naps [<date>]`.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli health sleep naps add <start> <end>`: Add a nap for today. Garmin takes naps only for the current day.
+  - `<start>`: Start time (HH:MM) in your Garmin time zone.
+  - `<end>`: End time (HH:MM) in your Garmin time zone. Must not be later than now.
+- `gccli health sleep naps delete <date> <start> [flags]`: Delete a nap.
+  - `<date>`: Date of the nap (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `<start>`: Start time of the nap (HH:MM) in your Garmin time zone.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli health sleep daily --start=DATE --end=DATE`: Show daily sleep statistics for a date range (at most 28 days).
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).

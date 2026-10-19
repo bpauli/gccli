@@ -29,6 +29,8 @@ func TestHealthEndpoints(t *testing.T) {
 		{"health.weekly-floors", map[string]string{"endDate": "2024-01-31", "weeks": "4"}, "GET /usersummary-service/stats/floors/weekly/2024-01-31/4"},
 		{"health.sleep", user, "GET /wellness-service/wellness/dailySleepData/jo?date=2024-01-15&nonSleepBufferMinutes=60"},
 		{"health.sleep-naps", day, "GET /sleep-service/sleep/naps/2024-01-15"},
+		{"health.add-nap", nil, "POST /sleep-service/sleep/nap"},
+		{"health.delete-nap", map[string]string{"date": "2024-01-15", "startMillis": "1705320000000"}, "DELETE /sleep-service/sleep/nap/2024-01-15/1705320000000"},
 		{"health.daily-sleep", span, "GET /sleep-service/stats/sleep/daily/2024-01-01/2024-01-31"},
 		{"health.weekly-sleep", map[string]string{"endDate": "2024-01-31"}, "GET /sleep-service/stats/sleep/weekly/2024-01-31/52"},
 		{"health.overall-sleep", span, "GET /sleep-service/stats/sleep/overall/2024-01-01/2024-01-31"},

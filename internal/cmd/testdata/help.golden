@@ -92,7 +92,10 @@ Commands:
   health floors daily              Show daily floors climbed for a date range.
   health floors weekly             Show weekly floors climbed.
   health sleep view                Show sleep data for a date.
-  health sleep naps                Show naps for a date.
+  health sleep naps view           Show naps for a date.
+  health sleep naps add            Add a nap for today. Garmin takes naps only
+                                   for the current day.
+  health sleep naps delete         Delete a nap.
   health sleep daily               Show daily sleep statistics for a date range
                                    (at most 28 days).
   health sleep weekly              Show weekly sleep statistics for the 52 weeks
@@ -536,7 +539,10 @@ Commands:
   health floors daily              Show daily floors climbed for a date range.
   health floors weekly             Show weekly floors climbed.
   health sleep view                Show sleep data for a date.
-  health sleep naps                Show naps for a date.
+  health sleep naps view           Show naps for a date.
+  health sleep naps add            Add a nap for today. Garmin takes naps only
+                                   for the current day.
+  health sleep naps delete         Delete a nap.
   health sleep daily               Show daily sleep statistics for a date range
                                    (at most 28 days).
   health sleep weekly              Show weekly sleep statistics for the 52 weeks
@@ -730,13 +736,41 @@ Flags:
       --version           Print version information.
 
 Commands:
-  health sleep view       Show sleep data for a date.
-  health sleep naps       Show naps for a date.
-  health sleep daily      Show daily sleep statistics for a date range (at most
-                          28 days).
-  health sleep weekly     Show weekly sleep statistics for the 52 weeks up to a
-                          date.
-  health sleep overall    Show overall sleep statistics for a date range.
+  health sleep view           Show sleep data for a date.
+  health sleep naps view      Show naps for a date.
+  health sleep naps add       Add a nap for today. Garmin takes naps only for
+                              the current day.
+  health sleep naps delete    Delete a nap.
+  health sleep daily          Show daily sleep statistics for a date range (at
+                              most 28 days).
+  health sleep weekly         Show weekly sleep statistics for the 52 weeks up
+                              to a date.
+  health sleep overall        Show overall sleep statistics for a date range.
+
+$ gccli health sleep naps --help
+Usage: gccli health sleep naps <command>
+
+Show, add and delete naps.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  health sleep naps view      Show naps for a date.
+  health sleep naps add       Add a nap for today. Garmin takes naps only for
+                              the current day.
+  health sleep naps delete    Delete a nap.
 
 $ gccli health stress --help
 Usage: gccli health stress <command>

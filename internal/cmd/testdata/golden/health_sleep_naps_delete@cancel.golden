@@ -1,0 +1,46 @@
+Any answer other than y or yes cancels, so no write is sent.
+-- args --
+health
+sleep
+naps
+delete
+2026-10-14
+12:00
+-- stdin --
+n
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","timeZone":"Europe/Berlin"}
+-- route GET /sleep-service/sleep/naps/2026-10-14 --
+[{"napStartTimestampGMT":"2026-10-14T07:15:00","napTimeSec":600},{"napStartTimestampGMT":"2026-10-14T10:00:37","napTimeSec":1200}]
+-- table stdout --
+-- table stderr --
+Delete nap on 2026-10-14 at 12:00? [y/N]: Cancelled
+-- table exit --
+0
+-- table requests --
+GET /userprofile-service/userprofile/settings
+GET /sleep-service/sleep/naps/2026-10-14
+-- plain stdout --
+-- plain stderr --
+Delete nap on 2026-10-14 at 12:00? [y/N]: Cancelled
+-- plain exit --
+0
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+GET /sleep-service/sleep/naps/2026-10-14
+-- plain-header stdout --
+-- plain-header stderr --
+Delete nap on 2026-10-14 at 12:00? [y/N]: Cancelled
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /sleep-service/sleep/naps/2026-10-14
+-- json stdout --
+-- json stderr --
+Delete nap on 2026-10-14 at 12:00? [y/N]: Cancelled
+-- json exit --
+0
+-- json requests --
+GET /userprofile-service/userprofile/settings
+GET /sleep-service/sleep/naps/2026-10-14

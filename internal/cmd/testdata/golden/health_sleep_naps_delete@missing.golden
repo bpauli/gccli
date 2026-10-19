@@ -1,0 +1,44 @@
+Error case: no nap starts at 10:00 in Berlin (08:00 UTC), so no prompt is shown, no write is sent and the exit code is 1.
+-- args --
+health
+sleep
+naps
+delete
+2026-10-14
+10:00
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","timeZone":"Europe/Berlin"}
+-- route GET /sleep-service/sleep/naps/2026-10-14 --
+[{"napStartTimestampGMT":"2026-10-14T07:15:00","napTimeSec":600},{"napStartTimestampGMT":"2026-10-14T10:00:37","napTimeSec":1200}]
+-- table stdout --
+-- table stderr --
+no nap on 2026-10-14 starts at 10:00
+-- table exit --
+1
+-- table requests --
+GET /userprofile-service/userprofile/settings
+GET /sleep-service/sleep/naps/2026-10-14
+-- plain stdout --
+-- plain stderr --
+no nap on 2026-10-14 starts at 10:00
+-- plain exit --
+1
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+GET /sleep-service/sleep/naps/2026-10-14
+-- plain-header stdout --
+-- plain-header stderr --
+no nap on 2026-10-14 starts at 10:00
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /sleep-service/sleep/naps/2026-10-14
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"no nap on 2026-10-14 starts at 10:00"}}
+-- json exit --
+1
+-- json requests --
+GET /userprofile-service/userprofile/settings
+GET /sleep-service/sleep/naps/2026-10-14
