@@ -227,6 +227,8 @@ Commands:
   profile settings                 Show user settings.
   profile privacy view             Show privacy settings.
   profile privacy-zones list       List privacy zones.
+  profile privacy-zones add        Add a privacy zone around a point.
+  profile privacy-zones delete     Delete a privacy zone.
   profile hr-zones                 Show heart rate zones.
   profile power-zones              Show power zones for all sports.
   hydration view                   Show hydration data for a date.
@@ -259,7 +261,9 @@ Commands:
   exercises list                   List available exercise categories and
                                    exercises.
   notifications list               List notifications.
-  notifications preferences        Show notification preferences.
+  notifications preferences view
+                                   Show notification preferences.
+  notifications preferences set    Turn a notification preference on or off.
   social connections               List your connections.
   social followers                 List the followers of a user.
   social following                 List the users that a user follows.
@@ -1301,12 +1305,14 @@ Flags:
       --version           Print version information.
 
 Commands:
-  profile view                  Show user profile.
-  profile settings              Show user settings.
-  profile privacy view          Show privacy settings.
-  profile privacy-zones list    List privacy zones.
-  profile hr-zones              Show heart rate zones.
-  profile power-zones           Show power zones for all sports.
+  profile view                    Show user profile.
+  profile settings                Show user settings.
+  profile privacy view            Show privacy settings.
+  profile privacy-zones list      List privacy zones.
+  profile privacy-zones add       Add a privacy zone around a point.
+  profile privacy-zones delete    Delete a privacy zone.
+  profile hr-zones                Show heart rate zones.
+  profile power-zones             Show power zones for all sports.
 
 $ gccli profile privacy --help
 Usage: gccli profile privacy <command>
@@ -1333,7 +1339,7 @@ Commands:
 $ gccli profile privacy-zones --help
 Usage: gccli profile privacy-zones <command>
 
-View privacy zones.
+List, add and delete privacy zones.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -1350,7 +1356,9 @@ Flags:
       --version           Print version information.
 
 Commands:
-  profile privacy-zones list    List privacy zones.
+  profile privacy-zones list      List privacy zones.
+  profile privacy-zones add       Add a privacy zone around a point.
+  profile privacy-zones delete    Delete a privacy zone.
 
 $ gccli hydration --help
 Usage: gccli hydration <command> [flags]
@@ -1577,7 +1585,7 @@ Commands:
 $ gccli notifications --help
 Usage: gccli notifications <command> [flags]
 
-View notifications and notification preferences.
+View notifications and change notification preferences.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -1594,8 +1602,34 @@ Flags:
       --version           Print version information.
 
 Commands:
-  notifications list           List notifications.
-  notifications preferences    Show notification preferences.
+  notifications list               List notifications.
+  notifications preferences view
+                                   Show notification preferences.
+  notifications preferences set    Turn a notification preference on or off.
+
+$ gccli notifications preferences --help
+Usage: gccli notifications preferences <command>
+
+Show and change notification preferences.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  notifications preferences view
+                                   Show notification preferences.
+  notifications preferences set    Turn a notification preference on or off.
 
 $ gccli social --help
 Usage: gccli social <command> [flags]

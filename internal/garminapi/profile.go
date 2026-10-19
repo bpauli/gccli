@@ -21,6 +21,8 @@ var profileEndpoints = []Endpoint{
 	{Name: "profile.social", Method: http.MethodGet, Host: ConnectAPI, Path: "/userprofile-service/socialProfile/{displayName}"},
 	{Name: "profile.privacy-settings", Method: http.MethodGet, Host: ConnectAPI, Path: "/privacysettings-service/privacy-settings"},
 	{Name: "profile.privacy-zones", Method: http.MethodGet, Host: ConnectAPI, Path: "/privacyzone-service/privacyZones"},
+	{Name: "profile.privacy-zone.create", Method: http.MethodPost, Host: ConnectAPI, Path: "/privacyzone-service/privacyZones", Body: true},
+	{Name: "profile.privacy-zone.delete", Method: http.MethodDelete, Host: ConnectAPI, Path: "/privacyzone-service/privacyZones/{privacyZoneID}"},
 	{Name: "profile.hr-zones", Method: http.MethodGet, Host: ConnectAPI, Path: "/biometric-service/heartRateZones/v2"},
 	{Name: "profile.power-zones", Method: http.MethodGet, Host: ConnectAPI, Path: "/biometric-service/powerZones/sports/all"},
 }

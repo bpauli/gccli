@@ -1,0 +1,62 @@
+The low limits are accepted too, and an answer without privacyZoneId prints no ID.
+-- args --
+profile
+privacy-zones
+add
+--lat
+90
+--lon=-180
+--radius
+500
+-- route POST /privacyzone-service/privacyZones --
+{"radius":500}
+-- table stdout --
+-- table stderr --
+Added privacy zone of 500 m around 90, -180
+-- table exit --
+0
+-- table requests --
+POST /privacyzone-service/privacyZones
+  {
+    "centerLatitude": 90,
+    "centerLongitude": -180,
+    "radius": 500
+  }
+-- plain stdout --
+-- plain stderr --
+Added privacy zone of 500 m around 90, -180
+-- plain exit --
+0
+-- plain requests --
+POST /privacyzone-service/privacyZones
+  {
+    "centerLatitude": 90,
+    "centerLongitude": -180,
+    "radius": 500
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Added privacy zone of 500 m around 90, -180
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /privacyzone-service/privacyZones
+  {
+    "centerLatitude": 90,
+    "centerLongitude": -180,
+    "radius": 500
+  }
+-- json stdout --
+{
+  "radius": 500
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /privacyzone-service/privacyZones
+  {
+    "centerLatitude": 90,
+    "centerLongitude": -180,
+    "radius": 500
+  }

@@ -18,6 +18,8 @@ func TestProfileEndpoints(t *testing.T) {
 		{"profile.social", map[string]string{"displayName": "testuser"}, "GET /userprofile-service/socialProfile/testuser"},
 		{"profile.privacy-settings", nil, "GET /privacysettings-service/privacy-settings"},
 		{"profile.privacy-zones", nil, "GET /privacyzone-service/privacyZones"},
+		{"profile.privacy-zone.create", nil, "POST /privacyzone-service/privacyZones"},
+		{"profile.privacy-zone.delete", map[string]string{"privacyZoneID": "123"}, "DELETE /privacyzone-service/privacyZones/123"},
 		{"profile.hr-zones", nil, "GET /biometric-service/heartRateZones/v2"},
 		{"profile.power-zones", nil, "GET /biometric-service/powerZones/sports/all"},
 	})

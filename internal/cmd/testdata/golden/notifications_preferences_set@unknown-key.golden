@@ -1,0 +1,37 @@
+Error case: a key that is not in the preferences fails after the GET and before any write. The error lists the keys that take true or false.
+-- args --
+notifications
+preferences
+set
+allowEmailDailySummary
+false
+-- route GET /notification-service/preference/userPreference --
+{"allowEmailWeeklySummary":true,"allowPushBadges":false,"pushHour":7}
+-- table stdout --
+-- table stderr --
+set notification preference: no notification preference "allowEmailDailySummary"; the keys are: allowEmailWeeklySummary, allowPushBadges
+-- table exit --
+1
+-- table requests --
+GET /notification-service/preference/userPreference
+-- plain stdout --
+-- plain stderr --
+set notification preference: no notification preference "allowEmailDailySummary"; the keys are: allowEmailWeeklySummary, allowPushBadges
+-- plain exit --
+1
+-- plain requests --
+GET /notification-service/preference/userPreference
+-- plain-header stdout --
+-- plain-header stderr --
+set notification preference: no notification preference "allowEmailDailySummary"; the keys are: allowEmailWeeklySummary, allowPushBadges
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /notification-service/preference/userPreference
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"set notification preference: no notification preference \"allowEmailDailySummary\"; the keys are: allowEmailWeeklySummary, allowPushBadges"}}
+-- json exit --
+1
+-- json requests --
+GET /notification-service/preference/userPreference

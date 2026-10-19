@@ -1,0 +1,63 @@
+Error case: the PUT answers 400, so the exit code is 1 (error).
+-- args --
+notifications
+preferences
+set
+allowEmailWeeklySummary
+false
+-- route GET /notification-service/preference/userPreference --
+{"allowEmailWeeklySummary":true,"allowPushBadges":false,"pushHour":7}
+-- route PUT /notification-service/preference/userPreference 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+set notification preference: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /notification-service/preference/userPreference
+PUT /notification-service/preference/userPreference
+  {
+    "allowEmailWeeklySummary": false,
+    "allowPushBadges": false,
+    "pushHour": 7
+  }
+-- plain stdout --
+-- plain stderr --
+set notification preference: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /notification-service/preference/userPreference
+PUT /notification-service/preference/userPreference
+  {
+    "allowEmailWeeklySummary": false,
+    "allowPushBadges": false,
+    "pushHour": 7
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+set notification preference: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /notification-service/preference/userPreference
+PUT /notification-service/preference/userPreference
+  {
+    "allowEmailWeeklySummary": false,
+    "allowPushBadges": false,
+    "pushHour": 7
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"set notification preference: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /notification-service/preference/userPreference
+PUT /notification-service/preference/userPreference
+  {
+    "allowEmailWeeklySummary": false,
+    "allowPushBadges": false,
+    "pushHour": 7
+  }

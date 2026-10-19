@@ -1,0 +1,101 @@
+Error case: an extra argument after the bare call fails before any request, and the exit code is 2 (usage). The usage line names the view child.
+-- args --
+notifications
+preferences
+extra
+-- table stdout --
+-- table stderr --
+Usage: gccli notifications preferences view
+
+Show notification preferences.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+gccli: error: unexpected argument extra
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli notifications preferences view
+
+Show notification preferences.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+gccli: error: unexpected argument extra
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli notifications preferences view
+
+Show notification preferences.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+gccli: error: unexpected argument extra
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli notifications preferences view
+
+Show notification preferences.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+gccli: error: unexpected argument extra
+-- json exit --
+2
+-- json requests --

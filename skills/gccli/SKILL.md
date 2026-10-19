@@ -547,7 +547,10 @@ Date shortcuts
 - `gccli social feed`: Show your newsfeed.
 - `gccli groups list`: List your groups. Also runs as `gccli groups`.
 - `gccli notifications list`: List notifications. Also runs as `gccli notifications`.
-- `gccli notifications preferences`: Show notification preferences.
+- `gccli notifications preferences view`: Show notification preferences. Also runs as `gccli notifications preferences`.
+- `gccli notifications preferences set <key> <value>`: Turn a notification preference on or off.
+  - `<key>`: Preference key, such as allowEmailWeeklySummary. Run gccli notifications preferences to see the keys.
+  - `<value>`: true turns the preference on, false turns it off.
 
 ### Hydration, Nutrition, Profile, Training, Wellness & Utilities
 
@@ -572,6 +575,13 @@ Date shortcuts
 - `gccli profile settings`: Show user settings.
 - `gccli profile privacy view`: Show privacy settings. Also runs as `gccli profile privacy`.
 - `gccli profile privacy-zones list`: List privacy zones. Also runs as `gccli profile privacy-zones`.
+- `gccli profile privacy-zones add --lat=DEGREES --lon=DEGREES --radius=METERS`: Add a privacy zone around a point.
+  - `--lat=DEGREES`: Latitude of the center, -90 to 90. Give a negative value as --lat=-33.9.
+  - `--lon=DEGREES`: Longitude of the center, -180 to 180. Give a negative value as --lon=-30.
+  - `--radius=METERS`: Radius in meters, 500 to 1500.
+- `gccli profile privacy-zones delete <id> [flags]`: Delete a privacy zone.
+  - `<id>`: Privacy zone ID.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli profile hr-zones`: Show heart rate zones.
 - `gccli profile power-zones`: Show power zones for all sports.
 - `gccli training plans [flags]`: List training plans. Also runs as `gccli training [flags]`.
@@ -608,6 +618,8 @@ Worked examples
 - Race event: `gccli events add --name "Berlin Marathon" --date 2026-09-27 --type running --race --location "Berlin, Germany" --distance 42.195km --time 09:15 --timezone Europe/Berlin`
 - Calendar note: `gccli calendar notes add 2026-10-20 "Long run" --content "Easy pace"` prints the note ID. Then `gccli calendar notes move <id> 2026-10-21`, `gccli calendar notes update <id> --content ""` (clears the text) and `gccli calendar notes delete <id> --force`.
 - Nap: `gccli health sleep naps add 13:30 13:50` adds a nap for today. Garmin takes only naps that end today, and the times are in the time zone of the Garmin profile, not of the machine. `gccli health sleep naps delete today 13:30 --force` deletes the nap that starts at 13:30.
+- Notification preference: `gccli notifications preferences` shows the keys. `gccli notifications preferences set allowEmailWeeklySummary false` turns one off. A key that is not in the preferences fails before any write, and the error lists the keys.
+- Privacy zone: `gccli profile privacy-zones add --lat 51.5 --lon=-0.12 --radius 500` prints the zone ID. A negative value needs the `=` form. The radius is 500 to 1500 meters. `gccli profile privacy-zones delete <id> --force` deletes it.
 - Race event with a goal time and training priority: `gccli events add --name "Spring 10K" --date 2026-05-10 --type running --race --distance 10km --goal 40m --training`
 - Access token for a script: `gccli auth token`. It refreshes an expired token first. If the refresh fails, stdout is empty and the exit code is 3.
 

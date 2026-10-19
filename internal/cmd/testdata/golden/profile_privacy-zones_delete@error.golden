@@ -1,0 +1,37 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+profile
+privacy-zones
+delete
+4321
+--force
+-- route DELETE /privacyzone-service/privacyZones/4321 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+delete privacy zone: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+DELETE /privacyzone-service/privacyZones/4321
+-- plain stdout --
+-- plain stderr --
+delete privacy zone: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+DELETE /privacyzone-service/privacyZones/4321
+-- plain-header stdout --
+-- plain-header stderr --
+delete privacy zone: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+DELETE /privacyzone-service/privacyZones/4321
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"delete privacy zone: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+DELETE /privacyzone-service/privacyZones/4321
