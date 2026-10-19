@@ -1,0 +1,33 @@
+-- args --
+health
+running-economy
+2026-10-14
+-- route GET /metrics-service/metrics/runningeconomy/latest/2026-10-14 204 --
+-- table stdout --
+{}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /metrics-service/metrics/runningeconomy/latest/2026-10-14
+-- plain stdout --
+{}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /metrics-service/metrics/runningeconomy/latest/2026-10-14
+-- plain-header stdout --
+{}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /metrics-service/metrics/runningeconomy/latest/2026-10-14
+-- json stdout --
+{}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /metrics-service/metrics/runningeconomy/latest/2026-10-14

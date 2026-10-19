@@ -64,6 +64,7 @@ Date shortcuts
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
 - `gccli activities types`: List all activity types supported by Garmin.
+- `gccli activities pending`: List pending activities.
 - `gccli activity summary <id>`: Show activity summary. Also runs as `gccli activity <id>`.
   - `<id>`: Activity ID.
 - `gccli activity details <id> [flags]`: Show full activity details.
@@ -166,6 +167,8 @@ Date shortcuts
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli health lactate-threshold`: Show latest lactate threshold.
 - `gccli health cycling-ftp`: Show latest cycling FTP.
+- `gccli health critical-swim-speed [<date>]`: Show latest critical swim speed as of a date.
+  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli health race-predictions view [<date>]`: Show current race predictions. Also runs as `gccli health race-predictions [<date>]`.
   - `[<date>]`: Unused. Current predictions are always returned.
 - `gccli health race-predictions range --start=DATE --end=DATE`: Show race predictions for a date range.
@@ -175,6 +178,11 @@ Date shortcuts
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli health hill-score [<date>]`: Show hill score data.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
+- `gccli health power-curve --start=DATE --end=DATE`: Show power curve for a date range.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli health running-economy [<date>]`: Show latest running economy as of a date.
+  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli health events [<date>]`: Show daily wellness events.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli health lifestyle [<date>]`: Show lifestyle logging data.
@@ -313,6 +321,9 @@ Date shortcuts
 
 - `gccli goals list [flags]`: List goals. Also runs as `gccli goals [flags]`.
   - `--status="active"`: Goal status: active, future, past.
+- `gccli goals weight [flags]`: Show the effective weight goal for a date range.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli badges earned`: Show earned badges. Also runs as `gccli badges`.
 - `gccli badges available`: Show available badges.
 - `gccli badges in-progress`: Show badges in progress.
@@ -367,6 +378,8 @@ Date shortcuts
   - `--locale="en"`: Locale for training plans (e.g. en, de, fr).
 - `gccli training plan <id>`: Show a specific training plan.
   - `<id>`: Training plan ID.
+- `gccli training active [flags]`: Show active training plans.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli wellness menstrual-cycle --start=DATE --end=DATE`: Show menstrual cycle data.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
@@ -374,6 +387,7 @@ Date shortcuts
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
 - `gccli wellness pregnancy-summary`: Show pregnancy summary.
+- `gccli wellness jet-lag list`: List jet lag trips. Also runs as `gccli wellness jet-lag`.
 - `gccli reload [<date>]`: Request data reload for a date.
   - `[<date>]`: Date to reload (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli completion <shell>`: Generate shell completion script.

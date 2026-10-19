@@ -1,0 +1,81 @@
+-- args --
+health
+power-curve
+--start
+2026-10-12
+--end
+2026-10-15
+-- route GET /fitnessstats-service/powerCurve?startDate=2026-10-12&endDate=2026-10-15 --
+{"entries":[{"duration":5,"power":812},{"duration":60,"power":402}]}
+-- table stdout --
+{
+  "entries": [
+    {
+      "duration": 5,
+      "power": 812
+    },
+    {
+      "duration": 60,
+      "power": 402
+    }
+  ]
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /fitnessstats-service/powerCurve?startDate=2026-10-12&endDate=2026-10-15
+-- plain stdout --
+{
+  "entries": [
+    {
+      "duration": 5,
+      "power": 812
+    },
+    {
+      "duration": 60,
+      "power": 402
+    }
+  ]
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /fitnessstats-service/powerCurve?startDate=2026-10-12&endDate=2026-10-15
+-- plain-header stdout --
+{
+  "entries": [
+    {
+      "duration": 5,
+      "power": 812
+    },
+    {
+      "duration": 60,
+      "power": 402
+    }
+  ]
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /fitnessstats-service/powerCurve?startDate=2026-10-12&endDate=2026-10-15
+-- json stdout --
+{
+  "entries": [
+    {
+      "duration": 5,
+      "power": 812
+    },
+    {
+      "duration": 60,
+      "power": 402
+    }
+  ]
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /fitnessstats-service/powerCurve?startDate=2026-10-12&endDate=2026-10-15

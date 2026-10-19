@@ -1,0 +1,45 @@
+-- args --
+goals
+weight
+--start
+2026-01-01
+--end
+2026-06-30
+-- route GET /goal-service/goal/user/effective/weightgoal/2026-01-01/2026-06-30 --
+{"value":1}
+-- table stdout --
+{
+  "value": 1
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /goal-service/goal/user/effective/weightgoal/2026-01-01/2026-06-30
+-- plain stdout --
+{
+  "value": 1
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /goal-service/goal/user/effective/weightgoal/2026-01-01/2026-06-30
+-- plain-header stdout --
+{
+  "value": 1
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /goal-service/goal/user/effective/weightgoal/2026-01-01/2026-06-30
+-- json stdout --
+{
+  "value": 1
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /goal-service/goal/user/effective/weightgoal/2026-01-01/2026-06-30
