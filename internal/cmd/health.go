@@ -81,16 +81,7 @@ var healthGroup = Group{Name: "health", Help: "View health data.", Children: []N
 		Verb:     "get training readiness", Output: JSON{},
 		LateDates: []string{"Date"},
 	},
-	Leaf{
-		Name: "training-status", Help: "Show training status data.",
-		Spec: argsOf(&struct {
-			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
-		}{}),
-		Endpoint: "health.training-status",
-		Params:   Params{"date": In("Date")},
-		Verb:     "get training status", Output: JSON{},
-		LateDates: []string{"Date"},
-	},
+	healthTrainingStatusGroup,
 	Leaf{
 		Name: "fitness-age", Help: "Show fitness age data.",
 		Spec: argsOf(&struct {
@@ -161,6 +152,25 @@ var healthGroup = Group{Name: "health", Help: "View health data.", Children: []N
 		Endpoint: "health.running-economy",
 		Params:   Params{"date": In("Date")},
 		Verb:     "get running economy", Output: JSON{},
+	},
+	Leaf{
+		Name: "acclimation", Help: "Show heat and altitude acclimation for a date range.",
+		Spec: argsOf(&struct {
+			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+			EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
+		}{}),
+		Endpoint: "health.acclimation",
+		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
+		Verb:     "get acclimation", Output: JSON{},
+	},
+	Leaf{
+		Name: "one-rep-max", Help: "Show current estimated one-rep max values as of a date.",
+		Spec: argsOf(&struct {
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today."`
+		}{}),
+		Endpoint: "health.one-rep-max",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get one-rep max", Output: JSON{},
 	},
 	Leaf{
 		Name: "events", Help: "Show daily wellness events.",
@@ -364,6 +374,28 @@ var healthSleepGroup = Group{Name: "sleep", Help: "Show sleep data.", Children: 
 		Endpoint: "health.overall-sleep",
 		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
 		Verb:     "get overall sleep", Output: JSON{},
+	},
+}}
+
+var healthTrainingStatusGroup = Group{Name: "training-status", Help: "Show training status data.", Children: []Node{
+	Leaf{
+		Name: "view", Help: "Show aggregated training status for a date.", Default: true,
+		Spec: argsOf(&struct {
+			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+		}{}),
+		Endpoint: "health.training-status",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get training status", Output: JSON{},
+		LateDates: []string{"Date"},
+	},
+	Leaf{
+		Name: "daily", Help: "Show daily training status for a date.",
+		Spec: argsOf(&struct {
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today."`
+		}{}),
+		Endpoint: "health.daily-training-status",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get daily training status", Output: JSON{},
 	},
 }}
 

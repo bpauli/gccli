@@ -200,8 +200,10 @@ Date shortcuts
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
 - `gccli health training-readiness [<date>]`: Show training readiness data.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
-- `gccli health training-status [<date>]`: Show training status data.
+- `gccli health training-status view [<date>]`: Show aggregated training status for a date. Also runs as `gccli health training-status [<date>]`.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
+- `gccli health training-status daily [<date>]`: Show daily training status for a date.
+  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli health fitness-age [<date>]`: Show fitness age data.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli health max-metrics [<date>]`: Show VO2max and max metrics data.
@@ -223,6 +225,11 @@ Date shortcuts
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
 - `gccli health running-economy [<date>]`: Show latest running economy as of a date.
+  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli health acclimation --start=DATE --end=DATE`: Show heat and altitude acclimation for a date range.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli health one-rep-max [<date>]`: Show current estimated one-rep max values as of a date.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli health events [<date>]`: Show daily wellness events.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.

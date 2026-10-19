@@ -1,6 +1,7 @@
 -- args --
 health
 training-status
+view
 2026-10-01
 -- route GET /metrics-service/metrics/trainingstatus/aggregated/2026-10-01 --
 {"value":1}

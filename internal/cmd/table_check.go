@@ -38,7 +38,7 @@ var v1LateDates = []string{
 	"health stress view",
 	"health summary",
 	"health training-readiness",
-	"health training-status",
+	"health training-status view",
 	"hydration view",
 	"nutrition food-log",
 	"nutrition meals",
