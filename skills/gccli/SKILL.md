@@ -300,6 +300,8 @@ Date shortcuts
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to start date.
 - `gccli devices alarms`: Show alarms from all devices.
 - `gccli devices last-used`: Show last used device.
+- `gccli devices sensors`: List paired sensors.
+- `gccli devices backups`: Show device backup summary.
 
 ### Gear
 

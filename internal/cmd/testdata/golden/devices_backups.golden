@@ -1,0 +1,41 @@
+-- args --
+devices
+backups
+-- route GET /devicebackup-service/backup/summary --
+{"value":1}
+-- table stdout --
+{
+  "value": 1
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /devicebackup-service/backup/summary
+-- plain stdout --
+{
+  "value": 1
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /devicebackup-service/backup/summary
+-- plain-header stdout --
+{
+  "value": 1
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /devicebackup-service/backup/summary
+-- json stdout --
+{
+  "value": 1
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /devicebackup-service/backup/summary

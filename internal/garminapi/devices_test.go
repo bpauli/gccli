@@ -16,6 +16,8 @@ func TestDevicesEndpoints(t *testing.T) {
 		{"devices.primary-training", nil, "GET /web-gateway/device-info/primary-training-device"},
 		{"devices.solar", map[string]string{"deviceID": "12345", "startDate": "2024-01-01", "endDate": "2024-01-07"}, "GET /web-gateway/solar/12345/2024-01-01/2024-01-07"},
 		{"devices.last-used", nil, "GET /device-service/deviceservice/mylastused"},
+		{"devices.sensors", nil, "GET /device-service/sensors"},
+		{"devices.backup-summary", nil, "GET /devicebackup-service/backup/summary"},
 	})
 }
 

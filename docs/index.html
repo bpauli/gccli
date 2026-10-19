@@ -488,7 +488,7 @@ gccli activities list --limit 5</pre>
           <div class="feature-card fade-in">
             <div class="feature-icon violet">&#x231a;</div>
             <h3>Devices</h3>
-            <p>List registered devices, view settings, solar data, alarms. Query primary and last-used device.</p>
+            <p>List registered devices, view settings, solar data, alarms. Query primary and last-used device. List paired sensors and the backup summary.</p>
           </div>
           <div class="feature-card fade-in">
             <div class="feature-icon">&#x1f45f;</div>
@@ -763,6 +763,8 @@ gccli activities list --limit 5</pre>
               <div class="cmd-row"><div class="cmd">gccli devices solar <span class="nowrap">&lt;device-id&gt;</span> [flags]</div><div class="desc">Show solar charging data for a device.<br><code><span class="nowrap">&lt;device-id&gt;</span></code> Device ID.<br><code><span class="nowrap">--start=</span><wbr>DATE</code> Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.<br><code><span class="nowrap">--end=</span><wbr>DATE</code> End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to start date.</div></div>
               <div class="cmd-row"><div class="cmd">gccli devices alarms</div><div class="desc">Show alarms from all devices.</div></div>
               <div class="cmd-row"><div class="cmd">gccli devices <span class="nowrap">last-used</span></div><div class="desc">Show last used device.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli devices sensors</div><div class="desc">List paired sensors.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli devices backups</div><div class="desc">Show device backup summary.</div></div>
             </div>
           </div>
 
