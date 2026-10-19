@@ -68,11 +68,18 @@ Commands:
   health steps view                Show step chart data for a date.
   health steps daily               Show daily step totals for a date range.
   health steps weekly              Show weekly step totals.
+  health steps monthly             Show monthly step totals.
+  health calories weekly           Show weekly calorie totals.
+  health pushes weekly             Show weekly wheelchair push totals.
+  health pushes monthly            Show monthly wheelchair push totals.
+  health lifetime-totals           Show lifetime totals.
   health hr                        Show heart rate data.
   health rhr                       Show resting heart rate data.
   health floors                    Show floors climbed data.
   health sleep                     Show sleep data.
   health stress view               Show stress data for a date.
+  health stress daily              Show daily stress statistics for a date
+                                   range.
   health stress weekly             Show weekly stress data.
   health respiration               Show respiration data.
   health spo2                      Show SpO2 (blood oxygen) data.
@@ -400,11 +407,18 @@ Commands:
   health steps view                Show step chart data for a date.
   health steps daily               Show daily step totals for a date range.
   health steps weekly              Show weekly step totals.
+  health steps monthly             Show monthly step totals.
+  health calories weekly           Show weekly calorie totals.
+  health pushes weekly             Show weekly wheelchair push totals.
+  health pushes monthly            Show monthly wheelchair push totals.
+  health lifetime-totals           Show lifetime totals.
   health hr                        Show heart rate data.
   health rhr                       Show resting heart rate data.
   health floors                    Show floors climbed data.
   health sleep                     Show sleep data.
   health stress view               Show stress data for a date.
+  health stress daily              Show daily stress statistics for a date
+                                   range.
   health stress weekly             Show weekly stress data.
   health respiration               Show respiration data.
   health spo2                      Show SpO2 (blood oxygen) data.
@@ -451,9 +465,55 @@ Flags:
       --version           Print version information.
 
 Commands:
-  health steps view      Show step chart data for a date.
-  health steps daily     Show daily step totals for a date range.
-  health steps weekly    Show weekly step totals.
+  health steps view       Show step chart data for a date.
+  health steps daily      Show daily step totals for a date range.
+  health steps weekly     Show weekly step totals.
+  health steps monthly    Show monthly step totals.
+
+$ gccli health calories --help
+Usage: gccli health calories <command>
+
+Show calorie statistics.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  health calories weekly    Show weekly calorie totals.
+
+$ gccli health pushes --help
+Usage: gccli health pushes <command>
+
+Show wheelchair push statistics.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  health pushes weekly     Show weekly wheelchair push totals.
+  health pushes monthly    Show monthly wheelchair push totals.
 
 $ gccli health stress --help
 Usage: gccli health stress <command>
@@ -476,6 +536,7 @@ Flags:
 
 Commands:
   health stress view      Show stress data for a date.
+  health stress daily     Show daily stress statistics for a date range.
   health stress weekly    Show weekly stress data.
 
 $ gccli health body-battery --help

@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **Challenges** - `challenges available` lists the badge challenges that you can join. `challenges completed` lists the badge challenges that you finished. (#210, #79)
+- **Health statistics** - `health stress daily --start DATE --end DATE` shows daily stress statistics for a date range. `health steps monthly` and `health pushes monthly` show monthly step and wheelchair push totals (`--end`, default today, and `--months`, default 6). `health calories weekly` and `health pushes weekly` show weekly calorie and wheelchair push totals (`--end`, default today, and `--weeks`, default 4). `health lifetime-totals` shows your lifetime totals. (#72)
 
 ## [2.3.0] - 2026-10-19
 
