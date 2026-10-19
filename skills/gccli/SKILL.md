@@ -318,6 +318,8 @@ Date shortcuts
 - `gccli gear unlink <uuid> <activity-id>`: Unlink gear from an activity.
   - `<uuid>`: Gear UUID.
   - `<activity-id>`: Activity ID.
+- `gccli gear types`: List gear types.
+- `gccli gear collections list`: List gear collections. Also runs as `gccli gear collections`.
 
 ### Goals, Badges & Challenges
 
