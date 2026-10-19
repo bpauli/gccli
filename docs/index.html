@@ -478,7 +478,7 @@ gccli activities list --limit 5</pre>
           <div class="feature-card fade-in">
             <div class="feature-icon rose">&#x2696;</div>
             <h3>Body Composition</h3>
-            <p>Weight tracking, body fat, muscle mass, weigh-in history, latest weigh-in, blood pressure. Add entries and upload via FIT encoding.</p>
+            <p>Weight tracking, body fat, muscle mass, weigh-in history, latest weigh-in, blood pressure, glucose. Add entries and upload via FIT encoding.</p>
           </div>
           <div class="feature-card fade-in">
             <div class="feature-icon violet">&#x1f5fa;</div>
@@ -723,6 +723,7 @@ gccli activities list --limit 5</pre>
               <div class="cmd-row"><div class="cmd">gccli body <span class="nowrap">blood-pressure</span> <span class="nowrap">--start=DATE</span> <span class="nowrap">--end=DATE</span></div><div class="desc">Show blood pressure data.<br><code><span class="nowrap">--start=</span><wbr>DATE</code> Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).<br><code><span class="nowrap">--end=</span><wbr>DATE</code> End date (YYYY-MM-DD, today, yesterday, 3d, +30d).</div></div>
               <div class="cmd-row"><div class="cmd">gccli body <span class="nowrap">add-blood-pressure</span> <span class="nowrap">--systolic=INT</span> <span class="nowrap">--diastolic=INT</span> <span class="nowrap">--pulse=INT</span> [flags]</div><div class="desc">Add a blood pressure measurement.<br><code><span class="nowrap">--systolic=</span><wbr>INT</code> Systolic pressure (mmHg).<br><code><span class="nowrap">--diastolic=</span><wbr>INT</code> Diastolic pressure (mmHg).<br><code><span class="nowrap">--pulse=</span><wbr>INT</code> Pulse rate (bpm).<br><code><span class="nowrap">--notes=</span><wbr>STRING</code> Optional notes.</div></div>
               <div class="cmd-row"><div class="cmd">gccli body <span class="nowrap">delete-blood-pressure</span> <span class="nowrap">--date=STRING</span> &lt;version&gt; [flags]</div><div class="desc">Delete a blood pressure entry.<br><code>&lt;version&gt;</code> Blood pressure entry version.<br><code><span class="nowrap">--date=</span><wbr>STRING</code> Date of the measurement (YYYY-MM-DD).<br><code><span class="nowrap">-f,</span> <span class="nowrap">--force</span></code> Skip confirmation prompt.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli body glucose [&lt;date&gt;]</div><div class="desc">Show glucose readings for a date.<br><code>[&lt;date&gt;]</code> Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.</div></div>
             </div>
           </div>
 

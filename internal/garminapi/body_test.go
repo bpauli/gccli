@@ -20,6 +20,7 @@ func TestBodyEndpoints(t *testing.T) {
 		{"body.latest-weight", map[string]string{"date": "2024-01-15"}, "GET /weight-service/weight/latest?date=2024-01-15"},
 		{"body.delete-weight", entry, "DELETE /weight-service/weight/2024-01-15/byversion/12345"},
 		{"body.blood-pressure", rng, "GET /bloodpressure-service/bloodpressure/range/2024-01-01/2024-01-31?includeAll=true"},
+		{"body.glucose", map[string]string{"date": "2024-01-15"}, "GET /biometric-service/biometric/glucose/2024-01-15"},
 		{"body.delete-blood-pressure", entry, "DELETE /bloodpressure-service/bloodpressure/2024-01-15/12345"},
 		{"body.add-weight", nil, "POST /weight-service/user-weight"},
 		{"body.add-blood-pressure", nil, "POST /bloodpressure-service/bloodpressure"},

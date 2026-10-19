@@ -14,7 +14,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Activities** — list, search, view details, download (FIT/GPX/TCX/KML/CSV), upload, create manual entries (with date), rename, retype, delete, set exercise sets for strength training, list activity types, list pending activities
 - **Exercise Catalog** — browse Garmin's exercise categories and exercises for strength training
 - **Health Data** — daily summaries, steps, heart rate, resting HR, sleep, stress, HRV, SpO2, respiration, body battery, floors, training readiness/status, VO2max, fitness age, race predictions, endurance/hill scores, intensity minutes, lactate threshold, cycling FTP, critical swim speed, power curve, running economy
-- **Body Composition** — weight tracking, latest weigh-in, body fat, muscle mass, blood pressure, FIT file encoding for composition uploads
+- **Body Composition** — weight tracking, latest weigh-in, body fat, muscle mass, blood pressure, glucose, FIT file encoding for composition uploads
 - **Workouts** — list, view, download as FIT, upload from JSON, update in place from JSON, create with sport types and targets (pace/HR/power/cadence), schedule (add/list/remove), delete
 - **Courses** — list courses, view favorites, get full course detail, download as FIT/GPX, import GPX files as new courses, send courses directly to a device, delete courses
 - **Devices** — list registered devices, view settings, solar data, alarms, primary/last-used device, paired sensors, backup summary
@@ -450,6 +450,9 @@ gccli body add-composition 75.5 --body-fat 15.2 --muscle-mass 35.0
 # Blood pressure
 gccli body blood-pressure --start 2024-01-01 --end 2024-01-31
 gccli body add-blood-pressure --systolic 120 --diastolic 80 --pulse 65
+
+# Glucose
+gccli body glucose [date]
 
 # Delete entries
 gccli body delete-weight <pk> --date 2024-01-15
@@ -967,6 +970,8 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `<version>`: Blood pressure entry version.
   - `--date=STRING`: Date of the measurement (YYYY-MM-DD).
   - `-f, --force`: Skip confirmation prompt.
+- `gccli body glucose [<date>]`: Show glucose readings for a date.
+  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 
 ### Workouts
 

@@ -73,6 +73,15 @@ var bodyGroup = Group{Name: "body", Help: "Body composition and weight data.", C
 		Verb:     "delete blood pressure",
 		Output:   Write{Done: "Deleted blood pressure entry {Version}", Confirm: "Delete blood pressure entry {Version} on {Date}?"},
 	},
+	Leaf{
+		Name: "glucose", Help: "Show glucose readings for a date.",
+		Spec: argsOf(&struct {
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today."`
+		}{}),
+		Endpoint: "body.glucose",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get glucose", Output: JSON{},
+	},
 }}
 
 // BodyCompositionCmd shows body composition data for a date or range.

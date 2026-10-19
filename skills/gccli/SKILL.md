@@ -233,6 +233,8 @@ Date shortcuts
   - `<version>`: Blood pressure entry version.
   - `--date=STRING`: Date of the measurement (YYYY-MM-DD).
   - `-f, --force`: Skip confirmation prompt.
+- `gccli body glucose [<date>]`: Show glucose readings for a date.
+  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 
 ### Workouts
 

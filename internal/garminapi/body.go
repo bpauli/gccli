@@ -16,6 +16,7 @@ var bodyEndpoints = []Endpoint{
 	{Name: "body.latest-weight", Method: http.MethodGet, Host: ConnectAPI, Path: "/weight-service/weight/latest?date={date}"},
 	{Name: "body.delete-weight", Method: http.MethodDelete, Host: ConnectAPI, Path: "/weight-service/weight/{date}/byversion/{version}"},
 	{Name: "body.blood-pressure", Method: http.MethodGet, Host: ConnectAPI, Path: "/bloodpressure-service/bloodpressure/range/{startDate}/{endDate}?includeAll=true"},
+	{Name: "body.glucose", Method: http.MethodGet, Host: ConnectAPI, Path: "/biometric-service/biometric/glucose/{date}"},
 	{Name: "body.delete-blood-pressure", Method: http.MethodDelete, Host: ConnectAPI, Path: "/bloodpressure-service/bloodpressure/{date}/{version}"},
 	{Name: "body.add-weight", Method: http.MethodPost, Host: ConnectAPI, Path: "/weight-service/user-weight", Body: true},
 	{Name: "body.add-blood-pressure", Method: http.MethodPost, Host: ConnectAPI, Path: "/bloodpressure-service/bloodpressure", Body: true},
