@@ -32,6 +32,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Workout copy** - `workouts copy <id> [<name>]` copies a workout and prints the ID of the copy. Without a name, the copy gets the name of the original. (#81)
 - **Goal writes** - `goals set <type> <value>` sets the daily goal for `floors-climbed` (floors), `intensity-minutes` (minutes) or `hydration` (milliliters). `goals steps set <steps>` sets a fixed daily steps goal, and `goals steps auto` sets Garmin's automatic steps goal. Each goal starts on `--date` (default today) and stays for the days after it. (#68)
 - **Calendar notes** - a new `calendar` group. `calendar notes add <date> <name> [--content TEXT]` adds a note to a calendar day and prints its ID. `calendar notes update <id>` changes `--name` or `--content` (an empty `--content` clears the text). `calendar notes move <id> <date>` moves a note to another day, and `calendar notes delete <id>` deletes a note after a prompt (`--force` skips it). (#82)
+- **Notification preference writes** - `notifications preferences set <key> <true|false>` turns one notification preference on or off. It reads the preferences, changes the key and sends the full object back. A key that is not in the preferences, or that is not true or false, fails before any write, and the error lists the keys. (#86)
+- **Privacy zone writes** - `profile privacy-zones add --lat --lon --radius` adds a privacy zone and prints its ID. The radius is 500 to 1500 meters, and gccli checks it, the latitude and the longitude before it sends the request. `profile privacy-zones delete <id>` deletes a zone after a prompt (`--force` skips it). (#88)
 
 ### Changed
 
@@ -40,6 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Training status** - `health training-status` is now a command group. The old command is the default child `view`, so `health training-status [<date>]` still works and gives the same output and exit codes. The help and the shell completion now list the children. (#73)
 - **Critical swim speed** - `health critical-swim-speed` is now a command group. The old command is the default child `view`, so `health critical-swim-speed [<date>]` still works and gives the same output and exit codes. The help and the shell completion now list the children. For a bad date, the usage block above the error line now names `health critical-swim-speed view`. (#74)
 - **Personal records** - `records` is now a command group. The old command is the default child `list`, so `records` still works and gives the same output and exit codes. The help and the shell completion now list the children. For an extra argument, the usage line above the error now names `records list`. (#87)
+- **Notification preferences** - `notifications preferences` is now a command group. The old command is the default child `view`, so `notifications preferences` still works and gives the same output and exit codes. The help and the shell completion now list the children. For an extra argument, the usage line above the error now names `notifications preferences view`. (#86)
 
 ## [2.3.0] - 2026-10-19
 

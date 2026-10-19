@@ -1,0 +1,60 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+profile
+privacy-zones
+add
+--lat
+52.52
+--lon=-30.5
+--radius
+800
+-- route POST /privacyzone-service/privacyZones 400 noeol --
+{"message":"Invalid radius"}
+-- table stdout --
+-- table stderr --
+add privacy zone: garmin api: 400 Bad Request: {"message":"Invalid radius"}
+-- table exit --
+1
+-- table requests --
+POST /privacyzone-service/privacyZones
+  {
+    "centerLatitude": 52.52,
+    "centerLongitude": -30.5,
+    "radius": 800
+  }
+-- plain stdout --
+-- plain stderr --
+add privacy zone: garmin api: 400 Bad Request: {"message":"Invalid radius"}
+-- plain exit --
+1
+-- plain requests --
+POST /privacyzone-service/privacyZones
+  {
+    "centerLatitude": 52.52,
+    "centerLongitude": -30.5,
+    "radius": 800
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+add privacy zone: garmin api: 400 Bad Request: {"message":"Invalid radius"}
+-- plain-header exit --
+1
+-- plain-header requests --
+POST /privacyzone-service/privacyZones
+  {
+    "centerLatitude": 52.52,
+    "centerLongitude": -30.5,
+    "radius": 800
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"add privacy zone: garmin api: 400 Bad Request: {\"message\":\"Invalid radius\"}"}}
+-- json exit --
+1
+-- json requests --
+POST /privacyzone-service/privacyZones
+  {
+    "centerLatitude": 52.52,
+    "centerLongitude": -30.5,
+    "radius": 800
+  }

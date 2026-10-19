@@ -1,0 +1,37 @@
+Error case: a key whose value is not true or false fails before any write.
+-- args --
+notifications
+preferences
+set
+pushHour
+true
+-- route GET /notification-service/preference/userPreference --
+{"allowEmailWeeklySummary":true,"allowPushBadges":false,"pushHour":7}
+-- table stdout --
+-- table stderr --
+set notification preference: notification preference "pushHour" is not true or false; the keys are: allowEmailWeeklySummary, allowPushBadges
+-- table exit --
+1
+-- table requests --
+GET /notification-service/preference/userPreference
+-- plain stdout --
+-- plain stderr --
+set notification preference: notification preference "pushHour" is not true or false; the keys are: allowEmailWeeklySummary, allowPushBadges
+-- plain exit --
+1
+-- plain requests --
+GET /notification-service/preference/userPreference
+-- plain-header stdout --
+-- plain-header stderr --
+set notification preference: notification preference "pushHour" is not true or false; the keys are: allowEmailWeeklySummary, allowPushBadges
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /notification-service/preference/userPreference
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"set notification preference: notification preference \"pushHour\" is not true or false; the keys are: allowEmailWeeklySummary, allowPushBadges"}}
+-- json exit --
+1
+-- json requests --
+GET /notification-service/preference/userPreference

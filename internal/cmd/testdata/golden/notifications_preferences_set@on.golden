@@ -1,0 +1,63 @@
+true turns a preference on.
+-- args --
+notifications
+preferences
+set
+allowPushBadges
+true
+-- route GET /notification-service/preference/userPreference --
+{"allowEmailWeeklySummary":true,"allowPushBadges":false,"pushHour":7}
+-- route PUT /notification-service/preference/userPreference noeol --
+true
+-- table stdout --
+-- table stderr --
+Set notification preference allowPushBadges to true
+-- table exit --
+0
+-- table requests --
+GET /notification-service/preference/userPreference
+PUT /notification-service/preference/userPreference
+  {
+    "allowEmailWeeklySummary": true,
+    "allowPushBadges": true,
+    "pushHour": 7
+  }
+-- plain stdout --
+-- plain stderr --
+Set notification preference allowPushBadges to true
+-- plain exit --
+0
+-- plain requests --
+GET /notification-service/preference/userPreference
+PUT /notification-service/preference/userPreference
+  {
+    "allowEmailWeeklySummary": true,
+    "allowPushBadges": true,
+    "pushHour": 7
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Set notification preference allowPushBadges to true
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /notification-service/preference/userPreference
+PUT /notification-service/preference/userPreference
+  {
+    "allowEmailWeeklySummary": true,
+    "allowPushBadges": true,
+    "pushHour": 7
+  }
+-- json stdout --
+true
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /notification-service/preference/userPreference
+PUT /notification-service/preference/userPreference
+  {
+    "allowEmailWeeklySummary": true,
+    "allowPushBadges": true,
+    "pushHour": 7
+  }

@@ -1,0 +1,38 @@
+-- args --
+profile
+privacy-zones
+delete
+4321
+-- stdin --
+y
+-- route DELETE /privacyzone-service/privacyZones/4321 noeol --
+true
+-- table stdout --
+-- table stderr --
+Delete privacy zone 4321? [y/N]: Deleted privacy zone 4321
+-- table exit --
+0
+-- table requests --
+DELETE /privacyzone-service/privacyZones/4321
+-- plain stdout --
+-- plain stderr --
+Delete privacy zone 4321? [y/N]: Deleted privacy zone 4321
+-- plain exit --
+0
+-- plain requests --
+DELETE /privacyzone-service/privacyZones/4321
+-- plain-header stdout --
+-- plain-header stderr --
+Delete privacy zone 4321? [y/N]: Deleted privacy zone 4321
+-- plain-header exit --
+0
+-- plain-header requests --
+DELETE /privacyzone-service/privacyZones/4321
+-- json stdout --
+true
+-- json stderr noeol --
+Delete privacy zone 4321? [y/N]: 
+-- json exit --
+0
+-- json requests --
+DELETE /privacyzone-service/privacyZones/4321

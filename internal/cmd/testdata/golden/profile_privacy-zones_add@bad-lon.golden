@@ -1,0 +1,128 @@
+Error case: a value out of range fails before any request, and the exit code is 2 (usage).
+-- args --
+profile
+privacy-zones
+add
+--lat=0
+--lon=180.5
+--radius=500
+-- table stdout --
+-- table stderr --
+Usage: gccli profile privacy-zones add --lat=DEGREES --lon=DEGREES --radius=METERS
+
+Add a privacy zone around a point.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --lat=DEGREES       Latitude of the center, -90 to 90. Give a negative
+                          value as --lat=-33.9.
+      --lon=DEGREES       Longitude of the center, -180 to 180. Give a negative
+                          value as --lon=-30.
+      --radius=METERS     Radius in meters, 500 to 1500.
+
+gccli: error: profile privacy-zones add: --lon must be between -180 and 180
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli profile privacy-zones add --lat=DEGREES --lon=DEGREES --radius=METERS
+
+Add a privacy zone around a point.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --lat=DEGREES       Latitude of the center, -90 to 90. Give a negative
+                          value as --lat=-33.9.
+      --lon=DEGREES       Longitude of the center, -180 to 180. Give a negative
+                          value as --lon=-30.
+      --radius=METERS     Radius in meters, 500 to 1500.
+
+gccli: error: profile privacy-zones add: --lon must be between -180 and 180
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli profile privacy-zones add --lat=DEGREES --lon=DEGREES --radius=METERS
+
+Add a privacy zone around a point.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --lat=DEGREES       Latitude of the center, -90 to 90. Give a negative
+                          value as --lat=-33.9.
+      --lon=DEGREES       Longitude of the center, -180 to 180. Give a negative
+                          value as --lon=-30.
+      --radius=METERS     Radius in meters, 500 to 1500.
+
+gccli: error: profile privacy-zones add: --lon must be between -180 and 180
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli profile privacy-zones add --lat=DEGREES --lon=DEGREES --radius=METERS
+
+Add a privacy zone around a point.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --lat=DEGREES       Latitude of the center, -90 to 90. Give a negative
+                          value as --lat=-33.9.
+      --lon=DEGREES       Longitude of the center, -180 to 180. Give a negative
+                          value as --lon=-30.
+      --radius=METERS     Radius in meters, 500 to 1500.
+
+gccli: error: profile privacy-zones add: --lon must be between -180 and 180
+-- json exit --
+2
+-- json requests --

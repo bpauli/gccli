@@ -1,0 +1,67 @@
+The body carries the center and the radius. A negative longitude needs the --lon=VALUE form.
+-- args --
+profile
+privacy-zones
+add
+--lat
+52.52
+--lon=-30.5
+--radius
+800
+-- route POST /privacyzone-service/privacyZones --
+{"centerLatitude":52.52,"centerLongitude":-30.5,"enhanced":false,"privacyZoneId":4321,"radius":800,"userProfileId":1001}
+-- table stdout --
+-- table stderr --
+Added privacy zone of 800 m around 52.52, -30.5 (ID: 4321)
+-- table exit --
+0
+-- table requests --
+POST /privacyzone-service/privacyZones
+  {
+    "centerLatitude": 52.52,
+    "centerLongitude": -30.5,
+    "radius": 800
+  }
+-- plain stdout --
+-- plain stderr --
+Added privacy zone of 800 m around 52.52, -30.5 (ID: 4321)
+-- plain exit --
+0
+-- plain requests --
+POST /privacyzone-service/privacyZones
+  {
+    "centerLatitude": 52.52,
+    "centerLongitude": -30.5,
+    "radius": 800
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Added privacy zone of 800 m around 52.52, -30.5 (ID: 4321)
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /privacyzone-service/privacyZones
+  {
+    "centerLatitude": 52.52,
+    "centerLongitude": -30.5,
+    "radius": 800
+  }
+-- json stdout --
+{
+  "centerLatitude": 52.52,
+  "centerLongitude": -30.5,
+  "enhanced": false,
+  "privacyZoneId": 4321,
+  "radius": 800,
+  "userProfileId": 1001
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /privacyzone-service/privacyZones
+  {
+    "centerLatitude": 52.52,
+    "centerLongitude": -30.5,
+    "radius": 800
+  }

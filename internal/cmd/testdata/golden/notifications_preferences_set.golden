@@ -1,0 +1,63 @@
+The command reads the preferences, sets one key and sends the full object back.
+-- args --
+notifications
+preferences
+set
+allowEmailWeeklySummary
+false
+-- route GET /notification-service/preference/userPreference --
+{"allowEmailWeeklySummary":true,"allowPushBadges":false,"pushHour":7}
+-- route PUT /notification-service/preference/userPreference noeol --
+true
+-- table stdout --
+-- table stderr --
+Set notification preference allowEmailWeeklySummary to false
+-- table exit --
+0
+-- table requests --
+GET /notification-service/preference/userPreference
+PUT /notification-service/preference/userPreference
+  {
+    "allowEmailWeeklySummary": false,
+    "allowPushBadges": false,
+    "pushHour": 7
+  }
+-- plain stdout --
+-- plain stderr --
+Set notification preference allowEmailWeeklySummary to false
+-- plain exit --
+0
+-- plain requests --
+GET /notification-service/preference/userPreference
+PUT /notification-service/preference/userPreference
+  {
+    "allowEmailWeeklySummary": false,
+    "allowPushBadges": false,
+    "pushHour": 7
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Set notification preference allowEmailWeeklySummary to false
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /notification-service/preference/userPreference
+PUT /notification-service/preference/userPreference
+  {
+    "allowEmailWeeklySummary": false,
+    "allowPushBadges": false,
+    "pushHour": 7
+  }
+-- json stdout --
+true
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /notification-service/preference/userPreference
+PUT /notification-service/preference/userPreference
+  {
+    "allowEmailWeeklySummary": false,
+    "allowPushBadges": false,
+    "pushHour": 7
+  }

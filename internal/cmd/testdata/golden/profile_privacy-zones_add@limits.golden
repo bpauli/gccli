@@ -1,0 +1,67 @@
+The limits are accepted: latitude -90 and 90, longitude -180 and 180, radius 500 and 1500.
+-- args --
+profile
+privacy-zones
+add
+--lat=-90
+--lon
+180
+--radius
+1500
+-- route POST /privacyzone-service/privacyZones --
+{"centerLatitude":-90.0,"centerLongitude":180.0,"enhanced":false,"privacyZoneId":4322,"radius":1500,"userProfileId":1001}
+-- table stdout --
+-- table stderr --
+Added privacy zone of 1500 m around -90, 180 (ID: 4322)
+-- table exit --
+0
+-- table requests --
+POST /privacyzone-service/privacyZones
+  {
+    "centerLatitude": -90,
+    "centerLongitude": 180,
+    "radius": 1500
+  }
+-- plain stdout --
+-- plain stderr --
+Added privacy zone of 1500 m around -90, 180 (ID: 4322)
+-- plain exit --
+0
+-- plain requests --
+POST /privacyzone-service/privacyZones
+  {
+    "centerLatitude": -90,
+    "centerLongitude": 180,
+    "radius": 1500
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Added privacy zone of 1500 m around -90, 180 (ID: 4322)
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /privacyzone-service/privacyZones
+  {
+    "centerLatitude": -90,
+    "centerLongitude": 180,
+    "radius": 1500
+  }
+-- json stdout --
+{
+  "centerLatitude": -90.0,
+  "centerLongitude": 180.0,
+  "enhanced": false,
+  "privacyZoneId": 4322,
+  "radius": 1500,
+  "userProfileId": 1001
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /privacyzone-service/privacyZones
+  {
+    "centerLatitude": -90,
+    "centerLongitude": 180,
+    "radius": 1500
+  }

@@ -282,6 +282,24 @@ var writeCases = map[string]writeCase{
 		human:    "Set automatic steps goal from 2026-10-15\n",
 		fallback: "Set automatic steps goal from 2026-10-15\n",
 	},
+	"notifications preferences set": {
+		args: []string{"allowEmailWeeklySummary", "false"},
+		routes: map[string]string{
+			"GET /notification-service/preference/userPreference": `{"allowEmailWeeklySummary":true,"allowPushBadges":false}`,
+			"PUT /notification-service/preference/userPreference": "true",
+		},
+		result:   "PUT /notification-service/preference/userPreference",
+		json:     "true\n",
+		human:    "Set notification preference allowEmailWeeklySummary to false\n",
+		fallback: "Set notification preference allowEmailWeeklySummary to false\n",
+	},
+	"profile privacy-zones add": {
+		args:     []string{"--lat", "52.52", "--lon=-30.5", "--radius", "800"},
+		routes:   map[string]string{"POST /privacyzone-service/privacyZones": `{"centerLatitude":52.52,"centerLongitude":-30.5,"privacyZoneId":4321,"radius":800}`},
+		json:     "{\n  \"centerLatitude\": 52.52,\n  \"centerLongitude\": -30.5,\n  \"privacyZoneId\": 4321,\n  \"radius\": 800\n}\n",
+		human:    "Added privacy zone of 800 m around 52.52, -30.5 (ID: 4321)\n",
+		fallback: "Added privacy zone of 800 m around 52.52, -30.5\n",
+	},
 	"hydration add": {
 		args:   []string{"250", "--date", "2024-01-15"},
 		routes: map[string]string{"PUT /usersummary-service/usersummary/hydration/log": `{"valueInML":250}`},
