@@ -31,6 +31,9 @@ Commands:
   activities search                Search activities by date range.
   activities types                 List all activity types supported by Garmin.
   activities pending               List pending activities.
+  activities stats view            Show activity totals by activity type.
+  activities stats monthly         Show monthly activity totals by activity
+                                   type.
   activity summary                 Show activity summary.
   activity details                 Show full activity details.
   activity splits                  Show activity splits.
@@ -43,6 +46,8 @@ Commands:
   activity exercise-sets set       Set exercise sets for a strength training
                                    activity.
   activity gear                    Show linked gear.
+  activity comments                List the comments on an activity.
+  activity likes                   List the likes of an activity.
   activity download                Download activity file.
   activity upload                  Upload an activity file (FIT/GPX/TCX).
   activity create                  Create a manual activity.
@@ -267,11 +272,36 @@ Flags:
       --version           Print version information.
 
 Commands:
-  activities list       List recent activities.
-  activities count      Show total activity count.
-  activities search     Search activities by date range.
-  activities types      List all activity types supported by Garmin.
-  activities pending    List pending activities.
+  activities list             List recent activities.
+  activities count            Show total activity count.
+  activities search           Search activities by date range.
+  activities types            List all activity types supported by Garmin.
+  activities pending          List pending activities.
+  activities stats view       Show activity totals by activity type.
+  activities stats monthly    Show monthly activity totals by activity type.
+
+$ gccli activities stats --help
+Usage: gccli activities stats <command>
+
+Show activity statistics.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  activities stats view       Show activity totals by activity type.
+  activities stats monthly    Show monthly activity totals by activity type.
 
 $ gccli activity --help
 Usage: gccli activity <command> [flags]
@@ -305,6 +335,8 @@ Commands:
   activity exercise-sets set     Set exercise sets for a strength training
                                  activity.
   activity gear                  Show linked gear.
+  activity comments              List the comments on an activity.
+  activity likes                 List the likes of an activity.
   activity download              Download activity file.
   activity upload                Upload an activity file (FIT/GPX/TCX).
   activity create                Create a manual activity.

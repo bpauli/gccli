@@ -41,6 +41,10 @@ var activitiesEndpoints = []Endpoint{
 	{Name: "activities.delete", Method: http.MethodDelete, Host: ConnectAPI, Path: "/activity-service/activity/{activityID}"},
 	{Name: "activities.types", Method: http.MethodGet, Host: ConnectAPI, Path: "/activity-service/activity/activityTypes"},
 	{Name: "activities.pending", Method: http.MethodGet, Host: ConnectAPI, Path: "/pendingactivity-service/pending-activities"},
+	{Name: "activities.statistics", Method: http.MethodGet, Host: ConnectAPI, Path: "/userstats-service/statistics/{displayName}"},
+	{Name: "activities.monthly-statistics", Method: http.MethodGet, Host: ConnectAPI, Path: "/userstats-service/statistics/monthly/{displayName}?ByParentType=true"},
+	{Name: "activities.comments", Method: http.MethodGet, Host: ConnectAPI, Path: "/conversation-service/conversation/comments/ACTIVITY/{activityID}?start=0&limit=20"},
+	{Name: "activities.likes", Method: http.MethodGet, Host: ConnectAPI, Path: "/conversation-service/conversation/likes/ACTIVITY/{activityID}"},
 }
 
 // CountActivities returns the total number of activities for the authenticated user.

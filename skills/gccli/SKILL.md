@@ -65,6 +65,8 @@ Date shortcuts
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
 - `gccli activities types`: List all activity types supported by Garmin.
 - `gccli activities pending`: List pending activities.
+- `gccli activities stats view`: Show activity totals by activity type. Also runs as `gccli activities stats`.
+- `gccli activities stats monthly`: Show monthly activity totals by activity type.
 - `gccli activity summary <id>`: Show activity summary. Also runs as `gccli activity <id>`.
   - `<id>`: Activity ID.
 - `gccli activity details <id> [flags]`: Show full activity details.
@@ -89,6 +91,10 @@ Date shortcuts
   - `<id>`: Activity ID.
   - `-e, --exercise=EXERCISE,...`: Exercise set in format CATEGORY/NAME:reps@weightkg[:dSECS][:rSECS] (e.g. BENCH_PRESS/BARBELL_BENCH_PRESS:12@20:d30:r60).
 - `gccli activity gear <id>`: Show linked gear.
+  - `<id>`: Activity ID.
+- `gccli activity comments <id>`: List the comments on an activity.
+  - `<id>`: Activity ID.
+- `gccli activity likes <id>`: List the likes of an activity.
   - `<id>`: Activity ID.
 - `gccli activity download <id> [flags]`: Download activity file.
   - `<id>`: Activity ID.

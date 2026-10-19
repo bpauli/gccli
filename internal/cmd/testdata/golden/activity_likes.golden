@@ -1,0 +1,50 @@
+-- args --
+activity
+likes
+111
+-- route GET /conversation-service/conversation/likes/ACTIVITY/111 --
+[{"displayName":"fan"}]
+-- table stdout --
+[
+  {
+    "displayName": "fan"
+  }
+]
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /conversation-service/conversation/likes/ACTIVITY/111
+-- plain stdout --
+[
+  {
+    "displayName": "fan"
+  }
+]
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /conversation-service/conversation/likes/ACTIVITY/111
+-- plain-header stdout --
+[
+  {
+    "displayName": "fan"
+  }
+]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /conversation-service/conversation/likes/ACTIVITY/111
+-- json stdout --
+[
+  {
+    "displayName": "fan"
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /conversation-service/conversation/likes/ACTIVITY/111

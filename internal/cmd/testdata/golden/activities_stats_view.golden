@@ -1,0 +1,112 @@
+-- args --
+activities
+stats
+view
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- route GET /userstats-service/statistics/tester --
+{"userProfileId":3141592,"statisticsStartDate":null,"statisticsEndDate":null,"userMetrics":[{"activityType":{"typeId":1,"typeKey":"running"},"totalActivities":3,"totalDistance":15000.5,"totalDuration":5400.0,"totalCalories":900.0,"totalElevationGain":120.0,"visibleCount":3}]}
+-- table stdout --
+{
+  "userProfileId": 3141592,
+  "statisticsStartDate": null,
+  "statisticsEndDate": null,
+  "userMetrics": [
+    {
+      "activityType": {
+        "typeId": 1,
+        "typeKey": "running"
+      },
+      "totalActivities": 3,
+      "totalDistance": 15000.5,
+      "totalDuration": 5400.0,
+      "totalCalories": 900.0,
+      "totalElevationGain": 120.0,
+      "visibleCount": 3
+    }
+  ]
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /userprofile-service/userprofile/settings
+GET /userstats-service/statistics/tester
+-- plain stdout --
+{
+  "userProfileId": 3141592,
+  "statisticsStartDate": null,
+  "statisticsEndDate": null,
+  "userMetrics": [
+    {
+      "activityType": {
+        "typeId": 1,
+        "typeKey": "running"
+      },
+      "totalActivities": 3,
+      "totalDistance": 15000.5,
+      "totalDuration": 5400.0,
+      "totalCalories": 900.0,
+      "totalElevationGain": 120.0,
+      "visibleCount": 3
+    }
+  ]
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+GET /userstats-service/statistics/tester
+-- plain-header stdout --
+{
+  "userProfileId": 3141592,
+  "statisticsStartDate": null,
+  "statisticsEndDate": null,
+  "userMetrics": [
+    {
+      "activityType": {
+        "typeId": 1,
+        "typeKey": "running"
+      },
+      "totalActivities": 3,
+      "totalDistance": 15000.5,
+      "totalDuration": 5400.0,
+      "totalCalories": 900.0,
+      "totalElevationGain": 120.0,
+      "visibleCount": 3
+    }
+  ]
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /userstats-service/statistics/tester
+-- json stdout --
+{
+  "userProfileId": 3141592,
+  "statisticsStartDate": null,
+  "statisticsEndDate": null,
+  "userMetrics": [
+    {
+      "activityType": {
+        "typeId": 1,
+        "typeKey": "running"
+      },
+      "totalActivities": 3,
+      "totalDistance": 15000.5,
+      "totalDuration": 5400.0,
+      "totalCalories": 900.0,
+      "totalElevationGain": 120.0,
+      "visibleCount": 3
+    }
+  ]
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /userprofile-service/userprofile/settings
+GET /userstats-service/statistics/tester

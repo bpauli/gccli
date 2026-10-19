@@ -21,6 +21,24 @@ var activityGroup = Group{Name: "activity", Help: "View activity details.", Chil
 	Custom{Name: "power-zones", Help: "Show power time in zones.", Cmd: &ActivityPowerZonesCmd{}},
 	activityExerciseSetsGroup,
 	Custom{Name: "gear", Help: "Show linked gear.", Cmd: &ActivityGearCmd{}},
+	Leaf{
+		Name: "comments", Help: "List the comments on an activity.",
+		Spec: argsOf(&struct {
+			ID string `arg:"" help:"Activity ID."`
+		}{}),
+		Endpoint: "activities.comments",
+		Params:   Params{"activityID": In("ID")},
+		Verb:     "get comments", Output: JSON{},
+	},
+	Leaf{
+		Name: "likes", Help: "List the likes of an activity.",
+		Spec: argsOf(&struct {
+			ID string `arg:"" help:"Activity ID."`
+		}{}),
+		Endpoint: "activities.likes",
+		Params:   Params{"activityID": In("ID")},
+		Verb:     "get likes", Output: JSON{},
+	},
 	Custom{Name: "download", Help: "Download activity file.", Cmd: &ActivityDownloadCmd{}},
 	Custom{Name: "upload", Help: "Upload an activity file (FIT/GPX/TCX).", Cmd: &ActivityUploadCmd{}},
 	Custom{Name: "create", Help: "Create a manual activity.", Cmd: &ActivityCreateCmd{}},

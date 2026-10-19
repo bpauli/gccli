@@ -1,0 +1,54 @@
+-- args --
+activity
+comments
+111
+-- route GET /conversation-service/conversation/comments/ACTIVITY/111?start=0&limit=20 --
+[{"commentId":5,"body":"Nice run"}]
+-- table stdout --
+[
+  {
+    "commentId": 5,
+    "body": "Nice run"
+  }
+]
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /conversation-service/conversation/comments/ACTIVITY/111?start=0&limit=20
+-- plain stdout --
+[
+  {
+    "commentId": 5,
+    "body": "Nice run"
+  }
+]
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /conversation-service/conversation/comments/ACTIVITY/111?start=0&limit=20
+-- plain-header stdout --
+[
+  {
+    "commentId": 5,
+    "body": "Nice run"
+  }
+]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /conversation-service/conversation/comments/ACTIVITY/111?start=0&limit=20
+-- json stdout --
+[
+  {
+    "commentId": 5,
+    "body": "Nice run"
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /conversation-service/conversation/comments/ACTIVITY/111?start=0&limit=20

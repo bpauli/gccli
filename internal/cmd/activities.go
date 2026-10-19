@@ -46,6 +46,22 @@ var activitiesGroup = Group{Name: "activities", Help: "List and search activitie
 	},
 	Custom{Name: "types", Help: "List all activity types supported by Garmin.", Cmd: &ActivitiesTypesCmd{}},
 	Leaf{Name: "pending", Help: "List pending activities.", Endpoint: "activities.pending", Verb: "get pending activities", Output: JSON{}},
+	activitiesStatsGroup,
+}}
+
+var activitiesStatsGroup = Group{Name: "stats", Help: "Show activity statistics.", Children: []Node{
+	Leaf{
+		Name: "view", Help: "Show activity totals by activity type.", Default: true,
+		Endpoint: "activities.statistics",
+		Params:   Params{"displayName": DisplayName},
+		Verb:     "get activity statistics", Output: JSON{},
+	},
+	Leaf{
+		Name: "monthly", Help: "Show monthly activity totals by activity type.",
+		Endpoint: "activities.monthly-statistics",
+		Params:   Params{"displayName": DisplayName},
+		Verb:     "get monthly activity statistics", Output: JSON{},
+	},
 }}
 
 // ActivitiesCountCmd shows the total activity count.

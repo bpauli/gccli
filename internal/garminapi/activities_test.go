@@ -47,6 +47,10 @@ func TestActivitiesEndpoints(t *testing.T) {
 		{"activities.delete", id, "DELETE /activity-service/activity/123"},
 		{"activities.types", nil, "GET /activity-service/activity/activityTypes"},
 		{"activities.pending", nil, "GET /pendingactivity-service/pending-activities"},
+		{"activities.statistics", map[string]string{"displayName": "jo"}, "GET /userstats-service/statistics/jo"},
+		{"activities.monthly-statistics", map[string]string{"displayName": "jo"}, "GET /userstats-service/statistics/monthly/jo?ByParentType=true"},
+		{"activities.comments", id, "GET /conversation-service/conversation/comments/ACTIVITY/123?start=0&limit=20"},
+		{"activities.likes", id, "GET /conversation-service/conversation/likes/ACTIVITY/123"},
 	})
 }
 
