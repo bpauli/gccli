@@ -26,6 +26,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Nutrition** — view daily food logs, meals, and nutrition settings
 - **Events** — list, add, and delete calendar events (races, group rides, etc.) with goals and training priority support
 - **Wellness** — menstrual cycle data, pregnancy summary, jet lag trips
+- **Social** - notifications
 - **Agent-ready** - ships a bundled agent skill (`skills/gccli/`) that plugs into AI assistants like Claude Code, Codex, Hermes, and OpenClaw so you can drive Garmin Connect in plain language
 - **Multiple accounts** — manage multiple Garmin accounts via `--account` flag
 - **Credential storage** in the OS keyring (macOS Keychain, Linux Secret Service), with a file fallback (see [Credential Storage](#credential-storage))
@@ -704,6 +705,12 @@ gccli wellness pregnancy-summary
 gccli wellness jet-lag list
 ```
 
+### Social
+
+```bash
+gccli notifications list               # List your notifications
+```
+
 ### Data Reload
 
 ```bash
@@ -1071,6 +1078,10 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli events delete <id> [flags]`: Delete a calendar event.
   - `<id>`: Event ID.
   - `-f, --force`: Skip confirmation prompt.
+
+### Social
+
+- `gccli notifications list`: List notifications. Also runs as `gccli notifications`.
 
 ### Hydration, Nutrition, Profile, Training, Wellness & Utilities
 

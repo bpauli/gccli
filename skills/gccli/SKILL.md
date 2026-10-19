@@ -359,6 +359,10 @@ Date shortcuts
   - `<id>`: Event ID.
   - `-f, --force`: Skip confirmation prompt.
 
+### Social
+
+- `gccli notifications list`: List notifications. Also runs as `gccli notifications`.
+
 ### Hydration, Nutrition, Profile, Training, Wellness & Utilities
 
 - `gccli hydration view [<date>]`: Show hydration data for a date. Also runs as `gccli hydration [<date>]`.
