@@ -238,6 +238,10 @@ Commands:
   events upcoming                  List upcoming events.
   events add                       Add a calendar event.
   events delete                    Delete a calendar event.
+  calendar notes add               Add a note to a calendar day.
+  calendar notes update            Change the name or text of a calendar note.
+  calendar notes move              Move a calendar note to another day.
+  calendar notes delete            Delete a calendar note.
   wellness menstrual-cycle         Show menstrual cycle data.
   wellness menstrual-summary       Show menstrual cycle summary.
   wellness menstrual-calendar      Show the menstrual cycle calendar for a date
@@ -1381,6 +1385,56 @@ Commands:
   events upcoming    List upcoming events.
   events add         Add a calendar event.
   events delete      Delete a calendar event.
+
+$ gccli calendar --help
+Usage: gccli calendar <command> [flags]
+
+Manage the Garmin Connect calendar.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  calendar notes add       Add a note to a calendar day.
+  calendar notes update    Change the name or text of a calendar note.
+  calendar notes move      Move a calendar note to another day.
+  calendar notes delete    Delete a calendar note.
+
+$ gccli calendar notes --help
+Usage: gccli calendar notes <command>
+
+Add, change, move and delete calendar notes.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  calendar notes add       Add a note to a calendar day.
+  calendar notes update    Change the name or text of a calendar note.
+  calendar notes move      Move a calendar note to another day.
+  calendar notes delete    Delete a calendar note.
 
 $ gccli wellness --help
 Usage: gccli wellness <command> [flags]

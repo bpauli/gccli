@@ -1,0 +1,69 @@
+The PUT carries the full GET object with the new name, because Garmin rejects a body without the date. The text stays.
+-- args --
+calendar
+notes
+update
+118934
+--name
+Tempo run
+-- route GET /calendar-service/note/118934 --
+{"content":"Easy pace","date":"2026-10-20","id":118934,"noteName":"Long run"}
+-- route PUT /calendar-service/note/118934 204 --
+-- table stdout --
+-- table stderr --
+Updated note 118934
+-- table exit --
+0
+-- table requests --
+GET /calendar-service/note/118934
+PUT /calendar-service/note/118934
+  {
+    "content": "Easy pace",
+    "date": "2026-10-20",
+    "id": 118934,
+    "noteName": "Tempo run"
+  }
+-- plain stdout --
+-- plain stderr --
+Updated note 118934
+-- plain exit --
+0
+-- plain requests --
+GET /calendar-service/note/118934
+PUT /calendar-service/note/118934
+  {
+    "content": "Easy pace",
+    "date": "2026-10-20",
+    "id": 118934,
+    "noteName": "Tempo run"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Updated note 118934
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /calendar-service/note/118934
+PUT /calendar-service/note/118934
+  {
+    "content": "Easy pace",
+    "date": "2026-10-20",
+    "id": 118934,
+    "noteName": "Tempo run"
+  }
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /calendar-service/note/118934
+PUT /calendar-service/note/118934
+  {
+    "content": "Easy pace",
+    "date": "2026-10-20",
+    "id": 118934,
+    "noteName": "Tempo run"
+  }

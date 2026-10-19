@@ -1,0 +1,38 @@
+Error case: the GET of the note answers 400, so no PUT is sent and the exit code is 1 (error).
+-- args --
+calendar
+notes
+update
+118934
+--name
+Tempo run
+-- route GET /calendar-service/note/118934 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+update note: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /calendar-service/note/118934
+-- plain stdout --
+-- plain stderr --
+update note: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /calendar-service/note/118934
+-- plain-header stdout --
+-- plain-header stderr --
+update note: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /calendar-service/note/118934
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"update note: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /calendar-service/note/118934

@@ -1,0 +1,64 @@
+The body carries the name, the date and the text.
+-- args --
+calendar
+notes
+add
+2026-10-20
+Long run
+--content
+Easy pace
+-- route POST /calendar-service/note --
+{"content":"Easy pace","date":"2026-10-20","id":118934,"noteName":"Long run"}
+-- table stdout --
+-- table stderr --
+Added note "Long run" on 2026-10-20 (ID: 118934)
+-- table exit --
+0
+-- table requests --
+POST /calendar-service/note
+  {
+    "content": "Easy pace",
+    "date": "2026-10-20",
+    "noteName": "Long run"
+  }
+-- plain stdout --
+-- plain stderr --
+Added note "Long run" on 2026-10-20 (ID: 118934)
+-- plain exit --
+0
+-- plain requests --
+POST /calendar-service/note
+  {
+    "content": "Easy pace",
+    "date": "2026-10-20",
+    "noteName": "Long run"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Added note "Long run" on 2026-10-20 (ID: 118934)
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /calendar-service/note
+  {
+    "content": "Easy pace",
+    "date": "2026-10-20",
+    "noteName": "Long run"
+  }
+-- json stdout --
+{
+  "content": "Easy pace",
+  "date": "2026-10-20",
+  "id": 118934,
+  "noteName": "Long run"
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /calendar-service/note
+  {
+    "content": "Easy pace",
+    "date": "2026-10-20",
+    "noteName": "Long run"
+  }

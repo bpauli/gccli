@@ -84,7 +84,13 @@ func (c *Client) UpdateGear(ctx context.Context, uuid string, e GearEdit) (json.
 	if err != nil {
 		return nil, err
 	}
-	body, err := withFields(data, "gear "+uuid, map[string]string{"name": e.Name, "brand": e.Brand, "model": e.Model, "notes": e.Notes})
+	fields := map[string]string{}
+	for key, value := range map[string]string{"name": e.Name, "brand": e.Brand, "model": e.Model, "notes": e.Notes} {
+		if value != "" {
+			fields[key] = value
+		}
+	}
+	body, err := withFields(data, "gear "+uuid, fields)
 	if err != nil {
 		return nil, err
 	}
@@ -106,7 +112,7 @@ func (c *Client) RenameGearCollection(ctx context.Context, uuid, name string) (j
 	return c.Call(ctx, "gear.collection.update", params, body)
 }
 
-// withFields sets each non-empty value of fields in the JSON object data.
+// withFields sets each value of fields in the JSON object data.
 // The other values go back as Garmin sent them, so unknown keys and number
 // text such as 0.0 stay the same.
 func withFields(data json.RawMessage, what string, fields map[string]string) ([]byte, error) {
@@ -115,9 +121,6 @@ func withFields(data json.RawMessage, what string, fields map[string]string) ([]
 		return nil, fmt.Errorf("parse %s: not a JSON object", what)
 	}
 	for key, value := range fields {
-		if value == "" {
-			continue
-		}
 		v, err := json.Marshal(value)
 		if err != nil {
 			return nil, err

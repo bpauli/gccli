@@ -319,6 +319,7 @@
               <span class="badge">Badges</span>
               <span class="badge">Courses</span>
               <span class="badge">Events</span>
+              <span class="badge">Calendar</span>
               <span class="badge">Training</span>
               <span class="badge">Hydration</span>
               <span class="badge">Nutrition</span>
@@ -504,6 +505,11 @@ gccli activities list --limit 5</pre>
             <div class="feature-icon yellow">&#x1f4c5;</div>
             <h3>Events</h3>
             <p>List, add, and delete calendar events, such as races and group rides. Set custom goals and training priority. List upcoming events.</p>
+          </div>
+          <div class="feature-card fade-in">
+            <div class="feature-icon green">&#x1f4dd;</div>
+            <h3>Calendar Notes</h3>
+            <p>Add a note to a calendar day. Change its name or text, move it to another day, or delete it.</p>
           </div>
           <div class="feature-card fade-in">
             <div class="feature-icon blue">&#x1f4c5;</div>
@@ -862,6 +868,16 @@ gccli activities list --limit 5</pre>
               <div class="cmd-row"><div class="cmd">gccli events upcoming</div><div class="desc">List upcoming events.</div></div>
               <div class="cmd-row"><div class="cmd">gccli events add <span class="nowrap">--name=STRING</span> <span class="nowrap">--date=STRING</span> <span class="nowrap">--type=STRING</span> [flags]</div><div class="desc">Add a calendar event.<br><code><span class="nowrap">-n,</span> <span class="nowrap">--name=</span><wbr>STRING</code> Event name.<br><code><span class="nowrap">-d,</span> <span class="nowrap">--date=</span><wbr>STRING</code> Event date (YYYY-MM-DD, today, +30d).<br><code><span class="nowrap">-t,</span> <span class="nowrap">--type=</span><wbr>STRING</code> Event type. One of: running, trail_running, cycling, gravel_cycling, mountain_biking, swimming, triathlon, multi_sport, hiking, walking, fitness_equipment, motorcycling, winter_sport, other.<br><code><span class="nowrap">--race</span></code> Mark as a race.<br><code><span class="nowrap">--location=</span><wbr>STRING</code> Event location.<br><code><span class="nowrap">--time=</span><wbr>STRING</code> Start time (HH:MM).<br><code><span class="nowrap">--timezone=</span><wbr>STRING</code> Time zone ID (e.g. Europe/Berlin).<br><code><span class="nowrap">--distance=</span><wbr>STRING</code> Target distance (e.g. 10km, 26.2mi, 400m).<br><code><span class="nowrap">--goal=</span><wbr>STRING</code> Time goal duration (e.g. 50m, 1h30m, 2400s).<br><code><span class="nowrap">--primary</span></code> Set as primary training event.<br><code><span class="nowrap">--training</span></code> Set as supporting training event.<br><code><span class="nowrap">--private</span></code> Make event private.<br><code><span class="nowrap">--note=</span><wbr>STRING</code> Event note.<br><code><span class="nowrap">--url=</span><wbr>STRING</code> Event URL.</div></div>
               <div class="cmd-row"><div class="cmd">gccli events delete &lt;id&gt; [flags]</div><div class="desc">Delete a calendar event.<br><code>&lt;id&gt;</code> Event ID.<br><code><span class="nowrap">-f,</span> <span class="nowrap">--force</span></code> Skip confirmation prompt.</div></div>
+            </div>
+          </div>
+
+          <div class="cmd-group fade-in">
+            <div class="cmd-header"><h3>Calendar</h3><span class="cmd-arrow">&#x25B6;</span></div>
+            <div class="cmd-body">
+              <div class="cmd-row"><div class="cmd">gccli calendar notes add &lt;date&gt; &lt;name&gt; [flags]</div><div class="desc">Add a note to a calendar day.<br><code>&lt;date&gt;</code> Date of the note (YYYY-MM-DD, today, yesterday, 3d, +30d).<br><code>&lt;name&gt;</code> Note name.<br><code><span class="nowrap">--content=</span><wbr>STRING</code> Note text.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli calendar notes update &lt;id&gt; [flags]</div><div class="desc">Change the name or text of a calendar note.<br><code>&lt;id&gt;</code> Note ID.<br><code><span class="nowrap">--name=</span><wbr>STRING</code> New name.<br><code><span class="nowrap">--content=</span><wbr>STRING</code> New text. An empty text clears it.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli calendar notes move &lt;id&gt; &lt;date&gt;</div><div class="desc">Move a calendar note to another day.<br><code>&lt;id&gt;</code> Note ID.<br><code>&lt;date&gt;</code> New date (YYYY-MM-DD, today, yesterday, 3d, +30d).</div></div>
+              <div class="cmd-row"><div class="cmd">gccli calendar notes delete &lt;id&gt; [flags]</div><div class="desc">Delete a calendar note.<br><code>&lt;id&gt;</code> Note ID.<br><code><span class="nowrap">-f,</span> <span class="nowrap">--force</span></code> Skip confirmation prompt.</div></div>
             </div>
           </div>
 

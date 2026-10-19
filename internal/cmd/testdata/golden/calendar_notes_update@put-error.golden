@@ -1,0 +1,68 @@
+Error case: the PUT answers 400, so the exit code is 1 (error).
+-- args --
+calendar
+notes
+update
+118934
+--content
+Hills
+-- route GET /calendar-service/note/118934 --
+{"content":"Easy pace","date":"2026-10-20","id":118934,"noteName":"Long run"}
+-- route PUT /calendar-service/note/118934 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+update note: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /calendar-service/note/118934
+PUT /calendar-service/note/118934
+  {
+    "content": "Hills",
+    "date": "2026-10-20",
+    "id": 118934,
+    "noteName": "Long run"
+  }
+-- plain stdout --
+-- plain stderr --
+update note: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /calendar-service/note/118934
+PUT /calendar-service/note/118934
+  {
+    "content": "Hills",
+    "date": "2026-10-20",
+    "id": 118934,
+    "noteName": "Long run"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+update note: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /calendar-service/note/118934
+PUT /calendar-service/note/118934
+  {
+    "content": "Hills",
+    "date": "2026-10-20",
+    "id": 118934,
+    "noteName": "Long run"
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"update note: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /calendar-service/note/118934
+PUT /calendar-service/note/118934
+  {
+    "content": "Hills",
+    "date": "2026-10-20",
+    "id": 118934,
+    "noteName": "Long run"
+  }

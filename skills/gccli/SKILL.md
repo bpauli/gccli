@@ -501,6 +501,23 @@ Date shortcuts
   - `<id>`: Event ID.
   - `-f, --force`: Skip confirmation prompt.
 
+### Calendar
+
+- `gccli calendar notes add <date> <name> [flags]`: Add a note to a calendar day.
+  - `<date>`: Date of the note (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `<name>`: Note name.
+  - `--content=STRING`: Note text.
+- `gccli calendar notes update <id> [flags]`: Change the name or text of a calendar note.
+  - `<id>`: Note ID.
+  - `--name=STRING`: New name.
+  - `--content=STRING`: New text. An empty text clears it.
+- `gccli calendar notes move <id> <date>`: Move a calendar note to another day.
+  - `<id>`: Note ID.
+  - `<date>`: New date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli calendar notes delete <id> [flags]`: Delete a calendar note.
+  - `<id>`: Note ID.
+  - `-f, --force`: Skip confirmation prompt.
+
 ### Social
 
 - `gccli social connections [flags]`: List your connections.
@@ -573,6 +590,7 @@ Worked examples
 - Running workout with a heart rate target: `gccli workouts create "HR Run" --type run --step "warmup:10m" --step "run:20m@hr:140-160" --step "cooldown:10m"`
 - Cycling workout with a power target: `gccli workouts create "FTP Intervals" --type bike --step "warmup:10m" --step "run:5m@power:250-280" --step "recovery:3m" --step "run:5m@power:250-280" --step "cooldown:10m"`
 - Race event: `gccli events add --name "Berlin Marathon" --date 2026-09-27 --type running --race --location "Berlin, Germany" --distance 42.195km --time 09:15 --timezone Europe/Berlin`
+- Calendar note: `gccli calendar notes add 2026-10-20 "Long run" --content "Easy pace"` prints the note ID. Then `gccli calendar notes move <id> 2026-10-21`, `gccli calendar notes update <id> --content ""` (clears the text) and `gccli calendar notes delete <id> --force`.
 - Race event with a goal time and training priority: `gccli events add --name "Spring 10K" --date 2026-05-10 --type running --race --distance 10km --goal 40m --training`
 - Access token for a script: `gccli auth token`. It refreshes an expired token first. If the refresh fails, stdout is empty and the exit code is 3.
 
