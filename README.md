@@ -24,7 +24,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Profile** — user profile and settings, privacy settings and zones, heart rate and power zones
 - **Hydration** — view and log daily water intake
 - **Nutrition** — view daily food logs, meals, and nutrition settings
-- **Events** — list, add, and delete calendar events (races, group rides, etc.) with goals and training priority support
+- **Events** — list, list upcoming, add, and delete calendar events (races, group rides, etc.) with goals and training priority support
 - **Wellness** — menstrual cycle data, pregnancy summary, jet lag trips
 - **Social** - notifications, connections, followers, groups
 - **Agent-ready** - ships a bundled agent skill (`skills/gccli/`) that plugs into AI assistants like Claude Code, Codex, Hermes, and OpenClaw so you can drive Garmin Connect in plain language
@@ -693,6 +693,7 @@ gccli events list --start 2024-01-01 --limit 50
 gccli events list --limit 50 --offset 50  # Next page (--offset must be a multiple of --limit)
 # On every paginated command --limit must be at least 1 and --offset must not be negative (exit code 2).
 gccli events list --sort eventDate_desc
+gccli events upcoming
 gccli events delete <id>               # Delete an event (with confirmation)
 gccli events delete <id> -f            # Delete without confirmation
 
@@ -1092,6 +1093,7 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `-l, --limit=20`: Maximum number of events to return.
   - `--offset=0`: Number of events to skip.
   - `--sort="eventDate_asc"`: Sort order. One of: eventDate_asc, eventDate_desc.
+- `gccli events upcoming`: List upcoming events.
 - `gccli events add --name=STRING --date=STRING --type=STRING [flags]`: Add a calendar event.
   - `-n, --name=STRING`: Event name.
   - `-d, --date=STRING`: Event date (YYYY-MM-DD, today, +30d).

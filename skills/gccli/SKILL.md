@@ -352,6 +352,7 @@ Date shortcuts
   - `-l, --limit=20`: Maximum number of events to return.
   - `--offset=0`: Number of events to skip.
   - `--sort="eventDate_asc"`: Sort order. One of: eventDate_asc, eventDate_desc.
+- `gccli events upcoming`: List upcoming events.
 - `gccli events add --name=STRING --date=STRING --type=STRING [flags]`: Add a calendar event.
   - `-n, --name=STRING`: Event name.
   - `-d, --date=STRING`: Event date (YYYY-MM-DD, today, +30d).
