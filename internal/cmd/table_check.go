@@ -32,7 +32,7 @@ var v1LateDates = []string{
 	"health max-metrics",
 	"health respiration view",
 	"health rhr",
-	"health sleep",
+	"health sleep view",
 	"health spo2",
 	"health steps view",
 	"health stress view",

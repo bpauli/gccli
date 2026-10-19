@@ -184,7 +184,7 @@ var caseReads = map[string][]routeShape{
 	"goals list":               {{"GET /goal-service/goal/goals", passthrough("array")}},
 	"health hr view":           {settingsName, {"GET /wellness-service/wellness/dailyHeartRate/tester", passthrough("object")}},
 	"health rhr":               {settingsName, {"GET /userstats-service/wellness/daily/tester", passthrough("object")}},
-	"health sleep":             {settingsName, {"GET /wellness-service/wellness/dailySleepData/tester", passthrough("object")}},
+	"health sleep view":        {settingsName, {"GET /wellness-service/wellness/dailySleepData/tester", passthrough("object")}},
 	"health steps view":        {settingsName, {"GET /wellness-service/wellness/dailySummaryChart/tester", passthrough("array")}},
 	"health summary":           {settingsName, {"GET /usersummary-service/usersummary/daily/tester", passthrough("object")}},
 	"profile settings":         {{"GET /userprofile-service/userprofile/user-settings", passthrough("object")}},

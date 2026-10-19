@@ -46,16 +46,7 @@ var healthGroup = Group{Name: "health", Help: "View health data.", Children: []N
 		LateDates: []string{"Date"},
 	},
 	healthFloorsGroup,
-	Leaf{
-		Name: "sleep", Help: "Show sleep data.",
-		Spec: argsOf(&struct {
-			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
-		}{}),
-		Endpoint: "health.sleep",
-		Params:   Params{"displayName": DisplayName, "date": In("Date")},
-		Verb:     "get sleep", Output: JSON{},
-		LateDates: []string{"Date"},
-	},
+	healthSleepGroup,
 	healthStressGroup,
 	healthRespirationGroup,
 	Leaf{
@@ -322,6 +313,57 @@ var healthRespirationGroup = Group{Name: "respiration", Help: "Show respiration 
 		Endpoint: "health.daily-respiration",
 		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
 		Verb:     "get daily respiration", Output: JSON{},
+	},
+}}
+
+var healthSleepGroup = Group{Name: "sleep", Help: "Show sleep data.", Children: []Node{
+	Leaf{
+		Name: "view", Help: "Show sleep data for a date.", Default: true,
+		Spec: argsOf(&struct {
+			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+		}{}),
+		Endpoint: "health.sleep",
+		Params:   Params{"displayName": DisplayName, "date": In("Date")},
+		Verb:     "get sleep", Output: JSON{},
+		LateDates: []string{"Date"},
+	},
+	Leaf{
+		Name: "naps", Help: "Show naps for a date.",
+		Spec: argsOf(&struct {
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today."`
+		}{}),
+		Endpoint: "health.sleep-naps",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get naps", Output: JSON{},
+	},
+	Leaf{
+		Name: "daily", Help: "Show daily sleep statistics for a date range (at most 28 days).",
+		Spec: argsOf(&struct {
+			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+			EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
+		}{}),
+		Endpoint: "health.daily-sleep",
+		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
+		Verb:     "get daily sleep", Output: JSON{},
+	},
+	Leaf{
+		Name: "weekly", Help: "Show weekly sleep statistics for the 52 weeks up to a date.",
+		Spec: argsOf(&struct {
+			EndDate Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"end"`
+		}{}),
+		Endpoint: "health.weekly-sleep",
+		Params:   Params{"endDate": In("EndDate").Or(Today)},
+		Verb:     "get weekly sleep", Output: JSON{},
+	},
+	Leaf{
+		Name: "overall", Help: "Show overall sleep statistics for a date range.",
+		Spec: argsOf(&struct {
+			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+			EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
+		}{}),
+		Endpoint: "health.overall-sleep",
+		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
+		Verb:     "get overall sleep", Output: JSON{},
 	},
 }}
 

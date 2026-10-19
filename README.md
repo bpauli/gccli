@@ -412,6 +412,10 @@ gccli health floors [date]             # Floors climbed
 gccli health floors daily --start 2024-01-01 --end 2024-01-31
 gccli health floors weekly --weeks 4
 gccli health sleep [date]              # Sleep data
+gccli health sleep naps [date]
+gccli health sleep daily --start 2024-01-01 --end 2024-01-28
+gccli health sleep weekly
+gccli health sleep overall --start 2024-01-01 --end 2024-01-31
 gccli health respiration [date]
 gccli health respiration daily --start 2024-01-01 --end 2024-01-31
 gccli health spo2 [date]               # Blood oxygen
@@ -913,8 +917,18 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli health floors weekly [flags]`: Show weekly floors climbed.
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
   - `--weeks=4`: Number of weeks.
-- `gccli health sleep [<date>]`: Show sleep data.
+- `gccli health sleep view [<date>]`: Show sleep data for a date. Also runs as `gccli health sleep [<date>]`.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
+- `gccli health sleep naps [<date>]`: Show naps for a date.
+  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli health sleep daily --start=DATE --end=DATE`: Show daily sleep statistics for a date range (at most 28 days).
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli health sleep weekly [flags]`: Show weekly sleep statistics for the 52 weeks up to a date.
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli health sleep overall --start=DATE --end=DATE`: Show overall sleep statistics for a date range.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
 - `gccli health stress view [<date>]`: Show stress data for a date. Also runs as `gccli health stress [<date>]`.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli health stress daily --start=DATE --end=DATE`: Show daily stress statistics for a date range.

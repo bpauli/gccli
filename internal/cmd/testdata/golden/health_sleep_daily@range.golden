@@ -1,0 +1,98 @@
+-- args --
+health
+sleep
+daily
+--start
+2026-10-01
+--end
+2026-10-10
+-- route GET /sleep-service/stats/sleep/daily/2026-10-01/2026-10-10 --
+{"individualStats":[{"calendarDate":"2026-10-01","values":{"totalSleepTimeInSeconds":25200}},{"calendarDate":"2026-10-10","values":{"totalSleepTimeInSeconds":27000}}]}
+-- table stdout --
+{
+  "individualStats": [
+    {
+      "calendarDate": "2026-10-01",
+      "values": {
+        "totalSleepTimeInSeconds": 25200
+      }
+    },
+    {
+      "calendarDate": "2026-10-10",
+      "values": {
+        "totalSleepTimeInSeconds": 27000
+      }
+    }
+  ]
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /sleep-service/stats/sleep/daily/2026-10-01/2026-10-10
+-- plain stdout --
+{
+  "individualStats": [
+    {
+      "calendarDate": "2026-10-01",
+      "values": {
+        "totalSleepTimeInSeconds": 25200
+      }
+    },
+    {
+      "calendarDate": "2026-10-10",
+      "values": {
+        "totalSleepTimeInSeconds": 27000
+      }
+    }
+  ]
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /sleep-service/stats/sleep/daily/2026-10-01/2026-10-10
+-- plain-header stdout --
+{
+  "individualStats": [
+    {
+      "calendarDate": "2026-10-01",
+      "values": {
+        "totalSleepTimeInSeconds": 25200
+      }
+    },
+    {
+      "calendarDate": "2026-10-10",
+      "values": {
+        "totalSleepTimeInSeconds": 27000
+      }
+    }
+  ]
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /sleep-service/stats/sleep/daily/2026-10-01/2026-10-10
+-- json stdout --
+{
+  "individualStats": [
+    {
+      "calendarDate": "2026-10-01",
+      "values": {
+        "totalSleepTimeInSeconds": 25200
+      }
+    },
+    {
+      "calendarDate": "2026-10-10",
+      "values": {
+        "totalSleepTimeInSeconds": 27000
+      }
+    }
+  ]
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /sleep-service/stats/sleep/daily/2026-10-01/2026-10-10

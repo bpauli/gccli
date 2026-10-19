@@ -205,13 +205,13 @@ func TestCheckTableRejects(t *testing.T) {
 			`activities list: Params["limit"] binds In("Limit"), which is not a field of the args struct`,
 		},
 		{
-			"LateDates names a Date field", "health sleep",
+			"LateDates names a Date field", "health sleep view",
 			func(l *Leaf) {
 				l.Spec = argsOf(&struct {
 					Date Date `arg:"" optional:""`
 				}{})
 			},
-			`health sleep: LateDates names "Date", which is not a string field of the args struct`,
+			`health sleep view: LateDates names "Date", which is not a string field of the args struct`,
 		},
 		{
 			"LateDates off the frozen list", "goals list",
@@ -224,14 +224,14 @@ func TestCheckTableRejects(t *testing.T) {
 			`goals list: JSONNull is allowed only on the paths in v1NullJSON`,
 		},
 		{
-			"stale v1LateDates entry", "health sleep",
+			"stale v1LateDates entry", "health sleep view",
 			func(l *Leaf) {
 				l.LateDates = nil
 				l.Spec = argsOf(&struct {
 					Date Date `arg:"" optional:"" default:"today"`
 				}{})
 			},
-			`health sleep: v1LateDates names this path, but the row has no LateDates: remove the entry`,
+			`health sleep view: v1LateDates names this path, but the row has no LateDates: remove the entry`,
 		},
 		{
 			"stale v1NullJSON entry", "courses detail",

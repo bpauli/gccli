@@ -32,16 +32,18 @@ func fixtureTree() []Node {
 			},
 		}},
 		Group{Name: "health", Help: "View health data.", Children: []Node{
-			Leaf{
-				Name: "sleep", Help: "Show sleep data.",
-				Spec: argsOf(&struct {
-					Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
-				}{}),
-				Endpoint: "health.sleep",
-				Params:   Params{"displayName": DisplayName, "date": In("Date")},
-				Verb:     "get sleep", Output: JSON{},
-				LateDates: []string{"Date"},
-			},
+			Group{Name: "sleep", Help: "Show sleep data.", Children: []Node{
+				Leaf{
+					Name: "view", Help: "Show sleep data for a date.", Default: true,
+					Spec: argsOf(&struct {
+						Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+					}{}),
+					Endpoint: "health.sleep",
+					Params:   Params{"displayName": DisplayName, "date": In("Date")},
+					Verb:     "get sleep", Output: JSON{},
+					LateDates: []string{"Date"},
+				},
+			}},
 		}},
 		Group{Name: "devices", Help: "Manage devices.", Children: []Node{
 			Leaf{
@@ -158,7 +160,9 @@ type handCLI struct {
 		} `cmd:"" default:"withargs" help:"List goals."`
 	} `cmd:"" help:"View goals."`
 	Health struct {
-		Sleep handHealthSleep `cmd:"" help:"Show sleep data."`
+		Sleep struct {
+			View handHealthSleep `cmd:"" default:"withargs" help:"Show sleep data for a date."`
+		} `cmd:"" help:"Show sleep data."`
 	} `cmd:"" help:"View health data."`
 	Devices struct {
 		Solar handDeviceSolar `cmd:"" help:"Show solar charging data for a device."`
