@@ -1,6 +1,7 @@
 -- args --
 health
 hr
+view
 2026-10-01
 -- route GET /userprofile-service/userprofile/settings --
 {"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}

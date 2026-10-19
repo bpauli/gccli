@@ -240,6 +240,8 @@ var skipped = map[string]string{
 	"goals weight":               clockSkip,
 	"health calories weekly":     clockSkip,
 	"health critical-swim-speed": clockSkip,
+	"health floors weekly":       clockSkip,
+	"health hr weekly":           clockSkip,
 	"health pushes monthly":      clockSkip,
 	"health pushes weekly":       clockSkip,
 	"health running-economy":     clockSkip,

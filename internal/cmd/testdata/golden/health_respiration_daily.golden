@@ -1,8 +1,10 @@
 -- args --
 health
-floors
-2026-10-01
--- route GET /wellness-service/wellness/floorsChartData/daily/2026-10-01 --
+respiration
+daily
+--start=2026-10-01
+--end=2026-10-01
+-- route GET /usersummary-service/stats/respiration/daily/2026-10-01/2026-10-01 --
 {"value":1}
 -- table stdout --
 {
@@ -12,7 +14,7 @@ floors
 -- table exit --
 0
 -- table requests --
-GET /wellness-service/wellness/floorsChartData/daily/2026-10-01
+GET /usersummary-service/stats/respiration/daily/2026-10-01/2026-10-01
 -- plain stdout --
 {
   "value": 1
@@ -21,7 +23,7 @@ GET /wellness-service/wellness/floorsChartData/daily/2026-10-01
 -- plain exit --
 0
 -- plain requests --
-GET /wellness-service/wellness/floorsChartData/daily/2026-10-01
+GET /usersummary-service/stats/respiration/daily/2026-10-01/2026-10-01
 -- plain-header stdout --
 {
   "value": 1
@@ -30,7 +32,7 @@ GET /wellness-service/wellness/floorsChartData/daily/2026-10-01
 -- plain-header exit --
 0
 -- plain-header requests --
-GET /wellness-service/wellness/floorsChartData/daily/2026-10-01
+GET /usersummary-service/stats/respiration/daily/2026-10-01/2026-10-01
 -- json stdout --
 {
   "value": 1
@@ -39,4 +41,4 @@ GET /wellness-service/wellness/floorsChartData/daily/2026-10-01
 -- json exit --
 0
 -- json requests --
-GET /wellness-service/wellness/floorsChartData/daily/2026-10-01
+GET /usersummary-service/stats/respiration/daily/2026-10-01/2026-10-01
