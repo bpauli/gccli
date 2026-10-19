@@ -1,0 +1,53 @@
+-- args --
+social
+connections
+-- route GET /connection-service/connection/v2/connections/pagination?start=0&limit=20 --
+[{"displayName":"friend","fullName":"A Friend"}]
+-- table stdout --
+[
+  {
+    "displayName": "friend",
+    "fullName": "A Friend"
+  }
+]
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /connection-service/connection/v2/connections/pagination?start=0&limit=20
+-- plain stdout --
+[
+  {
+    "displayName": "friend",
+    "fullName": "A Friend"
+  }
+]
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /connection-service/connection/v2/connections/pagination?start=0&limit=20
+-- plain-header stdout --
+[
+  {
+    "displayName": "friend",
+    "fullName": "A Friend"
+  }
+]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /connection-service/connection/v2/connections/pagination?start=0&limit=20
+-- json stdout --
+[
+  {
+    "displayName": "friend",
+    "fullName": "A Friend"
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /connection-service/connection/v2/connections/pagination?start=0&limit=20

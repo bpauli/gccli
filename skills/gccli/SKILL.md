@@ -361,6 +361,11 @@ Date shortcuts
 
 ### Social
 
+- `gccli social connections [flags]`: List your connections.
+  - `-l, --limit=20`: Maximum number of connections to return.
+  - `--offset=0`: Number of connections to skip.
+- `gccli social followers [<display-name>]`: List the followers of a user.
+  - `[<display-name>]`: Display name of the user. Defaults to your display name.
 - `gccli notifications list`: List notifications. Also runs as `gccli notifications`.
 
 ### Hydration, Nutrition, Profile, Training, Wellness & Utilities
