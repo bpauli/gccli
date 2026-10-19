@@ -1,0 +1,65 @@
+connections is Garmin's "subscribers" rule (typeId 3), as the probe proved.
+-- args --
+activity
+privacy
+111
+connections
+-- route PUT /activity-service/activity/111 204 --
+-- table stdout --
+-- table stderr --
+Changed activity 111 privacy to connections
+-- table exit --
+0
+-- table requests --
+PUT /activity-service/activity/111
+  {
+    "accessControlRuleDTO": {
+      "typeId": 3,
+      "typeKey": "subscribers"
+    },
+    "activityId": 111
+  }
+-- plain stdout --
+-- plain stderr --
+Changed activity 111 privacy to connections
+-- plain exit --
+0
+-- plain requests --
+PUT /activity-service/activity/111
+  {
+    "accessControlRuleDTO": {
+      "typeId": 3,
+      "typeKey": "subscribers"
+    },
+    "activityId": 111
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Changed activity 111 privacy to connections
+-- plain-header exit --
+0
+-- plain-header requests --
+PUT /activity-service/activity/111
+  {
+    "accessControlRuleDTO": {
+      "typeId": 3,
+      "typeKey": "subscribers"
+    },
+    "activityId": 111
+  }
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+PUT /activity-service/activity/111
+  {
+    "accessControlRuleDTO": {
+      "typeId": 3,
+      "typeKey": "subscribers"
+    },
+    "activityId": 111
+  }

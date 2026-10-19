@@ -1,0 +1,52 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+activity
+describe
+111
+Easy run in the rain
+-- route PUT /activity-service/activity/111 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+describe activity: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+PUT /activity-service/activity/111
+  {
+    "activityId": 111,
+    "description": "Easy run in the rain"
+  }
+-- plain stdout --
+-- plain stderr --
+describe activity: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+PUT /activity-service/activity/111
+  {
+    "activityId": 111,
+    "description": "Easy run in the rain"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+describe activity: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+PUT /activity-service/activity/111
+  {
+    "activityId": 111,
+    "description": "Easy run in the rain"
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"describe activity: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+PUT /activity-service/activity/111
+  {
+    "activityId": 111,
+    "description": "Easy run in the rain"
+  }

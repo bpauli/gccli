@@ -1,0 +1,30 @@
+A non-numeric ID fails before any request.
+-- args --
+activity
+describe
+abc
+Easy run
+-- table stdout --
+-- table stderr --
+describe activity: invalid activity ID: strconv.ParseInt: parsing "abc": invalid syntax
+-- table exit --
+1
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+describe activity: invalid activity ID: strconv.ParseInt: parsing "abc": invalid syntax
+-- plain exit --
+1
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+describe activity: invalid activity ID: strconv.ParseInt: parsing "abc": invalid syntax
+-- plain-header exit --
+1
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"describe activity: invalid activity ID: strconv.ParseInt: parsing \"abc\": invalid syntax"}}
+-- json exit --
+1
+-- json requests --

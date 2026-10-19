@@ -44,6 +44,10 @@ var activityGroup = Group{Name: "activity", Help: "View activity details.", Chil
 	Custom{Name: "create", Help: "Create a manual activity.", Cmd: &ActivityCreateCmd{}},
 	Custom{Name: "rename", Help: "Rename an activity.", Cmd: &ActivityRenameCmd{}},
 	Custom{Name: "retype", Help: "Change activity type.", Cmd: &ActivityRetypeCmd{}},
+	Custom{Name: "describe", Help: "Set or clear the description of an activity.", Cmd: &ActivityDescribeCmd{}},
+	Custom{Name: "privacy", Help: "Change who can see an activity.", Cmd: &ActivityPrivacyCmd{}},
+	Custom{Name: "favorite", Help: "Mark an activity as a favorite.", Cmd: &ActivityFavoriteCmd{}},
+	Custom{Name: "unfavorite", Help: "Remove the favorite mark from an activity.", Cmd: &ActivityUnfavoriteCmd{}},
 	Leaf{
 		Name: "delete", Help: "Delete an activity.",
 		Spec: argsOf(&struct {

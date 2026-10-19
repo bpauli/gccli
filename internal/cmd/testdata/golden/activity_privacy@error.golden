@@ -1,0 +1,64 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+activity
+privacy
+111
+connections
+-- route PUT /activity-service/activity/111 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+change activity privacy: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+PUT /activity-service/activity/111
+  {
+    "accessControlRuleDTO": {
+      "typeId": 3,
+      "typeKey": "subscribers"
+    },
+    "activityId": 111
+  }
+-- plain stdout --
+-- plain stderr --
+change activity privacy: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+PUT /activity-service/activity/111
+  {
+    "accessControlRuleDTO": {
+      "typeId": 3,
+      "typeKey": "subscribers"
+    },
+    "activityId": 111
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+change activity privacy: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+PUT /activity-service/activity/111
+  {
+    "accessControlRuleDTO": {
+      "typeId": 3,
+      "typeKey": "subscribers"
+    },
+    "activityId": 111
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"change activity privacy: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+PUT /activity-service/activity/111
+  {
+    "accessControlRuleDTO": {
+      "typeId": 3,
+      "typeKey": "subscribers"
+    },
+    "activityId": 111
+  }

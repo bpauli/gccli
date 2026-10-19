@@ -493,92 +493,34 @@ func TestCreateManualActivity_Success(t *testing.T) {
 	}
 }
 
-// --- RenameActivity tests ---
+// --- UpdateActivity tests ---
 
-func TestRenameActivity_Success(t *testing.T) {
+func TestUpdateActivity_SendsFieldsWithNumericID(t *testing.T) {
+	var got []byte
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/activity-service/activity/12345" {
-			t.Errorf("path = %s", r.URL.Path)
+		if r.Method != http.MethodPut || r.URL.Path != "/activity-service/activity/12345" {
+			t.Errorf("request = %s %s, want PUT /activity-service/activity/12345", r.Method, r.URL.Path)
 		}
-		if r.Method != http.MethodPut {
-			t.Errorf("method = %s, want PUT", r.Method)
-		}
-
-		body, _ := io.ReadAll(r.Body)
-		var payload map[string]any
-		if err := json.Unmarshal(body, &payload); err != nil {
-			t.Fatalf("unmarshal body: %v", err)
-		}
-		if payload["activityName"] != "Evening Run" {
-			t.Errorf("activityName = %v, want Evening Run", payload["activityName"])
-		}
-		// activityId should be numeric.
-		if payload["activityId"] != float64(12345) {
-			t.Errorf("activityId = %v, want 12345", payload["activityId"])
-		}
-
-		_, _ = w.Write([]byte(`{"activityId":12345,"activityName":"Evening Run"}`))
+		got, _ = io.ReadAll(r.Body)
+		w.WriteHeader(http.StatusNoContent)
 	})
 
 	_, client := testServer(t, handler)
-	_, err := client.RenameActivity(context.Background(), "12345", "Evening Run")
-	if err != nil {
-		t.Fatalf("RenameActivity: %v", err)
+	fields := map[string]any{"description": nil, "activityId": "999"}
+	if _, err := client.UpdateActivity(context.Background(), "12345", fields); err != nil {
+		t.Fatalf("UpdateActivity: %v", err)
+	}
+	if want := `{"activityId":12345,"description":null}`; string(got) != want {
+		t.Errorf("body = %s, want %s", got, want)
 	}
 }
 
-func TestRenameActivity_InvalidID(t *testing.T) {
-	_, client := testServer(t, http.HandlerFunc(func(http.ResponseWriter, *http.Request) {}))
-	_, err := client.RenameActivity(context.Background(), "not-a-number", "Name")
-	if err == nil {
-		t.Fatal("expected error for invalid ID")
-	}
-}
-
-// --- RetypeActivity tests ---
-
-func TestRetypeActivity_Success(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/activity-service/activity/12345" {
-			t.Errorf("path = %s", r.URL.Path)
-		}
-		if r.Method != http.MethodPut {
-			t.Errorf("method = %s, want PUT", r.Method)
-		}
-
-		body, _ := io.ReadAll(r.Body)
-		var payload map[string]any
-		if err := json.Unmarshal(body, &payload); err != nil {
-			t.Fatalf("unmarshal body: %v", err)
-		}
-		actType, ok := payload["activityTypeDTO"].(map[string]any)
-		if !ok {
-			t.Fatal("activityTypeDTO not a map")
-		}
-		if actType["typeId"] != float64(1) {
-			t.Errorf("typeId = %v, want 1", actType["typeId"])
-		}
-		if actType["typeKey"] != "running" {
-			t.Errorf("typeKey = %v, want running", actType["typeKey"])
-		}
-		if actType["parentTypeId"] != float64(17) {
-			t.Errorf("parentTypeId = %v, want 17", actType["parentTypeId"])
-		}
-
-		_, _ = w.Write([]byte(`{"activityId":12345}`))
-	})
-
-	_, client := testServer(t, handler)
-	_, err := client.RetypeActivity(context.Background(), "12345", 1, "running", 17)
-	if err != nil {
-		t.Fatalf("RetypeActivity: %v", err)
-	}
-}
-
-func TestRetypeActivity_InvalidID(t *testing.T) {
-	_, client := testServer(t, http.HandlerFunc(func(http.ResponseWriter, *http.Request) {}))
-	_, err := client.RetypeActivity(context.Background(), "abc", 1, "running", 17)
-	if err == nil {
-		t.Fatal("expected error for invalid ID")
+func TestUpdateActivity_InvalidID(t *testing.T) {
+	_, client := testServer(t, http.HandlerFunc(func(_ http.ResponseWriter, r *http.Request) {
+		t.Errorf("request sent: %s %s", r.Method, r.URL.RequestURI())
+	}))
+	_, err := client.UpdateActivity(context.Background(), "not-a-number", map[string]any{"activityName": "Name"})
+	if err == nil || !strings.Contains(err.Error(), "invalid activity ID") {
+		t.Fatalf("err = %v, want invalid activity ID", err)
 	}
 }

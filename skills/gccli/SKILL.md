@@ -23,7 +23,7 @@ Output
 - `--header` works only with `--plain`. With table or `--json` output it is a usage error (exit code 2). `GCCLI_HEADER=1` does the same as `--header` in plain mode, and table and JSON output ignore it.
 - Table and `--plain` output escape a backslash as `\\`, a tab as `\t`, a newline as `\n`, a carriage return as `\r`, a vertical tab as `\v` and a form feed as `\f`, so each record is one line. `--json` is not escaped this way.
 - Data goes to stdout, messages/errors to stderr.
-- Write commands (add, create, upload, import, update, set, rename, retype, schedule, send, link, unlink, remove, delete) print the Garmin response with `--json`, or `{"ok": true}` when the response is empty. Without `--json` they print a message on stderr and nothing on stdout. Only `courses import` prints a table on stdout instead (TSV with `--plain`).
+- Write commands (add, create, upload, import, update, set, rename, retype, describe, change, favorite, unfavorite, schedule, send, link, unlink, remove, delete) print the Garmin response with `--json`, or `{"ok": true}` when the response is empty. Without `--json` they print a message on stderr and nothing on stdout. Only `courses import` prints a table on stdout instead (TSV with `--plain`).
 - Always use `--json` when parsing output programmatically.
 - Tables show distance, speed, pace and elevation in the user's Garmin unit system (`metric`, `statute_us`, or `statute_uk`, which is miles with elevation in metres). Override with `--units <system>` or `GCCLI_UNITS`. JSON is never converted (meters, m/s).
 
@@ -116,6 +116,16 @@ Date shortcuts
   - `--type-id=INT`: Activity type ID.
   - `--type-key=STRING`: Activity type key (e.g. running, cycling).
   - `--parent-type-id=0`: Parent activity type ID.
+- `gccli activity describe <id> <text>`: Set or clear the description of an activity.
+  - `<id>`: Activity ID.
+  - `<text>`: New description. An empty text ("") clears it.
+- `gccli activity privacy <id> <level>`: Change who can see an activity.
+  - `<id>`: Activity ID.
+  - `<level>`: Who can see the activity: public, private or connections.
+- `gccli activity favorite <id>`: Mark an activity as a favorite.
+  - `<id>`: Activity ID.
+- `gccli activity unfavorite <id>`: Remove the favorite mark from an activity.
+  - `<id>`: Activity ID.
 - `gccli activity delete <id> [flags]`: Delete an activity.
   - `<id>`: Activity ID.
   - `-f, --force`: Skip confirmation prompt.

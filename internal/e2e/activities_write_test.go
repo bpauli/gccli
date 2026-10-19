@@ -66,9 +66,9 @@ func TestCreateManualActivity(t *testing.T) {
 
 	// Test rename: rename to E2E_TEST_RENAMED.
 	renamedName := e2eActivityPrefix + "RENAMED"
-	_, err = client.RenameActivity(ctx, activityID, renamedName)
+	_, err = client.UpdateActivity(ctx, activityID, map[string]any{"activityName": renamedName})
 	if err != nil {
-		t.Fatalf("RenameActivity(%s) failed: %v", activityID, err)
+		t.Fatalf("UpdateActivity(%s) failed: %v", activityID, err)
 	}
 
 	// Verify the name changed.

@@ -1,0 +1,60 @@
+Garmin answers 204 with no body, as the probe saw.
+-- args --
+activity
+unfavorite
+111
+-- route PUT /activity-service/activity/111 204 --
+-- table stdout --
+-- table stderr --
+Removed activity 111 from favorites
+-- table exit --
+0
+-- table requests --
+PUT /activity-service/activity/111
+  {
+    "activityId": 111,
+    "metadataDTO": {
+      "favorite": false
+    }
+  }
+-- plain stdout --
+-- plain stderr --
+Removed activity 111 from favorites
+-- plain exit --
+0
+-- plain requests --
+PUT /activity-service/activity/111
+  {
+    "activityId": 111,
+    "metadataDTO": {
+      "favorite": false
+    }
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Removed activity 111 from favorites
+-- plain-header exit --
+0
+-- plain-header requests --
+PUT /activity-service/activity/111
+  {
+    "activityId": 111,
+    "metadataDTO": {
+      "favorite": false
+    }
+  }
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+PUT /activity-service/activity/111
+  {
+    "activityId": 111,
+    "metadataDTO": {
+      "favorite": false
+    }
+  }

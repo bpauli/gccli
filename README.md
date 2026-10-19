@@ -11,7 +11,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 
 ## Features
 
-- **Activities** — list, search, view details, download (FIT/GPX/TCX/KML/CSV), upload, create manual entries (with date), rename, retype, delete, set exercise sets for strength training, list activity types, list pending activities
+- **Activities** — list, search, view details, download (FIT/GPX/TCX/KML/CSV), upload, create manual entries (with date), rename, retype, describe, change privacy, mark as favorite, delete, set exercise sets for strength training, list activity types, list pending activities
 - **Exercise Catalog** — browse Garmin's exercise categories and exercises for strength training
 - **Health Data** — daily summaries, steps, heart rate, resting HR, sleep, stress, HRV, SpO2, respiration, body battery, floors, training readiness/status, VO2max, fitness age, race predictions, endurance/hill scores, intensity minutes, lactate threshold, cycling FTP, critical swim speed, power curve, running economy
 - **Body Composition** — weight tracking, latest weigh-in, body fat, muscle mass, blood pressure, glucose, FIT file encoding for composition uploads
@@ -227,7 +227,7 @@ gccli activities list
 - `--plain`: tab-separated values on stdout, with no header row unless you add `--header`. Only these commands print TSV: `activities list`, `activities search`, `activities types`, `activity summary`, `courses list`, `courses favorites`, `courses import`, `events list`, `workouts list`, `workouts schedule list` and `exercises list` (without `--category`). Most other commands that return data print the same JSON in all modes, also without `--json`. `activities count` prints a single number. Use `--json` when a script parses the output.
 - `--header`: with `--plain`, the first line holds the column names. `activity summary` has no column names, so it prints no header line. `--header` without `--plain`, or with `--json`, is a usage error (exit code 2). `GCCLI_HEADER` is not an error: table and JSON output ignore it.
 - Table and `--plain` output escape the characters that would break a row or a column. A backslash prints as `\\`, a tab as `\t`, a newline as `\n`, a carriage return as `\r`, a vertical tab as `\v` and a form feed as `\f`. So each record is one line, and in `--plain` output only real tabs separate the fields. `--json` output does not change.
-- Write commands (the commands that add, create, upload, import, update, set, rename, retype, schedule, send, link, unlink, remove or delete data in Garmin Connect) all follow one rule:
+- Write commands (the commands that add, create, upload, import, update, set, rename, retype, describe, change, favorite, unfavorite, schedule, send, link, unlink, remove or delete data in Garmin Connect) all follow one rule:
   - With `--json`, they print the Garmin response on stdout, indented like all JSON output. When Garmin sends an empty response, they print `{"ok": true}`.
   - Without `--json`, they print one message on stderr and nothing on stdout. `courses import` is the only exception. It prints the saved course as a table on stdout (TSV with `--plain`).
 - Human-facing messages (errors, warnings, info) go to stderr.
@@ -913,6 +913,16 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `--type-id=INT`: Activity type ID.
   - `--type-key=STRING`: Activity type key (e.g. running, cycling).
   - `--parent-type-id=0`: Parent activity type ID.
+- `gccli activity describe <id> <text>`: Set or clear the description of an activity.
+  - `<id>`: Activity ID.
+  - `<text>`: New description. An empty text ("") clears it.
+- `gccli activity privacy <id> <level>`: Change who can see an activity.
+  - `<id>`: Activity ID.
+  - `<level>`: Who can see the activity: public, private or connections.
+- `gccli activity favorite <id>`: Mark an activity as a favorite.
+  - `<id>`: Activity ID.
+- `gccli activity unfavorite <id>`: Remove the favorite mark from an activity.
+  - `<id>`: Activity ID.
 - `gccli activity delete <id> [flags]`: Delete an activity.
   - `<id>`: Activity ID.
   - `-f, --force`: Skip confirmation prompt.

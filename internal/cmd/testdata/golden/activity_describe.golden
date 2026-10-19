@@ -1,0 +1,53 @@
+Garmin answers 204 with no body, as the probe saw.
+-- args --
+activity
+describe
+111
+Easy run in the rain
+-- route PUT /activity-service/activity/111 204 --
+-- table stdout --
+-- table stderr --
+Changed activity 111 description to "Easy run in the rain"
+-- table exit --
+0
+-- table requests --
+PUT /activity-service/activity/111
+  {
+    "activityId": 111,
+    "description": "Easy run in the rain"
+  }
+-- plain stdout --
+-- plain stderr --
+Changed activity 111 description to "Easy run in the rain"
+-- plain exit --
+0
+-- plain requests --
+PUT /activity-service/activity/111
+  {
+    "activityId": 111,
+    "description": "Easy run in the rain"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Changed activity 111 description to "Easy run in the rain"
+-- plain-header exit --
+0
+-- plain-header requests --
+PUT /activity-service/activity/111
+  {
+    "activityId": 111,
+    "description": "Easy run in the rain"
+  }
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+PUT /activity-service/activity/111
+  {
+    "activityId": 111,
+    "description": "Easy run in the rain"
+  }
