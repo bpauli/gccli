@@ -1,0 +1,65 @@
+The body carries the name, the --first-use date and an empty activity type list, as the web app sends it.
+-- args --
+gear
+collections
+create
+Road shoes
+--first-use
+2026-10-01
+-- route POST /gear-service/collection --
+{"uuid":"7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b","userProfilePk":3141592,"name":"Road shoes","firstUseDate":"2026-10-01","modifiedDate":"2026-10-01T08:00:00.0","associatedActivityTypes":[]}
+-- table stdout --
+-- table stderr --
+Created gear collection "Road shoes" (UUID: 7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b)
+-- table exit --
+0
+-- table requests --
+POST /gear-service/collection
+  {
+    "associatedActivityTypes": [],
+    "firstUseDate": "2026-10-01",
+    "name": "Road shoes"
+  }
+-- plain stdout --
+-- plain stderr --
+Created gear collection "Road shoes" (UUID: 7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b)
+-- plain exit --
+0
+-- plain requests --
+POST /gear-service/collection
+  {
+    "associatedActivityTypes": [],
+    "firstUseDate": "2026-10-01",
+    "name": "Road shoes"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Created gear collection "Road shoes" (UUID: 7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b)
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /gear-service/collection
+  {
+    "associatedActivityTypes": [],
+    "firstUseDate": "2026-10-01",
+    "name": "Road shoes"
+  }
+-- json stdout --
+{
+  "uuid": "7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b",
+  "userProfilePk": 3141592,
+  "name": "Road shoes",
+  "firstUseDate": "2026-10-01",
+  "modifiedDate": "2026-10-01T08:00:00.0",
+  "associatedActivityTypes": []
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /gear-service/collection
+  {
+    "associatedActivityTypes": [],
+    "firstUseDate": "2026-10-01",
+    "name": "Road shoes"
+  }

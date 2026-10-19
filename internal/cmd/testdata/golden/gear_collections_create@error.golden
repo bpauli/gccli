@@ -1,0 +1,58 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+gear
+collections
+create
+Road shoes
+--first-use
+2026-10-01
+-- route POST /gear-service/collection 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+create gear collection: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+POST /gear-service/collection
+  {
+    "associatedActivityTypes": [],
+    "firstUseDate": "2026-10-01",
+    "name": "Road shoes"
+  }
+-- plain stdout --
+-- plain stderr --
+create gear collection: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+POST /gear-service/collection
+  {
+    "associatedActivityTypes": [],
+    "firstUseDate": "2026-10-01",
+    "name": "Road shoes"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+create gear collection: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+POST /gear-service/collection
+  {
+    "associatedActivityTypes": [],
+    "firstUseDate": "2026-10-01",
+    "name": "Road shoes"
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"create gear collection: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+POST /gear-service/collection
+  {
+    "associatedActivityTypes": [],
+    "firstUseDate": "2026-10-01",
+    "name": "Road shoes"
+  }

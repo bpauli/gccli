@@ -18,7 +18,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Workouts** — list, view, download as FIT, upload from JSON, update in place from JSON, create with sport types and targets (pace/HR/power/cadence), schedule (add/list/remove/export), list workout types, strength benchmarks, delete
 - **Courses** — list courses, view favorites, get full course detail, download as FIT/GPX, import GPX files as new courses, send courses directly to a device, delete courses
 - **Devices** - list registered devices, view settings, solar data, alarms, primary/last-used device, paired sensors, backup summary, historical devices, device messages
-- **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities, gear types, gear collections, add, update, retire, unretire and delete gear
+- **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities, gear types, add, update, retire, unretire and delete gear, list, create, rename and delete gear collections, add gear to a collection
 - **Goals & Badges** — active goals, earned/available/in-progress badges, badge details, challenges, personal records
 - **Training** - browse and view training plans, show your active plans, list adaptive coaching workout types
 - **Profile** — user profile and settings, privacy settings and zones, heart rate and power zones
@@ -667,6 +667,8 @@ gccli gear update <uuid> --name "Pegasus 41 (old)"
 gccli gear retire <uuid>          # gear unretire <uuid> undoes it
 gccli gear delete <uuid> --force
 gccli gear collections list
+gccli gear collections create "Road shoes"
+gccli gear collections add <collection-uuid> <gear-uuid>
 ```
 
 ### Goals, Badges & Challenges
@@ -1216,6 +1218,18 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `<uuid>`: Gear UUID, with or without dashes.
   - `-f, --force`: Skip confirmation prompt.
 - `gccli gear collections list`: List gear collections. Also runs as `gccli gear collections`.
+- `gccli gear collections create <name> [flags]`: Create a gear collection.
+  - `<name>`: Collection name.
+  - `--first-use="today"`: Date of first use (YYYY-MM-DD, today, yesterday, 3d).
+- `gccli gear collections rename <uuid> <name>`: Rename a gear collection.
+  - `<uuid>`: Collection UUID.
+  - `<name>`: New name.
+- `gccli gear collections add <uuid> <gear-uuid>`: Add a gear item to a gear collection.
+  - `<uuid>`: Collection UUID.
+  - `<gear-uuid>`: Gear UUID, with or without dashes.
+- `gccli gear collections delete <uuid> [flags]`: Delete a gear collection. The gear items stay.
+  - `<uuid>`: Collection UUID.
+  - `-f, --force`: Skip confirmation prompt.
 
 ### Goals, Badges & Challenges
 

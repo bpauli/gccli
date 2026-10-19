@@ -1,0 +1,39 @@
+-- args --
+gear
+collections
+delete
+7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b
+-- stdin --
+y
+-- route DELETE /gear-service/collection/7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b 204 --
+-- table stdout --
+-- table stderr --
+Delete gear collection 7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b? [y/N]: Deleted gear collection 7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b
+-- table exit --
+0
+-- table requests --
+DELETE /gear-service/collection/7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b
+-- plain stdout --
+-- plain stderr --
+Delete gear collection 7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b? [y/N]: Deleted gear collection 7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b
+-- plain exit --
+0
+-- plain requests --
+DELETE /gear-service/collection/7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b
+-- plain-header stdout --
+-- plain-header stderr --
+Delete gear collection 7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b? [y/N]: Deleted gear collection 7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b
+-- plain-header exit --
+0
+-- plain-header requests --
+DELETE /gear-service/collection/7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr noeol --
+Delete gear collection 7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b? [y/N]: 
+-- json exit --
+0
+-- json requests --
+DELETE /gear-service/collection/7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b

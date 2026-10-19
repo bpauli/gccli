@@ -96,8 +96,31 @@ var gearGroup = Group{Name: "gear", Help: "Manage gear.", Children: []Node{
 	gearCollectionsGroup,
 }}
 
-var gearCollectionsGroup = Group{Name: "collections", Help: "View gear collections.", Children: []Node{
+var gearCollectionsGroup = Group{Name: "collections", Help: "Manage gear collections.", Children: []Node{
 	Leaf{Name: "list", Help: "List gear collections.", Default: true, Endpoint: "gear.collections", Verb: "get gear collections", Output: JSON{}},
+	Custom{Name: "create", Help: "Create a gear collection.", Cmd: &GearCollectionCreateCmd{}},
+	Custom{Name: "rename", Help: "Rename a gear collection.", Cmd: &GearCollectionRenameCmd{}},
+	Leaf{
+		Name: "add", Help: "Add a gear item to a gear collection.",
+		Spec: argsOf(&struct {
+			UUID string   `arg:"" help:"Collection UUID."`
+			Gear GearUUID `arg:"" help:"Gear UUID, with or without dashes." name:"gear-uuid"`
+		}{}),
+		Endpoint: "gear.collection.add-gear",
+		Params:   Params{"collectionUUID": In("UUID"), "gearUUID": In("Gear")},
+		Verb:     "add gear to collection",
+		Output:   Write{Done: "Added gear {Gear} to collection {UUID}"},
+	},
+	Leaf{
+		Name: "delete", Help: "Delete a gear collection. The gear items stay.",
+		Spec: argsOf(&struct {
+			UUID string `arg:"" help:"Collection UUID."`
+		}{}),
+		Endpoint: "gear.collection.delete",
+		Params:   Params{"collectionUUID": In("UUID")},
+		Verb:     "delete gear collection",
+		Output:   Write{Done: "Deleted gear collection {UUID}", Confirm: "Delete gear collection {UUID}?"},
+	},
 }}
 
 var gearUUIDArgs = argsOf(&struct {
@@ -191,4 +214,60 @@ func (c *GearUpdateCmd) Run(g *Globals) error {
 		return fmt.Errorf("update gear: %w", err)
 	}
 	return reportWrite(g, data, "Updated gear %s", c.UUID)
+}
+
+// GearCollectionCreateCmd creates a gear collection.
+type GearCollectionCreateCmd struct {
+	Name     string `arg:"" help:"Collection name."`
+	FirstUse Date   `help:"Date of first use (YYYY-MM-DD, today, yesterday, 3d)." default:"today" name:"first-use"`
+}
+
+func (c *GearCollectionCreateCmd) Run(g *Globals) error {
+	body, err := json.Marshal(map[string]any{
+		"name":                    c.Name,
+		"firstUseDate":            string(c.FirstUse),
+		"associatedActivityTypes": []any{},
+	})
+	if err != nil {
+		return err
+	}
+	client, err := resolveClient(g)
+	if err != nil {
+		return err
+	}
+	data, err := client.Call(g.Context, "gear.collection.create", nil, body)
+	if err != nil {
+		return fmt.Errorf("create gear collection: %w", err)
+	}
+	var resp map[string]any
+	_ = json.Unmarshal(data, &resp)
+	if uuid := jsonString(resp, "uuid"); uuid != "" {
+		return reportWrite(g, data, "Created gear collection %q (UUID: %s)", c.Name, uuid)
+	}
+	return reportWrite(g, data, "Created gear collection %q", c.Name)
+}
+
+// GearCollectionRenameCmd renames a gear collection.
+type GearCollectionRenameCmd struct {
+	UUID string `arg:"" help:"Collection UUID."`
+	Name string `arg:"" help:"New name."`
+}
+
+func (c *GearCollectionRenameCmd) Validate() error {
+	if c.Name == "" {
+		return errors.New("the new name must not be empty")
+	}
+	return nil
+}
+
+func (c *GearCollectionRenameCmd) Run(g *Globals) error {
+	client, err := resolveClient(g)
+	if err != nil {
+		return err
+	}
+	data, err := client.RenameGearCollection(g.Context, c.UUID, c.Name)
+	if err != nil {
+		return fmt.Errorf("rename gear collection: %w", err)
+	}
+	return reportWrite(g, data, "Renamed gear collection %s to %q", c.UUID, c.Name)
 }

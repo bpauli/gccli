@@ -1,0 +1,37 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+gear
+collections
+delete
+7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b
+--force
+-- route DELETE /gear-service/collection/7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+delete gear collection: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+DELETE /gear-service/collection/7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b
+-- plain stdout --
+-- plain stderr --
+delete gear collection: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+DELETE /gear-service/collection/7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b
+-- plain-header stdout --
+-- plain-header stderr --
+delete gear collection: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+DELETE /gear-service/collection/7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"delete gear collection: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+DELETE /gear-service/collection/7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b
