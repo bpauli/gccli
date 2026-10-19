@@ -1,0 +1,116 @@
+-- args --
+activities
+stats
+monthly
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- route GET /userstats-service/statistics/monthly/tester?ByParentType=true --
+{"userProfileId":3141592,"statisticsStartDate":null,"statisticsEndDate":null,"userMetrics":[{"activityType":{"typeId":1,"typeKey":"running"},"totalActivities":2,"totalDistance":10000.0,"totalDuration":3600.0,"totalCalories":600.0,"totalElevationGain":80.0,"visibleCount":2,"month":"2026-09"}]}
+-- table stdout --
+{
+  "userProfileId": 3141592,
+  "statisticsStartDate": null,
+  "statisticsEndDate": null,
+  "userMetrics": [
+    {
+      "activityType": {
+        "typeId": 1,
+        "typeKey": "running"
+      },
+      "totalActivities": 2,
+      "totalDistance": 10000.0,
+      "totalDuration": 3600.0,
+      "totalCalories": 600.0,
+      "totalElevationGain": 80.0,
+      "visibleCount": 2,
+      "month": "2026-09"
+    }
+  ]
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /userprofile-service/userprofile/settings
+GET /userstats-service/statistics/monthly/tester?ByParentType=true
+-- plain stdout --
+{
+  "userProfileId": 3141592,
+  "statisticsStartDate": null,
+  "statisticsEndDate": null,
+  "userMetrics": [
+    {
+      "activityType": {
+        "typeId": 1,
+        "typeKey": "running"
+      },
+      "totalActivities": 2,
+      "totalDistance": 10000.0,
+      "totalDuration": 3600.0,
+      "totalCalories": 600.0,
+      "totalElevationGain": 80.0,
+      "visibleCount": 2,
+      "month": "2026-09"
+    }
+  ]
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+GET /userstats-service/statistics/monthly/tester?ByParentType=true
+-- plain-header stdout --
+{
+  "userProfileId": 3141592,
+  "statisticsStartDate": null,
+  "statisticsEndDate": null,
+  "userMetrics": [
+    {
+      "activityType": {
+        "typeId": 1,
+        "typeKey": "running"
+      },
+      "totalActivities": 2,
+      "totalDistance": 10000.0,
+      "totalDuration": 3600.0,
+      "totalCalories": 600.0,
+      "totalElevationGain": 80.0,
+      "visibleCount": 2,
+      "month": "2026-09"
+    }
+  ]
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /userstats-service/statistics/monthly/tester?ByParentType=true
+-- json stdout --
+{
+  "userProfileId": 3141592,
+  "statisticsStartDate": null,
+  "statisticsEndDate": null,
+  "userMetrics": [
+    {
+      "activityType": {
+        "typeId": 1,
+        "typeKey": "running"
+      },
+      "totalActivities": 2,
+      "totalDistance": 10000.0,
+      "totalDuration": 3600.0,
+      "totalCalories": 600.0,
+      "totalElevationGain": 80.0,
+      "visibleCount": 2,
+      "month": "2026-09"
+    }
+  ]
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /userprofile-service/userprofile/settings
+GET /userstats-service/statistics/monthly/tester?ByParentType=true
