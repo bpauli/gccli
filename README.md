@@ -26,7 +26,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Nutrition** — view daily food logs, meals, and nutrition settings
 - **Events** — list, add, and delete calendar events (races, group rides, etc.) with goals and training priority support
 - **Wellness** — menstrual cycle data, pregnancy summary, jet lag trips
-- **Social** - notifications, connections, followers
+- **Social** - notifications, connections, followers, groups
 - **Agent-ready** - ships a bundled agent skill (`skills/gccli/`) that plugs into AI assistants like Claude Code, Codex, Hermes, and OpenClaw so you can drive Garmin Connect in plain language
 - **Multiple accounts** — manage multiple Garmin accounts via `--account` flag
 - **Credential storage** in the OS keyring (macOS Keychain, Linux Secret Service), with a file fallback (see [Credential Storage](#credential-storage))
@@ -713,6 +713,7 @@ gccli social connections               # List your connections
 gccli social connections --limit 50 --offset 50
 gccli social followers                 # List your followers
 gccli social followers <display-name>  # List the followers of another user
+gccli groups list                      # List your groups
 ```
 
 ### Data Reload
@@ -1090,6 +1091,7 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `--offset=0`: Number of connections to skip.
 - `gccli social followers [<display-name>]`: List the followers of a user.
   - `[<display-name>]`: Display name of the user. Defaults to your display name.
+- `gccli groups list`: List your groups. Also runs as `gccli groups`.
 - `gccli notifications list`: List notifications. Also runs as `gccli notifications`.
 
 ### Hydration, Nutrition, Profile, Training, Wellness & Utilities

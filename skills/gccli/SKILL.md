@@ -366,6 +366,7 @@ Date shortcuts
   - `--offset=0`: Number of connections to skip.
 - `gccli social followers [<display-name>]`: List the followers of a user.
   - `[<display-name>]`: Display name of the user. Defaults to your display name.
+- `gccli groups list`: List your groups. Also runs as `gccli groups`.
 - `gccli notifications list`: List notifications. Also runs as `gccli notifications`.
 
 ### Hydration, Nutrition, Profile, Training, Wellness & Utilities
