@@ -177,6 +177,9 @@ Commands:
   badges available                 Show available badges.
   badges in-progress               Show badges in progress.
   badges detail                    Show details of a badge.
+  badges compare                   Compare your badges with a connection.
+  badges leaderboard               Show the badge points leaderboard of your
+                                   connections.
   courses list                     List courses.
   courses favorites                List favorite courses.
   courses detail                   View course details.
@@ -188,6 +191,10 @@ Commands:
   challenges badge                 Show badge challenges.
   challenges available             Show available badge challenges.
   challenges completed             Show completed badge challenges.
+  challenges virtual available     Show available virtual challenges.
+  challenges virtual completed     Show completed virtual challenges.
+  challenges virtual in-progress
+                                   Show virtual challenges in progress.
   records list                     View personal records.
   records types                    List personal record types.
   records activity                 List the personal records set in an activity.
@@ -1049,6 +1056,8 @@ Commands:
   badges available      Show available badges.
   badges in-progress    Show badges in progress.
   badges detail         Show details of a badge.
+  badges compare        Compare your badges with a connection.
+  badges leaderboard    Show the badge points leaderboard of your connections.
 
 $ gccli courses --help
 Usage: gccli courses <command> [flags]
@@ -1098,10 +1107,39 @@ Flags:
       --version           Print version information.
 
 Commands:
-  challenges list         Show joined challenges.
-  challenges badge        Show badge challenges.
-  challenges available    Show available badge challenges.
-  challenges completed    Show completed badge challenges.
+  challenges list                 Show joined challenges.
+  challenges badge                Show badge challenges.
+  challenges available            Show available badge challenges.
+  challenges completed            Show completed badge challenges.
+  challenges virtual available    Show available virtual challenges.
+  challenges virtual completed    Show completed virtual challenges.
+  challenges virtual in-progress
+                                  Show virtual challenges in progress.
+
+$ gccli challenges virtual --help
+Usage: gccli challenges virtual <command>
+
+View virtual challenges.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces and
+                          elevations in table and plain output: auto
+                          (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  challenges virtual available    Show available virtual challenges.
+  challenges virtual completed    Show completed virtual challenges.
+  challenges virtual in-progress
+                                  Show virtual challenges in progress.
 
 $ gccli records --help
 Usage: gccli records <command> [flags]

@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Activity statistics** - `activities stats` shows your activity totals by activity type, and `activities stats monthly` shows them per month. (#72)
 - **Activity comments and likes** - `activity comments <id>` lists the comments on an activity. It always sends `start=0&limit=20`, the values of the live check. `activity likes <id>` lists the likes of an activity. (#75)
 - **Personal records** - `records types` lists the personal record types. `records activity <id>` lists the personal records set in an activity. (#87)
+- **Badges** - `badges compare <display-name>` compares your badges with those of a connection. `badges leaderboard` shows the badge points leaderboard of your connections. (#92)
+- **Virtual challenges** - `challenges virtual available`, `challenges virtual completed` and `challenges virtual in-progress` list the available, completed and in-progress virtual challenges. (#79)
 
 ### Changed
 

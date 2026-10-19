@@ -1,0 +1,54 @@
+-- args --
+challenges
+virtual
+completed
+-- route GET /badgechallenge-service/virtualChallenge/completed --
+[{"badgeChallengeName":"Virtual completed","badgeId":7}]
+-- table stdout --
+[
+  {
+    "badgeChallengeName": "Virtual completed",
+    "badgeId": 7
+  }
+]
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /badgechallenge-service/virtualChallenge/completed
+-- plain stdout --
+[
+  {
+    "badgeChallengeName": "Virtual completed",
+    "badgeId": 7
+  }
+]
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /badgechallenge-service/virtualChallenge/completed
+-- plain-header stdout --
+[
+  {
+    "badgeChallengeName": "Virtual completed",
+    "badgeId": 7
+  }
+]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /badgechallenge-service/virtualChallenge/completed
+-- json stdout --
+[
+  {
+    "badgeChallengeName": "Virtual completed",
+    "badgeId": 7
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /badgechallenge-service/virtualChallenge/completed

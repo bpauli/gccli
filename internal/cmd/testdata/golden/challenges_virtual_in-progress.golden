@@ -1,0 +1,54 @@
+-- args --
+challenges
+virtual
+in-progress
+-- route GET /badgechallenge-service/virtualChallenge/inProgress --
+[{"badgeChallengeName":"Virtual in-progress","badgeId":7}]
+-- table stdout --
+[
+  {
+    "badgeChallengeName": "Virtual in-progress",
+    "badgeId": 7
+  }
+]
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /badgechallenge-service/virtualChallenge/inProgress
+-- plain stdout --
+[
+  {
+    "badgeChallengeName": "Virtual in-progress",
+    "badgeId": 7
+  }
+]
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /badgechallenge-service/virtualChallenge/inProgress
+-- plain-header stdout --
+[
+  {
+    "badgeChallengeName": "Virtual in-progress",
+    "badgeId": 7
+  }
+]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /badgechallenge-service/virtualChallenge/inProgress
+-- json stdout --
+[
+  {
+    "badgeChallengeName": "Virtual in-progress",
+    "badgeId": 7
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /badgechallenge-service/virtualChallenge/inProgress

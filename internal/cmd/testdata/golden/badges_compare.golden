@@ -1,0 +1,70 @@
+-- args --
+badges
+compare
+jo/b
+-- route GET /badge-service/badge/compare/jo%2Fb --
+{"connection":{"displayName":"jo/b","badges":[]},"user":{"displayName":"me","badges":[]}}
+-- table stdout --
+{
+  "connection": {
+    "displayName": "jo/b",
+    "badges": []
+  },
+  "user": {
+    "displayName": "me",
+    "badges": []
+  }
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /badge-service/badge/compare/jo%2Fb
+-- plain stdout --
+{
+  "connection": {
+    "displayName": "jo/b",
+    "badges": []
+  },
+  "user": {
+    "displayName": "me",
+    "badges": []
+  }
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /badge-service/badge/compare/jo%2Fb
+-- plain-header stdout --
+{
+  "connection": {
+    "displayName": "jo/b",
+    "badges": []
+  },
+  "user": {
+    "displayName": "me",
+    "badges": []
+  }
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /badge-service/badge/compare/jo%2Fb
+-- json stdout --
+{
+  "connection": {
+    "displayName": "jo/b",
+    "badges": []
+  },
+  "user": {
+    "displayName": "me",
+    "badges": []
+  }
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /badge-service/badge/compare/jo%2Fb
