@@ -1,0 +1,44 @@
+Error case: on 2026-10-25 the clocks in Berlin go back at 03:00 CEST, so 02:30 happens twice (00:30 and 01:30 UTC). Even with one nap in the list, the time is refused before the prompt, no write is sent and the exit code is 1.
+-- args --
+health
+sleep
+naps
+delete
+2026-10-25
+02:30
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","timeZone":"Europe/Berlin"}
+-- route GET /sleep-service/sleep/naps/2026-10-25 --
+[{"napStartTimestampGMT":"2026-10-25T00:30:00","napTimeSec":600}]
+-- table stdout --
+-- table stderr --
+the time 02:30 is ambiguous on 2026-10-25 in your Garmin time zone (Europe/Berlin) because the clocks go back
+-- table exit --
+1
+-- table requests --
+GET /userprofile-service/userprofile/settings
+GET /sleep-service/sleep/naps/2026-10-25
+-- plain stdout --
+-- plain stderr --
+the time 02:30 is ambiguous on 2026-10-25 in your Garmin time zone (Europe/Berlin) because the clocks go back
+-- plain exit --
+1
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+GET /sleep-service/sleep/naps/2026-10-25
+-- plain-header stdout --
+-- plain-header stderr --
+the time 02:30 is ambiguous on 2026-10-25 in your Garmin time zone (Europe/Berlin) because the clocks go back
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /sleep-service/sleep/naps/2026-10-25
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"the time 02:30 is ambiguous on 2026-10-25 in your Garmin time zone (Europe/Berlin) because the clocks go back"}}
+-- json exit --
+1
+-- json requests --
+GET /userprofile-service/userprofile/settings
+GET /sleep-service/sleep/naps/2026-10-25
