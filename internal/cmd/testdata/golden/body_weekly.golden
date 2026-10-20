@@ -1,0 +1,97 @@
+-- args --
+body
+weekly
+2026-10-12
+-- route GET /weight-service/weight/weeklyRange/2025-10-14/2026-10-12 --
+{"weeklyWeightSummaries":[{"startDate":"2026-09-29","endDate":"2026-10-05","minWeight":81500.0,"maxWeight":82300.0,"averageWeight":{"from":1790640000000,"until":1791244799999,"weight":81933.3,"bmi":null,"bodyFat":null,"bodyWater":null,"boneMass":null,"muscleMass":null,"physiqueRating":null,"visceralFat":null,"metabolicAge":null},"weightDelta":null},{"startDate":"2026-10-06","endDate":"2026-10-12","minWeight":81200.0,"maxWeight":81200.0,"averageWeight":{"from":1791244800000,"until":1791849599999,"weight":81200.0,"bmi":null,"bodyFat":null,"bodyWater":null,"boneMass":null,"muscleMass":null,"physiqueRating":null,"visceralFat":null,"metabolicAge":null},"weightDelta":null}],"weightAverageDTO":{"from":1760400000000,"until":1791849599999,"weight":81566.7,"bmi":null,"bodyFat":null,"bodyWater":null,"boneMass":null,"muscleMass":null,"physiqueRating":null,"visceralFat":null,"metabolicAge":null},"previousWeekAverageDTO":null,"nextWeekAverageDTO":null}
+-- table stdout --
+START       END         MIN      MAX      AVERAGE
+2026-09-29  2026-10-05  81.5 kg  82.3 kg  81.9 kg
+2026-10-06  2026-10-12  81.2 kg  81.2 kg  81.2 kg
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /weight-service/weight/weeklyRange/2025-10-14/2026-10-12
+-- plain stdout --
+2026-09-29	2026-10-05	81.5 kg	82.3 kg	81.9 kg
+2026-10-06	2026-10-12	81.2 kg	81.2 kg	81.2 kg
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /weight-service/weight/weeklyRange/2025-10-14/2026-10-12
+-- plain-header stdout --
+START	END	MIN	MAX	AVERAGE
+2026-09-29	2026-10-05	81.5 kg	82.3 kg	81.9 kg
+2026-10-06	2026-10-12	81.2 kg	81.2 kg	81.2 kg
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /weight-service/weight/weeklyRange/2025-10-14/2026-10-12
+-- json stdout --
+{
+  "weeklyWeightSummaries": [
+    {
+      "startDate": "2026-09-29",
+      "endDate": "2026-10-05",
+      "minWeight": 81500.0,
+      "maxWeight": 82300.0,
+      "averageWeight": {
+        "from": 1790640000000,
+        "until": 1791244799999,
+        "weight": 81933.3,
+        "bmi": null,
+        "bodyFat": null,
+        "bodyWater": null,
+        "boneMass": null,
+        "muscleMass": null,
+        "physiqueRating": null,
+        "visceralFat": null,
+        "metabolicAge": null
+      },
+      "weightDelta": null
+    },
+    {
+      "startDate": "2026-10-06",
+      "endDate": "2026-10-12",
+      "minWeight": 81200.0,
+      "maxWeight": 81200.0,
+      "averageWeight": {
+        "from": 1791244800000,
+        "until": 1791849599999,
+        "weight": 81200.0,
+        "bmi": null,
+        "bodyFat": null,
+        "bodyWater": null,
+        "boneMass": null,
+        "muscleMass": null,
+        "physiqueRating": null,
+        "visceralFat": null,
+        "metabolicAge": null
+      },
+      "weightDelta": null
+    }
+  ],
+  "weightAverageDTO": {
+    "from": 1760400000000,
+    "until": 1791849599999,
+    "weight": 81566.7,
+    "bmi": null,
+    "bodyFat": null,
+    "bodyWater": null,
+    "boneMass": null,
+    "muscleMass": null,
+    "physiqueRating": null,
+    "visceralFat": null,
+    "metabolicAge": null
+  },
+  "previousWeekAverageDTO": null,
+  "nextWeekAverageDTO": null
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /weight-service/weight/weeklyRange/2025-10-14/2026-10-12

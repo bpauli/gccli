@@ -22,9 +22,9 @@ Flags:
                           output ($GCCLI_HEADER).
       --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
       --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
-      --units="auto"      Unit system for distances, speeds, paces and
-                          elevations in table and plain output: auto
-                          (Garmin profile), metric, statute_us, statute_uk
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
                           ($GCCLI_UNITS).
       --version           Print version information.
 
@@ -50,9 +50,9 @@ Flags:
                           output ($GCCLI_HEADER).
       --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
       --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
-      --units="auto"      Unit system for distances, speeds, paces and
-                          elevations in table and plain output: auto
-                          (Garmin profile), metric, statute_us, statute_uk
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
                           ($GCCLI_UNITS).
       --version           Print version information.
 
@@ -78,9 +78,9 @@ Flags:
                           output ($GCCLI_HEADER).
       --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
       --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
-      --units="auto"      Unit system for distances, speeds, paces and
-                          elevations in table and plain output: auto
-                          (Garmin profile), metric, statute_us, statute_uk
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
                           ($GCCLI_UNITS).
       --version           Print version information.
 
@@ -106,9 +106,9 @@ Flags:
                           output ($GCCLI_HEADER).
       --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
       --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
-      --units="auto"      Unit system for distances, speeds, paces and
-                          elevations in table and plain output: auto
-                          (Garmin profile), metric, statute_us, statute_uk
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
                           ($GCCLI_UNITS).
       --version           Print version information.
 

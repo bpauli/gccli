@@ -238,6 +238,7 @@ var skipped = map[string]string{
 	"health sleep naps add":           napClockSkip,
 	"body glucose":                    clockSkip,
 	"body latest":                     clockSkip,
+	"body weekly":                     clockSkip,
 	"devices solar":                   clockSkip,
 	"events list":                     clockSkip,
 	"goals weight":                    clockSkip,
