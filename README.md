@@ -1132,9 +1132,9 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `--metabolic-age=METABOLIC-AGE`: Metabolic age.
   - `--visceral-fat-rating=VISCERAL-FAT-RATING`: Visceral fat rating.
   - `--bmi=BMI`: Body mass index.
-- `gccli body delete-weight --date=STRING <pk> [flags]`: Delete a weigh-in entry.
+- `gccli body delete-weight --date=DATE <pk> [flags]`: Delete a weigh-in entry.
   - `<pk>`: Weigh-in version (primary key).
-  - `--date=STRING`: Date of the weigh-in (YYYY-MM-DD).
+  - `--date=DATE`: Date of the weigh-in (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `-f, --force`: Skip confirmation prompt.
 - `gccli body blood-pressure --start=DATE --end=DATE`: Show blood pressure data.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
@@ -1144,9 +1144,9 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `--diastolic=INT`: Diastolic pressure (mmHg).
   - `--pulse=INT`: Pulse rate (bpm).
   - `--notes=STRING`: Optional notes.
-- `gccli body delete-blood-pressure --date=STRING <version> [flags]`: Delete a blood pressure entry.
+- `gccli body delete-blood-pressure --date=DATE <version> [flags]`: Delete a blood pressure entry.
   - `<version>`: Blood pressure entry version.
-  - `--date=STRING`: Date of the measurement (YYYY-MM-DD).
+  - `--date=DATE`: Date of the measurement (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `-f, --force`: Skip confirmation prompt.
 - `gccli body glucose [<date>]`: Show glucose readings for a date.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.

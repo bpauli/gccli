@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | `workouts schedule add <id> <date>`, `workouts schedule list [<date>]`, `events add --date` (#263) | all | bad date: exit 1 with one error line | bad date: exit 2 with the usage block |
 | `hydration add --date` (#263) | all | bad date: exit 1 (or 3 without a login), after the login | bad date: exit 2 with the usage block, before the login |
 | the same 4 commands (#263) | all | an empty date (`""`) means today | an empty date is a usage error (exit 2); omit the date for today |
+| `body delete-weight --date`, `body delete-blood-pressure --date` (#263) | all | the date went into the request path unchecked, so a bad date was a Garmin error after the login (exit 1), and only `YYYY-MM-DD` worked | bad date: exit 2 with the usage block, before the login; `today`, `yesterday`, `3d` and `+30d` are now accepted |
 
 ### Added
 

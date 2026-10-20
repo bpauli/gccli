@@ -44,7 +44,7 @@ var bodyGroup = Group{Name: "body", Help: "Body composition and weight data.", C
 		Name: "delete-weight", Help: "Delete a weigh-in entry.",
 		Spec: argsOf(&struct {
 			PK   string `arg:"" help:"Weigh-in version (primary key)."`
-			Date string `help:"Date of the weigh-in (YYYY-MM-DD)." required:"" name:"date"`
+			Date Date   `help:"Date of the weigh-in (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"date"`
 		}{}),
 		Endpoint: "body.delete-weight",
 		Params:   Params{"date": In("Date"), "version": In("PK")},
@@ -66,7 +66,7 @@ var bodyGroup = Group{Name: "body", Help: "Body composition and weight data.", C
 		Name: "delete-blood-pressure", Help: "Delete a blood pressure entry.",
 		Spec: argsOf(&struct {
 			Version string `arg:"" help:"Blood pressure entry version."`
-			Date    string `help:"Date of the measurement (YYYY-MM-DD)." required:"" name:"date"`
+			Date    Date   `help:"Date of the measurement (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"date"`
 		}{}),
 		Endpoint: "body.delete-blood-pressure",
 		Params:   Params{"date": In("Date"), "version": In("Version")},
