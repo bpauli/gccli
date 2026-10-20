@@ -25,7 +25,6 @@ import (
 // liveSkip names the reads that the live refresh never sends, with the
 // reason. Each keeps its registry line.
 var liveSkip = map[string]string{
-	"reload":         "the GET asks Garmin to reload data",
 	"exercises list": "the catalog is a public file that fetchExerciseCatalogFn reads outside the client",
 	"devices alarms": "gccli builds the list from the alarms in the settings of each device",
 }

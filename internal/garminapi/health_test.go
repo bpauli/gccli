@@ -1,10 +1,6 @@
 package garminapi
 
-import (
-	"context"
-	"net/http"
-	"testing"
-)
+import "testing"
 
 func TestHealthEndpoints(t *testing.T) {
 	day := map[string]string{"date": "2024-01-15"}
@@ -65,45 +61,8 @@ func TestHealthEndpoints(t *testing.T) {
 		{"health.power-curve", span, "GET /fitnessstats-service/powerCurve?startDate=2024-01-01&endDate=2024-01-31"},
 		{"health.running-economy", day, "GET /metrics-service/metrics/runningeconomy/latest/2024-01-15"},
 		{"health.acclimation", span, "GET /wellness-service/stats/daily/acclimation?fromDate=2024-01-01&untilDate=2024-01-31"},
+		{"health.race-predictions", map[string]string{"displayName": "jo"}, "GET /metrics-service/metrics/racepredictions/latest/jo"},
+		{"health.race-predictions-range", map[string]string{"displayName": "jo", "startDate": "2024-01-01", "endDate": "2024-01-31"}, "GET /metrics-service/metrics/racepredictions/daily/jo?fromCalendarDate=2024-01-01&toCalendarDate=2024-01-31"},
 		{"health.one-rep-max", day, "GET /fitnessstats-service/vbt-stats/one-rep-max/current/2024-01-15"},
 	})
-}
-
-func TestGetRacePredictions_Current(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/metrics-service/metrics/racepredictions" {
-			t.Errorf("path = %s, want /metrics-service/metrics/racepredictions", r.URL.Path)
-		}
-		_, _ = w.Write([]byte(`{"5k":1200,"10k":2500,"halfMarathon":5400,"marathon":11200}`))
-	})
-
-	_, client := testServer(t, handler)
-	data, err := client.GetRacePredictions(context.Background(), "", "")
-	if err != nil {
-		t.Fatalf("GetRacePredictions: %v", err)
-	}
-	if data == nil {
-		t.Fatal("expected data")
-	}
-}
-
-func TestGetRacePredictions_DateRange(t *testing.T) {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/metrics-service/metrics/racepredictions/range/2024-01-01/2024-01-31" {
-			t.Errorf("path = %s, want /metrics-service/metrics/racepredictions/range/2024-01-01/2024-01-31", r.URL.Path)
-		}
-		if got := r.URL.Query().Get("type"); got != "daily" {
-			t.Errorf("type = %s, want daily", got)
-		}
-		_, _ = w.Write([]byte(`[{"date":"2024-01-01"}]`))
-	})
-
-	_, client := testServer(t, handler)
-	data, err := client.GetRacePredictions(context.Background(), "2024-01-01", "2024-01-31")
-	if err != nil {
-		t.Fatalf("GetRacePredictions: %v", err)
-	}
-	if data == nil {
-		t.Fatal("expected data")
-	}
 }

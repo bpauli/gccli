@@ -248,10 +248,6 @@ func TestFlagArgv(t *testing.T) {
 			wantPath: "/usersummary-service/stats/im/weekly/2026-10-12/2026-10-15",
 		},
 		{
-			args:     []string{"health", "race-predictions", "range", "--start", "3d", "--end", "today"},
-			wantPath: "/metrics-service/metrics/racepredictions/range/2026-10-12/2026-10-15",
-		},
-		{
 			args:      []string{"body", "composition", "--start", "3d", "--end", "today"},
 			wantPath:  "/weight-service/weight/dateRange",
 			wantQuery: map[string]string{"startDate": "2026-10-12", "endDate": "2026-10-15"},

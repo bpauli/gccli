@@ -11,12 +11,12 @@
 activities pending	object	live 2026-10-20
 activities stats monthly	object	live 2026-10-20
 activities stats view	object	live 2026-10-20
-activity comments	array	live 2026-10-20 with a real activity ID
+activity comments list	array	live 2026-10-20 with a real activity ID
 activity details	object	live 2026-10-20 with a real activity ID
 activity exercise-sets show	object	live 2026-10-20 with a real activity ID
 activity gear	unknown	405 live 2026-10-20 with a real activity ID
 activity hr-zones	array	recording conformance/testdata/recorded/get_activity-service.activity.1.hrTimeInZones_200_80d5bbb6.json
-activity likes	array	live 2026-10-20 with a real activity ID
+activity likes list	array	live 2026-10-20 with a real activity ID
 activity power-zones	array	live 2026-10-20 with a real activity ID
 activity split-summaries	object	live 2026-10-20 with a real activity ID
 activity splits	object	live 2026-10-20 with a real activity ID
@@ -93,8 +93,8 @@ health power-curve	object	live 2026-10-20
 health power-to-weight	array	live 2026-10-20
 health pushes monthly	array	live 2026-10-20
 health pushes weekly	array	live 2026-10-20
-health race-predictions range	unknown	404 live 2026-10-20
-health race-predictions view	unknown	404 live 2026-10-20
+health race-predictions range	array	live 2026-10-20
+health race-predictions view	unknown	empty body live 2026-10-20
 health respiration daily	array	live 2026-10-20
 health respiration view	object	live 2026-10-20
 health rhr	object	live 2026-10-20
@@ -137,7 +137,6 @@ profile view	object	live 2026-10-20
 records activity	array	live 2026-10-20
 records list	array	live 2026-10-20
 records types	array	live 2026-10-20
-reload	unknown	not run: the GET asks Garmin to reload data
 social connections	object	live 2026-10-20
 social feed	object	live 2026-10-20
 social followers	array	live 2026-10-20

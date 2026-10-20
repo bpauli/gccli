@@ -21,7 +21,7 @@ func TestWellnessEndpoints(t *testing.T) {
 		{"wellness.menstrual-log", day, "GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01"},
 		{"wellness.set-menstrual-log", day, "POST /periodichealth-service/menstrualcycle/dailylog/2026-10-01"},
 		{"wellness.delete-menstrual-log", day, "DELETE /periodichealth-service/menstrualcycle/dailylog/2026-10-01"},
-		{"wellness.request-reload", map[string]string{"date": "2024-01-15"}, "GET /wellness-service/wellness/epoch/request/2024-01-15"},
+		{"wellness.request-reload", map[string]string{"date": "2024-01-15"}, "POST /wellness-service/wellness/epoch/request/2024-01-15"},
 	})
 }
 
