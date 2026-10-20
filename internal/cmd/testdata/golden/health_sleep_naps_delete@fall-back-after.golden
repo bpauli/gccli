@@ -1,0 +1,54 @@
+On 2026-11-01 the clocks in New York go back at 02:00 EDT. 03:30 happens once, after the change (EST, UTC-5), so it is 08:30 UTC. The list also holds the two naps of the repeated hour (05:30 and 06:30 UTC), and the match takes the nap that starts in the minute of 08:30 UTC.
+-- args --
+health
+sleep
+naps
+delete
+2026-11-01
+03:30
+-- stdin --
+y
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","timeZone":"America/New_York"}
+-- route GET /sleep-service/sleep/naps/2026-11-01 --
+[{"napStartTimestampGMT":"2026-11-01T05:30:00","napTimeSec":600},{"napStartTimestampGMT":"2026-11-01T06:30:00","napTimeSec":600},{"napStartTimestampGMT":"2026-11-01T08:30:12","napTimeSec":900}]
+-- route DELETE /sleep-service/sleep/nap/2026-11-01/1793521812000 204 --
+-- table stdout --
+-- table stderr --
+Delete nap on 2026-11-01 at 03:30? [y/N]: Deleted nap on 2026-11-01 at 03:30
+-- table exit --
+0
+-- table requests --
+GET /userprofile-service/userprofile/settings
+GET /sleep-service/sleep/naps/2026-11-01
+DELETE /sleep-service/sleep/nap/2026-11-01/1793521812000
+-- plain stdout --
+-- plain stderr --
+Delete nap on 2026-11-01 at 03:30? [y/N]: Deleted nap on 2026-11-01 at 03:30
+-- plain exit --
+0
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+GET /sleep-service/sleep/naps/2026-11-01
+DELETE /sleep-service/sleep/nap/2026-11-01/1793521812000
+-- plain-header stdout --
+-- plain-header stderr --
+Delete nap on 2026-11-01 at 03:30? [y/N]: Deleted nap on 2026-11-01 at 03:30
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /sleep-service/sleep/naps/2026-11-01
+DELETE /sleep-service/sleep/nap/2026-11-01/1793521812000
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr noeol --
+Delete nap on 2026-11-01 at 03:30? [y/N]: 
+-- json exit --
+0
+-- json requests --
+GET /userprofile-service/userprofile/settings
+GET /sleep-service/sleep/naps/2026-11-01
+DELETE /sleep-service/sleep/nap/2026-11-01/1793521812000

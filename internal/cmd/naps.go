@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"slices"
 	"strconv"
 	"time"
 
@@ -41,10 +42,35 @@ func (c *Clock) Decode(ctx *kong.DecodeContext) error {
 	return nil
 }
 
-// on returns c on the date of day, in the location of day.
-func (c Clock) on(day time.Time) time.Time {
-	t, _ := time.Parse("15:04", string(c))
-	return time.Date(day.Year(), day.Month(), day.Day(), t.Hour(), t.Minute(), 0, 0, day.Location())
+// instant returns the moment at which a clock in loc shows c on day
+// (YYYY-MM-DD). On a day with a daylight saving change, a time in the
+// skipped hour has no instant and a time in the repeated hour has two.
+// Both are an error, so that a nap never gets a start or end that the
+// user did not name.
+func (c Clock) instant(day string, loc *time.Location) (time.Time, error) {
+	wall := day + " " + string(c)
+	digits, err := time.ParseInLocation("2006-01-02 15:04", wall, time.UTC)
+	if err != nil {
+		return time.Time{}, err
+	}
+	// The instant is the wall digits minus the zone offset in effect at
+	// that instant. The offsets one day before and one day after cover
+	// both sides of a change on that day.
+	var found []time.Time
+	for _, d := range []time.Duration{-24 * time.Hour, 24 * time.Hour} {
+		_, off := digits.Add(d).In(loc).Zone()
+		t := digits.Add(-time.Duration(off) * time.Second)
+		if t.In(loc).Format("2006-01-02 15:04") == wall && !slices.ContainsFunc(found, t.Equal) {
+			found = append(found, t)
+		}
+	}
+	switch len(found) {
+	case 0:
+		return time.Time{}, fmt.Errorf("the time %s does not exist on %s in your Garmin time zone (%s) because the clocks go forward", c, day, loc)
+	case 1:
+		return found[0], nil
+	}
+	return time.Time{}, fmt.Errorf("the time %s is ambiguous on %s in your Garmin time zone (%s) because the clocks go back", c, day, loc)
 }
 
 // napTimestamp is the GMT time format of the nap endpoints.
@@ -73,7 +99,18 @@ func (c *HealthSleepNapsAddCmd) Run(g *Globals) error {
 		return fmt.Errorf("get time zone: %w", err)
 	}
 	now := nowFn().In(loc)
-	start, end := c.Start.on(now), c.End.on(now)
+	date := now.Format("2006-01-02")
+	start, err := c.Start.instant(date, loc)
+	if err != nil {
+		return err
+	}
+	end, err := c.End.instant(date, loc)
+	if err != nil {
+		return err
+	}
+	if !end.After(start) {
+		return fmt.Errorf("the end time %s must be after the start time %s", c.End, c.Start)
+	}
 	if end.After(now) {
 		return fmt.Errorf("the end time %s is later than now (%s in your Garmin time zone)", c.End, now.Format("15:04"))
 	}
@@ -81,7 +118,6 @@ func (c *HealthSleepNapsAddCmd) Run(g *Globals) error {
 	if err != nil {
 		return err
 	}
-	date := now.Format("2006-01-02")
 	body, err := json.Marshal(map[string]any{
 		"calendarDate":         date,
 		"napStartTimestampGMT": start.UTC().Format(napTimestamp),
@@ -114,11 +150,15 @@ func (c *HealthSleepNapsDeleteCmd) Run(g *Globals) error {
 	if err != nil {
 		return fmt.Errorf("get time zone: %w", err)
 	}
+	at, err := c.Start.instant(string(c.Date), loc)
+	if err != nil {
+		return err
+	}
 	data, err := client.Call(g.Context, "health.sleep-naps", map[string]string{"date": string(c.Date)}, nil)
 	if err != nil {
 		return fmt.Errorf("get naps: %w", err)
 	}
-	start, err := napStart(data, loc, c.Start)
+	start, err := napStart(data, at)
 	if err != nil {
 		return err
 	}
@@ -141,11 +181,11 @@ func (c *HealthSleepNapsDeleteCmd) Run(g *Globals) error {
 	return reportWrite(g, data, "Deleted nap on %s at %s", c.Date, c.Start)
 }
 
-// napStart returns the GMT start of the first nap in naps that starts at
-// the minute at in loc, or the zero time. A DELETE of a nap that does not
-// exist also answers 204, so the start comes from the nap list: a missing
-// nap is an error, and the path gets the exact start.
-func napStart(naps json.RawMessage, loc *time.Location, at Clock) (time.Time, error) {
+// napStart returns the GMT start of the first nap in naps that starts in
+// the minute that begins at at, or the zero time. A DELETE of a nap that
+// does not exist also answers 204, so the start comes from the nap list: a
+// missing nap is an error, and the path gets the exact start.
+func napStart(naps json.RawMessage, at time.Time) (time.Time, error) {
 	var list []struct {
 		Start string `json:"napStartTimestampGMT"`
 	}
@@ -157,7 +197,7 @@ func napStart(naps json.RawMessage, loc *time.Location, at Clock) (time.Time, er
 		if err != nil {
 			return time.Time{}, errors.New("parse naps: napStartTimestampGMT is not a time")
 		}
-		if Clock(t.In(loc).Format("15:04")) == at {
+		if t.Truncate(time.Minute).Equal(at) {
 			return t, nil
 		}
 	}
