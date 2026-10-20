@@ -2,7 +2,7 @@
 reload
 2026-10-01
 -- route POST /wellness-service/wellness/epoch/request/2026-10-01 --
-{"userProfilePk":12345678,"calendarDate":"2026-10-01","status":"COMPLETE","source":"USER","ghReloadMetaData":null,"createDate":"2026-10-01T08:00:00.0","deviceList":[]}
+{"userProfilePk":12345678,"calendarDate":"2026-10-01","status":"COMPLETE","source":"USER","ghReloadMetaData":"","createDate":null,"deviceList":null}
 -- table stdout --
 -- table stderr --
 Requested reload for 2026-10-01
@@ -30,9 +30,9 @@ POST /wellness-service/wellness/epoch/request/2026-10-01
   "calendarDate": "2026-10-01",
   "status": "COMPLETE",
   "source": "USER",
-  "ghReloadMetaData": null,
-  "createDate": "2026-10-01T08:00:00.0",
-  "deviceList": []
+  "ghReloadMetaData": "",
+  "createDate": null,
+  "deviceList": null
 }
 -- json stderr --
 -- json exit --
