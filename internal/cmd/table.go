@@ -139,8 +139,9 @@ type Output interface{ output() }
 
 // JSON prints the response as indented JSON in every mode, and {} on an
 // empty body. List marks a row whose answer is a JSON array: it prints []
-// on an empty body. TestJSONListGoldens checks List against the main
-// golden of the row.
+// on an empty body. The shape of each row's answer, with its evidence, is
+// in testdata/answer_shapes.tsv, and TestAnswerShapes checks List and the
+// main golden against it.
 type JSON struct{ List bool }
 
 func (j JSON) empty() string {
