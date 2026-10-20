@@ -66,7 +66,7 @@ var gearGroup = Group{Name: "gear", Help: "Manage gear.", Children: []Node{
 		Verb:     "unlink gear",
 		Output:   Write{Done: "Unlinked gear {UUID} from activity {ActivityID}"},
 	},
-	Leaf{Name: "types", Help: "List gear types.", Endpoint: "gear.types", Verb: "get gear types", Output: JSON{}},
+	Leaf{Name: "types", Help: "List gear types.", Endpoint: "gear.types", Verb: "get gear types", Output: JSON{List: true}},
 	Custom{Name: "add", Help: "Add a gear item.", Cmd: &GearAddCmd{}},
 	Custom{Name: "update", Help: "Change the name, brand, model or notes of a gear item.", Cmd: &GearUpdateCmd{}},
 	Leaf{

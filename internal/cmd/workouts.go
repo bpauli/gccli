@@ -242,7 +242,7 @@ var workoutScheduleGroup = Group{Name: "schedule", Help: "Manage scheduled worko
 }}
 
 var workoutBenchmarksGroup = Group{Name: "benchmarks", Help: "View strength benchmarks.", Children: []Node{
-	Leaf{Name: "list", Help: "List strength benchmarks.", Default: true, Endpoint: "workouts.benchmarks", Verb: "get benchmarks", Output: JSON{}},
+	Leaf{Name: "list", Help: "List strength benchmarks.", Default: true, Endpoint: "workouts.benchmarks", Verb: "get benchmarks", Output: JSON{List: true}},
 }}
 
 // WorkoutScheduleAddCmd schedules a workout on a calendar date.

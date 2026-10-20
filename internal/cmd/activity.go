@@ -16,7 +16,15 @@ var activityGroup = Group{Name: "activity", Help: "View activity details.", Chil
 	Custom{Name: "typed-splits", Help: "Show typed splits.", Cmd: &ActivityTypedSplitsCmd{}},
 	Custom{Name: "split-summaries", Help: "Show split summaries.", Cmd: &ActivitySplitSummariesCmd{}},
 	Custom{Name: "weather", Help: "Show weather conditions.", Cmd: &ActivityWeatherCmd{}},
-	Custom{Name: "hr-zones", Help: "Show heart rate time in zones.", Cmd: &ActivityHRZonesCmd{}},
+	Leaf{
+		Name: "hr-zones", Help: "Show heart rate time in zones.",
+		Spec: argsOf(&struct {
+			ID string `arg:"" help:"Activity ID."`
+		}{}),
+		Endpoint: "activities.hr-zones",
+		Params:   Params{"activityID": In("ID")},
+		Verb:     "get activity HR zones", Output: JSON{List: true},
+	},
 	Custom{Name: "power-zones", Help: "Show power time in zones.", Cmd: &ActivityPowerZonesCmd{}},
 	activityExerciseSetsGroup,
 	Custom{Name: "gear", Help: "Show linked gear.", Cmd: &ActivityGearCmd{}},
@@ -240,25 +248,6 @@ func (c *ActivityWeatherCmd) Run(g *Globals) error {
 	data, err := client.Call(g.Context, "activities.weather", map[string]string{"activityID": c.ID}, nil)
 	if err != nil {
 		return fmt.Errorf("get activity weather: %w", err)
-	}
-
-	return writeObject(g, data)
-}
-
-// ActivityHRZonesCmd shows heart rate time-in-zone data for an activity.
-type ActivityHRZonesCmd struct {
-	ID string `arg:"" help:"Activity ID."`
-}
-
-func (c *ActivityHRZonesCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.Call(g.Context, "activities.hr-zones", map[string]string{"activityID": c.ID}, nil)
-	if err != nil {
-		return fmt.Errorf("get activity HR zones: %w", err)
 	}
 
 	return writeObject(g, data)

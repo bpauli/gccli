@@ -324,24 +324,6 @@ func TestActivityWeather_Success(t *testing.T) {
 	}
 }
 
-func TestActivityHRZones_Success(t *testing.T) {
-	server := activityTestServer(t)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &ActivityHRZonesCmd{ID: "12345678"}
-	err := cmd.Run(g)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
-	}
-}
-
 func TestActivityPowerZones_Success(t *testing.T) {
 	server := activityTestServer(t)
 	defer server.Close()

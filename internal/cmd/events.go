@@ -10,7 +10,7 @@ import (
 
 var eventsGroup = Group{Name: "events", Help: "Manage calendar events.", Children: []Node{
 	Custom{Name: "list", Help: "List calendar events.", Default: true, Cmd: &EventsListCmd{}},
-	Leaf{Name: "upcoming", Help: "List upcoming events.", Endpoint: "events.upcoming", Verb: "get upcoming events", Output: JSON{}},
+	Leaf{Name: "upcoming", Help: "List upcoming events.", Endpoint: "events.upcoming", Verb: "get upcoming events", Output: JSON{List: true}},
 	Custom{Name: "add", Help: "Add a calendar event.", Cmd: &EventsAddCmd{}},
 	Leaf{
 		Name: "delete", Help: "Delete a calendar event.",
