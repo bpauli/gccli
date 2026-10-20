@@ -1,0 +1,42 @@
+An empty body prints [], because the answer is an array. Garmin answered [] for the test account on 2026-10-20.
+-- args --
+health
+race-predictions
+range
+--start=2026-10-01
+--end=2026-10-01
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- route GET /metrics-service/metrics/racepredictions/daily/tester?fromCalendarDate=2026-10-01&toCalendarDate=2026-10-01 204 --
+-- table stdout --
+[]
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /userprofile-service/userprofile/settings
+GET /metrics-service/metrics/racepredictions/daily/tester?fromCalendarDate=2026-10-01&toCalendarDate=2026-10-01
+-- plain stdout --
+[]
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+GET /metrics-service/metrics/racepredictions/daily/tester?fromCalendarDate=2026-10-01&toCalendarDate=2026-10-01
+-- plain-header stdout --
+[]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /metrics-service/metrics/racepredictions/daily/tester?fromCalendarDate=2026-10-01&toCalendarDate=2026-10-01
+-- json stdout --
+[]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /userprofile-service/userprofile/settings
+GET /metrics-service/metrics/racepredictions/daily/tester?fromCalendarDate=2026-10-01&toCalendarDate=2026-10-01
