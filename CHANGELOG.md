@@ -15,13 +15,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   |---|---|---|---|
   | `activities list`, `activities search`, `activities types`, `courses list`, `courses favorites`, `events list`, `workouts list` | `--json` | `null` for an empty body | `[]` |
   | the same commands | table, `--plain` | `parse <noun>: unexpected end of JSON input`, exit 1, for an empty body | the header, nothing with `--plain`, exit 0 |
-  | `devices list`, `gear collections list`, `gear list`, `goals list`, `groups list`, `health steps view`, `profile privacy-zones list`, `records list` (also as `records`), `social connections`, `social followers` | all modes | `{}` for an empty body | `[]` |
+  | `badges available`, `badges earned` (also as `badges`), `devices list`, `devices sensors`, `events upcoming`, `gear collections list`, `gear list`, `gear types`, `goals list`, `groups list`, `health steps view`, `profile privacy-zones list`, `records list` (also as `records`), `social connections`, `social followers`, `wellness jet-lag list` (also as `wellness jet-lag`), `workouts benchmarks list` (also as `workouts benchmarks`) | all modes | `{}` for an empty body | `[]` |
   | `activities list`, `activities search`, `activities types`, `courses favorites`, `events list` | table, `--plain` | `parse <noun>: json: cannot unmarshal object ...`, exit 1, for an object answer | no rows, exit 0 |
   | `courses list` | table, `--plain` | `parse courses: json: cannot unmarshal array ...`, exit 1, for a root array answer | the rows of the array, or the header only for `[]`, exit 0 |
   | `workouts list` | table, `--plain` | `parse workouts: unexpected response format`, exit 1, for an object without a `workouts` or `results` key | no rows, exit 0 |
   | `workouts schedule list` | `--json` | `null` when no workout is scheduled | `[]` |
   | `workouts schedule list` | all modes | `parse calendar: unexpected end of JSON input`, exit 1, for an empty calendar body | the header, nothing with `--plain` or `[]`, exit 0 |
-  | `activity details`, `activity exercise-sets show`, `activity gear`, `activity hr-zones`, `activity power-zones`, `activity split-summaries`, `activity splits`, `activity typed-splits`, `activity weather`, `courses detail`, `workouts detail` | all modes | `null` for an empty body | `{}` |
+  | `activity details`, `activity exercise-sets show`, `activity gear`, `activity power-zones`, `activity split-summaries`, `activity splits`, `activity typed-splits`, `activity weather`, `courses detail`, `workouts detail` | all modes | `null` for an empty body | `{}` |
+  | `activity hr-zones` | all modes | `null` for an empty body | `[]` |
   | `activity summary` | `--json` | `null` for an empty body | `{}` |
   | `activity summary` | table, `--plain` | `parse activity: unexpected end of JSON input`, exit 1, for an empty body | nothing, exit 0 |
   | `exercises list` | `--json` | `{"error":{"code":"error","message":"json: error calling MarshalJSON for type *jsontext.Value: unexpected end of JSON input"}}` on stderr, exit 1, for an empty catalog | `{}`, exit 0 |
