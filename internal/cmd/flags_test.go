@@ -488,6 +488,73 @@ func TestRequiredStringsHaveTextType(t *testing.T) {
 
 // TestNonEmptyDecode pins the one rule of ID and FreeText: an empty or blank
 // value is a usage error, and any other value is kept as given.
+// TestNumericIDDecode pins the IDs that NumericID accepts: a base 10 int64
+// with an optional sign and leading zeros, and nothing else.
+func TestNumericIDDecode(t *testing.T) {
+	accepted := []struct {
+		raw  string
+		want NumericID
+	}{
+		{"1", 1},
+		{"007", 7},
+		{"010", 10},
+		{"+7", 7},
+		{"21504387319", 21504387319},
+		{"9223372036854775807", 9223372036854775807},
+	}
+	rejected := []string{
+		"",
+		" ",
+		" 7",
+		"7 ",
+		"\t7",
+		"0x10",
+		"0X10",
+		"0o10",
+		"0b10",
+		"1_000",
+		"1.5",
+		"1e3",
+		"abc",
+		"7a",
+		"9223372036854775808",
+	}
+	decode := func(t *testing.T, raw string) (NumericID, error) {
+		t.Helper()
+		var cli struct {
+			ID NumericID `name:"id"`
+		}
+		parser, err := kong.New(&cli)
+		if err != nil {
+			t.Fatal(err)
+		}
+		_, err = parser.Parse([]string{"--id", raw})
+		return cli.ID, err
+	}
+	for _, tt := range accepted {
+		t.Run(tt.raw, func(t *testing.T) {
+			got, err := decode(t, tt.raw)
+			if err != nil {
+				t.Fatalf("%q: err = %v, want %d", tt.raw, err, tt.want)
+			}
+			if got != tt.want {
+				t.Errorf("%q = %d, want %d", tt.raw, got, tt.want)
+			}
+		})
+	}
+	for _, raw := range rejected {
+		t.Run("rejected/"+raw, func(t *testing.T) {
+			got, err := decode(t, raw)
+			if err == nil {
+				t.Fatalf("%q = %d, want a usage error", raw, got)
+			}
+			if want := "--id: invalid ID " + strconv.Quote(raw) + ": expected a number"; !strings.Contains(err.Error(), want) {
+				t.Errorf("%q: err = %v, want %q", raw, err, want)
+			}
+		})
+	}
+}
+
 func TestNonEmptyDecode(t *testing.T) {
 	tests := []struct {
 		args    []string
