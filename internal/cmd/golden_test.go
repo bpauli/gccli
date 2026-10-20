@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"maps"
@@ -439,6 +440,44 @@ func TestGoldenErrorCases(t *testing.T) {
 			t.Errorf("no golden file of %q ends in an error from %s, so nothing pins the verb of its error message: copy the input sections of %s to %s@error.golden, give that route status 400 and a short JSON body, drop the routes that the command no longer requests, then run go test ./internal/cmd -run TestGolden -update", path, data, main, strings.TrimSuffix(main, ".golden"))
 		}
 	}
+}
+
+// TestJSONListGoldens checks JSON.List of every Leaf against the answer in
+// its main golden: a row whose golden answers with an array must set List,
+// and a row that sets List must have a golden that answers with an array.
+func TestJSONListGoldens(t *testing.T) {
+	walkNodes(commands, "", func(path string, n Node) {
+		l, ok := n.(Leaf)
+		if !ok {
+			return
+		}
+		out, ok := l.Output.(JSON)
+		if !ok {
+			return
+		}
+		g, err := readGolden(goldenFile(path))
+		if err != nil {
+			t.Error(err)
+			return
+		}
+		_, in, err := g.input()
+		if err != nil {
+			t.Error(err)
+			return
+		}
+		data := dataRoute(g)
+		if data == "" {
+			return
+		}
+		body := bytes.TrimSpace([]byte(in.routes[data].body))
+		isArray := bytes.HasPrefix(body, []byte("["))
+		switch {
+		case isArray && !out.List:
+			t.Errorf("%s: the main golden answers %s with an array, but the row is JSON{}: set JSON{List: true}, so an empty body prints []", path, data)
+		case !isArray && out.List:
+			t.Errorf("%s: the row is JSON{List: true}, but the main golden answers %s with %q: give the golden an array body, or make the row JSON{}", path, data, body)
+		}
+	})
 }
 
 func readGolden(file string) (golden, error) {

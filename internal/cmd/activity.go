@@ -27,7 +27,7 @@ var activityGroup = Group{Name: "activity", Help: "View activity details.", Chil
 		}{}),
 		Endpoint: "activities.comments",
 		Params:   Params{"activityID": In("ID")},
-		Verb:     "get comments", Output: JSON{},
+		Verb:     "get comments", Output: JSON{List: true},
 	},
 	Leaf{
 		Name: "likes", Help: "List the likes of an activity.",
@@ -36,7 +36,7 @@ var activityGroup = Group{Name: "activity", Help: "View activity details.", Chil
 		}{}),
 		Endpoint: "activities.likes",
 		Params:   Params{"activityID": In("ID")},
-		Verb:     "get likes", Output: JSON{},
+		Verb:     "get likes", Output: JSON{List: true},
 	},
 	Custom{Name: "download", Help: "Download activity file.", Cmd: &ActivityDownloadCmd{}},
 	Custom{Name: "upload", Help: "Upload an activity file (FIT/GPX/TCX).", Cmd: &ActivityUploadCmd{}},

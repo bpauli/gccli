@@ -21,7 +21,7 @@ var profilePrivacyGroup = Group{Name: "privacy", Help: "View privacy settings.",
 }}
 
 var profilePrivacyZonesGroup = Group{Name: "privacy-zones", Help: "List, add and delete privacy zones.", Children: []Node{
-	Leaf{Name: "list", Help: "List privacy zones.", Default: true, Endpoint: "profile.privacy-zones", Verb: "get privacy zones", Output: JSON{}},
+	Leaf{Name: "list", Help: "List privacy zones.", Default: true, Endpoint: "profile.privacy-zones", Verb: "get privacy zones", Output: JSON{List: true}},
 	Custom{Name: "add", Help: "Add a privacy zone around a point.", Cmd: &ProfilePrivacyZonesAddCmd{}},
 	Leaf{
 		Name: "delete", Help: "Delete a privacy zone.",

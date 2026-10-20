@@ -137,9 +137,18 @@ func (a alt) String() string {
 // Output is what a Leaf prints: JSON, Rows or Write.
 type Output interface{ output() }
 
-// JSON prints the response as indented JSON in every mode and {} on an
-// empty body.
-type JSON struct{}
+// JSON prints the response as indented JSON in every mode, and {} on an
+// empty body. List marks a row whose answer is a JSON array: it prints []
+// on an empty body. TestJSONListGoldens checks List against the main
+// golden of the row.
+type JSON struct{ List bool }
+
+func (j JSON) empty() string {
+	if j.List {
+		return "[]"
+	}
+	return "{}"
+}
 
 // Rows prints the response as JSON in --json mode, or [] on an empty
 // body, and as columns otherwise. Items names the wrapper key of the

@@ -8,7 +8,7 @@ var socialGroup = Group{Name: "social", Help: "View connections, followers, foll
 		}{}),
 		Endpoint: "connections.list",
 		Params:   Params{"start": In("Offset"), "limit": In("Limit")},
-		Verb:     "get connections", Output: JSON{},
+		Verb:     "get connections", Output: JSON{List: true},
 	},
 	Leaf{
 		Name: "followers", Help: "List the followers of a user.",
@@ -17,7 +17,7 @@ var socialGroup = Group{Name: "social", Help: "View connections, followers, foll
 		}{}),
 		Endpoint: "followers.list",
 		Params:   Params{"displayName": In("DisplayName").Or(DisplayName)},
-		Verb:     "get followers", Output: JSON{},
+		Verb:     "get followers", Output: JSON{List: true},
 	},
 	Leaf{
 		Name: "following", Help: "List the users that a user follows.",
@@ -26,8 +26,8 @@ var socialGroup = Group{Name: "social", Help: "View connections, followers, foll
 		}{}),
 		Endpoint: "following.list",
 		Params:   Params{"displayName": In("DisplayName").Or(DisplayName)},
-		Verb:     "get following", Output: JSON{},
+		Verb:     "get following", Output: JSON{List: true},
 	},
-	Leaf{Name: "requests", Help: "List pending connection requests.", Endpoint: "connections.pending", Verb: "get connection requests", Output: JSON{}},
+	Leaf{Name: "requests", Help: "List pending connection requests.", Endpoint: "connections.pending", Verb: "get connection requests", Output: JSON{List: true}},
 	Leaf{Name: "feed", Help: "Show your newsfeed.", Endpoint: "newsfeed.list", Verb: "get newsfeed", Output: JSON{}},
 }}

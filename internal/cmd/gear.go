@@ -17,7 +17,7 @@ var gearGroup = Group{Name: "gear", Help: "Manage gear.", Children: []Node{
 		Name: "list", Help: "List all gear.", Default: true,
 		Endpoint: "gear.list",
 		Params:   Params{"userProfilePK": ProfilePK},
-		Verb:     "get gear", Output: JSON{},
+		Verb:     "get gear", Output: JSON{List: true},
 	},
 	Leaf{
 		Name: "stats", Help: "Show usage statistics for a gear item.",
@@ -97,7 +97,7 @@ var gearGroup = Group{Name: "gear", Help: "Manage gear.", Children: []Node{
 }}
 
 var gearCollectionsGroup = Group{Name: "collections", Help: "Manage gear collections.", Children: []Node{
-	Leaf{Name: "list", Help: "List gear collections.", Default: true, Endpoint: "gear.collections", Verb: "get gear collections", Output: JSON{}},
+	Leaf{Name: "list", Help: "List gear collections.", Default: true, Endpoint: "gear.collections", Verb: "get gear collections", Output: JSON{List: true}},
 	Custom{Name: "create", Help: "Create a gear collection.", Cmd: &GearCollectionCreateCmd{}},
 	Custom{Name: "rename", Help: "Rename a gear collection.", Cmd: &GearCollectionRenameCmd{}},
 	Leaf{

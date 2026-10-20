@@ -17,7 +17,7 @@ var goalsGroup = Group{Name: "goals", Help: "View and set goals.", Children: []N
 		}{}),
 		Endpoint: "goals.list",
 		Params:   Params{"status": In("Status")},
-		Verb:     "get goals", Output: JSON{},
+		Verb:     "get goals", Output: JSON{List: true},
 	},
 	Leaf{
 		Name: "weight", Help: "Show the effective weight goal for a date range.",
@@ -146,9 +146,9 @@ var challengesGroup = Group{Name: "challenges", Help: "View challenges.", Childr
 	Leaf{Name: "available", Help: "Show available badge challenges.", Endpoint: "challenges.available", Verb: "get available challenges", Output: JSON{}},
 	Leaf{Name: "completed", Help: "Show completed badge challenges.", Endpoint: "challenges.completed", Verb: "get completed challenges", Output: JSON{}},
 	Group{Name: "virtual", Help: "View virtual challenges.", Children: []Node{
-		Leaf{Name: "available", Help: "Show available virtual challenges.", Endpoint: "challenges.virtual-available", Verb: "get available virtual challenges", Output: JSON{}},
-		Leaf{Name: "completed", Help: "Show completed virtual challenges.", Endpoint: "challenges.virtual-completed", Verb: "get completed virtual challenges", Output: JSON{}},
-		Leaf{Name: "in-progress", Help: "Show virtual challenges in progress.", Endpoint: "challenges.virtual-in-progress", Verb: "get in-progress virtual challenges", Output: JSON{}},
+		Leaf{Name: "available", Help: "Show available virtual challenges.", Endpoint: "challenges.virtual-available", Verb: "get available virtual challenges", Output: JSON{List: true}},
+		Leaf{Name: "completed", Help: "Show completed virtual challenges.", Endpoint: "challenges.virtual-completed", Verb: "get completed virtual challenges", Output: JSON{List: true}},
+		Leaf{Name: "in-progress", Help: "Show virtual challenges in progress.", Endpoint: "challenges.virtual-in-progress", Verb: "get in-progress virtual challenges", Output: JSON{List: true}},
 	}},
 }}
 
@@ -157,13 +157,13 @@ var recordsGroup = Group{Name: "records", Help: "View personal records.", Childr
 		Name: "list", Help: "View personal records.", Default: true,
 		Endpoint: "records.list",
 		Params:   Params{"displayName": DisplayName},
-		Verb:     "get personal records", Output: JSON{},
+		Verb:     "get personal records", Output: JSON{List: true},
 	},
 	Leaf{
 		Name: "types", Help: "List personal record types.",
 		Endpoint: "records.types",
 		Params:   Params{"displayName": DisplayName},
-		Verb:     "get personal record types", Output: JSON{},
+		Verb:     "get personal record types", Output: JSON{List: true},
 	},
 	Leaf{
 		Name: "activity", Help: "List the personal records set in an activity.",
@@ -172,6 +172,6 @@ var recordsGroup = Group{Name: "records", Help: "View personal records.", Childr
 		}{}),
 		Endpoint: "records.activity",
 		Params:   Params{"activityID": In("ID")},
-		Verb:     "get activity records", Output: JSON{},
+		Verb:     "get activity records", Output: JSON{List: true},
 	},
 }}

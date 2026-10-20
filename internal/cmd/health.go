@@ -109,7 +109,7 @@ var healthGroup = Group{Name: "health", Help: "View health data.", Children: []N
 		}{}),
 		Endpoint: "health.power-to-weight",
 		Params:   Params{"date": In("Date")},
-		Verb:     "get power to weight", Output: JSON{},
+		Verb:     "get power to weight", Output: JSON{List: true},
 	},
 	healthThresholdsGroup,
 	healthRacePredictionsGroup,
@@ -169,7 +169,7 @@ var healthGroup = Group{Name: "health", Help: "View health data.", Children: []N
 		}{}),
 		Endpoint: "health.one-rep-max",
 		Params:   Params{"date": In("Date")},
-		Verb:     "get one-rep max", Output: JSON{},
+		Verb:     "get one-rep max", Output: JSON{List: true},
 	},
 	Leaf{
 		Name: "events", Help: "Show daily wellness events.",
@@ -201,7 +201,7 @@ var healthStepsGroup = Group{Name: "steps", Help: "Show step data.", Children: [
 		}{}),
 		Endpoint: "health.steps",
 		Params:   Params{"displayName": DisplayName, "date": In("Date")},
-		Verb:     "get steps", Output: JSON{},
+		Verb:     "get steps", Output: JSON{List: true},
 		LateDates: []string{"Date"},
 	},
 	Leaf{
@@ -421,7 +421,7 @@ var healthThresholdsGroup = Group{Name: "thresholds", Help: "Show threshold and 
 		}{}),
 		Endpoint: "health.cycling-ftp-range",
 		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
-		Verb:     "get cycling ftp range", Output: JSON{},
+		Verb:     "get cycling ftp range", Output: JSON{List: true},
 	},
 	Leaf{
 		Name: "lactate-heart-rate", Help: "Show lactate threshold heart rate for a date range.",
@@ -431,7 +431,7 @@ var healthThresholdsGroup = Group{Name: "thresholds", Help: "Show threshold and 
 		}{}),
 		Endpoint: "health.lactate-heart-rate-range",
 		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
-		Verb:     "get lactate threshold heart rate range", Output: JSON{},
+		Verb:     "get lactate threshold heart rate range", Output: JSON{List: true},
 	},
 	Leaf{
 		Name: "lactate-speed", Help: "Show lactate threshold speed for a date range.",
@@ -441,7 +441,7 @@ var healthThresholdsGroup = Group{Name: "thresholds", Help: "Show threshold and 
 		}{}),
 		Endpoint: "health.lactate-speed-range",
 		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
-		Verb:     "get lactate threshold speed range", Output: JSON{},
+		Verb:     "get lactate threshold speed range", Output: JSON{List: true},
 	},
 	Leaf{
 		Name: "power-to-weight", Help: "Show power-to-weight data for a date range.",
@@ -451,7 +451,7 @@ var healthThresholdsGroup = Group{Name: "thresholds", Help: "Show threshold and 
 		}{}),
 		Endpoint: "health.power-to-weight-range",
 		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
-		Verb:     "get power to weight range", Output: JSON{},
+		Verb:     "get power to weight range", Output: JSON{List: true},
 	},
 }}
 

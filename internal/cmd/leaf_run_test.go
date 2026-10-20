@@ -328,8 +328,8 @@ func TestLeafRowSadPaths(t *testing.T) {
 			switch out := l.Output.(type) {
 			case JSON:
 				run("empty body", empty, flag, func(t *testing.T, stdout, stderr string, code int, _ []string) {
-					if code != 0 || stdout != "{}\n" || stderr != "" {
-						t.Errorf("exit %d, want 0\nstdout %q, want {}\nstderr %q, want empty", code, stdout, stderr)
+					if code != 0 || stdout != out.empty()+"\n" || stderr != "" {
+						t.Errorf("exit %d, want 0\nstdout %q, want %s\nstderr %q, want empty", code, stdout, out.empty(), stderr)
 					}
 				})
 			case Rows:

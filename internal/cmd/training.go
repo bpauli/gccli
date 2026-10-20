@@ -28,5 +28,5 @@ var trainingGroup = Group{Name: "training", Help: "View training plans and adapt
 		Params:   Params{"startDate": In("StartDate").Or(Today)},
 		Verb:     "get active training plans", Output: JSON{},
 	},
-	Leaf{Name: "coach-workouts", Help: "List adaptive coaching workout types.", Endpoint: "training.adaptive-coaching-workouts", Verb: "get coach workouts", Output: JSON{}},
+	Leaf{Name: "coach-workouts", Help: "List adaptive coaching workout types.", Endpoint: "training.adaptive-coaching-workouts", Verb: "get coach workouts", Output: JSON{List: true}},
 }}
