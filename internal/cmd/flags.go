@@ -101,6 +101,19 @@ func (id *NumericID) Decode(ctx *kong.DecodeContext) error {
 
 func (id NumericID) String() string { return strconv.FormatInt(int64(id), 10) }
 
+// popNonEmpty takes the next token of a flag or positional and rejects an
+// empty or blank one. Any other value is kept as given, spaces included.
+func popNonEmpty(ctx *kong.DecodeContext, what string) (string, error) {
+	raw, err := popString(ctx, what)
+	if err != nil {
+		return "", err
+	}
+	if strings.TrimSpace(raw) == "" {
+		return "", errors.New("must not be empty")
+	}
+	return raw, nil
+}
+
 // ID is a user-given value that names a Garmin object in a request path,
 // such as an activity ID or a gear UUID. Kong rejects an empty or blank
 // value at parse time, so it is a usage error before the login. The value
@@ -108,14 +121,25 @@ func (id NumericID) String() string { return strconv.FormatInt(int64(id), 10) }
 type ID string
 
 func (id *ID) Decode(ctx *kong.DecodeContext) error {
-	raw, err := popString(ctx, "id")
+	raw, err := popNonEmpty(ctx, "id")
 	if err != nil {
 		return err
 	}
-	if strings.TrimSpace(raw) == "" {
-		return errors.New("must not be empty")
-	}
 	*id = ID(raw)
+	return nil
+}
+
+// FreeText is a required free-text value that a request body carries, such as
+// a name or a type key. Kong rejects an empty or blank value at parse time,
+// so it is a usage error before the login. The value is sent as given.
+type FreeText string
+
+func (t *FreeText) Decode(ctx *kong.DecodeContext) error {
+	raw, err := popNonEmpty(ctx, "free text")
+	if err != nil {
+		return err
+	}
+	*t = FreeText(raw)
 	return nil
 }
 

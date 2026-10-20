@@ -447,3 +447,85 @@ func TestIDFieldsHaveIDType(t *testing.T) {
 		}
 	})
 }
+
+// requiredStringExempt names the required plain-string values of the Kong
+// tree that are not a FreeText on purpose, with the reason. A key is the
+// command path and the value name.
+var requiredStringExempt = map[string]string{
+	"activity describe text":       "an empty text clears the description by design",
+	"calendar notes add name":      "Validate rejects an empty name with its own message",
+	"gear collections rename name": "Validate rejects an empty name with its own message",
+}
+
+// TestRequiredStringsHaveTextType walks the whole Kong tree, Custom
+// commands included: a required flag or positional of type string lets an
+// empty value through to the login, so its type must be FreeText, or ID when it
+// fills a request path. Kong itself rejects an empty enum value and an empty
+// existingfile value, so those pass. An exempt value must still be a
+// required plain string, or the entry is stale.
+func TestRequiredStringsHaveTextType(t *testing.T) {
+	seen := map[string]bool{}
+	walkValues(t, func(path string, v *kong.Value) {
+		key := path + " " + v.Name
+		plain := v.Required && v.Target.Type() == reflect.TypeFor[string]() && v.Enum == "" && v.Tag.Type == ""
+		if reason, ok := requiredStringExempt[key]; ok {
+			seen[key] = true
+			if !plain {
+				t.Errorf("%s: requiredStringExempt names it (%s), but it is not a required plain string any more: drop the entry", key, reason)
+			}
+			return
+		}
+		if plain {
+			t.Errorf("%s: a required string, which Kong lets be empty: make the field a FreeText, or an ID when it fills a request path, so Kong rejects an empty value at parse time", key)
+		}
+	})
+	for key := range requiredStringExempt {
+		if !seen[key] {
+			t.Errorf("requiredStringExempt names %q, but the Kong tree has no such value: drop the entry", key)
+		}
+	}
+}
+
+// TestNonEmptyDecode pins the one rule of ID and FreeText: an empty or blank
+// value is a usage error, and any other value is kept as given.
+func TestNonEmptyDecode(t *testing.T) {
+	tests := []struct {
+		args    []string
+		wantID  ID
+		want    FreeText
+		wantErr string
+	}{
+		{args: []string{"7", "Morning Run"}, wantID: "7", want: "Morning Run"},
+		{args: []string{" 7 ", " x "}, wantID: " 7 ", want: " x "},
+		{args: []string{"", "x"}, wantErr: "<id>: must not be empty"},
+		{args: []string{" ", "x"}, wantErr: "<id>: must not be empty"},
+		{args: []string{"7", ""}, wantErr: "<name>: must not be empty"},
+		{args: []string{"7", " \t"}, wantErr: "<name>: must not be empty"},
+		{args: []string{"7"}, wantErr: `expected "<name>"`},
+	}
+	for _, tt := range tests {
+		t.Run(strings.Join(tt.args, " "), func(t *testing.T) {
+			var cli struct {
+				ID   ID       `arg:""`
+				Name FreeText `arg:""`
+			}
+			parser, err := kong.New(&cli)
+			if err != nil {
+				t.Fatal(err)
+			}
+			_, err = parser.Parse(tt.args)
+			if tt.wantErr != "" {
+				if err == nil || !strings.Contains(err.Error(), tt.wantErr) {
+					t.Fatalf("err = %v, want %q", err, tt.wantErr)
+				}
+				return
+			}
+			if err != nil {
+				t.Fatal(err)
+			}
+			if cli.ID != tt.wantID || cli.Name != tt.want {
+				t.Errorf("got ID %q, Name %q, want %q, %q", cli.ID, cli.Name, tt.wantID, tt.want)
+			}
+		})
+	}
+}
