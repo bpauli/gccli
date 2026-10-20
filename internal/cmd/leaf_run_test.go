@@ -176,18 +176,24 @@ func TestLeafRun(t *testing.T) {
 			requests: []string{activitiesRoute},
 		},
 		{
-			name:     "prints null on an empty body in json mode",
+			name:     "prints [] on an empty body in json mode",
 			args:     []string{"--json", "activities"},
 			routes:   map[string]mockReply{activitiesRoute: {status: http.StatusNoContent}},
-			stdout:   "null\n",
+			stdout:   "[]\n",
 			requests: []string{activitiesRoute},
 		},
 		{
-			name:     "an empty body fails in table mode before the units lookup",
+			name:     "prints the header on an empty body and skips the units lookup",
 			args:     []string{"--units", "auto", "activities"},
 			routes:   map[string]mockReply{activitiesRoute: {status: http.StatusNoContent}},
-			stderr:   "parse activities: unexpected end of JSON input\n",
-			code:     1,
+			stdout:   "ID  DATE  TYPE  NAME  DISTANCE  DURATION  CALORIES\n",
+			requests: []string{activitiesRoute},
+		},
+		{
+			name:     "prints the header for an object without the list",
+			args:     []string{"--units", "auto", "activities"},
+			routes:   map[string]mockReply{activitiesRoute: {body: `{"message":"no activities"}`}},
+			stdout:   "ID  DATE  TYPE  NAME  DISTANCE  DURATION  CALORIES\n",
 			requests: []string{activitiesRoute},
 		},
 		{
@@ -322,18 +328,18 @@ func TestLeafRowSadPaths(t *testing.T) {
 			switch out := l.Output.(type) {
 			case JSON:
 				run("empty body", empty, flag, func(t *testing.T, stdout, stderr string, code int, _ []string) {
-					if code != 0 || stdout != "{}\n" || stderr != "" {
-						t.Errorf("exit %d, want 0\nstdout %q, want {}\nstderr %q, want empty", code, stdout, stderr)
+					if code != 0 || stdout != out.empty()+"\n" || stderr != "" {
+						t.Errorf("exit %d, want 0\nstdout %q, want %s\nstderr %q, want empty", code, stdout, out.empty(), stderr)
 					}
 				})
 			case Rows:
 				run("empty body", empty, flag, func(t *testing.T, stdout, stderr string, code int, _ []string) {
-					wantOut, wantErr, wantCode := "", "parse "+out.Noun+": unexpected end of JSON input\n", 1
+					wantOut := ""
 					if flag == "--json" {
-						wantOut, wantErr, wantCode = "null\n", "", 0
+						wantOut = "[]\n"
 					}
-					if code != wantCode || stdout != wantOut || stderr != wantErr {
-						t.Errorf("exit %d, want %d\nstdout %q\nwant   %q\nstderr %q\nwant   %q", code, wantCode, stdout, wantOut, stderr, wantErr)
+					if code != 0 || stdout != wantOut || stderr != "" {
+						t.Errorf("exit %d, want 0\nstdout %q\nwant   %q\nstderr %q, want empty", code, stdout, wantOut, stderr)
 					}
 				})
 				if flag == "--json" || !usesUnits(out.Columns) {

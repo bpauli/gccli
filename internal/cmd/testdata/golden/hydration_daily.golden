@@ -4,38 +4,46 @@ daily
 --start=2026-10-01
 --end=2026-10-10
 -- route GET /usersummary-service/stats/hydration/daily/2026-10-01/2026-10-10 --
-{"value":1}
+[{"value":1}]
 -- table stdout --
-{
-  "value": 1
-}
+[
+  {
+    "value": 1
+  }
+]
 -- table stderr --
 -- table exit --
 0
 -- table requests --
 GET /usersummary-service/stats/hydration/daily/2026-10-01/2026-10-10
 -- plain stdout --
-{
-  "value": 1
-}
+[
+  {
+    "value": 1
+  }
+]
 -- plain stderr --
 -- plain exit --
 0
 -- plain requests --
 GET /usersummary-service/stats/hydration/daily/2026-10-01/2026-10-10
 -- plain-header stdout --
-{
-  "value": 1
-}
+[
+  {
+    "value": 1
+  }
+]
 -- plain-header stderr --
 -- plain-header exit --
 0
 -- plain-header requests --
 GET /usersummary-service/stats/hydration/daily/2026-10-01/2026-10-10
 -- json stdout --
-{
-  "value": 1
-}
+[
+  {
+    "value": 1
+  }
+]
 -- json stderr --
 -- json exit --
 0

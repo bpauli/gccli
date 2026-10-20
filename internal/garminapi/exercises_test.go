@@ -28,6 +28,25 @@ func TestFetchExerciseCatalog_Success(t *testing.T) {
 	}
 }
 
+func TestFetchExerciseCatalog_NoContent(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusNoContent)
+	}))
+	defer server.Close()
+
+	orig := fetchExercisesURL
+	fetchExercisesURL = server.URL
+	defer func() { fetchExercisesURL = orig }()
+
+	data, err := FetchExerciseCatalog(context.Background())
+	if err != nil {
+		t.Fatalf("a 204 is an empty catalog, got error: %v", err)
+	}
+	if len(data) != 0 {
+		t.Fatalf("a 204 is an empty catalog, got %q", data)
+	}
+}
+
 func TestFetchExerciseCatalog_ServerError(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)

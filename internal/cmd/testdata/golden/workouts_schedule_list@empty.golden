@@ -1,0 +1,33 @@
+-- args --
+workouts
+schedule
+list
+2026-10-15
+-- route GET /calendar-service/year/2026/month/9/day/15/start/0 204 --
+-- table stdout --
+SCHEDULE ID  WORKOUT ID  TITLE  SPORT  DATE
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /calendar-service/year/2026/month/9/day/15/start/0
+-- plain stdout --
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /calendar-service/year/2026/month/9/day/15/start/0
+-- plain-header stdout --
+SCHEDULE ID	WORKOUT ID	TITLE	SPORT	DATE
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /calendar-service/year/2026/month/9/day/15/start/0
+-- json stdout --
+[]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /calendar-service/year/2026/month/9/day/15/start/0

@@ -17,7 +17,7 @@ var gearGroup = Group{Name: "gear", Help: "Manage gear.", Children: []Node{
 		Name: "list", Help: "List all gear.", Default: true,
 		Endpoint: "gear.list",
 		Params:   Params{"userProfilePK": ProfilePK},
-		Verb:     "get gear", Output: JSON{},
+		Verb:     "get gear", Output: JSON{List: true},
 	},
 	Leaf{
 		Name: "stats", Help: "Show usage statistics for a gear item.",
@@ -36,13 +36,13 @@ var gearGroup = Group{Name: "gear", Help: "Manage gear.", Children: []Node{
 		}{}),
 		Endpoint: "gear.activities",
 		Params:   Params{"gearUUID": In("UUID"), "limit": In("Limit")},
-		Verb:     "get gear activities", Output: JSON{},
+		Verb:     "get gear activities", Output: JSON{List: true},
 	},
 	Leaf{
 		Name: "defaults", Help: "Show default gear per activity type.",
 		Endpoint: "gear.defaults",
 		Params:   Params{"userProfileNumber": ProfilePK},
-		Verb:     "get gear defaults", Output: JSON{},
+		Verb:     "get gear defaults", Output: JSON{List: true},
 	},
 	Leaf{
 		Name: "link", Help: "Link gear to an activity.",
@@ -66,7 +66,7 @@ var gearGroup = Group{Name: "gear", Help: "Manage gear.", Children: []Node{
 		Verb:     "unlink gear",
 		Output:   Write{Done: "Unlinked gear {UUID} from activity {ActivityID}"},
 	},
-	Leaf{Name: "types", Help: "List gear types.", Endpoint: "gear.types", Verb: "get gear types", Output: JSON{}},
+	Leaf{Name: "types", Help: "List gear types.", Endpoint: "gear.types", Verb: "get gear types", Output: JSON{List: true}},
 	Custom{Name: "add", Help: "Add a gear item.", Cmd: &GearAddCmd{}},
 	Custom{Name: "update", Help: "Change the name, brand, model or notes of a gear item.", Cmd: &GearUpdateCmd{}},
 	Leaf{
@@ -97,7 +97,7 @@ var gearGroup = Group{Name: "gear", Help: "Manage gear.", Children: []Node{
 }}
 
 var gearCollectionsGroup = Group{Name: "collections", Help: "Manage gear collections.", Children: []Node{
-	Leaf{Name: "list", Help: "List gear collections.", Default: true, Endpoint: "gear.collections", Verb: "get gear collections", Output: JSON{}},
+	Leaf{Name: "list", Help: "List gear collections.", Default: true, Endpoint: "gear.collections", Verb: "get gear collections", Output: JSON{List: true}},
 	Custom{Name: "create", Help: "Create a gear collection.", Cmd: &GearCollectionCreateCmd{}},
 	Custom{Name: "rename", Help: "Rename a gear collection.", Cmd: &GearCollectionRenameCmd{}},
 	Leaf{

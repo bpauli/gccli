@@ -19,7 +19,7 @@ var healthSleepNapsGroup = Group{Name: "naps", Help: "Show, add and delete naps.
 		}{}),
 		Endpoint: "health.sleep-naps",
 		Params:   Params{"date": In("Date")},
-		Verb:     "get naps", Output: JSON{},
+		Verb:     "get naps", Output: JSON{List: true},
 	},
 	Custom{Name: "add", Help: "Add a nap for today. Garmin takes naps only for the current day.", Cmd: &HealthSleepNapsAddCmd{}},
 	Custom{Name: "delete", Help: "Delete a nap.", Cmd: &HealthSleepNapsDeleteCmd{}},

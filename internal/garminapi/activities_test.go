@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -86,6 +87,26 @@ func TestCountActivities_Success(t *testing.T) {
 	}
 	if count != 42 {
 		t.Errorf("count = %d, want 42", count)
+	}
+}
+
+// An empty body (a 204 or an empty 200) counts as 0, not as an error.
+func TestCountActivities_EmptyBody(t *testing.T) {
+	for _, status := range []int{http.StatusOK, http.StatusNoContent} {
+		t.Run(fmt.Sprint(status), func(t *testing.T) {
+			handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+				w.WriteHeader(status)
+			})
+
+			_, client := testServer(t, handler)
+			count, err := client.CountActivities(context.Background())
+			if err != nil {
+				t.Fatalf("CountActivities: %v", err)
+			}
+			if count != 0 {
+				t.Errorf("count = %d, want 0", count)
+			}
+		})
 	}
 }
 

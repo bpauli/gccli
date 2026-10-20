@@ -3,38 +3,46 @@ activity
 power-zones
 111
 -- route GET /activity-service/activity/111/powerTimeInZones --
-{"value":1}
+[{"value":1}]
 -- table stdout --
-{
-  "value": 1
-}
+[
+  {
+    "value": 1
+  }
+]
 -- table stderr --
 -- table exit --
 0
 -- table requests --
 GET /activity-service/activity/111/powerTimeInZones
 -- plain stdout --
-{
-  "value": 1
-}
+[
+  {
+    "value": 1
+  }
+]
 -- plain stderr --
 -- plain exit --
 0
 -- plain requests --
 GET /activity-service/activity/111/powerTimeInZones
 -- plain-header stdout --
-{
-  "value": 1
-}
+[
+  {
+    "value": 1
+  }
+]
 -- plain-header stderr --
 -- plain-header exit --
 0
 -- plain-header requests --
 GET /activity-service/activity/111/powerTimeInZones
 -- json stdout --
-{
-  "value": 1
-}
+[
+  {
+    "value": 1
+  }
+]
 -- json stderr --
 -- json exit --
 0

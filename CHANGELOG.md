@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Breaking changes
+
+- **An empty answer is not an error** - When Garmin sends no body, a list command prints `[]` with `--json`, and a command that shows one object prints `{}` in every mode. A list command that prints columns prints the header only as a table and nothing with `--plain` (the header line with `--header`). A list command that prints JSON in every mode prints `[]` in every mode. The exit code is 0 in every case. A list answer without its list key gives no rows and exit 0, and `--json` prints the answer unchanged. The file `internal/cmd/testdata/answer_shapes.tsv` records the shape of the Garmin answer of every command that prints it, with the evidence for each; a shape that no Garmin answer confirmed is `unknown` and prints `{}`. `activities count` prints `0` (`{"count": 0}` with `--json`). Before, each command decided on its own: some printed `null`, some `{}`, and some failed with a parse error. A script that tests for `null` must test for `[]` or `{}`, and a script that relied on exit 1 for an empty list must test the output instead. (#192)
+
+  | Command(s) | Mode | Before | After |
+  |---|---|---|---|
+  | `activities list`, `activities search`, `activities types`, `courses list`, `courses favorites`, `events list`, `workouts list` | `--json` | `null` for an empty body | `[]` |
+  | the same commands | table, `--plain` | `parse <noun>: unexpected end of JSON input`, exit 1, for an empty body | the header, nothing with `--plain`, exit 0 |
+  | `badges available`, `badges earned` (also as `badges`), `devices list`, `devices sensors`, `events upcoming`, `gear collections list`, `gear list`, `gear types`, `goals list`, `groups list`, `health steps view`, `profile privacy-zones list`, `records list` (also as `records`), `social followers`, `wellness jet-lag list` (also as `wellness jet-lag`), `workouts benchmarks list` (also as `workouts benchmarks`) | all modes | `{}` for an empty body | `[]` |
+  | `gear activities`, `gear defaults`, `health body-battery range`, `health body-battery view` (also as `health body-battery`), `health events`, `health intensity-minutes weekly`, `health lactate-threshold`, `health max-metrics`, `health steps daily`, `health steps weekly`, `health stress weekly`, `health training-readiness`, `profile hr-zones`, `profile power-zones` | all modes | `{}` for an empty body | `[]` |
+  | `activities list`, `activities search`, `activities types`, `courses favorites`, `events list` | table, `--plain` | `parse <noun>: json: cannot unmarshal object ...`, exit 1, for an object answer | no rows, exit 0 |
+  | `courses list` | table, `--plain` | `parse courses: json: cannot unmarshal array ...`, exit 1, for a root array answer | the rows of the array, or the header only for `[]`, exit 0 |
+  | `workouts list` | table, `--plain` | `parse workouts: unexpected response format`, exit 1, for an object without a `workouts` or `results` key | no rows, exit 0 |
+  | `workouts schedule list` | `--json` | `null` when no workout is scheduled | `[]` |
+  | `workouts schedule list` | all modes | `parse calendar: unexpected end of JSON input`, exit 1, for an empty calendar body | the header, nothing with `--plain` or `[]`, exit 0 |
+  | `activity details`, `activity exercise-sets show`, `activity gear`, `activity split-summaries`, `activity splits`, `activity typed-splits`, `activity weather`, `courses detail`, `workouts detail` | all modes | `null` for an empty body | `{}` |
+  | `activity hr-zones`, `activity power-zones` | all modes | `null` for an empty body | `[]` |
+  | `devices alarms` | all modes | `null` when no device has an alarm | `[]` |
+  | `devices alarms` | all modes | `get device alarms: parse devices: unexpected end of JSON input`, exit 1, for an empty devices body | `[]`, exit 0 |
+  | `activity summary` | `--json` | `null` for an empty body | `{}` |
+  | `activity summary` | table, `--plain` | `parse activity: unexpected end of JSON input`, exit 1, for an empty body | nothing, exit 0 |
+  | `exercises list` | `--json` | `{"error":{"code":"error","message":"json: error calling MarshalJSON for type *jsontext.Value: unexpected end of JSON input"}}` on stderr, exit 1, for an empty catalog | `{}`, exit 0 |
+  | `exercises list` | table, `--plain` | `parse exercise catalog: unexpected end of JSON input`, exit 1, for an empty catalog | the header, nothing with `--plain`, exit 0 |
+  | `exercises list` | all modes | `list exercises: fetch exercise catalog: HTTP 204`, exit 1, for a 204 answer | the same as for an empty catalog: exit 0, or `unknown category "<c>"` and exit 1 with `--category <c>` |
+  | `exercises list --category <c>` | all modes | `parse exercise catalog: unexpected end of JSON input`, exit 1, for an empty catalog | `unknown category "<c>"`, exit 1 |
+  | `activities count` | all modes | `count activities: parse activity count: unexpected end of JSON input`, exit 1, for an empty body | `0`, or `{"count": 0}` with `--json`, exit 0, the same as for an answer without `totalCount` |
+
+  The commands added in this release follow the rule from the start. A list command with `--units auto` no longer reads the Garmin unit preference when it has no row to show.
+
 ### Added
 
 - **Challenges** - `challenges available` lists the badge challenges that you can join. `challenges completed` lists the badge challenges that you finished. (#210, #79)
@@ -52,6 +81,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `body add-weight` failed for every call with `500 Internal Server Error` and `ValueInstantiationException`, because `dateTimestamp` and `gmtTimestamp` had no milliseconds. The command now sends both as `YYYY-MM-DDTHH:MM:SS.000`, the format that Garmin accepts. (#258)
 - `body add-blood-pressure` failed for every call with `500 Internal Server Error` and `BloodPressureDateException`, because `measurementTimestampLocal` and `measurementTimestampGMT` ended in `Z`. It also sent the UTC time in the local field, so the saved local time was wrong in every zone but UTC. The command now sends the local time and the UTC time as `YYYY-MM-DDTHH:MM:SS.000`. (#258)
+- Empty bodies and missing list keys gave a different result per command and mode. One rule now covers every read; see Breaking changes. (#192)
 
 ## [2.3.0] - 2026-10-19
 

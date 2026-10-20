@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
 	"sort"
 	"strings"
@@ -28,33 +27,29 @@ func (c *ExercisesListCmd) Run(g *Globals) error {
 		return fmt.Errorf("list exercises: %w", err)
 	}
 
+	if outfmt.IsJSON(g.Context) && c.Category == "" {
+		return writeObject(g, data)
+	}
+
+	// An empty catalog has no categories, so --category fails with
+	// "unknown category" in every mode.
+	var catalog exerciseCatalog
+	if err := unmarshalAnswer(data, &catalog); err != nil {
+		return fmt.Errorf("parse exercise catalog: %w", err)
+	}
+
+	if c.Category == "" {
+		return c.printAllCategories(g, catalog)
+	}
+	cat := strings.ToUpper(c.Category)
 	if outfmt.IsJSON(g.Context) {
-		if c.Category == "" {
-			return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
-		}
-		// Filter to a single category in JSON mode.
-		var catalog exerciseCatalog
-		if err := json.Unmarshal(data, &catalog); err != nil {
-			return fmt.Errorf("parse exercise catalog: %w", err)
-		}
-		cat := strings.ToUpper(c.Category)
 		if exercises, ok := catalog.Categories[cat]; ok {
 			filtered := map[string]any{cat: exercises}
 			return outfmt.WriteJSON(g.Stdout, filtered)
 		}
 		return fmt.Errorf("unknown category %q", c.Category)
 	}
-
-	var catalog exerciseCatalog
-	if err := json.Unmarshal(data, &catalog); err != nil {
-		return fmt.Errorf("parse exercise catalog: %w", err)
-	}
-
-	if c.Category != "" {
-		return c.printCategory(g, catalog, strings.ToUpper(c.Category))
-	}
-
-	return c.printAllCategories(g, catalog)
+	return c.printCategory(g, catalog, cat)
 }
 
 func (c *ExercisesListCmd) printAllCategories(g *Globals, catalog exerciseCatalog) error {

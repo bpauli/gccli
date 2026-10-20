@@ -116,7 +116,7 @@ func (c *BodyCompositionCmd) Run(g *Globals) error {
 		return fmt.Errorf("get body composition: %w", err)
 	}
 
-	return writeHealthJSON(g, data)
+	return writeObject(g, data)
 }
 
 // garminTimestamp is the format of the local and GMT timestamps of a weigh-in

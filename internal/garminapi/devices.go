@@ -19,8 +19,9 @@ var devicesEndpoints = []Endpoint{
 	{Name: "devices.messages", Method: http.MethodGet, Host: ConnectAPI, Path: "/device-service/devicemessage/messages"},
 }
 
-// GetDeviceAlarms returns alarms from all devices by fetching device settings
-// for each registered device.
+// GetDeviceAlarms returns the alarms of all devices in one list, from the
+// settings of each registered device. An empty devices body is an empty
+// list, and so is a device without alarms.
 func (c *Client) GetDeviceAlarms(ctx context.Context) (json.RawMessage, error) {
 	devicesData, err := c.Call(ctx, "devices.list", nil, nil)
 	if err != nil {
@@ -30,11 +31,13 @@ func (c *Client) GetDeviceAlarms(ctx context.Context) (json.RawMessage, error) {
 	var devices []struct {
 		DeviceID json.Number `json:"deviceId"`
 	}
-	if err := json.Unmarshal(devicesData, &devices); err != nil {
-		return nil, fmt.Errorf("parse devices: %w", err)
+	if len(devicesData) > 0 {
+		if err := json.Unmarshal(devicesData, &devices); err != nil {
+			return nil, fmt.Errorf("parse devices: %w", err)
+		}
 	}
 
-	var allAlarms []any
+	allAlarms := []any{}
 	for _, device := range devices {
 		if device.DeviceID == "" {
 			continue

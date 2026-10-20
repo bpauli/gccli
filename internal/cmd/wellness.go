@@ -37,7 +37,7 @@ var wellnessGroup = Group{Name: "wellness", Help: "View wellness data.", Childre
 }}
 
 var wellnessJetLagGroup = Group{Name: "jet-lag", Help: "View jet lag trips and status.", Children: []Node{
-	Leaf{Name: "list", Help: "List jet lag trips.", Default: true, Endpoint: "wellness.jet-lag-trips", Verb: "get jet lag trips", Output: JSON{}},
+	Leaf{Name: "list", Help: "List jet lag trips.", Default: true, Endpoint: "wellness.jet-lag-trips", Verb: "get jet lag trips", Output: JSON{List: true}},
 	Leaf{
 		Name: "status", Help: "Show jet lag status for a date.",
 		Spec: argsOf(&struct {

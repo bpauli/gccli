@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/bpauli/gccli/internal/garminapi"
-	"github.com/bpauli/gccli/internal/outfmt"
 	"github.com/bpauli/gccli/internal/units"
 )
 
@@ -59,53 +58,28 @@ func usesUnits(columns []Column) bool {
 }
 
 func (r Rows) print(g *Globals, client *garminapi.Client, data json.RawMessage) error {
-	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(g.Stdout, data)
-	}
-	items, err := r.items(data)
-	if err != nil {
-		return fmt.Errorf("parse %s: %w", r.Noun, err)
-	}
-	sys := units.Metric
-	if usesUnits(r.Columns) {
-		sys = resolveUnits(g, client)
-	}
 	header := make([]string, len(r.Columns))
 	for i, c := range r.Columns {
 		header[i] = c.Label
 	}
-	rows := make([][]string, 0, len(items))
-	for _, item := range items {
-		row := make([]string, len(r.Columns))
-		for i, c := range r.Columns {
-			row[i] = c.Format.cell(valueAt(item, c.Path), sys)
+	return list{noun: r.Noun, keys: []string{r.Items}, header: header, rows: func(items []map[string]any) [][]string {
+		if len(items) == 0 {
+			return nil
 		}
-		rows = append(rows, row)
-	}
-	return outfmt.WriteRows(g.Context, g.Stdout, header, rows)
-}
-
-// The two parsers keep the behavior of the hand-written commands they
-// replaced: a root array fails on an element that is not an object, a
-// wrapped list skips it, and a missing or non-list key gives no rows.
-func (r Rows) items(data json.RawMessage) ([]map[string]any, error) {
-	if r.Items == "" {
-		var items []map[string]any
-		err := json.Unmarshal(data, &items)
-		return items, err
-	}
-	var wrapper map[string]any
-	if err := json.Unmarshal(data, &wrapper); err != nil {
-		return nil, err
-	}
-	list, _ := wrapper[r.Items].([]any)
-	var items []map[string]any
-	for _, v := range list {
-		if m, ok := v.(map[string]any); ok {
-			items = append(items, m)
+		sys := units.Metric
+		if usesUnits(r.Columns) {
+			sys = resolveUnits(g, client)
 		}
-	}
-	return items, nil
+		rows := make([][]string, 0, len(items))
+		for _, item := range items {
+			row := make([]string, len(r.Columns))
+			for i, c := range r.Columns {
+				row[i] = c.Format.cell(valueAt(item, c.Path), sys)
+			}
+			rows = append(rows, row)
+		}
+		return rows
+	}}.print(g, data)
 }
 
 func valueAt(m map[string]any, path string) any {

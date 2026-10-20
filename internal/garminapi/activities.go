@@ -55,11 +55,14 @@ func (c *Client) CountActivities(ctx context.Context) (int, error) {
 		return 0, err
 	}
 
+	// An empty body counts as 0, like an answer without totalCount.
 	var result struct {
 		TotalCount int `json:"totalCount"`
 	}
-	if err := json.Unmarshal(data, &result); err != nil {
-		return 0, fmt.Errorf("parse activity count: %w", err)
+	if len(data) > 0 {
+		if err := json.Unmarshal(data, &result); err != nil {
+			return 0, fmt.Errorf("parse activity count: %w", err)
+		}
 	}
 	return result.TotalCount, nil
 }

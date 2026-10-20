@@ -3,38 +3,46 @@ health
 calories
 weekly
 -- route GET /usersummary-service/stats/calories/weekly/2026-10-15/4 --
-{"value":1}
+[{"value":1}]
 -- table stdout --
-{
-  "value": 1
-}
+[
+  {
+    "value": 1
+  }
+]
 -- table stderr --
 -- table exit --
 0
 -- table requests --
 GET /usersummary-service/stats/calories/weekly/2026-10-15/4
 -- plain stdout --
-{
-  "value": 1
-}
+[
+  {
+    "value": 1
+  }
+]
 -- plain stderr --
 -- plain exit --
 0
 -- plain requests --
 GET /usersummary-service/stats/calories/weekly/2026-10-15/4
 -- plain-header stdout --
-{
-  "value": 1
-}
+[
+  {
+    "value": 1
+  }
+]
 -- plain-header stderr --
 -- plain-header exit --
 0
 -- plain-header requests --
 GET /usersummary-service/stats/calories/weekly/2026-10-15/4
 -- json stdout --
-{
-  "value": 1
-}
+[
+  {
+    "value": 1
+  }
+]
 -- json stderr --
 -- json exit --
 0

@@ -219,11 +219,6 @@ func TestCheckTableRejects(t *testing.T) {
 			`goals list: LateDates is allowed only on the paths in v1LateDates`,
 		},
 		{
-			"JSONNull off the frozen list", "goals list",
-			func(l *Leaf) { l.Output = JSONNull{} },
-			`goals list: JSONNull is allowed only on the paths in v1NullJSON`,
-		},
-		{
 			"stale v1LateDates entry", "health sleep view",
 			func(l *Leaf) {
 				l.LateDates = nil
@@ -232,18 +227,6 @@ func TestCheckTableRejects(t *testing.T) {
 				}{})
 			},
 			`health sleep view: v1LateDates names this path, but the row has no LateDates: remove the entry`,
-		},
-		{
-			"stale v1NullJSON entry", "courses detail",
-			func(l *Leaf) {
-				*l = Leaf{
-					Spec: argsOf(&struct {
-						ID string `arg:""`
-					}{}),
-					Endpoint: "courses.get", Params: Params{"courseID": In("ID")}, Output: JSON{},
-				}
-			},
-			`courses detail: v1NullJSON names this path, but the row's Output is not JSONNull: remove the entry`,
 		},
 		{
 			"Params key is no placeholder", "goals list",
@@ -374,14 +357,6 @@ func (intCmd) Run(*Globals) error { return nil }
 // The frozen lists must match the golden files that pin each quirk, so a
 // new entry and a stale entry both fail here.
 func TestFrozenListsMatchGoldens(t *testing.T) {
-	t.Run("v1NullJSON", func(t *testing.T) {
-		pinned := goldenLeaves(t, "@empty.golden", func(g golden) bool {
-			return slices.IndexFunc(goldenModes, func(m goldenMode) bool {
-				return strings.TrimSpace(g.sections[m.name+" stdout"]) != "null"
-			}) < 0
-		})
-		compareFrozen(t, "v1NullJSON", v1NullJSON, pinned, "<leaf>@empty.golden prints null in every mode")
-	})
 	t.Run("v1LateDates", func(t *testing.T) {
 		if files, _ := filepath.Glob(filepath.Join(goldenDir, "*@bad-date.golden")); len(files) == 0 {
 			t.Skip("no @bad-date.golden file yet: PR #194 adds them, and this check starts when it is merged")

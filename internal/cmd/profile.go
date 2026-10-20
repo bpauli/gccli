@@ -12,8 +12,8 @@ var profileGroup = Group{Name: "profile", Help: "View user profile.", Children: 
 	Leaf{Name: "settings", Help: "Show user settings.", Endpoint: "profile.user-settings", Verb: "get user settings", Output: JSON{}},
 	profilePrivacyGroup,
 	profilePrivacyZonesGroup,
-	Leaf{Name: "hr-zones", Help: "Show heart rate zones.", Endpoint: "profile.hr-zones", Verb: "get heart rate zones", Output: JSON{}},
-	Leaf{Name: "power-zones", Help: "Show power zones for all sports.", Endpoint: "profile.power-zones", Verb: "get power zones", Output: JSON{}},
+	Leaf{Name: "hr-zones", Help: "Show heart rate zones.", Endpoint: "profile.hr-zones", Verb: "get heart rate zones", Output: JSON{List: true}},
+	Leaf{Name: "power-zones", Help: "Show power zones for all sports.", Endpoint: "profile.power-zones", Verb: "get power zones", Output: JSON{List: true}},
 }}
 
 var profilePrivacyGroup = Group{Name: "privacy", Help: "View privacy settings.", Children: []Node{
@@ -21,7 +21,7 @@ var profilePrivacyGroup = Group{Name: "privacy", Help: "View privacy settings.",
 }}
 
 var profilePrivacyZonesGroup = Group{Name: "privacy-zones", Help: "List, add and delete privacy zones.", Children: []Node{
-	Leaf{Name: "list", Help: "List privacy zones.", Default: true, Endpoint: "profile.privacy-zones", Verb: "get privacy zones", Output: JSON{}},
+	Leaf{Name: "list", Help: "List privacy zones.", Default: true, Endpoint: "profile.privacy-zones", Verb: "get privacy zones", Output: JSON{List: true}},
 	Custom{Name: "add", Help: "Add a privacy zone around a point.", Cmd: &ProfilePrivacyZonesAddCmd{}},
 	Leaf{
 		Name: "delete", Help: "Delete a privacy zone.",

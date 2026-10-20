@@ -134,21 +134,27 @@ func (a alt) String() string {
 	return "In(" + strconv.Quote(a.field) + ")"
 }
 
-// Output is what a Leaf prints: JSON, JSONNull, Rows or Write.
+// Output is what a Leaf prints: JSON, Rows or Write.
 type Output interface{ output() }
 
-// JSON prints the response as indented JSON in every mode and {} on an
-// empty body.
-type JSON struct{}
+// JSON prints the response as indented JSON in every mode, and {} on an
+// empty body. List marks a row whose answer is a JSON array: it prints []
+// on an empty body. The shape of each row's answer, with its evidence, is
+// in testdata/answer_shapes.tsv, and TestAnswerShapes checks List and the
+// main golden against it.
+type JSON struct{ List bool }
 
-// JSONNull is JSON that prints null on an empty body. Only the paths in
-// v1NullJSON may use it.
-type JSONNull struct{}
+func (j JSON) empty() string {
+	if j.List {
+		return "[]"
+	}
+	return "{}"
+}
 
-// Rows prints the response as JSON in --json mode, null on an empty body
-// included, and as columns otherwise. Items names the wrapper key of the
-// list, or "" for a root array. A missing key gives no rows. Noun names
-// the list in the parse error: "parse <noun>: <err>".
+// Rows prints the response as JSON in --json mode, or [] on an empty
+// body, and as columns otherwise. Items names the wrapper key of the
+// list, or "" for a root array. An empty body or a missing key gives no
+// rows. Noun names the list in the parse error: "parse <noun>: <err>".
 type Rows struct {
 	Noun    string
 	Items   string
@@ -172,10 +178,9 @@ type Write struct {
 	Confirm string
 }
 
-func (JSON) output()     {}
-func (JSONNull) output() {}
-func (Rows) output()     {}
-func (Write) output()    {}
+func (JSON) output()  {}
+func (Rows) output()  {}
+func (Write) output() {}
 
 type argsSpec interface {
 	target(l Leaf) any

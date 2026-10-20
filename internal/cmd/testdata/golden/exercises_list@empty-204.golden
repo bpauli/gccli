@@ -1,0 +1,31 @@
+-- args --
+exercises
+list
+-- route GET /web-data/exercises/Exercises.json 204 --
+-- table stdout --
+CATEGORY  COUNT
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /web-data/exercises/Exercises.json
+-- plain stdout --
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /web-data/exercises/Exercises.json
+-- plain-header stdout --
+CATEGORY	COUNT
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /web-data/exercises/Exercises.json
+-- json stdout --
+{}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /web-data/exercises/Exercises.json

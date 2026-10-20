@@ -373,28 +373,18 @@ func TestActivitiesTypes_JSON(t *testing.T) {
 	// JSON output goes to stdout; just verify no error.
 }
 
-func TestParseActivityTypes_SortsByTypeID(t *testing.T) {
-	data := []byte(`[
-		{"typeId":181,"typeKey":"ultra_run"},
-		{"typeId":1,"typeKey":"running"},
-		{"typeId":17,"typeKey":"other"}
-	]`)
-	types, err := parseActivityTypes(data)
-	if err != nil {
-		t.Fatalf("parseActivityTypes: %v", err)
+func TestSortActivityTypes(t *testing.T) {
+	types := []map[string]any{
+		{"typeId": 181.0, "typeKey": "ultra_run"},
+		{"typeId": 1.0, "typeKey": "running"},
+		{"typeId": 17.0, "typeKey": "other"},
 	}
+	sortActivityTypes(types)
 	want := []string{"running", "other", "ultra_run"}
 	for i, w := range want {
 		if got := jsonString(types[i], "typeKey"); got != w {
 			t.Errorf("types[%d].typeKey = %q, want %q", i, got, w)
 		}
-	}
-}
-
-func TestParseActivityTypes_InvalidJSON(t *testing.T) {
-	_, err := parseActivityTypes([]byte("not-json"))
-	if err == nil {
-		t.Fatal("expected error for invalid JSON")
 	}
 }
 

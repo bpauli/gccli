@@ -5,8 +5,6 @@ list
 auto
 -- route GET /web-gateway/course/owner/ --
 {"courses":[{"courseId":111,"courseName":"Morning Loop"}]}
--- route GET /userprofile-service/userprofile/user-settings --
-{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"statute_us"}}
 -- table stdout --
 ID  NAME  TYPE  DISTANCE  CREATED
 -- table stderr --
@@ -14,14 +12,12 @@ ID  NAME  TYPE  DISTANCE  CREATED
 0
 -- table requests --
 GET /web-gateway/course/owner/
-GET /userprofile-service/userprofile/user-settings
 -- plain stdout --
 -- plain stderr --
 -- plain exit --
 0
 -- plain requests --
 GET /web-gateway/course/owner/
-GET /userprofile-service/userprofile/user-settings
 -- plain-header stdout --
 ID	NAME	TYPE	DISTANCE	CREATED
 -- plain-header stderr --
@@ -29,7 +25,6 @@ ID	NAME	TYPE	DISTANCE	CREATED
 0
 -- plain-header requests --
 GET /web-gateway/course/owner/
-GET /userprofile-service/userprofile/user-settings
 -- json stdout --
 {
   "courses": [

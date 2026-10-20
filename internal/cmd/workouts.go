@@ -7,8 +7,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/bpauli/gccli/internal/outfmt"
 )
 
 var workoutsGroup = Group{Name: "workouts", Help: "Manage workouts.", Children: []Node{
@@ -50,19 +48,7 @@ func (c *WorkoutsListCmd) Run(g *Globals) error {
 		return fmt.Errorf("list workouts: %w", err)
 	}
 
-	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
-	}
-
-	workouts, err := parseWorkouts(data)
-	if err != nil {
-		return err
-	}
-
-	rows := formatWorkoutRows(workouts)
-	header := []string{"ID", "NAME", "TYPE", "OWNER"}
-
-	return outfmt.WriteRows(g.Context, g.Stdout, header, rows)
+	return list{noun: "workouts", keys: []string{"workouts", "results"}, header: []string{"ID", "NAME", "TYPE", "OWNER"}, rows: formatWorkoutRows}.print(g, data)
 }
 
 // WorkoutDetailCmd shows workout details.
@@ -81,7 +67,7 @@ func (c *WorkoutDetailCmd) Run(g *Globals) error {
 		return fmt.Errorf("get workout: %w", err)
 	}
 
-	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
+	return writeObject(g, data)
 }
 
 // WorkoutDownloadCmd downloads a workout as FIT.
@@ -256,7 +242,7 @@ var workoutScheduleGroup = Group{Name: "schedule", Help: "Manage scheduled worko
 }}
 
 var workoutBenchmarksGroup = Group{Name: "benchmarks", Help: "View strength benchmarks.", Children: []Node{
-	Leaf{Name: "list", Help: "List strength benchmarks.", Default: true, Endpoint: "workouts.benchmarks", Verb: "get benchmarks", Output: JSON{}},
+	Leaf{Name: "list", Help: "List strength benchmarks.", Default: true, Endpoint: "workouts.benchmarks", Verb: "get benchmarks", Output: JSON{List: true}},
 }}
 
 // WorkoutScheduleAddCmd schedules a workout on a calendar date.
@@ -367,25 +353,23 @@ func (c *WorkoutScheduleListCmd) runRange(g *Globals) error {
 	return writeScheduledWorkouts(g, allWorkouts)
 }
 
+// writeScheduledWorkouts prints the items as one list answer, so a day
+// without a workout prints like every empty list.
 func writeScheduledWorkouts(g *Globals, items []map[string]any) error {
-	if outfmt.IsJSON(g.Context) {
-		out, err := json.Marshal(items)
-		if err != nil {
+	var data json.RawMessage
+	if len(items) > 0 {
+		var err error
+		if data, err = json.Marshal(items); err != nil {
 			return fmt.Errorf("marshal calendar items: %w", err)
 		}
-		return outfmt.WriteJSON(g.Stdout, json.RawMessage(out))
 	}
-
-	rows := formatCalendarWorkoutRows(items)
-	header := []string{"SCHEDULE ID", "WORKOUT ID", "TITLE", "SPORT", "DATE"}
-
-	return outfmt.WriteRows(g.Context, g.Stdout, header, rows)
+	return list{noun: "calendar items", header: []string{"SCHEDULE ID", "WORKOUT ID", "TITLE", "SPORT", "DATE"}, rows: formatCalendarWorkoutRows}.print(g, data)
 }
 
 // filterCalendarWorkouts extracts workout items matching the given date from calendar data.
 func filterCalendarWorkouts(data json.RawMessage, date string) ([]map[string]any, error) {
 	var calendar map[string]any
-	if err := json.Unmarshal(data, &calendar); err != nil {
+	if err := unmarshalAnswer(data, &calendar); err != nil {
 		return nil, fmt.Errorf("parse calendar: %w", err)
 	}
 
@@ -419,7 +403,7 @@ func filterCalendarWorkouts(data json.RawMessage, date string) ([]map[string]any
 // filterCalendarWorkoutsInRange extracts workout items within a date range from calendar data.
 func filterCalendarWorkoutsInRange(data json.RawMessage, startDate, endDate string) ([]map[string]any, error) {
 	var calendar map[string]any
-	if err := json.Unmarshal(data, &calendar); err != nil {
+	if err := unmarshalAnswer(data, &calendar); err != nil {
 		return nil, fmt.Errorf("parse calendar: %w", err)
 	}
 
@@ -464,39 +448,6 @@ func formatCalendarWorkoutRows(items []map[string]any) [][]string {
 		})
 	}
 	return rows
-}
-
-// parseWorkouts unmarshals workout list data.
-// The Garmin API may return either an array directly or an object with a nested array.
-func parseWorkouts(data json.RawMessage) ([]map[string]any, error) {
-	// Try as array first.
-	var workouts []map[string]any
-	if err := json.Unmarshal(data, &workouts); err == nil {
-		return workouts, nil
-	}
-
-	// Try as object with nested array.
-	var wrapper map[string]any
-	if err := json.Unmarshal(data, &wrapper); err != nil {
-		return nil, fmt.Errorf("parse workouts: %w", err)
-	}
-
-	// Common wrapper keys from Garmin API.
-	for _, key := range []string{"workouts", "results"} {
-		if arr, ok := wrapper[key]; ok {
-			if items, ok := arr.([]any); ok {
-				workouts = make([]map[string]any, 0, len(items))
-				for _, item := range items {
-					if m, ok := item.(map[string]any); ok {
-						workouts = append(workouts, m)
-					}
-				}
-				return workouts, nil
-			}
-		}
-	}
-
-	return nil, fmt.Errorf("parse workouts: unexpected response format")
 }
 
 // formatWorkoutRows extracts table rows from workout data.

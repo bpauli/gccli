@@ -4,11 +4,13 @@ list
 -- route GET /userprofile-service/userprofile/settings --
 {"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
 -- route GET /personalrecord-service/personalrecord/prs/tester --
-{"value":1}
+[{"value":1}]
 -- table stdout --
-{
-  "value": 1
-}
+[
+  {
+    "value": 1
+  }
+]
 -- table stderr --
 -- table exit --
 0
@@ -16,9 +18,11 @@ list
 GET /userprofile-service/userprofile/settings
 GET /personalrecord-service/personalrecord/prs/tester
 -- plain stdout --
-{
-  "value": 1
-}
+[
+  {
+    "value": 1
+  }
+]
 -- plain stderr --
 -- plain exit --
 0
@@ -26,9 +30,11 @@ GET /personalrecord-service/personalrecord/prs/tester
 GET /userprofile-service/userprofile/settings
 GET /personalrecord-service/personalrecord/prs/tester
 -- plain-header stdout --
-{
-  "value": 1
-}
+[
+  {
+    "value": 1
+  }
+]
 -- plain-header stderr --
 -- plain-header exit --
 0
@@ -36,9 +42,11 @@ GET /personalrecord-service/personalrecord/prs/tester
 GET /userprofile-service/userprofile/settings
 GET /personalrecord-service/personalrecord/prs/tester
 -- json stdout --
-{
-  "value": 1
-}
+[
+  {
+    "value": 1
+  }
+]
 -- json stderr --
 -- json exit --
 0

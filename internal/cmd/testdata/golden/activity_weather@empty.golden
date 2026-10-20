@@ -4,28 +4,28 @@ weather
 111
 -- route GET /activity-service/activity/111/weather 204 --
 -- table stdout --
-null
+{}
 -- table stderr --
 -- table exit --
 0
 -- table requests --
 GET /activity-service/activity/111/weather
 -- plain stdout --
-null
+{}
 -- plain stderr --
 -- plain exit --
 0
 -- plain requests --
 GET /activity-service/activity/111/weather
 -- plain-header stdout --
-null
+{}
 -- plain-header stderr --
 -- plain-header exit --
 0
 -- plain-header requests --
 GET /activity-service/activity/111/weather
 -- json stdout --
-null
+{}
 -- json stderr --
 -- json exit --
 0

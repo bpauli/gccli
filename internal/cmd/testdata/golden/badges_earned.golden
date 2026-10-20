@@ -2,38 +2,46 @@
 badges
 earned
 -- route GET /badge-service/badge/earned --
-{"value":1}
+[{"value":1}]
 -- table stdout --
-{
-  "value": 1
-}
+[
+  {
+    "value": 1
+  }
+]
 -- table stderr --
 -- table exit --
 0
 -- table requests --
 GET /badge-service/badge/earned
 -- plain stdout --
-{
-  "value": 1
-}
+[
+  {
+    "value": 1
+  }
+]
 -- plain stderr --
 -- plain exit --
 0
 -- plain requests --
 GET /badge-service/badge/earned
 -- plain-header stdout --
-{
-  "value": 1
-}
+[
+  {
+    "value": 1
+  }
+]
 -- plain-header stderr --
 -- plain-header exit --
 0
 -- plain-header requests --
 GET /badge-service/badge/earned
 -- json stdout --
-{
-  "value": 1
-}
+[
+  {
+    "value": 1
+  }
+]
 -- json stderr --
 -- json exit --
 0

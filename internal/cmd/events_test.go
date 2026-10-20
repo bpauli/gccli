@@ -88,17 +88,6 @@ func TestEventsList_JSON(t *testing.T) {
 	}
 }
 
-func TestParseEvents(t *testing.T) {
-	data := []byte(`[{"id":1,"eventName":"Race"},{"id":2,"eventName":"Ride"}]`)
-	events, err := parseEvents(data)
-	if err != nil {
-		t.Fatalf("parseEvents: %v", err)
-	}
-	if len(events) != 2 {
-		t.Errorf("got %d events, want 2", len(events))
-	}
-}
-
 func TestFormatEventListRows(t *testing.T) {
 	events := []map[string]any{
 		{
@@ -134,13 +123,6 @@ func TestFormatEventListRows(t *testing.T) {
 	// Second event falls back to numeric id.
 	if rows[1][0] != "456" {
 		t.Errorf("id = %s, want 456", rows[1][0])
-	}
-}
-
-func TestParseEvents_Invalid(t *testing.T) {
-	_, err := parseEvents(json.RawMessage(`not json`))
-	if err == nil {
-		t.Fatal("expected error")
 	}
 }
 
