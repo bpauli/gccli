@@ -95,7 +95,6 @@ func TestEveryLeafNeedsAccount(t *testing.T) {
 var notUsageCases = map[string]string{
 	"empty-200": "an empty 200 answer from Garmin, not an input",
 	"empty-day": "an empty --day clears the log entry; the value is accepted",
-	"empty-id":  "the endpoint table rejects an empty placeholder in Run (exit 1)",
 }
 
 // TestBadValuesAreCheckedBeforeAccount runs every @bad-* and @empty-*

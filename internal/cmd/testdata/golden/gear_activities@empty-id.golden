@@ -1,29 +1,121 @@
-Error case: the gear UUID is an empty string, so the endpoint table refuses the request and the exit code is 1 (error). The third args line is the empty argument.
+An empty ID is a usage error at parse time, before the login, with no request. The third args line is the empty argument.
 -- args --
 gear
 activities
 
 -- table stdout --
 -- table stderr --
-get gear activities: endpoint gear.activities: gearUUID: required
+Usage: gccli gear activities <uuid> [flags]
+
+Show activities linked to a gear item.
+
+Arguments:
+  <uuid>    Gear UUID.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --limit=20          Maximum number of activities to return.
+
+gccli: error: <uuid>: must not be empty
 -- table exit --
-1
+2
 -- table requests --
 -- plain stdout --
 -- plain stderr --
-get gear activities: endpoint gear.activities: gearUUID: required
+Usage: gccli gear activities <uuid> [flags]
+
+Show activities linked to a gear item.
+
+Arguments:
+  <uuid>    Gear UUID.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --limit=20          Maximum number of activities to return.
+
+gccli: error: <uuid>: must not be empty
 -- plain exit --
-1
+2
 -- plain requests --
 -- plain-header stdout --
 -- plain-header stderr --
-get gear activities: endpoint gear.activities: gearUUID: required
+Usage: gccli gear activities <uuid> [flags]
+
+Show activities linked to a gear item.
+
+Arguments:
+  <uuid>    Gear UUID.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --limit=20          Maximum number of activities to return.
+
+gccli: error: <uuid>: must not be empty
 -- plain-header exit --
-1
+2
 -- plain-header requests --
 -- json stdout --
 -- json stderr --
-{"error":{"code":"error","message":"get gear activities: endpoint gear.activities: gearUUID: required"}}
+Usage: gccli gear activities <uuid> [flags]
+
+Show activities linked to a gear item.
+
+Arguments:
+  <uuid>    Gear UUID.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --limit=20          Maximum number of activities to return.
+
+gccli: error: <uuid>: must not be empty
 -- json exit --
-1
+2
 -- json requests --
