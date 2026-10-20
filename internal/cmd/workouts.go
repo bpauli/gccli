@@ -7,8 +7,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/bpauli/gccli/internal/outfmt"
 )
 
 var workoutsGroup = Group{Name: "workouts", Help: "Manage workouts.", Children: []Node{
@@ -69,7 +67,7 @@ func (c *WorkoutDetailCmd) Run(g *Globals) error {
 		return fmt.Errorf("get workout: %w", err)
 	}
 
-	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
+	return writeObject(g, data)
 }
 
 // WorkoutDownloadCmd downloads a workout as FIT.

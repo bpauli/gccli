@@ -69,7 +69,7 @@ func (c *HealthRacePredictionsViewCmd) Run(g *Globals) error {
 		return fmt.Errorf("get race predictions: %w", err)
 	}
 
-	return writeHealthJSON(g, data)
+	return writeObject(g, data)
 }
 
 // HealthRacePredictionsRangeCmd shows race predictions for a date range.
@@ -89,5 +89,5 @@ func (c *HealthRacePredictionsRangeCmd) Run(g *Globals) error {
 		return fmt.Errorf("get race predictions range: %w", err)
 	}
 
-	return writeHealthJSON(g, data)
+	return writeObject(g, data)
 }

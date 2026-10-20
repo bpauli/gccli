@@ -53,5 +53,5 @@ func (c *DeviceAlarmsCmd) Run(g *Globals) error {
 		return fmt.Errorf("get device alarms: %w", err)
 	}
 
-	return writeHealthJSON(g, data)
+	return writeObject(g, data)
 }

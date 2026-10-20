@@ -44,7 +44,7 @@ func (l Leaf) run(g *Globals, args reflect.Value, force bool) error {
 	}
 	switch out := l.Output.(type) {
 	case JSON:
-		return writeHealthJSON(g, data)
+		return writeObject(g, data)
 	case Rows:
 		return out.print(g, client, data)
 	case Write:

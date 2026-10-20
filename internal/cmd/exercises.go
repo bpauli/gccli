@@ -30,7 +30,7 @@ func (c *ExercisesListCmd) Run(g *Globals) error {
 
 	if outfmt.IsJSON(g.Context) {
 		if c.Category == "" {
-			return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
+			return writeObject(g, data)
 		}
 		// Filter to a single category in JSON mode.
 		var catalog exerciseCatalog
@@ -46,7 +46,7 @@ func (c *ExercisesListCmd) Run(g *Globals) error {
 	}
 
 	var catalog exerciseCatalog
-	if err := json.Unmarshal(data, &catalog); err != nil {
+	if err := unmarshalAnswer(data, &catalog); err != nil {
 		return fmt.Errorf("parse exercise catalog: %w", err)
 	}
 

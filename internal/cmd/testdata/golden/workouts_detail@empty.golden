@@ -4,28 +4,28 @@ detail
 111
 -- route GET /workout-service/workout/111 204 --
 -- table stdout --
-null
+{}
 -- table stderr --
 -- table exit --
 0
 -- table requests --
 GET /workout-service/workout/111
 -- plain stdout --
-null
+{}
 -- plain stderr --
 -- plain exit --
 0
 -- plain requests --
 GET /workout-service/workout/111
 -- plain-header stdout --
-null
+{}
 -- plain-header stderr --
 -- plain-header exit --
 0
 -- plain-header requests --
 GET /workout-service/workout/111
 -- json stdout --
-null
+{}
 -- json stderr --
 -- json exit --
 0

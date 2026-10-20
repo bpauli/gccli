@@ -1,14 +1,11 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/bpauli/gccli/internal/outfmt"
 )
 
 // nowFn returns the current time. Variable for testing.
@@ -526,17 +523,6 @@ var healthStressGroup = Group{Name: "stress", Help: "Show stress data.", Childre
 		Verb:     "get weekly stress", Output: JSON{},
 	},
 }}
-
-// writeHealthJSON writes health data as JSON output.
-// Health endpoints return complex nested JSON, so we always output JSON
-// regardless of output mode.
-func writeHealthJSON(g *Globals, data json.RawMessage) error {
-	if data == nil {
-		_, _ = fmt.Fprintln(g.Stdout, "{}")
-		return nil
-	}
-	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
-}
 
 // relativeDateRe matches relative date strings like "3d", "7d", "14d".
 var relativeDateRe = regexp.MustCompile(`^(\d+)d$`)

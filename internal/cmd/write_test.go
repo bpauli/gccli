@@ -753,7 +753,7 @@ func TestWriteCensus(t *testing.T) {
 
 	paths := map[string][]string{}
 	commandPaths(newTestParser(t).Model.Node, "", paths)
-	banned := []string{"IsJSON", "ModeFromContext", "WriteJSON", "WriteRows", "writeHealthJSON", "Stdout", "Successf"}
+	banned := []string{"IsJSON", "ModeFromContext", "WriteJSON", "WriteRows", "writeObject", "Stdout", "Successf"}
 	found := map[string]bool{}
 	for fn, method := range runWrites(cli, apiWrites) {
 		pos := fset.Position(fn.Pos())

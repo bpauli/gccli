@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
 	"strconv"
 
@@ -77,12 +76,15 @@ func (c *ActivitySummaryCmd) Run(g *Globals) error {
 	}
 
 	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
+		return writeObject(g, data)
 	}
 
 	var activity map[string]any
-	if err := json.Unmarshal(data, &activity); err != nil {
+	if err := unmarshalAnswer(data, &activity); err != nil {
 		return fmt.Errorf("parse activity: %w", err)
+	}
+	if activity == nil {
+		return nil
 	}
 
 	cfg, err := readConfigFn()
@@ -164,7 +166,7 @@ func (c *ActivityDetailsCmd) Run(g *Globals) error {
 		return fmt.Errorf("get activity details: %w", err)
 	}
 
-	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
+	return writeObject(g, data)
 }
 
 // ActivitySplitsCmd shows activity splits.
@@ -183,7 +185,7 @@ func (c *ActivitySplitsCmd) Run(g *Globals) error {
 		return fmt.Errorf("get activity splits: %w", err)
 	}
 
-	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
+	return writeObject(g, data)
 }
 
 // ActivityTypedSplitsCmd shows typed splits for an activity.
@@ -202,7 +204,7 @@ func (c *ActivityTypedSplitsCmd) Run(g *Globals) error {
 		return fmt.Errorf("get activity typed splits: %w", err)
 	}
 
-	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
+	return writeObject(g, data)
 }
 
 // ActivitySplitSummariesCmd shows split summaries for an activity.
@@ -221,7 +223,7 @@ func (c *ActivitySplitSummariesCmd) Run(g *Globals) error {
 		return fmt.Errorf("get activity split summaries: %w", err)
 	}
 
-	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
+	return writeObject(g, data)
 }
 
 // ActivityWeatherCmd shows weather conditions for an activity.
@@ -240,7 +242,7 @@ func (c *ActivityWeatherCmd) Run(g *Globals) error {
 		return fmt.Errorf("get activity weather: %w", err)
 	}
 
-	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
+	return writeObject(g, data)
 }
 
 // ActivityHRZonesCmd shows heart rate time-in-zone data for an activity.
@@ -259,7 +261,7 @@ func (c *ActivityHRZonesCmd) Run(g *Globals) error {
 		return fmt.Errorf("get activity HR zones: %w", err)
 	}
 
-	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
+	return writeObject(g, data)
 }
 
 // ActivityPowerZonesCmd shows power time-in-zone data for an activity.
@@ -278,7 +280,7 @@ func (c *ActivityPowerZonesCmd) Run(g *Globals) error {
 		return fmt.Errorf("get activity power zones: %w", err)
 	}
 
-	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
+	return writeObject(g, data)
 }
 
 var activityExerciseSetsGroup = Group{Name: "exercise-sets", Help: "Manage exercise sets.", Children: []Node{
@@ -302,7 +304,7 @@ func (c *ActivityExerciseSetsShowCmd) Run(g *Globals) error {
 		return fmt.Errorf("get activity exercise sets: %w", err)
 	}
 
-	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
+	return writeObject(g, data)
 }
 
 // ActivityGearCmd shows gear linked to an activity.
@@ -321,5 +323,5 @@ func (c *ActivityGearCmd) Run(g *Globals) error {
 		return fmt.Errorf("get activity gear: %w", err)
 	}
 
-	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
+	return writeObject(g, data)
 }
