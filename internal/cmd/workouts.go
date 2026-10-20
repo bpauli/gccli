@@ -369,7 +369,7 @@ func writeScheduledWorkouts(g *Globals, items []map[string]any) error {
 // filterCalendarWorkouts extracts workout items matching the given date from calendar data.
 func filterCalendarWorkouts(data json.RawMessage, date string) ([]map[string]any, error) {
 	var calendar map[string]any
-	if err := json.Unmarshal(data, &calendar); err != nil {
+	if err := unmarshalAnswer(data, &calendar); err != nil {
 		return nil, fmt.Errorf("parse calendar: %w", err)
 	}
 
@@ -403,7 +403,7 @@ func filterCalendarWorkouts(data json.RawMessage, date string) ([]map[string]any
 // filterCalendarWorkoutsInRange extracts workout items within a date range from calendar data.
 func filterCalendarWorkoutsInRange(data json.RawMessage, startDate, endDate string) ([]map[string]any, error) {
 	var calendar map[string]any
-	if err := json.Unmarshal(data, &calendar); err != nil {
+	if err := unmarshalAnswer(data, &calendar); err != nil {
 		return nil, fmt.Errorf("parse calendar: %w", err)
 	}
 
