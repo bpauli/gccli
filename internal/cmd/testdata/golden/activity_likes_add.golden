@@ -1,0 +1,43 @@
+Garmin answers the like with the like record, as the probe of 2026-10-20 saw.
+-- args --
+activity
+likes
+add
+111
+-- route POST /conversation-service/conversation/like/ACTIVITY/111 --
+{"conversationLikePk":42,"conversationUuid":"3c0b5d2e-7a41-4f9e-b6d8-1e2f3a4b5c6d","createdDate":"2026-10-20T08:15:30.0","displayName":"tester","fullName":"Test User","userProfilePk":3141592}
+-- table stdout --
+-- table stderr --
+Liked activity 111
+-- table exit --
+0
+-- table requests --
+POST /conversation-service/conversation/like/ACTIVITY/111
+-- plain stdout --
+-- plain stderr --
+Liked activity 111
+-- plain exit --
+0
+-- plain requests --
+POST /conversation-service/conversation/like/ACTIVITY/111
+-- plain-header stdout --
+-- plain-header stderr --
+Liked activity 111
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /conversation-service/conversation/like/ACTIVITY/111
+-- json stdout --
+{
+  "conversationLikePk": 42,
+  "conversationUuid": "3c0b5d2e-7a41-4f9e-b6d8-1e2f3a4b5c6d",
+  "createdDate": "2026-10-20T08:15:30.0",
+  "displayName": "tester",
+  "fullName": "Test User",
+  "userProfilePk": 3141592
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /conversation-service/conversation/like/ACTIVITY/111

@@ -97,6 +97,10 @@ Date shortcuts
   - `<id>`: Activity ID.
 - `gccli activity likes list <id>`: List the likes of an activity. Also runs as `gccli activity likes <id>`.
   - `<id>`: Activity ID.
+- `gccli activity likes add <id>`: Like an activity.
+  - `<id>`: Activity ID.
+- `gccli activity likes remove <id>`: Remove your like from an activity.
+  - `<id>`: Activity ID.
 - `gccli activity download <id> [flags]`: Download activity file.
   - `<id>`: Activity ID.
   - `--format="fit"`: Download format: fit, gpx, tcx, kml, csv.

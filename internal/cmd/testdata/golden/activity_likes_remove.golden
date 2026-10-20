@@ -1,0 +1,43 @@
+The like comes from the conversation read: Garmin answers 204 to an unlike whether a like was there or not.
+-- args --
+activity
+likes
+remove
+111
+-- route GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3 --
+{"conversationUuid":"3c0b5d2e-7a41-4f9e-b6d8-1e2f3a4b5c6d","numberOfLikes":1,"numberOfComments":0,"likedByUser":true}
+-- route DELETE /conversation-service/conversation/like/3c0b5d2e-7a41-4f9e-b6d8-1e2f3a4b5c6d/0 204 --
+-- table stdout --
+-- table stderr --
+Removed like from activity 111
+-- table exit --
+0
+-- table requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+DELETE /conversation-service/conversation/like/3c0b5d2e-7a41-4f9e-b6d8-1e2f3a4b5c6d/0
+-- plain stdout --
+-- plain stderr --
+Removed like from activity 111
+-- plain exit --
+0
+-- plain requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+DELETE /conversation-service/conversation/like/3c0b5d2e-7a41-4f9e-b6d8-1e2f3a4b5c6d/0
+-- plain-header stdout --
+-- plain-header stderr --
+Removed like from activity 111
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+DELETE /conversation-service/conversation/like/3c0b5d2e-7a41-4f9e-b6d8-1e2f3a4b5c6d/0
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+DELETE /conversation-service/conversation/like/3c0b5d2e-7a41-4f9e-b6d8-1e2f3a4b5c6d/0

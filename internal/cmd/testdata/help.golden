@@ -48,6 +48,8 @@ Commands:
   activity gear                    Show linked gear.
   activity comments list           List the comments on an activity.
   activity likes list              List the likes of an activity.
+  activity likes add               Like an activity.
+  activity likes remove            Remove your like from an activity.
   activity download                Download activity file.
   activity upload                  Upload an activity file (FIT/GPX/TCX).
   activity create                  Create a manual activity.
@@ -393,6 +395,8 @@ Commands:
   activity gear                  Show linked gear.
   activity comments list         List the comments on an activity.
   activity likes list            List the likes of an activity.
+  activity likes add             Like an activity.
+  activity likes remove          Remove your like from an activity.
   activity download              Download activity file.
   activity upload                Upload an activity file (FIT/GPX/TCX).
   activity create                Create a manual activity.
@@ -453,7 +457,7 @@ Commands:
 $ gccli activity likes --help
 Usage: gccli activity likes <command>
 
-List the likes of an activity.
+List, add and remove likes of an activity.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -470,7 +474,9 @@ Flags:
       --version           Print version information.
 
 Commands:
-  activity likes list    List the likes of an activity.
+  activity likes list      List the likes of an activity.
+  activity likes add       Like an activity.
+  activity likes remove    Remove your like from an activity.
 
 $ gccli workouts --help
 Usage: gccli workouts <command> [flags]

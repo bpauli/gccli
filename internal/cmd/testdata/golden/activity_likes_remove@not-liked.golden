@@ -1,0 +1,36 @@
+The activity has a conversation, but the user does not like it: exit 1 and no unlike, because Garmin answers 204 to an unlike of nothing.
+-- args --
+activity
+likes
+remove
+111
+-- route GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3 --
+{"conversationUuid":"3c0b5d2e-7a41-4f9e-b6d8-1e2f3a4b5c6d","numberOfLikes":2,"numberOfComments":0,"likedByUser":false}
+-- table stdout --
+-- table stderr --
+activity 111 is not liked
+-- table exit --
+1
+-- table requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+-- plain stdout --
+-- plain stderr --
+activity 111 is not liked
+-- plain exit --
+1
+-- plain requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+-- plain-header stdout --
+-- plain-header stderr --
+activity 111 is not liked
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"activity 111 is not liked"}}
+-- json exit --
+1
+-- json requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
