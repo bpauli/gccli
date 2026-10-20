@@ -116,7 +116,7 @@ type EventsAddCmd struct {
 	Type     string `help:"Event type." required:"" short:"t" enum:"running,trail_running,cycling,gravel_cycling,mountain_biking,swimming,triathlon,multi_sport,hiking,walking,fitness_equipment,motorcycling,winter_sport,other"`
 	Race     bool   `help:"Mark as a race."`
 	Location string `help:"Event location."`
-	Time     string `help:"Start time (HH:MM)."`
+	Time     Clock  `help:"Start time (HH:MM)." placeholder:"HH:MM"`
 	Timezone string `help:"Time zone ID (e.g. Europe/Berlin)."`
 	Distance string `help:"Target distance (e.g. 10km, 26.2mi, 400m)."`
 	Goal     string `help:"Time goal duration (e.g. 50m, 1h30m, 2400s)."`
@@ -134,7 +134,7 @@ func (c *EventsAddCmd) Run(g *Globals) error {
 		Type:     c.Type,
 		Race:     c.Race,
 		Location: c.Location,
-		Time:     c.Time,
+		Time:     string(c.Time),
 		Timezone: c.Timezone,
 		Distance: c.Distance,
 		Goal:     c.Goal,

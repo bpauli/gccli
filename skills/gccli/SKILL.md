@@ -505,7 +505,7 @@ Date shortcuts
   - `-t, --type=STRING`: Event type. One of: running, trail_running, cycling, gravel_cycling, mountain_biking, swimming, triathlon, multi_sport, hiking, walking, fitness_equipment, motorcycling, winter_sport, other.
   - `--race`: Mark as a race.
   - `--location=STRING`: Event location.
-  - `--time=STRING`: Start time (HH:MM).
+  - `--time=HH:MM`: Start time (HH:MM).
   - `--timezone=STRING`: Time zone ID (e.g. Europe/Berlin).
   - `--distance=STRING`: Target distance (e.g. 10km, 26.2mi, 400m).
   - `--goal=STRING`: Time goal duration (e.g. 50m, 1h30m, 2400s).
