@@ -25,7 +25,7 @@ var workoutsGroup = Group{Name: "workouts", Help: "Manage workouts.", Children: 
 	Leaf{
 		Name: "delete", Help: "Delete a workout.",
 		Spec: argsOf(&struct {
-			ID string `arg:"" help:"Workout ID."`
+			ID ID `arg:"" help:"Workout ID."`
 		}{}),
 		Endpoint: "workouts.delete",
 		Params:   Params{"workoutID": In("ID")},
@@ -67,7 +67,7 @@ func (c *WorkoutsListCmd) Run(g *Globals) error {
 
 // WorkoutDetailCmd shows workout details.
 type WorkoutDetailCmd struct {
-	ID string `arg:"" help:"Workout ID."`
+	ID ID `arg:"" help:"Workout ID."`
 }
 
 func (c *WorkoutDetailCmd) Run(g *Globals) error {
@@ -76,7 +76,7 @@ func (c *WorkoutDetailCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.Call(g.Context, "workouts.get", map[string]string{"workoutID": c.ID}, nil)
+	data, err := client.Call(g.Context, "workouts.get", map[string]string{"workoutID": string(c.ID)}, nil)
 	if err != nil {
 		return fmt.Errorf("get workout: %w", err)
 	}
@@ -86,7 +86,7 @@ func (c *WorkoutDetailCmd) Run(g *Globals) error {
 
 // WorkoutDownloadCmd downloads a workout as FIT.
 type WorkoutDownloadCmd struct {
-	ID     string `arg:"" help:"Workout ID."`
+	ID     ID     `arg:"" help:"Workout ID."`
 	Output string `help:"Output file path (default: workout_{id}.fit)." short:"o"`
 }
 
@@ -96,7 +96,7 @@ func (c *WorkoutDownloadCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.DownloadWorkout(g.Context, c.ID)
+	data, err := client.DownloadWorkout(g.Context, string(c.ID))
 	if err != nil {
 		return fmt.Errorf("download workout: %w", err)
 	}
@@ -178,7 +178,7 @@ func (c *WorkoutUpdateCmd) Run(g *Globals) error {
 
 // WorkoutCopyCmd copies a workout.
 type WorkoutCopyCmd struct {
-	ID   string `arg:"" help:"Workout ID."`
+	ID   ID     `arg:"" help:"Workout ID."`
 	Name string `arg:"" optional:"" help:"Name of the copy. Without it, the copy gets the name of the original."`
 }
 
@@ -188,7 +188,7 @@ func (c *WorkoutCopyCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.CopyWorkout(g.Context, c.ID, c.Name)
+	data, err := client.CopyWorkout(g.Context, string(c.ID), c.Name)
 	if err != nil {
 		return fmt.Errorf("copy workout: %w", err)
 	}
@@ -233,7 +233,7 @@ var workoutScheduleGroup = Group{Name: "schedule", Help: "Manage scheduled worko
 	Leaf{
 		Name: "remove", Help: "Remove a scheduled workout from the calendar.",
 		Spec: argsOf(&struct {
-			ID string `arg:"" help:"Schedule ID (from 'workouts schedule list')."`
+			ID ID `arg:"" help:"Schedule ID (from 'workouts schedule list')."`
 		}{}),
 		Endpoint: "workouts.unschedule",
 		Params:   Params{"scheduleID": In("ID")},
@@ -257,8 +257,8 @@ var workoutBenchmarksGroup = Group{Name: "benchmarks", Help: "View strength benc
 
 // WorkoutScheduleAddCmd schedules a workout on a calendar date.
 type WorkoutScheduleAddCmd struct {
-	ID   string `arg:"" help:"Workout ID."`
-	Date Date   `arg:"" help:"Date to schedule (YYYY-MM-DD, today, yesterday, 3d)."`
+	ID   ID   `arg:"" help:"Workout ID."`
+	Date Date `arg:"" help:"Date to schedule (YYYY-MM-DD, today, yesterday, 3d)."`
 }
 
 func (c *WorkoutScheduleAddCmd) Run(g *Globals) error {
@@ -272,7 +272,7 @@ func (c *WorkoutScheduleAddCmd) Run(g *Globals) error {
 	if err != nil {
 		return fmt.Errorf("schedule workout: %w", err)
 	}
-	data, err := client.Call(g.Context, "workouts.schedule", map[string]string{"workoutID": c.ID}, body)
+	data, err := client.Call(g.Context, "workouts.schedule", map[string]string{"workoutID": string(c.ID)}, body)
 	if err != nil {
 		return fmt.Errorf("schedule workout: %w", err)
 	}

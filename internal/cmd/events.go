@@ -18,7 +18,7 @@ var eventsGroup = Group{Name: "events", Help: "Manage calendar events.", Childre
 	Leaf{
 		Name: "delete", Help: "Delete a calendar event.",
 		Spec: argsOf(&struct {
-			ID string `arg:"" help:"Event ID."`
+			ID ID `arg:"" help:"Event ID."`
 		}{}),
 		Endpoint: "events.delete",
 		Params:   Params{"eventID": In("ID")},

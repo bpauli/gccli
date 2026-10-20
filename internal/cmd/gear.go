@@ -22,7 +22,7 @@ var gearGroup = Group{Name: "gear", Help: "Manage gear.", Children: []Node{
 	Leaf{
 		Name: "stats", Help: "Show usage statistics for a gear item.",
 		Spec: argsOf(&struct {
-			UUID string `arg:"" help:"Gear UUID."`
+			UUID ID `arg:"" help:"Gear UUID."`
 		}{}),
 		Endpoint: "gear.stats",
 		Params:   Params{"gearUUID": In("UUID")},
@@ -31,8 +31,8 @@ var gearGroup = Group{Name: "gear", Help: "Manage gear.", Children: []Node{
 	Leaf{
 		Name: "activities", Help: "Show activities linked to a gear item.",
 		Spec: argsOf(&struct {
-			UUID  string `arg:"" help:"Gear UUID."`
-			Limit int    `help:"Maximum number of activities to return." default:"20"`
+			UUID  ID  `arg:"" help:"Gear UUID."`
+			Limit int `help:"Maximum number of activities to return." default:"20"`
 		}{}),
 		Endpoint: "gear.activities",
 		Params:   Params{"gearUUID": In("UUID"), "limit": In("Limit")},
@@ -47,8 +47,8 @@ var gearGroup = Group{Name: "gear", Help: "Manage gear.", Children: []Node{
 	Leaf{
 		Name: "link", Help: "Link gear to an activity.",
 		Spec: argsOf(&struct {
-			UUID       string `arg:"" help:"Gear UUID."`
-			ActivityID string `arg:"" help:"Activity ID." name:"activity-id"`
+			UUID       ID `arg:"" help:"Gear UUID."`
+			ActivityID ID `arg:"" help:"Activity ID." name:"activity-id"`
 		}{}),
 		Endpoint: "gear.link",
 		Params:   Params{"gearUUID": In("UUID"), "activityID": In("ActivityID")},
@@ -58,8 +58,8 @@ var gearGroup = Group{Name: "gear", Help: "Manage gear.", Children: []Node{
 	Leaf{
 		Name: "unlink", Help: "Unlink gear from an activity.",
 		Spec: argsOf(&struct {
-			UUID       string `arg:"" help:"Gear UUID."`
-			ActivityID string `arg:"" help:"Activity ID." name:"activity-id"`
+			UUID       ID `arg:"" help:"Gear UUID."`
+			ActivityID ID `arg:"" help:"Activity ID." name:"activity-id"`
 		}{}),
 		Endpoint: "gear.unlink",
 		Params:   Params{"gearUUID": In("UUID"), "activityID": In("ActivityID")},
@@ -103,7 +103,7 @@ var gearCollectionsGroup = Group{Name: "collections", Help: "Manage gear collect
 	Leaf{
 		Name: "add", Help: "Add a gear item to a gear collection.",
 		Spec: argsOf(&struct {
-			UUID string   `arg:"" help:"Collection UUID."`
+			UUID ID       `arg:"" help:"Collection UUID."`
 			Gear GearUUID `arg:"" help:"Gear UUID, with or without dashes." name:"gear-uuid"`
 		}{}),
 		Endpoint: "gear.collection.add-gear",
@@ -114,7 +114,7 @@ var gearCollectionsGroup = Group{Name: "collections", Help: "Manage gear collect
 	Leaf{
 		Name: "delete", Help: "Delete a gear collection. The gear items stay.",
 		Spec: argsOf(&struct {
-			UUID string `arg:"" help:"Collection UUID."`
+			UUID ID `arg:"" help:"Collection UUID."`
 		}{}),
 		Endpoint: "gear.collection.delete",
 		Params:   Params{"collectionUUID": In("UUID")},
@@ -249,7 +249,7 @@ func (c *GearCollectionCreateCmd) Run(g *Globals) error {
 
 // GearCollectionRenameCmd renames a gear collection.
 type GearCollectionRenameCmd struct {
-	UUID string `arg:"" help:"Collection UUID."`
+	UUID ID     `arg:"" help:"Collection UUID."`
 	Name string `arg:"" help:"New name."`
 }
 
@@ -265,7 +265,7 @@ func (c *GearCollectionRenameCmd) Run(g *Globals) error {
 	if err != nil {
 		return err
 	}
-	data, err := client.RenameGearCollection(g.Context, c.UUID, c.Name)
+	data, err := client.RenameGearCollection(g.Context, string(c.UUID), c.Name)
 	if err != nil {
 		return fmt.Errorf("rename gear collection: %w", err)
 	}

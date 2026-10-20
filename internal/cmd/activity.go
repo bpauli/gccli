@@ -24,7 +24,7 @@ var activityGroup = Group{Name: "activity", Help: "View activity details.", Chil
 	Leaf{
 		Name: "comments", Help: "List the comments on an activity.",
 		Spec: argsOf(&struct {
-			ID string `arg:"" help:"Activity ID."`
+			ID ID `arg:"" help:"Activity ID."`
 		}{}),
 		Endpoint: "activities.comments",
 		Params:   Params{"activityID": In("ID")},
@@ -33,7 +33,7 @@ var activityGroup = Group{Name: "activity", Help: "View activity details.", Chil
 	Leaf{
 		Name: "likes", Help: "List the likes of an activity.",
 		Spec: argsOf(&struct {
-			ID string `arg:"" help:"Activity ID."`
+			ID ID `arg:"" help:"Activity ID."`
 		}{}),
 		Endpoint: "activities.likes",
 		Params:   Params{"activityID": In("ID")},
@@ -51,7 +51,7 @@ var activityGroup = Group{Name: "activity", Help: "View activity details.", Chil
 	Leaf{
 		Name: "delete", Help: "Delete an activity.",
 		Spec: argsOf(&struct {
-			ID string `arg:"" help:"Activity ID."`
+			ID ID `arg:"" help:"Activity ID."`
 		}{}),
 		Endpoint: "activities.delete",
 		Params:   Params{"activityID": In("ID")},
@@ -62,7 +62,7 @@ var activityGroup = Group{Name: "activity", Help: "View activity details.", Chil
 
 // ActivitySummaryCmd shows an activity summary.
 type ActivitySummaryCmd struct {
-	ID string `arg:"" help:"Activity ID."`
+	ID ID `arg:"" help:"Activity ID."`
 }
 
 func (c *ActivitySummaryCmd) Run(g *Globals) error {
@@ -71,7 +71,7 @@ func (c *ActivitySummaryCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.Call(g.Context, "activities.get", map[string]string{"activityID": c.ID}, nil)
+	data, err := client.Call(g.Context, "activities.get", map[string]string{"activityID": string(c.ID)}, nil)
 	if err != nil {
 		return fmt.Errorf("get activity: %w", err)
 	}
@@ -148,9 +148,9 @@ func formatHeartRate(hr float64) string {
 
 // ActivityDetailsCmd shows full activity details including charts and polylines.
 type ActivityDetailsCmd struct {
-	ID       string `arg:"" help:"Activity ID."`
-	MaxChart int    `help:"Maximum chart data points." default:"2000" name:"max-chart"`
-	MaxPoly  int    `help:"Maximum polyline data points." default:"4000" name:"max-poly"`
+	ID       ID  `arg:"" help:"Activity ID."`
+	MaxChart int `help:"Maximum chart data points." default:"2000" name:"max-chart"`
+	MaxPoly  int `help:"Maximum polyline data points." default:"4000" name:"max-poly"`
 }
 
 func (c *ActivityDetailsCmd) Run(g *Globals) error {
@@ -159,7 +159,7 @@ func (c *ActivityDetailsCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.Call(g.Context, "activities.details", map[string]string{"activityID": c.ID, "maxChart": strconv.Itoa(c.MaxChart), "maxPoly": strconv.Itoa(c.MaxPoly)}, nil)
+	data, err := client.Call(g.Context, "activities.details", map[string]string{"activityID": string(c.ID), "maxChart": strconv.Itoa(c.MaxChart), "maxPoly": strconv.Itoa(c.MaxPoly)}, nil)
 	if err != nil {
 		return fmt.Errorf("get activity details: %w", err)
 	}
@@ -169,7 +169,7 @@ func (c *ActivityDetailsCmd) Run(g *Globals) error {
 
 // ActivitySplitsCmd shows activity splits.
 type ActivitySplitsCmd struct {
-	ID string `arg:"" help:"Activity ID."`
+	ID ID `arg:"" help:"Activity ID."`
 }
 
 func (c *ActivitySplitsCmd) Run(g *Globals) error {
@@ -178,7 +178,7 @@ func (c *ActivitySplitsCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.Call(g.Context, "activities.splits", map[string]string{"activityID": c.ID}, nil)
+	data, err := client.Call(g.Context, "activities.splits", map[string]string{"activityID": string(c.ID)}, nil)
 	if err != nil {
 		return fmt.Errorf("get activity splits: %w", err)
 	}
@@ -188,7 +188,7 @@ func (c *ActivitySplitsCmd) Run(g *Globals) error {
 
 // ActivityTypedSplitsCmd shows typed splits for an activity.
 type ActivityTypedSplitsCmd struct {
-	ID string `arg:"" help:"Activity ID."`
+	ID ID `arg:"" help:"Activity ID."`
 }
 
 func (c *ActivityTypedSplitsCmd) Run(g *Globals) error {
@@ -197,7 +197,7 @@ func (c *ActivityTypedSplitsCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.Call(g.Context, "activities.typed-splits", map[string]string{"activityID": c.ID}, nil)
+	data, err := client.Call(g.Context, "activities.typed-splits", map[string]string{"activityID": string(c.ID)}, nil)
 	if err != nil {
 		return fmt.Errorf("get activity typed splits: %w", err)
 	}
@@ -207,7 +207,7 @@ func (c *ActivityTypedSplitsCmd) Run(g *Globals) error {
 
 // ActivitySplitSummariesCmd shows split summaries for an activity.
 type ActivitySplitSummariesCmd struct {
-	ID string `arg:"" help:"Activity ID."`
+	ID ID `arg:"" help:"Activity ID."`
 }
 
 func (c *ActivitySplitSummariesCmd) Run(g *Globals) error {
@@ -216,7 +216,7 @@ func (c *ActivitySplitSummariesCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.Call(g.Context, "activities.split-summaries", map[string]string{"activityID": c.ID}, nil)
+	data, err := client.Call(g.Context, "activities.split-summaries", map[string]string{"activityID": string(c.ID)}, nil)
 	if err != nil {
 		return fmt.Errorf("get activity split summaries: %w", err)
 	}
@@ -226,7 +226,7 @@ func (c *ActivitySplitSummariesCmd) Run(g *Globals) error {
 
 // ActivityWeatherCmd shows weather conditions for an activity.
 type ActivityWeatherCmd struct {
-	ID string `arg:"" help:"Activity ID."`
+	ID ID `arg:"" help:"Activity ID."`
 }
 
 func (c *ActivityWeatherCmd) Run(g *Globals) error {
@@ -235,7 +235,7 @@ func (c *ActivityWeatherCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.Call(g.Context, "activities.weather", map[string]string{"activityID": c.ID}, nil)
+	data, err := client.Call(g.Context, "activities.weather", map[string]string{"activityID": string(c.ID)}, nil)
 	if err != nil {
 		return fmt.Errorf("get activity weather: %w", err)
 	}
@@ -245,7 +245,7 @@ func (c *ActivityWeatherCmd) Run(g *Globals) error {
 
 // ActivityHRZonesCmd shows heart rate time-in-zone data for an activity.
 type ActivityHRZonesCmd struct {
-	ID string `arg:"" help:"Activity ID."`
+	ID ID `arg:"" help:"Activity ID."`
 }
 
 func (c *ActivityHRZonesCmd) Run(g *Globals) error {
@@ -254,7 +254,7 @@ func (c *ActivityHRZonesCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.Call(g.Context, "activities.hr-zones", map[string]string{"activityID": c.ID}, nil)
+	data, err := client.Call(g.Context, "activities.hr-zones", map[string]string{"activityID": string(c.ID)}, nil)
 	if err != nil {
 		return fmt.Errorf("get activity HR zones: %w", err)
 	}
@@ -264,7 +264,7 @@ func (c *ActivityHRZonesCmd) Run(g *Globals) error {
 
 // ActivityPowerZonesCmd shows power time-in-zone data for an activity.
 type ActivityPowerZonesCmd struct {
-	ID string `arg:"" help:"Activity ID."`
+	ID ID `arg:"" help:"Activity ID."`
 }
 
 func (c *ActivityPowerZonesCmd) Run(g *Globals) error {
@@ -273,7 +273,7 @@ func (c *ActivityPowerZonesCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.Call(g.Context, "activities.power-zones", map[string]string{"activityID": c.ID}, nil)
+	data, err := client.Call(g.Context, "activities.power-zones", map[string]string{"activityID": string(c.ID)}, nil)
 	if err != nil {
 		return fmt.Errorf("get activity power zones: %w", err)
 	}
@@ -288,7 +288,7 @@ var activityExerciseSetsGroup = Group{Name: "exercise-sets", Help: "Manage exerc
 
 // ActivityExerciseSetsShowCmd shows exercise set data for strength training activities.
 type ActivityExerciseSetsShowCmd struct {
-	ID string `arg:"" help:"Activity ID."`
+	ID ID `arg:"" help:"Activity ID."`
 }
 
 func (c *ActivityExerciseSetsShowCmd) Run(g *Globals) error {
@@ -297,7 +297,7 @@ func (c *ActivityExerciseSetsShowCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.Call(g.Context, "activities.exercise-sets", map[string]string{"activityID": c.ID}, nil)
+	data, err := client.Call(g.Context, "activities.exercise-sets", map[string]string{"activityID": string(c.ID)}, nil)
 	if err != nil {
 		return fmt.Errorf("get activity exercise sets: %w", err)
 	}
@@ -307,7 +307,7 @@ func (c *ActivityExerciseSetsShowCmd) Run(g *Globals) error {
 
 // ActivityGearCmd shows gear linked to an activity.
 type ActivityGearCmd struct {
-	ID string `arg:"" help:"Activity ID."`
+	ID ID `arg:"" help:"Activity ID."`
 }
 
 func (c *ActivityGearCmd) Run(g *Globals) error {
@@ -316,7 +316,7 @@ func (c *ActivityGearCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.Call(g.Context, "activities.gear", map[string]string{"activityID": c.ID}, nil)
+	data, err := client.Call(g.Context, "activities.gear", map[string]string{"activityID": string(c.ID)}, nil)
 	if err != nil {
 		return fmt.Errorf("get activity gear: %w", err)
 	}

@@ -18,8 +18,8 @@ var calendarNotesGroup = Group{Name: "notes", Help: "Add, change, move and delet
 	Leaf{
 		Name: "move", Help: "Move a calendar note to another day.",
 		Spec: argsOf(&struct {
-			ID   string `arg:"" help:"Note ID."`
-			Date Date   `arg:"" help:"New date (YYYY-MM-DD, today, yesterday, 3d, +30d)."`
+			ID   ID   `arg:"" help:"Note ID."`
+			Date Date `arg:"" help:"New date (YYYY-MM-DD, today, yesterday, 3d, +30d)."`
 		}{}),
 		Endpoint: "calendar.note.move",
 		Params:   Params{"noteID": In("ID"), "date": In("Date")},
@@ -29,7 +29,7 @@ var calendarNotesGroup = Group{Name: "notes", Help: "Add, change, move and delet
 	Leaf{
 		Name: "delete", Help: "Delete a calendar note.",
 		Spec: argsOf(&struct {
-			ID string `arg:"" help:"Note ID."`
+			ID ID `arg:"" help:"Note ID."`
 		}{}),
 		Endpoint: "calendar.note.delete",
 		Params:   Params{"noteID": In("ID")},
@@ -79,7 +79,7 @@ func (c *CalendarNotesAddCmd) Run(g *Globals) error {
 
 // CalendarNotesUpdateCmd changes the name or text of a calendar note.
 type CalendarNotesUpdateCmd struct {
-	ID      string  `arg:"" help:"Note ID."`
+	ID      ID      `arg:"" help:"Note ID."`
 	Name    *string `help:"New name." placeholder:"STRING"`
 	Content *string `help:"New text. An empty text clears it." placeholder:"STRING"`
 }
@@ -99,7 +99,7 @@ func (c *CalendarNotesUpdateCmd) Run(g *Globals) error {
 	if err != nil {
 		return err
 	}
-	data, err := client.UpdateNote(g.Context, c.ID, garminapi.NoteEdit{Name: c.Name, Content: c.Content})
+	data, err := client.UpdateNote(g.Context, string(c.ID), garminapi.NoteEdit{Name: c.Name, Content: c.Content})
 	if err != nil {
 		return fmt.Errorf("update note: %w", err)
 	}

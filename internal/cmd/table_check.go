@@ -138,7 +138,7 @@ func checkLeaf(path string, l Leaf) []error {
 				fail("Params[%q] binds %s, which Kong skips (kong:\"-\")", key, a)
 			default:
 				if _, sendable := requestValue(reflect.Zero(f.Type)); !sendable {
-					fail("Params[%q] binds %s of type %s: the runner sends only string, int and Date", key, a, f.Type)
+					fail("Params[%q] binds %s of type %s: the runner sends only string, int, Date and ID", key, a, f.Type)
 				}
 			}
 		}
@@ -208,7 +208,7 @@ func checkLeaf(path string, l Leaf) []error {
 				if !ok {
 					fail("%s names {%s}, which is not a field of the args struct", tpl.name, name)
 				} else if _, sendable := requestValue(reflect.Zero(f.Type)); !sendable {
-					fail("%s names {%s} of type %s: a template takes only string, int and Date", tpl.name, name, f.Type)
+					fail("%s names {%s} of type %s: a template takes only string, int, Date and ID", tpl.name, name, f.Type)
 				}
 			}
 		}
@@ -255,6 +255,8 @@ func requestValue(v reflect.Value) (value string, ok bool) {
 	case string:
 		return x, true
 	case Date:
+		return string(x), true
+	case ID:
 		return string(x), true
 	case GearUUID:
 		return string(x), true

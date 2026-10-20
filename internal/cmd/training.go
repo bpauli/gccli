@@ -13,7 +13,7 @@ var trainingGroup = Group{Name: "training", Help: "View training plans and adapt
 	Leaf{
 		Name: "plan", Help: "Show a specific training plan.",
 		Spec: argsOf(&struct {
-			ID string `arg:"" help:"Training plan ID."`
+			ID ID `arg:"" help:"Training plan ID."`
 		}{}),
 		Endpoint: "training.plan",
 		Params:   Params{"planID": In("ID")},

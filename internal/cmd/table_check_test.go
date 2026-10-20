@@ -121,7 +121,7 @@ func TestCheckTableRejects(t *testing.T) {
 					Status []string `help:"Goal status." default:"active"`
 				}{})
 			},
-			`goals list: Params["status"] binds In("Status") of type []string: the runner sends only string, int and Date`,
+			`goals list: Params["status"] binds In("Status") of type []string: the runner sends only string, int, Date and ID`,
 		},
 		{
 			"Kong enum allows a value the placeholder does not", "goals list",
@@ -325,7 +325,7 @@ func TestCheckTableRejects(t *testing.T) {
 				}{})
 				l.Output = Write{Done: "Deleted course {ID} {Deep}", Confirm: "Delete course {ID}?"}
 			},
-			`courses delete: Done names {Deep} of type bool: a template takes only string, int and Date`,
+			`courses delete: Done names {Deep} of type bool: a template takes only string, int, Date and ID`,
 		},
 		{
 			"Rows without Noun", "activities list",

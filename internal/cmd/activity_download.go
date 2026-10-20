@@ -13,7 +13,7 @@ import (
 
 // ActivityDownloadCmd downloads an activity in a specified format.
 type ActivityDownloadCmd struct {
-	ID     string `arg:"" help:"Activity ID."`
+	ID     ID     `arg:"" help:"Activity ID."`
 	Format string `help:"Download format: fit, gpx, tcx, kml, csv." default:"fit" enum:"fit,gpx,tcx,kml,csv"`
 	Output string `help:"Output file path (default: activity_{id}.{format})." short:"o"`
 }
@@ -26,7 +26,7 @@ func (c *ActivityDownloadCmd) Run(g *Globals) error {
 
 	format := garminapi.DownloadFormat(strings.ToLower(c.Format))
 
-	data, err := client.DownloadActivity(g.Context, c.ID, format)
+	data, err := client.DownloadActivity(g.Context, string(c.ID), format)
 	if err != nil {
 		return fmt.Errorf("download activity: %w", err)
 	}
@@ -42,7 +42,7 @@ func (c *ActivityDownloadCmd) Run(g *Globals) error {
 
 	outPath := c.Output
 	if outPath == "" {
-		outPath = defaultActivityFilename(c.ID, c.Format)
+		outPath = defaultActivityFilename(string(c.ID), c.Format)
 	}
 
 	if err := os.WriteFile(outPath, data, 0o644); err != nil {

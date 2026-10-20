@@ -37,7 +37,7 @@ var coursesGroup = Group{Name: "courses", Help: "Manage courses.", Children: []N
 	Leaf{
 		Name: "delete", Help: "Delete a course.",
 		Spec: argsOf(&struct {
-			ID string `arg:"" help:"Course ID."`
+			ID ID `arg:"" help:"Course ID."`
 		}{}),
 		Endpoint: "courses.delete",
 		Params:   Params{"courseID": In("ID")},
@@ -48,7 +48,7 @@ var coursesGroup = Group{Name: "courses", Help: "Manage courses.", Children: []N
 
 // CourseDetailCmd shows details for a course.
 type CourseDetailCmd struct {
-	ID string `arg:"" help:"Course ID."`
+	ID ID `arg:"" help:"Course ID."`
 }
 
 func (c *CourseDetailCmd) Run(g *Globals) error {
@@ -57,7 +57,7 @@ func (c *CourseDetailCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.Call(g.Context, "courses.get", map[string]string{"courseID": c.ID}, nil)
+	data, err := client.Call(g.Context, "courses.get", map[string]string{"courseID": string(c.ID)}, nil)
 	if err != nil {
 		return fmt.Errorf("get course: %w", err)
 	}
@@ -67,7 +67,7 @@ func (c *CourseDetailCmd) Run(g *Globals) error {
 
 // CourseDownloadCmd downloads a course in a specified format.
 type CourseDownloadCmd struct {
-	ID     string `arg:"" help:"Course ID."`
+	ID     ID     `arg:"" help:"Course ID."`
 	Format string `help:"Download format: fit, gpx." default:"fit" enum:"fit,gpx"`
 	Output string `help:"Output file path (default: course_{id}.{format})." short:"o"`
 }
@@ -80,7 +80,7 @@ func (c *CourseDownloadCmd) Run(g *Globals) error {
 
 	format := garminapi.DownloadFormat(strings.ToLower(c.Format))
 
-	data, err := client.DownloadCourse(g.Context, c.ID, format)
+	data, err := client.DownloadCourse(g.Context, string(c.ID), format)
 	if err != nil {
 		return fmt.Errorf("download course: %w", err)
 	}

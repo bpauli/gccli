@@ -101,6 +101,24 @@ func (id *NumericID) Decode(ctx *kong.DecodeContext) error {
 
 func (id NumericID) String() string { return strconv.FormatInt(int64(id), 10) }
 
+// ID is a user-given value that names a Garmin object in a request path,
+// such as an activity ID or a gear UUID. Kong rejects an empty or blank
+// value at parse time, so it is a usage error before the login. The value
+// is sent as given.
+type ID string
+
+func (id *ID) Decode(ctx *kong.DecodeContext) error {
+	raw, err := popString(ctx, "id")
+	if err != nil {
+		return err
+	}
+	if strings.TrimSpace(raw) == "" {
+		return errors.New("must not be empty")
+	}
+	*id = ID(raw)
+	return nil
+}
+
 type Pagination struct {
 	Limit  int `help:"Maximum number of ${items} to return." default:"20" short:"l"`
 	Offset int `help:"Number of ${items} to skip." default:"0"`

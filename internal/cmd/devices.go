@@ -9,7 +9,7 @@ var devicesGroup = Group{Name: "devices", Help: "Manage devices.", Children: []N
 	Leaf{
 		Name: "settings", Help: "Show settings for a device.",
 		Spec: argsOf(&struct {
-			DeviceID string `arg:"" help:"Device ID."`
+			DeviceID ID `arg:"" help:"Device ID."`
 		}{}),
 		Endpoint: "devices.settings",
 		Params:   Params{"deviceID": In("DeviceID")},
@@ -19,9 +19,9 @@ var devicesGroup = Group{Name: "devices", Help: "Manage devices.", Children: []N
 	Leaf{
 		Name: "solar", Help: "Show solar charging data for a device.",
 		Spec: argsOf(&struct {
-			DeviceID  string `arg:"" help:"Device ID."`
-			StartDate Date   `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"start"`
-			EndDate   Date   `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to start date." name:"end"`
+			DeviceID  ID   `arg:"" help:"Device ID."`
+			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"start"`
+			EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to start date." name:"end"`
 		}{}),
 		Endpoint: "devices.solar",
 		Params: Params{
