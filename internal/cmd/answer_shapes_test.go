@@ -22,9 +22,10 @@ const answerShapesHeader = `# The answer shape of every Leaf row with a JSON out
 # command path: path, shape, source. The shape is array, object or unknown.
 # A row is JSON{List: true} exactly when its shape is array, so an empty
 # body prints []. An unknown shape prints {}. TestAnswerShapes checks the
-# rows and the main goldens against this file. A live refresh, read-only,
-# on a logged-in test account:
-#   GCCLI_BIN=bin/gccli go test -tags answershapes ./internal/cmd -run TestAnswerShapesLive -update
+# rows and the main goldens against this file. TestAnswerShapesLive
+# refreshes it from Garmin, read-only, through a wrapper that runs gccli
+# with the login of the test account (see its comment):
+#   ANSWER_SHAPES_BIN=/path/to/wrapper go test -tags answershapes ./internal/cmd -run TestAnswerShapesLive -update
 `
 
 type answerShape struct {
@@ -39,6 +40,9 @@ func readAnswerShapes(t *testing.T) map[string]answerShape {
 	data, err := os.ReadFile(answerShapesFile)
 	if err != nil {
 		t.Fatal(err)
+	}
+	if !bytes.HasPrefix(data, []byte(answerShapesHeader)) {
+		t.Fatalf("%s does not start with answerShapesHeader: copy the header from answer_shapes_test.go", answerShapesFile)
 	}
 	shapes := map[string]answerShape{}
 	for i, line := range strings.Split(strings.TrimSuffix(string(data), "\n"), "\n") {
