@@ -1,0 +1,85 @@
+no-discharge alone is a valid discharge value.
+-- args --
+wellness
+menstrual-log
+set
+2026-10-01
+--discharge
+no-discharge
+-- route GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01 204 --
+-- route POST /periodichealth-service/menstrualcycle/dailylog/2026-10-01 --
+{"userProfilePk":1,"calendarDate":"2026-10-01","symptoms":null,"moods":null,"discharge":["NO_DISCHARGE"],"flow":null,"sexDrive":null,"sexualActivity":null,"notes":null,"reportTimestamp":"2026-10-15T09:30:00.0","ovulationDay":false}
+-- table stdout --
+-- table stderr --
+Saved menstrual log for 2026-10-01
+-- table exit --
+0
+-- table requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+POST /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+  {
+    "calendarDate": "2026-10-01",
+    "discharge": [
+      "NO_DISCHARGE"
+    ],
+    "reportTimestamp": "2026-10-15T09:30:00.000"
+  }
+-- plain stdout --
+-- plain stderr --
+Saved menstrual log for 2026-10-01
+-- plain exit --
+0
+-- plain requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+POST /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+  {
+    "calendarDate": "2026-10-01",
+    "discharge": [
+      "NO_DISCHARGE"
+    ],
+    "reportTimestamp": "2026-10-15T09:30:00.000"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Saved menstrual log for 2026-10-01
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+POST /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+  {
+    "calendarDate": "2026-10-01",
+    "discharge": [
+      "NO_DISCHARGE"
+    ],
+    "reportTimestamp": "2026-10-15T09:30:00.000"
+  }
+-- json stdout --
+{
+  "userProfilePk": 1,
+  "calendarDate": "2026-10-01",
+  "symptoms": null,
+  "moods": null,
+  "discharge": [
+    "NO_DISCHARGE"
+  ],
+  "flow": null,
+  "sexDrive": null,
+  "sexualActivity": null,
+  "notes": null,
+  "reportTimestamp": "2026-10-15T09:30:00.0",
+  "ovulationDay": false
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+POST /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+  {
+    "calendarDate": "2026-10-01",
+    "discharge": [
+      "NO_DISCHARGE"
+    ],
+    "reportTimestamp": "2026-10-15T09:30:00.000"
+  }

@@ -1,0 +1,46 @@
+Error case: the DELETE fails, so the exit code is 1.
+-- args --
+wellness
+menstrual-log
+delete
+2026-10-01
+--force
+-- route GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01 --
+{"userProfilePk":1,"calendarDate":"2026-10-01","symptoms":["CRAMPS","HEADACHE"],"moods":null,"discharge":null,"flow":"LIGHT","sexDrive":null,"sexualActivity":null,"notes":"x","reportTimestamp":"2026-10-20T08:00:00.0","hasBabyMovement":false,"ovulationDay":true}
+-- route DELETE /periodichealth-service/menstrualcycle/dailylog/2026-10-01 400 --
+{"message":"Bad request","error":"BadRequestException"}
+-- table stdout --
+-- table stderr --
+delete menstrual log: garmin api: 400 Bad Request: {"message":"Bad request","error":"BadRequestException"}
+
+-- table exit --
+1
+-- table requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+DELETE /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+-- plain stdout --
+-- plain stderr --
+delete menstrual log: garmin api: 400 Bad Request: {"message":"Bad request","error":"BadRequestException"}
+
+-- plain exit --
+1
+-- plain requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+DELETE /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+-- plain-header stdout --
+-- plain-header stderr --
+delete menstrual log: garmin api: 400 Bad Request: {"message":"Bad request","error":"BadRequestException"}
+
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+DELETE /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"delete menstrual log: garmin api: 400 Bad Request: {\"message\":\"Bad request\",\"error\":\"BadRequestException\"}\n"}}
+-- json exit --
+1
+-- json requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+DELETE /periodichealth-service/menstrualcycle/dailylog/2026-10-01

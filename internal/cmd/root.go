@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"maps"
 	"os"
 	"strings"
 
@@ -118,10 +119,12 @@ func execute(args []string, version, commit, date string, stdout, stderr io.Writ
 // kongVars returns the values of the ${name} placeholders in the struct tags
 // of the command tree.
 func kongVars(version string) kong.Vars {
-	return kong.Vars{
+	vars := kong.Vars{
 		"version": version,
 		"units":   strings.Join(units.PreferenceNames(), ","),
 	}
+	maps.Copy(vars, menstrualVars())
+	return vars
 }
 
 func run(parser *kong.Kong, cli *CLI, args []string, stdout, stderr io.Writer) (code int) {

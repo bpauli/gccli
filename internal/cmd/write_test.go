@@ -324,6 +324,29 @@ var writeCases = map[string]writeCase{
 		human:    "Added privacy zone of 800 m around 52.52, -30.5 (ID: 4321)\n",
 		fallback: "Added privacy zone of 800 m around 52.52, -30.5\n",
 	},
+	"wellness menstrual-log set": {
+		args: []string{"2026-10-01", "--flow", "light"},
+		routes: map[string]string{
+			"GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01":  noContent,
+			"POST /periodichealth-service/menstrualcycle/dailylog/2026-10-01": `{"calendarDate":"2026-10-01","flow":"LIGHT"}`,
+		},
+		result:   "POST /periodichealth-service/menstrualcycle/dailylog/2026-10-01",
+		json:     "{\n  \"calendarDate\": \"2026-10-01\",\n  \"flow\": \"LIGHT\"\n}\n",
+		human:    "Saved menstrual log for 2026-10-01\n",
+		fallback: "Saved menstrual log for 2026-10-01\n",
+	},
+	"wellness menstrual-log delete": {
+		args: []string{"2026-10-01"},
+		routes: map[string]string{
+			"GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01":    `{"calendarDate":"2026-10-01","flow":"LIGHT"}`,
+			"DELETE /periodichealth-service/menstrualcycle/dailylog/2026-10-01": noContent,
+		},
+		result:   "DELETE /periodichealth-service/menstrualcycle/dailylog/2026-10-01",
+		prompt:   "Delete menstrual log for 2026-10-01?",
+		json:     okOut,
+		human:    "Deleted menstrual log for 2026-10-01\n",
+		fallback: "Deleted menstrual log for 2026-10-01\n",
+	},
 	"hydration add": {
 		args:   []string{"250", "--date", "2024-01-15"},
 		routes: map[string]string{"PUT /usersummary-service/usersummary/hydration/log": `{"valueInML":250}`},
