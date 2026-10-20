@@ -6,22 +6,22 @@ menstrual-cycle
 {"daySummary":{"startDate":"2026-10-01","dayInCycle":1,"periodLength":5,"currentPhase":1,"lengthOfCurrentPhase":5,"daysUntilNextPhase":5,"fertileWindowStart":3,"lengthOfFertileWindow":7,"predictedCycleLength":20,"educationContentMod":0,"cycleType":"REGULAR","feedbackPhrase":"GENERAL_UNHEALTHY_HABITS","predictedCycle":false},"dayLog":null}
 -- table stdout --
 {
-  "dayLog": null,
   "daySummary": {
-    "currentPhase": 1,
-    "cycleType": "REGULAR",
+    "startDate": "2026-10-01",
     "dayInCycle": 1,
-    "daysUntilNextPhase": 5,
-    "educationContentMod": 0,
-    "feedbackPhrase": "GENERAL_UNHEALTHY_HABITS",
-    "fertileWindowStart": 3,
-    "lengthOfCurrentPhase": 5,
-    "lengthOfFertileWindow": 7,
     "periodLength": 5,
-    "predictedCycle": false,
+    "currentPhase": 1,
+    "lengthOfCurrentPhase": 5,
+    "daysUntilNextPhase": 5,
+    "fertileWindowStart": 3,
+    "lengthOfFertileWindow": 7,
     "predictedCycleLength": 20,
-    "startDate": "2026-10-01"
-  }
+    "educationContentMod": 0,
+    "cycleType": "REGULAR",
+    "feedbackPhrase": "GENERAL_UNHEALTHY_HABITS",
+    "predictedCycle": false
+  },
+  "dayLog": null
 }
 -- table stderr --
 -- table exit --
@@ -30,22 +30,22 @@ menstrual-cycle
 GET /periodichealth-service/menstrualcycle/dayview/2026-10-01?todayDate=2026-10-15
 -- plain stdout --
 {
-  "dayLog": null,
   "daySummary": {
-    "currentPhase": 1,
-    "cycleType": "REGULAR",
+    "startDate": "2026-10-01",
     "dayInCycle": 1,
-    "daysUntilNextPhase": 5,
-    "educationContentMod": 0,
-    "feedbackPhrase": "GENERAL_UNHEALTHY_HABITS",
-    "fertileWindowStart": 3,
-    "lengthOfCurrentPhase": 5,
-    "lengthOfFertileWindow": 7,
     "periodLength": 5,
-    "predictedCycle": false,
+    "currentPhase": 1,
+    "lengthOfCurrentPhase": 5,
+    "daysUntilNextPhase": 5,
+    "fertileWindowStart": 3,
+    "lengthOfFertileWindow": 7,
     "predictedCycleLength": 20,
-    "startDate": "2026-10-01"
-  }
+    "educationContentMod": 0,
+    "cycleType": "REGULAR",
+    "feedbackPhrase": "GENERAL_UNHEALTHY_HABITS",
+    "predictedCycle": false
+  },
+  "dayLog": null
 }
 -- plain stderr --
 -- plain exit --
@@ -54,22 +54,22 @@ GET /periodichealth-service/menstrualcycle/dayview/2026-10-01?todayDate=2026-10-
 GET /periodichealth-service/menstrualcycle/dayview/2026-10-01?todayDate=2026-10-15
 -- plain-header stdout --
 {
-  "dayLog": null,
   "daySummary": {
-    "currentPhase": 1,
-    "cycleType": "REGULAR",
+    "startDate": "2026-10-01",
     "dayInCycle": 1,
-    "daysUntilNextPhase": 5,
-    "educationContentMod": 0,
-    "feedbackPhrase": "GENERAL_UNHEALTHY_HABITS",
-    "fertileWindowStart": 3,
-    "lengthOfCurrentPhase": 5,
-    "lengthOfFertileWindow": 7,
     "periodLength": 5,
-    "predictedCycle": false,
+    "currentPhase": 1,
+    "lengthOfCurrentPhase": 5,
+    "daysUntilNextPhase": 5,
+    "fertileWindowStart": 3,
+    "lengthOfFertileWindow": 7,
     "predictedCycleLength": 20,
-    "startDate": "2026-10-01"
-  }
+    "educationContentMod": 0,
+    "cycleType": "REGULAR",
+    "feedbackPhrase": "GENERAL_UNHEALTHY_HABITS",
+    "predictedCycle": false
+  },
+  "dayLog": null
 }
 -- plain-header stderr --
 -- plain-header exit --
@@ -78,22 +78,22 @@ GET /periodichealth-service/menstrualcycle/dayview/2026-10-01?todayDate=2026-10-
 GET /periodichealth-service/menstrualcycle/dayview/2026-10-01?todayDate=2026-10-15
 -- json stdout --
 {
-  "dayLog": null,
   "daySummary": {
-    "currentPhase": 1,
-    "cycleType": "REGULAR",
+    "startDate": "2026-10-01",
     "dayInCycle": 1,
-    "daysUntilNextPhase": 5,
-    "educationContentMod": 0,
-    "feedbackPhrase": "GENERAL_UNHEALTHY_HABITS",
-    "fertileWindowStart": 3,
-    "lengthOfCurrentPhase": 5,
-    "lengthOfFertileWindow": 7,
     "periodLength": 5,
-    "predictedCycle": false,
+    "currentPhase": 1,
+    "lengthOfCurrentPhase": 5,
+    "daysUntilNextPhase": 5,
+    "fertileWindowStart": 3,
+    "lengthOfFertileWindow": 7,
     "predictedCycleLength": 20,
-    "startDate": "2026-10-01"
-  }
+    "educationContentMod": 0,
+    "cycleType": "REGULAR",
+    "feedbackPhrase": "GENERAL_UNHEALTHY_HABITS",
+    "predictedCycle": false
+  },
+  "dayLog": null
 }
 -- json stderr --
 -- json exit --

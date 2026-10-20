@@ -263,7 +263,9 @@ var skipped = map[string]string{
 	"hydration weekly":                clockSkip,
 	"training active":                 clockSkip,
 	"wellness jet-lag status":         clockSkip,
+	"wellness menstrual-cycle":        clockSkip,
 	"wellness menstrual-log view":     clockSkip,
+	"wellness menstrual-summary":      clockSkip,
 	"workouts schedule export":        clockSkip,
 }
 

@@ -203,12 +203,13 @@ func TestFlagArgv(t *testing.T) {
 			wantQuery: map[string]string{"startDate": "2026-10-12", "endDate": "2026-10-15", "start": "0", "limit": "20"},
 		},
 		{
-			args:     []string{"wellness", "menstrual-cycle", "--start", "3d", "--end", "today"},
-			wantPath: "/periodichealth-service/menstrualcycle/dayview/2026-10-12/2026-10-15",
+			args:      []string{"wellness", "menstrual-cycle", "3d"},
+			wantPath:  "/periodichealth-service/menstrualcycle/dayview/2026-10-12",
+			wantQuery: map[string]string{"todayDate": "2026-10-15"},
 		},
 		{
-			args:     []string{"wellness", "menstrual-summary", "--start", "2024-01-01", "--end", "yesterday"},
-			wantPath: "/periodichealth-service/menstrualcycle/summary/2024-01-01/2026-10-14",
+			args:     []string{"wellness", "menstrual-summary", "yesterday"},
+			wantPath: "/periodichealth-service/menstrualcycle/summary/2026-10-14",
 		},
 		{
 			args:      []string{"workouts", "list", "--limit", "5", "--offset", "10"},
@@ -315,10 +316,9 @@ func TestFlagArgv(t *testing.T) {
 		{args: []string{"activities", "search", "--start", "20"}},
 		{args: []string{"activities", "search", "--start-date", "2024-01-01"}},
 		{args: []string{"activities", "search", "--start", "2024-01-01", "--end-date", "2024-01-31"}},
-		{args: []string{"wellness", "menstrual-cycle", "--start-date", "2024-01-01", "--end-date", "2024-01-31"}},
-		{args: []string{"wellness", "menstrual-cycle", "--start", "2024-01-01"}},
-		{args: []string{"wellness", "menstrual-summary", "--start-date", "2024-01-01", "--end-date", "2024-01-31"}},
-		{args: []string{"wellness", "menstrual-summary", "--start", "bad", "--end", "today"}},
+		{args: []string{"wellness", "menstrual-cycle", "--start", "2024-01-01", "--end", "2024-01-31"}},
+		{args: []string{"wellness", "menstrual-summary", "--start", "2024-01-01", "--end", "2024-01-31"}},
+		{args: []string{"wellness", "menstrual-summary", "bad"}},
 		{args: []string{"workouts", "list", "--start", "10"}},
 		{args: []string{"workouts", "list", "-s", "10"}},
 	}

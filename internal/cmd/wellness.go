@@ -2,23 +2,21 @@ package cmd
 
 var wellnessGroup = Group{Name: "wellness", Help: "View wellness data.", Children: []Node{
 	Leaf{
-		Name: "menstrual-cycle", Help: "Show menstrual cycle data.",
+		Name: "menstrual-cycle", Help: "Show the menstrual cycle day view of a date.",
 		Spec: argsOf(&struct {
-			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
-			EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today."`
 		}{}),
 		Endpoint: "wellness.menstrual-cycle-data",
-		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
+		Params:   Params{"date": In("Date"), "todayDate": Today},
 		Verb:     "get menstrual cycle data", Output: JSON{},
 	},
 	Leaf{
-		Name: "menstrual-summary", Help: "Show menstrual cycle summary.",
+		Name: "menstrual-summary", Help: "Show the menstrual cycle summary of a date.",
 		Spec: argsOf(&struct {
-			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
-			EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today."`
 		}{}),
 		Endpoint: "wellness.menstrual-cycle-summary",
-		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
+		Params:   Params{"date": In("Date")},
 		Verb:     "get menstrual cycle summary", Output: JSON{},
 	},
 	Leaf{
