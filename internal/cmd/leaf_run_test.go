@@ -336,7 +336,7 @@ func TestLeafRowSadPaths(t *testing.T) {
 						t.Errorf("exit %d, want %d\nstdout %q\nwant   %q\nstderr %q\nwant   %q", code, wantCode, stdout, wantOut, stderr, wantErr)
 					}
 				})
-				if flag == "--json" || !slices.ContainsFunc(out.Columns, func(c Column) bool { return c.Format == Distance }) {
+				if flag == "--json" || !usesUnits(out.Columns) {
 					continue
 				}
 				t.Run(path+"/units lookup fails/"+strings.TrimPrefix(flag, "--"), func(t *testing.T) {

@@ -19,13 +19,13 @@ Setup (once)
 Output
 
 - Default: human-friendly tables. Use `--json` / `-j` for JSON.
-- `--plain` prints TSV with no header row (add `--header` for the column names as the first line), but only for `activities list`, `activities search`, `activities types`, `activity summary`, `courses list`, `courses favorites`, `courses import`, `events list`, `workouts list`, `workouts schedule list` and `exercises list` (without `-c`). Most other commands print JSON in all modes.
+- `--plain` prints TSV with no header row (add `--header` for the column names as the first line), but only for `activities list`, `activities search`, `activities types`, `activity summary`, `body weekly`, `courses list`, `courses favorites`, `courses import`, `events list`, `workouts list`, `workouts schedule list` and `exercises list` (without `-c`). Most other commands print JSON in all modes.
 - `--header` works only with `--plain`. With table or `--json` output it is a usage error (exit code 2). `GCCLI_HEADER=1` does the same as `--header` in plain mode, and table and JSON output ignore it.
 - Table and `--plain` output escape a backslash as `\\`, a tab as `\t`, a newline as `\n`, a carriage return as `\r`, a vertical tab as `\v` and a form feed as `\f`, so each record is one line. `--json` is not escaped this way.
 - Data goes to stdout, messages/errors to stderr.
 - Write commands (add, create, upload, import, update, set, rename, retype, describe, change, favorite, unfavorite, schedule, send, link, unlink, remove, delete) print the Garmin response with `--json`, or `{"ok": true}` when the response is empty. Without `--json` they print a message on stderr and nothing on stdout. Only `courses import` prints a table on stdout instead (TSV with `--plain`).
 - Always use `--json` when parsing output programmatically.
-- Tables show distance, speed, pace and elevation in the user's Garmin unit system (`metric`, `statute_us`, or `statute_uk`, which is miles with elevation in metres). Override with `--units <system>` or `GCCLI_UNITS`. JSON is never converted (meters, m/s).
+- Tables show distance, speed, pace, elevation and weight in the user's Garmin unit system (`metric`, `statute_us`, or `statute_uk`, which is miles with elevation in metres). Weight is kg in `metric` and lbs in both statute systems. Override with `--units <system>` or `GCCLI_UNITS`. JSON is never converted (meters, m/s, grams).
 
 Date shortcuts
 
@@ -289,6 +289,8 @@ Date shortcuts
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli body latest [<date>]`: Show the latest weigh-in as of a date.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli body weekly [<end>]`: Show weekly weight summaries for the 52 weeks that end on a date.
+  - `[<end>]`: Last day of the 52 weeks (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli body add-weight <value> [flags]`: Add a weigh-in entry.
   - `<value>`: Weight value.
   - `--unit="kg"`: Unit: kg or lbs.
@@ -600,6 +602,21 @@ Date shortcuts
 - `gccli wellness menstrual-calendar --start=DATE --end=DATE`: Show the menstrual cycle calendar for a date range.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli wellness menstrual-log view [<date>]`: Show the menstrual daily log of a date. Also runs as `gccli wellness menstrual-log [<date>]`.
+  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli wellness menstrual-log set <date> [flags]`: Change the menstrual daily log of a date. Other fields keep their values.
+  - `<date>`: Date of the log (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--flow=FLOW`: Flow: light, medium or heavy. An empty value clears it.
+  - `--symptoms=SYMPTOM,...`: Comma-separated symptoms: acne, backache, bloating, body-aches, constipation, cramps, cravings, diarrhea, dizziness, fatigue, headache, insomnia, nausea, tender-breasts. An empty value clears them.
+  - `--moods=MOOD,...`: Comma-separated moods: energetic, emotional, fine, frustrated, happy, irritable, mood-swings, motivated, overwhelmed, sad. An empty value clears them.
+  - `--discharge=DISCHARGE,...`: Comma-separated discharge: creamy, egg-white, no-discharge, spotting, sticky, unusual. no-discharge takes no other value. An empty value clears it.
+  - `--sex-drive=LEVEL`: Sex drive: average, high or low. An empty value clears it.
+  - `--sexual-activity=KIND`: Sexual activity: protected or unprotected. An empty value clears it.
+  - `--notes=TEXT`: Notes. An empty value clears them.
+  - `--ovulation`: Mark the day as the ovulation day. --no-ovulation removes the mark.
+- `gccli wellness menstrual-log delete <date> [flags]`: Delete the menstrual daily log of a date.
+  - `<date>`: Date of the log (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli wellness pregnancy-summary`: Show pregnancy summary.
 - `gccli wellness jet-lag list`: List jet lag trips. Also runs as `gccli wellness jet-lag`.
 - `gccli wellness jet-lag status [<date>]`: Show jet lag status for a date.
@@ -617,6 +634,7 @@ Worked examples
 - Cycling workout with a power target: `gccli workouts create "FTP Intervals" --type bike --step "warmup:10m" --step "run:5m@power:250-280" --step "recovery:3m" --step "run:5m@power:250-280" --step "cooldown:10m"`
 - Race event: `gccli events add --name "Berlin Marathon" --date 2026-09-27 --type running --race --location "Berlin, Germany" --distance 42.195km --time 09:15 --timezone Europe/Berlin`
 - Calendar note: `gccli calendar notes add 2026-10-20 "Long run" --content "Easy pace"` prints the note ID. Then `gccli calendar notes move <id> 2026-10-21`, `gccli calendar notes update <id> --content ""` (clears the text) and `gccli calendar notes delete <id> --force`.
+- Menstrual daily log: `gccli wellness menstrual-log set 2026-10-01 --flow light --symptoms cramps,tender-breasts --ovulation` sets fields of the log of a day. `gccli wellness menstrual-log set 2026-10-01 --symptoms ""` clears the symptoms and keeps the other fields. `gccli wellness menstrual-log 2026-10-01` shows the log, and `gccli wellness menstrual-log delete 2026-10-01 --force` deletes it.
 - Nap: `gccli health sleep naps add 13:30 13:50` adds a nap for today. Garmin takes only naps that end today, and the times are in the time zone of the Garmin profile, not of the machine. `gccli health sleep naps delete today 13:30 --force` deletes the nap that starts at 13:30.
 - Notification preference: `gccli notifications preferences` shows the keys. `gccli notifications preferences set allowEmailWeeklySummary false` turns one off. A key that is not in the preferences fails before any write, and the error lists the keys.
 - Privacy zone: `gccli profile privacy-zones add --lat 51.5 --lon=-0.12 --radius 500` prints the zone ID. A negative value needs the `=` form. The radius is 500 to 1500 meters. `gccli profile privacy-zones delete <id> --force` deletes it.
@@ -665,6 +683,7 @@ Notes
 - Set `GCCLI_ACCOUNT=you@example.com` to avoid repeating `--account`.
 - For scripting, use `--json`. `--plain` gives TSV only for the commands listed under Output. Pin `--units` when parsing `--plain` output so it does not follow the Garmin profile.
 - Dates support `today`, `yesterday`, `3d`, `+30d`, or `YYYY-MM-DD`.
+- `body weekly [DATE]` always covers the 52 weeks that end on DATE (default today), because Garmin accepts no other window length. Weeks without a weigh-in are left out, so the list can be empty. Weights in `--json` are grams.
 - Tokens are stored in the OS keyring (macOS Keychain, Linux Secret Service). The file fallback encrypts tokens with a fixed passphrase built into gccli, so anyone who can read the files can read the tokens.
 - Tokens auto-refresh on 401. A 429 is retried up to 3 times when `Retry-After` is 30 s or less; a longer wait is reported as exit code 5. A 5xx is retried up to 2 times for read requests (GET) only, with exponential backoff. A write that gets a 5xx fails at once; check the state before you run it again. An API request fails when no data moves for 60 s; a transfer that keeps moving has no time limit.
 - For Garmin China accounts: `export GCCLI_DOMAIN=garmin.cn`.
@@ -673,4 +692,5 @@ Notes
 - Download formats: FIT (default), GPX, TCX, KML, CSV.
 - Workout step format: `type:duration[@target:low-high]`. Types: warmup, run, recovery, cooldown; targets: pace (min:sec), hr (bpm), power (watts), cadence.
 - `goals set` and `goals steps` change the goal from `--date` (default today) onward; the days before keep their goal. `gccli health summary <date> --json` shows the steps, floors and intensity minutes goals (`dailyStepGoal`, `userFloorsAscendedGoal`, `intensityMinutesGoal`).
+- `wellness menstrual-log set` changes only the fields you give. Garmin replaces the whole day on a write, so gccli reads the log first and sends the other fields again. The values are lower-case kebab (`light`, `tender-breasts`, `no-discharge`), the lists are comma-separated, and an empty value (`""`) clears a field. `--no-ovulation` removes the ovulation mark. The writes need cycle tracking set up in Garmin Connect; without it, Garmin answers 400 "MCT settings were not found". `wellness menstrual-log` prints `{}` for a day without a log, and `delete` of such a day fails with exit code 1.
 - `workouts update` replaces the whole workout, so build the file from `gccli workouts detail <id>` and edit it. `workoutId` is set from the ID argument, so an `upload` payload works unchanged. The workout keeps its ID and its calendar entries.

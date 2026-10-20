@@ -92,6 +92,8 @@ const (
 	metersPerKilometer = 1000.0
 	MetersPerMile      = 1609.344
 	metersPerFoot      = 0.3048
+	gramsPerKilogram   = 1000.0
+	gramsPerPound      = 453.59237
 )
 
 type scale struct {
@@ -103,6 +105,8 @@ type scale struct {
 	paceUnit      string
 	elevationPer  float64
 	elevationUnit string
+	weightPer     float64
+	weightUnit    string
 }
 
 var scales = [...]scale{
@@ -111,12 +115,14 @@ var scales = [...]scale{
 		speedMul: 3.6, speedUnit: "km/h",
 		pacePer: metersPerKilometer, paceUnit: "/km",
 		elevationPer: 1, elevationUnit: "m",
+		weightPer: gramsPerKilogram, weightUnit: "kg",
 	},
 	StatuteUS: {
 		distancePer: MetersPerMile, distanceUnit: "mi",
 		speedMul: 3600 / MetersPerMile, speedUnit: "mph",
 		pacePer: MetersPerMile, paceUnit: "/mi",
 		elevationPer: metersPerFoot, elevationUnit: "ft",
+		weightPer: gramsPerPound, weightUnit: "lbs",
 	},
 	// Garmin Connect shows statute_uk elevation in metres, not feet.
 	StatuteUK: {
@@ -124,6 +130,7 @@ var scales = [...]scale{
 		speedMul: 3600 / MetersPerMile, speedUnit: "mph",
 		pacePer: MetersPerMile, paceUnit: "/mi",
 		elevationPer: 1, elevationUnit: "m",
+		weightPer: gramsPerPound, weightUnit: "lbs",
 	},
 }
 
@@ -177,4 +184,13 @@ func (s System) Elevation(meters float64) string {
 	}
 	sc := s.scale()
 	return fmt.Sprintf("%d %s", int(math.Round(meters/sc.elevationPer)), sc.elevationUnit)
+}
+
+// Weight formats grams, for example "81.5 kg" or "179.7 lbs". 0 renders "-".
+func (s System) Weight(grams float64) string {
+	if grams == 0 {
+		return "-"
+	}
+	sc := s.scale()
+	return fmt.Sprintf("%.1f %s", grams/sc.weightPer, sc.weightUnit)
 }

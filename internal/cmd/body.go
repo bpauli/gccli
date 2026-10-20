@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/bpauli/gccli/internal/fit"
 )
@@ -37,6 +38,7 @@ var bodyGroup = Group{Name: "body", Help: "Body composition and weight data.", C
 		Params:   Params{"date": In("Date")},
 		Verb:     "get latest weigh-in", Output: JSON{},
 	},
+	Custom{Name: "weekly", Help: "Show weekly weight summaries for the 52 weeks that end on a date.", Cmd: &BodyWeeklyCmd{}},
 	Custom{Name: "add-weight", Help: "Add a weigh-in entry.", Cmd: &BodyAddWeightCmd{}},
 	Custom{Name: "add-composition", Help: "Add body composition data (weight, body fat, muscle mass, etc.) via FIT upload.", Cmd: &BodyAddCompositionCmd{}},
 	Leaf{
@@ -122,6 +124,46 @@ func (c *BodyCompositionCmd) Run(g *Globals) error {
 // without milliseconds with a 500 ValueInstantiationException, and a blood
 // pressure timestamp with a zone suffix with a 500 BloodPressureDateException.
 const garminTimestamp = "2006-01-02T15:04:05.000"
+
+// BodyWeeklyCmd shows the weekly weight summaries of the 52 weeks that end
+// on a date.
+type BodyWeeklyCmd struct {
+	End Date `arg:"" optional:"" default:"today" help:"Last day of the 52 weeks (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today."`
+}
+
+var weeklyWeightRows = Rows{Noun: "weekly weight", Items: "weeklyWeightSummaries", Columns: []Column{
+	{Label: "START", Path: "startDate"},
+	{Label: "END", Path: "endDate"},
+	{Label: "MIN", Path: "minWeight", Format: Weight},
+	{Label: "MAX", Path: "maxWeight", Format: Weight},
+	{Label: "AVERAGE", Path: "averageWeight.weight", Format: Weight},
+}}
+
+func (c *BodyWeeklyCmd) Run(g *Globals) error {
+	client, err := resolveClient(g)
+	if err != nil {
+		return err
+	}
+	start, err := weeklyWeightStart(c.End)
+	if err != nil {
+		return err
+	}
+	data, err := client.Call(g.Context, "body.weekly-weight", map[string]string{"startDate": start, "endDate": string(c.End)}, nil)
+	if err != nil {
+		return fmt.Errorf("get weekly weight: %w", err)
+	}
+	return weeklyWeightRows.print(g, client, data)
+}
+
+// weeklyWeightStart returns the first day of the window that ends on end.
+// Garmin answers 400 unless the window is 52 weeks, both ends counted.
+func weeklyWeightStart(end Date) (string, error) {
+	t, err := time.Parse("2006-01-02", string(end))
+	if err != nil {
+		return "", fmt.Errorf("parse end date: %w", err)
+	}
+	return t.AddDate(0, 0, -(52*7 - 1)).Format("2006-01-02"), nil
+}
 
 // BodyAddWeightCmd adds a weigh-in entry.
 type BodyAddWeightCmd struct {

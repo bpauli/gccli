@@ -1,0 +1,107 @@
+Garmin replaces the whole day, so set reads the saved log and sends it back with the new flow. The symptoms, the note and the ovulation day stay. hasBabyMovement is not modeled and stays too. userProfilePk and the saved reportTimestamp are not sent: reportTimestamp is the clock time in UTC (2026-10-15 09:30).
+-- args --
+wellness
+menstrual-log
+set
+2026-10-01
+--flow
+heavy
+-- route GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01 --
+{"userProfilePk":1,"calendarDate":"2026-10-01","symptoms":["CRAMPS","HEADACHE"],"moods":null,"discharge":null,"flow":"LIGHT","sexDrive":null,"sexualActivity":null,"notes":"x","reportTimestamp":"2026-10-20T08:00:00.0","hasBabyMovement":false,"ovulationDay":true}
+-- route POST /periodichealth-service/menstrualcycle/dailylog/2026-10-01 --
+{"userProfilePk":1,"calendarDate":"2026-10-01","symptoms":["CRAMPS","HEADACHE"],"moods":null,"discharge":null,"flow":"HEAVY","sexDrive":null,"sexualActivity":null,"notes":"x","reportTimestamp":"2026-10-15T09:30:00.0","ovulationDay":true}
+-- table stdout --
+-- table stderr --
+Saved menstrual log for 2026-10-01
+-- table exit --
+0
+-- table requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+POST /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+  {
+    "calendarDate": "2026-10-01",
+    "flow": "HEAVY",
+    "hasBabyMovement": false,
+    "notes": "x",
+    "ovulationDay": true,
+    "reportTimestamp": "2026-10-15T09:30:00.000",
+    "symptoms": [
+      "CRAMPS",
+      "HEADACHE"
+    ]
+  }
+-- plain stdout --
+-- plain stderr --
+Saved menstrual log for 2026-10-01
+-- plain exit --
+0
+-- plain requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+POST /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+  {
+    "calendarDate": "2026-10-01",
+    "flow": "HEAVY",
+    "hasBabyMovement": false,
+    "notes": "x",
+    "ovulationDay": true,
+    "reportTimestamp": "2026-10-15T09:30:00.000",
+    "symptoms": [
+      "CRAMPS",
+      "HEADACHE"
+    ]
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Saved menstrual log for 2026-10-01
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+POST /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+  {
+    "calendarDate": "2026-10-01",
+    "flow": "HEAVY",
+    "hasBabyMovement": false,
+    "notes": "x",
+    "ovulationDay": true,
+    "reportTimestamp": "2026-10-15T09:30:00.000",
+    "symptoms": [
+      "CRAMPS",
+      "HEADACHE"
+    ]
+  }
+-- json stdout --
+{
+  "userProfilePk": 1,
+  "calendarDate": "2026-10-01",
+  "symptoms": [
+    "CRAMPS",
+    "HEADACHE"
+  ],
+  "moods": null,
+  "discharge": null,
+  "flow": "HEAVY",
+  "sexDrive": null,
+  "sexualActivity": null,
+  "notes": "x",
+  "reportTimestamp": "2026-10-15T09:30:00.0",
+  "ovulationDay": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+POST /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+  {
+    "calendarDate": "2026-10-01",
+    "flow": "HEAVY",
+    "hasBabyMovement": false,
+    "notes": "x",
+    "ovulationDay": true,
+    "reportTimestamp": "2026-10-15T09:30:00.000",
+    "symptoms": [
+      "CRAMPS",
+      "HEADACHE"
+    ]
+  }

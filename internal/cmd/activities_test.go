@@ -319,6 +319,8 @@ func TestFormatCell(t *testing.T) {
 		{"count of a numeric string", Count, "712", "-"},
 		{"duration of a numeric string", Duration, "3005", "-"},
 		{"distance of a numeric string", Distance, "10012", "-"},
+		{"weight of grams", Weight, 81500.0, "81.5 kg"},
+		{"weight of a missing value", Weight, nil, "-"},
 		{"text of a numeric string", Text, "712", "712"},
 		{"text of a number", Text, 712.5, "712.5"},
 	}

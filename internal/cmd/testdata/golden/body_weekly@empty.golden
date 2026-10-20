@@ -1,0 +1,38 @@
+-- args --
+body
+weekly
+2026-10-12
+-- route GET /weight-service/weight/weeklyRange/2025-10-14/2026-10-12 --
+{"weeklyWeightSummaries":[],"weightAverageDTO":null,"previousWeekAverageDTO":null,"nextWeekAverageDTO":null}
+-- table stdout --
+START  END  MIN  MAX  AVERAGE
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /weight-service/weight/weeklyRange/2025-10-14/2026-10-12
+-- plain stdout --
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /weight-service/weight/weeklyRange/2025-10-14/2026-10-12
+-- plain-header stdout --
+START	END	MIN	MAX	AVERAGE
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /weight-service/weight/weeklyRange/2025-10-14/2026-10-12
+-- json stdout --
+{
+  "weeklyWeightSummaries": [],
+  "weightAverageDTO": null,
+  "previousWeekAverageDTO": null,
+  "nextWeekAverageDTO": null
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /weight-service/weight/weeklyRange/2025-10-14/2026-10-12

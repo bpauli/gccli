@@ -1,0 +1,35 @@
+Garmin answers 204 with no body for a day without a log.
+-- args --
+wellness
+menstrual-log
+view
+2026-10-01
+-- route GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01 204 --
+-- table stdout --
+{}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+-- plain stdout --
+{}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+-- plain-header stdout --
+{}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+-- json stdout --
+{}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01

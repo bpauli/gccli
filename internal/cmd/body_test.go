@@ -408,3 +408,23 @@ func TestBodyAddBP_VerifyPayload(t *testing.T) {
 		t.Errorf("measurementTimestampGMT = %v, want 2026-10-15T07:30:00.000", got)
 	}
 }
+
+func TestWeeklyWeightStart(t *testing.T) {
+	tests := []struct {
+		end  Date
+		want string
+	}{
+		{"2028-02-29", "2027-03-03"},
+		{"2026-03-01", "2025-03-03"},
+		{"2027-01-01", "2026-01-03"},
+	}
+	for _, tt := range tests {
+		got, err := weeklyWeightStart(tt.end)
+		if err != nil {
+			t.Fatalf("weeklyWeightStart(%q): %v", tt.end, err)
+		}
+		if got != tt.want {
+			t.Errorf("weeklyWeightStart(%q) = %q, want %q", tt.end, got, tt.want)
+		}
+	}
+}

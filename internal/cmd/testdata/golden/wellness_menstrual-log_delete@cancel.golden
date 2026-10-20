@@ -1,0 +1,38 @@
+The answer is no, so no DELETE is sent.
+-- args --
+wellness
+menstrual-log
+delete
+2026-10-01
+-- stdin --
+n
+-- route GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01 --
+{"userProfilePk":1,"calendarDate":"2026-10-01","symptoms":["CRAMPS","HEADACHE"],"moods":null,"discharge":null,"flow":"LIGHT","sexDrive":null,"sexualActivity":null,"notes":"x","reportTimestamp":"2026-10-20T08:00:00.0","hasBabyMovement":false,"ovulationDay":true}
+-- table stdout --
+-- table stderr --
+Delete menstrual log for 2026-10-01? [y/N]: Cancelled
+-- table exit --
+0
+-- table requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+-- plain stdout --
+-- plain stderr --
+Delete menstrual log for 2026-10-01? [y/N]: Cancelled
+-- plain exit --
+0
+-- plain requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+-- plain-header stdout --
+-- plain-header stderr --
+Delete menstrual log for 2026-10-01? [y/N]: Cancelled
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+-- json stdout --
+-- json stderr --
+Delete menstrual log for 2026-10-01? [y/N]: Cancelled
+-- json exit --
+0
+-- json requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
