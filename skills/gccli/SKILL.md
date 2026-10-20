@@ -252,8 +252,7 @@ Date shortcuts
 - `gccli health thresholds power-to-weight --start=DATE --end=DATE`: Show power-to-weight data for a date range.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
-- `gccli health race-predictions view [<date>]`: Show current race predictions. Also runs as `gccli health race-predictions [<date>]`.
-  - `[<date>]`: Unused. Current predictions are always returned.
+- `gccli health race-predictions view`: Show current race predictions. Also runs as `gccli health race-predictions`.
 - `gccli health race-predictions range --start=DATE --end=DATE`: Show race predictions for a date range.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).

@@ -52,9 +52,7 @@ var healthRacePredictionsGroup = Group{Name: "race-predictions", Help: "Show rac
 }}
 
 // HealthRacePredictionsViewCmd shows current race predictions.
-type HealthRacePredictionsViewCmd struct {
-	Date string `arg:"" optional:"" help:"Unused. Current predictions are always returned."`
-}
+type HealthRacePredictionsViewCmd struct{}
 
 func (c *HealthRacePredictionsViewCmd) Run(g *Globals) error {
 	client, err := resolveClient(g)

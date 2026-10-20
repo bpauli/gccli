@@ -2,7 +2,6 @@
 health
 race-predictions
 view
-2026-10-15
 -- route GET /metrics-service/metrics/racepredictions --
 {"value":1}
 -- table stdout --

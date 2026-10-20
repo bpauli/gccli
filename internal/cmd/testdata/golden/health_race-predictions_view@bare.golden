@@ -1,0 +1,41 @@
+-- args --
+health
+race-predictions
+-- route GET /metrics-service/metrics/racepredictions --
+{"value":1}
+-- table stdout --
+{
+  "value": 1
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /metrics-service/metrics/racepredictions
+-- plain stdout --
+{
+  "value": 1
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /metrics-service/metrics/racepredictions
+-- plain-header stdout --
+{
+  "value": 1
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /metrics-service/metrics/racepredictions
+-- json stdout --
+{
+  "value": 1
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /metrics-service/metrics/racepredictions
