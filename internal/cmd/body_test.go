@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/bpauli/gccli/internal/outfmt"
 )
@@ -372,6 +373,9 @@ func TestBodyAddBP_VerifyPayload(t *testing.T) {
 	overrideNewClient(t, server)
 	storeTestTokens(t, store, "test@example.com", testTokens())
 
+	// A clock east of UTC separates the local field from the GMT field.
+	overrideNowFn(t, time.Date(2026, 10, 15, 9, 30, 0, 0, time.FixedZone("UTC+2", 2*60*60)))
+
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
 	cmd := &BodyAddBPCmd{Systolic: 130, Diastolic: 85, Pulse: 68, Notes: "evening reading"}
@@ -394,5 +398,13 @@ func TestBodyAddBP_VerifyPayload(t *testing.T) {
 	}
 	if receivedPayload["sourceType"] != "MANUAL" {
 		t.Errorf("sourceType = %v, want MANUAL", receivedPayload["sourceType"])
+	}
+	// Garmin answers 500 BloodPressureDateException to a zone suffix, and
+	// the local field holds the local time, not UTC.
+	if got := receivedPayload["measurementTimestampLocal"]; got != "2026-10-15T09:30:00.000" {
+		t.Errorf("measurementTimestampLocal = %v, want 2026-10-15T09:30:00.000", got)
+	}
+	if got := receivedPayload["measurementTimestampGMT"]; got != "2026-10-15T07:30:00.000" {
+		t.Errorf("measurementTimestampGMT = %v, want 2026-10-15T07:30:00.000", got)
 	}
 }
