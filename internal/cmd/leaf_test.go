@@ -89,22 +89,37 @@ func TestEveryLeafNeedsAccount(t *testing.T) {
 // A positional date is checked at parse time, so every bad-date golden exits
 // 2 without an account and sends no request. A leaf that checks its date
 // after the login would exit 3 here.
-// TestBadDatesAndTimesAreCheckedBeforeAccount runs every bad-date,
-// empty-date, bad-time and empty-time golden without an account: a bad
-// date or time must be a usage error at parse time, before the login.
-func TestBadDatesAndTimesAreCheckedBeforeAccount(t *testing.T) {
+// notUsageCases names the @bad-* and @empty-* golden cases whose value is
+// not a usage error, with the reason. Every other such golden is a user
+// value that Kong checks at parse time.
+var notUsageCases = map[string]string{
+	"empty-200": "an empty 200 answer from Garmin, not an input",
+	"empty-day": "an empty --day clears the log entry; the value is accepted",
+	"empty-id":  "the endpoint table rejects an empty placeholder in Run (exit 1)",
+}
+
+// TestBadValuesAreCheckedBeforeAccount runs every @bad-* and @empty-*
+// golden without an account: a bad value that Kong can check must be a
+// usage error at parse time, before the login, with no request.
+func TestBadValuesAreCheckedBeforeAccount(t *testing.T) {
 	var files []string
-	for _, suffix := range []string{"bad-date", "empty-date", "bad-time", "empty-time"} {
-		matches, err := filepath.Glob(filepath.Join(goldenDir, "*"+suffix+".golden"))
+	for _, pattern := range []string{"*@bad-*.golden", "*@empty-*.golden"} {
+		matches, err := filepath.Glob(filepath.Join(goldenDir, pattern))
 		if err != nil {
 			t.Fatal(err)
 		}
 		if len(matches) == 0 {
-			t.Fatalf("no %s golden in %s", suffix, goldenDir)
+			t.Fatalf("no %s golden in %s", pattern, goldenDir)
 		}
 		files = append(files, matches...)
 	}
+	seen := map[string]bool{}
 	for _, file := range files {
+		_, suffix, _ := strings.Cut(strings.TrimSuffix(filepath.Base(file), ".golden"), "@")
+		if _, ok := notUsageCases[suffix]; ok {
+			seen[suffix] = true
+			continue
+		}
 		args, in, err := goldenInput(file)
 		if err != nil {
 			t.Errorf("%s: %v", file, err)
@@ -115,7 +130,7 @@ func TestBadDatesAndTimesAreCheckedBeforeAccount(t *testing.T) {
 			t.Run(filepath.Base(file)+"/"+strings.TrimPrefix(flag, "--"), func(t *testing.T) {
 				stdout, stderr, code, requests := runWithoutAccount(t, in, flag, args)
 				if code != kindUsage.exit {
-					t.Errorf("exit %d, want %d: a bad date or time must fail at parse time, before the login; stderr:\n%s", code, kindUsage.exit, stderr)
+					t.Errorf("exit %d, want %d: a bad value must fail at parse time, before the login; stderr:\n%s", code, kindUsage.exit, stderr)
 				}
 				if !strings.HasPrefix(stderr, "Usage: gccli ") || !strings.Contains(stderr, "\ngccli: error: ") {
 					t.Errorf("stderr is not the usage block with the error line:\n%s", stderr)
@@ -127,6 +142,11 @@ func TestBadDatesAndTimesAreCheckedBeforeAccount(t *testing.T) {
 					t.Errorf("sent %d requests, first: %s", len(requests), requests[0].route)
 				}
 			})
+		}
+	}
+	for suffix := range notUsageCases {
+		if !seen[suffix] {
+			t.Errorf("notUsageCases names %q, but no golden has that case: drop the entry", suffix)
 		}
 	}
 }
