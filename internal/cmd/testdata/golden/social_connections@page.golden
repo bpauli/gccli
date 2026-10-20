@@ -6,30 +6,58 @@ connections
 --offset
 10
 -- route GET /connection-service/connection/v2/connections/pagination?start=10&limit=5 --
-[]
+{"fullName":"Tester","userConnections":[],"pagination":{"start":10,"limit":5}}
 -- table stdout --
-[]
+{
+  "fullName": "Tester",
+  "userConnections": [],
+  "pagination": {
+    "start": 10,
+    "limit": 5
+  }
+}
 -- table stderr --
 -- table exit --
 0
 -- table requests --
 GET /connection-service/connection/v2/connections/pagination?start=10&limit=5
 -- plain stdout --
-[]
+{
+  "fullName": "Tester",
+  "userConnections": [],
+  "pagination": {
+    "start": 10,
+    "limit": 5
+  }
+}
 -- plain stderr --
 -- plain exit --
 0
 -- plain requests --
 GET /connection-service/connection/v2/connections/pagination?start=10&limit=5
 -- plain-header stdout --
-[]
+{
+  "fullName": "Tester",
+  "userConnections": [],
+  "pagination": {
+    "start": 10,
+    "limit": 5
+  }
+}
 -- plain-header stderr --
 -- plain-header exit --
 0
 -- plain-header requests --
 GET /connection-service/connection/v2/connections/pagination?start=10&limit=5
 -- json stdout --
-[]
+{
+  "fullName": "Tester",
+  "userConnections": [],
+  "pagination": {
+    "start": 10,
+    "limit": 5
+  }
+}
 -- json stderr --
 -- json exit --
 0

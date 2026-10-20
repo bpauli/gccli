@@ -1,35 +1,42 @@
-Error case: Garmin answers 400, so the exit code is 1 (error).
 -- args --
 health
 lifestyle
 2026-10-15
--- route GET /lifestylelogging-service/dailyLog/2026-10-15 400 noeol --
-{"message":"Bad Request"}
+-- route GET /lifestylelogging-service/dailyLog/2026-10-15 --
+{"value":1}
 -- table stdout --
+{
+  "value": 1
+}
 -- table stderr --
-get lifestyle: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- table exit --
-1
+0
 -- table requests --
 GET /lifestylelogging-service/dailyLog/2026-10-15
 -- plain stdout --
+{
+  "value": 1
+}
 -- plain stderr --
-get lifestyle: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- plain exit --
-1
+0
 -- plain requests --
 GET /lifestylelogging-service/dailyLog/2026-10-15
 -- plain-header stdout --
+{
+  "value": 1
+}
 -- plain-header stderr --
-get lifestyle: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- plain-header exit --
-1
+0
 -- plain-header requests --
 GET /lifestylelogging-service/dailyLog/2026-10-15
 -- json stdout --
+{
+  "value": 1
+}
 -- json stderr --
-{"error":{"code":"error","status":400,"message":"get lifestyle: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
 -- json exit --
-1
+0
 -- json requests --
 GET /lifestylelogging-service/dailyLog/2026-10-15
