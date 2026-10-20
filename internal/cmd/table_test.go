@@ -128,7 +128,7 @@ func fixtureTree() []Node {
 				Name: "delete-weight", Help: "Delete a weigh-in entry.",
 				Spec: argsOf(&struct {
 					PK   string `arg:"" help:"Weigh-in version (primary key)."`
-					Date string `help:"Date of the weigh-in (YYYY-MM-DD)." required:"" name:"date"`
+					Date Date   `help:"Date of the weigh-in (YYYY-MM-DD)." required:"" name:"date"`
 				}{}),
 				Endpoint: "body.delete-weight",
 				Params:   Params{"date": In("Date"), "version": In("PK")},
@@ -200,7 +200,7 @@ type handCourseDelete struct {
 
 type handBodyDeleteWeight struct {
 	PK    string `arg:"" help:"Weigh-in version (primary key)."`
-	Date  string `help:"Date of the weigh-in (YYYY-MM-DD)." required:"" name:"date"`
+	Date  Date   `help:"Date of the weigh-in (YYYY-MM-DD)." required:"" name:"date"`
 	Force bool   `help:"Skip confirmation prompt." short:"f"`
 }
 

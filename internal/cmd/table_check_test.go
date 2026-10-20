@@ -211,7 +211,17 @@ func TestCheckTableRejects(t *testing.T) {
 					Date string `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
 				}{})
 			},
-			`health sleep view: Date is a positional date (its help names YYYY-MM-DD), so its type must be Date, not string: Kong then checks it at parse time`,
+			`health sleep view: Date is a date (its help names YYYY-MM-DD), so its type must be Date, not string: Kong then checks it at parse time`,
+		},
+		{
+			"date flag of type string", "body delete-weight",
+			func(l *Leaf) {
+				l.Spec = argsOf(&struct {
+					PK   string `arg:"" help:"Weigh-in version (primary key)."`
+					Date string `help:"Date of the weigh-in (YYYY-MM-DD)." required:"" name:"date"`
+				}{})
+			},
+			`body delete-weight: Date is a date (its help names YYYY-MM-DD), so its type must be Date, not string: Kong then checks it at parse time`,
 		},
 		{
 			"JSONNull off the frozen list", "goals list",

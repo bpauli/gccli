@@ -31,7 +31,7 @@ var v1NullJSON = []string{
 
 // checkTable reports every defect of the command tree: a Custom without
 // a struct Cmd; a Leaf whose endpoint, placeholders, In fields, enums,
-// required bindings, int bindings, positional date types, frozen-list
+// required bindings, int bindings, date types, frozen-list
 // paths, Output type or Rows columns and Write templates do not fit. Each
 // fail message in checkLeaf states one rule.
 func checkTable(nodes []Node) []error {
@@ -84,8 +84,8 @@ func checkLeaf(path string, l Leaf) []error {
 	fields := l.spec().fields()
 	for i := range fields.NumField() {
 		f := fields.Field(i)
-		if _, arg := f.Tag.Lookup("arg"); arg && strings.Contains(f.Tag.Get("help"), "YYYY-MM-DD") && f.Type != reflect.TypeFor[Date]() {
-			fail("%s is a positional date (its help names YYYY-MM-DD), so its type must be Date, not %s: Kong then checks it at parse time", f.Name, f.Type)
+		if strings.Contains(f.Tag.Get("help"), "YYYY-MM-DD") && f.Type != reflect.TypeFor[Date]() {
+			fail("%s is a date (its help names YYYY-MM-DD), so its type must be Date, not %s: Kong then checks it at parse time", f.Name, f.Type)
 		}
 	}
 	if isNullJSON(l) && !slices.Contains(v1NullJSON, path) {

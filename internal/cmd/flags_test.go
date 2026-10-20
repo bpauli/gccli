@@ -324,3 +324,31 @@ func TestShortFlagsHaveOneMeaning(t *testing.T) {
 		}
 	})
 }
+
+// TestDateHelpMeansDateType walks the whole Kong tree, Custom commands
+// included: a flag or a positional whose help names YYYY-MM-DD must be a
+// Date, so that a bad date fails at parse time, before the login. checkLeaf
+// has the same rule for Leaf rows.
+func TestDateHelpMeansDateType(t *testing.T) {
+	dateType := reflect.TypeOf(Date(""))
+	check := func(path, name string, v *kong.Value) {
+		if strings.Contains(v.Help, "YYYY-MM-DD") && v.Target.Type() != dateType {
+			t.Errorf("%s: %s is a date (its help names YYYY-MM-DD), so its type must be Date, not %s", path, name, v.Target.Type())
+		}
+	}
+	var walk func(path string, node *kong.Node)
+	walk = func(path string, node *kong.Node) {
+		for _, f := range node.Flags {
+			check(path, "--"+f.Name, f.Value)
+		}
+		for _, p := range node.Positional {
+			check(path, "<"+p.Name+">", p)
+		}
+		for _, child := range node.Children {
+			if child.Type == kong.CommandNode {
+				walk(strings.TrimSpace(path+" "+child.Name), child)
+			}
+		}
+	}
+	walk("", newTestParser(t).Model.Node)
+}
