@@ -30,7 +30,7 @@ Output
 Date shortcuts
 
 - `today`, `yesterday`, `3d` (N days ago), `+30d` (N days ahead), `YYYY-MM-DD` (specific date).
-- All date range commands use `--start`/`--end`, and these flags accept every form above. A bad or empty date is a usage error (exit code 2).
+- All date range commands use `--start`/`--end`, and these flags accept every form above. So does the optional `[<date>]` argument of the daily views, such as `health sleep [<date>]` or `health steps [<date>]`. A bad or empty date is a usage error (exit code 2), before the login; omit the argument for today.
 - `activities list`, `activities search`, `workouts list` and `events list` page with `--limit`/`-l` and `--offset` (number of items to skip). `--limit` must be at least 1 and `--offset` must not be negative; other values are a usage error (exit code 2). In `events list`, `--offset` must be 0 or a multiple of `--limit`.
 
 <!-- gccli:commands:begin -->

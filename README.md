@@ -1562,7 +1562,7 @@ All commands support these flags:
 
 ## Date Format Reference
 
-Many commands accept flexible date formats. Every `--start` and `--end` flag accepts all of them. A bad or empty date in one of these flags is a usage error (exit code 2).
+Many commands accept flexible date formats. Every `--start` and `--end` flag accepts all of them, and so does the optional `[<date>]` argument of the daily views, such as `health sleep`, `health steps`, `body daily-weigh-ins`, `hydration`, `nutrition food-log` and `reload`. A bad or empty date in one of these flags or arguments is a usage error (exit code 2), before the login.
 
 | Format | Example | Description |
 | --- | --- | --- |

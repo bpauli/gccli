@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Breaking changes
+
+| Command(s) | Mode | Before | After |
+| --- | --- | --- | --- |
+| `body composition`, `body daily-weigh-ins`, `health body-battery view`, `health endurance-score`, `health events`, `health fitness-age`, `health floors view`, `health hill-score`, `health hr view`, `health hrv`, `health intensity-minutes view`, `health lifestyle`, `health max-metrics`, `health respiration view`, `health rhr`, `health sleep view`, `health spo2`, `health steps view`, `health stress view`, `health summary`, `health training-readiness`, `health training-status view`, `hydration view`, `nutrition food-log`, `nutrition meals`, `nutrition settings`, `reload` (#263) | all | bad date: exit 1 (or 3 without a login), after the login | bad date: exit 2 with the usage block, before the login |
+| the same 27 commands (#263) | all | an empty positional date (`""`) means today | an empty positional date is a usage error (exit 2); omit the date for today |
+
 ### Added
 
 - **Challenges** - `challenges available` lists the badge challenges that you can join. `challenges completed` lists the badge challenges that you finished. (#210, #79)
