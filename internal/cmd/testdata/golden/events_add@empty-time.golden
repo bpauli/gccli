@@ -1,0 +1,167 @@
+-- args --
+events
+add
+--name
+City Race
+--date
+2026-11-01
+--type
+running
+--time
+
+-- table stdout --
+-- table stderr --
+Usage: gccli events add --name=FREE-TEXT --date=DATE --type=STRING [flags]
+
+Add a calendar event.
+
+Flags:
+  -h, --help                 Show context-sensitive help.
+  -j, --json                 Output as JSON ($GCCLI_JSON).
+      --plain                Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header               Print the column names as the first line of --plain
+                             output ($GCCLI_HEADER).
+      --color="auto"         Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING       Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"         Unit system for distances, speeds, paces,
+                             elevations and weights in table and plain output:
+                             auto (Garmin profile), metric, statute_us,
+                             statute_uk ($GCCLI_UNITS).
+      --version              Print version information.
+
+  -n, --name=FREE-TEXT       Event name.
+  -d, --date=DATE            Event date (YYYY-MM-DD, today, +30d).
+  -t, --type=STRING          Event type.
+      --race                 Mark as a race.
+      --location=STRING      Event location.
+      --time=HH:MM           Start time (HH:MM).
+      --timezone=STRING      Time zone ID (e.g. Europe/Berlin).
+      --distance=DISTANCE    Target distance (e.g. 10km, 26.2mi, 400m).
+      --goal=GOAL            Time goal duration (e.g. 50m, 1h30m, 2400s).
+      --primary              Set as primary training event.
+      --training             Set as supporting training event.
+      --private              Make event private.
+      --note=STRING          Event note.
+      --url=STRING           Event URL.
+
+gccli: error: --time: invalid time "": expected HH:MM (00:00 to 23:59)
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli events add --name=FREE-TEXT --date=DATE --type=STRING [flags]
+
+Add a calendar event.
+
+Flags:
+  -h, --help                 Show context-sensitive help.
+  -j, --json                 Output as JSON ($GCCLI_JSON).
+      --plain                Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header               Print the column names as the first line of --plain
+                             output ($GCCLI_HEADER).
+      --color="auto"         Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING       Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"         Unit system for distances, speeds, paces,
+                             elevations and weights in table and plain output:
+                             auto (Garmin profile), metric, statute_us,
+                             statute_uk ($GCCLI_UNITS).
+      --version              Print version information.
+
+  -n, --name=FREE-TEXT       Event name.
+  -d, --date=DATE            Event date (YYYY-MM-DD, today, +30d).
+  -t, --type=STRING          Event type.
+      --race                 Mark as a race.
+      --location=STRING      Event location.
+      --time=HH:MM           Start time (HH:MM).
+      --timezone=STRING      Time zone ID (e.g. Europe/Berlin).
+      --distance=DISTANCE    Target distance (e.g. 10km, 26.2mi, 400m).
+      --goal=GOAL            Time goal duration (e.g. 50m, 1h30m, 2400s).
+      --primary              Set as primary training event.
+      --training             Set as supporting training event.
+      --private              Make event private.
+      --note=STRING          Event note.
+      --url=STRING           Event URL.
+
+gccli: error: --time: invalid time "": expected HH:MM (00:00 to 23:59)
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli events add --name=FREE-TEXT --date=DATE --type=STRING [flags]
+
+Add a calendar event.
+
+Flags:
+  -h, --help                 Show context-sensitive help.
+  -j, --json                 Output as JSON ($GCCLI_JSON).
+      --plain                Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header               Print the column names as the first line of --plain
+                             output ($GCCLI_HEADER).
+      --color="auto"         Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING       Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"         Unit system for distances, speeds, paces,
+                             elevations and weights in table and plain output:
+                             auto (Garmin profile), metric, statute_us,
+                             statute_uk ($GCCLI_UNITS).
+      --version              Print version information.
+
+  -n, --name=FREE-TEXT       Event name.
+  -d, --date=DATE            Event date (YYYY-MM-DD, today, +30d).
+  -t, --type=STRING          Event type.
+      --race                 Mark as a race.
+      --location=STRING      Event location.
+      --time=HH:MM           Start time (HH:MM).
+      --timezone=STRING      Time zone ID (e.g. Europe/Berlin).
+      --distance=DISTANCE    Target distance (e.g. 10km, 26.2mi, 400m).
+      --goal=GOAL            Time goal duration (e.g. 50m, 1h30m, 2400s).
+      --primary              Set as primary training event.
+      --training             Set as supporting training event.
+      --private              Make event private.
+      --note=STRING          Event note.
+      --url=STRING           Event URL.
+
+gccli: error: --time: invalid time "": expected HH:MM (00:00 to 23:59)
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli events add --name=FREE-TEXT --date=DATE --type=STRING [flags]
+
+Add a calendar event.
+
+Flags:
+  -h, --help                 Show context-sensitive help.
+  -j, --json                 Output as JSON ($GCCLI_JSON).
+      --plain                Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header               Print the column names as the first line of --plain
+                             output ($GCCLI_HEADER).
+      --color="auto"         Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING       Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"         Unit system for distances, speeds, paces,
+                             elevations and weights in table and plain output:
+                             auto (Garmin profile), metric, statute_us,
+                             statute_uk ($GCCLI_UNITS).
+      --version              Print version information.
+
+  -n, --name=FREE-TEXT       Event name.
+  -d, --date=DATE            Event date (YYYY-MM-DD, today, +30d).
+  -t, --type=STRING          Event type.
+      --race                 Mark as a race.
+      --location=STRING      Event location.
+      --time=HH:MM           Start time (HH:MM).
+      --timezone=STRING      Time zone ID (e.g. Europe/Berlin).
+      --distance=DISTANCE    Target distance (e.g. 10km, 26.2mi, 400m).
+      --goal=GOAL            Time goal duration (e.g. 50m, 1h30m, 2400s).
+      --primary              Set as primary training event.
+      --training             Set as supporting training event.
+      --private              Make event private.
+      --note=STRING          Event note.
+      --url=STRING           Event URL.
+
+gccli: error: --time: invalid time "": expected HH:MM (00:00 to 23:59)
+-- json exit --
+2
+-- json requests --

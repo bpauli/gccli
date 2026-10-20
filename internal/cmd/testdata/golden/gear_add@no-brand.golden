@@ -5,7 +5,7 @@ add
 Pegasus 41
 -- table stdout --
 -- table stderr --
-Usage: gccli gear add --brand=STRING --model=STRING <name> [flags]
+Usage: gccli gear add --brand=FREE-TEXT --model=FREE-TEXT <name> [flags]
 
 Add a gear item.
 
@@ -27,20 +27,20 @@ Flags:
       --version              Print version information.
 
       --type="shoes"         Gear type.
-      --brand=STRING         Brand.
-      --model=STRING         Model.
+      --brand=FREE-TEXT      Brand.
+      --model=FREE-TEXT      Model.
       --notes=STRING         Notes (1 to 2000 characters). Defaults to the name,
                              because Garmin requires notes.
       --first-use="today"    Date of first use (YYYY-MM-DD, today, yesterday,
                              3d).
 
-gccli: error: missing flags: --brand=STRING, --model=STRING
+gccli: error: missing flags: --brand=FREE-TEXT, --model=FREE-TEXT
 -- table exit --
 2
 -- table requests --
 -- plain stdout --
 -- plain stderr --
-Usage: gccli gear add --brand=STRING --model=STRING <name> [flags]
+Usage: gccli gear add --brand=FREE-TEXT --model=FREE-TEXT <name> [flags]
 
 Add a gear item.
 
@@ -62,20 +62,20 @@ Flags:
       --version              Print version information.
 
       --type="shoes"         Gear type.
-      --brand=STRING         Brand.
-      --model=STRING         Model.
+      --brand=FREE-TEXT      Brand.
+      --model=FREE-TEXT      Model.
       --notes=STRING         Notes (1 to 2000 characters). Defaults to the name,
                              because Garmin requires notes.
       --first-use="today"    Date of first use (YYYY-MM-DD, today, yesterday,
                              3d).
 
-gccli: error: missing flags: --brand=STRING, --model=STRING
+gccli: error: missing flags: --brand=FREE-TEXT, --model=FREE-TEXT
 -- plain exit --
 2
 -- plain requests --
 -- plain-header stdout --
 -- plain-header stderr --
-Usage: gccli gear add --brand=STRING --model=STRING <name> [flags]
+Usage: gccli gear add --brand=FREE-TEXT --model=FREE-TEXT <name> [flags]
 
 Add a gear item.
 
@@ -97,20 +97,20 @@ Flags:
       --version              Print version information.
 
       --type="shoes"         Gear type.
-      --brand=STRING         Brand.
-      --model=STRING         Model.
+      --brand=FREE-TEXT      Brand.
+      --model=FREE-TEXT      Model.
       --notes=STRING         Notes (1 to 2000 characters). Defaults to the name,
                              because Garmin requires notes.
       --first-use="today"    Date of first use (YYYY-MM-DD, today, yesterday,
                              3d).
 
-gccli: error: missing flags: --brand=STRING, --model=STRING
+gccli: error: missing flags: --brand=FREE-TEXT, --model=FREE-TEXT
 -- plain-header exit --
 2
 -- plain-header requests --
 -- json stdout --
 -- json stderr --
-Usage: gccli gear add --brand=STRING --model=STRING <name> [flags]
+Usage: gccli gear add --brand=FREE-TEXT --model=FREE-TEXT <name> [flags]
 
 Add a gear item.
 
@@ -132,14 +132,14 @@ Flags:
       --version              Print version information.
 
       --type="shoes"         Gear type.
-      --brand=STRING         Brand.
-      --model=STRING         Model.
+      --brand=FREE-TEXT      Brand.
+      --model=FREE-TEXT      Model.
       --notes=STRING         Notes (1 to 2000 characters). Defaults to the name,
                              because Garmin requires notes.
       --first-use="today"    Date of first use (YYYY-MM-DD, today, yesterday,
                              3d).
 
-gccli: error: missing flags: --brand=STRING, --model=STRING
+gccli: error: missing flags: --brand=FREE-TEXT, --model=FREE-TEXT
 -- json exit --
 2
 -- json requests --

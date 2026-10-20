@@ -22,7 +22,7 @@ var gearGroup = Group{Name: "gear", Help: "Manage gear.", Children: []Node{
 	Leaf{
 		Name: "stats", Help: "Show usage statistics for a gear item.",
 		Spec: argsOf(&struct {
-			UUID string `arg:"" help:"Gear UUID."`
+			UUID ID `arg:"" help:"Gear UUID."`
 		}{}),
 		Endpoint: "gear.stats",
 		Params:   Params{"gearUUID": In("UUID")},
@@ -31,8 +31,8 @@ var gearGroup = Group{Name: "gear", Help: "Manage gear.", Children: []Node{
 	Leaf{
 		Name: "activities", Help: "Show activities linked to a gear item.",
 		Spec: argsOf(&struct {
-			UUID  string `arg:"" help:"Gear UUID."`
-			Limit int    `help:"Maximum number of activities to return." default:"20"`
+			UUID  ID  `arg:"" help:"Gear UUID."`
+			Limit int `help:"Maximum number of activities to return." default:"20"`
 		}{}),
 		Endpoint: "gear.activities",
 		Params:   Params{"gearUUID": In("UUID"), "limit": In("Limit")},
@@ -47,8 +47,8 @@ var gearGroup = Group{Name: "gear", Help: "Manage gear.", Children: []Node{
 	Leaf{
 		Name: "link", Help: "Link gear to an activity.",
 		Spec: argsOf(&struct {
-			UUID       string `arg:"" help:"Gear UUID."`
-			ActivityID string `arg:"" help:"Activity ID." name:"activity-id"`
+			UUID       ID `arg:"" help:"Gear UUID."`
+			ActivityID ID `arg:"" help:"Activity ID." name:"activity-id"`
 		}{}),
 		Endpoint: "gear.link",
 		Params:   Params{"gearUUID": In("UUID"), "activityID": In("ActivityID")},
@@ -58,8 +58,8 @@ var gearGroup = Group{Name: "gear", Help: "Manage gear.", Children: []Node{
 	Leaf{
 		Name: "unlink", Help: "Unlink gear from an activity.",
 		Spec: argsOf(&struct {
-			UUID       string `arg:"" help:"Gear UUID."`
-			ActivityID string `arg:"" help:"Activity ID." name:"activity-id"`
+			UUID       ID `arg:"" help:"Gear UUID."`
+			ActivityID ID `arg:"" help:"Activity ID." name:"activity-id"`
 		}{}),
 		Endpoint: "gear.unlink",
 		Params:   Params{"gearUUID": In("UUID"), "activityID": In("ActivityID")},
@@ -103,7 +103,7 @@ var gearCollectionsGroup = Group{Name: "collections", Help: "Manage gear collect
 	Leaf{
 		Name: "add", Help: "Add a gear item to a gear collection.",
 		Spec: argsOf(&struct {
-			UUID string   `arg:"" help:"Collection UUID."`
+			UUID ID       `arg:"" help:"Collection UUID."`
 			Gear GearUUID `arg:"" help:"Gear UUID, with or without dashes." name:"gear-uuid"`
 		}{}),
 		Endpoint: "gear.collection.add-gear",
@@ -114,7 +114,7 @@ var gearCollectionsGroup = Group{Name: "collections", Help: "Manage gear collect
 	Leaf{
 		Name: "delete", Help: "Delete a gear collection. The gear items stay.",
 		Spec: argsOf(&struct {
-			UUID string `arg:"" help:"Collection UUID."`
+			UUID ID `arg:"" help:"Collection UUID."`
 		}{}),
 		Endpoint: "gear.collection.delete",
 		Params:   Params{"collectionUUID": In("UUID")},
@@ -156,12 +156,12 @@ var gearTypes = map[string]string{
 
 // GearAddCmd adds a gear item.
 type GearAddCmd struct {
-	Name     string `arg:"" help:"Gear name."`
-	Type     string `help:"Gear type." default:"shoes" enum:"shoes,bike,other"`
-	Brand    string `help:"Brand." required:""`
-	Model    string `help:"Model." required:""`
-	Notes    string `help:"Notes (1 to 2000 characters). Defaults to the name, because Garmin requires notes."`
-	FirstUse Date   `help:"Date of first use (YYYY-MM-DD, today, yesterday, 3d)." default:"today" name:"first-use"`
+	Name     FreeText `arg:"" help:"Gear name."`
+	Type     string   `help:"Gear type." default:"shoes" enum:"shoes,bike,other"`
+	Brand    FreeText `help:"Brand." required:""`
+	Model    FreeText `help:"Model." required:""`
+	Notes    string   `help:"Notes (1 to 2000 characters). Defaults to the name, because Garmin requires notes."`
+	FirstUse Date     `help:"Date of first use (YYYY-MM-DD, today, yesterday, 3d)." default:"today" name:"first-use"`
 }
 
 func (c *GearAddCmd) Run(g *Globals) error {
@@ -170,10 +170,10 @@ func (c *GearAddCmd) Run(g *Globals) error {
 		return err
 	}
 	data, err := client.CreateGear(g.Context, garminapi.NewGear{
-		Name:         c.Name,
+		Name:         string(c.Name),
 		Type:         gearTypes[c.Type],
-		Brand:        c.Brand,
-		Model:        c.Model,
+		Brand:        string(c.Brand),
+		Model:        string(c.Model),
 		Notes:        c.Notes,
 		FirstUseDate: string(c.FirstUse),
 	})
@@ -218,13 +218,13 @@ func (c *GearUpdateCmd) Run(g *Globals) error {
 
 // GearCollectionCreateCmd creates a gear collection.
 type GearCollectionCreateCmd struct {
-	Name     string `arg:"" help:"Collection name."`
-	FirstUse Date   `help:"Date of first use (YYYY-MM-DD, today, yesterday, 3d)." default:"today" name:"first-use"`
+	Name     FreeText `arg:"" help:"Collection name."`
+	FirstUse Date     `help:"Date of first use (YYYY-MM-DD, today, yesterday, 3d)." default:"today" name:"first-use"`
 }
 
 func (c *GearCollectionCreateCmd) Run(g *Globals) error {
 	body, err := json.Marshal(map[string]any{
-		"name":                    c.Name,
+		"name":                    string(c.Name),
 		"firstUseDate":            string(c.FirstUse),
 		"associatedActivityTypes": []any{},
 	})
@@ -249,12 +249,12 @@ func (c *GearCollectionCreateCmd) Run(g *Globals) error {
 
 // GearCollectionRenameCmd renames a gear collection.
 type GearCollectionRenameCmd struct {
-	UUID string `arg:"" help:"Collection UUID."`
+	UUID ID     `arg:"" help:"Collection UUID."`
 	Name string `arg:"" help:"New name."`
 }
 
 func (c *GearCollectionRenameCmd) Validate() error {
-	if c.Name == "" {
+	if strings.TrimSpace(c.Name) == "" {
 		return errors.New("the new name must not be empty")
 	}
 	return nil
@@ -265,7 +265,7 @@ func (c *GearCollectionRenameCmd) Run(g *Globals) error {
 	if err != nil {
 		return err
 	}
-	data, err := client.RenameGearCollection(g.Context, c.UUID, c.Name)
+	data, err := client.RenameGearCollection(g.Context, string(c.UUID), c.Name)
 	if err != nil {
 		return fmt.Errorf("rename gear collection: %w", err)
 	}

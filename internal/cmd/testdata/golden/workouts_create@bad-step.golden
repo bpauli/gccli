@@ -1,0 +1,133 @@
+A bad or empty step is a usage error at parse time, before the login, with no request.
+-- args --
+workouts
+create
+Tempo
+--type
+run
+--step
+bad
+-- table stdout --
+-- table stderr --
+Usage: gccli workouts create --type=STRING --step=STEP,... <name> [flags]
+
+Create a workout with sport type and optional targets.
+
+Arguments:
+  <name>    Workout name.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --type=STRING       Sport type.
+  -s, --step=STEP,...     Workout step (type:duration[@target:values]).
+      --unit="km"         Pace unit: km or mi.
+
+gccli: error: --step: invalid step "bad": expected type:duration[@target:values]
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli workouts create --type=STRING --step=STEP,... <name> [flags]
+
+Create a workout with sport type and optional targets.
+
+Arguments:
+  <name>    Workout name.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --type=STRING       Sport type.
+  -s, --step=STEP,...     Workout step (type:duration[@target:values]).
+      --unit="km"         Pace unit: km or mi.
+
+gccli: error: --step: invalid step "bad": expected type:duration[@target:values]
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli workouts create --type=STRING --step=STEP,... <name> [flags]
+
+Create a workout with sport type and optional targets.
+
+Arguments:
+  <name>    Workout name.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --type=STRING       Sport type.
+  -s, --step=STEP,...     Workout step (type:duration[@target:values]).
+      --unit="km"         Pace unit: km or mi.
+
+gccli: error: --step: invalid step "bad": expected type:duration[@target:values]
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli workouts create --type=STRING --step=STEP,... <name> [flags]
+
+Create a workout with sport type and optional targets.
+
+Arguments:
+  <name>    Workout name.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --type=STRING       Sport type.
+  -s, --step=STEP,...     Workout step (type:duration[@target:values]).
+      --unit="km"         Pace unit: km or mi.
+
+gccli: error: --step: invalid step "bad": expected type:duration[@target:values]
+-- json exit --
+2
+-- json requests --

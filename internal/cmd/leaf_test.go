@@ -3,6 +3,7 @@ package cmd
 import (
 	"bytes"
 	"os"
+	"path/filepath"
 	"slices"
 	"strings"
 	"testing"
@@ -85,14 +86,80 @@ func TestEveryLeafNeedsAccount(t *testing.T) {
 	}
 }
 
-func TestLateDatesAreCheckedAfterAccount(t *testing.T) {
-	for _, path := range v1LateDates {
-		args, in, err := goldenInput(strings.TrimSuffix(goldenFile(path), ".golden") + "@bad-date.golden")
+// A positional date is checked at parse time, so every bad-date golden exits
+// 2 without an account and sends no request. A leaf that checks its date
+// after the login would exit 3 here.
+// notUsageCases names the @bad-*, @empty-* and @blank-* golden cases whose
+// value is not a usage error, with the reason. Every other such golden is a
+// user value that Kong checks at parse time.
+var notUsageCases = map[string]string{
+	"empty-200":      "an empty 200 answer from Garmin, not an input",
+	"empty-204":      "a 204 answer from Garmin, not an input",
+	"empty-category": "an empty exercise catalog from Garmin; --category is checked against the catalog after the login",
+	"empty-day":      "an empty --day clears the log entry; the value is accepted",
+	"empty-range":    "an empty 204 answer to a date range, not an input",
+}
+
+// TestBadValuesAreCheckedBeforeAccount runs every @bad-*, @empty-* and @blank-*
+// golden without an account: a bad value that Kong can check must be a
+// usage error at parse time, before the login, with no request. A golden of
+// a notUsageCases case must not be a usage error, or the entry is stale.
+func TestBadValuesAreCheckedBeforeAccount(t *testing.T) {
+	var files []string
+	for _, pattern := range []string{"*@bad-*.golden", "*@empty-*.golden", "*@blank-*.golden"} {
+		matches, err := filepath.Glob(filepath.Join(goldenDir, pattern))
 		if err != nil {
-			t.Errorf("%q: %v", path, err)
+			t.Fatal(err)
+		}
+		if len(matches) == 0 {
+			t.Fatalf("no %s golden in %s", pattern, goldenDir)
+		}
+		files = append(files, matches...)
+	}
+	seen := map[string]bool{}
+	for _, file := range files {
+		_, suffix, _ := strings.Cut(strings.TrimSuffix(filepath.Base(file), ".golden"), "@")
+		_, exempt := notUsageCases[suffix]
+		seen[suffix] = seen[suffix] || exempt
+		args, in, err := goldenInput(file)
+		if err != nil {
+			t.Errorf("%s: %v", file, err)
 			continue
 		}
-		checkNeedsAccount(t, path, args, in)
+		if !exempt {
+			// A usage error sends no request, so no route is needed. An
+			// exempt case keeps its routes: exercises list fetches the
+			// public catalog without a login.
+			in.routes = nil
+		}
+		for _, flag := range []string{"--plain", "--json"} {
+			t.Run(filepath.Base(file)+"/"+strings.TrimPrefix(flag, "--"), func(t *testing.T) {
+				stdout, stderr, code, requests := runWithoutAccount(t, in, flag, args)
+				if exempt {
+					if code == kindUsage.exit {
+						t.Errorf("exit %d: notUsageCases names %q, but this value is a usage error now: drop the entry", code, suffix)
+					}
+					return
+				}
+				if code != kindUsage.exit {
+					t.Errorf("exit %d, want %d: a bad value must fail at parse time, before the login; stderr:\n%s", code, kindUsage.exit, stderr)
+				}
+				if !strings.HasPrefix(stderr, "Usage: gccli ") || !strings.Contains(stderr, "\ngccli: error: ") {
+					t.Errorf("stderr is not the usage block with the error line:\n%s", stderr)
+				}
+				if stdout != "" {
+					t.Errorf("stdout is not empty:\n%s", stdout)
+				}
+				if len(requests) != 0 {
+					t.Errorf("sent %d requests, first: %s", len(requests), requests[0].route)
+				}
+			})
+		}
+	}
+	for suffix := range notUsageCases {
+		if !seen[suffix] {
+			t.Errorf("notUsageCases names %q, but no golden has that case: drop the entry", suffix)
+		}
 	}
 }
 

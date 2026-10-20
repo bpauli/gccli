@@ -26,7 +26,7 @@ var profilePrivacyZonesGroup = Group{Name: "privacy-zones", Help: "List, add and
 	Leaf{
 		Name: "delete", Help: "Delete a privacy zone.",
 		Spec: argsOf(&struct {
-			ID string `arg:"" help:"Privacy zone ID."`
+			ID ID `arg:"" help:"Privacy zone ID."`
 		}{}),
 		Endpoint: "profile.privacy-zone.delete",
 		Params:   Params{"privacyZoneID": In("ID")},

@@ -38,7 +38,7 @@ func TestParseStepDuration(t *testing.T) {
 	}
 }
 
-func TestParsePaceToMPS(t *testing.T) {
+func TestParsePaceMPS(t *testing.T) {
 	tests := []struct {
 		input   string
 		unit    string
@@ -60,12 +60,12 @@ func TestParsePaceToMPS(t *testing.T) {
 	for _, tt := range tests {
 		name := tt.input + "_" + tt.unit
 		t.Run(name, func(t *testing.T) {
-			got, err := parsePaceToMPS(tt.input, tt.unit)
+			secs, err := parsePaceSeconds(tt.input)
 			if (err != nil) != tt.wantErr {
-				t.Fatalf("parsePaceToMPS(%q, %q) error = %v, wantErr %v", tt.input, tt.unit, err, tt.wantErr)
+				t.Fatalf("parsePaceSeconds(%q) error = %v, wantErr %v", tt.input, err, tt.wantErr)
 			}
-			if !tt.wantErr && math.Abs(got-tt.want) > 0.0001 {
-				t.Errorf("parsePaceToMPS(%q, %q) = %v, want %v", tt.input, tt.unit, got, tt.want)
+			if got := paceMPS(secs, tt.unit); !tt.wantErr && math.Abs(got-tt.want) > 0.0001 {
+				t.Errorf("paceMPS(%q, %q) = %v, want %v", tt.input, tt.unit, got, tt.want)
 			}
 		})
 	}
@@ -111,15 +111,13 @@ func TestParseStep(t *testing.T) {
 	tests := []struct {
 		name    string
 		input   string
-		unit    string
 		wantErr bool
-		check   func(t *testing.T, s workoutStep)
+		check   func(t *testing.T, s Step)
 	}{
 		{
 			name:  "warmup with pace target",
 			input: "warmup:1m@pace:5:30-6:00",
-			unit:  "km",
-			check: func(t *testing.T, s workoutStep) {
+			check: func(t *testing.T, s Step) {
 				if s.stepType != "warmup" {
 					t.Errorf("stepType = %q, want warmup", s.stepType)
 				}
@@ -129,21 +127,18 @@ func TestParseStep(t *testing.T) {
 				if s.targetType != "pace" {
 					t.Errorf("targetType = %q, want pace", s.targetType)
 				}
-				wantFast := 1000.0 / 330.0
-				if math.Abs(s.targetValueOne-wantFast) > 0.001 {
-					t.Errorf("targetValueOne = %v, want ~%v", s.targetValueOne, wantFast)
+				if s.targetValueOne != 330 {
+					t.Errorf("targetValueOne = %v, want 330 seconds per unit", s.targetValueOne)
 				}
-				wantSlow := 1000.0 / 360.0
-				if math.Abs(s.targetValueTwo-wantSlow) > 0.001 {
-					t.Errorf("targetValueTwo = %v, want ~%v", s.targetValueTwo, wantSlow)
+				if s.targetValueTwo != 360 {
+					t.Errorf("targetValueTwo = %v, want 360 seconds per unit", s.targetValueTwo)
 				}
 			},
 		},
 		{
 			name:  "run without target",
 			input: "run:5m",
-			unit:  "km",
-			check: func(t *testing.T, s workoutStep) {
+			check: func(t *testing.T, s Step) {
 				if s.stepType != "run" {
 					t.Errorf("stepType = %q, want run", s.stepType)
 				}
@@ -158,8 +153,7 @@ func TestParseStep(t *testing.T) {
 		{
 			name:  "cooldown with seconds duration and pace",
 			input: "cooldown:90s@pace:5:00-5:30",
-			unit:  "km",
-			check: func(t *testing.T, s workoutStep) {
+			check: func(t *testing.T, s Step) {
 				if s.stepType != "cooldown" {
 					t.Errorf("stepType = %q, want cooldown", s.stepType)
 				}
@@ -174,8 +168,7 @@ func TestParseStep(t *testing.T) {
 		{
 			name:  "recovery with combined duration",
 			input: "recovery:1m30s@pace:5:00-5:30",
-			unit:  "km",
-			check: func(t *testing.T, s workoutStep) {
+			check: func(t *testing.T, s Step) {
 				if s.stepType != "recovery" {
 					t.Errorf("stepType = %q, want recovery", s.stepType)
 				}
@@ -187,8 +180,7 @@ func TestParseStep(t *testing.T) {
 		{
 			name:  "rest without target",
 			input: "rest:2m",
-			unit:  "km",
-			check: func(t *testing.T, s workoutStep) {
+			check: func(t *testing.T, s Step) {
 				if s.stepType != "rest" {
 					t.Errorf("stepType = %q, want rest", s.stepType)
 				}
@@ -198,24 +190,9 @@ func TestParseStep(t *testing.T) {
 			},
 		},
 		{
-			name:  "imperial pace",
-			input: "run:5m@pace:8:51-9:39",
-			unit:  "mi",
-			check: func(t *testing.T, s workoutStep) {
-				if s.targetType != "pace" {
-					t.Fatalf("targetType = %q, want pace", s.targetType)
-				}
-				wantFast := 1609.344 / 531.0
-				if math.Abs(s.targetValueOne-wantFast) > 0.001 {
-					t.Errorf("targetValueOne = %v, want ~%v", s.targetValueOne, wantFast)
-				}
-			},
-		},
-		{
 			name:  "heart rate target",
 			input: "run:20m@hr:140-160",
-			unit:  "km",
-			check: func(t *testing.T, s workoutStep) {
+			check: func(t *testing.T, s Step) {
 				if s.targetType != "hr" {
 					t.Errorf("targetType = %q, want hr", s.targetType)
 				}
@@ -230,8 +207,7 @@ func TestParseStep(t *testing.T) {
 		{
 			name:  "power target",
 			input: "run:5m@power:250-280",
-			unit:  "km",
-			check: func(t *testing.T, s workoutStep) {
+			check: func(t *testing.T, s Step) {
 				if s.targetType != "power" {
 					t.Errorf("targetType = %q, want power", s.targetType)
 				}
@@ -246,8 +222,7 @@ func TestParseStep(t *testing.T) {
 		{
 			name:  "cadence target",
 			input: "run:10m@cadence:170-180",
-			unit:  "km",
-			check: func(t *testing.T, s workoutStep) {
+			check: func(t *testing.T, s Step) {
 				if s.targetType != "cadence" {
 					t.Errorf("targetType = %q, want cadence", s.targetType)
 				}
@@ -262,8 +237,7 @@ func TestParseStep(t *testing.T) {
 		{
 			name:  "other step type",
 			input: "other:3m",
-			unit:  "km",
-			check: func(t *testing.T, s workoutStep) {
+			check: func(t *testing.T, s Step) {
 				if s.stepType != "other" {
 					t.Errorf("stepType = %q, want other", s.stepType)
 				}
@@ -275,8 +249,7 @@ func TestParseStep(t *testing.T) {
 		{
 			name:  "interval step type",
 			input: "interval:5m@hr:150-170",
-			unit:  "km",
-			check: func(t *testing.T, s workoutStep) {
+			check: func(t *testing.T, s Step) {
 				if s.stepType != "interval" {
 					t.Errorf("stepType = %q, want interval", s.stepType)
 				}
@@ -288,40 +261,35 @@ func TestParseStep(t *testing.T) {
 		{
 			name:    "invalid type",
 			input:   "sprint:1m",
-			unit:    "km",
 			wantErr: true,
 		},
 		{
 			name:    "missing duration",
 			input:   "warmup",
-			unit:    "km",
 			wantErr: true,
 		},
 		{
 			name:    "invalid pace order",
 			input:   "run:1m@pace:6:00-5:30",
-			unit:    "km",
 			wantErr: true,
 		},
 		{
 			name:    "invalid target type",
 			input:   "run:5m@speed:10-12",
-			unit:    "km",
 			wantErr: true,
 		},
 		{
 			name:    "target without values",
 			input:   "run:5m@hr",
-			unit:    "km",
 			wantErr: true,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := parseStep(tt.input, tt.unit)
+			got, err := ParseStep(tt.input)
 			if (err != nil) != tt.wantErr {
-				t.Fatalf("parseStep(%q) error = %v, wantErr %v", tt.input, err, tt.wantErr)
+				t.Fatalf("ParseStep(%q) error = %v, wantErr %v", tt.input, err, tt.wantErr)
 			}
 			if tt.check != nil && err == nil {
 				tt.check(t, got)
@@ -331,13 +299,13 @@ func TestParseStep(t *testing.T) {
 }
 
 func TestBuildWorkoutJSON(t *testing.T) {
-	steps := []workoutStep{
-		{stepType: "warmup", durationSecs: 300, targetType: "pace", targetValueOne: 3.030303, targetValueTwo: 2.777778},
+	steps := []Step{
+		{stepType: "warmup", durationSecs: 300, targetType: "pace", targetValueOne: 330, targetValueTwo: 360},
 		{stepType: "run", durationSecs: 1200, targetType: "hr", targetValueOne: 140, targetValueTwo: 160},
 		{stepType: "cooldown", durationSecs: 300},
 	}
 
-	data, err := buildWorkoutJSON("Test Workout", "run", steps)
+	data, err := buildWorkoutJSON("Test Workout", "run", "km", steps)
 	if err != nil {
 		t.Fatalf("buildWorkoutJSON: %v", err)
 	}
@@ -431,13 +399,13 @@ func TestBuildWorkoutJSON(t *testing.T) {
 }
 
 func TestBuildWorkoutJSON_CyclingSport(t *testing.T) {
-	steps := []workoutStep{
+	steps := []Step{
 		{stepType: "warmup", durationSecs: 600},
 		{stepType: "run", durationSecs: 300, targetType: "power", targetValueOne: 250, targetValueTwo: 280},
 		{stepType: "cooldown", durationSecs: 600},
 	}
 
-	data, err := buildWorkoutJSON("FTP Intervals", "bike", steps)
+	data, err := buildWorkoutJSON("FTP Intervals", "bike", "km", steps)
 	if err != nil {
 		t.Fatalf("buildWorkoutJSON: %v", err)
 	}
@@ -471,42 +439,46 @@ func TestBuildWorkoutJSON_CyclingSport(t *testing.T) {
 }
 
 func TestBuildWorkoutJSON_UnknownSport(t *testing.T) {
-	_, err := buildWorkoutJSON("Bad", "unknown", nil)
+	_, err := buildWorkoutJSON("Bad", "unknown", "km", nil)
 	if err == nil {
 		t.Fatal("expected error, got nil")
 	}
 }
 
-func TestWorkout_RejectsOutOfRangeValues(t *testing.T) {
+func TestParseStep_RejectsOutOfRangeValues(t *testing.T) {
 	digits400 := strings.Repeat("9", 400)
 	overflowsTimes60 := "2" + strings.Repeat("0", 307)
 	tests := []struct {
-		name  string
-		steps []string
-		want  string
+		name string
+		step string
+		want string
 	}{
-		{"NaN target", []string{"run:5m@hr:nan-160"}, `invalid step "run:5m@hr:nan-160": invalid range low value "nan": out of range`},
-		{"Inf target", []string{"run:5m@hr:100-inf"}, `invalid step "run:5m@hr:100-inf": invalid range high value "inf": out of range`},
-		{"Infinity target", []string{"interval:4m@power:200-Infinity"}, `invalid step "interval:4m@power:200-Infinity": invalid range high value "Infinity": out of range`},
-		{"400-digit minutes", []string{"run:" + digits400 + "m"}, `invalid step "run:` + digits400 + `m": invalid duration "` + digits400 + `m": out of range`},
-		{"400-digit seconds", []string{"run:" + digits400 + "s"}, `invalid step "run:` + digits400 + `s": invalid duration "` + digits400 + `s": out of range`},
-		{"minutes overflow in seconds", []string{"run:" + overflowsTimes60 + "m"}, `invalid step "run:` + overflowsTimes60 + `m": invalid duration "` + overflowsTimes60 + `m": out of range`},
-		{"400-digit pace", []string{"run:5m@pace:" + digits400 + ":00-" + digits400 + ":01"}, `invalid step "run:5m@pace:` + digits400 + ":00-" + digits400 + `:01": invalid pace "` + digits400 + `:00": out of range`},
-		{"pace overflows in seconds", []string{"run:5m@pace:" + overflowsTimes60 + ":00-" + overflowsTimes60 + ":01"}, `invalid step "run:5m@pace:` + overflowsTimes60 + ":00-" + overflowsTimes60 + `:01": invalid pace "` + overflowsTimes60 + `:00": out of range`},
-		{"no steps", nil, `invalid step "": expected type:duration[@target:values]`},
+		{"NaN target", "run:5m@hr:nan-160", `invalid step "run:5m@hr:nan-160": invalid range low value "nan": out of range`},
+		{"Inf target", "run:5m@hr:100-inf", `invalid step "run:5m@hr:100-inf": invalid range high value "inf": out of range`},
+		{"Infinity target", "interval:4m@power:200-Infinity", `invalid step "interval:4m@power:200-Infinity": invalid range high value "Infinity": out of range`},
+		{"400-digit minutes", "run:" + digits400 + "m", `invalid step "run:` + digits400 + `m": invalid duration "` + digits400 + `m": out of range`},
+		{"400-digit seconds", "run:" + digits400 + "s", `invalid step "run:` + digits400 + `s": invalid duration "` + digits400 + `s": out of range`},
+		{"minutes overflow in seconds", "run:" + overflowsTimes60 + "m", `invalid step "run:` + overflowsTimes60 + `m": invalid duration "` + overflowsTimes60 + `m": out of range`},
+		{"400-digit pace", "run:5m@pace:" + digits400 + ":00-" + digits400 + ":01", `invalid step "run:5m@pace:` + digits400 + ":00-" + digits400 + `:01": invalid pace "` + digits400 + `:00": out of range`},
+		{"pace overflows in seconds", "run:5m@pace:" + overflowsTimes60 + ":00-" + overflowsTimes60 + ":01", `invalid step "run:5m@pace:` + overflowsTimes60 + ":00-" + overflowsTimes60 + `:01": invalid pace "` + overflowsTimes60 + `:00": out of range`},
+		{"empty step", "", `invalid step "": expected type:duration[@target:values]`},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			body, err := Workout("Foo", "run", "km", tt.steps)
+			step, err := ParseStep(tt.step)
 			if err == nil || err.Error() != tt.want {
-				t.Fatalf("Workout(%q) = %s, %v; want error %q", tt.steps, body, err, tt.want)
+				t.Fatalf("ParseStep(%q) = %+v, %v; want error %q", tt.step, step, err, tt.want)
 			}
 		})
 	}
 }
 
 func TestWorkout_KeepsLargestFiniteTarget(t *testing.T) {
-	body, err := Workout("Foo", "run", "km", []string{"run:5m@hr:1-1.7976931348623157e308"})
+	step, err := ParseStep("run:5m@hr:1-1.7976931348623157e308")
+	if err != nil {
+		t.Fatalf("ParseStep: %v", err)
+	}
+	body, err := Workout("Foo", "run", "km", []Step{step})
 	if err != nil {
 		t.Fatalf("Workout: %v", err)
 	}

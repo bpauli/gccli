@@ -10,7 +10,21 @@ import (
 	"testing"
 
 	"github.com/bpauli/gccli/internal/outfmt"
+	"github.com/bpauli/gccli/internal/payload"
 )
+
+func mustExercises(t *testing.T, values ...string) []Exercise {
+	t.Helper()
+	out := make([]Exercise, len(values))
+	for i, v := range values {
+		e, err := payload.ParseExercise(v)
+		if err != nil {
+			t.Fatalf("ParseExercise(%q): %v", v, err)
+		}
+		out[i] = Exercise(e)
+	}
+	return out
+}
 
 func TestActivityExerciseSetsSet_Success(t *testing.T) {
 	var receivedPayload map[string]any
@@ -35,11 +49,11 @@ func TestActivityExerciseSetsSet_Success(t *testing.T) {
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
 	cmd := &ActivityExerciseSetsSetCmd{
-		ID: "99999",
-		Exercise: []string{
+		ID: 99999,
+		Exercise: mustExercises(t,
 			"BENCH_PRESS/BARBELL_BENCH_PRESS:12@20:r60",
 			"BENCH_PRESS/BARBELL_BENCH_PRESS:10@25",
-		},
+		),
 	}
 	err := cmd.Run(g)
 	if err != nil {
@@ -66,13 +80,13 @@ func TestActivityExerciseSetsSet_Success(t *testing.T) {
 
 func TestActivityExerciseSetsSet_SentBody(t *testing.T) {
 	cmd := &ActivityExerciseSetsSetCmd{
-		ID: "111",
-		Exercise: []string{
+		ID: 111,
+		Exercise: mustExercises(t,
 			"bench_press/barbell_bench_press:12@20.5kg:d30:r60",
 			"SQUAT/BARBELL_BACK_SQUAT:8",
 			"ROW/DUMBBELL_ROW:10@15:r",
 			"PLANK/PLANK:1@0:d:r0",
-		},
+		),
 	}
 	want := `{
 		"activityId": 111,
@@ -166,49 +180,49 @@ func TestActivityExerciseSetsSet_SentBody(t *testing.T) {
 
 func TestActivityExerciseSetsSet_BadInputFailsBeforeCredentials(t *testing.T) {
 	tests := []struct {
-		name       string
-		args       []string
-		wantStderr string
+		name    string
+		args    []string
+		wantErr string
 	}{
 		{
-			name:       "bad exercise",
-			args:       []string{"activity", "exercise-sets", "set", "--exercise", "nope", "111"},
-			wantStderr: "exercise 1 (\"nope\"): expected format CATEGORY/NAME:reps@weightkg[:dSECS][:rSECS]\n",
+			name:    "bad exercise",
+			args:    []string{"activity", "exercise-sets", "set", "--exercise", "nope", "111"},
+			wantErr: "--exercise: invalid exercise \"nope\": expected format CATEGORY/NAME:reps@weightkg[:dSECS][:rSECS]",
 		},
 		{
-			name:       "bad activity ID before bad exercise",
-			args:       []string{"activity", "exercise-sets", "set", "--exercise", "nope", "abc"},
-			wantStderr: "invalid activity ID: strconv.ParseInt: parsing \"abc\": invalid syntax\n",
+			name:    "bad activity ID",
+			args:    []string{"activity", "exercise-sets", "set", "--exercise", "A/B:12@20", "abc"},
+			wantErr: "<id>: invalid ID \"abc\": expected a number",
 		},
 		{
-			name:       "NaN weight",
-			args:       []string{"activity", "exercise-sets", "set", "--exercise", "A/B:12@nan", "111"},
-			wantStderr: "exercise 1 (\"A/B:12@nan\"): invalid weight \"nan\": out of range\n",
+			name:    "NaN weight",
+			args:    []string{"activity", "exercise-sets", "set", "--exercise", "A/B:12@nan", "111"},
+			wantErr: "--exercise: invalid exercise \"A/B:12@nan\": invalid weight \"nan\": out of range",
 		},
 		{
-			name:       "Inf weight",
-			args:       []string{"activity", "exercise-sets", "set", "--exercise", "A/B:12@inf", "111"},
-			wantStderr: "exercise 1 (\"A/B:12@inf\"): invalid weight \"inf\": out of range\n",
+			name:    "Inf weight",
+			args:    []string{"activity", "exercise-sets", "set", "--exercise", "A/B:12@inf", "111"},
+			wantErr: "--exercise: invalid exercise \"A/B:12@inf\": invalid weight \"inf\": out of range",
 		},
 		{
-			name:       "weight overflows in milligrams",
-			args:       []string{"activity", "exercise-sets", "set", "--exercise", "A/B:12@1.7976931348623157e308", "111"},
-			wantStderr: "exercise 1 (\"A/B:12@1.7976931348623157e308\"): invalid weight \"1.7976931348623157e308\": out of range\n",
+			name:    "weight overflows in milligrams",
+			args:    []string{"activity", "exercise-sets", "set", "--exercise", "A/B:12@1.7976931348623157e308", "111"},
+			wantErr: "--exercise: invalid exercise \"A/B:12@1.7976931348623157e308\": invalid weight \"1.7976931348623157e308\": out of range",
 		},
 		{
-			name:       "negative reps",
-			args:       []string{"activity", "exercise-sets", "set", "--exercise", "A/B:-1", "111"},
-			wantStderr: "exercise 1 (\"A/B:-1\"): invalid rep count \"-1\": must not be negative\n",
+			name:    "negative reps",
+			args:    []string{"activity", "exercise-sets", "set", "--exercise", "A/B:-1", "111"},
+			wantErr: "--exercise: invalid exercise \"A/B:-1\": invalid rep count \"-1\": must not be negative",
 		},
 		{
-			name:       "empty exercise name",
-			args:       []string{"activity", "exercise-sets", "set", "--exercise", "A/:1", "111"},
-			wantStderr: "exercise 1 (\"A/:1\"): expected CATEGORY/NAME before ':'\n",
+			name:    "empty exercise name",
+			args:    []string{"activity", "exercise-sets", "set", "--exercise", "A/:1", "111"},
+			wantErr: "--exercise: invalid exercise \"A/:1\": expected CATEGORY/NAME before ':'",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			runBadInput(t, tt.args, tt.wantStderr)
+			runBadInput(t, tt.args, tt.wantErr)
 		})
 	}
 }

@@ -170,20 +170,15 @@ func (c *Client) CreateManualActivity(ctx context.Context, name, activityType, t
 
 // UpdateActivity sends a partial update of an activity: Garmin changes only
 // the fields in the body, so fields holds just the keys to change.
-func (c *Client) UpdateActivity(ctx context.Context, activityID string, fields map[string]any) (json.RawMessage, error) {
-	id, err := strconv.ParseInt(activityID, 10, 64)
-	if err != nil {
-		return nil, fmt.Errorf("invalid activity ID: %w", err)
-	}
-
+func (c *Client) UpdateActivity(ctx context.Context, activityID int64, fields map[string]any) (json.RawMessage, error) {
 	payload := map[string]any{}
 	maps.Copy(payload, fields)
-	payload["activityId"] = id
+	payload["activityId"] = activityID
 
 	body, err := json.Marshal(payload)
 	if err != nil {
 		return nil, fmt.Errorf("marshal activity update: %w", err)
 	}
 
-	return c.Call(ctx, "activities.update", map[string]string{"activityID": activityID}, body)
+	return c.Call(ctx, "activities.update", map[string]string{"activityID": strconv.FormatInt(activityID, 10)}, body)
 }

@@ -122,7 +122,7 @@ var badgesGroup = Group{Name: "badges", Help: "View badges.", Children: []Node{
 	Leaf{
 		Name: "detail", Help: "Show details of a badge.",
 		Spec: argsOf(&struct {
-			ID string `arg:"" help:"Badge ID."`
+			ID ID `arg:"" help:"Badge ID."`
 		}{}),
 		Endpoint: "badges.detail",
 		Params:   Params{"badgeID": In("ID")},
@@ -131,7 +131,7 @@ var badgesGroup = Group{Name: "badges", Help: "View badges.", Children: []Node{
 	Leaf{
 		Name: "compare", Help: "Compare your badges with a connection.",
 		Spec: argsOf(&struct {
-			DisplayName string `arg:"" help:"Display name of the connection."`
+			DisplayName ID `arg:"" help:"Display name of the connection."`
 		}{}),
 		Endpoint: "badges.compare",
 		Params:   Params{"displayName": In("DisplayName")},
@@ -168,7 +168,7 @@ var recordsGroup = Group{Name: "records", Help: "View personal records.", Childr
 	Leaf{
 		Name: "activity", Help: "List the personal records set in an activity.",
 		Spec: argsOf(&struct {
-			ID string `arg:"" help:"Activity ID."`
+			ID ID `arg:"" help:"Activity ID."`
 		}{}),
 		Endpoint: "records.activity",
 		Params:   Params{"activityID": In("ID")},

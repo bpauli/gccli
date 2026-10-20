@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/alecthomas/kong"
+
 	"github.com/bpauli/gccli/internal/payload"
 )
 
@@ -15,7 +17,7 @@ var eventsGroup = Group{Name: "events", Help: "Manage calendar events.", Childre
 	Leaf{
 		Name: "delete", Help: "Delete a calendar event.",
 		Spec: argsOf(&struct {
-			ID string `arg:"" help:"Event ID."`
+			ID ID `arg:"" help:"Event ID."`
 		}{}),
 		Endpoint: "events.delete",
 		Params:   Params{"eventID": In("ID")},
@@ -55,22 +57,12 @@ func (c *EventsListCmd) Run(g *Globals) error {
 		return err
 	}
 
-	startDate := string(c.StartDate)
-	if startDate == "" {
-		startDate = "today"
-	}
-
-	date, err := resolveDate(startDate)
-	if err != nil {
-		return err
-	}
-
 	client, err := resolveClient(g)
 	if err != nil {
 		return err
 	}
 
-	data, err := client.Call(g.Context, "events.list", map[string]string{"startDate": date, "pageIndex": strconv.Itoa(page), "limit": strconv.Itoa(c.Limit), "sortOrder": c.Sort}, nil)
+	data, err := client.Call(g.Context, "events.list", map[string]string{"startDate": c.StartDate.orToday(), "pageIndex": strconv.Itoa(page), "limit": strconv.Itoa(c.Limit), "sortOrder": c.Sort}, nil)
 	if err != nil {
 		return fmt.Errorf("list events: %w", err)
 	}
@@ -99,38 +91,67 @@ func formatEventListRows(events []map[string]any) [][]string {
 
 // EventsAddCmd adds a new calendar event.
 type EventsAddCmd struct {
-	Name     string `help:"Event name." required:"" short:"n"`
-	Date     string `help:"Event date (YYYY-MM-DD, today, +30d)." required:"" short:"d"`
-	Type     string `help:"Event type." required:"" short:"t" enum:"running,trail_running,cycling,gravel_cycling,mountain_biking,swimming,triathlon,multi_sport,hiking,walking,fitness_equipment,motorcycling,winter_sport,other"`
-	Race     bool   `help:"Mark as a race."`
-	Location string `help:"Event location."`
-	Time     string `help:"Start time (HH:MM)."`
-	Timezone string `help:"Time zone ID (e.g. Europe/Berlin)."`
-	Distance string `help:"Target distance (e.g. 10km, 26.2mi, 400m)."`
-	Goal     string `help:"Time goal duration (e.g. 50m, 1h30m, 2400s)."`
-	Primary  bool   `help:"Set as primary training event." xor:"priority"`
-	Training bool   `help:"Set as supporting training event." xor:"priority"`
-	Private  bool   `help:"Make event private."`
-	Note     string `help:"Event note."`
-	URL      string `help:"Event URL."`
+	Name     FreeText      `help:"Event name." required:"" short:"n"`
+	Date     Date          `help:"Event date (YYYY-MM-DD, today, +30d)." required:"" short:"d"`
+	Type     string        `help:"Event type." required:"" short:"t" enum:"running,trail_running,cycling,gravel_cycling,mountain_biking,swimming,triathlon,multi_sport,hiking,walking,fitness_equipment,motorcycling,winter_sport,other"`
+	Race     bool          `help:"Mark as a race."`
+	Location string        `help:"Event location."`
+	Time     Clock         `help:"Start time (HH:MM)." placeholder:"HH:MM"`
+	Timezone string        `help:"Time zone ID (e.g. Europe/Berlin)."`
+	Distance EventDistance `help:"Target distance (e.g. 10km, 26.2mi, 400m)." placeholder:"DISTANCE"`
+	Goal     Goal          `help:"Time goal duration (e.g. 50m, 1h30m, 2400s)."`
+	Primary  bool          `help:"Set as primary training event." xor:"priority"`
+	Training bool          `help:"Set as supporting training event." xor:"priority"`
+	Private  bool          `help:"Make event private."`
+	Note     string        `help:"Event note."`
+	URL      string        `help:"Event URL."`
+}
+
+// EventDistance and Goal are the Kong types of the event target values. Kong
+// decodes them through the payload parsers at parse time, so a bad value is
+// a usage error before the login. Distance is taken by the rows Format.
+type (
+	EventDistance payload.Distance
+	Goal          payload.Goal
+)
+
+func (d *EventDistance) Decode(ctx *kong.DecodeContext) error {
+	raw, err := popString(ctx, "distance")
+	if err != nil {
+		return err
+	}
+	v, err := payload.ParseDistance(raw)
+	if err != nil {
+		return err
+	}
+	*d = EventDistance(v)
+	return nil
+}
+
+func (g *Goal) Decode(ctx *kong.DecodeContext) error {
+	raw, err := popString(ctx, "goal")
+	if err != nil {
+		return err
+	}
+	v, err := payload.ParseGoal(raw)
+	if err != nil {
+		return err
+	}
+	*g = Goal(v)
+	return nil
 }
 
 func (c *EventsAddCmd) Run(g *Globals) error {
-	date, err := resolveDate(c.Date)
-	if err != nil {
-		return fmt.Errorf("invalid date: %w", err)
-	}
-
 	body, err := payload.Event{
-		Name:     c.Name,
-		Date:     date,
+		Name:     string(c.Name),
+		Date:     string(c.Date),
 		Type:     c.Type,
 		Race:     c.Race,
 		Location: c.Location,
-		Time:     c.Time,
+		Time:     string(c.Time),
 		Timezone: c.Timezone,
-		Distance: c.Distance,
-		Goal:     c.Goal,
+		Distance: payload.Distance(c.Distance),
+		Goal:     payload.Goal(c.Goal),
 		Primary:  c.Primary,
 		Training: c.Training,
 		Private:  c.Private,

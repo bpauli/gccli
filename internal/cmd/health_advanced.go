@@ -6,12 +6,11 @@ var healthBodyBatteryGroup = Group{Name: "body-battery", Help: "Show body batter
 	Leaf{
 		Name: "view", Help: "Show body battery data for a date.", Default: true,
 		Spec: argsOf(&struct {
-			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
 		}{}),
 		Endpoint: "health.body-battery",
 		Params:   Params{"startDate": In("Date"), "endDate": In("Date")},
 		Verb:     "get body battery", Output: JSON{List: true},
-		LateDates: []string{"Date"},
 	},
 	Leaf{
 		Name: "range", Help: "Show body battery data for a date range.",
@@ -29,12 +28,11 @@ var healthIntensityMinutesGroup = Group{Name: "intensity-minutes", Help: "Show i
 	Leaf{
 		Name: "view", Help: "Show intensity minutes for a date.", Default: true,
 		Spec: argsOf(&struct {
-			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
 		}{}),
 		Endpoint: "health.intensity-minutes",
 		Params:   Params{"date": In("Date")},
 		Verb:     "get intensity minutes", Output: JSON{},
-		LateDates: []string{"Date"},
 	},
 	Leaf{
 		Name: "weekly", Help: "Show weekly intensity minutes for a date range.",
@@ -54,9 +52,7 @@ var healthRacePredictionsGroup = Group{Name: "race-predictions", Help: "Show rac
 }}
 
 // HealthRacePredictionsViewCmd shows current race predictions.
-type HealthRacePredictionsViewCmd struct {
-	Date string `arg:"" optional:"" help:"Unused. Current predictions are always returned."`
-}
+type HealthRacePredictionsViewCmd struct{}
 
 func (c *HealthRacePredictionsViewCmd) Run(g *Globals) error {
 	client, err := resolveClient(g)

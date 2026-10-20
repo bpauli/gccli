@@ -136,7 +136,7 @@ func TestCourseSend_Success_Table(t *testing.T) {
 
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &CourseSendCmd{CourseID: "123", DeviceID: "456"}
+	cmd := &CourseSendCmd{CourseID: 123, DeviceID: 456}
 	err := cmd.Run(g)
 	if err != nil {
 		t.Fatalf("expected no error, got: %v", err)
@@ -157,7 +157,7 @@ func TestCourseSend_CourseNotFound(t *testing.T) {
 
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &CourseSendCmd{CourseID: "99999", DeviceID: "456"}
+	cmd := &CourseSendCmd{CourseID: 99999, DeviceID: 456}
 	err := cmd.Run(g)
 	if err == nil {
 		t.Fatal("expected error, got nil")
@@ -174,19 +174,6 @@ func newTestGPXFile(t *testing.T) string {
 		t.Fatalf("write temp file: %v", err)
 	}
 	return path
-}
-
-func TestCourseImport_InvalidType(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &CourseImportCmd{File: "route.gpx", Type: "swimming"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "unknown activity type") {
-		t.Fatalf("unexpected error: %v", err)
-	}
 }
 
 func TestCourseImport_Success(t *testing.T) {

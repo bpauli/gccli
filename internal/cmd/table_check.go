@@ -12,48 +12,13 @@ import (
 	"github.com/bpauli/gccli/internal/garminapi"
 )
 
-// v1LateDates lists the paths whose positional date is checked after
-// login (exit 1 or 3) instead of at parse time (exit 2), as their
-// <leaf>@bad-date.golden files pin. The major release that moves the dates
-// to parse time deletes it; until then the list only shrinks.
-var v1LateDates = []string{
-	"body composition",
-	"body daily-weigh-ins",
-	"health body-battery view",
-	"health endurance-score",
-	"health events",
-	"health fitness-age",
-	"health floors view",
-	"health hill-score",
-	"health hr view",
-	"health hrv",
-	"health intensity-minutes view",
-	"health lifestyle",
-	"health max-metrics",
-	"health respiration view",
-	"health rhr",
-	"health sleep view",
-	"health spo2",
-	"health steps view",
-	"health stress view",
-	"health summary",
-	"health training-readiness",
-	"health training-status view",
-	"hydration view",
-	"nutrition food-log",
-	"nutrition meals",
-	"nutrition settings",
-	"reload",
-}
-
 // checkTable reports every defect of the command tree: a Custom without
 // a struct Cmd; a Leaf whose endpoint, placeholders, In fields, enums,
-// required bindings, int bindings, frozen-list paths, Output type or
+// required bindings, int bindings, date and ID types, Output type or
 // Rows columns and Write templates do not fit. Each fail message in
 // checkLeaf states one rule.
 func checkTable(nodes []Node) []error {
 	var errs []error
-	leaves := map[string]Leaf{}
 	walkNodes(nodes, "", func(path string, n Node) {
 		switch n := n.(type) {
 		case Custom:
@@ -61,15 +26,9 @@ func checkTable(nodes []Node) []error {
 				errs = append(errs, fmt.Errorf("%s: Custom needs a Cmd that points to a struct, got %T", path, n.Cmd))
 			}
 		case Leaf:
-			leaves[path] = n
 			errs = append(errs, checkLeaf(path, n)...)
 		}
 	})
-	for _, path := range v1LateDates {
-		if l, ok := leaves[path]; ok && len(l.LateDates) == 0 {
-			errs = append(errs, fmt.Errorf("%s: v1LateDates names this path, but the row has no LateDates: remove the entry", path))
-		}
-	}
 	return errs
 }
 
@@ -83,6 +42,52 @@ func walkNodes(nodes []Node, prefix string, visit func(path string, n Node)) {
 	}
 }
 
+// dateTypeError names the defect of a flag, positional or field that is a
+// date or a clock time but whose type Kong does not check at parse time. A
+// name such as Date, StartDate, date or start-date says that the value is a
+// date, and Time, StartTime, time or start-time that it is a clock time. A
+// name is stable contract, so the type cannot drift from it the way the help
+// text can. The help rule catches the rest, such as --first-use. The date
+// rule comes first, because the help of a date and time names both
+// YYYY-MM-DD and HH:MM.
+func dateTypeError(name, help string, t reflect.Type) string {
+	isDate := t == reflect.TypeFor[Date]() || t == reflect.TypeFor[DateTime]()
+	isClock := t == reflect.TypeFor[Clock]()
+	switch {
+	case name == "date" || name == "Date" || strings.HasSuffix(name, "-date") || strings.HasSuffix(name, "Date"):
+		if !isDate {
+			return fmt.Sprintf("%s is a date (by its name), so its type must be Date or DateTime, not %s: Kong then checks it at parse time", name, t)
+		}
+	case strings.Contains(help, "YYYY-MM-DD"):
+		if !isDate {
+			return fmt.Sprintf("%s is a date (its help names YYYY-MM-DD), so its type must be Date or DateTime, not %s: Kong then checks it at parse time", name, t)
+		}
+	case name == "time" || name == "Time" || strings.HasSuffix(name, "-time") || strings.HasSuffix(name, "Time"):
+		if !isClock {
+			return fmt.Sprintf("%s is a clock time (by its name), so its type must be Clock, not %s: Kong then checks it at parse time", name, t)
+		}
+	case strings.Contains(help, "HH:MM"):
+		if !isClock {
+			return fmt.Sprintf("%s is a clock time (its help names HH:MM), so its type must be Clock, not %s: Kong then checks it at parse time", name, t)
+		}
+	}
+	return ""
+}
+
+// idTypeError names the defect of a flag, positional or field that is an ID
+// by its name (id, ID, uuid, UUID, or a name that ends in -id, ID, -uuid or
+// UUID) but is a plain string, which Kong lets be empty. A non-string type,
+// such as the int --type-id of activity retype, passes.
+func idTypeError(name string, t reflect.Type) string {
+	isIDName := name == "id" || name == "ID" || name == "uuid" || name == "UUID" ||
+		strings.HasSuffix(name, "-id") || strings.HasSuffix(name, "ID") ||
+		strings.HasSuffix(name, "-uuid") || strings.HasSuffix(name, "UUID")
+	if isIDName && t == reflect.TypeFor[string]() {
+		return fmt.Sprintf("%s is an ID (by its name), so its type must be ID, NumericID or GearUUID, not string: Kong then rejects an empty value at parse time", name)
+	}
+	return ""
+}
+
 func checkLeaf(path string, l Leaf) []error {
 	var errs []error
 	fail := func(format string, a ...any) {
@@ -94,13 +99,14 @@ func checkLeaf(path string, l Leaf) []error {
 		return errs
 	}
 	fields := l.spec().fields()
-	for _, name := range l.LateDates {
-		if f, ok := argsField(fields, name); !ok || f.Type != reflect.TypeFor[string]() {
-			fail("LateDates names %q, which is not a string field of the args struct", name)
+	for i := range fields.NumField() {
+		f := fields.Field(i)
+		if msg := dateTypeError(f.Name, f.Tag.Get("help"), f.Type); msg != "" {
+			fail("%s", msg)
 		}
-	}
-	if len(l.LateDates) > 0 && !slices.Contains(v1LateDates, path) {
-		fail("LateDates is allowed only on the paths in v1LateDates")
+		if msg := idTypeError(f.Name, f.Type); msg != "" {
+			fail("%s", msg)
+		}
 	}
 	for _, key := range slices.Sorted(maps.Keys(l.Params)) {
 		for _, a := range l.Params[key].alts {
@@ -117,7 +123,7 @@ func checkLeaf(path string, l Leaf) []error {
 				fail("Params[%q] binds %s, which Kong skips (kong:\"-\")", key, a)
 			default:
 				if _, sendable := requestValue(reflect.Zero(f.Type)); !sendable {
-					fail("Params[%q] binds %s of type %s: the runner sends only string, int and Date", key, a, f.Type)
+					fail("Params[%q] binds %s of type %s: the runner sends only string, int, Date and ID", key, a, f.Type)
 				}
 			}
 		}
@@ -161,8 +167,15 @@ func checkLeaf(path string, l Leaf) []error {
 		switch {
 		case !bound:
 			fail("placeholder {%s} of %s is required, but Params does not bind it", p.Name, l.Endpoint)
-		case !s.sure(fields, l.LateDates):
+		case !s.sure(fields):
 			fail("placeholder {%s} of %s is required, but %s may be empty: make the field required, give it a default, or add .Or(...)", p.Name, l.Endpoint, s)
+		}
+		// Kong's enum check already rejects an empty value of an enum field.
+		for _, a := range s.alts {
+			f, ok := argsField(fields, a.field)
+			if ok && alwaysSet(f) && f.Type == reflect.TypeFor[string]() && kongEnum(f) == nil {
+				fail("placeholder {%s} of %s is required, but %s is a string, which may be empty (\"\"): make the field an ID, so Kong rejects an empty value at parse time", p.Name, l.Endpoint, a)
+			}
 		}
 	}
 
@@ -187,7 +200,7 @@ func checkLeaf(path string, l Leaf) []error {
 				if !ok {
 					fail("%s names {%s}, which is not a field of the args struct", tpl.name, name)
 				} else if _, sendable := requestValue(reflect.Zero(f.Type)); !sendable {
-					fail("%s names {%s} of type %s: a template takes only string, int and Date", tpl.name, name, f.Type)
+					fail("%s names {%s} of type %s: a template takes only string, int, Date and ID", tpl.name, name, f.Type)
 				}
 			}
 		}
@@ -235,6 +248,8 @@ func requestValue(v reflect.Value) (value string, ok bool) {
 		return x, true
 	case Date:
 		return string(x), true
+	case ID:
+		return string(x), true
 	case GearUUID:
 		return string(x), true
 	case int:
@@ -255,10 +270,9 @@ func kongEnum(f reflect.StructField) []string {
 	return values
 }
 
-// A LateDates field is never empty: resolveDate gives today for "".
-func (s Source) sure(fields reflect.Type, late []string) bool {
+func (s Source) sure(fields reflect.Type) bool {
 	for _, a := range s.alts {
-		if a.lookup != noLookup || slices.Contains(late, a.field) {
+		if a.lookup != noLookup {
 			return true
 		}
 		if f, ok := argsField(fields, a.field); ok && alwaysSet(f) {

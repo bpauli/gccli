@@ -12,8 +12,22 @@ import (
 	"testing"
 
 	"github.com/bpauli/gccli/internal/outfmt"
+	"github.com/bpauli/gccli/internal/payload"
 	"github.com/bpauli/gccli/internal/secrets"
 )
+
+func mustSteps(t *testing.T, values ...string) []Step {
+	t.Helper()
+	out := make([]Step, len(values))
+	for i, v := range values {
+		s, err := payload.ParseStep(v)
+		if err != nil {
+			t.Fatalf("ParseStep(%q): %v", v, err)
+		}
+		out[i] = Step(s)
+	}
+	return out
+}
 
 func TestWorkoutCreateCmd_Run_Table(t *testing.T) {
 	server := workoutsTestServer(t)
@@ -29,7 +43,7 @@ func TestWorkoutCreateCmd_Run_Table(t *testing.T) {
 	cmd := &WorkoutCreateCmd{
 		Name:  "Test Run",
 		Type:  "run",
-		Steps: []string{"warmup:1m", "run:5m@pace:5:15-5:30", "cooldown:1m"},
+		Steps: mustSteps(t, "warmup:1m", "run:5m@pace:5:15-5:30", "cooldown:1m"),
 		Unit:  "km",
 	}
 
@@ -39,22 +53,6 @@ func TestWorkoutCreateCmd_Run_Table(t *testing.T) {
 	}
 	if buf.Len() == 0 {
 		t.Fatal("expected output, got empty buffer")
-	}
-}
-
-func TestWorkoutCreateCmd_Run_InvalidStep(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &WorkoutCreateCmd{
-		Name:  "Test Run",
-		Type:  "run",
-		Steps: []string{"invalid"},
-		Unit:  "km",
-	}
-
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
 	}
 }
 
@@ -109,7 +107,7 @@ func TestWorkoutCreateCmd_SentBody(t *testing.T) {
 				Name: "Mixed",
 				Type: "run",
 				Unit: "km",
-				Steps: []string{
+				Steps: mustSteps(t,
 					"warmup:10m@pace:5:30-6:00",
 					"run:1m30s@hr:140-160",
 					"interval:45s@power:250-280",
@@ -117,7 +115,7 @@ func TestWorkoutCreateCmd_SentBody(t *testing.T) {
 					"rest:30s",
 					"other:1m",
 					"cooldown:5m",
-				},
+				),
 			},
 			want: `{
 				"sportType": {
@@ -271,7 +269,7 @@ func TestWorkoutCreateCmd_SentBody(t *testing.T) {
 				Name:  "Miles",
 				Type:  "bike",
 				Unit:  "mi",
-				Steps: []string{"run:20m@pace:8:00-8:30"},
+				Steps: mustSteps(t, "run:20m@pace:8:00-8:30"),
 			},
 			want: `{
 				"sportType": {
@@ -321,7 +319,10 @@ func TestWorkoutCreateCmd_SentBody(t *testing.T) {
 	}
 }
 
-func runBadInput(t *testing.T, args []string, wantStderr string) {
+// runBadInput runs args with and without an account and requires a usage
+// error (exit 2, the usage block, the error line) with no credential store
+// opened: a bad value is checked at parse time, before the login.
+func runBadInput(t *testing.T, args []string, wantErr string) {
 	t.Helper()
 	for _, account := range []string{harnessAccount, ""} {
 		newHarness(t, harnessInput{})
@@ -335,35 +336,36 @@ func runBadInput(t *testing.T, args []string, wantStderr string) {
 			global = append(global, "--account", account)
 		}
 		code := execute(append(global, args...), "test", "none", "never", &stdout, &stderr)
-		if code != 1 || stdout.Len() != 0 || stderr.String() != wantStderr {
-			t.Errorf("account %q: exit %d, stdout %q, stderr %q; want exit 1, no stdout, stderr %q", account, code, stdout.String(), stderr.String(), wantStderr)
+		errLine := "\ngccli: error: " + wantErr + "\n"
+		if code != 2 || stdout.Len() != 0 || !strings.HasPrefix(stderr.String(), "Usage: gccli ") || !strings.HasSuffix(stderr.String(), errLine) {
+			t.Errorf("account %q: exit %d, stdout %q, stderr %q; want exit 2, no stdout, the usage block and %q", account, code, stdout.String(), stderr.String(), errLine)
 		}
 	}
 }
 
 func TestWorkoutCreateCmd_BadStepFailsBeforeCredentials(t *testing.T) {
 	runBadInput(t, []string{"workouts", "create", "--type", "run", "--step", "bad", "Foo"},
-		"invalid step \"bad\": expected type:duration[@target:values]\n")
+		"--step: invalid step \"bad\": expected type:duration[@target:values]")
 }
 
 func TestWorkoutCreateCmd_OutOfRangeStepFailsBeforeCredentials(t *testing.T) {
 	digits400 := strings.Repeat("9", 400)
 	overflowsTimes60 := "2" + strings.Repeat("0", 307)
 	tests := []struct {
-		name       string
-		step       string
-		wantStderr string
+		name    string
+		step    string
+		wantErr string
 	}{
-		{"NaN target", "run:5m@hr:nan-160", "invalid step \"run:5m@hr:nan-160\": invalid range low value \"nan\": out of range\n"},
-		{"Inf target", "run:5m@hr:100-inf", "invalid step \"run:5m@hr:100-inf\": invalid range high value \"inf\": out of range\n"},
-		{"400-digit duration", "run:" + digits400 + "m", "invalid step \"run:" + digits400 + "m\": invalid duration \"" + digits400 + "m\": out of range\n"},
-		{"minutes overflow in seconds", "run:" + overflowsTimes60 + "m", "invalid step \"run:" + overflowsTimes60 + "m\": invalid duration \"" + overflowsTimes60 + "m\": out of range\n"},
-		{"400-digit pace", "run:5m@pace:" + digits400 + ":00-" + digits400 + ":01", "invalid step \"run:5m@pace:" + digits400 + ":00-" + digits400 + ":01\": invalid pace \"" + digits400 + ":00\": out of range\n"},
-		{"empty step", "", "invalid step \"\": expected type:duration[@target:values]\n"},
+		{"NaN target", "run:5m@hr:nan-160", "--step: invalid step \"run:5m@hr:nan-160\": invalid range low value \"nan\": out of range"},
+		{"Inf target", "run:5m@hr:100-inf", "--step: invalid step \"run:5m@hr:100-inf\": invalid range high value \"inf\": out of range"},
+		{"400-digit duration", "run:" + digits400 + "m", "--step: invalid step \"run:" + digits400 + "m\": invalid duration \"" + digits400 + "m\": out of range"},
+		{"minutes overflow in seconds", "run:" + overflowsTimes60 + "m", "--step: invalid step \"run:" + overflowsTimes60 + "m\": invalid duration \"" + overflowsTimes60 + "m\": out of range"},
+		{"400-digit pace", "run:5m@pace:" + digits400 + ":00-" + digits400 + ":01", "--step: invalid step \"run:5m@pace:" + digits400 + ":00-" + digits400 + ":01\": invalid pace \"" + digits400 + ":00\": out of range"},
+		{"empty step", "", "workouts create: invalid step \"\": expected type:duration[@target:values]"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			runBadInput(t, []string{"workouts", "create", "--type", "run", "--step", tt.step, "Foo"}, tt.wantStderr)
+			runBadInput(t, []string{"workouts", "create", "--type", "run", "--step", tt.step, "Foo"}, tt.wantErr)
 		})
 	}
 }

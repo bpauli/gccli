@@ -20,10 +20,7 @@ func (l Leaf) run(g *Globals, args reflect.Value, force bool) error {
 	if err != nil {
 		return err
 	}
-	in, err := l.inputs(args)
-	if err != nil {
-		return err
-	}
+	in := l.inputs(args)
 	if w, ok := l.Output.(Write); ok && w.Confirm != "" {
 		ok, err := confirm(g.Stderr, expand(w.Confirm, in), force)
 		if err != nil {
@@ -53,7 +50,7 @@ func (l Leaf) run(g *Globals, args reflect.Value, force bool) error {
 	return fmt.Errorf("%T output is not wired: keep the command Custom", l.Output)
 }
 
-func (l Leaf) inputs(args reflect.Value) (map[string]string, error) {
+func (l Leaf) inputs(args reflect.Value) map[string]string {
 	in := map[string]string{}
 	read := func(name string) {
 		if f, ok := argsField(args.Type(), name); ok {
@@ -70,14 +67,7 @@ func (l Leaf) inputs(args reflect.Value) (map[string]string, error) {
 			read(name)
 		}
 	}
-	for _, name := range l.LateDates {
-		date, err := resolveDate(in[name])
-		if err != nil {
-			return nil, err
-		}
-		in[name] = date
-	}
-	return in, nil
+	return in
 }
 
 func (l Leaf) params(g *Globals, client *garminapi.Client, in map[string]string) (map[string]string, error) {

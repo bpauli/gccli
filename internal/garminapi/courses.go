@@ -10,7 +10,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 )
 
@@ -201,27 +200,17 @@ func filterCourseFields(course map[string]any) map[string]any {
 }
 
 // SendCourseToDevice sends a course to a device via the device message API.
-func (c *Client) SendCourseToDevice(ctx context.Context, courseID, deviceID, courseName string) (json.RawMessage, error) {
-	deviceIDInt, err := strconv.ParseInt(deviceID, 10, 64)
-	if err != nil {
-		return nil, fmt.Errorf("parse device ID: %w", err)
-	}
-
-	courseIDInt, err := strconv.ParseInt(courseID, 10, 64)
-	if err != nil {
-		return nil, fmt.Errorf("parse course ID: %w", err)
-	}
-
+func (c *Client) SendCourseToDevice(ctx context.Context, courseID, deviceID int64, courseName string) (json.RawMessage, error) {
 	payload := []map[string]any{
 		{
-			"deviceId":    deviceIDInt,
-			"messageUrl":  fmt.Sprintf("course-service/course/fit/%s/%s?elevation=true", courseID, deviceID),
+			"deviceId":    deviceID,
+			"messageUrl":  fmt.Sprintf("course-service/course/fit/%d/%d?elevation=true", courseID, deviceID),
 			"messageType": "courses",
 			"messageName": courseName,
 			"groupName":   nil,
 			"priority":    0,
 			"fileType":    "FIT",
-			"metaDataId":  courseIDInt,
+			"metaDataId":  courseID,
 		},
 	}
 

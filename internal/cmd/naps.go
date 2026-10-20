@@ -29,11 +29,10 @@ var healthSleepNapsGroup = Group{Name: "naps", Help: "Show, add and delete naps.
 type Clock string
 
 func (c *Clock) Decode(ctx *kong.DecodeContext) error {
-	tok, err := ctx.Scan.PopValue("time")
+	raw, err := popString(ctx, "time")
 	if err != nil {
 		return err
 	}
-	raw := fmt.Sprint(tok.Value)
 	t, err := time.Parse("15:04", raw)
 	if err != nil {
 		return fmt.Errorf("invalid time %q: expected HH:MM (00:00 to 23:59)", raw)

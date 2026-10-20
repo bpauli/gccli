@@ -8,12 +8,11 @@ var hydrationGroup = Group{Name: "hydration", Help: "Track hydration.", Children
 	Leaf{
 		Name: "view", Help: "Show hydration data for a date.", Default: true,
 		Spec: argsOf(&struct {
-			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
 		}{}),
 		Endpoint: "hydration.get",
 		Params:   Params{"date": In("Date")},
 		Verb:     "get hydration", Output: JSON{},
-		LateDates: []string{"Date"},
 	},
 	Leaf{
 		Name: "daily", Help: "Show daily hydration statistics for a date range.",
@@ -41,7 +40,7 @@ var hydrationGroup = Group{Name: "hydration", Help: "Track hydration.", Children
 // HydrationAddCmd adds a hydration log entry.
 type HydrationAddCmd struct {
 	Amount float64 `arg:"" help:"Amount of water in milliliters."`
-	Date   string  `help:"Date to log for (YYYY-MM-DD). Defaults to today." default:""`
+	Date   Date    `help:"Date to log for (YYYY-MM-DD). Defaults to today."`
 }
 
 func (c *HydrationAddCmd) Run(g *Globals) error {
@@ -50,11 +49,7 @@ func (c *HydrationAddCmd) Run(g *Globals) error {
 		return err
 	}
 
-	date, err := resolveDate(c.Date)
-	if err != nil {
-		return err
-	}
-
+	date := c.Date.orToday()
 	data, err := client.AddHydration(g.Context, date, c.Amount)
 	if err != nil {
 		return fmt.Errorf("add hydration: %w", err)

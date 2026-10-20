@@ -928,19 +928,19 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `-o, --output=STRING`: Output file path (default: activity_{id}.{format}).
 - `gccli activity upload <file>`: Upload an activity file (FIT/GPX/TCX).
   - `<file>`: Path to activity file (FIT, GPX, or TCX).
-- `gccli activity create --name=STRING --type=STRING --duration=DURATION [flags]`: Create a manual activity.
-  - `--name=STRING`: Activity name.
-  - `--type=STRING`: Activity type key (e.g. running, cycling, swimming).
+- `gccli activity create --name=FREE-TEXT --type=FREE-TEXT --duration=DURATION [flags]`: Create a manual activity.
+  - `--name=FREE-TEXT`: Activity name.
+  - `--type=FREE-TEXT`: Activity type key (e.g. running, cycling, swimming).
   - `--distance=FLOAT-64`: Distance in meters.
   - `--duration=DURATION`: Duration (e.g. 30m, 1h15m).
-  - `--date=STRING`: Start date/time (e.g. 2024-06-15T07:30:00). Defaults to now.
+  - `--date=DATE-TIME`: Start date and time in local time: YYYY-MM-DDTHH:MM:SS, YYYY-MM-DDTHH:MM or YYYY-MM-DD, with T or a space. Defaults to now.
 - `gccli activity rename <id> <name>`: Rename an activity.
   - `<id>`: Activity ID.
   - `<name>`: New activity name.
-- `gccli activity retype --type-id=INT --type-key=STRING <id> [flags]`: Change activity type.
+- `gccli activity retype --type-id=INT --type-key=FREE-TEXT <id> [flags]`: Change activity type.
   - `<id>`: Activity ID.
   - `--type-id=INT`: Activity type ID.
-  - `--type-key=STRING`: Activity type key (e.g. running, cycling).
+  - `--type-key=FREE-TEXT`: Activity type key (e.g. running, cycling).
   - `--parent-type-id=0`: Parent activity type ID.
 - `gccli activity describe <id> <text>`: Set or clear the description of an activity.
   - `<id>`: Activity ID.
@@ -1078,8 +1078,7 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli health thresholds power-to-weight --start=DATE --end=DATE`: Show power-to-weight data for a date range.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
-- `gccli health race-predictions view [<date>]`: Show current race predictions. Also runs as `gccli health race-predictions [<date>]`.
-  - `[<date>]`: Unused. Current predictions are always returned.
+- `gccli health race-predictions view`: Show current race predictions. Also runs as `gccli health race-predictions`.
 - `gccli health race-predictions range --start=DATE --end=DATE`: Show race predictions for a date range.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
@@ -1133,9 +1132,9 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `--metabolic-age=METABOLIC-AGE`: Metabolic age.
   - `--visceral-fat-rating=VISCERAL-FAT-RATING`: Visceral fat rating.
   - `--bmi=BMI`: Body mass index.
-- `gccli body delete-weight --date=STRING <pk> [flags]`: Delete a weigh-in entry.
+- `gccli body delete-weight --date=DATE <pk> [flags]`: Delete a weigh-in entry.
   - `<pk>`: Weigh-in version (primary key).
-  - `--date=STRING`: Date of the weigh-in (YYYY-MM-DD).
+  - `--date=DATE`: Date of the weigh-in (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `-f, --force`: Skip confirmation prompt.
 - `gccli body blood-pressure --start=DATE --end=DATE`: Show blood pressure data.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
@@ -1145,9 +1144,9 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `--diastolic=INT`: Diastolic pressure (mmHg).
   - `--pulse=INT`: Pulse rate (bpm).
   - `--notes=STRING`: Optional notes.
-- `gccli body delete-blood-pressure --date=STRING <version> [flags]`: Delete a blood pressure entry.
+- `gccli body delete-blood-pressure --date=DATE <version> [flags]`: Delete a blood pressure entry.
   - `<version>`: Blood pressure entry version.
-  - `--date=STRING`: Date of the measurement (YYYY-MM-DD).
+  - `--date=DATE`: Date of the measurement (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `-f, --force`: Skip confirmation prompt.
 - `gccli body glucose [<date>]`: Show glucose readings for a date.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
@@ -1206,7 +1205,7 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli courses import <file> [flags]`: Import a GPX file as a new course.
   - `<file>`: Path to GPX file.
   - `-n, --name=STRING`: Course name (overrides name from GPX).
-  - `-t, --type="cycling"`: Activity type key (e.g. running, cycling, hiking).
+  - `-t, --type="cycling"`: Activity type key. One of: cycling, e_bike_fitness, e_bike_mountain, gravel_cycling, hiking, mountain_biking, other, road_biking, running, street_running, trail_running, ultra_run, walking.
   - `-p, --privacy=2`: Course privacy: 1=public, 2=private, 4=group.
 - `gccli courses send <course-id> <device-id>`: Send a course to a device.
   - `<course-id>`: Course ID.
@@ -1248,11 +1247,11 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `<uuid>`: Gear UUID.
   - `<activity-id>`: Activity ID.
 - `gccli gear types`: List gear types.
-- `gccli gear add --brand=STRING --model=STRING <name> [flags]`: Add a gear item.
+- `gccli gear add --brand=FREE-TEXT --model=FREE-TEXT <name> [flags]`: Add a gear item.
   - `<name>`: Gear name.
   - `--type="shoes"`: Gear type. One of: shoes, bike, other.
-  - `--brand=STRING`: Brand.
-  - `--model=STRING`: Model.
+  - `--brand=FREE-TEXT`: Brand.
+  - `--model=FREE-TEXT`: Model.
   - `--notes=STRING`: Notes (1 to 2000 characters). Defaults to the name, because Garmin requires notes.
   - `--first-use="today"`: Date of first use (YYYY-MM-DD, today, yesterday, 3d).
 - `gccli gear update <uuid> [flags]`: Change the name, brand, model or notes of a gear item.
@@ -1326,16 +1325,16 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `--offset=0`: Number of events to skip.
   - `--sort="eventDate_asc"`: Sort order. One of: eventDate_asc, eventDate_desc.
 - `gccli events upcoming`: List upcoming events.
-- `gccli events add --name=STRING --date=STRING --type=STRING [flags]`: Add a calendar event.
-  - `-n, --name=STRING`: Event name.
-  - `-d, --date=STRING`: Event date (YYYY-MM-DD, today, +30d).
+- `gccli events add --name=FREE-TEXT --date=DATE --type=STRING [flags]`: Add a calendar event.
+  - `-n, --name=FREE-TEXT`: Event name.
+  - `-d, --date=DATE`: Event date (YYYY-MM-DD, today, +30d).
   - `-t, --type=STRING`: Event type. One of: running, trail_running, cycling, gravel_cycling, mountain_biking, swimming, triathlon, multi_sport, hiking, walking, fitness_equipment, motorcycling, winter_sport, other.
   - `--race`: Mark as a race.
   - `--location=STRING`: Event location.
-  - `--time=STRING`: Start time (HH:MM).
+  - `--time=HH:MM`: Start time (HH:MM).
   - `--timezone=STRING`: Time zone ID (e.g. Europe/Berlin).
-  - `--distance=STRING`: Target distance (e.g. 10km, 26.2mi, 400m).
-  - `--goal=STRING`: Time goal duration (e.g. 50m, 1h30m, 2400s).
+  - `--distance=DISTANCE`: Target distance (e.g. 10km, 26.2mi, 400m).
+  - `--goal=GOAL`: Time goal duration (e.g. 50m, 1h30m, 2400s).
   - `--primary`: Set as primary training event.
   - `--training`: Set as supporting training event.
   - `--private`: Make event private.
@@ -1392,7 +1391,7 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `--weeks=4`: Number of weeks.
 - `gccli hydration add <amount> [flags]`: Add a hydration log entry.
   - `<amount>`: Amount of water in milliliters.
-  - `--date=""`: Date to log for (YYYY-MM-DD). Defaults to today.
+  - `--date=DATE`: Date to log for (YYYY-MM-DD). Defaults to today.
 - `gccli nutrition food-log [<date>]`: Show daily food log for a date. Also runs as `gccli nutrition [<date>]`.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli nutrition meals [<date>]`: Show meal summaries for a date.
@@ -1563,7 +1562,7 @@ All commands support these flags:
 
 ## Date Format Reference
 
-Many commands accept flexible date formats. Every `--start` and `--end` flag accepts all of them. A bad or empty date in one of these flags is a usage error (exit code 2).
+Many commands accept flexible date formats. Every `--start` and `--end` flag accepts all of them, and so does the optional `[<date>]` argument of the daily views, such as `health sleep`, `health steps`, `body daily-weigh-ins`, `hydration`, `nutrition food-log` and `reload`. A bad or empty date in one of these flags or arguments is a usage error (exit code 2), before the login.
 
 | Format | Example | Description |
 | --- | --- | --- |

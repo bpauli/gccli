@@ -5,6 +5,7 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"reflect"
+	"strconv"
 	"strings"
 	"sync"
 	"testing"
@@ -57,6 +58,83 @@ func TestDateDecode(t *testing.T) {
 			}
 			if cli.D != tt.want {
 				t.Errorf("D = %q, want %q", cli.D, tt.want)
+			}
+		})
+	}
+}
+
+// TestDateTimeDecode pins the format set of DateTime and the zone it parses
+// in. The accepted arguments of activity create --date are stable contract,
+// so an extra format is a defect, and the clock runs in UTC+2 here so that a
+// parse in UTC shows as a wrong wall time or zone.
+func TestDateTimeDecode(t *testing.T) {
+	loc := time.FixedZone("UTC+2", 2*60*60)
+	overrideNowFn(t, time.Date(2026, 10, 15, 12, 0, 0, 0, loc))
+	const layout = "2006-01-02 15:04:05.000000000 -0700 MST"
+	accepted := []struct {
+		raw  string
+		want time.Time
+	}{
+		{"2026-10-15T07:30:15", time.Date(2026, 10, 15, 7, 30, 15, 0, loc)},
+		{"2026-10-15T07:30", time.Date(2026, 10, 15, 7, 30, 0, 0, loc)},
+		{"2026-10-15 07:30:15", time.Date(2026, 10, 15, 7, 30, 15, 0, loc)},
+		{"2026-10-15 07:30", time.Date(2026, 10, 15, 7, 30, 0, 0, loc)},
+		{"2026-10-15", time.Date(2026, 10, 15, 0, 0, 0, 0, loc)},
+		{"2026-10-15T7:30", time.Date(2026, 10, 15, 7, 30, 0, 0, loc)},
+		{"2026-10-15T07:30:15.5", time.Date(2026, 10, 15, 7, 30, 15, 500000000, loc)},
+		{"2026-10-15T00:00:00", time.Date(2026, 10, 15, 0, 0, 0, 0, loc)},
+		{"2026-10-15T23:59:59", time.Date(2026, 10, 15, 23, 59, 59, 0, loc)},
+		{"2024-02-29", time.Date(2024, 2, 29, 0, 0, 0, 0, loc)},
+	}
+	rejected := []string{
+		"2026-10-15T07:30:15Z",
+		"2026-10-15T07:30:15+02:00",
+		"2026-10-15T07:30+02:00",
+		"15.10.2026",
+		"15.10.2026 07:30",
+		"today",
+		"3d",
+		"",
+		" ",
+		" 2026-10-15",
+		"2026-10-15 ",
+		"2026-02-30",
+		"2026-10-15T24:00",
+		"2026-10-15T07:60",
+		"2026-10-15T07",
+		"2026-10-15T07:30:15.5Z",
+	}
+	decode := func(t *testing.T, raw string) (DateTime, error) {
+		t.Helper()
+		var cli struct {
+			D DateTime `name:"d"`
+		}
+		parser, err := kong.New(&cli)
+		if err != nil {
+			t.Fatal(err)
+		}
+		_, err = parser.Parse([]string{"--d", raw})
+		return cli.D, err
+	}
+	for _, tt := range accepted {
+		t.Run(tt.raw, func(t *testing.T) {
+			got, err := decode(t, tt.raw)
+			if err != nil {
+				t.Fatalf("%q: err = %v, want a time", tt.raw, err)
+			}
+			if got.Format(layout) != tt.want.Format(layout) {
+				t.Errorf("%q = %s, want %s", tt.raw, got.Format(layout), tt.want.Format(layout))
+			}
+		})
+	}
+	for _, raw := range rejected {
+		t.Run("rejected/"+raw, func(t *testing.T) {
+			got, err := decode(t, raw)
+			if err == nil {
+				t.Fatalf("%q = %s, want a usage error", raw, got.Format(layout))
+			}
+			if want := "--d: invalid date and time " + strconv.Quote(raw); !strings.Contains(err.Error(), want) {
+				t.Errorf("%q: err = %v, want %q", raw, err, want)
 			}
 		})
 	}
@@ -323,4 +401,131 @@ func TestShortFlagsHaveOneMeaning(t *testing.T) {
 			t.Errorf("-%c means --%s in %q and --%s in %q", f.Short, prev.long, prev.path, f.Name, path)
 		}
 	})
+}
+
+// walkValues calls fn on every flag and positional of the whole Kong tree,
+// Custom commands included.
+func walkValues(t *testing.T, fn func(path string, v *kong.Value)) {
+	t.Helper()
+	var walk func(path string, node *kong.Node)
+	walk = func(path string, node *kong.Node) {
+		for _, f := range node.Flags {
+			fn(path, f.Value)
+		}
+		for _, p := range node.Positional {
+			fn(path, p)
+		}
+		for _, child := range node.Children {
+			if child.Type == kong.CommandNode {
+				walk(strings.TrimSpace(path+" "+child.Name), child)
+			}
+		}
+	}
+	walk("", newTestParser(t).Model.Node)
+}
+
+// TestDateFieldsHaveDateType walks the whole Kong tree, Custom commands
+// included: a flag or a positional that is a date by its name or by its
+// help must be a Date or a DateTime, so that a bad date fails at parse
+// time, before the login. checkLeaf has the same rule for Leaf rows.
+func TestDateFieldsHaveDateType(t *testing.T) {
+	walkValues(t, func(path string, v *kong.Value) {
+		if msg := dateTypeError(v.Name, v.Help, v.Target.Type()); msg != "" {
+			t.Errorf("%s: %s", path, msg)
+		}
+	})
+}
+
+// TestIDFieldsHaveIDType walks the whole Kong tree, Custom commands
+// included: a flag or a positional that is an ID by its name must not be a
+// plain string, so that an empty ID fails at parse time, before the login.
+// checkLeaf has the same rule for Leaf rows.
+func TestIDFieldsHaveIDType(t *testing.T) {
+	walkValues(t, func(path string, v *kong.Value) {
+		if msg := idTypeError(v.Name, v.Target.Type()); msg != "" {
+			t.Errorf("%s: %s", path, msg)
+		}
+	})
+}
+
+// requiredStringExempt names the required plain-string values of the Kong
+// tree that are not a FreeText on purpose, with the reason. A key is the
+// command path and the value name.
+var requiredStringExempt = map[string]string{
+	"activity describe text":       "an empty text clears the description by design",
+	"calendar notes add name":      "Validate rejects an empty or blank name with its own message",
+	"gear collections rename name": "Validate rejects an empty or blank name with its own message",
+}
+
+// TestRequiredStringsHaveTextType walks the whole Kong tree, Custom
+// commands included: a required flag or positional of type string lets an
+// empty value through to the login, so its type must be FreeText, or ID when it
+// fills a request path. Kong itself rejects an empty enum value and an empty
+// existingfile value, so those pass. An exempt value must still be a
+// required plain string, or the entry is stale.
+func TestRequiredStringsHaveTextType(t *testing.T) {
+	seen := map[string]bool{}
+	walkValues(t, func(path string, v *kong.Value) {
+		key := path + " " + v.Name
+		plain := v.Required && v.Target.Type() == reflect.TypeFor[string]() && v.Enum == "" && v.Tag.Type == ""
+		if reason, ok := requiredStringExempt[key]; ok {
+			seen[key] = true
+			if !plain {
+				t.Errorf("%s: requiredStringExempt names it (%s), but it is not a required plain string any more: drop the entry", key, reason)
+			}
+			return
+		}
+		if plain {
+			t.Errorf("%s: a required string, which Kong lets be empty: make the field a FreeText, or an ID when it fills a request path, so Kong rejects an empty value at parse time", key)
+		}
+	})
+	for key := range requiredStringExempt {
+		if !seen[key] {
+			t.Errorf("requiredStringExempt names %q, but the Kong tree has no such value: drop the entry", key)
+		}
+	}
+}
+
+// TestNonEmptyDecode pins the one rule of ID and FreeText: an empty or blank
+// value is a usage error, and any other value is kept as given.
+func TestNonEmptyDecode(t *testing.T) {
+	tests := []struct {
+		args    []string
+		wantID  ID
+		want    FreeText
+		wantErr string
+	}{
+		{args: []string{"7", "Morning Run"}, wantID: "7", want: "Morning Run"},
+		{args: []string{" 7 ", " x "}, wantID: " 7 ", want: " x "},
+		{args: []string{"", "x"}, wantErr: "<id>: must not be empty"},
+		{args: []string{" ", "x"}, wantErr: "<id>: must not be empty"},
+		{args: []string{"7", ""}, wantErr: "<name>: must not be empty"},
+		{args: []string{"7", " \t"}, wantErr: "<name>: must not be empty"},
+		{args: []string{"7"}, wantErr: `expected "<name>"`},
+	}
+	for _, tt := range tests {
+		t.Run(strings.Join(tt.args, " "), func(t *testing.T) {
+			var cli struct {
+				ID   ID       `arg:""`
+				Name FreeText `arg:""`
+			}
+			parser, err := kong.New(&cli)
+			if err != nil {
+				t.Fatal(err)
+			}
+			_, err = parser.Parse(tt.args)
+			if tt.wantErr != "" {
+				if err == nil || !strings.Contains(err.Error(), tt.wantErr) {
+					t.Fatalf("err = %v, want %q", err, tt.wantErr)
+				}
+				return
+			}
+			if err != nil {
+				t.Fatal(err)
+			}
+			if cli.ID != tt.wantID || cli.Name != tt.want {
+				t.Errorf("got ID %q, Name %q, want %q, %q", cli.ID, cli.Name, tt.wantID, tt.want)
+			}
+		})
+	}
 }

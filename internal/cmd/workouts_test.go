@@ -380,19 +380,6 @@ func TestWorkoutScheduleAdd_SendsTheDate(t *testing.T) {
 	}
 }
 
-func TestWorkoutScheduleAdd_InvalidDate(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &WorkoutScheduleAddCmd{ID: "77", Date: "bad-date"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "invalid date") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
-
 // --- WorkoutScheduleListCmd tests ---
 
 func TestWorkoutScheduleList_Success(t *testing.T) {
@@ -428,19 +415,6 @@ func TestWorkoutScheduleList_JSON(t *testing.T) {
 	err := cmd.Run(g)
 	if err != nil {
 		t.Fatalf("expected no error, got: %v", err)
-	}
-}
-
-func TestWorkoutScheduleList_InvalidDate(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &WorkoutScheduleListCmd{Date: "bad-date"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "invalid date") {
-		t.Fatalf("unexpected error: %v", err)
 	}
 }
 
@@ -740,7 +714,7 @@ func TestWorkoutUpdate_Success(t *testing.T) {
 
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &WorkoutUpdateCmd{ID: "42", File: tmpFile}
+	cmd := &WorkoutUpdateCmd{ID: 42, File: tmpFile}
 	if err := cmd.Run(g); err != nil {
 		t.Fatalf("expected no error, got: %v", err)
 	}
@@ -765,7 +739,7 @@ func TestWorkoutUpdate_InvalidJSON(t *testing.T) {
 
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &WorkoutUpdateCmd{ID: "42", File: tmpFile}
+	cmd := &WorkoutUpdateCmd{ID: 42, File: tmpFile}
 	err := cmd.Run(g)
 	if err == nil {
 		t.Fatal("expected error, got nil")
@@ -782,7 +756,7 @@ func TestWorkoutUpdate_ReadFileError(t *testing.T) {
 
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &WorkoutUpdateCmd{ID: "42", File: filepath.Join(t.TempDir(), "missing.json")}
+	cmd := &WorkoutUpdateCmd{ID: 42, File: filepath.Join(t.TempDir(), "missing.json")}
 	err := cmd.Run(g)
 	if err == nil {
 		t.Fatal("expected error, got nil")
@@ -830,7 +804,7 @@ func TestWorkoutUpdate_SetsWorkoutIDFromArgument(t *testing.T) {
 
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &WorkoutUpdateCmd{ID: "42", File: tmpFile}
+	cmd := &WorkoutUpdateCmd{ID: 42, File: tmpFile}
 	if err := cmd.Run(g); err != nil {
 		t.Fatalf("expected no error, got: %v", err)
 	}
@@ -867,7 +841,7 @@ func TestWorkoutUpdate_WarnsOnMismatchedWorkoutID(t *testing.T) {
 
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &WorkoutUpdateCmd{ID: "42", File: tmpFile}
+	cmd := &WorkoutUpdateCmd{ID: 42, File: tmpFile}
 	if err := cmd.Run(g); err != nil {
 		t.Fatalf("expected no error, got: %v", err)
 	}
@@ -886,24 +860,6 @@ func TestWorkoutUpdate_WarnsOnMismatchedWorkoutID(t *testing.T) {
 	}
 }
 
-func TestWorkoutUpdate_NonNumericID(t *testing.T) {
-	tmpFile := filepath.Join(t.TempDir(), "workout.json")
-	if err := os.WriteFile(tmpFile, []byte(`{}`), 0o644); err != nil {
-		t.Fatalf("write temp file: %v", err)
-	}
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &WorkoutUpdateCmd{ID: "not-an-id", File: tmpFile}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "invalid workout ID") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
-
 func TestWorkoutUpdate_NonObjectJSON(t *testing.T) {
 	store := newTestSecretsStore(t)
 	overrideLoadSecrets(t, store)
@@ -916,7 +872,7 @@ func TestWorkoutUpdate_NonObjectJSON(t *testing.T) {
 
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &WorkoutUpdateCmd{ID: "42", File: tmpFile}
+	cmd := &WorkoutUpdateCmd{ID: 42, File: tmpFile}
 	err := cmd.Run(g)
 	if err == nil {
 		t.Fatal("expected error, got nil")
