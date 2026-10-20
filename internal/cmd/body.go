@@ -118,6 +118,10 @@ func (c *BodyCompositionCmd) Run(g *Globals) error {
 	return writeHealthJSON(g, data)
 }
 
+// weightTimestamp is the format of the weigh-in timestamps. Garmin rejects
+// a timestamp without milliseconds with a 500 ValueInstantiationException.
+const weightTimestamp = "2006-01-02T15:04:05.000"
+
 // BodyAddWeightCmd adds a weigh-in entry.
 type BodyAddWeightCmd struct {
 	Value float64 `arg:"" help:"Weight value."`
@@ -131,8 +135,8 @@ func (c *BodyAddWeightCmd) Run(g *Globals) error {
 	}
 
 	now := nowFn()
-	localTS := now.Format("2006-01-02T15:04:05")
-	gmtTS := now.UTC().Format("2006-01-02T15:04:05")
+	localTS := now.Format(weightTimestamp)
+	gmtTS := now.UTC().Format(weightTimestamp)
 
 	data, err := client.AddWeight(g.Context, c.Value, c.Unit, localTS, gmtTS)
 	if err != nil {
