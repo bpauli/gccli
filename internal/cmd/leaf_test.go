@@ -99,7 +99,8 @@ var notUsageCases = map[string]string{
 
 // TestBadValuesAreCheckedBeforeAccount runs every @bad-* and @empty-*
 // golden without an account: a bad value that Kong can check must be a
-// usage error at parse time, before the login, with no request.
+// usage error at parse time, before the login, with no request. A golden of
+// a notUsageCases case must not be a usage error, or the entry is stale.
 func TestBadValuesAreCheckedBeforeAccount(t *testing.T) {
 	var files []string
 	for _, pattern := range []string{"*@bad-*.golden", "*@empty-*.golden"} {
@@ -115,10 +116,8 @@ func TestBadValuesAreCheckedBeforeAccount(t *testing.T) {
 	seen := map[string]bool{}
 	for _, file := range files {
 		_, suffix, _ := strings.Cut(strings.TrimSuffix(filepath.Base(file), ".golden"), "@")
-		if _, ok := notUsageCases[suffix]; ok {
-			seen[suffix] = true
-			continue
-		}
+		_, exempt := notUsageCases[suffix]
+		seen[suffix] = seen[suffix] || exempt
 		args, in, err := goldenInput(file)
 		if err != nil {
 			t.Errorf("%s: %v", file, err)
@@ -128,6 +127,12 @@ func TestBadValuesAreCheckedBeforeAccount(t *testing.T) {
 		for _, flag := range []string{"--plain", "--json"} {
 			t.Run(filepath.Base(file)+"/"+strings.TrimPrefix(flag, "--"), func(t *testing.T) {
 				stdout, stderr, code, requests := runWithoutAccount(t, in, flag, args)
+				if exempt {
+					if code == kindUsage.exit {
+						t.Errorf("exit %d: notUsageCases names %q, but this value is a usage error now: drop the entry", code, suffix)
+					}
+					return
+				}
 				if code != kindUsage.exit {
 					t.Errorf("exit %d, want %d: a bad value must fail at parse time, before the login; stderr:\n%s", code, kindUsage.exit, stderr)
 				}
