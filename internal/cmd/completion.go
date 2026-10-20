@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 
 	"github.com/alecthomas/kong"
@@ -82,9 +83,17 @@ func collectFlags(node *kong.Node) []flagInfo {
 			IsBool: f.IsBool(),
 		}
 		if f.Enum != "" {
-			fi.Enum = strings.Split(f.Enum, ",")
+			// An empty enum value, as in "light,heavy,", clears a field: it has nothing to complete.
+			fi.Enum = slices.DeleteFunc(strings.Split(f.Enum, ","), func(v string) bool { return v == "" })
 		}
 		flags = append(flags, fi)
+		switch f.Tag.Negatable {
+		case "":
+		case "_": // Kong's mark for the default negation --no-<flag>
+			flags = append(flags, flagInfo{Long: "no-" + f.Name, Help: f.Help, IsBool: true})
+		default:
+			flags = append(flags, flagInfo{Long: f.Tag.Negatable, Help: f.Help, IsBool: true})
+		}
 	}
 	return flags
 }

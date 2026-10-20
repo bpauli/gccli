@@ -26,7 +26,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Nutrition** — view daily food logs, meals, and nutrition settings
 - **Events** — list, list upcoming, add, and delete calendar events (races, group rides, etc.) with goals and training priority support
 - **Calendar** - add, update, move and delete calendar notes
-- **Wellness** - menstrual cycle data and calendar, pregnancy summary, jet lag trips and status
+- **Wellness** - menstrual cycle data and calendar, menstrual daily log (view, set, delete), pregnancy summary, jet lag trips and status
 - **Social** - notifications, view and change notification preferences, connections, connection requests, followers, following, newsfeed, groups
 - **Agent-ready** - ships a bundled agent skill (`skills/gccli/`) that plugs into AI assistants like Claude Code, Codex, Hermes, and OpenClaw so you can drive Garmin Connect in plain language
 - **Multiple accounts** — manage multiple Garmin accounts via `--account` flag
@@ -790,6 +790,10 @@ gccli calendar notes delete <id>               # Delete a note (with confirmatio
 gccli wellness menstrual-cycle --start 2024-01-01 --end 2024-03-31
 gccli wellness menstrual-summary --start 2024-01-01 --end 2024-03-31
 gccli wellness menstrual-calendar --start 2024-01-01 --end 2024-03-31
+gccli wellness menstrual-log 2026-10-01           # Daily log ({} for a day without a log)
+gccli wellness menstrual-log set 2026-10-01 --flow light --symptoms cramps,headache
+gccli wellness menstrual-log set 2026-10-01 --notes ""   # Clear the notes, keep the other fields
+gccli wellness menstrual-log delete 2026-10-01    # Delete the daily log (with confirmation)
 gccli wellness pregnancy-summary
 gccli wellness jet-lag list
 gccli wellness jet-lag status 2024-03-15
@@ -1423,6 +1427,21 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli wellness menstrual-calendar --start=DATE --end=DATE`: Show the menstrual cycle calendar for a date range.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli wellness menstrual-log view [<date>]`: Show the menstrual daily log of a date. Also runs as `gccli wellness menstrual-log [<date>]`.
+  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli wellness menstrual-log set <date> [flags]`: Change the menstrual daily log of a date. Other fields keep their values.
+  - `<date>`: Date of the log (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--flow=FLOW`: Flow: light, medium or heavy. An empty value clears it.
+  - `--symptoms=SYMPTOM,...`: Comma-separated symptoms: acne, backache, bloating, body-aches, constipation, cramps, cravings, diarrhea, dizziness, fatigue, headache, insomnia, nausea, tender-breasts. An empty value clears them.
+  - `--moods=MOOD,...`: Comma-separated moods: energetic, emotional, fine, frustrated, happy, irritable, mood-swings, motivated, overwhelmed, sad. An empty value clears them.
+  - `--discharge=DISCHARGE,...`: Comma-separated discharge: creamy, egg-white, no-discharge, spotting, sticky, unusual. no-discharge takes no other value. An empty value clears it.
+  - `--sex-drive=LEVEL`: Sex drive: average, high or low. An empty value clears it.
+  - `--sexual-activity=KIND`: Sexual activity: protected or unprotected. An empty value clears it.
+  - `--notes=TEXT`: Notes. An empty value clears them.
+  - `--ovulation`: Mark the day as the ovulation day. --no-ovulation removes the mark.
+- `gccli wellness menstrual-log delete <date> [flags]`: Delete the menstrual daily log of a date.
+  - `<date>`: Date of the log (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli wellness pregnancy-summary`: Show pregnancy summary.
 - `gccli wellness jet-lag list`: List jet lag trips. Also runs as `gccli wellness jet-lag`.
 - `gccli wellness jet-lag status [<date>]`: Show jet lag status for a date.

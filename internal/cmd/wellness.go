@@ -31,6 +31,7 @@ var wellnessGroup = Group{Name: "wellness", Help: "View wellness data.", Childre
 		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
 		Verb:     "get menstrual calendar", Output: JSON{},
 	},
+	wellnessMenstrualLogGroup,
 	Leaf{Name: "pregnancy-summary", Help: "Show pregnancy summary.", Endpoint: "wellness.pregnancy-summary", Verb: "get pregnancy summary", Output: JSON{}},
 	wellnessJetLagGroup,
 }}

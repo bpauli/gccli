@@ -602,6 +602,21 @@ Date shortcuts
 - `gccli wellness menstrual-calendar --start=DATE --end=DATE`: Show the menstrual cycle calendar for a date range.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli wellness menstrual-log view [<date>]`: Show the menstrual daily log of a date. Also runs as `gccli wellness menstrual-log [<date>]`.
+  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli wellness menstrual-log set <date> [flags]`: Change the menstrual daily log of a date. Other fields keep their values.
+  - `<date>`: Date of the log (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--flow=FLOW`: Flow: light, medium or heavy. An empty value clears it.
+  - `--symptoms=SYMPTOM,...`: Comma-separated symptoms: acne, backache, bloating, body-aches, constipation, cramps, cravings, diarrhea, dizziness, fatigue, headache, insomnia, nausea, tender-breasts. An empty value clears them.
+  - `--moods=MOOD,...`: Comma-separated moods: energetic, emotional, fine, frustrated, happy, irritable, mood-swings, motivated, overwhelmed, sad. An empty value clears them.
+  - `--discharge=DISCHARGE,...`: Comma-separated discharge: creamy, egg-white, no-discharge, spotting, sticky, unusual. no-discharge takes no other value. An empty value clears it.
+  - `--sex-drive=LEVEL`: Sex drive: average, high or low. An empty value clears it.
+  - `--sexual-activity=KIND`: Sexual activity: protected or unprotected. An empty value clears it.
+  - `--notes=TEXT`: Notes. An empty value clears them.
+  - `--ovulation`: Mark the day as the ovulation day. --no-ovulation removes the mark.
+- `gccli wellness menstrual-log delete <date> [flags]`: Delete the menstrual daily log of a date.
+  - `<date>`: Date of the log (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli wellness pregnancy-summary`: Show pregnancy summary.
 - `gccli wellness jet-lag list`: List jet lag trips. Also runs as `gccli wellness jet-lag`.
 - `gccli wellness jet-lag status [<date>]`: Show jet lag status for a date.
@@ -619,6 +634,7 @@ Worked examples
 - Cycling workout with a power target: `gccli workouts create "FTP Intervals" --type bike --step "warmup:10m" --step "run:5m@power:250-280" --step "recovery:3m" --step "run:5m@power:250-280" --step "cooldown:10m"`
 - Race event: `gccli events add --name "Berlin Marathon" --date 2026-09-27 --type running --race --location "Berlin, Germany" --distance 42.195km --time 09:15 --timezone Europe/Berlin`
 - Calendar note: `gccli calendar notes add 2026-10-20 "Long run" --content "Easy pace"` prints the note ID. Then `gccli calendar notes move <id> 2026-10-21`, `gccli calendar notes update <id> --content ""` (clears the text) and `gccli calendar notes delete <id> --force`.
+- Menstrual daily log: `gccli wellness menstrual-log set 2026-10-01 --flow light --symptoms cramps,tender-breasts --ovulation` sets fields of the log of a day. `gccli wellness menstrual-log set 2026-10-01 --symptoms ""` clears the symptoms and keeps the other fields. `gccli wellness menstrual-log 2026-10-01` shows the log, and `gccli wellness menstrual-log delete 2026-10-01 --force` deletes it.
 - Nap: `gccli health sleep naps add 13:30 13:50` adds a nap for today. Garmin takes only naps that end today, and the times are in the time zone of the Garmin profile, not of the machine. `gccli health sleep naps delete today 13:30 --force` deletes the nap that starts at 13:30.
 - Notification preference: `gccli notifications preferences` shows the keys. `gccli notifications preferences set allowEmailWeeklySummary false` turns one off. A key that is not in the preferences fails before any write, and the error lists the keys.
 - Privacy zone: `gccli profile privacy-zones add --lat 51.5 --lon=-0.12 --radius 500` prints the zone ID. A negative value needs the `=` form. The radius is 500 to 1500 meters. `gccli profile privacy-zones delete <id> --force` deletes it.
@@ -676,4 +692,5 @@ Notes
 - Download formats: FIT (default), GPX, TCX, KML, CSV.
 - Workout step format: `type:duration[@target:low-high]`. Types: warmup, run, recovery, cooldown; targets: pace (min:sec), hr (bpm), power (watts), cadence.
 - `goals set` and `goals steps` change the goal from `--date` (default today) onward; the days before keep their goal. `gccli health summary <date> --json` shows the steps, floors and intensity minutes goals (`dailyStepGoal`, `userFloorsAscendedGoal`, `intensityMinutesGoal`).
+- `wellness menstrual-log set` changes only the fields you give. Garmin replaces the whole day on a write, so gccli reads the log first and sends the other fields again. The values are lower-case kebab (`light`, `tender-breasts`, `no-discharge`), the lists are comma-separated, and an empty value (`""`) clears a field. `--no-ovulation` removes the ovulation mark. The writes need cycle tracking set up in Garmin Connect; without it, Garmin answers 400 "MCT settings were not found". `wellness menstrual-log` prints `{}` for a day without a log, and `delete` of such a day fails with exit code 1.
 - `workouts update` replaces the whole workout, so build the file from `gccli workouts detail <id>` and edit it. `workoutId` is set from the ID argument, so an `upload` payload works unchanged. The workout keeps its ID and its calendar entries.

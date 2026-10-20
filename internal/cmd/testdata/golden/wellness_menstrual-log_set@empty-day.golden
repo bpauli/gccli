@@ -1,0 +1,156 @@
+Garmin answers 204 for a day without a log, so the body holds only the given values. Each lower-case kebab value goes to Garmin in upper snake case.
+-- args --
+wellness
+menstrual-log
+set
+2026-10-01
+--flow
+medium
+--symptoms
+tender-breasts,body-aches
+--moods
+mood-swings
+--discharge
+egg-white,sticky
+--sex-drive
+high
+--sexual-activity
+unprotected
+--notes
+Long day
+--ovulation
+-- route GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01 204 --
+-- route POST /periodichealth-service/menstrualcycle/dailylog/2026-10-01 --
+{"userProfilePk":1,"calendarDate":"2026-10-01","symptoms":["TENDER_BREASTS","BODY_ACHES"],"moods":["MOOD_SWINGS"],"discharge":["EGG_WHITE","STICKY"],"flow":"MEDIUM","sexDrive":"HIGH","sexualActivity":"UNPROTECTED","notes":"Long day","reportTimestamp":"2026-10-15T09:30:00.0","ovulationDay":true}
+-- table stdout --
+-- table stderr --
+Saved menstrual log for 2026-10-01
+-- table exit --
+0
+-- table requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+POST /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+  {
+    "calendarDate": "2026-10-01",
+    "discharge": [
+      "EGG_WHITE",
+      "STICKY"
+    ],
+    "flow": "MEDIUM",
+    "moods": [
+      "MOOD_SWINGS"
+    ],
+    "notes": "Long day",
+    "ovulationDay": true,
+    "reportTimestamp": "2026-10-15T09:30:00.000",
+    "sexDrive": "HIGH",
+    "sexualActivity": "UNPROTECTED",
+    "symptoms": [
+      "TENDER_BREASTS",
+      "BODY_ACHES"
+    ]
+  }
+-- plain stdout --
+-- plain stderr --
+Saved menstrual log for 2026-10-01
+-- plain exit --
+0
+-- plain requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+POST /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+  {
+    "calendarDate": "2026-10-01",
+    "discharge": [
+      "EGG_WHITE",
+      "STICKY"
+    ],
+    "flow": "MEDIUM",
+    "moods": [
+      "MOOD_SWINGS"
+    ],
+    "notes": "Long day",
+    "ovulationDay": true,
+    "reportTimestamp": "2026-10-15T09:30:00.000",
+    "sexDrive": "HIGH",
+    "sexualActivity": "UNPROTECTED",
+    "symptoms": [
+      "TENDER_BREASTS",
+      "BODY_ACHES"
+    ]
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Saved menstrual log for 2026-10-01
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+POST /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+  {
+    "calendarDate": "2026-10-01",
+    "discharge": [
+      "EGG_WHITE",
+      "STICKY"
+    ],
+    "flow": "MEDIUM",
+    "moods": [
+      "MOOD_SWINGS"
+    ],
+    "notes": "Long day",
+    "ovulationDay": true,
+    "reportTimestamp": "2026-10-15T09:30:00.000",
+    "sexDrive": "HIGH",
+    "sexualActivity": "UNPROTECTED",
+    "symptoms": [
+      "TENDER_BREASTS",
+      "BODY_ACHES"
+    ]
+  }
+-- json stdout --
+{
+  "userProfilePk": 1,
+  "calendarDate": "2026-10-01",
+  "symptoms": [
+    "TENDER_BREASTS",
+    "BODY_ACHES"
+  ],
+  "moods": [
+    "MOOD_SWINGS"
+  ],
+  "discharge": [
+    "EGG_WHITE",
+    "STICKY"
+  ],
+  "flow": "MEDIUM",
+  "sexDrive": "HIGH",
+  "sexualActivity": "UNPROTECTED",
+  "notes": "Long day",
+  "reportTimestamp": "2026-10-15T09:30:00.0",
+  "ovulationDay": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+POST /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+  {
+    "calendarDate": "2026-10-01",
+    "discharge": [
+      "EGG_WHITE",
+      "STICKY"
+    ],
+    "flow": "MEDIUM",
+    "moods": [
+      "MOOD_SWINGS"
+    ],
+    "notes": "Long day",
+    "ovulationDay": true,
+    "reportTimestamp": "2026-10-15T09:30:00.000",
+    "sexDrive": "HIGH",
+    "sexualActivity": "UNPROTECTED",
+    "symptoms": [
+      "TENDER_BREASTS",
+      "BODY_ACHES"
+    ]
+  }

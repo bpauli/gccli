@@ -1,0 +1,100 @@
+The daily log of a day with a log.
+-- args --
+wellness
+menstrual-log
+view
+2026-10-01
+-- route GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01 --
+{"userProfilePk":1,"calendarDate":"2026-10-01","symptoms":["CRAMPS","HEADACHE"],"moods":null,"discharge":null,"flow":"LIGHT","sexDrive":null,"sexualActivity":null,"notes":"x","reportTimestamp":"2026-10-20T08:00:00.0","hasBabyMovement":false,"ovulationDay":true}
+-- table stdout --
+{
+  "userProfilePk": 1,
+  "calendarDate": "2026-10-01",
+  "symptoms": [
+    "CRAMPS",
+    "HEADACHE"
+  ],
+  "moods": null,
+  "discharge": null,
+  "flow": "LIGHT",
+  "sexDrive": null,
+  "sexualActivity": null,
+  "notes": "x",
+  "reportTimestamp": "2026-10-20T08:00:00.0",
+  "hasBabyMovement": false,
+  "ovulationDay": true
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+-- plain stdout --
+{
+  "userProfilePk": 1,
+  "calendarDate": "2026-10-01",
+  "symptoms": [
+    "CRAMPS",
+    "HEADACHE"
+  ],
+  "moods": null,
+  "discharge": null,
+  "flow": "LIGHT",
+  "sexDrive": null,
+  "sexualActivity": null,
+  "notes": "x",
+  "reportTimestamp": "2026-10-20T08:00:00.0",
+  "hasBabyMovement": false,
+  "ovulationDay": true
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+-- plain-header stdout --
+{
+  "userProfilePk": 1,
+  "calendarDate": "2026-10-01",
+  "symptoms": [
+    "CRAMPS",
+    "HEADACHE"
+  ],
+  "moods": null,
+  "discharge": null,
+  "flow": "LIGHT",
+  "sexDrive": null,
+  "sexualActivity": null,
+  "notes": "x",
+  "reportTimestamp": "2026-10-20T08:00:00.0",
+  "hasBabyMovement": false,
+  "ovulationDay": true
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+-- json stdout --
+{
+  "userProfilePk": 1,
+  "calendarDate": "2026-10-01",
+  "symptoms": [
+    "CRAMPS",
+    "HEADACHE"
+  ],
+  "moods": null,
+  "discharge": null,
+  "flow": "LIGHT",
+  "sexDrive": null,
+  "sexualActivity": null,
+  "notes": "x",
+  "reportTimestamp": "2026-10-20T08:00:00.0",
+  "hasBabyMovement": false,
+  "ovulationDay": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
