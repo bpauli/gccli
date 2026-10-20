@@ -1,0 +1,32 @@
+-- args --
+devices
+alarms
+-- route GET /device-service/deviceregistration/devices --
+-- table stdout --
+[]
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /device-service/deviceregistration/devices
+-- plain stdout --
+[]
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /device-service/deviceregistration/devices
+-- plain-header stdout --
+[]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /device-service/deviceregistration/devices
+-- json stdout --
+[]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /device-service/deviceregistration/devices
