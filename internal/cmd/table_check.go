@@ -31,7 +31,7 @@ var v1NullJSON = []string{
 
 // checkTable reports every defect of the command tree: a Custom without
 // a struct Cmd; a Leaf whose endpoint, placeholders, In fields, enums,
-// required bindings, int bindings, date types, frozen-list
+// required bindings, int bindings, date and ID types, frozen-list
 // paths, Output type or Rows columns and Write templates do not fit. Each
 // fail message in checkLeaf states one rule.
 func checkTable(nodes []Node) []error {
@@ -103,6 +103,20 @@ func dateTypeError(name, help string, t reflect.Type) string {
 	return ""
 }
 
+// idTypeError names the defect of a flag, positional or field that is an ID
+// by its name (id, ID, uuid, UUID, or a name that ends in -id, ID, -uuid or
+// UUID) but is a plain string, which Kong lets be empty. A non-string type,
+// such as the int --type-id of activity retype, passes.
+func idTypeError(name string, t reflect.Type) string {
+	isIDName := name == "id" || name == "ID" || name == "uuid" || name == "UUID" ||
+		strings.HasSuffix(name, "-id") || strings.HasSuffix(name, "ID") ||
+		strings.HasSuffix(name, "-uuid") || strings.HasSuffix(name, "UUID")
+	if isIDName && t == reflect.TypeFor[string]() {
+		return fmt.Sprintf("%s is an ID (by its name), so its type must be ID, NumericID or GearUUID, not string: Kong then rejects an empty value at parse time", name)
+	}
+	return ""
+}
+
 func checkLeaf(path string, l Leaf) []error {
 	var errs []error
 	fail := func(format string, a ...any) {
@@ -117,6 +131,9 @@ func checkLeaf(path string, l Leaf) []error {
 	for i := range fields.NumField() {
 		f := fields.Field(i)
 		if msg := dateTypeError(f.Name, f.Tag.Get("help"), f.Type); msg != "" {
+			fail("%s", msg)
+		}
+		if msg := idTypeError(f.Name, f.Type); msg != "" {
 			fail("%s", msg)
 		}
 	}
@@ -184,6 +201,13 @@ func checkLeaf(path string, l Leaf) []error {
 			fail("placeholder {%s} of %s is required, but Params does not bind it", p.Name, l.Endpoint)
 		case !s.sure(fields):
 			fail("placeholder {%s} of %s is required, but %s may be empty: make the field required, give it a default, or add .Or(...)", p.Name, l.Endpoint, s)
+		}
+		// Kong's enum check already rejects an empty value of an enum field.
+		for _, a := range s.alts {
+			f, ok := argsField(fields, a.field)
+			if ok && alwaysSet(f) && f.Type == reflect.TypeFor[string]() && kongEnum(f) == nil {
+				fail("placeholder {%s} of %s is required, but %s is a string, which may be empty (\"\"): make the field an ID, so Kong rejects an empty value at parse time", p.Name, l.Endpoint, a)
+			}
 		}
 	}
 

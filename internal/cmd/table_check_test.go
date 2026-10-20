@@ -109,7 +109,7 @@ func TestCheckTableRejects(t *testing.T) {
 			"In names a field Kong skips", "goals list",
 			func(l *Leaf) {
 				l.Spec = argsOf(&struct {
-					Status string `kong:"-" default:"active"`
+					Status string `kong:"-" default:"active" enum:"active,future,past"`
 				}{})
 			},
 			`goals list: Params["status"] binds In("Status"), which Kong skips (kong:"-")`,
@@ -209,8 +209,9 @@ func TestCheckTableRejects(t *testing.T) {
 			"positional date of type string", "health sleep view",
 			func(l *Leaf) {
 				l.Spec = argsOf(&struct {
-					Date string `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+					Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
 				}{})
+				l.Params["date"] = In("Date").Or(Today)
 			},
 			`health sleep view: Date is a date (by its name), so its type must be Date or DateTime, not string: Kong then checks it at parse time`,
 		},
@@ -218,9 +219,10 @@ func TestCheckTableRejects(t *testing.T) {
 			"date flag of type string", "body delete-weight",
 			func(l *Leaf) {
 				l.Spec = argsOf(&struct {
-					PK   string `arg:"" help:"Weigh-in version (primary key)."`
-					Date string `help:"Date of the weigh-in (YYYY-MM-DD)." required:"" name:"date"`
+					PK   ID     `arg:"" help:"Weigh-in version (primary key)."`
+					Date string `help:"Date of the weigh-in (YYYY-MM-DD)." name:"date"`
 				}{})
+				l.Params["date"] = In("Date").Or(Today)
 			},
 			`body delete-weight: Date is a date (by its name), so its type must be Date or DateTime, not string: Kong then checks it at parse time`,
 		},
@@ -228,7 +230,7 @@ func TestCheckTableRejects(t *testing.T) {
 			"date and time flag of type string, help without a format", "body delete-weight",
 			func(l *Leaf) {
 				l.Spec = argsOf(&struct {
-					PK   string `arg:"" help:"Weigh-in version (primary key)."`
+					PK   ID     `arg:"" help:"Weigh-in version (primary key)."`
 					Date string `help:"Start date and time (e.g. 2024-06-15T07:30:00). Defaults to now." name:"date"`
 				}{})
 			},
@@ -238,7 +240,7 @@ func TestCheckTableRejects(t *testing.T) {
 			"date flag of type string whose name does not say date", "body delete-weight",
 			func(l *Leaf) {
 				l.Spec = argsOf(&struct {
-					PK  string `arg:"" help:"Weigh-in version (primary key)."`
+					PK  ID     `arg:"" help:"Weigh-in version (primary key)."`
 					End string `help:"Last day (YYYY-MM-DD)." required:"" name:"end"`
 				}{})
 			},
@@ -254,7 +256,7 @@ func TestCheckTableRejects(t *testing.T) {
 			func(l *Leaf) {
 				*l = Leaf{
 					Spec: argsOf(&struct {
-						ID string `arg:""`
+						ID ID `arg:""`
 					}{}),
 					Endpoint: "courses.get", Params: Params{"courseID": In("ID")}, Output: JSON{},
 				}
@@ -275,6 +277,18 @@ func TestCheckTableRejects(t *testing.T) {
 			"required placeholder may be empty", "devices solar",
 			func(l *Leaf) { l.Params["startDate"] = In("StartDate") },
 			`devices solar: placeholder {startDate} of devices.solar is required, but In("StartDate") may be empty: make the field required, give it a default, or add .Or(...)`,
+		},
+		{
+			"required placeholder bound to a string", "devices settings",
+			func(l *Leaf) {
+				*l = Leaf{
+					Spec: argsOf(&struct {
+						Device string `arg:"" help:"Device."`
+					}{}),
+					Endpoint: "devices.settings", Params: Params{"deviceID": In("Device")}, Output: JSON{},
+				}
+			},
+			`devices settings: placeholder {deviceID} of devices.settings is required, but In("Device") is a string, which may be empty (""): make the field an ID, so Kong rejects an empty value at parse time`,
 		},
 		{
 			"Write on a GET", "goals list",
@@ -320,8 +334,8 @@ func TestCheckTableRejects(t *testing.T) {
 			"Done names a field a template cannot take", "courses delete",
 			func(l *Leaf) {
 				l.Spec = argsOf(&struct {
-					ID   string `arg:"" help:"Course ID."`
-					Deep bool   `help:"Deep."`
+					ID   ID   `arg:"" help:"Course ID."`
+					Deep bool `help:"Deep."`
 				}{})
 				l.Output = Write{Done: "Deleted course {ID} {Deep}", Confirm: "Delete course {ID}?"}
 			},
@@ -390,6 +404,37 @@ func TestDateTypeError(t *testing.T) {
 	for _, tc := range cases {
 		if got := dateTypeError(tc.name, tc.help, tc.typ); got != tc.want {
 			t.Errorf("dateTypeError(%q, %q, %s) = %q, want %q", tc.name, tc.help, tc.typ, got, tc.want)
+		}
+	}
+}
+
+func TestIDTypeError(t *testing.T) {
+	cases := []struct {
+		name string
+		typ  reflect.Type
+		want string
+	}{
+		{"ID", reflect.TypeFor[ID](), ""},
+		{"ID", reflect.TypeFor[NumericID](), ""},
+		{"UUID", reflect.TypeFor[GearUUID](), ""},
+		{"id", reflect.TypeFor[string](), "id is an ID (by its name), so its type must be ID, NumericID or GearUUID, not string: Kong then rejects an empty value at parse time"},
+		{"ID", reflect.TypeFor[string](), "ID is an ID (by its name), so its type must be ID, NumericID or GearUUID, not string: Kong then rejects an empty value at parse time"},
+		{"uuid", reflect.TypeFor[string](), "uuid is an ID (by its name), so its type must be ID, NumericID or GearUUID, not string: Kong then rejects an empty value at parse time"},
+		{"UUID", reflect.TypeFor[string](), "UUID is an ID (by its name), so its type must be ID, NumericID or GearUUID, not string: Kong then rejects an empty value at parse time"},
+		{"device-id", reflect.TypeFor[string](), "device-id is an ID (by its name), so its type must be ID, NumericID or GearUUID, not string: Kong then rejects an empty value at parse time"},
+		{"DeviceID", reflect.TypeFor[string](), "DeviceID is an ID (by its name), so its type must be ID, NumericID or GearUUID, not string: Kong then rejects an empty value at parse time"},
+		{"gear-uuid", reflect.TypeFor[string](), "gear-uuid is an ID (by its name), so its type must be ID, NumericID or GearUUID, not string: Kong then rejects an empty value at parse time"},
+		{"GearUUID", reflect.TypeFor[string](), "GearUUID is an ID (by its name), so its type must be ID, NumericID or GearUUID, not string: Kong then rejects an empty value at parse time"},
+		{"type-id", reflect.TypeFor[int](), ""},
+		{"parent-type-id", reflect.TypeFor[int](), ""},
+		{"TypeID", reflect.TypeFor[int](), ""},
+		{"Valid", reflect.TypeFor[string](), ""},
+		{"display-name", reflect.TypeFor[string](), ""},
+		{"Version", reflect.TypeFor[string](), ""},
+	}
+	for _, tc := range cases {
+		if got := idTypeError(tc.name, tc.typ); got != tc.want {
+			t.Errorf("idTypeError(%q, %s) = %q, want %q", tc.name, tc.typ, got, tc.want)
 		}
 	}
 }

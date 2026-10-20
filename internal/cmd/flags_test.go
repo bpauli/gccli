@@ -403,23 +403,17 @@ func TestShortFlagsHaveOneMeaning(t *testing.T) {
 	})
 }
 
-// TestDateFieldsHaveDateType walks the whole Kong tree, Custom commands
-// included: a flag or a positional that is a date by its name or by its
-// help must be a Date or a DateTime, so that a bad date fails at parse
-// time, before the login. checkLeaf has the same rule for Leaf rows.
-func TestDateFieldsHaveDateType(t *testing.T) {
-	check := func(path string, v *kong.Value) {
-		if msg := dateTypeError(v.Name, v.Help, v.Target.Type()); msg != "" {
-			t.Errorf("%s: %s", path, msg)
-		}
-	}
+// walkValues calls fn on every flag and positional of the whole Kong tree,
+// Custom commands included.
+func walkValues(t *testing.T, fn func(path string, v *kong.Value)) {
+	t.Helper()
 	var walk func(path string, node *kong.Node)
 	walk = func(path string, node *kong.Node) {
 		for _, f := range node.Flags {
-			check(path, f.Value)
+			fn(path, f.Value)
 		}
 		for _, p := range node.Positional {
-			check(path, p)
+			fn(path, p)
 		}
 		for _, child := range node.Children {
 			if child.Type == kong.CommandNode {
@@ -428,4 +422,28 @@ func TestDateFieldsHaveDateType(t *testing.T) {
 		}
 	}
 	walk("", newTestParser(t).Model.Node)
+}
+
+// TestDateFieldsHaveDateType walks the whole Kong tree, Custom commands
+// included: a flag or a positional that is a date by its name or by its
+// help must be a Date or a DateTime, so that a bad date fails at parse
+// time, before the login. checkLeaf has the same rule for Leaf rows.
+func TestDateFieldsHaveDateType(t *testing.T) {
+	walkValues(t, func(path string, v *kong.Value) {
+		if msg := dateTypeError(v.Name, v.Help, v.Target.Type()); msg != "" {
+			t.Errorf("%s: %s", path, msg)
+		}
+	})
+}
+
+// TestIDFieldsHaveIDType walks the whole Kong tree, Custom commands
+// included: a flag or a positional that is an ID by its name must not be a
+// plain string, so that an empty ID fails at parse time, before the login.
+// checkLeaf has the same rule for Leaf rows.
+func TestIDFieldsHaveIDType(t *testing.T) {
+	walkValues(t, func(path string, v *kong.Value) {
+		if msg := idTypeError(v.Name, v.Target.Type()); msg != "" {
+			t.Errorf("%s: %s", path, msg)
+		}
+	})
 }

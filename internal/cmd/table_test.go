@@ -48,9 +48,9 @@ func fixtureTree() []Node {
 			Leaf{
 				Name: "solar", Help: "Show solar charging data for a device.",
 				Spec: argsOf(&struct {
-					DeviceID  string `arg:"" help:"Device ID."`
-					StartDate Date   `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"start"`
-					EndDate   Date   `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to start date." name:"end"`
+					DeviceID  ID   `arg:"" help:"Device ID."`
+					StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"start"`
+					EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to start date." name:"end"`
 				}{}),
 				Endpoint: "devices.solar",
 				Params: Params{
@@ -92,8 +92,8 @@ func fixtureTree() []Node {
 			Leaf{
 				Name: "unlink", Help: "Unlink gear from an activity.",
 				Spec: argsOf(&struct {
-					UUID       string `arg:"" help:"Gear UUID."`
-					ActivityID string `arg:"" optional:"" help:"Activity ID."`
+					UUID       ID `arg:"" help:"Gear UUID."`
+					ActivityID ID `arg:"" optional:"" help:"Activity ID."`
 				}{}),
 				Endpoint: "gear.unlink",
 				Params:   Params{"gearUUID": In("UUID"), "activityID": In("ActivityID").Or(DisplayName)},
@@ -115,7 +115,7 @@ func fixtureTree() []Node {
 			Leaf{
 				Name: "delete", Help: "Delete a course.",
 				Spec: argsOf(&struct {
-					ID string `arg:"" help:"Course ID."`
+					ID ID `arg:"" help:"Course ID."`
 				}{}),
 				Endpoint: "courses.delete",
 				Params:   Params{"courseID": In("ID")},
@@ -127,8 +127,8 @@ func fixtureTree() []Node {
 			Leaf{
 				Name: "delete-weight", Help: "Delete a weigh-in entry.",
 				Spec: argsOf(&struct {
-					PK   string `arg:"" help:"Weigh-in version (primary key)."`
-					Date Date   `help:"Date of the weigh-in (YYYY-MM-DD)." required:"" name:"date"`
+					PK   ID   `arg:"" help:"Weigh-in version (primary key)."`
+					Date Date `help:"Date of the weigh-in (YYYY-MM-DD)." required:"" name:"date"`
 				}{}),
 				Endpoint: "body.delete-weight",
 				Params:   Params{"date": In("Date"), "version": In("PK")},
@@ -188,20 +188,20 @@ type handHealthSleep struct {
 }
 
 type handDeviceSolar struct {
-	DeviceID  string `arg:"" help:"Device ID."`
-	StartDate Date   `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"start"`
-	EndDate   Date   `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to start date." name:"end"`
+	DeviceID  ID   `arg:"" help:"Device ID."`
+	StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"start"`
+	EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to start date." name:"end"`
 }
 
 type handCourseDelete struct {
-	ID    string `arg:"" help:"Course ID."`
-	Force bool   `help:"Skip confirmation prompt." short:"f"`
+	ID    ID   `arg:"" help:"Course ID."`
+	Force bool `help:"Skip confirmation prompt." short:"f"`
 }
 
 type handBodyDeleteWeight struct {
-	PK    string `arg:"" help:"Weigh-in version (primary key)."`
-	Date  Date   `help:"Date of the weigh-in (YYYY-MM-DD)." required:"" name:"date"`
-	Force bool   `help:"Skip confirmation prompt." short:"f"`
+	PK    ID   `arg:"" help:"Weigh-in version (primary key)."`
+	Date  Date `help:"Date of the weigh-in (YYYY-MM-DD)." required:"" name:"date"`
+	Force bool `help:"Skip confirmation prompt." short:"f"`
 }
 
 type handActivitiesList struct {
@@ -210,9 +210,9 @@ type handActivitiesList struct {
 }
 
 type handGearUnlink struct {
-	UUID       string `arg:"" help:"Gear UUID."`
-	ActivityID string `arg:"" optional:"" help:"Activity ID."`
-	Force      bool   `help:"Skip confirmation prompt." short:"f"`
+	UUID       ID   `arg:"" help:"Gear UUID."`
+	ActivityID ID   `arg:"" optional:"" help:"Activity ID."`
+	Force      bool `help:"Skip confirmation prompt." short:"f"`
 }
 
 // newParserFor builds a parser with the options execute uses, so help is
