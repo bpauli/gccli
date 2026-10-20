@@ -41,9 +41,6 @@ func readAnswerShapes(t *testing.T) map[string]answerShape {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !bytes.HasPrefix(data, []byte(answerShapesHeader)) {
-		t.Fatalf("%s does not start with answerShapesHeader: copy the header from answer_shapes_test.go", answerShapesFile)
-	}
 	shapes := map[string]answerShape{}
 	for i, line := range strings.Split(strings.TrimSuffix(string(data), "\n"), "\n") {
 		if line == "" || strings.HasPrefix(line, "#") {
@@ -91,6 +88,13 @@ func jsonLeaves() map[string]Leaf {
 // the main golden answers the data route with a 200 body of that shape.
 func TestAnswerShapes(t *testing.T) {
 	shapes := readAnswerShapes(t)
+	data, err := os.ReadFile(answerShapesFile)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if want := formatAnswerShapes(shapes); !bytes.Equal(data, want) {
+		t.Errorf("%s is not in its canonical form, the header of answer_shapes_test.go and one line per path in sorted order (- file, + canonical):\n%s", answerShapesFile, lineDiff(string(data), string(want)))
+	}
 	leaves := jsonLeaves()
 	for _, path := range slices.Sorted(maps.Keys(shapes)) {
 		if _, ok := leaves[path]; !ok {
@@ -123,14 +127,14 @@ func TestAnswerShapes(t *testing.T) {
 			t.Error(err)
 			continue
 		}
-		data := dataRoute(g)
-		if data == "" {
+		route := dataRoute(g)
+		if route == "" {
 			t.Errorf("%s: the main golden sends no request, so nothing pins the answer shape", path)
 			continue
 		}
-		reply := in.routes[data]
+		reply := in.routes[route]
 		if reply.status != 0 && reply.status != http.StatusOK {
-			t.Errorf("%s: the main golden answers %s with status %d: give it a 200 and a body of the registry's shape (%s)", path, data, reply.status, s.Shape)
+			t.Errorf("%s: the main golden answers %s with status %d: give it a 200 and a body of the registry's shape (%s)", path, route, reply.status, s.Shape)
 			continue
 		}
 		body := bytes.TrimSpace([]byte(reply.body))
@@ -139,7 +143,7 @@ func TestAnswerShapes(t *testing.T) {
 			got = "array"
 		}
 		if got != s.Shape {
-			t.Errorf("%s: the main golden answers %s with %s %q, but %s says the answer is %s (%s): give the golden a body of that shape, then run go test ./internal/cmd -run TestGolden -update", path, data, got, body, answerShapesFile, s.Shape, s.Source)
+			t.Errorf("%s: the main golden answers %s with %s %q, but %s says the answer is %s (%s): give the golden a body of that shape, then run go test ./internal/cmd -run TestGolden -update", path, route, got, body, answerShapesFile, s.Shape, s.Source)
 		}
 	}
 }
