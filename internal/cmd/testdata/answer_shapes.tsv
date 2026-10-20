@@ -93,8 +93,8 @@ health power-curve	object	live 2026-10-20
 health power-to-weight	array	live 2026-10-20
 health pushes monthly	array	live 2026-10-20
 health pushes weekly	array	live 2026-10-20
-health race-predictions range	unknown	404 live 2026-10-20
-health race-predictions view	unknown	404 live 2026-10-20
+health race-predictions range	array	live 2026-10-20
+health race-predictions view	unknown	empty body live 2026-10-20
 health respiration daily	array	live 2026-10-20
 health respiration view	object	live 2026-10-20
 health rhr	object	live 2026-10-20

@@ -1,11 +1,6 @@
 package garminapi
 
-import (
-	"context"
-	"encoding/json"
-	"fmt"
-	"net/http"
-)
+import "net/http"
 
 var healthEndpoints = []Endpoint{
 	{Name: "health.daily-summary", Method: http.MethodGet, Host: ConnectAPI, Path: "/usersummary-service/usersummary/daily/{displayName}?calendarDate={date}"},
@@ -62,16 +57,7 @@ var healthEndpoints = []Endpoint{
 	{Name: "health.power-curve", Method: http.MethodGet, Host: ConnectAPI, Path: "/fitnessstats-service/powerCurve?startDate={startDate}&endDate={endDate}"},
 	{Name: "health.running-economy", Method: http.MethodGet, Host: ConnectAPI, Path: "/metrics-service/metrics/runningeconomy/latest/{date}"},
 	{Name: "health.acclimation", Method: http.MethodGet, Host: ConnectAPI, Path: "/wellness-service/stats/daily/acclimation?fromDate={startDate}&untilDate={endDate}"},
+	{Name: "health.race-predictions", Method: http.MethodGet, Host: ConnectAPI, Path: "/metrics-service/metrics/racepredictions/latest/{displayName}"},
+	{Name: "health.race-predictions-range", Method: http.MethodGet, Host: ConnectAPI, Path: "/metrics-service/metrics/racepredictions/daily/{displayName}?fromCalendarDate={startDate}&toCalendarDate={endDate}"},
 	{Name: "health.one-rep-max", Method: http.MethodGet, Host: ConnectAPI, Path: "/fitnessstats-service/vbt-stats/one-rep-max/current/{date}"},
-}
-
-// GetRacePredictions returns race prediction data.
-// If startDate and endDate are empty, returns current predictions.
-// Date format: YYYY-MM-DD.
-func (c *Client) GetRacePredictions(ctx context.Context, startDate, endDate string) (json.RawMessage, error) {
-	if startDate == "" {
-		return c.ConnectAPI(ctx, http.MethodGet, "/metrics-service/metrics/racepredictions", nil)
-	}
-	path := fmt.Sprintf("/metrics-service/metrics/racepredictions/range/%s/%s?type=daily", startDate, endDate)
-	return c.ConnectAPI(ctx, http.MethodGet, path, nil)
 }

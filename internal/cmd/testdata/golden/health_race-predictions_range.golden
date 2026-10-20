@@ -2,43 +2,57 @@
 health
 race-predictions
 range
---start=2026-10-01
+--start=2026-09-01
 --end=2026-10-01
--- route GET /metrics-service/metrics/racepredictions/range/2026-10-01/2026-10-01?type=daily --
-{"value":1}
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- route GET /metrics-service/metrics/racepredictions/daily/tester?fromCalendarDate=2026-09-01&toCalendarDate=2026-10-01 --
+[{"value":1}]
 -- table stdout --
-{
-  "value": 1
-}
+[
+  {
+    "value": 1
+  }
+]
 -- table stderr --
 -- table exit --
 0
 -- table requests --
-GET /metrics-service/metrics/racepredictions/range/2026-10-01/2026-10-01?type=daily
+GET /userprofile-service/userprofile/settings
+GET /metrics-service/metrics/racepredictions/daily/tester?fromCalendarDate=2026-09-01&toCalendarDate=2026-10-01
 -- plain stdout --
-{
-  "value": 1
-}
+[
+  {
+    "value": 1
+  }
+]
 -- plain stderr --
 -- plain exit --
 0
 -- plain requests --
-GET /metrics-service/metrics/racepredictions/range/2026-10-01/2026-10-01?type=daily
+GET /userprofile-service/userprofile/settings
+GET /metrics-service/metrics/racepredictions/daily/tester?fromCalendarDate=2026-09-01&toCalendarDate=2026-10-01
 -- plain-header stdout --
-{
-  "value": 1
-}
+[
+  {
+    "value": 1
+  }
+]
 -- plain-header stderr --
 -- plain-header exit --
 0
 -- plain-header requests --
-GET /metrics-service/metrics/racepredictions/range/2026-10-01/2026-10-01?type=daily
+GET /userprofile-service/userprofile/settings
+GET /metrics-service/metrics/racepredictions/daily/tester?fromCalendarDate=2026-09-01&toCalendarDate=2026-10-01
 -- json stdout --
-{
-  "value": 1
-}
+[
+  {
+    "value": 1
+  }
+]
 -- json stderr --
 -- json exit --
 0
 -- json requests --
-GET /metrics-service/metrics/racepredictions/range/2026-10-01/2026-10-01?type=daily
+GET /userprofile-service/userprofile/settings
+GET /metrics-service/metrics/racepredictions/daily/tester?fromCalendarDate=2026-09-01&toCalendarDate=2026-10-01
