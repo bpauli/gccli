@@ -13,8 +13,8 @@ add weight: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- table requests --
 POST /weight-service/user-weight
   {
-    "dateTimestamp": "2026-10-15T09:30:00",
-    "gmtTimestamp": "2026-10-15T09:30:00",
+    "dateTimestamp": "2026-10-15T09:30:00.000",
+    "gmtTimestamp": "2026-10-15T09:30:00.000",
     "sourceType": "MANUAL",
     "unitKey": "kg",
     "value": 80.5
@@ -27,8 +27,8 @@ add weight: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- plain requests --
 POST /weight-service/user-weight
   {
-    "dateTimestamp": "2026-10-15T09:30:00",
-    "gmtTimestamp": "2026-10-15T09:30:00",
+    "dateTimestamp": "2026-10-15T09:30:00.000",
+    "gmtTimestamp": "2026-10-15T09:30:00.000",
     "sourceType": "MANUAL",
     "unitKey": "kg",
     "value": 80.5
@@ -41,8 +41,8 @@ add weight: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- plain-header requests --
 POST /weight-service/user-weight
   {
-    "dateTimestamp": "2026-10-15T09:30:00",
-    "gmtTimestamp": "2026-10-15T09:30:00",
+    "dateTimestamp": "2026-10-15T09:30:00.000",
+    "gmtTimestamp": "2026-10-15T09:30:00.000",
     "sourceType": "MANUAL",
     "unitKey": "kg",
     "value": 80.5
@@ -55,8 +55,8 @@ POST /weight-service/user-weight
 -- json requests --
 POST /weight-service/user-weight
   {
-    "dateTimestamp": "2026-10-15T09:30:00",
-    "gmtTimestamp": "2026-10-15T09:30:00",
+    "dateTimestamp": "2026-10-15T09:30:00.000",
+    "gmtTimestamp": "2026-10-15T09:30:00.000",
     "sourceType": "MANUAL",
     "unitKey": "kg",
     "value": 80.5

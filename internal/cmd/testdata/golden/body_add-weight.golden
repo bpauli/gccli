@@ -12,8 +12,8 @@ Added weight: 80.5 kg
 -- table requests --
 POST /weight-service/user-weight
   {
-    "dateTimestamp": "2026-10-15T09:30:00",
-    "gmtTimestamp": "2026-10-15T09:30:00",
+    "dateTimestamp": "2026-10-15T09:30:00.000",
+    "gmtTimestamp": "2026-10-15T09:30:00.000",
     "sourceType": "MANUAL",
     "unitKey": "kg",
     "value": 80.5
@@ -26,8 +26,8 @@ Added weight: 80.5 kg
 -- plain requests --
 POST /weight-service/user-weight
   {
-    "dateTimestamp": "2026-10-15T09:30:00",
-    "gmtTimestamp": "2026-10-15T09:30:00",
+    "dateTimestamp": "2026-10-15T09:30:00.000",
+    "gmtTimestamp": "2026-10-15T09:30:00.000",
     "sourceType": "MANUAL",
     "unitKey": "kg",
     "value": 80.5
@@ -40,8 +40,8 @@ Added weight: 80.5 kg
 -- plain-header requests --
 POST /weight-service/user-weight
   {
-    "dateTimestamp": "2026-10-15T09:30:00",
-    "gmtTimestamp": "2026-10-15T09:30:00",
+    "dateTimestamp": "2026-10-15T09:30:00.000",
+    "gmtTimestamp": "2026-10-15T09:30:00.000",
     "sourceType": "MANUAL",
     "unitKey": "kg",
     "value": 80.5
@@ -56,8 +56,8 @@ POST /weight-service/user-weight
 -- json requests --
 POST /weight-service/user-weight
   {
-    "dateTimestamp": "2026-10-15T09:30:00",
-    "gmtTimestamp": "2026-10-15T09:30:00",
+    "dateTimestamp": "2026-10-15T09:30:00.000",
+    "gmtTimestamp": "2026-10-15T09:30:00.000",
     "sourceType": "MANUAL",
     "unitKey": "kg",
     "value": 80.5
