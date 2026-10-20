@@ -1,0 +1,82 @@
+The time 7:30 is sent zero-padded as 07:30, because Clock keeps that form.
+-- args --
+events
+add
+--name
+City Race
+--date
+2026-11-01
+--type
+running
+--time
+7:30
+-- route POST /calendar-service/event --
+{"id":4242,"eventName":"City Race","date":"2026-11-01"}
+-- table stdout --
+-- table stderr --
+Added event "City Race" on 2026-11-01 (ID: 4242)
+-- table exit --
+0
+-- table requests --
+POST /calendar-service/event
+  {
+    "date": "2026-11-01",
+    "eventName": "City Race",
+    "eventTimeLocal": {
+      "startTimeHhMm": "07:30"
+    },
+    "eventType": "running",
+    "race": false
+  }
+-- plain stdout --
+-- plain stderr --
+Added event "City Race" on 2026-11-01 (ID: 4242)
+-- plain exit --
+0
+-- plain requests --
+POST /calendar-service/event
+  {
+    "date": "2026-11-01",
+    "eventName": "City Race",
+    "eventTimeLocal": {
+      "startTimeHhMm": "07:30"
+    },
+    "eventType": "running",
+    "race": false
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Added event "City Race" on 2026-11-01 (ID: 4242)
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /calendar-service/event
+  {
+    "date": "2026-11-01",
+    "eventName": "City Race",
+    "eventTimeLocal": {
+      "startTimeHhMm": "07:30"
+    },
+    "eventType": "running",
+    "race": false
+  }
+-- json stdout --
+{
+  "id": 4242,
+  "eventName": "City Race",
+  "date": "2026-11-01"
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /calendar-service/event
+  {
+    "date": "2026-11-01",
+    "eventName": "City Race",
+    "eventTimeLocal": {
+      "startTimeHhMm": "07:30"
+    },
+    "eventType": "running",
+    "race": false
+  }
