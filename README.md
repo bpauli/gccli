@@ -11,7 +11,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 
 ## Features
 
-- **Activities** — list, search, view details, download (FIT/GPX/TCX/KML/CSV), upload, create manual entries (with date), rename, retype, describe, change privacy, mark as favorite, delete, set exercise sets for strength training, list activity types, list pending activities
+- **Activities** - list, search, view details, download (FIT/GPX/TCX/KML/CSV), upload, create manual entries (with date), rename, retype, describe, change privacy, mark as favorite, delete, set exercise sets for strength training, list activity types, list pending activities, list comments and likes, like and unlike
 - **Exercise Catalog** — browse Garmin's exercise categories and exercises for strength training
 - **Health Data** — daily summaries, steps, heart rate, resting HR, sleep, stress, HRV, SpO2, respiration, body battery, floors, training readiness/status, VO2max, fitness age, race predictions, endurance/hill scores, intensity minutes, lactate threshold, cycling FTP, critical swim speed, power curve, running economy
 - **Body Composition** - weight tracking, latest weigh-in, weekly weight summaries, body fat, muscle mass, blood pressure, glucose, FIT file encoding for composition uploads
@@ -374,6 +374,10 @@ gccli activity exercise-sets set <id> -e "BENCH_PRESS/BARBELL_BENCH_PRESS:12@20:
 gccli activity gear <id>
 gccli activity comments <id>
 gccli activity likes <id>
+
+# Like an activity, and remove the like
+gccli activity likes add <id>
+gccli activity likes remove <id>
 
 # Download and upload
 gccli activity download <id> --format fit
