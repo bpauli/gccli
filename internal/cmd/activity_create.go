@@ -8,8 +8,8 @@ import (
 
 // ActivityCreateCmd creates a manual activity entry.
 type ActivityCreateCmd struct {
-	Name     string        `help:"Activity name." required:""`
-	Type     string        `help:"Activity type key (e.g. running, cycling, swimming)." required:""`
+	Name     FreeText      `help:"Activity name." required:""`
+	Type     FreeText      `help:"Activity type key (e.g. running, cycling, swimming)." required:""`
 	Distance float64       `help:"Distance in meters."`
 	Duration time.Duration `help:"Duration (e.g. 30m, 1h15m)." required:""`
 	Date     DateTime      `help:"Start date and time in local time: YYYY-MM-DDTHH:MM:SS, YYYY-MM-DDTHH:MM or YYYY-MM-DD, with T or a space. Defaults to now."`
@@ -24,8 +24,8 @@ func (c *ActivityCreateCmd) Run(g *Globals) error {
 	start := c.Date.orNow()
 	data, err := client.CreateManualActivity(
 		g.Context,
-		c.Name,
-		c.Type,
+		string(c.Name),
+		string(c.Type),
 		start.Location().String(),
 		c.Distance,
 		c.Duration.Seconds(),

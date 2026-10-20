@@ -113,7 +113,7 @@ func formatEventListRows(events []map[string]any) [][]string {
 
 // EventsAddCmd adds a new calendar event.
 type EventsAddCmd struct {
-	Name     string        `help:"Event name." required:"" short:"n"`
+	Name     FreeText      `help:"Event name." required:"" short:"n"`
 	Date     Date          `help:"Event date (YYYY-MM-DD, today, +30d)." required:"" short:"d"`
 	Type     string        `help:"Event type." required:"" short:"t" enum:"running,trail_running,cycling,gravel_cycling,mountain_biking,swimming,triathlon,multi_sport,hiking,walking,fitness_equipment,motorcycling,winter_sport,other"`
 	Race     bool          `help:"Mark as a race."`
@@ -165,7 +165,7 @@ func (g *Goal) Decode(ctx *kong.DecodeContext) error {
 
 func (c *EventsAddCmd) Run(g *Globals) error {
 	body, err := payload.Event{
-		Name:     c.Name,
+		Name:     string(c.Name),
 		Date:     string(c.Date),
 		Type:     c.Type,
 		Race:     c.Race,

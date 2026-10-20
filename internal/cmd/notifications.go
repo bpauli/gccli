@@ -14,8 +14,8 @@ var notificationsPreferencesGroup = Group{Name: "preferences", Help: "Show and c
 
 // NotificationsPreferencesSetCmd turns one notification preference on or off.
 type NotificationsPreferencesSetCmd struct {
-	Key   string `arg:"" help:"Preference key, such as allowEmailWeeklySummary. Run gccli notifications preferences to see the keys."`
-	Value string `arg:"" help:"true turns the preference on, false turns it off." enum:"true,false"`
+	Key   FreeText `arg:"" help:"Preference key, such as allowEmailWeeklySummary. Run gccli notifications preferences to see the keys."`
+	Value string   `arg:"" help:"true turns the preference on, false turns it off." enum:"true,false"`
 }
 
 func (c *NotificationsPreferencesSetCmd) Run(g *Globals) error {
@@ -23,7 +23,7 @@ func (c *NotificationsPreferencesSetCmd) Run(g *Globals) error {
 	if err != nil {
 		return err
 	}
-	data, err := client.SetNotificationPreference(g.Context, c.Key, c.Value == "true")
+	data, err := client.SetNotificationPreference(g.Context, string(c.Key), c.Value == "true")
 	if err != nil {
 		return fmt.Errorf("set notification preference: %w", err)
 	}

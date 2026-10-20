@@ -927,19 +927,19 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `-o, --output=STRING`: Output file path (default: activity_{id}.{format}).
 - `gccli activity upload <file>`: Upload an activity file (FIT/GPX/TCX).
   - `<file>`: Path to activity file (FIT, GPX, or TCX).
-- `gccli activity create --name=STRING --type=STRING --duration=DURATION [flags]`: Create a manual activity.
-  - `--name=STRING`: Activity name.
-  - `--type=STRING`: Activity type key (e.g. running, cycling, swimming).
+- `gccli activity create --name=FREE-TEXT --type=FREE-TEXT --duration=DURATION [flags]`: Create a manual activity.
+  - `--name=FREE-TEXT`: Activity name.
+  - `--type=FREE-TEXT`: Activity type key (e.g. running, cycling, swimming).
   - `--distance=FLOAT-64`: Distance in meters.
   - `--duration=DURATION`: Duration (e.g. 30m, 1h15m).
   - `--date=DATE-TIME`: Start date and time in local time: YYYY-MM-DDTHH:MM:SS, YYYY-MM-DDTHH:MM or YYYY-MM-DD, with T or a space. Defaults to now.
 - `gccli activity rename <id> <name>`: Rename an activity.
   - `<id>`: Activity ID.
   - `<name>`: New activity name.
-- `gccli activity retype --type-id=INT --type-key=STRING <id> [flags]`: Change activity type.
+- `gccli activity retype --type-id=INT --type-key=FREE-TEXT <id> [flags]`: Change activity type.
   - `<id>`: Activity ID.
   - `--type-id=INT`: Activity type ID.
-  - `--type-key=STRING`: Activity type key (e.g. running, cycling).
+  - `--type-key=FREE-TEXT`: Activity type key (e.g. running, cycling).
   - `--parent-type-id=0`: Parent activity type ID.
 - `gccli activity describe <id> <text>`: Set or clear the description of an activity.
   - `<id>`: Activity ID.
@@ -1246,11 +1246,11 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `<uuid>`: Gear UUID.
   - `<activity-id>`: Activity ID.
 - `gccli gear types`: List gear types.
-- `gccli gear add --brand=STRING --model=STRING <name> [flags]`: Add a gear item.
+- `gccli gear add --brand=FREE-TEXT --model=FREE-TEXT <name> [flags]`: Add a gear item.
   - `<name>`: Gear name.
   - `--type="shoes"`: Gear type. One of: shoes, bike, other.
-  - `--brand=STRING`: Brand.
-  - `--model=STRING`: Model.
+  - `--brand=FREE-TEXT`: Brand.
+  - `--model=FREE-TEXT`: Model.
   - `--notes=STRING`: Notes (1 to 2000 characters). Defaults to the name, because Garmin requires notes.
   - `--first-use="today"`: Date of first use (YYYY-MM-DD, today, yesterday, 3d).
 - `gccli gear update <uuid> [flags]`: Change the name, brand, model or notes of a gear item.
@@ -1324,8 +1324,8 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `--offset=0`: Number of events to skip.
   - `--sort="eventDate_asc"`: Sort order. One of: eventDate_asc, eventDate_desc.
 - `gccli events upcoming`: List upcoming events.
-- `gccli events add --name=STRING --date=DATE --type=STRING [flags]`: Add a calendar event.
-  - `-n, --name=STRING`: Event name.
+- `gccli events add --name=FREE-TEXT --date=DATE --type=STRING [flags]`: Add a calendar event.
+  - `-n, --name=FREE-TEXT`: Event name.
   - `-d, --date=DATE`: Event date (YYYY-MM-DD, today, +30d).
   - `-t, --type=STRING`: Event type. One of: running, trail_running, cycling, gravel_cycling, mountain_biking, swimming, triathlon, multi_sport, hiking, walking, fitness_equipment, motorcycling, winter_sport, other.
   - `--race`: Mark as a race.

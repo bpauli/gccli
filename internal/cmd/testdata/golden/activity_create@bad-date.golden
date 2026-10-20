@@ -11,7 +11,7 @@ swimming
 2026-02-30T07:30:00
 -- table stdout --
 -- table stderr --
-Usage: gccli activity create --name=STRING --type=STRING --duration=DURATION [flags]
+Usage: gccli activity create --name=FREE-TEXT --type=FREE-TEXT --duration=DURATION [flags]
 
 Create a manual activity.
 
@@ -29,8 +29,8 @@ Flags:
                              statute_uk ($GCCLI_UNITS).
       --version              Print version information.
 
-      --name=STRING          Activity name.
-      --type=STRING          Activity type key (e.g. running, cycling,
+      --name=FREE-TEXT       Activity name.
+      --type=FREE-TEXT       Activity type key (e.g. running, cycling,
                              swimming).
       --distance=FLOAT-64    Distance in meters.
       --duration=DURATION    Duration (e.g. 30m, 1h15m).
@@ -44,7 +44,7 @@ gccli: error: --date: invalid date and time "2026-02-30T07:30:00": expected YYYY
 -- table requests --
 -- plain stdout --
 -- plain stderr --
-Usage: gccli activity create --name=STRING --type=STRING --duration=DURATION [flags]
+Usage: gccli activity create --name=FREE-TEXT --type=FREE-TEXT --duration=DURATION [flags]
 
 Create a manual activity.
 
@@ -62,8 +62,8 @@ Flags:
                              statute_uk ($GCCLI_UNITS).
       --version              Print version information.
 
-      --name=STRING          Activity name.
-      --type=STRING          Activity type key (e.g. running, cycling,
+      --name=FREE-TEXT       Activity name.
+      --type=FREE-TEXT       Activity type key (e.g. running, cycling,
                              swimming).
       --distance=FLOAT-64    Distance in meters.
       --duration=DURATION    Duration (e.g. 30m, 1h15m).
@@ -77,7 +77,7 @@ gccli: error: --date: invalid date and time "2026-02-30T07:30:00": expected YYYY
 -- plain requests --
 -- plain-header stdout --
 -- plain-header stderr --
-Usage: gccli activity create --name=STRING --type=STRING --duration=DURATION [flags]
+Usage: gccli activity create --name=FREE-TEXT --type=FREE-TEXT --duration=DURATION [flags]
 
 Create a manual activity.
 
@@ -95,8 +95,8 @@ Flags:
                              statute_uk ($GCCLI_UNITS).
       --version              Print version information.
 
-      --name=STRING          Activity name.
-      --type=STRING          Activity type key (e.g. running, cycling,
+      --name=FREE-TEXT       Activity name.
+      --type=FREE-TEXT       Activity type key (e.g. running, cycling,
                              swimming).
       --distance=FLOAT-64    Distance in meters.
       --duration=DURATION    Duration (e.g. 30m, 1h15m).
@@ -110,7 +110,7 @@ gccli: error: --date: invalid date and time "2026-02-30T07:30:00": expected YYYY
 -- plain-header requests --
 -- json stdout --
 -- json stderr --
-Usage: gccli activity create --name=STRING --type=STRING --duration=DURATION [flags]
+Usage: gccli activity create --name=FREE-TEXT --type=FREE-TEXT --duration=DURATION [flags]
 
 Create a manual activity.
 
@@ -128,8 +128,8 @@ Flags:
                              statute_uk ($GCCLI_UNITS).
       --version              Print version information.
 
-      --name=STRING          Activity name.
-      --type=STRING          Activity type key (e.g. running, cycling,
+      --name=FREE-TEXT       Activity name.
+      --type=FREE-TEXT       Activity type key (e.g. running, cycling,
                              swimming).
       --distance=FLOAT-64    Distance in meters.
       --duration=DURATION    Duration (e.g. 30m, 1h15m).

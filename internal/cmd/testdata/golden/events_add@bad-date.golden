@@ -9,7 +9,7 @@ City Race
 running
 -- table stdout --
 -- table stderr --
-Usage: gccli events add --name=STRING --date=DATE --type=STRING [flags]
+Usage: gccli events add --name=FREE-TEXT --date=DATE --type=STRING [flags]
 
 Add a calendar event.
 
@@ -27,7 +27,7 @@ Flags:
                              statute_uk ($GCCLI_UNITS).
       --version              Print version information.
 
-  -n, --name=STRING          Event name.
+  -n, --name=FREE-TEXT       Event name.
   -d, --date=DATE            Event date (YYYY-MM-DD, today, +30d).
   -t, --type=STRING          Event type.
       --race                 Mark as a race.
@@ -48,7 +48,7 @@ gccli: error: --date: invalid date "2026-02-30": expected YYYY-MM-DD, today, yes
 -- table requests --
 -- plain stdout --
 -- plain stderr --
-Usage: gccli events add --name=STRING --date=DATE --type=STRING [flags]
+Usage: gccli events add --name=FREE-TEXT --date=DATE --type=STRING [flags]
 
 Add a calendar event.
 
@@ -66,7 +66,7 @@ Flags:
                              statute_uk ($GCCLI_UNITS).
       --version              Print version information.
 
-  -n, --name=STRING          Event name.
+  -n, --name=FREE-TEXT       Event name.
   -d, --date=DATE            Event date (YYYY-MM-DD, today, +30d).
   -t, --type=STRING          Event type.
       --race                 Mark as a race.
@@ -87,7 +87,7 @@ gccli: error: --date: invalid date "2026-02-30": expected YYYY-MM-DD, today, yes
 -- plain requests --
 -- plain-header stdout --
 -- plain-header stderr --
-Usage: gccli events add --name=STRING --date=DATE --type=STRING [flags]
+Usage: gccli events add --name=FREE-TEXT --date=DATE --type=STRING [flags]
 
 Add a calendar event.
 
@@ -105,7 +105,7 @@ Flags:
                              statute_uk ($GCCLI_UNITS).
       --version              Print version information.
 
-  -n, --name=STRING          Event name.
+  -n, --name=FREE-TEXT       Event name.
   -d, --date=DATE            Event date (YYYY-MM-DD, today, +30d).
   -t, --type=STRING          Event type.
       --race                 Mark as a race.
@@ -126,7 +126,7 @@ gccli: error: --date: invalid date "2026-02-30": expected YYYY-MM-DD, today, yes
 -- plain-header requests --
 -- json stdout --
 -- json stderr --
-Usage: gccli events add --name=STRING --date=DATE --type=STRING [flags]
+Usage: gccli events add --name=FREE-TEXT --date=DATE --type=STRING [flags]
 
 Add a calendar event.
 
@@ -144,7 +144,7 @@ Flags:
                              statute_uk ($GCCLI_UNITS).
       --version              Print version information.
 
-  -n, --name=STRING          Event name.
+  -n, --name=FREE-TEXT       Event name.
   -d, --date=DATE            Event date (YYYY-MM-DD, today, +30d).
   -t, --type=STRING          Event type.
       --race                 Mark as a race.

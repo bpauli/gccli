@@ -12,7 +12,7 @@ running
 1x
 -- table stdout --
 -- table stderr --
-Usage: gccli events add --name=STRING --date=DATE --type=STRING [flags]
+Usage: gccli events add --name=FREE-TEXT --date=DATE --type=STRING [flags]
 
 Add a calendar event.
 
@@ -30,7 +30,7 @@ Flags:
                              statute_uk ($GCCLI_UNITS).
       --version              Print version information.
 
-  -n, --name=STRING          Event name.
+  -n, --name=FREE-TEXT       Event name.
   -d, --date=DATE            Event date (YYYY-MM-DD, today, +30d).
   -t, --type=STRING          Event type.
       --race                 Mark as a race.
@@ -51,7 +51,7 @@ gccli: error: --goal: invalid goal duration "1x" (use e.g. 50m, 1h30m, 2400s)
 -- table requests --
 -- plain stdout --
 -- plain stderr --
-Usage: gccli events add --name=STRING --date=DATE --type=STRING [flags]
+Usage: gccli events add --name=FREE-TEXT --date=DATE --type=STRING [flags]
 
 Add a calendar event.
 
@@ -69,7 +69,7 @@ Flags:
                              statute_uk ($GCCLI_UNITS).
       --version              Print version information.
 
-  -n, --name=STRING          Event name.
+  -n, --name=FREE-TEXT       Event name.
   -d, --date=DATE            Event date (YYYY-MM-DD, today, +30d).
   -t, --type=STRING          Event type.
       --race                 Mark as a race.
@@ -90,7 +90,7 @@ gccli: error: --goal: invalid goal duration "1x" (use e.g. 50m, 1h30m, 2400s)
 -- plain requests --
 -- plain-header stdout --
 -- plain-header stderr --
-Usage: gccli events add --name=STRING --date=DATE --type=STRING [flags]
+Usage: gccli events add --name=FREE-TEXT --date=DATE --type=STRING [flags]
 
 Add a calendar event.
 
@@ -108,7 +108,7 @@ Flags:
                              statute_uk ($GCCLI_UNITS).
       --version              Print version information.
 
-  -n, --name=STRING          Event name.
+  -n, --name=FREE-TEXT       Event name.
   -d, --date=DATE            Event date (YYYY-MM-DD, today, +30d).
   -t, --type=STRING          Event type.
       --race                 Mark as a race.
@@ -129,7 +129,7 @@ gccli: error: --goal: invalid goal duration "1x" (use e.g. 50m, 1h30m, 2400s)
 -- plain-header requests --
 -- json stdout --
 -- json stderr --
-Usage: gccli events add --name=STRING --date=DATE --type=STRING [flags]
+Usage: gccli events add --name=FREE-TEXT --date=DATE --type=STRING [flags]
 
 Add a calendar event.
 
@@ -147,7 +147,7 @@ Flags:
                              statute_uk ($GCCLI_UNITS).
       --version              Print version information.
 
-  -n, --name=STRING          Event name.
+  -n, --name=FREE-TEXT       Event name.
   -d, --date=DATE            Event date (YYYY-MM-DD, today, +30d).
   -t, --type=STRING          Event type.
       --race                 Mark as a race.

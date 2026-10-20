@@ -9,7 +9,7 @@ abc
 running
 -- table stdout --
 -- table stderr --
-Usage: gccli activity retype --type-id=INT --type-key=STRING <id> [flags]
+Usage: gccli activity retype --type-id=INT --type-key=FREE-TEXT <id> [flags]
 
 Change activity type.
 
@@ -17,22 +17,22 @@ Arguments:
   <id>    Activity ID.
 
 Flags:
-  -h, --help                Show context-sensitive help.
-  -j, --json                Output as JSON ($GCCLI_JSON).
-      --plain               Output as plain text (TSV) ($GCCLI_PLAIN).
-      --header              Print the column names as the first line of --plain
-                            output ($GCCLI_HEADER).
-      --color="auto"        Color mode: auto, always, never ($GCCLI_COLOR).
-      --account=STRING      Garmin account email ($GCCLI_ACCOUNT).
-      --units="auto"        Unit system for distances, speeds, paces,
-                            elevations and weights in table and plain output:
-                            auto (Garmin profile), metric, statute_us,
-                            statute_uk ($GCCLI_UNITS).
-      --version             Print version information.
+  -h, --help                  Show context-sensitive help.
+  -j, --json                  Output as JSON ($GCCLI_JSON).
+      --plain                 Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                Print the column names as the first line of
+                              --plain output ($GCCLI_HEADER).
+      --color="auto"          Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING        Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"          Unit system for distances, speeds, paces,
+                              elevations and weights in table and plain output:
+                              auto (Garmin profile), metric, statute_us,
+                              statute_uk ($GCCLI_UNITS).
+      --version               Print version information.
 
-      --type-id=INT         Activity type ID.
-      --type-key=STRING     Activity type key (e.g. running, cycling).
-      --parent-type-id=0    Parent activity type ID.
+      --type-id=INT           Activity type ID.
+      --type-key=FREE-TEXT    Activity type key (e.g. running, cycling).
+      --parent-type-id=0      Parent activity type ID.
 
 gccli: error: <id>: invalid ID "abc": expected a number
 -- table exit --
@@ -40,7 +40,7 @@ gccli: error: <id>: invalid ID "abc": expected a number
 -- table requests --
 -- plain stdout --
 -- plain stderr --
-Usage: gccli activity retype --type-id=INT --type-key=STRING <id> [flags]
+Usage: gccli activity retype --type-id=INT --type-key=FREE-TEXT <id> [flags]
 
 Change activity type.
 
@@ -48,22 +48,22 @@ Arguments:
   <id>    Activity ID.
 
 Flags:
-  -h, --help                Show context-sensitive help.
-  -j, --json                Output as JSON ($GCCLI_JSON).
-      --plain               Output as plain text (TSV) ($GCCLI_PLAIN).
-      --header              Print the column names as the first line of --plain
-                            output ($GCCLI_HEADER).
-      --color="auto"        Color mode: auto, always, never ($GCCLI_COLOR).
-      --account=STRING      Garmin account email ($GCCLI_ACCOUNT).
-      --units="auto"        Unit system for distances, speeds, paces,
-                            elevations and weights in table and plain output:
-                            auto (Garmin profile), metric, statute_us,
-                            statute_uk ($GCCLI_UNITS).
-      --version             Print version information.
+  -h, --help                  Show context-sensitive help.
+  -j, --json                  Output as JSON ($GCCLI_JSON).
+      --plain                 Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                Print the column names as the first line of
+                              --plain output ($GCCLI_HEADER).
+      --color="auto"          Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING        Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"          Unit system for distances, speeds, paces,
+                              elevations and weights in table and plain output:
+                              auto (Garmin profile), metric, statute_us,
+                              statute_uk ($GCCLI_UNITS).
+      --version               Print version information.
 
-      --type-id=INT         Activity type ID.
-      --type-key=STRING     Activity type key (e.g. running, cycling).
-      --parent-type-id=0    Parent activity type ID.
+      --type-id=INT           Activity type ID.
+      --type-key=FREE-TEXT    Activity type key (e.g. running, cycling).
+      --parent-type-id=0      Parent activity type ID.
 
 gccli: error: <id>: invalid ID "abc": expected a number
 -- plain exit --
@@ -71,7 +71,7 @@ gccli: error: <id>: invalid ID "abc": expected a number
 -- plain requests --
 -- plain-header stdout --
 -- plain-header stderr --
-Usage: gccli activity retype --type-id=INT --type-key=STRING <id> [flags]
+Usage: gccli activity retype --type-id=INT --type-key=FREE-TEXT <id> [flags]
 
 Change activity type.
 
@@ -79,22 +79,22 @@ Arguments:
   <id>    Activity ID.
 
 Flags:
-  -h, --help                Show context-sensitive help.
-  -j, --json                Output as JSON ($GCCLI_JSON).
-      --plain               Output as plain text (TSV) ($GCCLI_PLAIN).
-      --header              Print the column names as the first line of --plain
-                            output ($GCCLI_HEADER).
-      --color="auto"        Color mode: auto, always, never ($GCCLI_COLOR).
-      --account=STRING      Garmin account email ($GCCLI_ACCOUNT).
-      --units="auto"        Unit system for distances, speeds, paces,
-                            elevations and weights in table and plain output:
-                            auto (Garmin profile), metric, statute_us,
-                            statute_uk ($GCCLI_UNITS).
-      --version             Print version information.
+  -h, --help                  Show context-sensitive help.
+  -j, --json                  Output as JSON ($GCCLI_JSON).
+      --plain                 Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                Print the column names as the first line of
+                              --plain output ($GCCLI_HEADER).
+      --color="auto"          Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING        Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"          Unit system for distances, speeds, paces,
+                              elevations and weights in table and plain output:
+                              auto (Garmin profile), metric, statute_us,
+                              statute_uk ($GCCLI_UNITS).
+      --version               Print version information.
 
-      --type-id=INT         Activity type ID.
-      --type-key=STRING     Activity type key (e.g. running, cycling).
-      --parent-type-id=0    Parent activity type ID.
+      --type-id=INT           Activity type ID.
+      --type-key=FREE-TEXT    Activity type key (e.g. running, cycling).
+      --parent-type-id=0      Parent activity type ID.
 
 gccli: error: <id>: invalid ID "abc": expected a number
 -- plain-header exit --
@@ -102,7 +102,7 @@ gccli: error: <id>: invalid ID "abc": expected a number
 -- plain-header requests --
 -- json stdout --
 -- json stderr --
-Usage: gccli activity retype --type-id=INT --type-key=STRING <id> [flags]
+Usage: gccli activity retype --type-id=INT --type-key=FREE-TEXT <id> [flags]
 
 Change activity type.
 
@@ -110,22 +110,22 @@ Arguments:
   <id>    Activity ID.
 
 Flags:
-  -h, --help                Show context-sensitive help.
-  -j, --json                Output as JSON ($GCCLI_JSON).
-      --plain               Output as plain text (TSV) ($GCCLI_PLAIN).
-      --header              Print the column names as the first line of --plain
-                            output ($GCCLI_HEADER).
-      --color="auto"        Color mode: auto, always, never ($GCCLI_COLOR).
-      --account=STRING      Garmin account email ($GCCLI_ACCOUNT).
-      --units="auto"        Unit system for distances, speeds, paces,
-                            elevations and weights in table and plain output:
-                            auto (Garmin profile), metric, statute_us,
-                            statute_uk ($GCCLI_UNITS).
-      --version             Print version information.
+  -h, --help                  Show context-sensitive help.
+  -j, --json                  Output as JSON ($GCCLI_JSON).
+      --plain                 Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                Print the column names as the first line of
+                              --plain output ($GCCLI_HEADER).
+      --color="auto"          Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING        Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"          Unit system for distances, speeds, paces,
+                              elevations and weights in table and plain output:
+                              auto (Garmin profile), metric, statute_us,
+                              statute_uk ($GCCLI_UNITS).
+      --version               Print version information.
 
-      --type-id=INT         Activity type ID.
-      --type-key=STRING     Activity type key (e.g. running, cycling).
-      --parent-type-id=0    Parent activity type ID.
+      --type-id=INT           Activity type ID.
+      --type-key=FREE-TEXT    Activity type key (e.g. running, cycling).
+      --parent-type-id=0      Parent activity type ID.
 
 gccli: error: <id>: invalid ID "abc": expected a number
 -- json exit --

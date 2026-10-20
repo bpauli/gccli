@@ -156,12 +156,12 @@ var gearTypes = map[string]string{
 
 // GearAddCmd adds a gear item.
 type GearAddCmd struct {
-	Name     string `arg:"" help:"Gear name."`
-	Type     string `help:"Gear type." default:"shoes" enum:"shoes,bike,other"`
-	Brand    string `help:"Brand." required:""`
-	Model    string `help:"Model." required:""`
-	Notes    string `help:"Notes (1 to 2000 characters). Defaults to the name, because Garmin requires notes."`
-	FirstUse Date   `help:"Date of first use (YYYY-MM-DD, today, yesterday, 3d)." default:"today" name:"first-use"`
+	Name     FreeText `arg:"" help:"Gear name."`
+	Type     string   `help:"Gear type." default:"shoes" enum:"shoes,bike,other"`
+	Brand    FreeText `help:"Brand." required:""`
+	Model    FreeText `help:"Model." required:""`
+	Notes    string   `help:"Notes (1 to 2000 characters). Defaults to the name, because Garmin requires notes."`
+	FirstUse Date     `help:"Date of first use (YYYY-MM-DD, today, yesterday, 3d)." default:"today" name:"first-use"`
 }
 
 func (c *GearAddCmd) Run(g *Globals) error {
@@ -170,10 +170,10 @@ func (c *GearAddCmd) Run(g *Globals) error {
 		return err
 	}
 	data, err := client.CreateGear(g.Context, garminapi.NewGear{
-		Name:         c.Name,
+		Name:         string(c.Name),
 		Type:         gearTypes[c.Type],
-		Brand:        c.Brand,
-		Model:        c.Model,
+		Brand:        string(c.Brand),
+		Model:        string(c.Model),
 		Notes:        c.Notes,
 		FirstUseDate: string(c.FirstUse),
 	})
@@ -218,13 +218,13 @@ func (c *GearUpdateCmd) Run(g *Globals) error {
 
 // GearCollectionCreateCmd creates a gear collection.
 type GearCollectionCreateCmd struct {
-	Name     string `arg:"" help:"Collection name."`
-	FirstUse Date   `help:"Date of first use (YYYY-MM-DD, today, yesterday, 3d)." default:"today" name:"first-use"`
+	Name     FreeText `arg:"" help:"Collection name."`
+	FirstUse Date     `help:"Date of first use (YYYY-MM-DD, today, yesterday, 3d)." default:"today" name:"first-use"`
 }
 
 func (c *GearCollectionCreateCmd) Run(g *Globals) error {
 	body, err := json.Marshal(map[string]any{
-		"name":                    c.Name,
+		"name":                    string(c.Name),
 		"firstUseDate":            string(c.FirstUse),
 		"associatedActivityTypes": []any{},
 	})

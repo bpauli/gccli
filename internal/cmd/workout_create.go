@@ -12,10 +12,10 @@ import (
 
 // WorkoutCreateCmd creates a workout with configurable sport type and targets.
 type WorkoutCreateCmd struct {
-	Name  string `arg:"" help:"Workout name."`
-	Type  string `help:"Sport type." required:"" enum:"run,bike,swim,strength,cardio,hiit,yoga,pilates,mobility,multisport,custom"`
-	Steps []Step `help:"Workout step (type:duration[@target:values])." required:"" short:"s" name:"step"`
-	Unit  string `help:"Pace unit: km or mi." default:"km" enum:"km,mi"`
+	Name  FreeText `arg:"" help:"Workout name."`
+	Type  string   `help:"Sport type." required:"" enum:"run,bike,swim,strength,cardio,hiit,yoga,pilates,mobility,multisport,custom"`
+	Steps []Step   `help:"Workout step (type:duration[@target:values])." required:"" short:"s" name:"step"`
+	Unit  string   `help:"Pace unit: km or mi." default:"km" enum:"km,mi"`
 }
 
 // Step is the Kong type of a workout step. Kong decodes it through the
@@ -49,7 +49,7 @@ func (c *WorkoutCreateCmd) Run(g *Globals) error {
 	for i, s := range c.Steps {
 		steps[i] = payload.Step(s)
 	}
-	body, err := payload.Workout(c.Name, c.Type, c.Unit, steps)
+	body, err := payload.Workout(string(c.Name), c.Type, c.Unit, steps)
 	if err != nil {
 		return err
 	}

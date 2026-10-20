@@ -11,7 +11,7 @@ running
 
 -- table stdout --
 -- table stderr --
-Usage: gccli events add --name=STRING --date=DATE --type=STRING [flags]
+Usage: gccli events add --name=FREE-TEXT --date=DATE --type=STRING [flags]
 
 Add a calendar event.
 
@@ -29,7 +29,7 @@ Flags:
                              statute_uk ($GCCLI_UNITS).
       --version              Print version information.
 
-  -n, --name=STRING          Event name.
+  -n, --name=FREE-TEXT       Event name.
   -d, --date=DATE            Event date (YYYY-MM-DD, today, +30d).
   -t, --type=STRING          Event type.
       --race                 Mark as a race.
@@ -50,7 +50,7 @@ gccli: error: --time: invalid time "": expected HH:MM (00:00 to 23:59)
 -- table requests --
 -- plain stdout --
 -- plain stderr --
-Usage: gccli events add --name=STRING --date=DATE --type=STRING [flags]
+Usage: gccli events add --name=FREE-TEXT --date=DATE --type=STRING [flags]
 
 Add a calendar event.
 
@@ -68,7 +68,7 @@ Flags:
                              statute_uk ($GCCLI_UNITS).
       --version              Print version information.
 
-  -n, --name=STRING          Event name.
+  -n, --name=FREE-TEXT       Event name.
   -d, --date=DATE            Event date (YYYY-MM-DD, today, +30d).
   -t, --type=STRING          Event type.
       --race                 Mark as a race.
@@ -89,7 +89,7 @@ gccli: error: --time: invalid time "": expected HH:MM (00:00 to 23:59)
 -- plain requests --
 -- plain-header stdout --
 -- plain-header stderr --
-Usage: gccli events add --name=STRING --date=DATE --type=STRING [flags]
+Usage: gccli events add --name=FREE-TEXT --date=DATE --type=STRING [flags]
 
 Add a calendar event.
 
@@ -107,7 +107,7 @@ Flags:
                              statute_uk ($GCCLI_UNITS).
       --version              Print version information.
 
-  -n, --name=STRING          Event name.
+  -n, --name=FREE-TEXT       Event name.
   -d, --date=DATE            Event date (YYYY-MM-DD, today, +30d).
   -t, --type=STRING          Event type.
       --race                 Mark as a race.
@@ -128,7 +128,7 @@ gccli: error: --time: invalid time "": expected HH:MM (00:00 to 23:59)
 -- plain-header requests --
 -- json stdout --
 -- json stderr --
-Usage: gccli events add --name=STRING --date=DATE --type=STRING [flags]
+Usage: gccli events add --name=FREE-TEXT --date=DATE --type=STRING [flags]
 
 Add a calendar event.
 
@@ -146,7 +146,7 @@ Flags:
                              statute_uk ($GCCLI_UNITS).
       --version              Print version information.
 
-  -n, --name=STRING          Event name.
+  -n, --name=FREE-TEXT       Event name.
   -d, --date=DATE            Event date (YYYY-MM-DD, today, +30d).
   -t, --type=STRING          Event type.
       --race                 Mark as a race.

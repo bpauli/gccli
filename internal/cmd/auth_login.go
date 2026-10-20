@@ -22,9 +22,9 @@ var (
 
 // AuthLoginCmd authenticates with Garmin Connect.
 type AuthLoginCmd struct {
-	Email    string `arg:"" help:"Garmin account email address."`
-	Headless bool   `help:"Use headless login (email/password) instead of browser SSO."`
-	MFACode  string `help:"MFA code for two-factor authentication." name:"mfa-code"`
+	Email    FreeText `arg:"" help:"Garmin account email address."`
+	Headless bool     `help:"Use headless login (email/password) instead of browser SSO."`
+	MFACode  string   `help:"MFA code for two-factor authentication." name:"mfa-code"`
 }
 
 func (c *AuthLoginCmd) Validate() error {
@@ -77,13 +77,13 @@ func (c *AuthLoginCmd) Run(g *Globals) error {
 		}
 
 		opts.PromptMFA = garminauth.PromptMFA
-		tokens, err = loginHeadlessFn(g.Context, c.Email, string(pw), opts)
+		tokens, err = loginHeadlessFn(g.Context, string(c.Email), string(pw), opts)
 		if err != nil {
 			return fmt.Errorf("login: %w", err)
 		}
 	} else {
 		g.UI.Infof("Opening browser for Garmin SSO login...")
-		tokens, err = loginBrowserFn(g.Context, c.Email, opts)
+		tokens, err = loginBrowserFn(g.Context, string(c.Email), opts)
 		if err != nil {
 			return fmt.Errorf("login: %w", err)
 		}
@@ -100,12 +100,12 @@ func (c *AuthLoginCmd) Run(g *Globals) error {
 		return fmt.Errorf("marshal tokens: %w", err)
 	}
 
-	if err := store.Set(c.Email, data); err != nil {
+	if err := store.Set(string(c.Email), data); err != nil {
 		return fmt.Errorf("store tokens: %w", err)
 	}
 
 	// Save as default account so subsequent commands don't need --account.
-	if err := config.Update(func(f *config.File) { f.DefaultAccount = c.Email }); err != nil {
+	if err := config.Update(func(f *config.File) { f.DefaultAccount = string(c.Email) }); err != nil {
 		return fmt.Errorf("save default account: %w", err)
 	}
 

@@ -8,11 +8,11 @@ import (
 // ActivityRenameCmd renames an activity.
 type ActivityRenameCmd struct {
 	ID   NumericID `arg:"" help:"Activity ID."`
-	Name string    `arg:"" help:"New activity name."`
+	Name FreeText  `arg:"" help:"New activity name."`
 }
 
 func (c *ActivityRenameCmd) Run(g *Globals) error {
-	data, err := updateActivity(g, c.ID, "rename activity", map[string]any{"activityName": c.Name})
+	data, err := updateActivity(g, c.ID, "rename activity", map[string]any{"activityName": string(c.Name)})
 	if err != nil {
 		return err
 	}
@@ -23,14 +23,14 @@ func (c *ActivityRenameCmd) Run(g *Globals) error {
 type ActivityRetypeCmd struct {
 	ID           NumericID `arg:"" help:"Activity ID."`
 	TypeID       int       `help:"Activity type ID." required:"" name:"type-id"`
-	TypeKey      string    `help:"Activity type key (e.g. running, cycling)." required:"" name:"type-key"`
+	TypeKey      FreeText  `help:"Activity type key (e.g. running, cycling)." required:"" name:"type-key"`
 	ParentTypeID int       `help:"Parent activity type ID." default:"0" name:"parent-type-id"`
 }
 
 func (c *ActivityRetypeCmd) Run(g *Globals) error {
 	fields := map[string]any{"activityTypeDTO": map[string]any{
 		"typeId":       c.TypeID,
-		"typeKey":      c.TypeKey,
+		"typeKey":      string(c.TypeKey),
 		"parentTypeId": c.ParentTypeID,
 	}}
 	data, err := updateActivity(g, c.ID, "retype activity", fields)
