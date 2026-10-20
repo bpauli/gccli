@@ -6,8 +6,6 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/alecthomas/kong"
-
 	"github.com/bpauli/gccli/internal/garminapi"
 )
 
@@ -27,8 +25,10 @@ var wellnessMenstrualLogGroup = Group{Name: "menstrual-log", Help: "Show, set an
 
 // menstrualValues lists Garmin's values of each enum field of the menstrual
 // daily log, as the Garmin Connect web app sends them. The flags take each
-// value in lower-case kebab form, and the Kong var menstrual_<field> lists
-// those forms.
+// value in lower-case kebab form, written out in the enum tags of
+// WellnessMenstrualLogSetCmd. Kong interpolates each kong.Vars entry into
+// every tag of the tree on each kong.New, which is slow for the many test
+// parsers.
 var menstrualValues = map[string][]string{
 	"flow":            {"LIGHT", "MEDIUM", "HEAVY"},
 	"symptoms":        {"ACNE", "BACKACHE", "BLOATING", "BODY_ACHES", "CONSTIPATION", "CRAMPS", "CRAVINGS", "DIARRHEA", "DIZZINESS", "FATIGUE", "HEADACHE", "INSOMNIA", "NAUSEA", "TENDER_BREASTS"},
@@ -40,18 +40,6 @@ var menstrualValues = map[string][]string{
 
 func menstrualFlagValue(garmin string) string {
 	return strings.ToLower(strings.ReplaceAll(garmin, "_", "-"))
-}
-
-func menstrualVars() kong.Vars {
-	vars := kong.Vars{}
-	for field, values := range menstrualValues {
-		var flags []string
-		for _, v := range values {
-			flags = append(flags, menstrualFlagValue(v))
-		}
-		vars["menstrual_"+field] = strings.Join(flags, ",")
-	}
-	return vars
 }
 
 // garminMenstrualValue returns Garmin's value for the flag value v of field.
@@ -71,12 +59,12 @@ func garminMenstrualValue(field, v string) string {
 // makes it empty for "", so nil keeps the list and empty clears it.
 type WellnessMenstrualLogSetCmd struct {
 	Date           Date     `arg:"" help:"Date of the log (YYYY-MM-DD, today, yesterday, 3d, +30d)."`
-	Flow           *string  `help:"Flow: light, medium or heavy. An empty value clears it." enum:"${menstrual_flow}," placeholder:"FLOW"`
-	Symptoms       []string `help:"Comma-separated symptoms: acne, backache, bloating, body-aches, constipation, cramps, cravings, diarrhea, dizziness, fatigue, headache, insomnia, nausea, tender-breasts. An empty value clears them." enum:"${menstrual_symptoms}" placeholder:"SYMPTOM"`
-	Moods          []string `help:"Comma-separated moods: energetic, emotional, fine, frustrated, happy, irritable, mood-swings, motivated, overwhelmed, sad. An empty value clears them." enum:"${menstrual_moods}" placeholder:"MOOD"`
-	Discharge      []string `help:"Comma-separated discharge: creamy, egg-white, no-discharge, spotting, sticky, unusual. no-discharge takes no other value. An empty value clears it." enum:"${menstrual_discharge}" placeholder:"DISCHARGE"`
-	SexDrive       *string  `help:"Sex drive: average, high or low. An empty value clears it." enum:"${menstrual_sex_drive}," placeholder:"LEVEL"`
-	SexualActivity *string  `help:"Sexual activity: protected or unprotected. An empty value clears it." enum:"${menstrual_sexual_activity}," placeholder:"KIND"`
+	Flow           *string  `help:"Flow: light, medium or heavy. An empty value clears it." enum:"light,medium,heavy," placeholder:"FLOW"`
+	Symptoms       []string `help:"Comma-separated symptoms: acne, backache, bloating, body-aches, constipation, cramps, cravings, diarrhea, dizziness, fatigue, headache, insomnia, nausea, tender-breasts. An empty value clears them." enum:"acne,backache,bloating,body-aches,constipation,cramps,cravings,diarrhea,dizziness,fatigue,headache,insomnia,nausea,tender-breasts" placeholder:"SYMPTOM"`
+	Moods          []string `help:"Comma-separated moods: energetic, emotional, fine, frustrated, happy, irritable, mood-swings, motivated, overwhelmed, sad. An empty value clears them." enum:"energetic,emotional,fine,frustrated,happy,irritable,mood-swings,motivated,overwhelmed,sad" placeholder:"MOOD"`
+	Discharge      []string `help:"Comma-separated discharge: creamy, egg-white, no-discharge, spotting, sticky, unusual. no-discharge takes no other value. An empty value clears it." enum:"creamy,egg-white,no-discharge,spotting,sticky,unusual" placeholder:"DISCHARGE"`
+	SexDrive       *string  `help:"Sex drive: average, high or low. An empty value clears it." enum:"average,high,low," placeholder:"LEVEL"`
+	SexualActivity *string  `help:"Sexual activity: protected or unprotected. An empty value clears it." enum:"protected,unprotected," placeholder:"KIND"`
 	Notes          *string  `help:"Notes. An empty value clears them." placeholder:"TEXT"`
 	Ovulation      *bool    `help:"Mark the day as the ovulation day. --no-ovulation removes the mark." negatable:""`
 }

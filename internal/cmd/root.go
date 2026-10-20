@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"maps"
 	"os"
 	"strings"
 
@@ -101,7 +100,10 @@ func execute(args []string, version, commit, date string, stdout, stderr io.Writ
 			Compact: true,
 		}),
 		kong.Help(colorHelpPrinter),
-		kongVars(versionStr),
+		kong.Vars{
+			"version": versionStr,
+			"units":   strings.Join(units.PreferenceNames(), ","),
+		},
 	)
 	if err != nil {
 		_, _ = fmt.Fprintf(stderr, "gccli: %s\n", err)
@@ -114,17 +116,6 @@ func execute(args []string, version, commit, date string, stdout, stderr io.Writ
 	}
 
 	return run(parser, &cli, args, stdout, stderr)
-}
-
-// kongVars returns the values of the ${name} placeholders in the struct tags
-// of the command tree.
-func kongVars(version string) kong.Vars {
-	vars := kong.Vars{
-		"version": version,
-		"units":   strings.Join(units.PreferenceNames(), ","),
-	}
-	maps.Copy(vars, menstrualVars())
-	return vars
 }
 
 func run(parser *kong.Kong, cli *CLI, args []string, stdout, stderr io.Writer) (code int) {
