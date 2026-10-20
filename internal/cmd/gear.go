@@ -36,13 +36,13 @@ var gearGroup = Group{Name: "gear", Help: "Manage gear.", Children: []Node{
 		}{}),
 		Endpoint: "gear.activities",
 		Params:   Params{"gearUUID": In("UUID"), "limit": In("Limit")},
-		Verb:     "get gear activities", Output: JSON{},
+		Verb:     "get gear activities", Output: JSON{List: true},
 	},
 	Leaf{
 		Name: "defaults", Help: "Show default gear per activity type.",
 		Endpoint: "gear.defaults",
 		Params:   Params{"userProfileNumber": ProfilePK},
-		Verb:     "get gear defaults", Output: JSON{},
+		Verb:     "get gear defaults", Output: JSON{List: true},
 	},
 	Leaf{
 		Name: "link", Help: "Link gear to an activity.",

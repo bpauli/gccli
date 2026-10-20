@@ -8,7 +8,7 @@ var socialGroup = Group{Name: "social", Help: "View connections, followers, foll
 		}{}),
 		Endpoint: "connections.list",
 		Params:   Params{"start": In("Offset"), "limit": In("Limit")},
-		Verb:     "get connections", Output: JSON{List: true},
+		Verb:     "get connections", Output: JSON{},
 	},
 	Leaf{
 		Name: "followers", Help: "List the followers of a user.",

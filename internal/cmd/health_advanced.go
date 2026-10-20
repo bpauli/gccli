@@ -10,7 +10,7 @@ var healthBodyBatteryGroup = Group{Name: "body-battery", Help: "Show body batter
 		}{}),
 		Endpoint: "health.body-battery",
 		Params:   Params{"startDate": In("Date"), "endDate": In("Date")},
-		Verb:     "get body battery", Output: JSON{},
+		Verb:     "get body battery", Output: JSON{List: true},
 		LateDates: []string{"Date"},
 	},
 	Leaf{
@@ -21,7 +21,7 @@ var healthBodyBatteryGroup = Group{Name: "body-battery", Help: "Show body batter
 		}{}),
 		Endpoint: "health.body-battery",
 		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
-		Verb:     "get body battery range", Output: JSON{},
+		Verb:     "get body battery range", Output: JSON{List: true},
 	},
 }}
 
@@ -44,7 +44,7 @@ var healthIntensityMinutesGroup = Group{Name: "intensity-minutes", Help: "Show i
 		}{}),
 		Endpoint: "health.weekly-intensity-minutes",
 		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
-		Verb:     "get weekly intensity minutes", Output: JSON{},
+		Verb:     "get weekly intensity minutes", Output: JSON{List: true},
 	},
 }}
 
