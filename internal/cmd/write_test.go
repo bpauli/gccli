@@ -696,7 +696,7 @@ func newHarness(t *testing.T, in harnessInput) *harness {
 			return nil, fmt.Errorf("fetch exercise catalog: %w", err)
 		}
 		defer func() { _ = resp.Body.Close() }()
-		if resp.StatusCode != http.StatusOK {
+		if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusNoContent {
 			return nil, fmt.Errorf("fetch exercise catalog: HTTP %d", resp.StatusCode)
 		}
 		return io.ReadAll(resp.Body)
