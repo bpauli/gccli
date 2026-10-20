@@ -1,0 +1,160 @@
+# The answer shape of every read that prints the Garmin answer as JSON (a
+# Leaf row with a JSON output, or a Custom whose Run calls writeObject or
+# writeAnswer), one line per command path: path, shape, source. The shape
+# is array, object or unknown. A Leaf row is JSON{List: true} exactly when
+# its shape is array, so an empty body prints []. An unknown shape prints
+# {}. TestAnswerShapes checks the rows, the main goldens and the empty
+# output of each Custom against this file. TestAnswerShapesLive refreshes
+# it from the raw Garmin answers, read-only, with the stored login of the
+# test account (see its comment):
+#   ANSWER_SHAPES_CONFIG=<XDG_CONFIG_HOME of that login> go test -tags answershapes ./internal/cmd -run TestAnswerShapesLive -update
+activities pending	object	live 2026-10-20
+activities stats monthly	object	live 2026-10-20
+activities stats view	object	live 2026-10-20
+activity comments	array	live 2026-10-20 with a real activity ID
+activity details	object	live 2026-10-20 with a real activity ID
+activity exercise-sets show	object	live 2026-10-20 with a real activity ID
+activity gear	unknown	405 live 2026-10-20 with a real activity ID
+activity hr-zones	array	recording conformance/testdata/recorded/get_activity-service.activity.1.hrTimeInZones_200_80d5bbb6.json
+activity likes	array	live 2026-10-20 with a real activity ID
+activity power-zones	array	live 2026-10-20 with a real activity ID
+activity split-summaries	object	live 2026-10-20 with a real activity ID
+activity splits	object	live 2026-10-20 with a real activity ID
+activity summary	object	live 2026-10-20 with a real activity ID
+activity typed-splits	object	live 2026-10-20 with a real activity ID
+activity weather	object	live 2026-10-20 with a real activity ID
+badges available	array	live 2026-10-20
+badges compare	object	live 2026-10-19 with a real display name
+badges detail	object	live 2026-10-20
+badges earned	array	live 2026-10-20
+badges in-progress	unknown	404 live 2026-10-20 (#267)
+badges leaderboard	object	live 2026-10-20
+body blood-pressure	object	live 2026-10-20
+body composition	object	live 2026-10-20
+body daily-weigh-ins	object	live 2026-10-20
+body glucose	object	live 2026-10-20
+body latest	object	live 2026-10-20
+body weigh-ins	object	live 2026-10-20
+challenges available	array	live 2026-10-20
+challenges badge	unknown	404 live 2026-10-20 (#267)
+challenges completed	array	live 2026-10-20
+challenges list	unknown	404 live 2026-10-20 (#267)
+challenges virtual available	array	live 2026-10-20
+challenges virtual completed	array	live 2026-10-20
+challenges virtual in-progress	array	live 2026-10-20
+courses detail	object	live 2026-10-20
+devices alarms	array	built by gccli: the alarms of every device in one list
+devices backups	object	live 2026-10-20
+devices historical	array	live 2026-10-20
+devices last-used	object	live 2026-10-20
+devices list	array	live 2026-10-20
+devices messages	object	live 2026-10-20
+devices primary	object	live 2026-10-20
+devices sensors	array	live 2026-10-20
+devices settings	object	live 2026-10-20
+devices solar	object	live 2026-10-20
+events upcoming	array	live 2026-10-20
+exercises list	object	the public exercise catalog is an object with a categories key (exerciseCatalog in exercises.go)
+gear activities	array	live 2026-10-20
+gear collections list	array	live 2026-10-20
+gear defaults	array	live 2026-10-20
+gear list	array	live 2026-10-20
+gear stats	unknown	500 live 2026-10-20 with a fake UUID
+gear types	array	live 2026-10-20
+goals list	array	live 2026-10-20
+goals weight	object	live 2026-10-20
+groups list	array	live 2026-10-20
+health acclimation	object	live 2026-10-20
+health body-battery range	array	live 2026-10-20
+health body-battery view	array	live 2026-10-20
+health calories weekly	array	live 2026-10-20
+health critical-swim-speed range	object	live 2026-10-20
+health critical-swim-speed view	unknown	empty body live 2026-10-20
+health cycling-ftp	object	live 2026-10-20
+health endurance-score	unknown	empty body live 2026-10-20
+health events	array	live 2026-10-20
+health fitness-age	object	live 2026-10-20
+health floors daily	array	live 2026-10-20
+health floors view	object	live 2026-10-20
+health floors weekly	array	live 2026-10-20
+health hill-score	unknown	empty body live 2026-10-20
+health hr daily	array	live 2026-10-20
+health hr view	object	live 2026-10-20
+health hr weekly	array	live 2026-10-20
+health hrv	unknown	empty body live 2026-10-20
+health intensity-minutes view	object	live 2026-10-20
+health intensity-minutes weekly	array	live 2026-10-20
+health lactate-threshold	array	live 2026-10-20
+health lifestyle	object	live 2026-10-20
+health lifetime-totals	object	live 2026-10-20
+health max-metrics	array	live 2026-10-20
+health one-rep-max	array	live 2026-10-20
+health power-curve	object	live 2026-10-20
+health power-to-weight	array	live 2026-10-20
+health pushes monthly	array	live 2026-10-20
+health pushes weekly	array	live 2026-10-20
+health race-predictions range	unknown	404 live 2026-10-20
+health race-predictions view	unknown	404 live 2026-10-20
+health respiration daily	array	live 2026-10-20
+health respiration view	object	live 2026-10-20
+health rhr	object	live 2026-10-20
+health running-economy	unknown	empty body live 2026-10-20
+health sleep daily	object	live 2026-10-20
+health sleep naps view	array	live 2026-10-20
+health sleep overall	object	live 2026-10-20
+health sleep view	object	live 2026-10-20
+health sleep weekly	unknown	empty body live 2026-10-20
+health spo2	object	live 2026-10-20
+health steps daily	array	live 2026-10-20
+health steps monthly	array	live 2026-10-20
+health steps view	array	live 2026-10-20
+health steps weekly	array	live 2026-10-20
+health stress daily	array	live 2026-10-20
+health stress view	object	live 2026-10-20
+health stress weekly	array	live 2026-10-20
+health summary	object	live 2026-10-20
+health thresholds cycling-ftp	array	live 2026-10-20
+health thresholds lactate-heart-rate	array	live 2026-10-20
+health thresholds lactate-speed	array	live 2026-10-20
+health thresholds power-to-weight	array	live 2026-10-20
+health training-readiness	array	live 2026-10-20
+health training-status daily	object	live 2026-10-20
+health training-status view	object	live 2026-10-20
+hydration daily	array	live 2026-10-20
+hydration view	object	live 2026-10-20
+hydration weekly	array	live 2026-10-20
+notifications list	object	live 2026-10-20
+notifications preferences view	object	live 2026-10-20
+nutrition food-log	object	live 2026-10-20
+nutrition meals	object	live 2026-10-20
+nutrition settings	unknown	empty body live 2026-10-20
+profile hr-zones	array	live 2026-10-20
+profile power-zones	array	live 2026-10-20
+profile privacy view	object	live 2026-10-20
+profile privacy-zones list	array	live 2026-10-20
+profile settings	object	live 2026-10-20
+profile view	object	live 2026-10-20
+records activity	array	live 2026-10-20
+records list	array	live 2026-10-20
+records types	array	live 2026-10-20
+reload	unknown	not run: the GET asks Garmin to reload data
+social connections	object	live 2026-10-20
+social feed	object	live 2026-10-20
+social followers	array	live 2026-10-20
+social following	array	live 2026-10-20
+social requests	array	live 2026-10-20
+training active	object	live 2026-10-20
+training coach-workouts	array	live 2026-10-20
+training plan	unknown	no training plan on the test account
+training plans	object	live 2026-10-20
+wellness jet-lag list	array	live 2026-10-20
+wellness jet-lag status	unknown	empty body live 2026-10-20
+wellness menstrual-calendar	object	live 2026-10-20
+wellness menstrual-cycle	unknown	404 live 2026-10-20
+wellness menstrual-log view	unknown	empty body live 2026-10-20
+wellness menstrual-summary	unknown	404 live 2026-10-20
+wellness pregnancy-summary	unknown	404 live 2026-10-20
+workouts benchmarks list	array	live 2026-10-20
+workouts detail	unknown	403 live 2026-10-20 with the golden ID; the test account has no workout
+workouts schedule export	object	live 2026-10-20
+workouts types	object	live 2026-10-20

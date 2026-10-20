@@ -1,12 +1,9 @@
 package cmd
 
 import (
-	"bytes"
 	"strings"
 	"testing"
 	"time"
-
-	"github.com/bpauli/gccli/internal/outfmt"
 )
 
 func overrideNowFn(t *testing.T, fixed time.Time) {
@@ -74,14 +71,5 @@ func TestResolveDate_ErrorMessage(t *testing.T) {
 	}
 	if !strings.Contains(err.Error(), "3d") {
 		t.Errorf("expected error to mention relative date example, got: %v", err)
-	}
-}
-
-func TestWriteHealthJSON_NilData(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	err := writeHealthJSON(g, nil)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
 	}
 }

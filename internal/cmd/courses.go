@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/bpauli/gccli/internal/garminapi"
-	"github.com/bpauli/gccli/internal/outfmt"
 )
 
 var courseColumns = []Column{
@@ -62,7 +61,7 @@ func (c *CourseDetailCmd) Run(g *Globals) error {
 		return fmt.Errorf("get course: %w", err)
 	}
 
-	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
+	return writeObject(g, data)
 }
 
 // CourseDownloadCmd downloads a course in a specified format.

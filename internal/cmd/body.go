@@ -108,8 +108,14 @@ func (c *BodyCompositionCmd) Run(g *Globals) error {
 		return fmt.Errorf("get body composition: %w", err)
 	}
 
-	return writeHealthJSON(g, data)
+	return writeObject(g, data)
 }
+
+// garminTimestamp is the format of the local and GMT timestamps of a weigh-in
+// and of a blood pressure reading. Garmin rejects a weigh-in timestamp
+// without milliseconds with a 500 ValueInstantiationException, and a blood
+// pressure timestamp with a zone suffix with a 500 BloodPressureDateException.
+const garminTimestamp = "2006-01-02T15:04:05.000"
 
 // BodyWeeklyCmd shows the weekly weight summaries of the 52 weeks that end
 // on a date.
@@ -164,8 +170,8 @@ func (c *BodyAddWeightCmd) Run(g *Globals) error {
 	}
 
 	now := nowFn()
-	localTS := now.Format("2006-01-02T15:04:05")
-	gmtTS := now.UTC().Format("2006-01-02T15:04:05")
+	localTS := now.Format(garminTimestamp)
+	gmtTS := now.UTC().Format(garminTimestamp)
 
 	data, err := client.AddWeight(g.Context, c.Value, c.Unit, localTS, gmtTS)
 	if err != nil {
@@ -236,10 +242,11 @@ func (c *BodyAddBPCmd) Run(g *Globals) error {
 		return err
 	}
 
-	now := nowFn().UTC()
-	ts := now.Format(time.RFC3339Nano)
+	now := nowFn()
+	localTS := now.Format(garminTimestamp)
+	gmtTS := now.UTC().Format(garminTimestamp)
 
-	data, err := client.AddBloodPressure(g.Context, c.Systolic, c.Diastolic, c.Pulse, ts, ts, c.Notes)
+	data, err := client.AddBloodPressure(g.Context, c.Systolic, c.Diastolic, c.Pulse, localTS, gmtTS, c.Notes)
 	if err != nil {
 		return fmt.Errorf("add blood pressure: %w", err)
 	}

@@ -93,8 +93,11 @@ func TestEveryLeafNeedsAccount(t *testing.T) {
 // not a usage error, with the reason. Every other such golden is a user
 // value that Kong checks at parse time.
 var notUsageCases = map[string]string{
-	"empty-200": "an empty 200 answer from Garmin, not an input",
-	"empty-day": "an empty --day clears the log entry; the value is accepted",
+	"empty-200":      "an empty 200 answer from Garmin, not an input",
+	"empty-204":      "a 204 answer from Garmin, not an input",
+	"empty-category": "an empty exercise catalog from Garmin; --category is checked against the catalog after the login",
+	"empty-day":      "an empty --day clears the log entry; the value is accepted",
+	"empty-range":    "an empty 204 answer to a date range, not an input",
 }
 
 // TestBadValuesAreCheckedBeforeAccount runs every @bad-* and @empty-*
@@ -123,7 +126,12 @@ func TestBadValuesAreCheckedBeforeAccount(t *testing.T) {
 			t.Errorf("%s: %v", file, err)
 			continue
 		}
-		in.routes = nil
+		if !exempt {
+			// A usage error sends no request, so no route is needed. An
+			// exempt case keeps its routes: exercises list fetches the
+			// public catalog without a login.
+			in.routes = nil
+		}
 		for _, flag := range []string{"--plain", "--json"} {
 			t.Run(filepath.Base(file)+"/"+strings.TrimPrefix(flag, "--"), func(t *testing.T) {
 				stdout, stderr, code, requests := runWithoutAccount(t, in, flag, args)

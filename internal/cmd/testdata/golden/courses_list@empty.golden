@@ -5,28 +5,27 @@ list
 auto
 -- route GET /web-gateway/course/owner/ 204 --
 -- table stdout --
+ID  NAME  TYPE  DISTANCE  CREATED
 -- table stderr --
-parse courses: unexpected end of JSON input
 -- table exit --
-1
+0
 -- table requests --
 GET /web-gateway/course/owner/
 -- plain stdout --
 -- plain stderr --
-parse courses: unexpected end of JSON input
 -- plain exit --
-1
+0
 -- plain requests --
 GET /web-gateway/course/owner/
 -- plain-header stdout --
+ID	NAME	TYPE	DISTANCE	CREATED
 -- plain-header stderr --
-parse courses: unexpected end of JSON input
 -- plain-header exit --
-1
+0
 -- plain-header requests --
 GET /web-gateway/course/owner/
 -- json stdout --
-null
+[]
 -- json stderr --
 -- json exit --
 0

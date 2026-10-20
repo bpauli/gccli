@@ -1,14 +1,11 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/bpauli/gccli/internal/outfmt"
 )
 
 // nowFn returns the current time. Variable for testing.
@@ -74,7 +71,7 @@ var healthGroup = Group{Name: "health", Help: "View health data.", Children: []N
 		}{}),
 		Endpoint: "health.training-readiness",
 		Params:   Params{"date": In("Date")},
-		Verb:     "get training readiness", Output: JSON{},
+		Verb:     "get training readiness", Output: JSON{List: true},
 	},
 	healthTrainingStatusGroup,
 	Leaf{
@@ -93,9 +90,9 @@ var healthGroup = Group{Name: "health", Help: "View health data.", Children: []N
 		}{}),
 		Endpoint: "health.max-metrics",
 		Params:   Params{"date": In("Date")},
-		Verb:     "get max metrics", Output: JSON{},
+		Verb:     "get max metrics", Output: JSON{List: true},
 	},
-	Leaf{Name: "lactate-threshold", Help: "Show latest lactate threshold.", Endpoint: "health.lactate-threshold", Verb: "get lactate threshold", Output: JSON{}},
+	Leaf{Name: "lactate-threshold", Help: "Show latest lactate threshold.", Endpoint: "health.lactate-threshold", Verb: "get lactate threshold", Output: JSON{List: true}},
 	Leaf{Name: "cycling-ftp", Help: "Show latest cycling FTP.", Endpoint: "health.cycling-ftp", Verb: "get cycling ftp", Output: JSON{}},
 	healthCriticalSwimSpeedGroup,
 	Leaf{
@@ -105,7 +102,7 @@ var healthGroup = Group{Name: "health", Help: "View health data.", Children: []N
 		}{}),
 		Endpoint: "health.power-to-weight",
 		Params:   Params{"date": In("Date")},
-		Verb:     "get power to weight", Output: JSON{},
+		Verb:     "get power to weight", Output: JSON{List: true},
 	},
 	healthThresholdsGroup,
 	healthRacePredictionsGroup,
@@ -163,7 +160,7 @@ var healthGroup = Group{Name: "health", Help: "View health data.", Children: []N
 		}{}),
 		Endpoint: "health.one-rep-max",
 		Params:   Params{"date": In("Date")},
-		Verb:     "get one-rep max", Output: JSON{},
+		Verb:     "get one-rep max", Output: JSON{List: true},
 	},
 	Leaf{
 		Name: "events", Help: "Show daily wellness events.",
@@ -172,7 +169,7 @@ var healthGroup = Group{Name: "health", Help: "View health data.", Children: []N
 		}{}),
 		Endpoint: "health.all-day-events",
 		Params:   Params{"date": In("Date")},
-		Verb:     "get events", Output: JSON{},
+		Verb:     "get events", Output: JSON{List: true},
 	},
 	Leaf{
 		Name: "lifestyle", Help: "Show lifestyle logging data.",
@@ -193,7 +190,7 @@ var healthStepsGroup = Group{Name: "steps", Help: "Show step data.", Children: [
 		}{}),
 		Endpoint: "health.steps",
 		Params:   Params{"displayName": DisplayName, "date": In("Date")},
-		Verb:     "get steps", Output: JSON{},
+		Verb:     "get steps", Output: JSON{List: true},
 	},
 	Leaf{
 		Name: "daily", Help: "Show daily step totals for a date range.",
@@ -203,7 +200,7 @@ var healthStepsGroup = Group{Name: "steps", Help: "Show step data.", Children: [
 		}{}),
 		Endpoint: "health.daily-steps",
 		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
-		Verb:     "get daily steps", Output: JSON{},
+		Verb:     "get daily steps", Output: JSON{List: true},
 	},
 	Leaf{
 		Name: "weekly", Help: "Show weekly step totals.",
@@ -213,7 +210,7 @@ var healthStepsGroup = Group{Name: "steps", Help: "Show step data.", Children: [
 		}{}),
 		Endpoint: "health.weekly-steps",
 		Params:   Params{"endDate": In("EndDate").Or(Today), "weeks": In("Weeks")},
-		Verb:     "get weekly steps", Output: JSON{},
+		Verb:     "get weekly steps", Output: JSON{List: true},
 	},
 	Leaf{
 		Name: "monthly", Help: "Show monthly step totals.",
@@ -223,7 +220,7 @@ var healthStepsGroup = Group{Name: "steps", Help: "Show step data.", Children: [
 		}{}),
 		Endpoint: "health.monthly-steps",
 		Params:   Params{"endDate": In("EndDate").Or(Today), "months": In("Months")},
-		Verb:     "get monthly steps", Output: JSON{},
+		Verb:     "get monthly steps", Output: JSON{List: true},
 	},
 }}
 
@@ -245,7 +242,7 @@ var healthHeartRateGroup = Group{Name: "hr", Help: "Show heart rate data.", Chil
 		}{}),
 		Endpoint: "health.daily-heart-rate",
 		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
-		Verb:     "get daily heart rate", Output: JSON{},
+		Verb:     "get daily heart rate", Output: JSON{List: true},
 	},
 	Leaf{
 		Name: "weekly", Help: "Show weekly heart rate statistics.",
@@ -255,7 +252,7 @@ var healthHeartRateGroup = Group{Name: "hr", Help: "Show heart rate data.", Chil
 		}{}),
 		Endpoint: "health.weekly-heart-rate",
 		Params:   Params{"endDate": In("EndDate").Or(Today), "weeks": In("Weeks")},
-		Verb:     "get weekly heart rate", Output: JSON{},
+		Verb:     "get weekly heart rate", Output: JSON{List: true},
 	},
 }}
 
@@ -277,7 +274,7 @@ var healthFloorsGroup = Group{Name: "floors", Help: "Show floors climbed data.",
 		}{}),
 		Endpoint: "health.daily-floors",
 		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
-		Verb:     "get daily floors", Output: JSON{},
+		Verb:     "get daily floors", Output: JSON{List: true},
 	},
 	Leaf{
 		Name: "weekly", Help: "Show weekly floors climbed.",
@@ -287,7 +284,7 @@ var healthFloorsGroup = Group{Name: "floors", Help: "Show floors climbed data.",
 		}{}),
 		Endpoint: "health.weekly-floors",
 		Params:   Params{"endDate": In("EndDate").Or(Today), "weeks": In("Weeks")},
-		Verb:     "get weekly floors", Output: JSON{},
+		Verb:     "get weekly floors", Output: JSON{List: true},
 	},
 }}
 
@@ -309,7 +306,7 @@ var healthRespirationGroup = Group{Name: "respiration", Help: "Show respiration 
 		}{}),
 		Endpoint: "health.daily-respiration",
 		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
-		Verb:     "get daily respiration", Output: JSON{},
+		Verb:     "get daily respiration", Output: JSON{List: true},
 	},
 }}
 
@@ -407,7 +404,7 @@ var healthThresholdsGroup = Group{Name: "thresholds", Help: "Show threshold and 
 		}{}),
 		Endpoint: "health.cycling-ftp-range",
 		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
-		Verb:     "get cycling ftp range", Output: JSON{},
+		Verb:     "get cycling ftp range", Output: JSON{List: true},
 	},
 	Leaf{
 		Name: "lactate-heart-rate", Help: "Show lactate threshold heart rate for a date range.",
@@ -417,7 +414,7 @@ var healthThresholdsGroup = Group{Name: "thresholds", Help: "Show threshold and 
 		}{}),
 		Endpoint: "health.lactate-heart-rate-range",
 		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
-		Verb:     "get lactate threshold heart rate range", Output: JSON{},
+		Verb:     "get lactate threshold heart rate range", Output: JSON{List: true},
 	},
 	Leaf{
 		Name: "lactate-speed", Help: "Show lactate threshold speed for a date range.",
@@ -427,7 +424,7 @@ var healthThresholdsGroup = Group{Name: "thresholds", Help: "Show threshold and 
 		}{}),
 		Endpoint: "health.lactate-speed-range",
 		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
-		Verb:     "get lactate threshold speed range", Output: JSON{},
+		Verb:     "get lactate threshold speed range", Output: JSON{List: true},
 	},
 	Leaf{
 		Name: "power-to-weight", Help: "Show power-to-weight data for a date range.",
@@ -437,7 +434,7 @@ var healthThresholdsGroup = Group{Name: "thresholds", Help: "Show threshold and 
 		}{}),
 		Endpoint: "health.power-to-weight-range",
 		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
-		Verb:     "get power to weight range", Output: JSON{},
+		Verb:     "get power to weight range", Output: JSON{List: true},
 	},
 }}
 
@@ -450,7 +447,7 @@ var healthCaloriesGroup = Group{Name: "calories", Help: "Show calorie statistics
 		}{}),
 		Endpoint: "health.weekly-calories",
 		Params:   Params{"endDate": In("EndDate").Or(Today), "weeks": In("Weeks")},
-		Verb:     "get weekly calories", Output: JSON{},
+		Verb:     "get weekly calories", Output: JSON{List: true},
 	},
 }}
 
@@ -463,7 +460,7 @@ var healthPushesGroup = Group{Name: "pushes", Help: "Show wheelchair push statis
 		}{}),
 		Endpoint: "health.weekly-pushes",
 		Params:   Params{"endDate": In("EndDate").Or(Today), "weeks": In("Weeks")},
-		Verb:     "get weekly pushes", Output: JSON{},
+		Verb:     "get weekly pushes", Output: JSON{List: true},
 	},
 	Leaf{
 		Name: "monthly", Help: "Show monthly wheelchair push totals.",
@@ -473,7 +470,7 @@ var healthPushesGroup = Group{Name: "pushes", Help: "Show wheelchair push statis
 		}{}),
 		Endpoint: "health.monthly-pushes",
 		Params:   Params{"endDate": In("EndDate").Or(Today), "months": In("Months")},
-		Verb:     "get monthly pushes", Output: JSON{},
+		Verb:     "get monthly pushes", Output: JSON{List: true},
 	},
 }}
 
@@ -495,7 +492,7 @@ var healthStressGroup = Group{Name: "stress", Help: "Show stress data.", Childre
 		}{}),
 		Endpoint: "health.daily-stress",
 		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
-		Verb:     "get daily stress", Output: JSON{},
+		Verb:     "get daily stress", Output: JSON{List: true},
 	},
 	Leaf{
 		Name: "weekly", Help: "Show weekly stress data.",
@@ -505,20 +502,9 @@ var healthStressGroup = Group{Name: "stress", Help: "Show stress data.", Childre
 		}{}),
 		Endpoint: "health.weekly-stress",
 		Params:   Params{"endDate": In("EndDate").Or(Today), "weeks": In("Weeks")},
-		Verb:     "get weekly stress", Output: JSON{},
+		Verb:     "get weekly stress", Output: JSON{List: true},
 	},
 }}
-
-// writeHealthJSON writes health data as JSON output.
-// Health endpoints return complex nested JSON, so we always output JSON
-// regardless of output mode.
-func writeHealthJSON(g *Globals, data json.RawMessage) error {
-	if data == nil {
-		_, _ = fmt.Fprintln(g.Stdout, "{}")
-		return nil
-	}
-	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
-}
 
 // relativeDateRe matches relative date strings like "3d", "7d", "14d".
 var relativeDateRe = regexp.MustCompile(`^(\d+)d$`)

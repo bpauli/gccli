@@ -5,6 +5,6 @@ var groupsGroup = Group{Name: "groups", Help: "View groups.", Children: []Node{
 		Name: "list", Help: "List your groups.", Default: true,
 		Endpoint: "groups.list",
 		Params:   Params{"displayName": DisplayName},
-		Verb:     "get groups", Output: JSON{},
+		Verb:     "get groups", Output: JSON{List: true},
 	},
 }}

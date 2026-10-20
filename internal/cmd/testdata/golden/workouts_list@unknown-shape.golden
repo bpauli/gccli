@@ -4,24 +4,23 @@ list
 -- route GET /workout-service/workouts?start=0&limit=20 --
 {"items":[{"workoutId":901,"workoutName":"Tempo"}]}
 -- table stdout --
+ID  NAME  TYPE  OWNER
 -- table stderr --
-parse workouts: unexpected response format
 -- table exit --
-1
+0
 -- table requests --
 GET /workout-service/workouts?start=0&limit=20
 -- plain stdout --
 -- plain stderr --
-parse workouts: unexpected response format
 -- plain exit --
-1
+0
 -- plain requests --
 GET /workout-service/workouts?start=0&limit=20
 -- plain-header stdout --
+ID	NAME	TYPE	OWNER
 -- plain-header stderr --
-parse workouts: unexpected response format
 -- plain-header exit --
-1
+0
 -- plain-header requests --
 GET /workout-service/workouts?start=0&limit=20
 -- json stdout --

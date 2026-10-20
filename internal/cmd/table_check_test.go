@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"go/ast"
 	"go/token"
-	"os"
-	"path/filepath"
 	"reflect"
 	"slices"
 	"strings"
@@ -247,23 +245,6 @@ func TestCheckTableRejects(t *testing.T) {
 			`body delete-weight: End is a date (its help names YYYY-MM-DD), so its type must be Date or DateTime, not string: Kong then checks it at parse time`,
 		},
 		{
-			"JSONNull off the frozen list", "goals list",
-			func(l *Leaf) { l.Output = JSONNull{} },
-			`goals list: JSONNull is allowed only on the paths in v1NullJSON`,
-		},
-		{
-			"stale v1NullJSON entry", "courses detail",
-			func(l *Leaf) {
-				*l = Leaf{
-					Spec: argsOf(&struct {
-						ID ID `arg:""`
-					}{}),
-					Endpoint: "courses.get", Params: Params{"courseID": In("ID")}, Output: JSON{},
-				}
-			},
-			`courses detail: v1NullJSON names this path, but the row's Output is not JSONNull: remove the entry`,
-		},
-		{
 			"Params key is no placeholder", "goals list",
 			func(l *Leaf) { l.Params = Params{"state": In("Status")} },
 			`goals list: Params["state"] is not a placeholder of goals.list`,
@@ -461,56 +442,3 @@ func TestCheckTableRejectsBadCustom(t *testing.T) {
 type intCmd int
 
 func (intCmd) Run(*Globals) error { return nil }
-
-// The frozen lists must match the golden files that pin each quirk, so a
-// new entry and a stale entry both fail here.
-func TestFrozenListsMatchGoldens(t *testing.T) {
-	t.Run("v1NullJSON", func(t *testing.T) {
-		pinned := goldenLeaves(t, "@empty.golden", func(g golden) bool {
-			return slices.IndexFunc(goldenModes, func(m goldenMode) bool {
-				return strings.TrimSpace(g.sections[m.name+" stdout"]) != "null"
-			}) < 0
-		})
-		compareFrozen(t, "v1NullJSON", v1NullJSON, pinned, "<leaf>@empty.golden prints null in every mode")
-	})
-}
-
-// goldenLeaves returns the leaf path of every golden file with the suffix
-// whose sections pass keep.
-func goldenLeaves(t *testing.T, suffix string, keep func(golden) bool) []string {
-	t.Helper()
-	files, err := filepath.Glob(filepath.Join(goldenDir, "*"+suffix))
-	if err != nil {
-		t.Fatal(err)
-	}
-	var leaves []string
-	for _, file := range files {
-		data, err := os.ReadFile(file)
-		if err != nil {
-			t.Fatal(err)
-		}
-		g, err := parseGolden(string(data))
-		if err != nil {
-			t.Fatalf("%s: %v", file, err)
-		}
-		if keep(g) {
-			path, _, _ := goldenCommand(file)
-			leaves = append(leaves, path)
-		}
-	}
-	return leaves
-}
-
-func compareFrozen(t *testing.T, list string, entries, pinned []string, rule string) {
-	t.Helper()
-	for _, path := range entries {
-		if !slices.Contains(pinned, path) {
-			t.Errorf("%s names %q, but no %s: remove the entry", list, path, rule)
-		}
-	}
-	for _, path := range pinned {
-		if !slices.Contains(entries, path) {
-			t.Errorf("%s does not name %q, but its %s: add the entry", list, path, rule)
-		}
-	}
-}

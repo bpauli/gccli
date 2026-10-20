@@ -696,7 +696,7 @@ func newHarness(t *testing.T, in harnessInput) *harness {
 			return nil, fmt.Errorf("fetch exercise catalog: %w", err)
 		}
 		defer func() { _ = resp.Body.Close() }()
-		if resp.StatusCode != http.StatusOK {
+		if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusNoContent {
 			return nil, fmt.Errorf("fetch exercise catalog: HTTP %d", resp.StatusCode)
 		}
 		return io.ReadAll(resp.Body)
@@ -753,7 +753,7 @@ func TestWriteCensus(t *testing.T) {
 
 	paths := map[string][]string{}
 	commandPaths(newTestParser(t).Model.Node, "", paths)
-	banned := []string{"IsJSON", "ModeFromContext", "WriteJSON", "WriteRows", "writeHealthJSON", "Stdout", "Successf"}
+	banned := []string{"IsJSON", "ModeFromContext", "WriteJSON", "WriteRows", "writeObject", "Stdout", "Successf"}
 	found := map[string]bool{}
 	for fn, method := range runWrites(cli, apiWrites) {
 		pos := fset.Position(fn.Pos())

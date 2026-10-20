@@ -22,7 +22,7 @@ var hydrationGroup = Group{Name: "hydration", Help: "Track hydration.", Children
 		}{}),
 		Endpoint: "hydration.daily",
 		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
-		Verb:     "get daily hydration", Output: JSON{},
+		Verb:     "get daily hydration", Output: JSON{List: true},
 	},
 	Leaf{
 		Name: "weekly", Help: "Show weekly hydration statistics.",
@@ -32,7 +32,7 @@ var hydrationGroup = Group{Name: "hydration", Help: "Track hydration.", Children
 		}{}),
 		Endpoint: "hydration.weekly",
 		Params:   Params{"endDate": In("EndDate").Or(Today), "weeks": In("Weeks")},
-		Verb:     "get weekly hydration", Output: JSON{},
+		Verb:     "get weekly hydration", Output: JSON{List: true},
 	},
 	Custom{Name: "add", Help: "Add a hydration log entry.", Cmd: &HydrationAddCmd{}},
 }}

@@ -3,6 +3,7 @@ package garminapi
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"slices"
 	"strings"
@@ -109,13 +110,8 @@ func TestGetDeviceAlarms_NoDevices(t *testing.T) {
 	if err != nil {
 		t.Fatalf("GetDeviceAlarms: %v", err)
 	}
-
-	var result []any
-	if err := json.Unmarshal(data, &result); err != nil {
-		t.Fatalf("unmarshal: %v", err)
-	}
-	if len(result) != 0 {
-		t.Fatalf("expected 0 alarms, got %d", len(result))
+	if string(data) != "[]" {
+		t.Fatalf("alarms = %s, want [] (an empty list, not null)", data)
 	}
 }
 
@@ -133,13 +129,32 @@ func TestGetDeviceAlarms_NoAlarms(t *testing.T) {
 	if err != nil {
 		t.Fatalf("GetDeviceAlarms: %v", err)
 	}
-
-	var result []any
-	if err := json.Unmarshal(data, &result); err != nil {
-		t.Fatalf("unmarshal: %v", err)
+	if string(data) != "[]" {
+		t.Fatalf("alarms = %s, want [] (an empty list, not null)", data)
 	}
-	if len(result) != 0 {
-		t.Fatalf("expected 0 alarms, got %d", len(result))
+}
+
+// An empty devices body (a 204 or an empty 200) is an empty list, not an
+// error.
+func TestGetDeviceAlarms_EmptyDevicesBody(t *testing.T) {
+	for _, status := range []int{http.StatusOK, http.StatusNoContent} {
+		t.Run(fmt.Sprint(status), func(t *testing.T) {
+			handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if r.URL.Path != "/device-service/deviceregistration/devices" {
+					t.Errorf("unexpected request %s", r.URL.Path)
+				}
+				w.WriteHeader(status)
+			})
+
+			_, client := testServer(t, handler)
+			data, err := client.GetDeviceAlarms(context.Background())
+			if err != nil {
+				t.Fatalf("GetDeviceAlarms: %v", err)
+			}
+			if string(data) != "[]" {
+				t.Fatalf("alarms = %s, want []", data)
+			}
+		})
 	}
 }
 

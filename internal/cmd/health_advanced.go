@@ -10,7 +10,7 @@ var healthBodyBatteryGroup = Group{Name: "body-battery", Help: "Show body batter
 		}{}),
 		Endpoint: "health.body-battery",
 		Params:   Params{"startDate": In("Date"), "endDate": In("Date")},
-		Verb:     "get body battery", Output: JSON{},
+		Verb:     "get body battery", Output: JSON{List: true},
 	},
 	Leaf{
 		Name: "range", Help: "Show body battery data for a date range.",
@@ -20,7 +20,7 @@ var healthBodyBatteryGroup = Group{Name: "body-battery", Help: "Show body batter
 		}{}),
 		Endpoint: "health.body-battery",
 		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
-		Verb:     "get body battery range", Output: JSON{},
+		Verb:     "get body battery range", Output: JSON{List: true},
 	},
 }}
 
@@ -42,7 +42,7 @@ var healthIntensityMinutesGroup = Group{Name: "intensity-minutes", Help: "Show i
 		}{}),
 		Endpoint: "health.weekly-intensity-minutes",
 		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
-		Verb:     "get weekly intensity minutes", Output: JSON{},
+		Verb:     "get weekly intensity minutes", Output: JSON{List: true},
 	},
 }}
 
@@ -65,7 +65,7 @@ func (c *HealthRacePredictionsViewCmd) Run(g *Globals) error {
 		return fmt.Errorf("get race predictions: %w", err)
 	}
 
-	return writeHealthJSON(g, data)
+	return writeObject(g, data)
 }
 
 // HealthRacePredictionsRangeCmd shows race predictions for a date range.
@@ -85,5 +85,5 @@ func (c *HealthRacePredictionsRangeCmd) Run(g *Globals) error {
 		return fmt.Errorf("get race predictions range: %w", err)
 	}
 
-	return writeHealthJSON(g, data)
+	return writeObject(g, data)
 }

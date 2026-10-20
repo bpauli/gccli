@@ -6,11 +6,13 @@ view
 -- route GET /userprofile-service/userprofile/settings --
 {"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
 -- route GET /wellness-service/wellness/dailySummaryChart/tester?date=2026-10-15 --
-{"value":1}
+[{"value":1}]
 -- table stdout --
-{
-  "value": 1
-}
+[
+  {
+    "value": 1
+  }
+]
 -- table stderr --
 -- table exit --
 0
@@ -18,9 +20,11 @@ view
 GET /userprofile-service/userprofile/settings
 GET /wellness-service/wellness/dailySummaryChart/tester?date=2026-10-15
 -- plain stdout --
-{
-  "value": 1
-}
+[
+  {
+    "value": 1
+  }
+]
 -- plain stderr --
 -- plain exit --
 0
@@ -28,9 +32,11 @@ GET /wellness-service/wellness/dailySummaryChart/tester?date=2026-10-15
 GET /userprofile-service/userprofile/settings
 GET /wellness-service/wellness/dailySummaryChart/tester?date=2026-10-15
 -- plain-header stdout --
-{
-  "value": 1
-}
+[
+  {
+    "value": 1
+  }
+]
 -- plain-header stderr --
 -- plain-header exit --
 0
@@ -38,9 +44,11 @@ GET /wellness-service/wellness/dailySummaryChart/tester?date=2026-10-15
 GET /userprofile-service/userprofile/settings
 GET /wellness-service/wellness/dailySummaryChart/tester?date=2026-10-15
 -- json stdout --
-{
-  "value": 1
-}
+[
+  {
+    "value": 1
+  }
+]
 -- json stderr --
 -- json exit --
 0

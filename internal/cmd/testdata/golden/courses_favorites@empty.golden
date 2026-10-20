@@ -3,28 +3,27 @@ courses
 favorites
 -- route GET /course-service/course/favorites 204 --
 -- table stdout --
+ID  NAME  TYPE  DISTANCE  CREATED
 -- table stderr --
-parse favorite courses: unexpected end of JSON input
 -- table exit --
-1
+0
 -- table requests --
 GET /course-service/course/favorites
 -- plain stdout --
 -- plain stderr --
-parse favorite courses: unexpected end of JSON input
 -- plain exit --
-1
+0
 -- plain requests --
 GET /course-service/course/favorites
 -- plain-header stdout --
+ID	NAME	TYPE	DISTANCE	CREATED
 -- plain-header stderr --
-parse favorite courses: unexpected end of JSON input
 -- plain-header exit --
-1
+0
 -- plain-header requests --
 GET /course-service/course/favorites
 -- json stdout --
-null
+[]
 -- json stderr --
 -- json exit --
 0

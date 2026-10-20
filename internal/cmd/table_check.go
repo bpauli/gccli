@@ -12,31 +12,13 @@ import (
 	"github.com/bpauli/gccli/internal/garminapi"
 )
 
-// v1NullJSON lists the paths that print null on an empty body, as their
-// <leaf>@empty.golden files pin. The major release that prints {}
-// everywhere deletes it; until then the list only shrinks.
-var v1NullJSON = []string{
-	"activity details",
-	"activity exercise-sets show",
-	"activity gear",
-	"activity hr-zones",
-	"activity power-zones",
-	"activity split-summaries",
-	"activity splits",
-	"activity typed-splits",
-	"activity weather",
-	"courses detail",
-	"workouts detail",
-}
-
 // checkTable reports every defect of the command tree: a Custom without
 // a struct Cmd; a Leaf whose endpoint, placeholders, In fields, enums,
-// required bindings, int bindings, date and ID types, frozen-list
-// paths, Output type or Rows columns and Write templates do not fit. Each
-// fail message in checkLeaf states one rule.
+// required bindings, int bindings, date and ID types, Output type or
+// Rows columns and Write templates do not fit. Each fail message in
+// checkLeaf states one rule.
 func checkTable(nodes []Node) []error {
 	var errs []error
-	leaves := map[string]Leaf{}
 	walkNodes(nodes, "", func(path string, n Node) {
 		switch n := n.(type) {
 		case Custom:
@@ -44,21 +26,10 @@ func checkTable(nodes []Node) []error {
 				errs = append(errs, fmt.Errorf("%s: Custom needs a Cmd that points to a struct, got %T", path, n.Cmd))
 			}
 		case Leaf:
-			leaves[path] = n
 			errs = append(errs, checkLeaf(path, n)...)
 		}
 	})
-	for _, path := range v1NullJSON {
-		if l, ok := leaves[path]; ok && !isNullJSON(l) {
-			errs = append(errs, fmt.Errorf("%s: v1NullJSON names this path, but the row's Output is not JSONNull: remove the entry", path))
-		}
-	}
 	return errs
-}
-
-func isNullJSON(l Leaf) bool {
-	_, ok := l.Output.(JSONNull)
-	return ok
 }
 
 func walkNodes(nodes []Node, prefix string, visit func(path string, n Node)) {
@@ -136,9 +107,6 @@ func checkLeaf(path string, l Leaf) []error {
 		if msg := idTypeError(f.Name, f.Type); msg != "" {
 			fail("%s", msg)
 		}
-	}
-	if isNullJSON(l) && !slices.Contains(v1NullJSON, path) {
-		fail("JSONNull is allowed only on the paths in v1NullJSON")
 	}
 	for _, key := range slices.Sorted(maps.Keys(l.Params)) {
 		for _, a := range l.Params[key].alts {

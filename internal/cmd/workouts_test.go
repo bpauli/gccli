@@ -513,49 +513,6 @@ func TestFilterCalendarWorkoutsInRange_Empty(t *testing.T) {
 	}
 }
 
-// --- parseWorkouts tests ---
-
-func TestParseWorkouts_Array(t *testing.T) {
-	data := json.RawMessage(`[{"workoutId":1,"workoutName":"Run"},{"workoutId":2,"workoutName":"Bike"}]`)
-	workouts, err := parseWorkouts(data)
-	if err != nil {
-		t.Fatalf("parseWorkouts: %v", err)
-	}
-	if len(workouts) != 2 {
-		t.Errorf("got %d workouts, want 2", len(workouts))
-	}
-}
-
-func TestParseWorkouts_Wrapper(t *testing.T) {
-	data := json.RawMessage(`{"workouts":[{"workoutId":1,"workoutName":"Run"}],"totalCount":1}`)
-	workouts, err := parseWorkouts(data)
-	if err != nil {
-		t.Fatalf("parseWorkouts: %v", err)
-	}
-	if len(workouts) != 1 {
-		t.Errorf("got %d workouts, want 1", len(workouts))
-	}
-}
-
-func TestParseWorkouts_InvalidJSON(t *testing.T) {
-	data := json.RawMessage(`not json`)
-	_, err := parseWorkouts(data)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-}
-
-func TestParseWorkouts_EmptyArray(t *testing.T) {
-	data := json.RawMessage(`[]`)
-	workouts, err := parseWorkouts(data)
-	if err != nil {
-		t.Fatalf("parseWorkouts: %v", err)
-	}
-	if len(workouts) != 0 {
-		t.Errorf("got %d workouts, want 0", len(workouts))
-	}
-}
-
 // --- formatWorkoutRows tests ---
 
 func TestFormatWorkoutRows(t *testing.T) {

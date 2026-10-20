@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
 	"strconv"
 
@@ -17,8 +16,24 @@ var activityGroup = Group{Name: "activity", Help: "View activity details.", Chil
 	Custom{Name: "typed-splits", Help: "Show typed splits.", Cmd: &ActivityTypedSplitsCmd{}},
 	Custom{Name: "split-summaries", Help: "Show split summaries.", Cmd: &ActivitySplitSummariesCmd{}},
 	Custom{Name: "weather", Help: "Show weather conditions.", Cmd: &ActivityWeatherCmd{}},
-	Custom{Name: "hr-zones", Help: "Show heart rate time in zones.", Cmd: &ActivityHRZonesCmd{}},
-	Custom{Name: "power-zones", Help: "Show power time in zones.", Cmd: &ActivityPowerZonesCmd{}},
+	Leaf{
+		Name: "hr-zones", Help: "Show heart rate time in zones.",
+		Spec: argsOf(&struct {
+			ID ID `arg:"" help:"Activity ID."`
+		}{}),
+		Endpoint: "activities.hr-zones",
+		Params:   Params{"activityID": In("ID")},
+		Verb:     "get activity HR zones", Output: JSON{List: true},
+	},
+	Leaf{
+		Name: "power-zones", Help: "Show power time in zones.",
+		Spec: argsOf(&struct {
+			ID ID `arg:"" help:"Activity ID."`
+		}{}),
+		Endpoint: "activities.power-zones",
+		Params:   Params{"activityID": In("ID")},
+		Verb:     "get activity power zones", Output: JSON{List: true},
+	},
 	activityExerciseSetsGroup,
 	Custom{Name: "gear", Help: "Show linked gear.", Cmd: &ActivityGearCmd{}},
 	Leaf{
@@ -28,7 +43,7 @@ var activityGroup = Group{Name: "activity", Help: "View activity details.", Chil
 		}{}),
 		Endpoint: "activities.comments",
 		Params:   Params{"activityID": In("ID")},
-		Verb:     "get comments", Output: JSON{},
+		Verb:     "get comments", Output: JSON{List: true},
 	},
 	Leaf{
 		Name: "likes", Help: "List the likes of an activity.",
@@ -37,7 +52,7 @@ var activityGroup = Group{Name: "activity", Help: "View activity details.", Chil
 		}{}),
 		Endpoint: "activities.likes",
 		Params:   Params{"activityID": In("ID")},
-		Verb:     "get likes", Output: JSON{},
+		Verb:     "get likes", Output: JSON{List: true},
 	},
 	Custom{Name: "download", Help: "Download activity file.", Cmd: &ActivityDownloadCmd{}},
 	Custom{Name: "upload", Help: "Upload an activity file (FIT/GPX/TCX).", Cmd: &ActivityUploadCmd{}},
@@ -77,12 +92,15 @@ func (c *ActivitySummaryCmd) Run(g *Globals) error {
 	}
 
 	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
+		return writeObject(g, data)
 	}
 
 	var activity map[string]any
-	if err := json.Unmarshal(data, &activity); err != nil {
+	if err := unmarshalAnswer(data, &activity); err != nil {
 		return fmt.Errorf("parse activity: %w", err)
+	}
+	if activity == nil {
+		return nil
 	}
 
 	cfg, err := readConfigFn()
@@ -164,7 +182,7 @@ func (c *ActivityDetailsCmd) Run(g *Globals) error {
 		return fmt.Errorf("get activity details: %w", err)
 	}
 
-	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
+	return writeObject(g, data)
 }
 
 // ActivitySplitsCmd shows activity splits.
@@ -183,7 +201,7 @@ func (c *ActivitySplitsCmd) Run(g *Globals) error {
 		return fmt.Errorf("get activity splits: %w", err)
 	}
 
-	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
+	return writeObject(g, data)
 }
 
 // ActivityTypedSplitsCmd shows typed splits for an activity.
@@ -202,7 +220,7 @@ func (c *ActivityTypedSplitsCmd) Run(g *Globals) error {
 		return fmt.Errorf("get activity typed splits: %w", err)
 	}
 
-	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
+	return writeObject(g, data)
 }
 
 // ActivitySplitSummariesCmd shows split summaries for an activity.
@@ -221,7 +239,7 @@ func (c *ActivitySplitSummariesCmd) Run(g *Globals) error {
 		return fmt.Errorf("get activity split summaries: %w", err)
 	}
 
-	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
+	return writeObject(g, data)
 }
 
 // ActivityWeatherCmd shows weather conditions for an activity.
@@ -240,45 +258,7 @@ func (c *ActivityWeatherCmd) Run(g *Globals) error {
 		return fmt.Errorf("get activity weather: %w", err)
 	}
 
-	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
-}
-
-// ActivityHRZonesCmd shows heart rate time-in-zone data for an activity.
-type ActivityHRZonesCmd struct {
-	ID ID `arg:"" help:"Activity ID."`
-}
-
-func (c *ActivityHRZonesCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.Call(g.Context, "activities.hr-zones", map[string]string{"activityID": string(c.ID)}, nil)
-	if err != nil {
-		return fmt.Errorf("get activity HR zones: %w", err)
-	}
-
-	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
-}
-
-// ActivityPowerZonesCmd shows power time-in-zone data for an activity.
-type ActivityPowerZonesCmd struct {
-	ID ID `arg:"" help:"Activity ID."`
-}
-
-func (c *ActivityPowerZonesCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.Call(g.Context, "activities.power-zones", map[string]string{"activityID": string(c.ID)}, nil)
-	if err != nil {
-		return fmt.Errorf("get activity power zones: %w", err)
-	}
-
-	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
+	return writeObject(g, data)
 }
 
 var activityExerciseSetsGroup = Group{Name: "exercise-sets", Help: "Manage exercise sets.", Children: []Node{
@@ -302,7 +282,7 @@ func (c *ActivityExerciseSetsShowCmd) Run(g *Globals) error {
 		return fmt.Errorf("get activity exercise sets: %w", err)
 	}
 
-	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
+	return writeObject(g, data)
 }
 
 // ActivityGearCmd shows gear linked to an activity.
@@ -321,5 +301,5 @@ func (c *ActivityGearCmd) Run(g *Globals) error {
 		return fmt.Errorf("get activity gear: %w", err)
 	}
 
-	return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
+	return writeObject(g, data)
 }

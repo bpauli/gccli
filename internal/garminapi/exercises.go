@@ -28,7 +28,9 @@ func FetchExerciseCatalog(ctx context.Context) (json.RawMessage, error) {
 	}
 	defer func() { _ = resp.Body.Close() }()
 
-	if resp.StatusCode != http.StatusOK {
+	// A 204 is an empty catalog, like an empty 200 body: the answer is
+	// nil, and the command prints it as empty.
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusNoContent {
 		return nil, fmt.Errorf("fetch exercise catalog: HTTP %d", resp.StatusCode)
 	}
 
