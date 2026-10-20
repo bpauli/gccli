@@ -1,0 +1,127 @@
+Error case: a name of only spaces fails before any request, like an empty name, and the exit code is 2 (usage).
+-- args --
+calendar
+notes
+add
+2026-10-20
+   
+-- table stdout --
+-- table stderr --
+Usage: gccli calendar notes add <date> <name> [flags]
+
+Add a note to a calendar day.
+
+Arguments:
+  <date>    Date of the note (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  <name>    Note name.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --content=STRING    Note text.
+
+gccli: error: calendar notes add: the note name must not be empty
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli calendar notes add <date> <name> [flags]
+
+Add a note to a calendar day.
+
+Arguments:
+  <date>    Date of the note (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  <name>    Note name.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --content=STRING    Note text.
+
+gccli: error: calendar notes add: the note name must not be empty
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli calendar notes add <date> <name> [flags]
+
+Add a note to a calendar day.
+
+Arguments:
+  <date>    Date of the note (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  <name>    Note name.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --content=STRING    Note text.
+
+gccli: error: calendar notes add: the note name must not be empty
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli calendar notes add <date> <name> [flags]
+
+Add a note to a calendar day.
+
+Arguments:
+  <date>    Date of the note (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  <name>    Note name.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --content=STRING    Note text.
+
+gccli: error: calendar notes add: the note name must not be empty
+-- json exit --
+2
+-- json requests --

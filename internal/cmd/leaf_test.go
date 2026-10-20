@@ -89,9 +89,9 @@ func TestEveryLeafNeedsAccount(t *testing.T) {
 // A positional date is checked at parse time, so every bad-date golden exits
 // 2 without an account and sends no request. A leaf that checks its date
 // after the login would exit 3 here.
-// notUsageCases names the @bad-* and @empty-* golden cases whose value is
-// not a usage error, with the reason. Every other such golden is a user
-// value that Kong checks at parse time.
+// notUsageCases names the @bad-*, @empty-* and @blank-* golden cases whose
+// value is not a usage error, with the reason. Every other such golden is a
+// user value that Kong checks at parse time.
 var notUsageCases = map[string]string{
 	"empty-200":      "an empty 200 answer from Garmin, not an input",
 	"empty-204":      "a 204 answer from Garmin, not an input",
@@ -100,13 +100,13 @@ var notUsageCases = map[string]string{
 	"empty-range":    "an empty 204 answer to a date range, not an input",
 }
 
-// TestBadValuesAreCheckedBeforeAccount runs every @bad-* and @empty-*
+// TestBadValuesAreCheckedBeforeAccount runs every @bad-*, @empty-* and @blank-*
 // golden without an account: a bad value that Kong can check must be a
 // usage error at parse time, before the login, with no request. A golden of
 // a notUsageCases case must not be a usage error, or the entry is stale.
 func TestBadValuesAreCheckedBeforeAccount(t *testing.T) {
 	var files []string
-	for _, pattern := range []string{"*@bad-*.golden", "*@empty-*.golden"} {
+	for _, pattern := range []string{"*@bad-*.golden", "*@empty-*.golden", "*@blank-*.golden"} {
 		matches, err := filepath.Glob(filepath.Join(goldenDir, pattern))
 		if err != nil {
 			t.Fatal(err)
