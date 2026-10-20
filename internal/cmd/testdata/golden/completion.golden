@@ -290,8 +290,6 @@ _gccli_completions() {
         "calendar notes update") COMPREPLY=($(compgen -W '--name --content' -- "$cur")) ;;
         "calendar notes delete") COMPREPLY=($(compgen -W '--force -f' -- "$cur")) ;;
         "wellness") COMPREPLY=($(compgen -W 'menstrual-cycle menstrual-summary menstrual-calendar menstrual-log pregnancy-summary jet-lag' -- "$cur")) ;;
-        "wellness menstrual-cycle") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
-        "wellness menstrual-summary") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "wellness menstrual-calendar") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "wellness menstrual-log") COMPREPLY=($(compgen -W 'view set delete' -- "$cur")) ;;
         "wellness menstrual-log set") COMPREPLY=($(compgen -W '--flow --symptoms --moods --discharge --sex-drive --sexual-activity --notes --ovulation --no-ovulation' -- "$cur")) ;;
@@ -601,8 +599,6 @@ _gccli_completions() {
         "calendar notes update") COMPREPLY=($(compgen -W '--name --content' -- "$cur")) ;;
         "calendar notes delete") COMPREPLY=($(compgen -W '--force -f' -- "$cur")) ;;
         "wellness") COMPREPLY=($(compgen -W 'menstrual-cycle menstrual-summary menstrual-calendar menstrual-log pregnancy-summary jet-lag' -- "$cur")) ;;
-        "wellness menstrual-cycle") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
-        "wellness menstrual-summary") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "wellness menstrual-calendar") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "wellness menstrual-log") COMPREPLY=($(compgen -W 'view set delete' -- "$cur")) ;;
         "wellness menstrual-log set") COMPREPLY=($(compgen -W '--flow --symptoms --moods --discharge --sex-drive --sexual-activity --notes --ovulation --no-ovulation' -- "$cur")) ;;
@@ -912,8 +908,6 @@ _gccli_completions() {
         "calendar notes update") COMPREPLY=($(compgen -W '--name --content' -- "$cur")) ;;
         "calendar notes delete") COMPREPLY=($(compgen -W '--force -f' -- "$cur")) ;;
         "wellness") COMPREPLY=($(compgen -W 'menstrual-cycle menstrual-summary menstrual-calendar menstrual-log pregnancy-summary jet-lag' -- "$cur")) ;;
-        "wellness menstrual-cycle") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
-        "wellness menstrual-summary") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "wellness menstrual-calendar") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "wellness menstrual-log") COMPREPLY=($(compgen -W 'view set delete' -- "$cur")) ;;
         "wellness menstrual-log set") COMPREPLY=($(compgen -W '--flow --symptoms --moods --discharge --sex-drive --sexual-activity --notes --ovulation --no-ovulation' -- "$cur")) ;;
@@ -1223,8 +1217,6 @@ _gccli_completions() {
         "calendar notes update") COMPREPLY=($(compgen -W '--name --content' -- "$cur")) ;;
         "calendar notes delete") COMPREPLY=($(compgen -W '--force -f' -- "$cur")) ;;
         "wellness") COMPREPLY=($(compgen -W 'menstrual-cycle menstrual-summary menstrual-calendar menstrual-log pregnancy-summary jet-lag' -- "$cur")) ;;
-        "wellness menstrual-cycle") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
-        "wellness menstrual-summary") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "wellness menstrual-calendar") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "wellness menstrual-log") COMPREPLY=($(compgen -W 'view set delete' -- "$cur")) ;;
         "wellness menstrual-log set") COMPREPLY=($(compgen -W '--flow --symptoms --moods --discharge --sex-drive --sexual-activity --notes --ovulation --no-ovulation' -- "$cur")) ;;

@@ -792,14 +792,14 @@ gccli calendar notes delete <id>               # Delete a note (with confirmatio
 ### Wellness
 
 ```bash
-gccli wellness menstrual-cycle --start 2024-01-01 --end 2024-03-31
-gccli wellness menstrual-summary --start 2024-01-01 --end 2024-03-31
+gccli wellness menstrual-cycle                    # Cycle day view of today ({} for a day outside a tracked cycle)
+gccli wellness menstrual-summary 2026-10-01       # Cycle summary of a date
 gccli wellness menstrual-calendar --start 2024-01-01 --end 2024-03-31
 gccli wellness menstrual-log 2026-10-01           # Daily log ({} for a day without a log)
 gccli wellness menstrual-log set 2026-10-01 --flow light --symptoms cramps,headache
 gccli wellness menstrual-log set 2026-10-01 --notes ""   # Clear the notes, keep the other fields
 gccli wellness menstrual-log delete 2026-10-01    # Delete the daily log (with confirmation)
-gccli wellness pregnancy-summary
+gccli wellness pregnancy-summary                  # Pregnancy snapshot ({} when there is none)
 gccli wellness jet-lag list
 gccli wellness jet-lag status 2024-03-15
 ```
@@ -1426,12 +1426,10 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli training active [flags]`: Show active training plans.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli training coach-workouts`: List adaptive coaching workout types.
-- `gccli wellness menstrual-cycle --start=DATE --end=DATE`: Show menstrual cycle data.
-  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
-  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
-- `gccli wellness menstrual-summary --start=DATE --end=DATE`: Show menstrual cycle summary.
-  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
-  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli wellness menstrual-cycle [<date>]`: Show the menstrual cycle day view of a date.
+  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli wellness menstrual-summary [<date>]`: Show the menstrual cycle summary of a date.
+  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli wellness menstrual-calendar --start=DATE --end=DATE`: Show the menstrual cycle calendar for a date range.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).

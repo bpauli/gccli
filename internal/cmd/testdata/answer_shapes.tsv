@@ -149,10 +149,10 @@ training plans	object	live 2026-10-20
 wellness jet-lag list	array	live 2026-10-20
 wellness jet-lag status	unknown	empty body live 2026-10-20
 wellness menstrual-calendar	object	live 2026-10-20
-wellness menstrual-cycle	unknown	404 live 2026-10-20
+wellness menstrual-cycle	object	live 2026-10-20
 wellness menstrual-log view	unknown	empty body live 2026-10-20
-wellness menstrual-summary	unknown	404 live 2026-10-20
-wellness pregnancy-summary	unknown	404 live 2026-10-20
+wellness menstrual-summary	object	live 2026-10-20
+wellness pregnancy-summary	unknown	empty body live 2026-10-20
 workouts benchmarks list	array	live 2026-10-20
 workouts detail	unknown	403 live 2026-10-20 with the golden ID; the test account has no workout
 workouts schedule export	object	live 2026-10-20

@@ -1,43 +1,102 @@
 -- args --
 wellness
 menstrual-cycle
---start=2026-10-01
---end=2026-10-01
--- route GET /periodichealth-service/menstrualcycle/dayview/2026-10-01/2026-10-01 --
-{"value":1}
+2026-10-01
+-- route GET /periodichealth-service/menstrualcycle/dayview/2026-10-01?todayDate=2026-10-15 noeol --
+{"daySummary":{"startDate":"2026-10-01","dayInCycle":1,"periodLength":5,"currentPhase":1,"lengthOfCurrentPhase":5,"daysUntilNextPhase":5,"fertileWindowStart":3,"lengthOfFertileWindow":7,"predictedCycleLength":20,"educationContentMod":0,"cycleType":"REGULAR","feedbackPhrase":"GENERAL_UNHEALTHY_HABITS","predictedCycle":false},"dayLog":null}
 -- table stdout --
 {
-  "value": 1
+  "daySummary": {
+    "startDate": "2026-10-01",
+    "dayInCycle": 1,
+    "periodLength": 5,
+    "currentPhase": 1,
+    "lengthOfCurrentPhase": 5,
+    "daysUntilNextPhase": 5,
+    "fertileWindowStart": 3,
+    "lengthOfFertileWindow": 7,
+    "predictedCycleLength": 20,
+    "educationContentMod": 0,
+    "cycleType": "REGULAR",
+    "feedbackPhrase": "GENERAL_UNHEALTHY_HABITS",
+    "predictedCycle": false
+  },
+  "dayLog": null
 }
 -- table stderr --
 -- table exit --
 0
 -- table requests --
-GET /periodichealth-service/menstrualcycle/dayview/2026-10-01/2026-10-01
+GET /periodichealth-service/menstrualcycle/dayview/2026-10-01?todayDate=2026-10-15
 -- plain stdout --
 {
-  "value": 1
+  "daySummary": {
+    "startDate": "2026-10-01",
+    "dayInCycle": 1,
+    "periodLength": 5,
+    "currentPhase": 1,
+    "lengthOfCurrentPhase": 5,
+    "daysUntilNextPhase": 5,
+    "fertileWindowStart": 3,
+    "lengthOfFertileWindow": 7,
+    "predictedCycleLength": 20,
+    "educationContentMod": 0,
+    "cycleType": "REGULAR",
+    "feedbackPhrase": "GENERAL_UNHEALTHY_HABITS",
+    "predictedCycle": false
+  },
+  "dayLog": null
 }
 -- plain stderr --
 -- plain exit --
 0
 -- plain requests --
-GET /periodichealth-service/menstrualcycle/dayview/2026-10-01/2026-10-01
+GET /periodichealth-service/menstrualcycle/dayview/2026-10-01?todayDate=2026-10-15
 -- plain-header stdout --
 {
-  "value": 1
+  "daySummary": {
+    "startDate": "2026-10-01",
+    "dayInCycle": 1,
+    "periodLength": 5,
+    "currentPhase": 1,
+    "lengthOfCurrentPhase": 5,
+    "daysUntilNextPhase": 5,
+    "fertileWindowStart": 3,
+    "lengthOfFertileWindow": 7,
+    "predictedCycleLength": 20,
+    "educationContentMod": 0,
+    "cycleType": "REGULAR",
+    "feedbackPhrase": "GENERAL_UNHEALTHY_HABITS",
+    "predictedCycle": false
+  },
+  "dayLog": null
 }
 -- plain-header stderr --
 -- plain-header exit --
 0
 -- plain-header requests --
-GET /periodichealth-service/menstrualcycle/dayview/2026-10-01/2026-10-01
+GET /periodichealth-service/menstrualcycle/dayview/2026-10-01?todayDate=2026-10-15
 -- json stdout --
 {
-  "value": 1
+  "daySummary": {
+    "startDate": "2026-10-01",
+    "dayInCycle": 1,
+    "periodLength": 5,
+    "currentPhase": 1,
+    "lengthOfCurrentPhase": 5,
+    "daysUntilNextPhase": 5,
+    "fertileWindowStart": 3,
+    "lengthOfFertileWindow": 7,
+    "predictedCycleLength": 20,
+    "educationContentMod": 0,
+    "cycleType": "REGULAR",
+    "feedbackPhrase": "GENERAL_UNHEALTHY_HABITS",
+    "predictedCycle": false
+  },
+  "dayLog": null
 }
 -- json stderr --
 -- json exit --
 0
 -- json requests --
-GET /periodichealth-service/menstrualcycle/dayview/2026-10-01/2026-10-01
+GET /periodichealth-service/menstrualcycle/dayview/2026-10-01?todayDate=2026-10-15

@@ -255,8 +255,8 @@ Commands:
   calendar notes update            Change the name or text of a calendar note.
   calendar notes move              Move a calendar note to another day.
   calendar notes delete            Delete a calendar note.
-  wellness menstrual-cycle         Show menstrual cycle data.
-  wellness menstrual-summary       Show menstrual cycle summary.
+  wellness menstrual-cycle         Show the menstrual cycle day view of a date.
+  wellness menstrual-summary       Show the menstrual cycle summary of a date.
   wellness menstrual-calendar      Show the menstrual cycle calendar for a date
                                    range.
   wellness menstrual-log view      Show the menstrual daily log of a date.
@@ -1587,8 +1587,8 @@ Flags:
       --version           Print version information.
 
 Commands:
-  wellness menstrual-cycle         Show menstrual cycle data.
-  wellness menstrual-summary       Show menstrual cycle summary.
+  wellness menstrual-cycle         Show the menstrual cycle day view of a date.
+  wellness menstrual-summary       Show the menstrual cycle summary of a date.
   wellness menstrual-calendar      Show the menstrual cycle calendar for a date
                                    range.
   wellness menstrual-log view      Show the menstrual daily log of a date.
