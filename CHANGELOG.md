@@ -107,6 +107,7 @@ The commands added in this release follow the rule from the start. A list comman
 - `body add-blood-pressure` failed for every call with `500 Internal Server Error` and `BloodPressureDateException`, because `measurementTimestampLocal` and `measurementTimestampGMT` ended in `Z`. It also sent the UTC time in the local field, so the saved local time was wrong in every zone but UTC. The command now sends the local time and the UTC time as `YYYY-MM-DDTHH:MM:SS.000`. (#258)
 - Empty bodies and missing list keys gave a different result per command and mode. One rule now covers every read; see Breaking changes. (#192)
 - `health race-predictions view` (also as `health race-predictions`) and `health race-predictions range` failed for every call with `404 Not Found` (exit 4), because Garmin removed their paths. They now call `/metrics-service/metrics/racepredictions/latest/<display name>` and `/metrics-service/metrics/racepredictions/daily/<display name>`, the paths of the Garmin Connect web app, and look up your display name first. The flags of `range` do not change. Garmin accepts a range of at most one year. For an empty answer, `view` prints `{}` and `range` prints `[]`; see Breaking changes. (#269)
+- `reload` failed with `405 Method Not Allowed` on every call, because it sent GET. It now sends POST with no body. Like every write command, it prints Garmin's answer with `--json`, and `Requested reload for <date>` on stderr in the other modes. (#144)
 
 ## [2.3.0] - 2026-10-19
 

@@ -19,7 +19,7 @@ var wellnessEndpoints = []Endpoint{
 	{Name: "wellness.menstrual-log", Method: http.MethodGet, Host: ConnectAPI, Path: "/periodichealth-service/menstrualcycle/dailylog/{date}"},
 	{Name: "wellness.set-menstrual-log", Method: http.MethodPost, Host: ConnectAPI, Path: "/periodichealth-service/menstrualcycle/dailylog/{date}", Body: true},
 	{Name: "wellness.delete-menstrual-log", Method: http.MethodDelete, Host: ConnectAPI, Path: "/periodichealth-service/menstrualcycle/dailylog/{date}"},
-	{Name: "wellness.request-reload", Method: http.MethodGet, Host: ConnectAPI, Path: "/wellness-service/wellness/epoch/request/{date}"},
+	{Name: "wellness.request-reload", Method: http.MethodPost, Host: ConnectAPI, Path: "/wellness-service/wellness/epoch/request/{date}"},
 }
 
 // MenstrualLogEdit holds the changes to the menstrual daily log of a day, in
