@@ -1213,7 +1213,7 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli courses import <file> [flags]`: Import a GPX file as a new course.
   - `<file>`: Path to GPX file.
   - `-n, --name=STRING`: Course name (overrides name from GPX).
-  - `-t, --type="cycling"`: Activity type key. One of: cycling, e_bike_fitness, e_bike_mountain, gravel_cycling, hiking, mountain_biking, other, road_biking, running, street_running, trail_running, ultra_run, walking.
+  - `-t, --type="cycling"`: Activity type key: cycling, e_bike_fitness, e_bike_mountain, gravel_cycling, hiking, mountain_biking, other, road_biking, running, street_running, trail_running, ultra_run or walking.
   - `-p, --privacy=2`: Course privacy: 1=public, 2=private, 4=group.
 - `gccli courses send <course-id> <device-id>`: Send a course to a device.
   - `<course-id>`: Course ID.

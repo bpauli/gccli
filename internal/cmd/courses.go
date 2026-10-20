@@ -101,7 +101,7 @@ func (c *CourseDownloadCmd) Run(g *Globals) error {
 type CourseImportCmd struct {
 	File    string `arg:"" help:"Path to GPX file." type:"existingfile"`
 	Name    string `help:"Course name (overrides name from GPX)." short:"n"`
-	Type    string `help:"Activity type key." short:"t" default:"cycling" enum:"cycling,e_bike_fitness,e_bike_mountain,gravel_cycling,hiking,mountain_biking,other,road_biking,running,street_running,trail_running,ultra_run,walking"`
+	Type    string `help:"Activity type key: cycling, e_bike_fitness, e_bike_mountain, gravel_cycling, hiking, mountain_biking, other, road_biking, running, street_running, trail_running, ultra_run or walking." short:"t" default:"cycling" enum:"cycling,e_bike_fitness,e_bike_mountain,gravel_cycling,hiking,mountain_biking,other,road_biking,running,street_running,trail_running,ultra_run,walking"`
 	Privacy int    `help:"Course privacy: 1=public, 2=private, 4=group." short:"p" default:"2" enum:"1,2,4"`
 }
 

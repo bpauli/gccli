@@ -1,0 +1,36 @@
+The user likes the activity, but the conversation has no conversationUuid: exit 1 and no unlike, because the unlike path needs the UUID.
+-- args --
+activity
+likes
+remove
+111
+-- route GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3 --
+{"numberOfLikes":2,"numberOfComments":0,"likedByUser":true}
+-- table stdout --
+-- table stderr --
+parse conversation: no conversationUuid
+-- table exit --
+1
+-- table requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+-- plain stdout --
+-- plain stderr --
+parse conversation: no conversationUuid
+-- plain exit --
+1
+-- plain requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+-- plain-header stdout --
+-- plain-header stderr --
+parse conversation: no conversationUuid
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"parse conversation: no conversationUuid"}}
+-- json exit --
+1
+-- json requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3

@@ -31,7 +31,10 @@ Flags:
       --version           Print version information.
 
   -n, --name=STRING       Course name (overrides name from GPX).
-  -t, --type="cycling"    Activity type key.
+  -t, --type="cycling"    Activity type key: cycling, e_bike_fitness,
+                          e_bike_mountain, gravel_cycling, hiking,
+                          mountain_biking, other, road_biking, running,
+                          street_running, trail_running, ultra_run or walking.
   -p, --privacy=2         Course privacy: 1=public, 2=private, 4=group.
 
 gccli: error: --type must be one of "cycling","e_bike_fitness","e_bike_mountain","gravel_cycling","hiking","mountain_biking","other","road_biking","running","street_running","trail_running","ultra_run","walking" but got "swimming"
@@ -62,7 +65,10 @@ Flags:
       --version           Print version information.
 
   -n, --name=STRING       Course name (overrides name from GPX).
-  -t, --type="cycling"    Activity type key.
+  -t, --type="cycling"    Activity type key: cycling, e_bike_fitness,
+                          e_bike_mountain, gravel_cycling, hiking,
+                          mountain_biking, other, road_biking, running,
+                          street_running, trail_running, ultra_run or walking.
   -p, --privacy=2         Course privacy: 1=public, 2=private, 4=group.
 
 gccli: error: --type must be one of "cycling","e_bike_fitness","e_bike_mountain","gravel_cycling","hiking","mountain_biking","other","road_biking","running","street_running","trail_running","ultra_run","walking" but got "swimming"
@@ -93,7 +99,10 @@ Flags:
       --version           Print version information.
 
   -n, --name=STRING       Course name (overrides name from GPX).
-  -t, --type="cycling"    Activity type key.
+  -t, --type="cycling"    Activity type key: cycling, e_bike_fitness,
+                          e_bike_mountain, gravel_cycling, hiking,
+                          mountain_biking, other, road_biking, running,
+                          street_running, trail_running, ultra_run or walking.
   -p, --privacy=2         Course privacy: 1=public, 2=private, 4=group.
 
 gccli: error: --type must be one of "cycling","e_bike_fitness","e_bike_mountain","gravel_cycling","hiking","mountain_biking","other","road_biking","running","street_running","trail_running","ultra_run","walking" but got "swimming"
@@ -124,7 +133,10 @@ Flags:
       --version           Print version information.
 
   -n, --name=STRING       Course name (overrides name from GPX).
-  -t, --type="cycling"    Activity type key.
+  -t, --type="cycling"    Activity type key: cycling, e_bike_fitness,
+                          e_bike_mountain, gravel_cycling, hiking,
+                          mountain_biking, other, road_biking, running,
+                          street_running, trail_running, ultra_run or walking.
   -p, --privacy=2         Course privacy: 1=public, 2=private, 4=group.
 
 gccli: error: --type must be one of "cycling","e_bike_fitness","e_bike_mountain","gravel_cycling","hiking","mountain_biking","other","road_biking","running","street_running","trail_running","ultra_run","walking" but got "swimming"
