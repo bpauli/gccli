@@ -93,9 +93,9 @@ Date shortcuts
   - `-e, --exercise=EXERCISE,...`: Exercise set in format CATEGORY/NAME:reps@weightkg[:dSECS][:rSECS] (e.g. BENCH_PRESS/BARBELL_BENCH_PRESS:12@20:d30:r60).
 - `gccli activity gear <id>`: Show linked gear.
   - `<id>`: Activity ID.
-- `gccli activity comments <id>`: List the comments on an activity.
+- `gccli activity comments list <id>`: List the comments on an activity. Also runs as `gccli activity comments <id>`.
   - `<id>`: Activity ID.
-- `gccli activity likes <id>`: List the likes of an activity.
+- `gccli activity likes list <id>`: List the likes of an activity. Also runs as `gccli activity likes <id>`.
   - `<id>`: Activity ID.
 - `gccli activity download <id> [flags]`: Download activity file.
   - `<id>`: Activity ID.
