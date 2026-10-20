@@ -1,0 +1,89 @@
+An empty value clears a field. A cleared list or flow is left out of the body, which clears it in Garmin. A note that is left out keeps its value, so a cleared note is sent as "". --no-ovulation removes the ovulation mark.
+-- args --
+wellness
+menstrual-log
+set
+2026-10-01
+--flow
+
+--symptoms
+
+--notes
+
+--no-ovulation
+-- route GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01 --
+{"userProfilePk":1,"calendarDate":"2026-10-01","symptoms":["CRAMPS","HEADACHE"],"moods":null,"discharge":null,"flow":"LIGHT","sexDrive":null,"sexualActivity":null,"notes":"x","reportTimestamp":"2026-10-20T08:00:00.0","hasBabyMovement":false,"ovulationDay":true}
+-- route POST /periodichealth-service/menstrualcycle/dailylog/2026-10-01 --
+{"userProfilePk":1,"calendarDate":"2026-10-01","symptoms":null,"moods":null,"discharge":null,"flow":null,"sexDrive":null,"sexualActivity":null,"notes":null,"reportTimestamp":"2026-10-15T09:30:00.0","ovulationDay":false}
+-- table stdout --
+-- table stderr --
+Saved menstrual log for 2026-10-01
+-- table exit --
+0
+-- table requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+POST /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+  {
+    "calendarDate": "2026-10-01",
+    "hasBabyMovement": false,
+    "notes": "",
+    "ovulationDay": false,
+    "reportTimestamp": "2026-10-15T09:30:00.000"
+  }
+-- plain stdout --
+-- plain stderr --
+Saved menstrual log for 2026-10-01
+-- plain exit --
+0
+-- plain requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+POST /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+  {
+    "calendarDate": "2026-10-01",
+    "hasBabyMovement": false,
+    "notes": "",
+    "ovulationDay": false,
+    "reportTimestamp": "2026-10-15T09:30:00.000"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Saved menstrual log for 2026-10-01
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+POST /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+  {
+    "calendarDate": "2026-10-01",
+    "hasBabyMovement": false,
+    "notes": "",
+    "ovulationDay": false,
+    "reportTimestamp": "2026-10-15T09:30:00.000"
+  }
+-- json stdout --
+{
+  "userProfilePk": 1,
+  "calendarDate": "2026-10-01",
+  "symptoms": null,
+  "moods": null,
+  "discharge": null,
+  "flow": null,
+  "sexDrive": null,
+  "sexualActivity": null,
+  "notes": null,
+  "reportTimestamp": "2026-10-15T09:30:00.0",
+  "ovulationDay": false
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+POST /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+  {
+    "calendarDate": "2026-10-01",
+    "hasBabyMovement": false,
+    "notes": "",
+    "ovulationDay": false,
+    "reportTimestamp": "2026-10-15T09:30:00.000"
+  }

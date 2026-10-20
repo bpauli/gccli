@@ -1,0 +1,41 @@
+Error case: the read of the saved log fails, so no write is sent and the exit code is 1.
+-- args --
+wellness
+menstrual-log
+set
+2026-10-01
+--flow
+light
+-- route GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01 400 --
+{"message":"Bad request","error":"BadRequestException"}
+-- table stdout --
+-- table stderr --
+set menstrual log: garmin api: 400 Bad Request: {"message":"Bad request","error":"BadRequestException"}
+
+-- table exit --
+1
+-- table requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+-- plain stdout --
+-- plain stderr --
+set menstrual log: garmin api: 400 Bad Request: {"message":"Bad request","error":"BadRequestException"}
+
+-- plain exit --
+1
+-- plain requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+-- plain-header stdout --
+-- plain-header stderr --
+set menstrual log: garmin api: 400 Bad Request: {"message":"Bad request","error":"BadRequestException"}
+
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"set menstrual log: garmin api: 400 Bad Request: {\"message\":\"Bad request\",\"error\":\"BadRequestException\"}\n"}}
+-- json exit --
+1
+-- json requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01

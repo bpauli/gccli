@@ -1,0 +1,66 @@
+Error case: Garmin rejects the write for an account without cycle tracking. The message of Garmin is shown and the exit code is 1.
+-- args --
+wellness
+menstrual-log
+set
+2026-10-01
+--flow
+light
+-- route GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01 204 --
+-- route POST /periodichealth-service/menstrualcycle/dailylog/2026-10-01 400 --
+{"message":"MCT settings were not found","error":"BadRequestException"}
+-- table stdout --
+-- table stderr --
+set menstrual log: garmin api: 400 Bad Request: {"message":"MCT settings were not found","error":"BadRequestException"}
+
+-- table exit --
+1
+-- table requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+POST /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+  {
+    "calendarDate": "2026-10-01",
+    "flow": "LIGHT",
+    "reportTimestamp": "2026-10-15T09:30:00.000"
+  }
+-- plain stdout --
+-- plain stderr --
+set menstrual log: garmin api: 400 Bad Request: {"message":"MCT settings were not found","error":"BadRequestException"}
+
+-- plain exit --
+1
+-- plain requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+POST /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+  {
+    "calendarDate": "2026-10-01",
+    "flow": "LIGHT",
+    "reportTimestamp": "2026-10-15T09:30:00.000"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+set menstrual log: garmin api: 400 Bad Request: {"message":"MCT settings were not found","error":"BadRequestException"}
+
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+POST /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+  {
+    "calendarDate": "2026-10-01",
+    "flow": "LIGHT",
+    "reportTimestamp": "2026-10-15T09:30:00.000"
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"set menstrual log: garmin api: 400 Bad Request: {\"message\":\"MCT settings were not found\",\"error\":\"BadRequestException\"}\n"}}
+-- json exit --
+1
+-- json requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+POST /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+  {
+    "calendarDate": "2026-10-01",
+    "flow": "LIGHT",
+    "reportTimestamp": "2026-10-15T09:30:00.000"
+  }

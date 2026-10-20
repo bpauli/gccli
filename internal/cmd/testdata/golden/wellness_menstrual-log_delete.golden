@@ -1,0 +1,46 @@
+The day has a log, so delete asks and then deletes it.
+-- args --
+wellness
+menstrual-log
+delete
+2026-10-01
+-- stdin --
+y
+-- route GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01 --
+{"userProfilePk":1,"calendarDate":"2026-10-01","symptoms":["CRAMPS","HEADACHE"],"moods":null,"discharge":null,"flow":"LIGHT","sexDrive":null,"sexualActivity":null,"notes":"x","reportTimestamp":"2026-10-20T08:00:00.0","hasBabyMovement":false,"ovulationDay":true}
+-- route DELETE /periodichealth-service/menstrualcycle/dailylog/2026-10-01 204 --
+-- table stdout --
+-- table stderr --
+Delete menstrual log for 2026-10-01? [y/N]: Deleted menstrual log for 2026-10-01
+-- table exit --
+0
+-- table requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+DELETE /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+-- plain stdout --
+-- plain stderr --
+Delete menstrual log for 2026-10-01? [y/N]: Deleted menstrual log for 2026-10-01
+-- plain exit --
+0
+-- plain requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+DELETE /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+-- plain-header stdout --
+-- plain-header stderr --
+Delete menstrual log for 2026-10-01? [y/N]: Deleted menstrual log for 2026-10-01
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+DELETE /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr noeol --
+Delete menstrual log for 2026-10-01? [y/N]: 
+-- json exit --
+0
+-- json requests --
+GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01
+DELETE /periodichealth-service/menstrualcycle/dailylog/2026-10-01

@@ -1,0 +1,210 @@
+Error case: without a flag there is nothing to set, so no request is sent and the exit code is 2 (usage).
+-- args --
+wellness
+menstrual-log
+set
+2026-10-01
+-- table stdout --
+-- table stderr --
+Usage: gccli wellness menstrual-log set <date> [flags]
+
+Change the menstrual daily log of a date. Other fields keep their values.
+
+Arguments:
+  <date>    Date of the log (YYYY-MM-DD, today, yesterday, 3d, +30d).
+
+Flags:
+  -h, --help                       Show context-sensitive help.
+  -j, --json                       Output as JSON ($GCCLI_JSON).
+      --plain                      Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                     Print the column names as the first line of
+                                   --plain output ($GCCLI_HEADER).
+      --color="auto"               Color mode: auto, always, never
+                                   ($GCCLI_COLOR).
+      --account=STRING             Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"               Unit system for distances, speeds, paces
+                                   and elevations in table and plain output:
+                                   auto (Garmin profile), metric, statute_us,
+                                   statute_uk ($GCCLI_UNITS).
+      --version                    Print version information.
+
+      --flow=FLOW                  Flow: light, medium or heavy. An empty value
+                                   clears it.
+      --symptoms=SYMPTOM,...       Comma-separated symptoms: acne, backache,
+                                   bloating, body-aches, constipation, cramps,
+                                   cravings, diarrhea, dizziness, fatigue,
+                                   headache, insomnia, nausea, tender-breasts.
+                                   An empty value clears them.
+      --moods=MOOD,...             Comma-separated moods: energetic, emotional,
+                                   fine, frustrated, happy, irritable,
+                                   mood-swings, motivated, overwhelmed, sad.
+                                   An empty value clears them.
+      --discharge=DISCHARGE,...    Comma-separated discharge: creamy, egg-white,
+                                   no-discharge, spotting, sticky, unusual.
+                                   no-discharge takes no other value. An empty
+                                   value clears it.
+      --sex-drive=LEVEL            Sex drive: average, high or low. An empty
+                                   value clears it.
+      --sexual-activity=KIND       Sexual activity: protected or unprotected.
+                                   An empty value clears it.
+      --notes=TEXT                 Notes. An empty value clears them.
+      --[no-]ovulation             Mark the day as the ovulation day.
+                                   --no-ovulation removes the mark.
+
+gccli: error: wellness menstrual-log set: nothing to set: give --flow, --symptoms, --moods, --discharge, --sex-drive, --sexual-activity, --notes, --ovulation or --no-ovulation
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli wellness menstrual-log set <date> [flags]
+
+Change the menstrual daily log of a date. Other fields keep their values.
+
+Arguments:
+  <date>    Date of the log (YYYY-MM-DD, today, yesterday, 3d, +30d).
+
+Flags:
+  -h, --help                       Show context-sensitive help.
+  -j, --json                       Output as JSON ($GCCLI_JSON).
+      --plain                      Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                     Print the column names as the first line of
+                                   --plain output ($GCCLI_HEADER).
+      --color="auto"               Color mode: auto, always, never
+                                   ($GCCLI_COLOR).
+      --account=STRING             Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"               Unit system for distances, speeds, paces
+                                   and elevations in table and plain output:
+                                   auto (Garmin profile), metric, statute_us,
+                                   statute_uk ($GCCLI_UNITS).
+      --version                    Print version information.
+
+      --flow=FLOW                  Flow: light, medium or heavy. An empty value
+                                   clears it.
+      --symptoms=SYMPTOM,...       Comma-separated symptoms: acne, backache,
+                                   bloating, body-aches, constipation, cramps,
+                                   cravings, diarrhea, dizziness, fatigue,
+                                   headache, insomnia, nausea, tender-breasts.
+                                   An empty value clears them.
+      --moods=MOOD,...             Comma-separated moods: energetic, emotional,
+                                   fine, frustrated, happy, irritable,
+                                   mood-swings, motivated, overwhelmed, sad.
+                                   An empty value clears them.
+      --discharge=DISCHARGE,...    Comma-separated discharge: creamy, egg-white,
+                                   no-discharge, spotting, sticky, unusual.
+                                   no-discharge takes no other value. An empty
+                                   value clears it.
+      --sex-drive=LEVEL            Sex drive: average, high or low. An empty
+                                   value clears it.
+      --sexual-activity=KIND       Sexual activity: protected or unprotected.
+                                   An empty value clears it.
+      --notes=TEXT                 Notes. An empty value clears them.
+      --[no-]ovulation             Mark the day as the ovulation day.
+                                   --no-ovulation removes the mark.
+
+gccli: error: wellness menstrual-log set: nothing to set: give --flow, --symptoms, --moods, --discharge, --sex-drive, --sexual-activity, --notes, --ovulation or --no-ovulation
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli wellness menstrual-log set <date> [flags]
+
+Change the menstrual daily log of a date. Other fields keep their values.
+
+Arguments:
+  <date>    Date of the log (YYYY-MM-DD, today, yesterday, 3d, +30d).
+
+Flags:
+  -h, --help                       Show context-sensitive help.
+  -j, --json                       Output as JSON ($GCCLI_JSON).
+      --plain                      Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                     Print the column names as the first line of
+                                   --plain output ($GCCLI_HEADER).
+      --color="auto"               Color mode: auto, always, never
+                                   ($GCCLI_COLOR).
+      --account=STRING             Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"               Unit system for distances, speeds, paces
+                                   and elevations in table and plain output:
+                                   auto (Garmin profile), metric, statute_us,
+                                   statute_uk ($GCCLI_UNITS).
+      --version                    Print version information.
+
+      --flow=FLOW                  Flow: light, medium or heavy. An empty value
+                                   clears it.
+      --symptoms=SYMPTOM,...       Comma-separated symptoms: acne, backache,
+                                   bloating, body-aches, constipation, cramps,
+                                   cravings, diarrhea, dizziness, fatigue,
+                                   headache, insomnia, nausea, tender-breasts.
+                                   An empty value clears them.
+      --moods=MOOD,...             Comma-separated moods: energetic, emotional,
+                                   fine, frustrated, happy, irritable,
+                                   mood-swings, motivated, overwhelmed, sad.
+                                   An empty value clears them.
+      --discharge=DISCHARGE,...    Comma-separated discharge: creamy, egg-white,
+                                   no-discharge, spotting, sticky, unusual.
+                                   no-discharge takes no other value. An empty
+                                   value clears it.
+      --sex-drive=LEVEL            Sex drive: average, high or low. An empty
+                                   value clears it.
+      --sexual-activity=KIND       Sexual activity: protected or unprotected.
+                                   An empty value clears it.
+      --notes=TEXT                 Notes. An empty value clears them.
+      --[no-]ovulation             Mark the day as the ovulation day.
+                                   --no-ovulation removes the mark.
+
+gccli: error: wellness menstrual-log set: nothing to set: give --flow, --symptoms, --moods, --discharge, --sex-drive, --sexual-activity, --notes, --ovulation or --no-ovulation
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli wellness menstrual-log set <date> [flags]
+
+Change the menstrual daily log of a date. Other fields keep their values.
+
+Arguments:
+  <date>    Date of the log (YYYY-MM-DD, today, yesterday, 3d, +30d).
+
+Flags:
+  -h, --help                       Show context-sensitive help.
+  -j, --json                       Output as JSON ($GCCLI_JSON).
+      --plain                      Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                     Print the column names as the first line of
+                                   --plain output ($GCCLI_HEADER).
+      --color="auto"               Color mode: auto, always, never
+                                   ($GCCLI_COLOR).
+      --account=STRING             Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"               Unit system for distances, speeds, paces
+                                   and elevations in table and plain output:
+                                   auto (Garmin profile), metric, statute_us,
+                                   statute_uk ($GCCLI_UNITS).
+      --version                    Print version information.
+
+      --flow=FLOW                  Flow: light, medium or heavy. An empty value
+                                   clears it.
+      --symptoms=SYMPTOM,...       Comma-separated symptoms: acne, backache,
+                                   bloating, body-aches, constipation, cramps,
+                                   cravings, diarrhea, dizziness, fatigue,
+                                   headache, insomnia, nausea, tender-breasts.
+                                   An empty value clears them.
+      --moods=MOOD,...             Comma-separated moods: energetic, emotional,
+                                   fine, frustrated, happy, irritable,
+                                   mood-swings, motivated, overwhelmed, sad.
+                                   An empty value clears them.
+      --discharge=DISCHARGE,...    Comma-separated discharge: creamy, egg-white,
+                                   no-discharge, spotting, sticky, unusual.
+                                   no-discharge takes no other value. An empty
+                                   value clears it.
+      --sex-drive=LEVEL            Sex drive: average, high or low. An empty
+                                   value clears it.
+      --sexual-activity=KIND       Sexual activity: protected or unprotected.
+                                   An empty value clears it.
+      --notes=TEXT                 Notes. An empty value clears them.
+      --[no-]ovulation             Mark the day as the ovulation day.
+                                   --no-ovulation removes the mark.
+
+gccli: error: wellness menstrual-log set: nothing to set: give --flow, --symptoms, --moods, --discharge, --sex-drive, --sexual-activity, --notes, --ovulation or --no-ovulation
+-- json exit --
+2
+-- json requests --
