@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
 	"sort"
 	"strings"
@@ -146,36 +145,21 @@ func (c *ActivitiesTypesCmd) Run(g *Globals) error {
 		return fmt.Errorf("get activity types: %w", err)
 	}
 
-	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
-	}
-
-	types, err := parseActivityTypes(data)
-	if err != nil {
-		return err
-	}
-
-	rows := formatActivityTypeRows(types)
-	header := activityTypesHeader()
-
-	return outfmt.WriteRows(g.Context, g.Stdout, header, rows)
+	return list{noun: "activity types", header: activityTypesHeader(), rows: func(types []map[string]any) [][]string {
+		sortActivityTypes(types)
+		return formatActivityTypeRows(types)
+	}}.print(g, data)
 }
 
 func activityTypesHeader() []string {
 	return []string{"ID", "TYPE KEY", "PARENT ID", "TRIMMABLE", "HIDDEN", "RESTRICTED"}
 }
 
-// parseActivityTypes unmarshals the activity types payload and sorts by typeId
-// so table/plain output is stable across runs.
-func parseActivityTypes(data json.RawMessage) ([]map[string]any, error) {
-	var types []map[string]any
-	if err := json.Unmarshal(data, &types); err != nil {
-		return nil, fmt.Errorf("parse activity types: %w", err)
-	}
+// sortActivityTypes sorts by typeId so table/plain output is stable across runs.
+func sortActivityTypes(types []map[string]any) {
 	sort.SliceStable(types, func(i, j int) bool {
 		return jsonFloat(types[i], "typeId") < jsonFloat(types[j], "typeId")
 	})
-	return types, nil
 }
 
 // formatActivityTypeRows extracts table rows from activity-type data.

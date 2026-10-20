@@ -3,28 +3,27 @@ activities
 types
 -- route GET /activity-service/activity/activityTypes 204 --
 -- table stdout --
+ID  TYPE KEY  PARENT ID  TRIMMABLE  HIDDEN  RESTRICTED
 -- table stderr --
-parse activity types: unexpected end of JSON input
 -- table exit --
-1
+0
 -- table requests --
 GET /activity-service/activity/activityTypes
 -- plain stdout --
 -- plain stderr --
-parse activity types: unexpected end of JSON input
 -- plain exit --
-1
+0
 -- plain requests --
 GET /activity-service/activity/activityTypes
 -- plain-header stdout --
+ID	TYPE KEY	PARENT ID	TRIMMABLE	HIDDEN	RESTRICTED
 -- plain-header stderr --
-parse activity types: unexpected end of JSON input
 -- plain-header exit --
-1
+0
 -- plain-header requests --
 GET /activity-service/activity/activityTypes
 -- json stdout --
-null
+[]
 -- json stderr --
 -- json exit --
 0

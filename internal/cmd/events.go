@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/bpauli/gccli/internal/outfmt"
 	"github.com/bpauli/gccli/internal/payload"
 )
 
@@ -76,28 +75,7 @@ func (c *EventsListCmd) Run(g *Globals) error {
 		return fmt.Errorf("list events: %w", err)
 	}
 
-	if outfmt.IsJSON(g.Context) {
-		return outfmt.WriteJSON(g.Stdout, json.RawMessage(data))
-	}
-
-	events, err := parseEvents(data)
-	if err != nil {
-		return err
-	}
-
-	rows := formatEventListRows(events)
-	header := []string{"ID", "DATE", "NAME", "TYPE", "LOCATION"}
-
-	return outfmt.WriteRows(g.Context, g.Stdout, header, rows)
-}
-
-// parseEvents unmarshals the events list response.
-func parseEvents(data json.RawMessage) ([]map[string]any, error) {
-	var events []map[string]any
-	if err := json.Unmarshal(data, &events); err != nil {
-		return nil, fmt.Errorf("parse events: %w", err)
-	}
-	return events, nil
+	return list{noun: "events", header: []string{"ID", "DATE", "NAME", "TYPE", "LOCATION"}, rows: formatEventListRows}.print(g, data)
 }
 
 // formatEventListRows formats events for table output.
