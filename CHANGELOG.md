@@ -24,6 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   | `workouts schedule list` | all modes | `parse calendar: unexpected end of JSON input`, exit 1, for an empty calendar body | the header, nothing with `--plain` or `[]`, exit 0 |
   | `activity details`, `activity exercise-sets show`, `activity gear`, `activity split-summaries`, `activity splits`, `activity typed-splits`, `activity weather`, `courses detail`, `workouts detail` | all modes | `null` for an empty body | `{}` |
   | `activity hr-zones`, `activity power-zones` | all modes | `null` for an empty body | `[]` |
+  | `devices alarms` | all modes | `null` when no device has an alarm | `[]` |
+  | `devices alarms` | all modes | `get device alarms: parse devices: unexpected end of JSON input`, exit 1, for an empty devices body | `[]`, exit 0 |
   | `activity summary` | `--json` | `null` for an empty body | `{}` |
   | `activity summary` | table, `--plain` | `parse activity: unexpected end of JSON input`, exit 1, for an empty body | nothing, exit 0 |
   | `exercises list` | `--json` | `{"error":{"code":"error","message":"json: error calling MarshalJSON for type *jsontext.Value: unexpected end of JSON input"}}` on stderr, exit 1, for an empty catalog | `{}`, exit 0 |
