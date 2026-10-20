@@ -1,16 +1,15 @@
-An empty ID is a usage error at parse time, before the login, with no request. The third args line is the empty argument.
 -- args --
-activity
-comments
-
+wellness
+menstrual-cycle
+2026-02-30
 -- table stdout --
 -- table stderr --
-Usage: gccli activity comments <id>
+Usage: gccli wellness menstrual-cycle [<date>]
 
-List the comments on an activity.
+Show the menstrual cycle day view of a date.
 
 Arguments:
-  <id>    Activity ID.
+  [<date>]    Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -26,18 +25,18 @@ Flags:
                           ($GCCLI_UNITS).
       --version           Print version information.
 
-gccli: error: <id>: must not be empty
+gccli: error: [<date>]: invalid date "2026-02-30": expected YYYY-MM-DD, today, yesterday, Nd (e.g. 3d), or +Nd (e.g. +30d)
 -- table exit --
 2
 -- table requests --
 -- plain stdout --
 -- plain stderr --
-Usage: gccli activity comments <id>
+Usage: gccli wellness menstrual-cycle [<date>]
 
-List the comments on an activity.
+Show the menstrual cycle day view of a date.
 
 Arguments:
-  <id>    Activity ID.
+  [<date>]    Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -53,18 +52,18 @@ Flags:
                           ($GCCLI_UNITS).
       --version           Print version information.
 
-gccli: error: <id>: must not be empty
+gccli: error: [<date>]: invalid date "2026-02-30": expected YYYY-MM-DD, today, yesterday, Nd (e.g. 3d), or +Nd (e.g. +30d)
 -- plain exit --
 2
 -- plain requests --
 -- plain-header stdout --
 -- plain-header stderr --
-Usage: gccli activity comments <id>
+Usage: gccli wellness menstrual-cycle [<date>]
 
-List the comments on an activity.
+Show the menstrual cycle day view of a date.
 
 Arguments:
-  <id>    Activity ID.
+  [<date>]    Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -80,18 +79,18 @@ Flags:
                           ($GCCLI_UNITS).
       --version           Print version information.
 
-gccli: error: <id>: must not be empty
+gccli: error: [<date>]: invalid date "2026-02-30": expected YYYY-MM-DD, today, yesterday, Nd (e.g. 3d), or +Nd (e.g. +30d)
 -- plain-header exit --
 2
 -- plain-header requests --
 -- json stdout --
 -- json stderr --
-Usage: gccli activity comments <id>
+Usage: gccli wellness menstrual-cycle [<date>]
 
-List the comments on an activity.
+Show the menstrual cycle day view of a date.
 
 Arguments:
-  <id>    Activity ID.
+  [<date>]    Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -107,7 +106,7 @@ Flags:
                           ($GCCLI_UNITS).
       --version           Print version information.
 
-gccli: error: <id>: must not be empty
+gccli: error: [<date>]: invalid date "2026-02-30": expected YYYY-MM-DD, today, yesterday, Nd (e.g. 3d), or +Nd (e.g. +30d)
 -- json exit --
 2
 -- json requests --

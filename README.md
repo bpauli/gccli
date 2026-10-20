@@ -11,7 +11,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 
 ## Features
 
-- **Activities** — list, search, view details, download (FIT/GPX/TCX/KML/CSV), upload, create manual entries (with date), rename, retype, describe, change privacy, mark as favorite, delete, set exercise sets for strength training, list activity types, list pending activities
+- **Activities** - list, search, view details, download (FIT/GPX/TCX/KML/CSV), upload, create manual entries (with date), rename, retype, describe, change privacy, mark as favorite, delete, set exercise sets for strength training, list activity types, list pending activities, list comments and likes, like and unlike
 - **Exercise Catalog** — browse Garmin's exercise categories and exercises for strength training
 - **Health Data** — daily summaries, steps, heart rate, resting HR, sleep, stress, HRV, SpO2, respiration, body battery, floors, training readiness/status, VO2max, fitness age, race predictions, endurance/hill scores, intensity minutes, lactate threshold, cycling FTP, critical swim speed, power curve, running economy
 - **Body Composition** - weight tracking, latest weigh-in, weekly weight summaries, body fat, muscle mass, blood pressure, glucose, FIT file encoding for composition uploads
@@ -228,7 +228,7 @@ gccli activities list
 - `--plain`: tab-separated values on stdout, with no header row unless you add `--header`. Only these commands print TSV: `activities list`, `activities search`, `activities types`, `activity summary`, `body weekly`, `courses list`, `courses favorites`, `courses import`, `events list`, `workouts list`, `workouts schedule list` and `exercises list` (without `--category`). Most other commands that return data print the same JSON in all modes, also without `--json`. `activities count` prints a single number. Use `--json` when a script parses the output.
 - `--header`: with `--plain`, the first line holds the column names. `activity summary` has no column names, so it prints no header line. `--header` without `--plain`, or with `--json`, is a usage error (exit code 2). `GCCLI_HEADER` is not an error: table and JSON output ignore it.
 - Table and `--plain` output escape the characters that would break a row or a column. A backslash prints as `\\`, a tab as `\t`, a newline as `\n`, a carriage return as `\r`, a vertical tab as `\v` and a form feed as `\f`. So each record is one line, and in `--plain` output only real tabs separate the fields. `--json` output does not change.
-- Write commands (the commands that add, create, upload, import, update, set, rename, retype, describe, change, favorite, unfavorite, schedule, send, link, unlink, remove or delete data in Garmin Connect) all follow one rule:
+- Write commands (the commands that add, create, upload, import, update, set, rename, retype, describe, change, favorite, unfavorite, schedule, send, link, unlink, remove, reload or delete data in Garmin Connect) all follow one rule:
   - With `--json`, they print the Garmin response on stdout, indented like all JSON output. When Garmin sends an empty response, they print `{"ok": true}`.
   - Without `--json`, they print one message on stderr and nothing on stdout. `courses import` is the only exception. It prints the saved course as a table on stdout (TSV with `--plain`).
 - An empty answer is not an error. When Garmin sends no body, the exit code is 0 and the output follows the shape of the Garmin answer: a command whose answer is a list prints `[]` with `--json`, and a command whose answer is one object prints `{}` in every mode. A list command that prints columns (`activities list`, `activities search`, `activities types`, `body weekly`, `courses list`, `courses favorites`, `events list`, `workouts list` and `workouts schedule list`) prints the header only as a table and nothing with `--plain` (the header line with `--header`); every other list command prints `[]` in every mode. `activity summary` and `exercises list` show one object, so they print `{}` with `--json` and no row otherwise. [`internal/cmd/testdata/answer_shapes.tsv`](internal/cmd/testdata/answer_shapes.tsv) records the shape of the Garmin answer of every command that prints it (`array`, `object` or `unknown`, with the evidence for each; a shape that no Garmin answer confirmed is `unknown` and prints `{}`), and a test keeps the commands in step with it. `activities count` prints `0` (`{"count": 0}` with `--json`). A list answer without its list key gives no rows, and `--json` prints the answer unchanged.
@@ -374,6 +374,10 @@ gccli activity exercise-sets set <id> -e "BENCH_PRESS/BARBELL_BENCH_PRESS:12@20:
 gccli activity gear <id>
 gccli activity comments <id>
 gccli activity likes <id>
+
+# Like an activity, and remove the like
+gccli activity likes add <id>
+gccli activity likes remove <id>
 
 # Download and upload
 gccli activity download <id> --format fit
@@ -788,14 +792,14 @@ gccli calendar notes delete <id>               # Delete a note (with confirmatio
 ### Wellness
 
 ```bash
-gccli wellness menstrual-cycle --start 2024-01-01 --end 2024-03-31
-gccli wellness menstrual-summary --start 2024-01-01 --end 2024-03-31
+gccli wellness menstrual-cycle                    # Cycle day view of today ({} for a day outside a tracked cycle)
+gccli wellness menstrual-summary 2026-10-01       # Cycle summary of a date
 gccli wellness menstrual-calendar --start 2024-01-01 --end 2024-03-31
 gccli wellness menstrual-log 2026-10-01           # Daily log ({} for a day without a log)
 gccli wellness menstrual-log set 2026-10-01 --flow light --symptoms cramps,headache
 gccli wellness menstrual-log set 2026-10-01 --notes ""   # Clear the notes, keep the other fields
 gccli wellness menstrual-log delete 2026-10-01    # Delete the daily log (with confirmation)
-gccli wellness pregnancy-summary
+gccli wellness pregnancy-summary                  # Pregnancy snapshot ({} when there is none)
 gccli wellness jet-lag list
 gccli wellness jet-lag status 2024-03-15
 ```
@@ -918,9 +922,13 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `-e, --exercise=EXERCISE,...`: Exercise set in format CATEGORY/NAME:reps@weightkg[:dSECS][:rSECS] (e.g. BENCH_PRESS/BARBELL_BENCH_PRESS:12@20:d30:r60).
 - `gccli activity gear <id>`: Show linked gear.
   - `<id>`: Activity ID.
-- `gccli activity comments <id>`: List the comments on an activity.
+- `gccli activity comments list <id>`: List the comments on an activity. Also runs as `gccli activity comments <id>`.
   - `<id>`: Activity ID.
-- `gccli activity likes <id>`: List the likes of an activity.
+- `gccli activity likes list <id>`: List the likes of an activity. Also runs as `gccli activity likes <id>`.
+  - `<id>`: Activity ID.
+- `gccli activity likes add <id>`: Like an activity.
+  - `<id>`: Activity ID.
+- `gccli activity likes remove <id>`: Remove your like from an activity.
   - `<id>`: Activity ID.
 - `gccli activity download <id> [flags]`: Download activity file.
   - `<id>`: Activity ID.
@@ -1418,12 +1426,10 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli training active [flags]`: Show active training plans.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli training coach-workouts`: List adaptive coaching workout types.
-- `gccli wellness menstrual-cycle --start=DATE --end=DATE`: Show menstrual cycle data.
-  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
-  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
-- `gccli wellness menstrual-summary --start=DATE --end=DATE`: Show menstrual cycle summary.
-  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
-  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli wellness menstrual-cycle [<date>]`: Show the menstrual cycle day view of a date.
+  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli wellness menstrual-summary [<date>]`: Show the menstrual cycle summary of a date.
+  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli wellness menstrual-calendar --start=DATE --end=DATE`: Show the menstrual cycle calendar for a date range.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).

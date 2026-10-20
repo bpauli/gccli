@@ -10,16 +10,16 @@ import (
 )
 
 var wellnessEndpoints = []Endpoint{
-	{Name: "wellness.menstrual-cycle-data", Method: http.MethodGet, Host: ConnectAPI, Path: "/periodichealth-service/menstrualcycle/dayview/{startDate}/{endDate}"},
-	{Name: "wellness.menstrual-cycle-summary", Method: http.MethodGet, Host: ConnectAPI, Path: "/periodichealth-service/menstrualcycle/summary/{startDate}/{endDate}"},
-	{Name: "wellness.pregnancy-summary", Method: http.MethodGet, Host: ConnectAPI, Path: "/periodichealth-service/pregnancy/summary"},
+	{Name: "wellness.menstrual-cycle-data", Method: http.MethodGet, Host: ConnectAPI, Path: "/periodichealth-service/menstrualcycle/dayview/{date}?todayDate={todayDate}"},
+	{Name: "wellness.menstrual-cycle-summary", Method: http.MethodGet, Host: ConnectAPI, Path: "/periodichealth-service/menstrualcycle/summary/{date}"},
+	{Name: "wellness.pregnancy-summary", Method: http.MethodGet, Host: ConnectAPI, Path: "/periodichealth-service/menstrualcycle/pregnancysnapshot"},
 	{Name: "wellness.jet-lag-trips", Method: http.MethodGet, Host: ConnectAPI, Path: "/jetlag-service/jetlag/trip/all"},
 	{Name: "wellness.jet-lag-status", Method: http.MethodGet, Host: ConnectAPI, Path: "/jetlag-service/jetlag/status/daily/{date}"},
 	{Name: "wellness.menstrual-calendar", Method: http.MethodGet, Host: ConnectAPI, Path: "/periodichealth-service/menstrualcycle/calendar/{startDate}/{endDate}"},
 	{Name: "wellness.menstrual-log", Method: http.MethodGet, Host: ConnectAPI, Path: "/periodichealth-service/menstrualcycle/dailylog/{date}"},
 	{Name: "wellness.set-menstrual-log", Method: http.MethodPost, Host: ConnectAPI, Path: "/periodichealth-service/menstrualcycle/dailylog/{date}", Body: true},
 	{Name: "wellness.delete-menstrual-log", Method: http.MethodDelete, Host: ConnectAPI, Path: "/periodichealth-service/menstrualcycle/dailylog/{date}"},
-	{Name: "wellness.request-reload", Method: http.MethodGet, Host: ConnectAPI, Path: "/wellness-service/wellness/epoch/request/{date}"},
+	{Name: "wellness.request-reload", Method: http.MethodPost, Host: ConnectAPI, Path: "/wellness-service/wellness/epoch/request/{date}"},
 }
 
 // MenstrualLogEdit holds the changes to the menstrual daily log of a day, in

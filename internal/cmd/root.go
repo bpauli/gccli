@@ -68,7 +68,7 @@ var commands = []Node{
 		}{}),
 		Endpoint: "wellness.request-reload",
 		Params:   Params{"date": In("Date")},
-		Verb:     "request reload", Output: JSON{},
+		Verb:     "request reload", Output: Write{Done: "Requested reload for {Date}"},
 	},
 	Custom{Name: "completion", Help: "Generate shell completion script.", Cmd: &CompletionCmd{}},
 }

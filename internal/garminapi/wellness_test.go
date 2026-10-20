@@ -12,16 +12,16 @@ func TestWellnessEndpoints(t *testing.T) {
 	span := map[string]string{"startDate": "2024-01-01", "endDate": "2024-01-31"}
 	day := map[string]string{"date": "2026-10-01"}
 	testEndpoints(t, wellnessEndpoints, []endpointCase{
-		{"wellness.menstrual-cycle-data", span, "GET /periodichealth-service/menstrualcycle/dayview/2024-01-01/2024-01-31"},
-		{"wellness.menstrual-cycle-summary", span, "GET /periodichealth-service/menstrualcycle/summary/2024-01-01/2024-01-31"},
-		{"wellness.pregnancy-summary", nil, "GET /periodichealth-service/pregnancy/summary"},
+		{"wellness.menstrual-cycle-data", map[string]string{"date": "2026-10-01", "todayDate": "2026-10-20"}, "GET /periodichealth-service/menstrualcycle/dayview/2026-10-01?todayDate=2026-10-20"},
+		{"wellness.menstrual-cycle-summary", day, "GET /periodichealth-service/menstrualcycle/summary/2026-10-01"},
+		{"wellness.pregnancy-summary", nil, "GET /periodichealth-service/menstrualcycle/pregnancysnapshot"},
 		{"wellness.jet-lag-trips", nil, "GET /jetlag-service/jetlag/trip/all"},
 		{"wellness.jet-lag-status", map[string]string{"date": "2024-01-15"}, "GET /jetlag-service/jetlag/status/daily/2024-01-15"},
 		{"wellness.menstrual-calendar", span, "GET /periodichealth-service/menstrualcycle/calendar/2024-01-01/2024-01-31"},
 		{"wellness.menstrual-log", day, "GET /periodichealth-service/menstrualcycle/dailylog/2026-10-01"},
 		{"wellness.set-menstrual-log", day, "POST /periodichealth-service/menstrualcycle/dailylog/2026-10-01"},
 		{"wellness.delete-menstrual-log", day, "DELETE /periodichealth-service/menstrualcycle/dailylog/2026-10-01"},
-		{"wellness.request-reload", map[string]string{"date": "2024-01-15"}, "GET /wellness-service/wellness/epoch/request/2024-01-15"},
+		{"wellness.request-reload", map[string]string{"date": "2024-01-15"}, "POST /wellness-service/wellness/epoch/request/2024-01-15"},
 	})
 }
 

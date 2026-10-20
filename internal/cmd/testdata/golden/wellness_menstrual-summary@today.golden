@@ -1,0 +1,90 @@
+Without a date, the command shows the summary of today. The clock is 2026-10-15.
+-- args --
+wellness
+menstrual-summary
+-- route GET /periodichealth-service/menstrualcycle/summary/2026-10-15 noeol --
+{"startDate":"2026-10-01","dayInCycle":15,"periodLength":5,"currentPhase":4,"lengthOfCurrentPhase":11,"daysUntilNextPhase":6,"fertileWindowStart":3,"lengthOfFertileWindow":7,"predictedCycleLength":20,"educationContentMod":0,"cycleType":"REGULAR","feedbackPhrase":"GENERAL_UNHEALTHY_HABITS","predictedCycle":false}
+-- table stdout --
+{
+  "startDate": "2026-10-01",
+  "dayInCycle": 15,
+  "periodLength": 5,
+  "currentPhase": 4,
+  "lengthOfCurrentPhase": 11,
+  "daysUntilNextPhase": 6,
+  "fertileWindowStart": 3,
+  "lengthOfFertileWindow": 7,
+  "predictedCycleLength": 20,
+  "educationContentMod": 0,
+  "cycleType": "REGULAR",
+  "feedbackPhrase": "GENERAL_UNHEALTHY_HABITS",
+  "predictedCycle": false
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /periodichealth-service/menstrualcycle/summary/2026-10-15
+-- plain stdout --
+{
+  "startDate": "2026-10-01",
+  "dayInCycle": 15,
+  "periodLength": 5,
+  "currentPhase": 4,
+  "lengthOfCurrentPhase": 11,
+  "daysUntilNextPhase": 6,
+  "fertileWindowStart": 3,
+  "lengthOfFertileWindow": 7,
+  "predictedCycleLength": 20,
+  "educationContentMod": 0,
+  "cycleType": "REGULAR",
+  "feedbackPhrase": "GENERAL_UNHEALTHY_HABITS",
+  "predictedCycle": false
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /periodichealth-service/menstrualcycle/summary/2026-10-15
+-- plain-header stdout --
+{
+  "startDate": "2026-10-01",
+  "dayInCycle": 15,
+  "periodLength": 5,
+  "currentPhase": 4,
+  "lengthOfCurrentPhase": 11,
+  "daysUntilNextPhase": 6,
+  "fertileWindowStart": 3,
+  "lengthOfFertileWindow": 7,
+  "predictedCycleLength": 20,
+  "educationContentMod": 0,
+  "cycleType": "REGULAR",
+  "feedbackPhrase": "GENERAL_UNHEALTHY_HABITS",
+  "predictedCycle": false
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /periodichealth-service/menstrualcycle/summary/2026-10-15
+-- json stdout --
+{
+  "startDate": "2026-10-01",
+  "dayInCycle": 15,
+  "periodLength": 5,
+  "currentPhase": 4,
+  "lengthOfCurrentPhase": 11,
+  "daysUntilNextPhase": 6,
+  "fertileWindowStart": 3,
+  "lengthOfFertileWindow": 7,
+  "predictedCycleLength": 20,
+  "educationContentMod": 0,
+  "cycleType": "REGULAR",
+  "feedbackPhrase": "GENERAL_UNHEALTHY_HABITS",
+  "predictedCycle": false
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /periodichealth-service/menstrualcycle/summary/2026-10-15

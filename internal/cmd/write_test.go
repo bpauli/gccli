@@ -106,6 +106,17 @@ var writeCases = map[string]writeCase{
 		human:    "Removed activity 1 from favorites\n",
 		fallback: "Removed activity 1 from favorites\n",
 	},
+	"activity likes remove": {
+		args: []string{"1"},
+		routes: map[string]string{
+			"GET /conversation-service/conversation/ACTIVITY/1?likerLimit=3": `{"conversationUuid":"c-1","likedByUser":true}`,
+			"DELETE /conversation-service/conversation/like/c-1/0":           noContent,
+		},
+		result:   "DELETE /conversation-service/conversation/like/c-1/0",
+		json:     okOut,
+		human:    "Removed like from activity 1\n",
+		fallback: "Removed like from activity 1\n",
+	},
 	"activity exercise-sets set": {
 		args:   []string{"1", "-e", "BENCH_PRESS/BARBELL_BENCH_PRESS:12@20"},
 		routes: map[string]string{"PUT /activity-service/activity/1/exerciseSets": noContent},

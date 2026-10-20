@@ -46,8 +46,10 @@ Commands:
   activity exercise-sets set       Set exercise sets for a strength training
                                    activity.
   activity gear                    Show linked gear.
-  activity comments                List the comments on an activity.
-  activity likes                   List the likes of an activity.
+  activity comments list           List the comments on an activity.
+  activity likes list              List the likes of an activity.
+  activity likes add               Like an activity.
+  activity likes remove            Remove your like from an activity.
   activity download                Download activity file.
   activity upload                  Upload an activity file (FIT/GPX/TCX).
   activity create                  Create a manual activity.
@@ -253,8 +255,8 @@ Commands:
   calendar notes update            Change the name or text of a calendar note.
   calendar notes move              Move a calendar note to another day.
   calendar notes delete            Delete a calendar note.
-  wellness menstrual-cycle         Show menstrual cycle data.
-  wellness menstrual-summary       Show menstrual cycle summary.
+  wellness menstrual-cycle         Show the menstrual cycle day view of a date.
+  wellness menstrual-summary       Show the menstrual cycle summary of a date.
   wellness menstrual-calendar      Show the menstrual cycle calendar for a date
                                    range.
   wellness menstrual-log view      Show the menstrual daily log of a date.
@@ -391,8 +393,10 @@ Commands:
   activity exercise-sets set     Set exercise sets for a strength training
                                  activity.
   activity gear                  Show linked gear.
-  activity comments              List the comments on an activity.
-  activity likes                 List the likes of an activity.
+  activity comments list         List the comments on an activity.
+  activity likes list            List the likes of an activity.
+  activity likes add             Like an activity.
+  activity likes remove          Remove your like from an activity.
   activity download              Download activity file.
   activity upload                Upload an activity file (FIT/GPX/TCX).
   activity create                Create a manual activity.
@@ -427,6 +431,52 @@ Commands:
   activity exercise-sets show    Show exercise sets.
   activity exercise-sets set     Set exercise sets for a strength training
                                  activity.
+
+$ gccli activity comments --help
+Usage: gccli activity comments <command>
+
+List the comments on an activity.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  activity comments list    List the comments on an activity.
+
+$ gccli activity likes --help
+Usage: gccli activity likes <command>
+
+List, add and remove likes of an activity.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  activity likes list      List the likes of an activity.
+  activity likes add       Like an activity.
+  activity likes remove    Remove your like from an activity.
 
 $ gccli workouts --help
 Usage: gccli workouts <command> [flags]
@@ -1537,8 +1587,8 @@ Flags:
       --version           Print version information.
 
 Commands:
-  wellness menstrual-cycle         Show menstrual cycle data.
-  wellness menstrual-summary       Show menstrual cycle summary.
+  wellness menstrual-cycle         Show the menstrual cycle day view of a date.
+  wellness menstrual-summary       Show the menstrual cycle summary of a date.
   wellness menstrual-calendar      Show the menstrual cycle calendar for a date
                                    range.
   wellness menstrual-log view      Show the menstrual daily log of a date.

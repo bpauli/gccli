@@ -2,7 +2,7 @@ Error case: Garmin answers 400, so the exit code is 1 (error).
 -- args --
 wellness
 pregnancy-summary
--- route GET /periodichealth-service/pregnancy/summary 400 noeol --
+-- route GET /periodichealth-service/menstrualcycle/pregnancysnapshot 400 noeol --
 {"message":"Bad Request"}
 -- table stdout --
 -- table stderr --
@@ -10,25 +10,25 @@ get pregnancy summary: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- table exit --
 1
 -- table requests --
-GET /periodichealth-service/pregnancy/summary
+GET /periodichealth-service/menstrualcycle/pregnancysnapshot
 -- plain stdout --
 -- plain stderr --
 get pregnancy summary: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- plain exit --
 1
 -- plain requests --
-GET /periodichealth-service/pregnancy/summary
+GET /periodichealth-service/menstrualcycle/pregnancysnapshot
 -- plain-header stdout --
 -- plain-header stderr --
 get pregnancy summary: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- plain-header exit --
 1
 -- plain-header requests --
-GET /periodichealth-service/pregnancy/summary
+GET /periodichealth-service/menstrualcycle/pregnancysnapshot
 -- json stdout --
 -- json stderr --
 {"error":{"code":"error","status":400,"message":"get pregnancy summary: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
 -- json exit --
 1
 -- json requests --
-GET /periodichealth-service/pregnancy/summary
+GET /periodichealth-service/menstrualcycle/pregnancysnapshot

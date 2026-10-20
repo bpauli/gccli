@@ -1,7 +1,5 @@
 package cmd
 
-import "fmt"
-
 var healthBodyBatteryGroup = Group{Name: "body-battery", Help: "Show body battery data.", Children: []Node{
 	Leaf{
 		Name: "view", Help: "Show body battery data for a date.", Default: true,
@@ -47,43 +45,20 @@ var healthIntensityMinutesGroup = Group{Name: "intensity-minutes", Help: "Show i
 }}
 
 var healthRacePredictionsGroup = Group{Name: "race-predictions", Help: "Show race predictions.", Children: []Node{
-	Custom{Name: "view", Help: "Show current race predictions.", Default: true, Cmd: &HealthRacePredictionsViewCmd{}},
-	Custom{Name: "range", Help: "Show race predictions for a date range.", Cmd: &HealthRacePredictionsRangeCmd{}},
+	Leaf{
+		Name: "view", Help: "Show current race predictions.", Default: true,
+		Endpoint: "health.race-predictions",
+		Params:   Params{"displayName": DisplayName},
+		Verb:     "get race predictions", Output: JSON{},
+	},
+	Leaf{
+		Name: "range", Help: "Show race predictions for a date range.",
+		Spec: argsOf(&struct {
+			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+			EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
+		}{}),
+		Endpoint: "health.race-predictions-range",
+		Params:   Params{"displayName": DisplayName, "startDate": In("StartDate"), "endDate": In("EndDate")},
+		Verb:     "get race predictions range", Output: JSON{List: true},
+	},
 }}
-
-// HealthRacePredictionsViewCmd shows current race predictions.
-type HealthRacePredictionsViewCmd struct{}
-
-func (c *HealthRacePredictionsViewCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.GetRacePredictions(g.Context, "", "")
-	if err != nil {
-		return fmt.Errorf("get race predictions: %w", err)
-	}
-
-	return writeObject(g, data)
-}
-
-// HealthRacePredictionsRangeCmd shows race predictions for a date range.
-type HealthRacePredictionsRangeCmd struct {
-	StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
-	EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
-}
-
-func (c *HealthRacePredictionsRangeCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.GetRacePredictions(g.Context, string(c.StartDate), string(c.EndDate))
-	if err != nil {
-		return fmt.Errorf("get race predictions range: %w", err)
-	}
-
-	return writeObject(g, data)
-}

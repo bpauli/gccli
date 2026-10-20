@@ -1,41 +1,41 @@
 -- args --
 reload
 2026-10-01
--- route GET /wellness-service/wellness/epoch/request/2026-10-01 --
-{"value":1}
+-- route POST /wellness-service/wellness/epoch/request/2026-10-01 --
+{"userProfilePk":12345678,"calendarDate":"2026-10-01","status":"COMPLETE","source":"USER","ghReloadMetaData":"","createDate":null,"deviceList":null}
 -- table stdout --
-{
-  "value": 1
-}
 -- table stderr --
+Requested reload for 2026-10-01
 -- table exit --
 0
 -- table requests --
-GET /wellness-service/wellness/epoch/request/2026-10-01
+POST /wellness-service/wellness/epoch/request/2026-10-01
 -- plain stdout --
-{
-  "value": 1
-}
 -- plain stderr --
+Requested reload for 2026-10-01
 -- plain exit --
 0
 -- plain requests --
-GET /wellness-service/wellness/epoch/request/2026-10-01
+POST /wellness-service/wellness/epoch/request/2026-10-01
 -- plain-header stdout --
-{
-  "value": 1
-}
 -- plain-header stderr --
+Requested reload for 2026-10-01
 -- plain-header exit --
 0
 -- plain-header requests --
-GET /wellness-service/wellness/epoch/request/2026-10-01
+POST /wellness-service/wellness/epoch/request/2026-10-01
 -- json stdout --
 {
-  "value": 1
+  "userProfilePk": 12345678,
+  "calendarDate": "2026-10-01",
+  "status": "COMPLETE",
+  "source": "USER",
+  "ghReloadMetaData": "",
+  "createDate": null,
+  "deviceList": null
 }
 -- json stderr --
 -- json exit --
 0
 -- json requests --
-GET /wellness-service/wellness/epoch/request/2026-10-01
+POST /wellness-service/wellness/epoch/request/2026-10-01
