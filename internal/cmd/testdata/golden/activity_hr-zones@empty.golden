@@ -4,28 +4,28 @@ hr-zones
 111
 -- route GET /activity-service/activity/111/hrTimeInZones 204 --
 -- table stdout --
-{}
+[]
 -- table stderr --
 -- table exit --
 0
 -- table requests --
 GET /activity-service/activity/111/hrTimeInZones
 -- plain stdout --
-{}
+[]
 -- plain stderr --
 -- plain exit --
 0
 -- plain requests --
 GET /activity-service/activity/111/hrTimeInZones
 -- plain-header stdout --
-{}
+[]
 -- plain-header stderr --
 -- plain-header exit --
 0
 -- plain-header requests --
 GET /activity-service/activity/111/hrTimeInZones
 -- json stdout --
-{}
+[]
 -- json stderr --
 -- json exit --
 0
