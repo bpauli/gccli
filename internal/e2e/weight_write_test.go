@@ -16,7 +16,7 @@ import (
 // the orphan sweep knows a test weigh-in by this value.
 const e2eWeightKG = 42.42
 
-const weightTimestamp = "2006-01-02T15:04:05.000"
+const garminTimestamp = "2006-01-02T15:04:05.000"
 
 // TestAddDeleteWeight adds a weigh-in for now, finds it in the day view by
 // its weight and deletes it by its date and samplePk.
@@ -28,7 +28,7 @@ func TestAddDeleteWeight(t *testing.T) {
 	date := now.Format("2006-01-02")
 	cleanupOrphanWeighIns(t, client, date)
 
-	if _, err := client.AddWeight(ctx, e2eWeightKG, "kg", now.Format(weightTimestamp), now.UTC().Format(weightTimestamp)); err != nil {
+	if _, err := client.AddWeight(ctx, e2eWeightKG, "kg", now.Format(garminTimestamp), now.UTC().Format(garminTimestamp)); err != nil {
 		t.Fatalf("AddWeight failed: %v", err)
 	}
 	t.Log("Added weigh-in")
