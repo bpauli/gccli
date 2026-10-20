@@ -205,6 +205,15 @@ func TestCheckTableRejects(t *testing.T) {
 			`activities list: Params["limit"] binds In("Limit"), which is not a field of the args struct`,
 		},
 		{
+			"positional date of type string", "health sleep view",
+			func(l *Leaf) {
+				l.Spec = argsOf(&struct {
+					Date string `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+				}{})
+			},
+			`health sleep view: Date is a positional date (its help names YYYY-MM-DD), so its type must be Date, not string: Kong then checks it at parse time`,
+		},
+		{
 			"JSONNull off the frozen list", "goals list",
 			func(l *Leaf) { l.Output = JSONNull{} },
 			`goals list: JSONNull is allowed only on the paths in v1NullJSON`,
