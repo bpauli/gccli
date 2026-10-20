@@ -24,6 +24,7 @@ Output
 - Table and `--plain` output escape a backslash as `\\`, a tab as `\t`, a newline as `\n`, a carriage return as `\r`, a vertical tab as `\v` and a form feed as `\f`, so each record is one line. `--json` is not escaped this way.
 - Data goes to stdout, messages/errors to stderr.
 - Write commands (add, create, upload, import, update, set, rename, retype, describe, change, favorite, unfavorite, schedule, send, link, unlink, remove, delete) print the Garmin response with `--json`, or `{"ok": true}` when the response is empty. Without `--json` they print a message on stderr and nothing on stdout. Only `courses import` prints a table on stdout instead (TSV with `--plain`).
+- An empty answer is not an error. When Garmin sends no body, a list command prints `[]` with `--json`, the header only as a table and nothing with `--plain` (the header line with `--header`). A command that shows one object prints `{}` in every mode. The exit code is 0. A list answer without its list key gives no rows, and `--json` prints the answer unchanged.
 - Always use `--json` when parsing output programmatically.
 - Tables show distance, speed, pace, elevation and weight in the user's Garmin unit system (`metric`, `statute_us`, or `statute_uk`, which is miles with elevation in metres). Weight is kg in `metric` and lbs in both statute systems. Override with `--units <system>` or `GCCLI_UNITS`. JSON is never converted (meters, m/s, grams).
 

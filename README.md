@@ -231,6 +231,7 @@ gccli activities list
 - Write commands (the commands that add, create, upload, import, update, set, rename, retype, describe, change, favorite, unfavorite, schedule, send, link, unlink, remove or delete data in Garmin Connect) all follow one rule:
   - With `--json`, they print the Garmin response on stdout, indented like all JSON output. When Garmin sends an empty response, they print `{"ok": true}`.
   - Without `--json`, they print one message on stderr and nothing on stdout. `courses import` is the only exception. It prints the saved course as a table on stdout (TSV with `--plain`).
+- An empty answer is not an error. When Garmin sends no body, a list command prints `[]` with `--json`, the header only as a table and nothing with `--plain` (the header line with `--header`). A command that shows one object prints `{}` in every mode. The exit code is 0. A list answer without its list key gives no rows, and `--json` prints the answer unchanged.
 - Human-facing messages (errors, warnings, info) go to stderr.
 - Delete commands ask for confirmation in a terminal. Without a terminal (scripts, pipes, agents), they exit with an error unless you pass `--force`. If you answer no, the command prints `Cancelled` on stderr, prints nothing on stdout and exits with 0.
 - Tables, TSV and JSON on stdout have no colors. The messages on stderr use colors. The `--help` text uses bold and faint text when stdout is a terminal, and `--color` does not change this.

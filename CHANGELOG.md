@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Breaking changes
+
+- **An empty answer is not an error** - When Garmin sends no body, a list command prints `[]` with `--json`, the header only as a table and nothing with `--plain` (the header line with `--header`), and a command that shows one object prints `{}` in every mode. The exit code is 0 in every case. A list answer without its list key gives no rows and exit 0, and `--json` prints the answer unchanged. Before, each command decided on its own: some printed `null`, some `{}`, and some failed with a parse error. A script that tests for `null` must test for `[]` or `{}`, and a script that relied on exit 1 for an empty list must test the output instead. (#192)
+
+  | Command(s) | Mode | Before | After |
+  |---|---|---|---|
+  | `activities list`, `activities search`, `activities types`, `courses list`, `courses favorites`, `events list`, `workouts list` and every other list command | `--json` | `null` for an empty body | `[]` |
+  | the same list commands | table, `--plain` | `parse <noun>: unexpected end of JSON input`, exit 1, for an empty body | the header, nothing with `--plain`, exit 0 |
+  | every list command | table, `--plain` | `parse <noun>: json: cannot unmarshal object ...`, exit 1, for an object answer without the list | no rows, exit 0 |
+  | `workouts list` | table, `--plain` | `parse workouts: unexpected response format`, exit 1, for an object without a `workouts` or `results` key | no rows, exit 0 |
+  | `workouts schedule list` | `--json` | `null` when no workout is scheduled | `[]` |
+  | `workouts schedule list` | all modes | `parse calendar: unexpected end of JSON input`, exit 1, for an empty calendar body | the header, nothing with `--plain` or `[]`, exit 0 |
+  | `activity details`, `activity exercise-sets show`, `activity gear`, `activity hr-zones`, `activity power-zones`, `activity split-summaries`, `activity splits`, `activity typed-splits`, `activity weather`, `courses detail`, `workouts detail` | all modes | `null` for an empty body | `{}` |
+  | `activity summary` | `--json` | `null` for an empty body | `{}` |
+  | `activity summary` | table, `--plain` | `parse activity: unexpected end of JSON input`, exit 1, for an empty body | nothing, exit 0 |
+  | `exercises list` | `--json` | `null` for an empty catalog | `{}` |
+  | `exercises list` | table, `--plain` | `parse exercise catalog: unexpected end of JSON input`, exit 1, for an empty catalog | the header, nothing with `--plain`, exit 0; with `--category`, `unknown category` |
+
+  A list command with `--units auto` no longer reads the Garmin unit preference when it has no row to show.
+
 ### Added
 
 - **Challenges** - `challenges available` lists the badge challenges that you can join. `challenges completed` lists the badge challenges that you finished. (#210, #79)
@@ -52,6 +72,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `body add-weight` failed for every call with `500 Internal Server Error` and `ValueInstantiationException`, because `dateTimestamp` and `gmtTimestamp` had no milliseconds. The command now sends both as `YYYY-MM-DDTHH:MM:SS.000`, the format that Garmin accepts. (#258)
 - `body add-blood-pressure` failed for every call with `500 Internal Server Error` and `BloodPressureDateException`, because `measurementTimestampLocal` and `measurementTimestampGMT` ended in `Z`. It also sent the UTC time in the local field, so the saved local time was wrong in every zone but UTC. The command now sends the local time and the UTC time as `YYYY-MM-DDTHH:MM:SS.000`. (#258)
+- Empty bodies and missing list keys gave a different result per command and mode. One rule now covers every read; see Breaking changes. (#192)
 
 ## [2.3.0] - 2026-10-19
 
