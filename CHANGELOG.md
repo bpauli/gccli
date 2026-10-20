@@ -56,6 +56,7 @@ In `--json` mode, a bad date or time in the commands below used to print the JSO
 | `exercises list` (#192) | all modes | `list exercises: fetch exercise catalog: HTTP 204`, exit 1, for a 204 answer | the same as for an empty catalog: exit 0, or `unknown category "<c>"` and exit 1 with `--category <c>` |
 | `exercises list --category <c>` (#192) | all modes | `parse exercise catalog: unexpected end of JSON input`, exit 1, for an empty catalog | `unknown category "<c>"`, exit 1 |
 | `activities count` (#192) | all modes | `count activities: parse activity count: unexpected end of JSON input`, exit 1, for an empty body | `0`, or `{"count": 0}` with `--json`, exit 0, the same as for an answer without `totalCount` |
+| `health race-predictions range` (#269) | all modes | `{}` for an empty body; in v2.3.0 every call failed with a 404 (exit 4), so no call printed it | `[]`, because the answer is an array |
 
 The commands added in this release follow the rule from the start. A list command with `--units auto` no longer reads the Garmin unit preference when it has no row to show.
 
@@ -105,6 +106,7 @@ The commands added in this release follow the rule from the start. A list comman
 - `body add-weight` failed for every call with `500 Internal Server Error` and `ValueInstantiationException`, because `dateTimestamp` and `gmtTimestamp` had no milliseconds. The command now sends both as `YYYY-MM-DDTHH:MM:SS.000`, the format that Garmin accepts. (#258)
 - `body add-blood-pressure` failed for every call with `500 Internal Server Error` and `BloodPressureDateException`, because `measurementTimestampLocal` and `measurementTimestampGMT` ended in `Z`. It also sent the UTC time in the local field, so the saved local time was wrong in every zone but UTC. The command now sends the local time and the UTC time as `YYYY-MM-DDTHH:MM:SS.000`. (#258)
 - Empty bodies and missing list keys gave a different result per command and mode. One rule now covers every read; see Breaking changes. (#192)
+- `health race-predictions view` (also as `health race-predictions`) and `health race-predictions range` failed for every call with `404 Not Found` (exit 4), because Garmin removed their paths. They now call `/metrics-service/metrics/racepredictions/latest/<display name>` and `/metrics-service/metrics/racepredictions/daily/<display name>`, the paths of the Garmin Connect web app, and look up your display name first. The flags of `range` do not change. Garmin accepts a range of at most one year. For an empty answer, `view` prints `{}` and `range` prints `[]`; see Breaking changes. (#269)
 
 ## [2.3.0] - 2026-10-19
 
