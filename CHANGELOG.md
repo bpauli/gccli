@@ -24,6 +24,14 @@ In `--json` mode, a bad date or time in the commands below used to print the JSO
 | `events add --time` (#263) | all | bad time: exit 1 with one error line, before the login | bad time: exit 2 with the usage block; the help placeholder is `HH:MM` in place of `STRING`, and a time such as `7:30` is sent as `07:30` |
 | `events add --time` (#263) | all | an empty `--time` (`""`) means no start time | an empty `--time` is a usage error (exit 2); omit the flag for no start time |
 | `health race-predictions view [<date>]` (#263) | all | took an unused date argument and ignored it | takes no argument; a date is a usage error (exit 2, `unexpected argument`). `health race-predictions` without a child still runs `view` |
+| `events add --goal`, `events add --distance` (#263) | all | bad value: exit 1 with one error line, before the login | bad value: exit 2 with the usage block; the help placeholders are `GOAL` and `DISTANCE` in place of `STRING` |
+| the same 2 flags (#263) | all | an empty value (`""`) means no goal or no target distance | an empty value is a usage error (exit 2); omit the flag for no goal or no target distance |
+| `workouts create --step` (#263) | all | bad or empty step: exit 1 with one error line, before the login | bad or empty step: exit 2 with the usage block |
+| `activity exercise-sets set --exercise` (#263) | all | bad exercise: exit 1 with one error line (`exercise N ("..."): ...`), before the login | bad exercise: exit 2 with the usage block (`--exercise: invalid exercise "...": ...`) |
+| `activity exercise-sets set <id>`, `workouts update <id>` (#263) | all | non-numeric ID: exit 1 with one error line, before the login | non-numeric ID: exit 2 with the usage block; an ID such as `007` or `+7` is sent as `7` |
+| `activity describe`, `activity rename`, `activity retype`, `activity privacy`, `activity favorite` and `activity unfavorite` `<id>` (#263) | all | non-numeric ID: exit 1 (or 3 without a login), after the login | non-numeric ID: exit 2 with the usage block, before the login; an ID such as `007` or `+7` is sent as `7` |
+| `courses send <course-id> <device-id>` (#263) | all | non-numeric ID: exit 1 after the login and the course lookup request | non-numeric ID: exit 2 with the usage block, before the login, with no request; an ID such as `007` or `+7` is sent as `7` |
+| `courses import --type` (#263) | all | unknown type: exit 1 with one error line that lists the types, before the login | unknown type: exit 2 with the usage block (`--type must be one of ...`); the help lists the types |
 
 ### Added
 
