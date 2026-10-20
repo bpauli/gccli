@@ -73,11 +73,11 @@ func (l list) items(data json.RawMessage) ([]map[string]any, error) {
 		return nil, err
 	}
 	for _, key := range l.keys {
-		list, ok := wrapper[key].([]any)
+		values, ok := wrapper[key].([]any)
 		if !ok {
 			continue
 		}
-		for _, v := range list {
+		for _, v := range values {
 			if m, ok := v.(map[string]any); ok {
 				items = append(items, m)
 			}
