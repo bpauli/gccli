@@ -2,11 +2,11 @@
 health
 race-predictions
 range
---start=2026-10-01
+--start=2026-09-01
 --end=2026-10-01
 -- route GET /userprofile-service/userprofile/settings --
 {"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
--- route GET /metrics-service/metrics/racepredictions/daily/tester?fromCalendarDate=2026-10-01&toCalendarDate=2026-10-01 --
+-- route GET /metrics-service/metrics/racepredictions/daily/tester?fromCalendarDate=2026-09-01&toCalendarDate=2026-10-01 --
 [{"value":1}]
 -- table stdout --
 [
@@ -19,7 +19,7 @@ range
 0
 -- table requests --
 GET /userprofile-service/userprofile/settings
-GET /metrics-service/metrics/racepredictions/daily/tester?fromCalendarDate=2026-10-01&toCalendarDate=2026-10-01
+GET /metrics-service/metrics/racepredictions/daily/tester?fromCalendarDate=2026-09-01&toCalendarDate=2026-10-01
 -- plain stdout --
 [
   {
@@ -31,7 +31,7 @@ GET /metrics-service/metrics/racepredictions/daily/tester?fromCalendarDate=2026-
 0
 -- plain requests --
 GET /userprofile-service/userprofile/settings
-GET /metrics-service/metrics/racepredictions/daily/tester?fromCalendarDate=2026-10-01&toCalendarDate=2026-10-01
+GET /metrics-service/metrics/racepredictions/daily/tester?fromCalendarDate=2026-09-01&toCalendarDate=2026-10-01
 -- plain-header stdout --
 [
   {
@@ -43,7 +43,7 @@ GET /metrics-service/metrics/racepredictions/daily/tester?fromCalendarDate=2026-
 0
 -- plain-header requests --
 GET /userprofile-service/userprofile/settings
-GET /metrics-service/metrics/racepredictions/daily/tester?fromCalendarDate=2026-10-01&toCalendarDate=2026-10-01
+GET /metrics-service/metrics/racepredictions/daily/tester?fromCalendarDate=2026-09-01&toCalendarDate=2026-10-01
 -- json stdout --
 [
   {
@@ -55,4 +55,4 @@ GET /metrics-service/metrics/racepredictions/daily/tester?fromCalendarDate=2026-
 0
 -- json requests --
 GET /userprofile-service/userprofile/settings
-GET /metrics-service/metrics/racepredictions/daily/tester?fromCalendarDate=2026-10-01&toCalendarDate=2026-10-01
+GET /metrics-service/metrics/racepredictions/daily/tester?fromCalendarDate=2026-09-01&toCalendarDate=2026-10-01
