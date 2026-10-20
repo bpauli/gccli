@@ -12,40 +12,6 @@ import (
 	"github.com/bpauli/gccli/internal/garminapi"
 )
 
-// v1LateDates lists the paths whose positional date is checked after
-// login (exit 1 or 3) instead of at parse time (exit 2), as their
-// <leaf>@bad-date.golden files pin. The major release that moves the dates
-// to parse time deletes it; until then the list only shrinks.
-var v1LateDates = []string{
-	"body composition",
-	"body daily-weigh-ins",
-	"health body-battery view",
-	"health endurance-score",
-	"health events",
-	"health fitness-age",
-	"health floors view",
-	"health hill-score",
-	"health hr view",
-	"health hrv",
-	"health intensity-minutes view",
-	"health lifestyle",
-	"health max-metrics",
-	"health respiration view",
-	"health rhr",
-	"health sleep view",
-	"health spo2",
-	"health steps view",
-	"health stress view",
-	"health summary",
-	"health training-readiness",
-	"health training-status view",
-	"hydration view",
-	"nutrition food-log",
-	"nutrition meals",
-	"nutrition settings",
-	"reload",
-}
-
 // v1NullJSON lists the paths that print null on an empty body, as their
 // <leaf>@empty.golden files pin. The major release that prints {}
 // everywhere deletes it; until then the list only shrinks.
@@ -82,11 +48,6 @@ func checkTable(nodes []Node) []error {
 			errs = append(errs, checkLeaf(path, n)...)
 		}
 	})
-	for _, path := range v1LateDates {
-		if l, ok := leaves[path]; ok && len(l.LateDates) == 0 {
-			errs = append(errs, fmt.Errorf("%s: v1LateDates names this path, but the row has no LateDates: remove the entry", path))
-		}
-	}
 	for _, path := range v1NullJSON {
 		if l, ok := leaves[path]; ok && !isNullJSON(l) {
 			errs = append(errs, fmt.Errorf("%s: v1NullJSON names this path, but the row's Output is not JSONNull: remove the entry", path))
@@ -121,14 +82,6 @@ func checkLeaf(path string, l Leaf) []error {
 		return errs
 	}
 	fields := l.spec().fields()
-	for _, name := range l.LateDates {
-		if f, ok := argsField(fields, name); !ok || f.Type != reflect.TypeFor[string]() {
-			fail("LateDates names %q, which is not a string field of the args struct", name)
-		}
-	}
-	if len(l.LateDates) > 0 && !slices.Contains(v1LateDates, path) {
-		fail("LateDates is allowed only on the paths in v1LateDates")
-	}
 	if isNullJSON(l) && !slices.Contains(v1NullJSON, path) {
 		fail("JSONNull is allowed only on the paths in v1NullJSON")
 	}
@@ -191,7 +144,7 @@ func checkLeaf(path string, l Leaf) []error {
 		switch {
 		case !bound:
 			fail("placeholder {%s} of %s is required, but Params does not bind it", p.Name, l.Endpoint)
-		case !s.sure(fields, l.LateDates):
+		case !s.sure(fields):
 			fail("placeholder {%s} of %s is required, but %s may be empty: make the field required, give it a default, or add .Or(...)", p.Name, l.Endpoint, s)
 		}
 	}
@@ -285,10 +238,9 @@ func kongEnum(f reflect.StructField) []string {
 	return values
 }
 
-// A LateDates field is never empty: resolveDate gives today for "".
-func (s Source) sure(fields reflect.Type, late []string) bool {
+func (s Source) sure(fields reflect.Type) bool {
 	for _, a := range s.alts {
-		if a.lookup != noLookup || slices.Contains(late, a.field) {
+		if a.lookup != noLookup {
 			return true
 		}
 		if f, ok := argsField(fields, a.field); ok && alwaysSet(f) {

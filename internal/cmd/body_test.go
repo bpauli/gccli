@@ -89,7 +89,7 @@ func TestBodyComposition_Success(t *testing.T) {
 
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &BodyCompositionCmd{}
+	cmd := &BodyCompositionCmd{Date: "2024-01-01"}
 	err := cmd.Run(g)
 	if err != nil {
 		t.Fatalf("expected no error, got: %v", err)
@@ -127,27 +127,6 @@ func TestBodyComposition_WithDateRange(t *testing.T) {
 	}
 	if !called {
 		t.Fatal("expected API to be called")
-	}
-}
-
-func TestBodyComposition_InvalidDate(t *testing.T) {
-	server := bodyTestServer(t)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.JSON, "test@example.com")
-	cmd := &BodyCompositionCmd{Date: "not-a-date"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "invalid date") {
-		t.Fatalf("unexpected error: %v", err)
 	}
 }
 

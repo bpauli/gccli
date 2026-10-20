@@ -64,12 +64,11 @@ var commands = []Node{
 	Leaf{
 		Name: "reload", Help: "Request data reload for a date.",
 		Spec: argsOf(&struct {
-			Date string `arg:"" optional:"" help:"Date to reload (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+			Date Date `arg:"" optional:"" default:"today" help:"Date to reload (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
 		}{}),
 		Endpoint: "wellness.request-reload",
 		Params:   Params{"date": In("Date")},
 		Verb:     "request reload", Output: JSON{},
-		LateDates: []string{"Date"},
 	},
 	Custom{Name: "completion", Help: "Generate shell completion script.", Cmd: &CompletionCmd{}},
 }

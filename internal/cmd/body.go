@@ -22,12 +22,11 @@ var bodyGroup = Group{Name: "body", Help: "Body composition and weight data.", C
 	Leaf{
 		Name: "daily-weigh-ins", Help: "Show weigh-in data for a single day.",
 		Spec: argsOf(&struct {
-			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
 		}{}),
 		Endpoint: "body.daily-weigh-ins",
 		Params:   Params{"date": In("Date")},
 		Verb:     "get daily weigh-ins", Output: JSON{},
-		LateDates: []string{"Date"},
 	},
 	Leaf{
 		Name: "latest", Help: "Show the latest weigh-in as of a date.",
@@ -87,9 +86,9 @@ var bodyGroup = Group{Name: "body", Help: "Body composition and weight data.", C
 
 // BodyCompositionCmd shows body composition data for a date or range.
 type BodyCompositionCmd struct {
-	Date      string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
-	StartDate Date   `help:"Start date for range query (YYYY-MM-DD, today, yesterday, 3d, +30d)." name:"start"`
-	EndDate   Date   `help:"End date for range query (YYYY-MM-DD, today, yesterday, 3d, +30d)." name:"end"`
+	Date      Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+	StartDate Date `help:"Start date for range query (YYYY-MM-DD, today, yesterday, 3d, +30d)." name:"start"`
+	EndDate   Date `help:"End date for range query (YYYY-MM-DD, today, yesterday, 3d, +30d)." name:"end"`
 }
 
 func (c *BodyCompositionCmd) Run(g *Globals) error {
@@ -98,17 +97,10 @@ func (c *BodyCompositionCmd) Run(g *Globals) error {
 		return err
 	}
 
-	var startDate, endDate string
+	startDate, endDate := string(c.Date), string(c.Date)
 	if c.StartDate != "" && c.EndDate != "" {
 		startDate = string(c.StartDate)
 		endDate = string(c.EndDate)
-	} else {
-		date, err := resolveDate(c.Date)
-		if err != nil {
-			return err
-		}
-		startDate = date
-		endDate = date
 	}
 
 	data, err := client.Call(g.Context, "body.composition", map[string]string{"startDate": startDate, "endDate": endDate}, nil)

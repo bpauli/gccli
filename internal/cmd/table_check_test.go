@@ -205,33 +205,9 @@ func TestCheckTableRejects(t *testing.T) {
 			`activities list: Params["limit"] binds In("Limit"), which is not a field of the args struct`,
 		},
 		{
-			"LateDates names a Date field", "health sleep view",
-			func(l *Leaf) {
-				l.Spec = argsOf(&struct {
-					Date Date `arg:"" optional:""`
-				}{})
-			},
-			`health sleep view: LateDates names "Date", which is not a string field of the args struct`,
-		},
-		{
-			"LateDates off the frozen list", "goals list",
-			func(l *Leaf) { l.LateDates = []string{"Status"} },
-			`goals list: LateDates is allowed only on the paths in v1LateDates`,
-		},
-		{
 			"JSONNull off the frozen list", "goals list",
 			func(l *Leaf) { l.Output = JSONNull{} },
 			`goals list: JSONNull is allowed only on the paths in v1NullJSON`,
-		},
-		{
-			"stale v1LateDates entry", "health sleep view",
-			func(l *Leaf) {
-				l.LateDates = nil
-				l.Spec = argsOf(&struct {
-					Date Date `arg:"" optional:"" default:"today"`
-				}{})
-			},
-			`health sleep view: v1LateDates names this path, but the row has no LateDates: remove the entry`,
 		},
 		{
 			"stale v1NullJSON entry", "courses detail",
@@ -381,17 +357,6 @@ func TestFrozenListsMatchGoldens(t *testing.T) {
 			}) < 0
 		})
 		compareFrozen(t, "v1NullJSON", v1NullJSON, pinned, "<leaf>@empty.golden prints null in every mode")
-	})
-	t.Run("v1LateDates", func(t *testing.T) {
-		if files, _ := filepath.Glob(filepath.Join(goldenDir, "*@bad-date.golden")); len(files) == 0 {
-			t.Skip("no @bad-date.golden file yet: PR #194 adds them, and this check starts when it is merged")
-		}
-		pinned := goldenLeaves(t, "@bad-date.golden", func(g golden) bool {
-			return slices.IndexFunc(goldenModes, func(m goldenMode) bool {
-				return strings.TrimSpace(g.sections[m.name+" exit"]) != "1"
-			}) < 0
-		})
-		compareFrozen(t, "v1LateDates", v1LateDates, pinned, "<leaf>@bad-date.golden exits 1 in every mode")
 	})
 }
 

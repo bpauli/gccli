@@ -70,13 +70,7 @@ func TestLeafRun(t *testing.T) {
 			requests: []string{"GET /goal-service/goal/goals?status=active"},
 		},
 		{
-			name:   "checks a late date after the login and before any request",
-			args:   []string{"health", "sleep", "2026-02-30"},
-			stderr: "invalid date \"2026-02-30\": expected YYYY-MM-DD, today, yesterday, Nd (e.g. 3d), or +Nd (e.g. +30d)\n",
-			code:   1,
-		},
-		{
-			name: "resolves a late date and looks the display name up once",
+			name: "resolves a positional date and looks the display name up once",
 			args: []string{"health", "sleep", "yesterday"},
 			routes: map[string]mockReply{
 				profileRoute: {body: profileBody},

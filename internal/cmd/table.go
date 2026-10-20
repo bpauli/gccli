@@ -48,10 +48,6 @@ type Leaf struct {
 	// Verb wraps a request error: "get sleep: <err>".
 	Verb   string
 	Output Output
-	// LateDates names string fields that Run resolves with resolveDate after
-	// resolveClient, so a bad date exits 1 or 3 instead of 2. Only the paths
-	// in v1LateDates may set it.
-	LateDates []string
 }
 
 func (g Group) head() head  { return head{Name: g.Name, Help: g.Help} }

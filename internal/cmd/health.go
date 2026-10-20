@@ -18,12 +18,11 @@ var healthGroup = Group{Name: "health", Help: "View health data.", Children: []N
 	Leaf{
 		Name: "summary", Help: "Show daily health summary.", Default: true,
 		Spec: argsOf(&struct {
-			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
 		}{}),
 		Endpoint: "health.daily-summary",
 		Params:   Params{"displayName": DisplayName, "date": In("Date")},
 		Verb:     "get daily summary", Output: JSON{},
-		LateDates: []string{"Date"},
 	},
 	healthStepsGroup,
 	healthCaloriesGroup,
@@ -38,12 +37,11 @@ var healthGroup = Group{Name: "health", Help: "View health data.", Children: []N
 	Leaf{
 		Name: "rhr", Help: "Show resting heart rate data.",
 		Spec: argsOf(&struct {
-			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
 		}{}),
 		Endpoint: "health.resting-heart-rate",
 		Params:   Params{"displayName": DisplayName, "date": In("Date")},
 		Verb:     "get resting heart rate", Output: JSON{},
-		LateDates: []string{"Date"},
 	},
 	healthFloorsGroup,
 	healthSleepGroup,
@@ -52,55 +50,50 @@ var healthGroup = Group{Name: "health", Help: "View health data.", Children: []N
 	Leaf{
 		Name: "spo2", Help: "Show SpO2 (blood oxygen) data.",
 		Spec: argsOf(&struct {
-			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
 		}{}),
 		Endpoint: "health.spo2",
 		Params:   Params{"date": In("Date")},
 		Verb:     "get spo2", Output: JSON{},
-		LateDates: []string{"Date"},
 	},
 	Leaf{
 		Name: "hrv", Help: "Show heart rate variability data.",
 		Spec: argsOf(&struct {
-			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
 		}{}),
 		Endpoint: "health.hrv",
 		Params:   Params{"date": In("Date")},
 		Verb:     "get hrv", Output: JSON{},
-		LateDates: []string{"Date"},
 	},
 	healthBodyBatteryGroup,
 	healthIntensityMinutesGroup,
 	Leaf{
 		Name: "training-readiness", Help: "Show training readiness data.",
 		Spec: argsOf(&struct {
-			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
 		}{}),
 		Endpoint: "health.training-readiness",
 		Params:   Params{"date": In("Date")},
 		Verb:     "get training readiness", Output: JSON{},
-		LateDates: []string{"Date"},
 	},
 	healthTrainingStatusGroup,
 	Leaf{
 		Name: "fitness-age", Help: "Show fitness age data.",
 		Spec: argsOf(&struct {
-			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
 		}{}),
 		Endpoint: "health.fitness-age",
 		Params:   Params{"date": In("Date")},
 		Verb:     "get fitness age", Output: JSON{},
-		LateDates: []string{"Date"},
 	},
 	Leaf{
 		Name: "max-metrics", Help: "Show VO2max and max metrics data.",
 		Spec: argsOf(&struct {
-			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
 		}{}),
 		Endpoint: "health.max-metrics",
 		Params:   Params{"date": In("Date")},
 		Verb:     "get max metrics", Output: JSON{},
-		LateDates: []string{"Date"},
 	},
 	Leaf{Name: "lactate-threshold", Help: "Show latest lactate threshold.", Endpoint: "health.lactate-threshold", Verb: "get lactate threshold", Output: JSON{}},
 	Leaf{Name: "cycling-ftp", Help: "Show latest cycling FTP.", Endpoint: "health.cycling-ftp", Verb: "get cycling ftp", Output: JSON{}},
@@ -119,22 +112,20 @@ var healthGroup = Group{Name: "health", Help: "View health data.", Children: []N
 	Leaf{
 		Name: "endurance-score", Help: "Show endurance score data.",
 		Spec: argsOf(&struct {
-			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
 		}{}),
 		Endpoint: "health.endurance-score",
 		Params:   Params{"date": In("Date")},
 		Verb:     "get endurance score", Output: JSON{},
-		LateDates: []string{"Date"},
 	},
 	Leaf{
 		Name: "hill-score", Help: "Show hill score data.",
 		Spec: argsOf(&struct {
-			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
 		}{}),
 		Endpoint: "health.hill-score",
 		Params:   Params{"date": In("Date")},
 		Verb:     "get hill score", Output: JSON{},
-		LateDates: []string{"Date"},
 	},
 	Leaf{
 		Name: "power-curve", Help: "Show power curve for a date range.",
@@ -177,22 +168,20 @@ var healthGroup = Group{Name: "health", Help: "View health data.", Children: []N
 	Leaf{
 		Name: "events", Help: "Show daily wellness events.",
 		Spec: argsOf(&struct {
-			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
 		}{}),
 		Endpoint: "health.all-day-events",
 		Params:   Params{"date": In("Date")},
 		Verb:     "get events", Output: JSON{},
-		LateDates: []string{"Date"},
 	},
 	Leaf{
 		Name: "lifestyle", Help: "Show lifestyle logging data.",
 		Spec: argsOf(&struct {
-			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
 		}{}),
 		Endpoint: "health.lifestyle-logging",
 		Params:   Params{"date": In("Date")},
 		Verb:     "get lifestyle", Output: JSON{},
-		LateDates: []string{"Date"},
 	},
 }}
 
@@ -200,12 +189,11 @@ var healthStepsGroup = Group{Name: "steps", Help: "Show step data.", Children: [
 	Leaf{
 		Name: "view", Help: "Show step chart data for a date.", Default: true,
 		Spec: argsOf(&struct {
-			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
 		}{}),
 		Endpoint: "health.steps",
 		Params:   Params{"displayName": DisplayName, "date": In("Date")},
 		Verb:     "get steps", Output: JSON{},
-		LateDates: []string{"Date"},
 	},
 	Leaf{
 		Name: "daily", Help: "Show daily step totals for a date range.",
@@ -243,12 +231,11 @@ var healthHeartRateGroup = Group{Name: "hr", Help: "Show heart rate data.", Chil
 	Leaf{
 		Name: "view", Help: "Show heart rate data for a date.", Default: true,
 		Spec: argsOf(&struct {
-			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
 		}{}),
 		Endpoint: "health.heart-rate",
 		Params:   Params{"displayName": DisplayName, "date": In("Date")},
 		Verb:     "get heart rate", Output: JSON{},
-		LateDates: []string{"Date"},
 	},
 	Leaf{
 		Name: "daily", Help: "Show daily heart rate statistics for a date range.",
@@ -276,12 +263,11 @@ var healthFloorsGroup = Group{Name: "floors", Help: "Show floors climbed data.",
 	Leaf{
 		Name: "view", Help: "Show floors climbed for a date.", Default: true,
 		Spec: argsOf(&struct {
-			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
 		}{}),
 		Endpoint: "health.floors",
 		Params:   Params{"date": In("Date")},
 		Verb:     "get floors", Output: JSON{},
-		LateDates: []string{"Date"},
 	},
 	Leaf{
 		Name: "daily", Help: "Show daily floors climbed for a date range.",
@@ -309,12 +295,11 @@ var healthRespirationGroup = Group{Name: "respiration", Help: "Show respiration 
 	Leaf{
 		Name: "view", Help: "Show respiration data for a date.", Default: true,
 		Spec: argsOf(&struct {
-			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
 		}{}),
 		Endpoint: "health.respiration",
 		Params:   Params{"date": In("Date")},
 		Verb:     "get respiration", Output: JSON{},
-		LateDates: []string{"Date"},
 	},
 	Leaf{
 		Name: "daily", Help: "Show daily respiration statistics for a date range.",
@@ -332,12 +317,11 @@ var healthSleepGroup = Group{Name: "sleep", Help: "Show sleep data.", Children: 
 	Leaf{
 		Name: "view", Help: "Show sleep data for a date.", Default: true,
 		Spec: argsOf(&struct {
-			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
 		}{}),
 		Endpoint: "health.sleep",
 		Params:   Params{"displayName": DisplayName, "date": In("Date")},
 		Verb:     "get sleep", Output: JSON{},
-		LateDates: []string{"Date"},
 	},
 	healthSleepNapsGroup,
 	Leaf{
@@ -375,12 +359,11 @@ var healthTrainingStatusGroup = Group{Name: "training-status", Help: "Show train
 	Leaf{
 		Name: "view", Help: "Show aggregated training status for a date.", Default: true,
 		Spec: argsOf(&struct {
-			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
 		}{}),
 		Endpoint: "health.training-status",
 		Params:   Params{"date": In("Date")},
 		Verb:     "get training status", Output: JSON{},
-		LateDates: []string{"Date"},
 	},
 	Leaf{
 		Name: "daily", Help: "Show daily training status for a date.",
@@ -498,12 +481,11 @@ var healthStressGroup = Group{Name: "stress", Help: "Show stress data.", Childre
 	Leaf{
 		Name: "view", Help: "Show stress data for a date.", Default: true,
 		Spec: argsOf(&struct {
-			Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
 		}{}),
 		Endpoint: "health.stress",
 		Params:   Params{"date": In("Date")},
 		Verb:     "get stress", Output: JSON{},
-		LateDates: []string{"Date"},
 	},
 	Leaf{
 		Name: "daily", Help: "Show daily stress statistics for a date range.",

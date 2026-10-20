@@ -36,12 +36,11 @@ func fixtureTree() []Node {
 				Leaf{
 					Name: "view", Help: "Show sleep data for a date.", Default: true,
 					Spec: argsOf(&struct {
-						Date string `arg:"" optional:"" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+						Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
 					}{}),
 					Endpoint: "health.sleep",
 					Params:   Params{"displayName": DisplayName, "date": In("Date")},
 					Verb:     "get sleep", Output: JSON{},
-					LateDates: []string{"Date"},
 				},
 			}},
 		}},
