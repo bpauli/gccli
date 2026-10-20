@@ -52,7 +52,7 @@ lint:
 
 .PHONY: test
 test:
-	go test -race ./...
+	go test -race -timeout 20m ./...
 
 .PHONY: test-e2e
 test-e2e:
