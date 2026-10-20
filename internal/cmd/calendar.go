@@ -89,7 +89,7 @@ func (c *CalendarNotesUpdateCmd) Validate() error {
 	if c.Name == nil && c.Content == nil {
 		return errors.New("nothing to change: give --name or --content")
 	}
-	if c.Name != nil && *c.Name == "" {
+	if c.Name != nil && strings.TrimSpace(*c.Name) == "" {
 		return errors.New("the note name must not be empty")
 	}
 	return nil
