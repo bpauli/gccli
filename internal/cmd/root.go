@@ -100,10 +100,7 @@ func execute(args []string, version, commit, date string, stdout, stderr io.Writ
 			Compact: true,
 		}),
 		kong.Help(colorHelpPrinter),
-		kong.Vars{
-			"version": versionStr,
-			"units":   strings.Join(units.PreferenceNames(), ","),
-		},
+		kongVars(versionStr),
 	)
 	if err != nil {
 		_, _ = fmt.Fprintf(stderr, "gccli: %s\n", err)
@@ -116,6 +113,15 @@ func execute(args []string, version, commit, date string, stdout, stderr io.Writ
 	}
 
 	return run(parser, &cli, args, stdout, stderr)
+}
+
+// kongVars returns the values of the ${name} placeholders in the struct tags
+// of the command tree.
+func kongVars(version string) kong.Vars {
+	return kong.Vars{
+		"version": version,
+		"units":   strings.Join(units.PreferenceNames(), ","),
+	}
 }
 
 func run(parser *kong.Kong, cli *CLI, args []string, stdout, stderr io.Writer) (code int) {

@@ -11,8 +11,6 @@ import (
 	"testing"
 
 	"github.com/alecthomas/kong"
-
-	"github.com/bpauli/gccli/internal/units"
 )
 
 // fixtureTree is a small tree with one row of every shape the migration
@@ -228,7 +226,7 @@ func newParserFor(t *testing.T, cli any, stdout, stderr io.Writer) *kong.Kong {
 		kong.Exit(func(int) {}),
 		kong.ConfigureHelp(kong.HelpOptions{Compact: true}),
 		kong.Help(colorHelpPrinter),
-		kong.Vars{"version": "test", "units": strings.Join(units.PreferenceNames(), ",")},
+		kongVars("test"),
 	)
 	if err != nil {
 		t.Fatalf("kong.New: %v", err)
