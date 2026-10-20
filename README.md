@@ -26,7 +26,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Nutrition** — view daily food logs, meals, and nutrition settings
 - **Events** — list, list upcoming, add, and delete calendar events (races, group rides, etc.) with goals and training priority support
 - **Calendar** - add, update, move and delete calendar notes
-- **Wellness** - menstrual cycle data and calendar, pregnancy summary, jet lag trips and status
+- **Wellness** - menstrual cycle data and calendar, menstrual daily log (view, set, delete), pregnancy summary, jet lag trips and status
 - **Social** - notifications, view and change notification preferences, connections, connection requests, followers, following, newsfeed, groups
 - **Agent-ready** - ships a bundled agent skill (`skills/gccli/`) that plugs into AI assistants like Claude Code, Codex, Hermes, and OpenClaw so you can drive Garmin Connect in plain language
 - **Multiple accounts** — manage multiple Garmin accounts via `--account` flag
@@ -789,6 +789,10 @@ gccli calendar notes delete <id>               # Delete a note (with confirmatio
 gccli wellness menstrual-cycle --start 2024-01-01 --end 2024-03-31
 gccli wellness menstrual-summary --start 2024-01-01 --end 2024-03-31
 gccli wellness menstrual-calendar --start 2024-01-01 --end 2024-03-31
+gccli wellness menstrual-log 2026-10-01           # Daily log ({} for a day without a log)
+gccli wellness menstrual-log set 2026-10-01 --flow light --symptoms cramps,headache
+gccli wellness menstrual-log set 2026-10-01 --notes ""   # Clear the notes, keep the other fields
+gccli wellness menstrual-log delete 2026-10-01    # Delete the daily log (with confirmation)
 gccli wellness pregnancy-summary
 gccli wellness jet-lag list
 gccli wellness jet-lag status 2024-03-15
