@@ -193,6 +193,9 @@ func TestBodyAddWeight_VerifyPayload(t *testing.T) {
 	overrideNewClient(t, server)
 	storeTestTokens(t, store, "test@example.com", testTokens())
 
+	// A clock east of UTC separates the local field from the GMT field.
+	overrideNowFn(t, time.Date(2026, 10, 15, 9, 30, 0, 0, time.FixedZone("UTC+2", 2*60*60)))
+
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
 	cmd := &BodyAddWeightCmd{Value: 80.0, Unit: "lbs"}
@@ -210,11 +213,13 @@ func TestBodyAddWeight_VerifyPayload(t *testing.T) {
 	if receivedPayload["sourceType"] != "MANUAL" {
 		t.Errorf("sourceType = %v, want MANUAL", receivedPayload["sourceType"])
 	}
-	if receivedPayload["dateTimestamp"] == nil {
-		t.Error("expected dateTimestamp to be set")
+	// Garmin answers 500 ValueInstantiationException to a timestamp without
+	// milliseconds, and the local field holds the local time, not UTC.
+	if got := receivedPayload["dateTimestamp"]; got != "2026-10-15T09:30:00.000" {
+		t.Errorf("dateTimestamp = %v, want 2026-10-15T09:30:00.000", got)
 	}
-	if receivedPayload["gmtTimestamp"] == nil {
-		t.Error("expected gmtTimestamp to be set")
+	if got := receivedPayload["gmtTimestamp"]; got != "2026-10-15T07:30:00.000" {
+		t.Errorf("gmtTimestamp = %v, want 2026-10-15T07:30:00.000", got)
 	}
 }
 
