@@ -1,4 +1,4 @@
-A non-numeric ID fails before any request.
+A non-numeric ID is a usage error at parse time, before the login, with no request.
 -- args --
 activity
 describe
@@ -6,25 +6,113 @@ abc
 Easy run
 -- table stdout --
 -- table stderr --
-describe activity: invalid activity ID: strconv.ParseInt: parsing "abc": invalid syntax
+Usage: gccli activity describe <id> <text>
+
+Set or clear the description of an activity.
+
+Arguments:
+  <id>      Activity ID.
+  <text>    New description. An empty text ("") clears it.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+gccli: error: <id>: invalid ID "abc": expected a number
 -- table exit --
-1
+2
 -- table requests --
 -- plain stdout --
 -- plain stderr --
-describe activity: invalid activity ID: strconv.ParseInt: parsing "abc": invalid syntax
+Usage: gccli activity describe <id> <text>
+
+Set or clear the description of an activity.
+
+Arguments:
+  <id>      Activity ID.
+  <text>    New description. An empty text ("") clears it.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+gccli: error: <id>: invalid ID "abc": expected a number
 -- plain exit --
-1
+2
 -- plain requests --
 -- plain-header stdout --
 -- plain-header stderr --
-describe activity: invalid activity ID: strconv.ParseInt: parsing "abc": invalid syntax
+Usage: gccli activity describe <id> <text>
+
+Set or clear the description of an activity.
+
+Arguments:
+  <id>      Activity ID.
+  <text>    New description. An empty text ("") clears it.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+gccli: error: <id>: invalid ID "abc": expected a number
 -- plain-header exit --
-1
+2
 -- plain-header requests --
 -- json stdout --
 -- json stderr --
-{"error":{"code":"error","message":"describe activity: invalid activity ID: strconv.ParseInt: parsing \"abc\": invalid syntax"}}
+Usage: gccli activity describe <id> <text>
+
+Set or clear the description of an activity.
+
+Arguments:
+  <id>      Activity ID.
+  <text>    New description. An empty text ("") clears it.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+gccli: error: <id>: invalid ID "abc": expected a number
 -- json exit --
-1
+2
 -- json requests --
