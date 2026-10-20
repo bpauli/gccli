@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking changes
 
+In `--json` mode, a bad date or time in the commands below used to print the JSON error object on stderr (`{"error":{...}}`) after the login. It now prints the plain usage block on stderr with exit 2, like every other usage error: a usage error never prints the JSON error object, in any mode.
+
 | Command(s) | Mode | Before | After |
 | --- | --- | --- | --- |
 | `body composition`, `body daily-weigh-ins`, `health body-battery view`, `health endurance-score`, `health events`, `health fitness-age`, `health floors view`, `health hill-score`, `health hr view`, `health hrv`, `health intensity-minutes view`, `health lifestyle`, `health max-metrics`, `health respiration view`, `health rhr`, `health sleep view`, `health spo2`, `health steps view`, `health stress view`, `health summary`, `health training-readiness`, `health training-status view`, `hydration view`, `nutrition food-log`, `nutrition meals`, `nutrition settings`, `reload` (#263) | all | bad date: exit 1 (or 3 without a login), after the login | bad date: exit 2 with the usage block, before the login |
@@ -18,7 +20,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | the same 4 commands (#263) | all | an empty date (`""`) means today | an empty date is a usage error (exit 2); omit the date for today |
 | `activity create --date` (#263) | all | bad date or time: exit 1 (or 3 without a login), after the login | bad date or time: exit 2 with the usage block, before the login; the help names the formats, and its placeholder is `DATE-TIME` in place of `STRING` |
 | `activity create --date` (#263) | all | an empty `--date` (`""`) means now | an empty `--date` is a usage error (exit 2); omit the flag for now |
-| `body delete-weight --date`, `body delete-blood-pressure --date` (#263) | all | the date went into the request path unchecked, so a bad date was a Garmin error after the login (exit 1), and only `YYYY-MM-DD` worked; an empty `--date` (`""`) was `date: required` (exit 1, or 3 without a login) | bad or empty date: exit 2 with the usage block, before the login; `today`, `yesterday`, `3d` and `+30d` are now accepted |
+| `body delete-weight --date`, `body delete-blood-pressure --date` (#263) | all | the date went into the request path unchecked, so a bad date was a Garmin error after the login (exit 1), and only `YYYY-MM-DD` worked; an empty `--date` (`""`) was `date: required` (exit 1, or 3 without a login) | bad or empty date: exit 2 with the usage block, before the login; `today`, `yesterday`, `3d` and `+30d` are now accepted; the help placeholder is `DATE` in place of `STRING` |
+| `events add --time` (#263) | all | bad time: exit 1 with one error line, before the login | bad time: exit 2 with the usage block; the help placeholder is `HH:MM` in place of `STRING`, and a time such as `7:30` is sent as `07:30` |
+| `events add --time` (#263) | all | an empty `--time` (`""`) means no start time | an empty `--time` is a usage error (exit 2); omit the flag for no start time |
 | `health race-predictions view [<date>]` (#263) | all | took an unused date argument and ignored it | takes no argument; a date is a usage error (exit 2, `unexpected argument`). `health race-predictions` without a child still runs `view` |
 
 ### Added
