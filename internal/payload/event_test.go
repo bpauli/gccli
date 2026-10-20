@@ -21,18 +21,18 @@ func TestParseDistance(t *testing.T) {
 		{"km", 0, "", true},
 	}
 	for _, tt := range tests {
-		val, unit, err := parseDistance(tt.input)
+		d, err := ParseDistance(tt.input)
 		if (err != nil) != tt.wantErr {
-			t.Errorf("parseDistance(%q) error = %v, wantErr %v", tt.input, err, tt.wantErr)
+			t.Errorf("ParseDistance(%q) error = %v, wantErr %v", tt.input, err, tt.wantErr)
 			continue
 		}
-		if val != tt.wantVal || unit != tt.wantUnit {
-			t.Errorf("parseDistance(%q) = (%v, %q), want (%v, %q)", tt.input, val, unit, tt.wantVal, tt.wantUnit)
+		if d != (Distance{tt.wantVal, tt.wantUnit}) {
+			t.Errorf("ParseDistance(%q) = %+v, want (%v, %q)", tt.input, d, tt.wantVal, tt.wantUnit)
 		}
 	}
 }
 
-func TestParseGoalDuration(t *testing.T) {
+func TestParseGoal(t *testing.T) {
 	tests := []struct {
 		input   string
 		want    int
@@ -43,27 +43,37 @@ func TestParseGoalDuration(t *testing.T) {
 		{"2400s", 2400, false},
 		{"3h30m0s", 12600, false},
 		{"notaduration", 0, true},
+		{"", 0, true},
+		{"0s", 0, true},
+		{"500ms", 0, true},
+		{"-1h", 0, true},
 	}
 	for _, tt := range tests {
-		got, err := parseGoalDuration(tt.input)
+		got, err := ParseGoal(tt.input)
 		if (err != nil) != tt.wantErr {
-			t.Errorf("parseGoalDuration(%q) error = %v, wantErr %v", tt.input, err, tt.wantErr)
+			t.Errorf("ParseGoal(%q) error = %v, wantErr %v", tt.input, err, tt.wantErr)
 			continue
 		}
-		if got != tt.want {
-			t.Errorf("parseGoalDuration(%q) = %d, want %d", tt.input, got, tt.want)
+		if int(got) != tt.want {
+			t.Errorf("ParseGoal(%q) = %d, want %d", tt.input, got, tt.want)
 		}
 	}
 }
 
-func TestEvent_RejectsBadValues(t *testing.T) {
+func TestParseDistance_RejectsOutOfRange(t *testing.T) {
 	digits400 := strings.Repeat("9", 400)
+	_, err := ParseDistance(digits400 + "km")
+	if want := `invalid distance "` + digits400 + `km": out of range`; err == nil || err.Error() != want {
+		t.Fatalf("ParseDistance = %v, want error %q", err, want)
+	}
+}
+
+func TestEvent_RejectsBadValues(t *testing.T) {
 	tests := []struct {
 		name  string
 		event Event
 		want  string
 	}{
-		{"400-digit distance", Event{Distance: digits400 + "km"}, `invalid distance "` + digits400 + `km": out of range`},
 		{"hour and minute out of range", Event{Time: "99:99"}, `invalid time "99:99" (use HH:MM, e.g. 07:30)`},
 		{"hour 24", Event{Time: "24:00"}, `invalid time "24:00" (use HH:MM, e.g. 07:30)`},
 		{"minute 60", Event{Time: "12:60"}, `invalid time "12:60" (use HH:MM, e.g. 07:30)`},

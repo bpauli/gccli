@@ -21,12 +21,15 @@ func finite(v float64) bool {
 	return !math.IsNaN(v) && !math.IsInf(v, 0)
 }
 
-type workoutStep struct {
+// Step is one parsed workout step. A pace target keeps its seconds per
+// distance unit, because the unit is a flag of its own; Workout converts the
+// pace to meters per second with the unit it gets.
+type Step struct {
 	stepType       string
 	durationSecs   float64
 	targetType     string  // "pace", "hr", "power", "cadence", or "" for no target
-	targetValueOne float64 // higher/faster value
-	targetValueTwo float64 // lower/slower value
+	targetValueOne float64 // fast pace in seconds per unit, or the low value
+	targetValueTwo float64 // slow pace in seconds per unit, or the high value
 }
 
 var stepTypeMap = map[string]struct {
@@ -76,54 +79,36 @@ var durationRegexp = regexp.MustCompile(`^(?:(\d+)m)?(?:(\d+)s)?$`)
 var paceRegexp = regexp.MustCompile(`^(\d+):(\d{2})$`)
 
 // Workout builds the body of a new workout from a sport type such as "run",
-// step values such as "run:5m@pace:5:30-6:00" and a pace unit, "km" or "mi".
-func Workout(name, sportType, unit string, rawSteps []string) (json.RawMessage, error) {
-	steps, err := parseSteps(rawSteps, unit)
-	if err != nil {
-		return nil, err
-	}
-	body, err := buildWorkoutJSON(name, sportType, steps)
+// parsed steps and a pace unit, "km" or "mi".
+func Workout(name, sportType, unit string, steps []Step) (json.RawMessage, error) {
+	body, err := buildWorkoutJSON(name, sportType, unit, steps)
 	if err != nil {
 		return nil, fmt.Errorf("build workout: %w", err)
 	}
 	return body, nil
 }
 
-func parseSteps(raw []string, unit string) ([]workoutStep, error) {
-	if len(raw) == 0 {
-		return nil, fmt.Errorf(`invalid step "": expected type:duration[@target:values]`)
-	}
-	steps := make([]workoutStep, 0, len(raw))
-	for _, s := range raw {
-		step, err := parseStep(s, unit)
-		if err != nil {
-			return nil, err
-		}
-		steps = append(steps, step)
-	}
-	return steps, nil
-}
-
-func parseStep(s string, unit string) (workoutStep, error) {
+// ParseStep parses one step value such as "run:5m@pace:5:30-6:00".
+func ParseStep(s string) (Step, error) {
 	// Split on first "@" to separate step part from optional target part.
 	stepPart, targetPart, _ := strings.Cut(s, "@")
 
 	// Parse step part: "type:duration"
 	typeName, durStr, found := strings.Cut(stepPart, ":")
 	if !found {
-		return workoutStep{}, fmt.Errorf("invalid step %q: expected type:duration[@target:values]", s)
+		return Step{}, fmt.Errorf("invalid step %q: expected type:duration[@target:values]", s)
 	}
 
 	if _, ok := stepTypeMap[typeName]; !ok {
-		return workoutStep{}, fmt.Errorf("invalid step type %q: expected warmup, run, interval, cooldown, recovery, rest, or other", typeName)
+		return Step{}, fmt.Errorf("invalid step type %q: expected warmup, run, interval, cooldown, recovery, rest, or other", typeName)
 	}
 
 	dur, err := parseStepDuration(durStr)
 	if err != nil {
-		return workoutStep{}, fmt.Errorf("invalid step %q: %w", s, err)
+		return Step{}, fmt.Errorf("invalid step %q: %w", s, err)
 	}
 
-	step := workoutStep{
+	step := Step{
 		stepType:     typeName,
 		durationSecs: dur,
 	}
@@ -131,27 +116,27 @@ func parseStep(s string, unit string) (workoutStep, error) {
 	if targetPart != "" {
 		targetName, values, found := strings.Cut(targetPart, ":")
 		if !found {
-			return workoutStep{}, fmt.Errorf("invalid step %q: target requires values after ':'", s)
+			return Step{}, fmt.Errorf("invalid step %q: target requires values after ':'", s)
 		}
 
 		if _, ok := targetTypeMap[targetName]; !ok {
-			return workoutStep{}, fmt.Errorf("invalid target type %q: expected pace, hr, power, or cadence", targetName)
+			return Step{}, fmt.Errorf("invalid target type %q: expected pace, hr, power, or cadence", targetName)
 		}
 
 		step.targetType = targetName
 
 		switch targetName {
 		case "pace":
-			high, low, err := parsePaceRange(values, unit)
+			fast, slow, err := parsePaceRange(values)
 			if err != nil {
-				return workoutStep{}, fmt.Errorf("invalid step %q: %w", s, err)
+				return Step{}, fmt.Errorf("invalid step %q: %w", s, err)
 			}
-			step.targetValueOne = high
-			step.targetValueTwo = low
+			step.targetValueOne = fast
+			step.targetValueTwo = slow
 		default:
 			low, high, err := parseNumericRange(values)
 			if err != nil {
-				return workoutStep{}, fmt.Errorf("invalid step %q: %w", s, err)
+				return Step{}, fmt.Errorf("invalid step %q: %w", s, err)
 			}
 			step.targetValueOne = low
 			step.targetValueTwo = high
@@ -221,8 +206,9 @@ func parseNumericRange(s string) (float64, float64, error) {
 	return lowVal, highVal, nil
 }
 
-// parsePaceRange parses "5:30-6:00" into (fastMPS, slowMPS).
-func parsePaceRange(s string, unit string) (float64, float64, error) {
+// parsePaceRange parses "5:30-6:00" into the fast and the slow pace in
+// seconds per unit.
+func parsePaceRange(s string) (float64, float64, error) {
 	idx := findPaceSeparator(s)
 	if idx < 0 {
 		return 0, 0, fmt.Errorf("invalid pace range %q: expected format like 5:30-6:00", s)
@@ -231,21 +217,21 @@ func parsePaceRange(s string, unit string) (float64, float64, error) {
 	fastStr := s[:idx]
 	slowStr := s[idx+1:]
 
-	fastMPS, err := parsePaceToMPS(fastStr, unit)
+	fast, err := parsePaceSeconds(fastStr)
 	if err != nil {
 		return 0, 0, err
 	}
 
-	slowMPS, err := parsePaceToMPS(slowStr, unit)
+	slow, err := parsePaceSeconds(slowStr)
 	if err != nil {
 		return 0, 0, err
 	}
 
-	if fastMPS < slowMPS {
+	if fast > slow {
 		return 0, 0, fmt.Errorf("fast pace %s must be faster (lower) than slow pace %s", fastStr, slowStr)
 	}
 
-	return fastMPS, slowMPS, nil
+	return fast, slow, nil
 }
 
 // findPaceSeparator finds the hyphen index in a pace range like "5:30-6:00".
@@ -263,7 +249,8 @@ func findPaceSeparator(s string) int {
 	return -1
 }
 
-func parsePaceToMPS(s string, unit string) (float64, error) {
+// parsePaceSeconds parses a pace such as "5:30" into seconds per unit.
+func parsePaceSeconds(s string) (float64, error) {
 	m := paceRegexp.FindStringSubmatch(s)
 	if m == nil {
 		return 0, fmt.Errorf("invalid pace %q: expected format like 5:30", s)
@@ -280,15 +267,19 @@ func parsePaceToMPS(s string, unit string) (float64, error) {
 		return 0, fmt.Errorf("invalid pace %q: out of range", s)
 	}
 
+	return totalSecs, nil
+}
+
+// paceMPS converts a pace in seconds per unit to meters per second.
+func paceMPS(secsPerUnit float64, unit string) float64 {
 	dist := metersPerKm
 	if unit == "mi" {
 		dist = units.MetersPerMile
 	}
-
-	return dist / totalSecs, nil
+	return dist / secsPerUnit
 }
 
-func buildWorkoutJSON(name string, sportType string, steps []workoutStep) (json.RawMessage, error) {
+func buildWorkoutJSON(name, sportType, unit string, steps []Step) (json.RawMessage, error) {
 	sport, ok := sportTypeMap[sportType]
 	if !ok {
 		return nil, fmt.Errorf("unknown sport type: %s", sportType)
@@ -324,8 +315,12 @@ func buildWorkoutJSON(name string, sportType string, steps []workoutStep) (json.
 				"workoutTargetTypeId":  tt.id,
 				"workoutTargetTypeKey": tt.key,
 			}
-			step["targetValueOne"] = s.targetValueOne
-			step["targetValueTwo"] = s.targetValueTwo
+			one, two := s.targetValueOne, s.targetValueTwo
+			if s.targetType == "pace" {
+				one, two = paceMPS(one, unit), paceMPS(two, unit)
+			}
+			step["targetValueOne"] = one
+			step["targetValueTwo"] = two
 		} else {
 			step["targetType"] = map[string]any{
 				"workoutTargetTypeId":  1,

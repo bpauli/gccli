@@ -1,42 +1,27 @@
 package cmd
 
 import (
+	"maps"
+	"reflect"
+	"slices"
 	"strings"
 	"testing"
 )
 
-func TestResolveCourseActivityType_Valid(t *testing.T) {
-	tests := []struct {
-		key  string
-		want int
-	}{
-		{"running", 1},
-		{"cycling", 2},
-		{"hiking", 3},
-		{"gravel_cycling", 143},
+// TestCourseActivityTypesMatchEnum pins that the enum of courses import
+// --type, which Kong checks at parse time, names exactly the keys of
+// courseActivityTypes, so no value can reach Run without a PK.
+func TestCourseActivityTypesMatchEnum(t *testing.T) {
+	f, ok := reflect.TypeFor[CourseImportCmd]().FieldByName("Type")
+	if !ok {
+		t.Fatal("CourseImportCmd has no Type field")
 	}
-	for _, tt := range tests {
-		t.Run(tt.key, func(t *testing.T) {
-			got, err := resolveCourseActivityType(tt.key)
-			if err != nil {
-				t.Fatalf("unexpected error: %v", err)
-			}
-			if got != tt.want {
-				t.Errorf("got %d, want %d", got, tt.want)
-			}
-		})
+	got := strings.Split(f.Tag.Get("enum"), ",")
+	want := slices.Sorted(maps.Keys(courseActivityTypes))
+	if !slices.Equal(got, want) {
+		t.Errorf("enum of --type = %v, want the sorted keys of courseActivityTypes %v", got, want)
 	}
-}
-
-func TestResolveCourseActivityType_Unknown(t *testing.T) {
-	_, err := resolveCourseActivityType("swimming")
-	if err == nil {
-		t.Fatal("expected error for unknown type")
-	}
-	if !strings.Contains(err.Error(), "swimming") {
-		t.Errorf("error should mention the invalid type: %v", err)
-	}
-	if !strings.Contains(err.Error(), "cycling") {
-		t.Errorf("error should list valid types: %v", err)
+	if courseActivityTypes["cycling"] != 2 || courseActivityTypes["gravel_cycling"] != 143 {
+		t.Errorf("cycling = %d and gravel_cycling = %d, want 2 and 143", courseActivityTypes["cycling"], courseActivityTypes["gravel_cycling"])
 	}
 }

@@ -2,24 +2,42 @@ package cmd
 
 import (
 	"fmt"
-	"strconv"
+
+	"github.com/alecthomas/kong"
 
 	"github.com/bpauli/gccli/internal/payload"
 )
 
 // ActivityExerciseSetsSetCmd sets exercise sets for a strength training activity.
 type ActivityExerciseSetsSetCmd struct {
-	ID       string   `arg:"" help:"Activity ID."`
-	Exercise []string `help:"Exercise set in format CATEGORY/NAME:reps@weightkg[:dSECS][:rSECS] (e.g. BENCH_PRESS/BARBELL_BENCH_PRESS:12@20:d30:r60)." short:"e" required:""`
+	ID       NumericID  `arg:"" help:"Activity ID."`
+	Exercise []Exercise `help:"Exercise set in format CATEGORY/NAME:reps@weightkg[:dSECS][:rSECS] (e.g. BENCH_PRESS/BARBELL_BENCH_PRESS:12@20:d30:r60)." short:"e" required:""`
+}
+
+// Exercise is the Kong type of an exercise set. Kong decodes it through the
+// payload parser at parse time, so a bad value is a usage error before the
+// login.
+type Exercise payload.Exercise
+
+func (e *Exercise) Decode(ctx *kong.DecodeContext) error {
+	raw, err := popString(ctx, "exercise")
+	if err != nil {
+		return err
+	}
+	v, err := payload.ParseExercise(raw)
+	if err != nil {
+		return fmt.Errorf("invalid exercise %q: %w", raw, err)
+	}
+	*e = Exercise(v)
+	return nil
 }
 
 func (c *ActivityExerciseSetsSetCmd) Run(g *Globals) error {
-	activityID, err := strconv.ParseInt(c.ID, 10, 64)
-	if err != nil {
-		return fmt.Errorf("invalid activity ID: %w", err)
+	exercises := make([]payload.Exercise, len(c.Exercise))
+	for i, e := range c.Exercise {
+		exercises[i] = payload.Exercise(e)
 	}
-
-	body, err := payload.ExerciseSets(activityID, c.Exercise)
+	body, err := payload.ExerciseSets(int64(c.ID), exercises)
 	if err != nil {
 		return err
 	}
@@ -29,7 +47,7 @@ func (c *ActivityExerciseSetsSetCmd) Run(g *Globals) error {
 		return err
 	}
 
-	data, err := client.Call(g.Context, "activities.set-exercise-sets", map[string]string{"activityID": c.ID}, body)
+	data, err := client.Call(g.Context, "activities.set-exercise-sets", map[string]string{"activityID": c.ID.String()}, body)
 	if err != nil {
 		return fmt.Errorf("set exercise sets: %w", err)
 	}

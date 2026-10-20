@@ -507,20 +507,10 @@ func TestUpdateActivity_SendsFieldsWithNumericID(t *testing.T) {
 
 	_, client := testServer(t, handler)
 	fields := map[string]any{"description": nil, "activityId": "999"}
-	if _, err := client.UpdateActivity(context.Background(), "12345", fields); err != nil {
+	if _, err := client.UpdateActivity(context.Background(), 12345, fields); err != nil {
 		t.Fatalf("UpdateActivity: %v", err)
 	}
 	if want := `{"activityId":12345,"description":null}`; string(got) != want {
 		t.Errorf("body = %s, want %s", got, want)
-	}
-}
-
-func TestUpdateActivity_InvalidID(t *testing.T) {
-	_, client := testServer(t, http.HandlerFunc(func(_ http.ResponseWriter, r *http.Request) {
-		t.Errorf("request sent: %s %s", r.Method, r.URL.RequestURI())
-	}))
-	_, err := client.UpdateActivity(context.Background(), "not-a-number", map[string]any{"activityName": "Name"})
-	if err == nil || !strings.Contains(err.Error(), "invalid activity ID") {
-		t.Fatalf("err = %v, want invalid activity ID", err)
 	}
 }

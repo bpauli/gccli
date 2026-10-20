@@ -102,16 +102,11 @@ func (c *CourseDownloadCmd) Run(g *Globals) error {
 type CourseImportCmd struct {
 	File    string `arg:"" help:"Path to GPX file." type:"existingfile"`
 	Name    string `help:"Course name (overrides name from GPX)." short:"n"`
-	Type    string `help:"Activity type key (e.g. running, cycling, hiking)." short:"t" default:"cycling"`
+	Type    string `help:"Activity type key." short:"t" default:"cycling" enum:"cycling,e_bike_fitness,e_bike_mountain,gravel_cycling,hiking,mountain_biking,other,road_biking,running,street_running,trail_running,ultra_run,walking"`
 	Privacy int    `help:"Course privacy: 1=public, 2=private, 4=group." short:"p" default:"2" enum:"1,2,4"`
 }
 
 func (c *CourseImportCmd) Run(g *Globals) error {
-	typePk, err := resolveCourseActivityType(c.Type)
-	if err != nil {
-		return err
-	}
-
 	client, err := resolveClient(g)
 	if err != nil {
 		return err
@@ -120,7 +115,7 @@ func (c *CourseImportCmd) Run(g *Globals) error {
 	g.UI.Infof("Importing %s...", filepath.Base(c.File))
 	saved, err := client.ImportCourse(g.Context, c.File, garminapi.CourseImportOptions{
 		Name:           c.Name,
-		ActivityTypePK: typePk,
+		ActivityTypePK: courseActivityTypes[c.Type],
 		Privacy:        c.Privacy,
 	})
 	if err != nil {
@@ -146,8 +141,8 @@ func (c *CourseImportCmd) Run(g *Globals) error {
 
 // CourseSendCmd sends a course to a device.
 type CourseSendCmd struct {
-	CourseID string `arg:"" help:"Course ID."`
-	DeviceID string `arg:"" help:"Device ID."`
+	CourseID NumericID `arg:"" help:"Course ID."`
+	DeviceID NumericID `arg:"" help:"Device ID."`
 }
 
 func (c *CourseSendCmd) Run(g *Globals) error {
@@ -157,7 +152,7 @@ func (c *CourseSendCmd) Run(g *Globals) error {
 	}
 
 	// Fetch course detail to get the course name.
-	courseData, err := client.Call(g.Context, "courses.get", map[string]string{"courseID": c.CourseID}, nil)
+	courseData, err := client.Call(g.Context, "courses.get", map[string]string{"courseID": c.CourseID.String()}, nil)
 	if err != nil {
 		return fmt.Errorf("get course: %w", err)
 	}
@@ -168,7 +163,7 @@ func (c *CourseSendCmd) Run(g *Globals) error {
 	}
 	courseName := jsonString(course, "courseName")
 
-	data, err := client.SendCourseToDevice(g.Context, c.CourseID, c.DeviceID, courseName)
+	data, err := client.SendCourseToDevice(g.Context, int64(c.CourseID), int64(c.DeviceID), courseName)
 	if err != nil {
 		return fmt.Errorf("send course to device: %w", err)
 	}

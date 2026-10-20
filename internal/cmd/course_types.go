@@ -1,11 +1,8 @@
 package cmd
 
-import (
-	"fmt"
-	"sort"
-	"strings"
-)
-
+// courseActivityTypes maps each --type value of courses import to Garmin's
+// activity type PK. The enum tag of the flag lists the same keys, which
+// TestCourseActivityTypesMatchEnum checks.
 var courseActivityTypes = map[string]int{
 	"running":         1,
 	"cycling":         2,
@@ -20,18 +17,4 @@ var courseActivityTypes = map[string]int{
 	"e_bike_mountain": 175,
 	"e_bike_fitness":  176,
 	"ultra_run":       181,
-}
-
-func resolveCourseActivityType(typeKey string) (int, error) {
-	if id, ok := courseActivityTypes[typeKey]; ok {
-		return id, nil
-	}
-
-	keys := make([]string, 0, len(courseActivityTypes))
-	for k := range courseActivityTypes {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-
-	return 0, fmt.Errorf("unknown activity type %q; valid types: %s", typeKey, strings.Join(keys, ", "))
 }

@@ -52,7 +52,7 @@ func TestActivityRename_Success(t *testing.T) {
 
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &ActivityRenameCmd{ID: "12345678", Name: "New Name"}
+	cmd := &ActivityRenameCmd{ID: 12345678, Name: "New Name"}
 	err := cmd.Run(g)
 	if err != nil {
 		t.Fatalf("expected no error, got: %v", err)
@@ -62,27 +62,6 @@ func TestActivityRename_Success(t *testing.T) {
 	}
 	if !strings.Contains(buf.String(), "New Name") {
 		t.Fatalf("expected new name in message, got: %q", buf.String())
-	}
-}
-
-func TestActivityRename_InvalidID(t *testing.T) {
-	server := modifyTestServer(t)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &ActivityRenameCmd{ID: "not-a-number", Name: "New Name"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "rename activity") {
-		t.Fatalf("unexpected error: %v", err)
 	}
 }
 
@@ -99,7 +78,7 @@ func TestActivityRetype_Success(t *testing.T) {
 
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &ActivityRetypeCmd{ID: "12345678", TypeID: 2, TypeKey: "cycling", ParentTypeID: 17}
+	cmd := &ActivityRetypeCmd{ID: 12345678, TypeID: 2, TypeKey: "cycling", ParentTypeID: 17}
 	err := cmd.Run(g)
 	if err != nil {
 		t.Fatalf("expected no error, got: %v", err)
@@ -131,7 +110,7 @@ func TestActivityRetype_VerifyPayload(t *testing.T) {
 
 	var buf bytes.Buffer
 	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &ActivityRetypeCmd{ID: "12345678", TypeID: 2, TypeKey: "cycling", ParentTypeID: 17}
+	cmd := &ActivityRetypeCmd{ID: 12345678, TypeID: 2, TypeKey: "cycling", ParentTypeID: 17}
 	err := cmd.Run(g)
 	if err != nil {
 		t.Fatalf("expected no error, got: %v", err)

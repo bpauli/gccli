@@ -145,15 +145,11 @@ func (c *WorkoutUploadCmd) Run(g *Globals) error {
 
 // WorkoutUpdateCmd updates an existing workout from a JSON file.
 type WorkoutUpdateCmd struct {
-	ID   string `arg:"" help:"Workout ID to update."`
-	File string `arg:"" help:"Path to workout JSON file." type:"existingfile"`
+	ID   NumericID `arg:"" help:"Workout ID to update."`
+	File string    `arg:"" help:"Path to workout JSON file." type:"existingfile"`
 }
 
 func (c *WorkoutUpdateCmd) Run(g *Globals) error {
-	if _, err := strconv.ParseInt(c.ID, 10, 64); err != nil {
-		return fmt.Errorf("invalid workout ID: %w", err)
-	}
-
 	client, err := resolveClient(g)
 	if err != nil {
 		return err
@@ -164,7 +160,7 @@ func (c *WorkoutUpdateCmd) Run(g *Globals) error {
 		return fmt.Errorf("read file: %w", err)
 	}
 
-	payload, replaced, err := setWorkoutID(jsonData, c.ID)
+	payload, replaced, err := setWorkoutID(jsonData, c.ID.String())
 	if err != nil {
 		return fmt.Errorf("%s: %w", c.File, err)
 	}
@@ -172,7 +168,7 @@ func (c *WorkoutUpdateCmd) Run(g *Globals) error {
 		g.UI.Warnf("Workout JSON has workoutId %s, updating workout %s instead", replaced, c.ID)
 	}
 
-	data, err := client.Call(g.Context, "workouts.update", map[string]string{"workoutID": c.ID}, payload)
+	data, err := client.Call(g.Context, "workouts.update", map[string]string{"workoutID": c.ID.String()}, payload)
 	if err != nil {
 		return fmt.Errorf("update workout: %w", err)
 	}

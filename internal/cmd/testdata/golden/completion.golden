@@ -144,6 +144,7 @@ _gccli_completions() {
             "gear add --type") COMPREPLY=($(compgen -W 'shoes bike other' -- "$cur")) ;;
             "goals list --status") COMPREPLY=($(compgen -W 'active future past' -- "$cur")) ;;
             "courses download --format") COMPREPLY=($(compgen -W 'fit gpx' -- "$cur")) ;;
+            "courses import --type"|"courses import -t") COMPREPLY=($(compgen -W 'cycling e_bike_fitness e_bike_mountain gravel_cycling hiking mountain_biking other road_biking running street_running trail_running ultra_run walking' -- "$cur")) ;;
             "courses import --privacy"|"courses import -p") COMPREPLY=($(compgen -W '1 2 4' -- "$cur")) ;;
             "events list --sort") COMPREPLY=($(compgen -W 'eventDate_asc eventDate_desc' -- "$cur")) ;;
             "events add --type"|"events add -t") COMPREPLY=($(compgen -W 'running trail_running cycling gravel_cycling mountain_biking swimming triathlon multi_sport hiking walking fitness_equipment motorcycling winter_sport other' -- "$cur")) ;;
@@ -450,6 +451,7 @@ _gccli_completions() {
             "gear add --type") COMPREPLY=($(compgen -W 'shoes bike other' -- "$cur")) ;;
             "goals list --status") COMPREPLY=($(compgen -W 'active future past' -- "$cur")) ;;
             "courses download --format") COMPREPLY=($(compgen -W 'fit gpx' -- "$cur")) ;;
+            "courses import --type"|"courses import -t") COMPREPLY=($(compgen -W 'cycling e_bike_fitness e_bike_mountain gravel_cycling hiking mountain_biking other road_biking running street_running trail_running ultra_run walking' -- "$cur")) ;;
             "courses import --privacy"|"courses import -p") COMPREPLY=($(compgen -W '1 2 4' -- "$cur")) ;;
             "events list --sort") COMPREPLY=($(compgen -W 'eventDate_asc eventDate_desc' -- "$cur")) ;;
             "events add --type"|"events add -t") COMPREPLY=($(compgen -W 'running trail_running cycling gravel_cycling mountain_biking swimming triathlon multi_sport hiking walking fitness_equipment motorcycling winter_sport other' -- "$cur")) ;;
@@ -756,6 +758,7 @@ _gccli_completions() {
             "gear add --type") COMPREPLY=($(compgen -W 'shoes bike other' -- "$cur")) ;;
             "goals list --status") COMPREPLY=($(compgen -W 'active future past' -- "$cur")) ;;
             "courses download --format") COMPREPLY=($(compgen -W 'fit gpx' -- "$cur")) ;;
+            "courses import --type"|"courses import -t") COMPREPLY=($(compgen -W 'cycling e_bike_fitness e_bike_mountain gravel_cycling hiking mountain_biking other road_biking running street_running trail_running ultra_run walking' -- "$cur")) ;;
             "courses import --privacy"|"courses import -p") COMPREPLY=($(compgen -W '1 2 4' -- "$cur")) ;;
             "events list --sort") COMPREPLY=($(compgen -W 'eventDate_asc eventDate_desc' -- "$cur")) ;;
             "events add --type"|"events add -t") COMPREPLY=($(compgen -W 'running trail_running cycling gravel_cycling mountain_biking swimming triathlon multi_sport hiking walking fitness_equipment motorcycling winter_sport other' -- "$cur")) ;;
@@ -1062,6 +1065,7 @@ _gccli_completions() {
             "gear add --type") COMPREPLY=($(compgen -W 'shoes bike other' -- "$cur")) ;;
             "goals list --status") COMPREPLY=($(compgen -W 'active future past' -- "$cur")) ;;
             "courses download --format") COMPREPLY=($(compgen -W 'fit gpx' -- "$cur")) ;;
+            "courses import --type"|"courses import -t") COMPREPLY=($(compgen -W 'cycling e_bike_fitness e_bike_mountain gravel_cycling hiking mountain_biking other road_biking running street_running trail_running ultra_run walking' -- "$cur")) ;;
             "courses import --privacy"|"courses import -p") COMPREPLY=($(compgen -W '1 2 4' -- "$cur")) ;;
             "events list --sort") COMPREPLY=($(compgen -W 'eventDate_asc eventDate_desc' -- "$cur")) ;;
             "events add --type"|"events add -t") COMPREPLY=($(compgen -W 'running trail_running cycling gravel_cycling mountain_biking swimming triathlon multi_sport hiking walking fitness_equipment motorcycling winter_sport other' -- "$cur")) ;;

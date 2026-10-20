@@ -3,20 +3,30 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
 	"github.com/alecthomas/kong"
 )
 
+// popString takes the next token of a flag or positional as its raw string.
+// what names the value in the error for a missing token.
+func popString(ctx *kong.DecodeContext, what string) (string, error) {
+	tok, err := ctx.Scan.PopValue(what)
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprint(tok.Value), nil
+}
+
 type Date string
 
 func (d *Date) Decode(ctx *kong.DecodeContext) error {
-	tok, err := ctx.Scan.PopValue("date")
+	raw, err := popString(ctx, "date")
 	if err != nil {
 		return err
 	}
-	raw := fmt.Sprint(tok.Value)
 	if strings.TrimSpace(raw) == "" {
 		return errors.New("empty date: expected YYYY-MM-DD, today, yesterday, Nd (e.g. 3d), or +Nd (e.g. +30d)")
 	}
@@ -50,11 +60,10 @@ var dateTimeFormats = []string{
 }
 
 func (d *DateTime) Decode(ctx *kong.DecodeContext) error {
-	tok, err := ctx.Scan.PopValue("date and time")
+	raw, err := popString(ctx, "date and time")
 	if err != nil {
 		return err
 	}
-	raw := fmt.Sprint(tok.Value)
 	for _, f := range dateTimeFormats {
 		if t, err := time.ParseInLocation(f, raw, nowFn().Location()); err == nil {
 			d.Time = t
@@ -71,6 +80,26 @@ func (d DateTime) orNow() time.Time {
 	}
 	return d.Time
 }
+
+// NumericID is an ID that a request body carries as a number, such as an
+// activity ID. Kong checks it at parse time, so a non-numeric ID is a usage
+// error before the login. String gives the decimal form for a request path.
+type NumericID int64
+
+func (id *NumericID) Decode(ctx *kong.DecodeContext) error {
+	raw, err := popString(ctx, "id")
+	if err != nil {
+		return err
+	}
+	n, err := strconv.ParseInt(raw, 10, 64)
+	if err != nil {
+		return fmt.Errorf("invalid ID %q: expected a number", raw)
+	}
+	*id = NumericID(n)
+	return nil
+}
+
+func (id NumericID) String() string { return strconv.FormatInt(int64(id), 10) }
 
 type Pagination struct {
 	Limit  int `help:"Maximum number of ${items} to return." default:"20" short:"l"`

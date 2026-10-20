@@ -9,7 +9,26 @@ import (
 	"testing"
 
 	"github.com/bpauli/gccli/internal/outfmt"
+	"github.com/bpauli/gccli/internal/payload"
 )
+
+func mustDistance(t *testing.T, s string) EventDistance {
+	t.Helper()
+	d, err := payload.ParseDistance(s)
+	if err != nil {
+		t.Fatalf("ParseDistance(%q): %v", s, err)
+	}
+	return EventDistance(d)
+}
+
+func mustGoal(t *testing.T, s string) Goal {
+	t.Helper()
+	g, err := payload.ParseGoal(s)
+	if err != nil {
+		t.Fatalf("ParseGoal(%q): %v", s, err)
+	}
+	return Goal(g)
+}
 
 func eventsTestServer(t *testing.T) *httptest.Server {
 	t.Helper()
@@ -185,8 +204,8 @@ func TestEventsAdd_AllFlags(t *testing.T) {
 		Location: "Berlin, Germany",
 		Time:     "09:15",
 		Timezone: "Europe/Berlin",
-		Distance: "42.195km",
-		Goal:     "3h30m",
+		Distance: mustDistance(t, "42.195km"),
+		Goal:     mustGoal(t, "3h30m"),
 		Training: true,
 		Private:  true,
 		Note:     "My first marathon",
@@ -198,54 +217,19 @@ func TestEventsAdd_AllFlags(t *testing.T) {
 	}
 }
 
-func TestEventsAdd_InvalidDistance(t *testing.T) {
-	server := eventsTestServer(t)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &EventsAddCmd{Name: "Race", Date: "2026-04-01", Type: "running", Distance: "abc"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-}
-
-func TestEventsAdd_InvalidGoal(t *testing.T) {
-	server := eventsTestServer(t)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &EventsAddCmd{Name: "Race", Date: "2026-04-01", Type: "running", Goal: "notaduration"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-}
-
 func TestEventsAdd_BadValueFailsBeforeCredentials(t *testing.T) {
 	digits400 := "1" + strings.Repeat("0", 400)
 	tests := []struct {
-		name       string
-		flags      []string
-		wantStderr string
+		name    string
+		flags   []string
+		wantErr string
 	}{
-		{"400-digit distance", []string{"--distance", digits400 + "km"}, "invalid distance \"" + digits400 + "km\": out of range\n"},
+		{"400-digit distance", []string{"--distance", digits400 + "km"}, "--distance: invalid distance \"" + digits400 + "km\": out of range"},
+		{"zero goal", []string{"--goal", "0s"}, "--goal: goal duration must be positive"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			runBadInput(t, append([]string{"events", "add", "--name", "x", "--date", "2026-11-01", "--type", "running"}, tt.flags...), tt.wantStderr)
+			runBadInput(t, append([]string{"events", "add", "--name", "x", "--date", "2026-11-01", "--type", "running"}, tt.flags...), tt.wantErr)
 		})
 	}
 }
@@ -327,8 +311,8 @@ func TestEventsAdd_SentBody(t *testing.T) {
 				Location: "Berlin, Germany",
 				Time:     "09:15",
 				Timezone: "Europe/Berlin",
-				Distance: "42.195km",
-				Goal:     "3h30m",
+				Distance: mustDistance(t, "42.195km"),
+				Goal:     mustGoal(t, "3h30m"),
 				Training: true,
 				Private:  true,
 				Note:     "My first marathon",
@@ -367,7 +351,7 @@ func TestEventsAdd_SentBody(t *testing.T) {
 		},
 		{
 			name: "primary without goal, time without zone, miles",
-			cmd:  EventsAddCmd{Name: "Ten", Date: "2026-05-02", Type: "trail_running", Time: "07:00", Distance: "10mi", Primary: true},
+			cmd:  EventsAddCmd{Name: "Ten", Date: "2026-05-02", Type: "trail_running", Time: "07:00", Distance: mustDistance(t, "10mi"), Primary: true},
 			want: `{
 				"completionTarget": {
 					"unit": "mile",
@@ -389,7 +373,7 @@ func TestEventsAdd_SentBody(t *testing.T) {
 		},
 		{
 			name: "goal without priority, meters",
-			cmd:  EventsAddCmd{Name: "Track", Date: "2026-06-03", Type: "running", Distance: "400 m", Goal: "75s"},
+			cmd:  EventsAddCmd{Name: "Track", Date: "2026-06-03", Type: "running", Distance: mustDistance(t, "400 m"), Goal: mustGoal(t, "75s")},
 			want: `{
 				"completionTarget": {
 					"unit": "meter",

@@ -307,7 +307,7 @@ func TestSendCourseToDevice_Success(t *testing.T) {
 	})
 
 	_, client := testServer(t, handler)
-	data, err := client.SendCourseToDevice(context.Background(), "12345", "67890", "Morning Run")
+	data, err := client.SendCourseToDevice(context.Background(), 12345, 67890, "Morning Run")
 	if err != nil {
 		t.Fatalf("SendCourseToDevice: %v", err)
 	}
@@ -324,22 +324,6 @@ func TestSendCourseToDevice_Success(t *testing.T) {
 	}
 }
 
-func TestSendCourseToDevice_InvalidDeviceID(t *testing.T) {
-	_, client := testServer(t, http.HandlerFunc(func(http.ResponseWriter, *http.Request) {}))
-	_, err := client.SendCourseToDevice(context.Background(), "12345", "not-a-number", "Test")
-	if err == nil {
-		t.Fatal("expected error for invalid device ID")
-	}
-}
-
-func TestSendCourseToDevice_InvalidCourseID(t *testing.T) {
-	_, client := testServer(t, http.HandlerFunc(func(http.ResponseWriter, *http.Request) {}))
-	_, err := client.SendCourseToDevice(context.Background(), "not-a-number", "67890", "Test")
-	if err == nil {
-		t.Fatal("expected error for invalid course ID")
-	}
-}
-
 func TestSendCourseToDevice_ServerError(t *testing.T) {
 	handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -347,7 +331,7 @@ func TestSendCourseToDevice_ServerError(t *testing.T) {
 	})
 
 	_, client := testServer(t, handler)
-	_, err := client.SendCourseToDevice(context.Background(), "12345", "67890", "Test")
+	_, err := client.SendCourseToDevice(context.Background(), 12345, 67890, "Test")
 	if err == nil {
 		t.Fatal("expected error")
 	}

@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -66,7 +67,11 @@ func TestCreateManualActivity(t *testing.T) {
 
 	// Test rename: rename to E2E_TEST_RENAMED.
 	renamedName := e2eActivityPrefix + "RENAMED"
-	_, err = client.UpdateActivity(ctx, activityID, map[string]any{"activityName": renamedName})
+	activityNum, err := strconv.ParseInt(activityID, 10, 64)
+	if err != nil {
+		t.Fatalf("activity ID %q is not a number: %v", activityID, err)
+	}
+	_, err = client.UpdateActivity(ctx, activityNum, map[string]any{"activityName": renamedName})
 	if err != nil {
 		t.Fatalf("UpdateActivity(%s) failed: %v", activityID, err)
 	}

@@ -9,6 +9,19 @@ func ptrFloat64(v float64) *float64 { return &v }
 
 func ptrInt(v int) *int { return &v }
 
+func mustExercises(t *testing.T, values ...string) []Exercise {
+	t.Helper()
+	out := make([]Exercise, len(values))
+	for i, v := range values {
+		ex, err := ParseExercise(v)
+		if err != nil {
+			t.Fatalf("ParseExercise(%q): %v", v, err)
+		}
+		out[i] = ex
+	}
+	return out
+}
+
 func TestParseOneExercise_Valid(t *testing.T) {
 	tests := []struct {
 		input    string
@@ -104,7 +117,7 @@ func TestParseOneExercise_Valid(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.input, func(t *testing.T) {
-			parsed, err := parseOneExercise(tt.input)
+			parsed, err := ParseExercise(tt.input)
 			if err != nil {
 				t.Fatalf("unexpected error: %v", err)
 			}
@@ -168,7 +181,7 @@ func TestParseOneExercise_Invalid(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.input, func(t *testing.T) {
-			_, err := parseOneExercise(tt.input)
+			_, err := ParseExercise(tt.input)
 			if err == nil {
 				t.Fatal("expected error")
 			}
@@ -186,10 +199,7 @@ func TestParseExerciseSets_PerSetRest(t *testing.T) {
 		"BENCH_PRESS/BARBELL_BENCH_PRESS:8@30:d20",
 	}
 
-	sets, err := parseExerciseSets(exercises)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
+	sets := exerciseSets(mustExercises(t, exercises...))
 
 	// 3 active + 2 rest = 5 sets total.
 	if len(sets) != 5 {
@@ -230,10 +240,7 @@ func TestParseExerciseSets_NoSuffixes(t *testing.T) {
 		"BENCH_PRESS/BARBELL_BENCH_PRESS:10@20",
 	}
 
-	sets, err := parseExerciseSets(exercises)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
+	sets := exerciseSets(mustExercises(t, exercises...))
 
 	if len(sets) != 2 {
 		t.Fatalf("sets count = %d, want 2", len(sets))
@@ -248,10 +255,7 @@ func TestParseExerciseSets_LastExerciseWithRest(t *testing.T) {
 		"BENCH_PRESS/BARBELL_BENCH_PRESS:12@20:r60",
 	}
 
-	sets, err := parseExerciseSets(exercises)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
+	sets := exerciseSets(mustExercises(t, exercises...))
 
 	// 1 active + 1 rest = 2 (REST inserted even for last exercise).
 	if len(sets) != 2 {
@@ -262,31 +266,31 @@ func TestParseExerciseSets_LastExerciseWithRest(t *testing.T) {
 	}
 }
 
-func TestExerciseSets_RejectsBadValues(t *testing.T) {
+func TestParseExercise_RejectsBadValues(t *testing.T) {
 	tests := []struct {
 		exercise string
 		want     string
 	}{
-		{"A/B:12@inf", `exercise 1 ("A/B:12@inf"): invalid weight "inf": out of range`},
-		{"A/B:12@nan", `exercise 1 ("A/B:12@nan"): invalid weight "nan": out of range`},
-		{"A/B:12@-Inf", `exercise 1 ("A/B:12@-Inf"): invalid weight "-Inf": out of range`},
-		{"A/B:12@1.7976931348623157e308", `exercise 1 ("A/B:12@1.7976931348623157e308"): invalid weight "1.7976931348623157e308": out of range`},
-		{"A/B:-1", `exercise 1 ("A/B:-1"): invalid rep count "-1": must not be negative`},
-		{"A/:1", `exercise 1 ("A/:1"): expected CATEGORY/NAME before ':'`},
-		{"/B:1", `exercise 1 ("/B:1"): expected CATEGORY/NAME before ':'`},
+		{"A/B:12@inf", `invalid weight "inf": out of range`},
+		{"A/B:12@nan", `invalid weight "nan": out of range`},
+		{"A/B:12@-Inf", `invalid weight "-Inf": out of range`},
+		{"A/B:12@1.7976931348623157e308", `invalid weight "1.7976931348623157e308": out of range`},
+		{"A/B:-1", `invalid rep count "-1": must not be negative`},
+		{"A/:1", `expected CATEGORY/NAME before ':'`},
+		{"/B:1", `expected CATEGORY/NAME before ':'`},
 	}
 	for _, tt := range tests {
 		t.Run(tt.exercise, func(t *testing.T) {
-			body, err := ExerciseSets(111, []string{tt.exercise})
+			ex, err := ParseExercise(tt.exercise)
 			if err == nil || err.Error() != tt.want {
-				t.Fatalf("ExerciseSets(%q) = %s, %v; want error %q", tt.exercise, body, err, tt.want)
+				t.Fatalf("ParseExercise(%q) = %+v, %v; want error %q", tt.exercise, ex, err, tt.want)
 			}
 		})
 	}
 }
 
 func TestExerciseSets_AcceptsZeroReps(t *testing.T) {
-	body, err := ExerciseSets(111, []string{"A/B:0"})
+	body, err := ExerciseSets(111, mustExercises(t, "A/B:0"))
 	if err != nil {
 		t.Fatalf("ExerciseSets: %v", err)
 	}
