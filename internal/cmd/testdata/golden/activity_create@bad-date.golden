@@ -1,0 +1,143 @@
+-- args --
+activity
+create
+--name
+Swim
+--type
+swimming
+--duration
+30m
+--date
+2026-02-30T07:30:00
+-- table stdout --
+-- table stderr --
+Usage: gccli activity create --name=STRING --type=STRING --duration=DURATION [flags]
+
+Create a manual activity.
+
+Flags:
+  -h, --help                 Show context-sensitive help.
+  -j, --json                 Output as JSON ($GCCLI_JSON).
+      --plain                Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header               Print the column names as the first line of --plain
+                             output ($GCCLI_HEADER).
+      --color="auto"         Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING       Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"         Unit system for distances, speeds, paces,
+                             elevations and weights in table and plain output:
+                             auto (Garmin profile), metric, statute_us,
+                             statute_uk ($GCCLI_UNITS).
+      --version              Print version information.
+
+      --name=STRING          Activity name.
+      --type=STRING          Activity type key (e.g. running, cycling,
+                             swimming).
+      --distance=FLOAT-64    Distance in meters.
+      --duration=DURATION    Duration (e.g. 30m, 1h15m).
+      --date=DATE-TIME       Start date and time in local time:
+                             YYYY-MM-DDTHH:MM:SS, YYYY-MM-DDTHH:MM or
+                             YYYY-MM-DD, with T or a space. Defaults to now.
+
+gccli: error: --date: invalid date and time "2026-02-30T07:30:00": expected YYYY-MM-DDTHH:MM:SS, YYYY-MM-DDTHH:MM or YYYY-MM-DD, with T or a space
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli activity create --name=STRING --type=STRING --duration=DURATION [flags]
+
+Create a manual activity.
+
+Flags:
+  -h, --help                 Show context-sensitive help.
+  -j, --json                 Output as JSON ($GCCLI_JSON).
+      --plain                Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header               Print the column names as the first line of --plain
+                             output ($GCCLI_HEADER).
+      --color="auto"         Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING       Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"         Unit system for distances, speeds, paces,
+                             elevations and weights in table and plain output:
+                             auto (Garmin profile), metric, statute_us,
+                             statute_uk ($GCCLI_UNITS).
+      --version              Print version information.
+
+      --name=STRING          Activity name.
+      --type=STRING          Activity type key (e.g. running, cycling,
+                             swimming).
+      --distance=FLOAT-64    Distance in meters.
+      --duration=DURATION    Duration (e.g. 30m, 1h15m).
+      --date=DATE-TIME       Start date and time in local time:
+                             YYYY-MM-DDTHH:MM:SS, YYYY-MM-DDTHH:MM or
+                             YYYY-MM-DD, with T or a space. Defaults to now.
+
+gccli: error: --date: invalid date and time "2026-02-30T07:30:00": expected YYYY-MM-DDTHH:MM:SS, YYYY-MM-DDTHH:MM or YYYY-MM-DD, with T or a space
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli activity create --name=STRING --type=STRING --duration=DURATION [flags]
+
+Create a manual activity.
+
+Flags:
+  -h, --help                 Show context-sensitive help.
+  -j, --json                 Output as JSON ($GCCLI_JSON).
+      --plain                Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header               Print the column names as the first line of --plain
+                             output ($GCCLI_HEADER).
+      --color="auto"         Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING       Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"         Unit system for distances, speeds, paces,
+                             elevations and weights in table and plain output:
+                             auto (Garmin profile), metric, statute_us,
+                             statute_uk ($GCCLI_UNITS).
+      --version              Print version information.
+
+      --name=STRING          Activity name.
+      --type=STRING          Activity type key (e.g. running, cycling,
+                             swimming).
+      --distance=FLOAT-64    Distance in meters.
+      --duration=DURATION    Duration (e.g. 30m, 1h15m).
+      --date=DATE-TIME       Start date and time in local time:
+                             YYYY-MM-DDTHH:MM:SS, YYYY-MM-DDTHH:MM or
+                             YYYY-MM-DD, with T or a space. Defaults to now.
+
+gccli: error: --date: invalid date and time "2026-02-30T07:30:00": expected YYYY-MM-DDTHH:MM:SS, YYYY-MM-DDTHH:MM or YYYY-MM-DD, with T or a space
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli activity create --name=STRING --type=STRING --duration=DURATION [flags]
+
+Create a manual activity.
+
+Flags:
+  -h, --help                 Show context-sensitive help.
+  -j, --json                 Output as JSON ($GCCLI_JSON).
+      --plain                Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header               Print the column names as the first line of --plain
+                             output ($GCCLI_HEADER).
+      --color="auto"         Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING       Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"         Unit system for distances, speeds, paces,
+                             elevations and weights in table and plain output:
+                             auto (Garmin profile), metric, statute_us,
+                             statute_uk ($GCCLI_UNITS).
+      --version              Print version information.
+
+      --name=STRING          Activity name.
+      --type=STRING          Activity type key (e.g. running, cycling,
+                             swimming).
+      --distance=FLOAT-64    Distance in meters.
+      --duration=DURATION    Duration (e.g. 30m, 1h15m).
+      --date=DATE-TIME       Start date and time in local time:
+                             YYYY-MM-DDTHH:MM:SS, YYYY-MM-DDTHH:MM or
+                             YYYY-MM-DD, with T or a space. Defaults to now.
+
+gccli: error: --date: invalid date and time "2026-02-30T07:30:00": expected YYYY-MM-DDTHH:MM:SS, YYYY-MM-DDTHH:MM or YYYY-MM-DD, with T or a space
+-- json exit --
+2
+-- json requests --
