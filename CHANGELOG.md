@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   | `exercises list` | table, `--plain` | `parse exercise catalog: unexpected end of JSON input`, exit 1, for an empty catalog | the header, nothing with `--plain`, exit 0 |
   | `exercises list` | all modes | `list exercises: fetch exercise catalog: HTTP 204`, exit 1, for a 204 answer | the same as for an empty catalog: exit 0, or `unknown category "<c>"` and exit 1 with `--category <c>` |
   | `exercises list --category <c>` | all modes | `parse exercise catalog: unexpected end of JSON input`, exit 1, for an empty catalog | `unknown category "<c>"`, exit 1 |
+  | `activities count` | all modes | `count activities: parse activity count: unexpected end of JSON input`, exit 1, for an empty body | `0`, or `{"count": 0}` with `--json`, exit 0, the same as for an answer without `totalCount` |
 
   The commands added in this release follow the rule from the start. A list command with `--units auto` no longer reads the Garmin unit preference when it has no row to show.
 
