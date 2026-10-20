@@ -5,8 +5,8 @@ likes
 remove
 111
 -- route GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3 --
-{"conversationUuid":"3c0b5d2e-7a41-4f9e-b6d8-1e2f3a4b5c6d","numberOfLikes":1,"numberOfComments":0,"likedByUser":true}
--- route DELETE /conversation-service/conversation/like/3c0b5d2e-7a41-4f9e-b6d8-1e2f3a4b5c6d/0 400 noeol --
+{"conversationUuid":"3C0B5D2E7A414F9EB6D81E2F3A4B5C6D","numberOfLikes":1,"numberOfComments":0,"likedByUser":true}
+-- route DELETE /conversation-service/conversation/like/3C0B5D2E7A414F9EB6D81E2F3A4B5C6D/0 400 noeol --
 {"message":"Bad Request"}
 -- table stdout --
 -- table stderr --
@@ -15,7 +15,7 @@ remove like: garmin api: 400 Bad Request: {"message":"Bad Request"}
 1
 -- table requests --
 GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
-DELETE /conversation-service/conversation/like/3c0b5d2e-7a41-4f9e-b6d8-1e2f3a4b5c6d/0
+DELETE /conversation-service/conversation/like/3C0B5D2E7A414F9EB6D81E2F3A4B5C6D/0
 -- plain stdout --
 -- plain stderr --
 remove like: garmin api: 400 Bad Request: {"message":"Bad Request"}
@@ -23,7 +23,7 @@ remove like: garmin api: 400 Bad Request: {"message":"Bad Request"}
 1
 -- plain requests --
 GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
-DELETE /conversation-service/conversation/like/3c0b5d2e-7a41-4f9e-b6d8-1e2f3a4b5c6d/0
+DELETE /conversation-service/conversation/like/3C0B5D2E7A414F9EB6D81E2F3A4B5C6D/0
 -- plain-header stdout --
 -- plain-header stderr --
 remove like: garmin api: 400 Bad Request: {"message":"Bad Request"}
@@ -31,7 +31,7 @@ remove like: garmin api: 400 Bad Request: {"message":"Bad Request"}
 1
 -- plain-header requests --
 GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
-DELETE /conversation-service/conversation/like/3c0b5d2e-7a41-4f9e-b6d8-1e2f3a4b5c6d/0
+DELETE /conversation-service/conversation/like/3C0B5D2E7A414F9EB6D81E2F3A4B5C6D/0
 -- json stdout --
 -- json stderr --
 {"error":{"code":"error","status":400,"message":"remove like: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
@@ -39,4 +39,4 @@ DELETE /conversation-service/conversation/like/3c0b5d2e-7a41-4f9e-b6d8-1e2f3a4b5
 1
 -- json requests --
 GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
-DELETE /conversation-service/conversation/like/3c0b5d2e-7a41-4f9e-b6d8-1e2f3a4b5c6d/0
+DELETE /conversation-service/conversation/like/3C0B5D2E7A414F9EB6D81E2F3A4B5C6D/0

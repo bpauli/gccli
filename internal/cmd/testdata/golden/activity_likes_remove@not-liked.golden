@@ -5,7 +5,7 @@ likes
 remove
 111
 -- route GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3 --
-{"conversationUuid":"3c0b5d2e-7a41-4f9e-b6d8-1e2f3a4b5c6d","numberOfLikes":2,"numberOfComments":0,"likedByUser":false}
+{"conversationUuid":"3C0B5D2E7A414F9EB6D81E2F3A4B5C6D","numberOfLikes":2,"numberOfComments":0,"likedByUser":false}
 -- table stdout --
 -- table stderr --
 activity 111 is not liked
