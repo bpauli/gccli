@@ -2,10 +2,11 @@ An empty ID is a usage error at parse time, before the login, with no request. T
 -- args --
 activity
 likes
+list
 
 -- table stdout --
 -- table stderr --
-Usage: gccli activity likes <id>
+Usage: gccli activity likes list <id>
 
 List the likes of an activity.
 
@@ -32,7 +33,7 @@ gccli: error: <id>: must not be empty
 -- table requests --
 -- plain stdout --
 -- plain stderr --
-Usage: gccli activity likes <id>
+Usage: gccli activity likes list <id>
 
 List the likes of an activity.
 
@@ -59,7 +60,7 @@ gccli: error: <id>: must not be empty
 -- plain requests --
 -- plain-header stdout --
 -- plain-header stderr --
-Usage: gccli activity likes <id>
+Usage: gccli activity likes list <id>
 
 List the likes of an activity.
 
@@ -86,7 +87,7 @@ gccli: error: <id>: must not be empty
 -- plain-header requests --
 -- json stdout --
 -- json stderr --
-Usage: gccli activity likes <id>
+Usage: gccli activity likes list <id>
 
 List the likes of an activity.
 

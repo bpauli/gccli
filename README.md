@@ -11,7 +11,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 
 ## Features
 
-- **Activities** — list, search, view details, download (FIT/GPX/TCX/KML/CSV), upload, create manual entries (with date), rename, retype, describe, change privacy, mark as favorite, delete, set exercise sets for strength training, list activity types, list pending activities
+- **Activities** - list, search, view details, download (FIT/GPX/TCX/KML/CSV), upload, create manual entries (with date), rename, retype, describe, change privacy, mark as favorite, delete, set exercise sets for strength training, list activity types, list pending activities, list comments and likes, like and unlike
 - **Exercise Catalog** — browse Garmin's exercise categories and exercises for strength training
 - **Health Data** — daily summaries, steps, heart rate, resting HR, sleep, stress, HRV, SpO2, respiration, body battery, floors, training readiness/status, VO2max, fitness age, race predictions, endurance/hill scores, intensity minutes, lactate threshold, cycling FTP, critical swim speed, power curve, running economy
 - **Body Composition** - weight tracking, latest weigh-in, weekly weight summaries, body fat, muscle mass, blood pressure, glucose, FIT file encoding for composition uploads
@@ -374,6 +374,10 @@ gccli activity exercise-sets set <id> -e "BENCH_PRESS/BARBELL_BENCH_PRESS:12@20:
 gccli activity gear <id>
 gccli activity comments <id>
 gccli activity likes <id>
+
+# Like an activity, and remove the like
+gccli activity likes add <id>
+gccli activity likes remove <id>
 
 # Download and upload
 gccli activity download <id> --format fit
@@ -918,9 +922,13 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `-e, --exercise=EXERCISE,...`: Exercise set in format CATEGORY/NAME:reps@weightkg[:dSECS][:rSECS] (e.g. BENCH_PRESS/BARBELL_BENCH_PRESS:12@20:d30:r60).
 - `gccli activity gear <id>`: Show linked gear.
   - `<id>`: Activity ID.
-- `gccli activity comments <id>`: List the comments on an activity.
+- `gccli activity comments list <id>`: List the comments on an activity. Also runs as `gccli activity comments <id>`.
   - `<id>`: Activity ID.
-- `gccli activity likes <id>`: List the likes of an activity.
+- `gccli activity likes list <id>`: List the likes of an activity. Also runs as `gccli activity likes <id>`.
+  - `<id>`: Activity ID.
+- `gccli activity likes add <id>`: Like an activity.
+  - `<id>`: Activity ID.
+- `gccli activity likes remove <id>`: Remove your like from an activity.
   - `<id>`: Activity ID.
 - `gccli activity download <id> [flags]`: Download activity file.
   - `<id>`: Activity ID.

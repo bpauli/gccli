@@ -1,35 +1,51 @@
-Error case: Garmin answers 400, so the exit code is 1 (error).
 -- args --
 activity
 likes
+list
 111
--- route GET /conversation-service/conversation/likes/ACTIVITY/111 400 noeol --
-{"message":"Bad Request"}
+-- route GET /conversation-service/conversation/likes/ACTIVITY/111 --
+[{"displayName":"fan"}]
 -- table stdout --
+[
+  {
+    "displayName": "fan"
+  }
+]
 -- table stderr --
-get likes: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- table exit --
-1
+0
 -- table requests --
 GET /conversation-service/conversation/likes/ACTIVITY/111
 -- plain stdout --
+[
+  {
+    "displayName": "fan"
+  }
+]
 -- plain stderr --
-get likes: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- plain exit --
-1
+0
 -- plain requests --
 GET /conversation-service/conversation/likes/ACTIVITY/111
 -- plain-header stdout --
+[
+  {
+    "displayName": "fan"
+  }
+]
 -- plain-header stderr --
-get likes: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- plain-header exit --
-1
+0
 -- plain-header requests --
 GET /conversation-service/conversation/likes/ACTIVITY/111
 -- json stdout --
+[
+  {
+    "displayName": "fan"
+  }
+]
 -- json stderr --
-{"error":{"code":"error","status":400,"message":"get likes: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
 -- json exit --
-1
+0
 -- json requests --
 GET /conversation-service/conversation/likes/ACTIVITY/111

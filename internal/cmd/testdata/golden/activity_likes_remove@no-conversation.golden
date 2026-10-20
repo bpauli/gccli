@@ -1,0 +1,36 @@
+Garmin answers 404 when the activity has no conversation yet, which also means no like: exit 1 (not 3) and no unlike.
+-- args --
+activity
+likes
+remove
+111
+-- route GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3 404 noeol --
+{"message":"Conversation not found"}
+-- table stdout --
+-- table stderr --
+activity 111 is not liked
+-- table exit --
+1
+-- table requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+-- plain stdout --
+-- plain stderr --
+activity 111 is not liked
+-- plain exit --
+1
+-- plain requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+-- plain-header stdout --
+-- plain-header stderr --
+activity 111 is not liked
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"activity 111 is not liked"}}
+-- json exit --
+1
+-- json requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3

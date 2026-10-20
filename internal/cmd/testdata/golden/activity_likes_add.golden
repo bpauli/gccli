@@ -1,0 +1,43 @@
+Garmin answers the like with the like record, in the shape of the live answer of 2026-10-20: fullName and createdDate are null there.
+-- args --
+activity
+likes
+add
+111
+-- route POST /conversation-service/conversation/like/ACTIVITY/111 --
+{"userProfilePk":3141592,"conversationLikePk":42,"conversationUuid":"3C0B5D2E7A414F9EB6D81E2F3A4B5C6D","displayName":"tester","fullName":null,"createdDate":null}
+-- table stdout --
+-- table stderr --
+Liked activity 111
+-- table exit --
+0
+-- table requests --
+POST /conversation-service/conversation/like/ACTIVITY/111
+-- plain stdout --
+-- plain stderr --
+Liked activity 111
+-- plain exit --
+0
+-- plain requests --
+POST /conversation-service/conversation/like/ACTIVITY/111
+-- plain-header stdout --
+-- plain-header stderr --
+Liked activity 111
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /conversation-service/conversation/like/ACTIVITY/111
+-- json stdout --
+{
+  "userProfilePk": 3141592,
+  "conversationLikePk": 42,
+  "conversationUuid": "3C0B5D2E7A414F9EB6D81E2F3A4B5C6D",
+  "displayName": "tester",
+  "fullName": null,
+  "createdDate": null
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /conversation-service/conversation/like/ACTIVITY/111

@@ -52,6 +52,10 @@ func TestActivitiesEndpoints(t *testing.T) {
 		{"activities.monthly-statistics", map[string]string{"displayName": "jo"}, "GET /userstats-service/statistics/monthly/jo?ByParentType=true"},
 		{"activities.comments", id, "GET /conversation-service/conversation/comments/ACTIVITY/123?start=0&limit=20"},
 		{"activities.likes", id, "GET /conversation-service/conversation/likes/ACTIVITY/123"},
+		{"activities.conversation", id, "GET /conversation-service/conversation/ACTIVITY/123?likerLimit=3"},
+		{"activities.like", id, "POST /conversation-service/conversation/like/ACTIVITY/123"},
+		{"activities.unlike", map[string]string{"conversationUUID": "9f0c-4e"}, "DELETE /conversation-service/conversation/like/9f0c-4e/0"},
+		{"activities.unlike", map[string]string{"conversationUUID": "a/b"}, "DELETE /conversation-service/conversation/like/a%2Fb/0"},
 	})
 }
 
