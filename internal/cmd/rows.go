@@ -25,9 +25,11 @@ const (
 	Duration
 	// Count prints a number as an integer, or "-" for 0.
 	Count
+	// Weight prints grams in the unit system, or "-" for 0.
+	Weight
 )
 
-var formatNames = [...]string{Text: "Text", DateOnly: "DateOnly", Distance: "Distance", Duration: "Duration", Count: "Count"}
+var formatNames = [...]string{Text: "Text", DateOnly: "DateOnly", Distance: "Distance", Duration: "Duration", Count: "Count", Weight: "Weight"}
 
 func (f Format) String() string {
 	if int(f) < len(formatNames) {
@@ -46,8 +48,14 @@ func (f Format) cell(v any, sys units.System) string {
 		return formatDuration(numberOf(v))
 	case Count:
 		return formatCount(numberOf(v))
+	case Weight:
+		return sys.Weight(numberOf(v))
 	}
 	return textOf(v)
+}
+
+func usesUnits(columns []Column) bool {
+	return slices.ContainsFunc(columns, func(c Column) bool { return c.Format == Distance || c.Format == Weight })
 }
 
 func (r Rows) print(g *Globals, client *garminapi.Client, data json.RawMessage) error {
@@ -59,7 +67,7 @@ func (r Rows) print(g *Globals, client *garminapi.Client, data json.RawMessage) 
 		return fmt.Errorf("parse %s: %w", r.Noun, err)
 	}
 	sys := units.Metric
-	if slices.ContainsFunc(r.Columns, func(c Column) bool { return c.Format == Distance }) {
+	if usesUnits(r.Columns) {
 		sys = resolveUnits(g, client)
 	}
 	header := make([]string, len(r.Columns))

@@ -14,7 +14,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Activities** — list, search, view details, download (FIT/GPX/TCX/KML/CSV), upload, create manual entries (with date), rename, retype, describe, change privacy, mark as favorite, delete, set exercise sets for strength training, list activity types, list pending activities
 - **Exercise Catalog** — browse Garmin's exercise categories and exercises for strength training
 - **Health Data** — daily summaries, steps, heart rate, resting HR, sleep, stress, HRV, SpO2, respiration, body battery, floors, training readiness/status, VO2max, fitness age, race predictions, endurance/hill scores, intensity minutes, lactate threshold, cycling FTP, critical swim speed, power curve, running economy
-- **Body Composition** — weight tracking, latest weigh-in, body fat, muscle mass, blood pressure, glucose, FIT file encoding for composition uploads
+- **Body Composition** - weight tracking, latest weigh-in, weekly weight summaries, body fat, muscle mass, blood pressure, glucose, FIT file encoding for composition uploads
 - **Workouts** — list, view, download as FIT, upload from JSON, update in place from JSON, create with sport types and targets (pace/HR/power/cadence), schedule (add/list/remove/export), list workout types, strength benchmarks, delete
 - **Courses** — list courses, view favorites, get full course detail, download as FIT/GPX, import GPX files as new courses, send courses directly to a device, delete courses
 - **Devices** - list registered devices, view settings, solar data, alarms, primary/last-used device, paired sensors, backup summary, historical devices, device messages
@@ -35,7 +35,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Resilient networking** - API calls retry on 429 (waits for `Retry-After` up to 30 s, 3 retries max) and read requests (GET) retry on 5xx (2 retries max, exponential backoff); writes are not resent on 5xx; an API request fails when no data moves for 60 s, and a transfer that keeps moving has no time limit
 - **Shell completion** — generated scripts for bash, zsh, fish, and PowerShell
 - **Parseable output** - JSON and plain/TSV modes for scripting and automation. `--json` output stays stable within a major version. Table and `--plain` output may change in a minor release
-- **Your unit system** - tables show km or miles, pace per km or per mile, and elevation in metres or feet, as set in your Garmin Connect profile; pin one with `--units`
+- **Your unit system** - tables show km or miles, pace per km or per mile, elevation in metres or feet, and weight in kg or lbs, as set in your Garmin Connect profile; pin one with `--units`
 
 ## Installation
 
@@ -225,7 +225,7 @@ gccli activities list
 
 - Default: human-friendly tables on stdout.
 - `--json` / `-j`: JSON on stdout (best for scripting).
-- `--plain`: tab-separated values on stdout, with no header row unless you add `--header`. Only these commands print TSV: `activities list`, `activities search`, `activities types`, `activity summary`, `courses list`, `courses favorites`, `courses import`, `events list`, `workouts list`, `workouts schedule list` and `exercises list` (without `--category`). Most other commands that return data print the same JSON in all modes, also without `--json`. `activities count` prints a single number. Use `--json` when a script parses the output.
+- `--plain`: tab-separated values on stdout, with no header row unless you add `--header`. Only these commands print TSV: `activities list`, `activities search`, `activities types`, `activity summary`, `body weekly`, `courses list`, `courses favorites`, `courses import`, `events list`, `workouts list`, `workouts schedule list` and `exercises list` (without `--category`). Most other commands that return data print the same JSON in all modes, also without `--json`. `activities count` prints a single number. Use `--json` when a script parses the output.
 - `--header`: with `--plain`, the first line holds the column names. `activity summary` has no column names, so it prints no header line. `--header` without `--plain`, or with `--json`, is a usage error (exit code 2). `GCCLI_HEADER` is not an error: table and JSON output ignore it.
 - Table and `--plain` output escape the characters that would break a row or a column. A backslash prints as `\\`, a tab as `\t`, a newline as `\n`, a carriage return as `\r`, a vertical tab as `\v` and a form feed as `\f`. So each record is one line, and in `--plain` output only real tabs separate the fields. `--json` output does not change.
 - Write commands (the commands that add, create, upload, import, update, set, rename, retype, describe, change, favorite, unfavorite, schedule, send, link, unlink, remove or delete data in Garmin Connect) all follow one rule:
@@ -255,14 +255,14 @@ With `--json`, a runtime error goes to stderr as one JSON line. Usage errors sta
 
 ### Units
 
-Six commands convert units in table and plain output: `activities list`, `activities search`, `activity summary`, `courses list`, `courses favorites` and `courses import`. They show distances, speeds, paces and elevations in the unit system from your Garmin Connect profile. To read the profile, each of these commands makes one extra request. It does this only in table or plain mode, and only when the unit system is `auto`.
+Seven commands convert units in table and plain output: `activities list`, `activities search`, `activity summary`, `body weekly`, `courses list`, `courses favorites` and `courses import`. They show distances, speeds, paces, elevations and weights in the unit system from your Garmin Connect profile. To read the profile, each of these commands makes one extra request. It does this only in table or plain mode, and only when the unit system is `auto`.
 
-| Value | Distance | Speed | Pace | Elevation |
-| --- | --- | --- | --- | --- |
-| `metric` | km | km/h | /km | m |
-| `statute_us` | mi | mph | /mi | ft |
-| `statute_uk` | mi | mph | /mi | m |
-| `auto` (default) | from the Garmin profile | | | |
+| Value | Distance | Speed | Pace | Elevation | Weight |
+| --- | --- | --- | --- | --- | --- |
+| `metric` | km | km/h | /km | m | kg |
+| `statute_us` | mi | mph | /mi | ft | lbs |
+| `statute_uk` | mi | mph | /mi | m | lbs |
+| `auto` (default) | from the Garmin profile | | | | |
 
 The unit system is resolved in this order:
 
@@ -274,7 +274,7 @@ The unit system is resolved in this order:
 
 A pinned system (steps 1 to 3) skips the Garmin request. If gccli cannot read the profile setting, it prints a warning and uses metric.
 
-JSON output is never converted. It is the raw Garmin data in meters and meters per second.
+JSON output is never converted. It is the raw Garmin data in meters, meters per second and grams.
 
 Pin a system in scripts that parse `--plain` output. Otherwise the output changes when the Garmin profile setting changes:
 
@@ -473,6 +473,7 @@ gccli body composition --start 2024-01-01 --end 2024-01-31
 gccli body weigh-ins --start 2024-01-01 --end 2024-01-31
 gccli body daily-weigh-ins [date]
 gccli body latest [date]
+gccli body weekly [date]               # 52 weeks that end on the date (default today)
 
 # Add data
 gccli body add-weight 75.5 --unit kg
@@ -1113,6 +1114,8 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli body latest [<date>]`: Show the latest weigh-in as of a date.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli body weekly [<end>]`: Show weekly weight summaries for the 52 weeks that end on a date.
+  - `[<end>]`: Last day of the 52 weeks (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli body add-weight <value> [flags]`: Add a weigh-in entry.
   - `<value>`: Weight value.
   - `--unit="kg"`: Unit: kg or lbs.

@@ -18,6 +18,7 @@ func TestBodyEndpoints(t *testing.T) {
 		{"body.weigh-ins", rng, "GET /weight-service/weight/range/2024-01-01/2024-01-31?includeAll=true"},
 		{"body.daily-weigh-ins", map[string]string{"date": "2024-01-15"}, "GET /weight-service/weight/dayview/2024-01-15?includeAll=true"},
 		{"body.latest-weight", map[string]string{"date": "2024-01-15"}, "GET /weight-service/weight/latest?date=2024-01-15"},
+		{"body.weekly-weight", map[string]string{"startDate": "2023-02-06", "endDate": "2024-02-04"}, "GET /weight-service/weight/weeklyRange/2023-02-06/2024-02-04"},
 		{"body.delete-weight", entry, "DELETE /weight-service/weight/2024-01-15/byversion/12345"},
 		{"body.blood-pressure", rng, "GET /bloodpressure-service/bloodpressure/range/2024-01-01/2024-01-31?includeAll=true"},
 		{"body.glucose", map[string]string{"date": "2024-01-15"}, "GET /biometric-service/biometric/glucose/2024-01-15"},

@@ -241,6 +241,7 @@ var skipped = map[string]string{
 	"wellness menstrual-log set":      menstrualLogClockSkip,
 	"body glucose":                    clockSkip,
 	"body latest":                     clockSkip,
+	"body weekly":                     clockSkip,
 	"devices solar":                   clockSkip,
 	"events list":                     clockSkip,
 	"goals weight":                    clockSkip,

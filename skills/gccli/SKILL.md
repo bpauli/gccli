@@ -19,13 +19,13 @@ Setup (once)
 Output
 
 - Default: human-friendly tables. Use `--json` / `-j` for JSON.
-- `--plain` prints TSV with no header row (add `--header` for the column names as the first line), but only for `activities list`, `activities search`, `activities types`, `activity summary`, `courses list`, `courses favorites`, `courses import`, `events list`, `workouts list`, `workouts schedule list` and `exercises list` (without `-c`). Most other commands print JSON in all modes.
+- `--plain` prints TSV with no header row (add `--header` for the column names as the first line), but only for `activities list`, `activities search`, `activities types`, `activity summary`, `body weekly`, `courses list`, `courses favorites`, `courses import`, `events list`, `workouts list`, `workouts schedule list` and `exercises list` (without `-c`). Most other commands print JSON in all modes.
 - `--header` works only with `--plain`. With table or `--json` output it is a usage error (exit code 2). `GCCLI_HEADER=1` does the same as `--header` in plain mode, and table and JSON output ignore it.
 - Table and `--plain` output escape a backslash as `\\`, a tab as `\t`, a newline as `\n`, a carriage return as `\r`, a vertical tab as `\v` and a form feed as `\f`, so each record is one line. `--json` is not escaped this way.
 - Data goes to stdout, messages/errors to stderr.
 - Write commands (add, create, upload, import, update, set, rename, retype, describe, change, favorite, unfavorite, schedule, send, link, unlink, remove, delete) print the Garmin response with `--json`, or `{"ok": true}` when the response is empty. Without `--json` they print a message on stderr and nothing on stdout. Only `courses import` prints a table on stdout instead (TSV with `--plain`).
 - Always use `--json` when parsing output programmatically.
-- Tables show distance, speed, pace and elevation in the user's Garmin unit system (`metric`, `statute_us`, or `statute_uk`, which is miles with elevation in metres). Override with `--units <system>` or `GCCLI_UNITS`. JSON is never converted (meters, m/s).
+- Tables show distance, speed, pace, elevation and weight in the user's Garmin unit system (`metric`, `statute_us`, or `statute_uk`, which is miles with elevation in metres). Weight is kg in `metric` and lbs in both statute systems. Override with `--units <system>` or `GCCLI_UNITS`. JSON is never converted (meters, m/s, grams).
 
 Date shortcuts
 
@@ -289,6 +289,8 @@ Date shortcuts
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli body latest [<date>]`: Show the latest weigh-in as of a date.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli body weekly [<end>]`: Show weekly weight summaries for the 52 weeks that end on a date.
+  - `[<end>]`: Last day of the 52 weeks (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli body add-weight <value> [flags]`: Add a weigh-in entry.
   - `<value>`: Weight value.
   - `--unit="kg"`: Unit: kg or lbs.
@@ -681,6 +683,7 @@ Notes
 - Set `GCCLI_ACCOUNT=you@example.com` to avoid repeating `--account`.
 - For scripting, use `--json`. `--plain` gives TSV only for the commands listed under Output. Pin `--units` when parsing `--plain` output so it does not follow the Garmin profile.
 - Dates support `today`, `yesterday`, `3d`, `+30d`, or `YYYY-MM-DD`.
+- `body weekly [DATE]` always covers the 52 weeks that end on DATE (default today), because Garmin accepts no other window length. Weeks without a weigh-in are left out, so the list can be empty. Weights in `--json` are grams.
 - Tokens are stored in the OS keyring (macOS Keychain, Linux Secret Service). The file fallback encrypts tokens with a fixed passphrase built into gccli, so anyone who can read the files can read the tokens.
 - Tokens auto-refresh on 401. A 429 is retried up to 3 times when `Retry-After` is 30 s or less; a longer wait is reported as exit code 5. A 5xx is retried up to 2 times for read requests (GET) only, with exponential backoff. A write that gets a 5xx fails at once; check the state before you run it again. An API request fails when no data moves for 60 s; a transfer that keeps moving has no time limit.
 - For Garmin China accounts: `export GCCLI_DOMAIN=garmin.cn`.

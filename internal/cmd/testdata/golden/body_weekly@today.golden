@@ -1,0 +1,73 @@
+-- args --
+body
+weekly
+-- route GET /weight-service/weight/weeklyRange/2025-10-17/2026-10-15 --
+{"weeklyWeightSummaries":[{"startDate":"2026-10-09","endDate":"2026-10-15","minWeight":81500.0,"maxWeight":81500.0,"averageWeight":{"from":1791504000000,"until":1792108799999,"weight":81500.0,"bmi":null,"bodyFat":null,"bodyWater":null,"boneMass":null,"muscleMass":null,"physiqueRating":null,"visceralFat":null,"metabolicAge":null},"weightDelta":null}],"weightAverageDTO":{"from":1791504000000,"until":1792108799999,"weight":81500.0,"bmi":null,"bodyFat":null,"bodyWater":null,"boneMass":null,"muscleMass":null,"physiqueRating":null,"visceralFat":null,"metabolicAge":null},"previousWeekAverageDTO":null,"nextWeekAverageDTO":null}
+-- table stdout --
+START       END         MIN      MAX      AVERAGE
+2026-10-09  2026-10-15  81.5 kg  81.5 kg  81.5 kg
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /weight-service/weight/weeklyRange/2025-10-17/2026-10-15
+-- plain stdout --
+2026-10-09	2026-10-15	81.5 kg	81.5 kg	81.5 kg
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /weight-service/weight/weeklyRange/2025-10-17/2026-10-15
+-- plain-header stdout --
+START	END	MIN	MAX	AVERAGE
+2026-10-09	2026-10-15	81.5 kg	81.5 kg	81.5 kg
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /weight-service/weight/weeklyRange/2025-10-17/2026-10-15
+-- json stdout --
+{
+  "weeklyWeightSummaries": [
+    {
+      "startDate": "2026-10-09",
+      "endDate": "2026-10-15",
+      "minWeight": 81500.0,
+      "maxWeight": 81500.0,
+      "averageWeight": {
+        "from": 1791504000000,
+        "until": 1792108799999,
+        "weight": 81500.0,
+        "bmi": null,
+        "bodyFat": null,
+        "bodyWater": null,
+        "boneMass": null,
+        "muscleMass": null,
+        "physiqueRating": null,
+        "visceralFat": null,
+        "metabolicAge": null
+      },
+      "weightDelta": null
+    }
+  ],
+  "weightAverageDTO": {
+    "from": 1791504000000,
+    "until": 1792108799999,
+    "weight": 81500.0,
+    "bmi": null,
+    "bodyFat": null,
+    "bodyWater": null,
+    "boneMass": null,
+    "muscleMass": null,
+    "physiqueRating": null,
+    "visceralFat": null,
+    "metabolicAge": null
+  },
+  "previousWeekAverageDTO": null,
+  "nextWeekAverageDTO": null
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /weight-service/weight/weeklyRange/2025-10-17/2026-10-15

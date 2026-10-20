@@ -62,6 +62,15 @@ func TestElevation(t *testing.T) {
 	})
 }
 
+func TestWeight(t *testing.T) {
+	runFormatCases(t, "Weight", System.Weight, []formatCase{
+		{0, [3]string{"-", "-", "-"}},
+		{81500, [3]string{"81.5 kg", "179.7 lbs", "179.7 lbs"}},
+		{453.59237, [3]string{"0.5 kg", "1.0 lbs", "1.0 lbs"}},
+		{100000, [3]string{"100.0 kg", "220.5 lbs", "220.5 lbs"}},
+	})
+}
+
 func TestParseSystem(t *testing.T) {
 	tests := []struct {
 		in      string
