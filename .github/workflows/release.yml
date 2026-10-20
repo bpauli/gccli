@@ -90,3 +90,26 @@ jobs:
             --field repository=bpauli/gccli
         env:
           GH_TOKEN: ${{ secrets.TAP_GITHUB_TOKEN }}
+
+  update-apt:
+    needs: goreleaser
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get tag
+        id: tag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "tag=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Trigger apt-packages update
+        run: |
+          gh workflow run update-package.yml \
+            --repo bpauli/apt-packages \
+            --field package=gccli \
+            --field tag=${{ steps.tag.outputs.tag }} \
+            --field repository=bpauli/gccli
+        env:
+          GH_TOKEN: ${{ secrets.TAP_GITHUB_TOKEN }}
