@@ -788,14 +788,14 @@ gccli calendar notes delete <id>               # Delete a note (with confirmatio
 ### Wellness
 
 ```bash
-gccli wellness menstrual-cycle --start 2024-01-01 --end 2024-03-31
-gccli wellness menstrual-summary --start 2024-01-01 --end 2024-03-31
+gccli wellness menstrual-cycle                    # Cycle day view of today ({} for a day outside a tracked cycle)
+gccli wellness menstrual-summary 2026-10-01       # Cycle summary of a date
 gccli wellness menstrual-calendar --start 2024-01-01 --end 2024-03-31
 gccli wellness menstrual-log 2026-10-01           # Daily log ({} for a day without a log)
 gccli wellness menstrual-log set 2026-10-01 --flow light --symptoms cramps,headache
 gccli wellness menstrual-log set 2026-10-01 --notes ""   # Clear the notes, keep the other fields
 gccli wellness menstrual-log delete 2026-10-01    # Delete the daily log (with confirmation)
-gccli wellness pregnancy-summary
+gccli wellness pregnancy-summary                  # Pregnancy snapshot ({} when there is none)
 gccli wellness jet-lag list
 gccli wellness jet-lag status 2024-03-15
 ```
