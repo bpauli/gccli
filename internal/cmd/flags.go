@@ -27,6 +27,14 @@ func (d *Date) Decode(ctx *kong.DecodeContext) error {
 	return nil
 }
 
+// orToday returns the date, or the clock date when the flag was left out.
+func (d Date) orToday() string {
+	if d == "" {
+		return nowFn().Format("2006-01-02")
+	}
+	return string(d)
+}
+
 type Pagination struct {
 	Limit  int `help:"Maximum number of ${items} to return." default:"20" short:"l"`
 	Offset int `help:"Number of ${items} to skip." default:"0"`

@@ -56,22 +56,12 @@ func (c *EventsListCmd) Run(g *Globals) error {
 		return err
 	}
 
-	startDate := string(c.StartDate)
-	if startDate == "" {
-		startDate = "today"
-	}
-
-	date, err := resolveDate(startDate)
-	if err != nil {
-		return err
-	}
-
 	client, err := resolveClient(g)
 	if err != nil {
 		return err
 	}
 
-	data, err := client.Call(g.Context, "events.list", map[string]string{"startDate": date, "pageIndex": strconv.Itoa(page), "limit": strconv.Itoa(c.Limit), "sortOrder": c.Sort}, nil)
+	data, err := client.Call(g.Context, "events.list", map[string]string{"startDate": c.StartDate.orToday(), "pageIndex": strconv.Itoa(page), "limit": strconv.Itoa(c.Limit), "sortOrder": c.Sort}, nil)
 	if err != nil {
 		return fmt.Errorf("list events: %w", err)
 	}
@@ -122,7 +112,7 @@ func formatEventListRows(events []map[string]any) [][]string {
 // EventsAddCmd adds a new calendar event.
 type EventsAddCmd struct {
 	Name     string `help:"Event name." required:"" short:"n"`
-	Date     string `help:"Event date (YYYY-MM-DD, today, +30d)." required:"" short:"d"`
+	Date     Date   `help:"Event date (YYYY-MM-DD, today, +30d)." required:"" short:"d"`
 	Type     string `help:"Event type." required:"" short:"t" enum:"running,trail_running,cycling,gravel_cycling,mountain_biking,swimming,triathlon,multi_sport,hiking,walking,fitness_equipment,motorcycling,winter_sport,other"`
 	Race     bool   `help:"Mark as a race."`
 	Location string `help:"Event location."`
@@ -138,14 +128,9 @@ type EventsAddCmd struct {
 }
 
 func (c *EventsAddCmd) Run(g *Globals) error {
-	date, err := resolveDate(c.Date)
-	if err != nil {
-		return fmt.Errorf("invalid date: %w", err)
-	}
-
 	body, err := payload.Event{
 		Name:     c.Name,
-		Date:     date,
+		Date:     string(c.Date),
 		Type:     c.Type,
 		Race:     c.Race,
 		Location: c.Location,

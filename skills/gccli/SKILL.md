@@ -500,9 +500,9 @@ Date shortcuts
   - `--offset=0`: Number of events to skip.
   - `--sort="eventDate_asc"`: Sort order. One of: eventDate_asc, eventDate_desc.
 - `gccli events upcoming`: List upcoming events.
-- `gccli events add --name=STRING --date=STRING --type=STRING [flags]`: Add a calendar event.
+- `gccli events add --name=STRING --date=DATE --type=STRING [flags]`: Add a calendar event.
   - `-n, --name=STRING`: Event name.
-  - `-d, --date=STRING`: Event date (YYYY-MM-DD, today, +30d).
+  - `-d, --date=DATE`: Event date (YYYY-MM-DD, today, +30d).
   - `-t, --type=STRING`: Event type. One of: running, trail_running, cycling, gravel_cycling, mountain_biking, swimming, triathlon, multi_sport, hiking, walking, fitness_equipment, motorcycling, winter_sport, other.
   - `--race`: Mark as a race.
   - `--location=STRING`: Event location.
@@ -566,7 +566,7 @@ Date shortcuts
   - `--weeks=4`: Number of weeks.
 - `gccli hydration add <amount> [flags]`: Add a hydration log entry.
   - `<amount>`: Amount of water in milliliters.
-  - `--date=""`: Date to log for (YYYY-MM-DD). Defaults to today.
+  - `--date=DATE`: Date to log for (YYYY-MM-DD). Defaults to today.
 - `gccli nutrition food-log [<date>]`: Show daily food log for a date. Also runs as `gccli nutrition [<date>]`.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli nutrition meals [<date>]`: Show meal summaries for a date.

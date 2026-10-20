@@ -262,20 +262,16 @@ var workoutBenchmarksGroup = Group{Name: "benchmarks", Help: "View strength benc
 // WorkoutScheduleAddCmd schedules a workout on a calendar date.
 type WorkoutScheduleAddCmd struct {
 	ID   string `arg:"" help:"Workout ID."`
-	Date string `arg:"" help:"Date to schedule (YYYY-MM-DD, today, yesterday, 3d)."`
+	Date Date   `arg:"" help:"Date to schedule (YYYY-MM-DD, today, yesterday, 3d)."`
 }
 
 func (c *WorkoutScheduleAddCmd) Run(g *Globals) error {
-	date, err := resolveDate(c.Date)
-	if err != nil {
-		return err
-	}
-
 	client, err := resolveClient(g)
 	if err != nil {
 		return err
 	}
 
+	date := string(c.Date)
 	body, err := json.Marshal(map[string]string{"date": date})
 	if err != nil {
 		return fmt.Errorf("schedule workout: %w", err)
@@ -290,9 +286,9 @@ func (c *WorkoutScheduleAddCmd) Run(g *Globals) error {
 
 // WorkoutScheduleListCmd lists scheduled workouts for a date or date range.
 type WorkoutScheduleListCmd struct {
-	Date      string `arg:"" help:"Date to list (YYYY-MM-DD, today, yesterday, 3d). Defaults to today." optional:""`
-	StartDate Date   `help:"Start date for range (YYYY-MM-DD, today, yesterday, 3d, +30d)." name:"start"`
-	EndDate   Date   `help:"End date for range (YYYY-MM-DD, today, yesterday, 3d, +30d)." name:"end"`
+	Date      Date `arg:"" optional:"" default:"today" help:"Date to list (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+	StartDate Date `help:"Start date for range (YYYY-MM-DD, today, yesterday, 3d, +30d)." name:"start"`
+	EndDate   Date `help:"End date for range (YYYY-MM-DD, today, yesterday, 3d, +30d)." name:"end"`
 }
 
 func (c *WorkoutScheduleListCmd) Run(g *Globals) error {
@@ -300,16 +296,12 @@ func (c *WorkoutScheduleListCmd) Run(g *Globals) error {
 		return c.runRange(g)
 	}
 
-	date, err := resolveDate(c.Date)
-	if err != nil {
-		return err
-	}
-
 	client, err := resolveClient(g)
 	if err != nil {
 		return err
 	}
 
+	date := string(c.Date)
 	data, err := client.GetCalendarWeek(g.Context, date)
 	if err != nil {
 		return fmt.Errorf("list scheduled workouts: %w", err)

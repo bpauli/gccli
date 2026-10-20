@@ -40,7 +40,7 @@ var hydrationGroup = Group{Name: "hydration", Help: "Track hydration.", Children
 // HydrationAddCmd adds a hydration log entry.
 type HydrationAddCmd struct {
 	Amount float64 `arg:"" help:"Amount of water in milliliters."`
-	Date   string  `help:"Date to log for (YYYY-MM-DD). Defaults to today." default:""`
+	Date   Date    `help:"Date to log for (YYYY-MM-DD). Defaults to today."`
 }
 
 func (c *HydrationAddCmd) Run(g *Globals) error {
@@ -49,11 +49,7 @@ func (c *HydrationAddCmd) Run(g *Globals) error {
 		return err
 	}
 
-	date, err := resolveDate(c.Date)
-	if err != nil {
-		return err
-	}
-
+	date := c.Date.orToday()
 	data, err := client.AddHydration(g.Context, date, c.Amount)
 	if err != nil {
 		return fmt.Errorf("add hydration: %w", err)

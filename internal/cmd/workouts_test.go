@@ -380,19 +380,6 @@ func TestWorkoutScheduleAdd_SendsTheDate(t *testing.T) {
 	}
 }
 
-func TestWorkoutScheduleAdd_InvalidDate(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &WorkoutScheduleAddCmd{ID: "77", Date: "bad-date"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "invalid date") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-}
-
 // --- WorkoutScheduleListCmd tests ---
 
 func TestWorkoutScheduleList_Success(t *testing.T) {
@@ -428,19 +415,6 @@ func TestWorkoutScheduleList_JSON(t *testing.T) {
 	err := cmd.Run(g)
 	if err != nil {
 		t.Fatalf("expected no error, got: %v", err)
-	}
-}
-
-func TestWorkoutScheduleList_InvalidDate(t *testing.T) {
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &WorkoutScheduleListCmd{Date: "bad-date"}
-	err := cmd.Run(g)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
-	if !strings.Contains(err.Error(), "invalid date") {
-		t.Fatalf("unexpected error: %v", err)
 	}
 }
 
