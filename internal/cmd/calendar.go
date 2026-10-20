@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/bpauli/gccli/internal/garminapi"
 )
@@ -46,7 +47,7 @@ type CalendarNotesAddCmd struct {
 }
 
 func (c *CalendarNotesAddCmd) Validate() error {
-	if c.Name == "" {
+	if strings.TrimSpace(c.Name) == "" {
 		return errors.New("the note name must not be empty")
 	}
 	return nil

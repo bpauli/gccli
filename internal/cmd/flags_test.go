@@ -453,8 +453,8 @@ func TestIDFieldsHaveIDType(t *testing.T) {
 // command path and the value name.
 var requiredStringExempt = map[string]string{
 	"activity describe text":       "an empty text clears the description by design",
-	"calendar notes add name":      "Validate rejects an empty name with its own message",
-	"gear collections rename name": "Validate rejects an empty name with its own message",
+	"calendar notes add name":      "Validate rejects an empty or blank name with its own message",
+	"gear collections rename name": "Validate rejects an empty or blank name with its own message",
 }
 
 // TestRequiredStringsHaveTextType walks the whole Kong tree, Custom

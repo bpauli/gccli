@@ -254,7 +254,7 @@ type GearCollectionRenameCmd struct {
 }
 
 func (c *GearCollectionRenameCmd) Validate() error {
-	if c.Name == "" {
+	if strings.TrimSpace(c.Name) == "" {
 		return errors.New("the new name must not be empty")
 	}
 	return nil
