@@ -72,20 +72,33 @@ func walkNodes(nodes []Node, prefix string, visit func(path string, n Node)) {
 }
 
 // dateTypeError names the defect of a flag, positional or field that is a
-// date but whose type Kong does not check at parse time. A name such as
-// Date, StartDate, date or start-date says that the value is a date, and a
-// name is stable contract, so the type cannot drift from it the way the
-// help text can. The help rule catches the rest, such as --first-use.
+// date or a clock time but whose type Kong does not check at parse time. A
+// name such as Date, StartDate, date or start-date says that the value is a
+// date, and Time, StartTime, time or start-time that it is a clock time. A
+// name is stable contract, so the type cannot drift from it the way the help
+// text can. The help rule catches the rest, such as --first-use. The date
+// rule comes first, because the help of a date and time names both
+// YYYY-MM-DD and HH:MM.
 func dateTypeError(name, help string, t reflect.Type) string {
-	if t == reflect.TypeFor[Date]() || t == reflect.TypeFor[DateTime]() {
-		return ""
-	}
-	byName := name == "date" || name == "Date" || strings.HasSuffix(name, "-date") || strings.HasSuffix(name, "Date")
+	isDate := t == reflect.TypeFor[Date]() || t == reflect.TypeFor[DateTime]()
+	isClock := t == reflect.TypeFor[Clock]()
 	switch {
-	case byName:
-		return fmt.Sprintf("%s is a date (by its name), so its type must be Date or DateTime, not %s: Kong then checks it at parse time", name, t)
+	case name == "date" || name == "Date" || strings.HasSuffix(name, "-date") || strings.HasSuffix(name, "Date"):
+		if !isDate {
+			return fmt.Sprintf("%s is a date (by its name), so its type must be Date or DateTime, not %s: Kong then checks it at parse time", name, t)
+		}
 	case strings.Contains(help, "YYYY-MM-DD"):
-		return fmt.Sprintf("%s is a date (its help names YYYY-MM-DD), so its type must be Date or DateTime, not %s: Kong then checks it at parse time", name, t)
+		if !isDate {
+			return fmt.Sprintf("%s is a date (its help names YYYY-MM-DD), so its type must be Date or DateTime, not %s: Kong then checks it at parse time", name, t)
+		}
+	case name == "time" || name == "Time" || strings.HasSuffix(name, "-time") || strings.HasSuffix(name, "Time"):
+		if !isClock {
+			return fmt.Sprintf("%s is a clock time (by its name), so its type must be Clock, not %s: Kong then checks it at parse time", name, t)
+		}
+	case strings.Contains(help, "HH:MM"):
+		if !isClock {
+			return fmt.Sprintf("%s is a clock time (its help names HH:MM), so its type must be Clock, not %s: Kong then checks it at parse time", name, t)
+		}
 	}
 	return ""
 }
