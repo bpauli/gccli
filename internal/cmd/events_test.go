@@ -242,7 +242,6 @@ func TestEventsAdd_BadValueFailsBeforeCredentials(t *testing.T) {
 		wantStderr string
 	}{
 		{"400-digit distance", []string{"--distance", digits400 + "km"}, "invalid distance \"" + digits400 + "km\": out of range\n"},
-		{"time out of range", []string{"--time", "99:99"}, "invalid time \"99:99\" (use HH:MM, e.g. 07:30)\n"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

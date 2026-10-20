@@ -89,13 +89,20 @@ func TestEveryLeafNeedsAccount(t *testing.T) {
 // A positional date is checked at parse time, so every bad-date golden exits
 // 2 without an account and sends no request. A leaf that checks its date
 // after the login would exit 3 here.
-func TestBadDatesAreCheckedBeforeAccount(t *testing.T) {
-	files, err := filepath.Glob(filepath.Join(goldenDir, "*bad-date.golden"))
-	if err != nil {
-		t.Fatal(err)
-	}
-	if len(files) == 0 {
-		t.Fatalf("no bad-date golden in %s", goldenDir)
+// TestBadDatesAndTimesAreCheckedBeforeAccount runs every bad-date,
+// empty-date, bad-time and empty-time golden without an account: a bad
+// date or time must be a usage error at parse time, before the login.
+func TestBadDatesAndTimesAreCheckedBeforeAccount(t *testing.T) {
+	var files []string
+	for _, suffix := range []string{"bad-date", "empty-date", "bad-time", "empty-time"} {
+		matches, err := filepath.Glob(filepath.Join(goldenDir, "*"+suffix+".golden"))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(matches) == 0 {
+			t.Fatalf("no %s golden in %s", suffix, goldenDir)
+		}
+		files = append(files, matches...)
 	}
 	for _, file := range files {
 		args, in, err := goldenInput(file)
@@ -108,7 +115,7 @@ func TestBadDatesAreCheckedBeforeAccount(t *testing.T) {
 			t.Run(filepath.Base(file)+"/"+strings.TrimPrefix(flag, "--"), func(t *testing.T) {
 				stdout, stderr, code, requests := runWithoutAccount(t, in, flag, args)
 				if code != kindUsage.exit {
-					t.Errorf("exit %d, want %d: a bad date must fail at parse time, before the login; stderr:\n%s", code, kindUsage.exit, stderr)
+					t.Errorf("exit %d, want %d: a bad date or time must fail at parse time, before the login; stderr:\n%s", code, kindUsage.exit, stderr)
 				}
 				if !strings.HasPrefix(stderr, "Usage: gccli ") || !strings.Contains(stderr, "\ngccli: error: ") {
 					t.Errorf("stderr is not the usage block with the error line:\n%s", stderr)

@@ -5,6 +5,7 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"reflect"
+	"strconv"
 	"strings"
 	"sync"
 	"testing"
@@ -57,6 +58,83 @@ func TestDateDecode(t *testing.T) {
 			}
 			if cli.D != tt.want {
 				t.Errorf("D = %q, want %q", cli.D, tt.want)
+			}
+		})
+	}
+}
+
+// TestDateTimeDecode pins the format set of DateTime and the zone it parses
+// in. The accepted arguments of activity create --date are stable contract,
+// so an extra format is a defect, and the clock runs in UTC+2 here so that a
+// parse in UTC shows as a wrong wall time or zone.
+func TestDateTimeDecode(t *testing.T) {
+	loc := time.FixedZone("UTC+2", 2*60*60)
+	overrideNowFn(t, time.Date(2026, 10, 15, 12, 0, 0, 0, loc))
+	const layout = "2006-01-02 15:04:05.000000000 -0700 MST"
+	accepted := []struct {
+		raw  string
+		want time.Time
+	}{
+		{"2026-10-15T07:30:15", time.Date(2026, 10, 15, 7, 30, 15, 0, loc)},
+		{"2026-10-15T07:30", time.Date(2026, 10, 15, 7, 30, 0, 0, loc)},
+		{"2026-10-15 07:30:15", time.Date(2026, 10, 15, 7, 30, 15, 0, loc)},
+		{"2026-10-15 07:30", time.Date(2026, 10, 15, 7, 30, 0, 0, loc)},
+		{"2026-10-15", time.Date(2026, 10, 15, 0, 0, 0, 0, loc)},
+		{"2026-10-15T7:30", time.Date(2026, 10, 15, 7, 30, 0, 0, loc)},
+		{"2026-10-15T07:30:15.5", time.Date(2026, 10, 15, 7, 30, 15, 500000000, loc)},
+		{"2026-10-15T00:00:00", time.Date(2026, 10, 15, 0, 0, 0, 0, loc)},
+		{"2026-10-15T23:59:59", time.Date(2026, 10, 15, 23, 59, 59, 0, loc)},
+		{"2024-02-29", time.Date(2024, 2, 29, 0, 0, 0, 0, loc)},
+	}
+	rejected := []string{
+		"2026-10-15T07:30:15Z",
+		"2026-10-15T07:30:15+02:00",
+		"2026-10-15T07:30+02:00",
+		"15.10.2026",
+		"15.10.2026 07:30",
+		"today",
+		"3d",
+		"",
+		" ",
+		" 2026-10-15",
+		"2026-10-15 ",
+		"2026-02-30",
+		"2026-10-15T24:00",
+		"2026-10-15T07:60",
+		"2026-10-15T07",
+		"2026-10-15T07:30:15.5Z",
+	}
+	decode := func(t *testing.T, raw string) (DateTime, error) {
+		t.Helper()
+		var cli struct {
+			D DateTime `name:"d"`
+		}
+		parser, err := kong.New(&cli)
+		if err != nil {
+			t.Fatal(err)
+		}
+		_, err = parser.Parse([]string{"--d", raw})
+		return cli.D, err
+	}
+	for _, tt := range accepted {
+		t.Run(tt.raw, func(t *testing.T) {
+			got, err := decode(t, tt.raw)
+			if err != nil {
+				t.Fatalf("%q: err = %v, want a time", tt.raw, err)
+			}
+			if got.Format(layout) != tt.want.Format(layout) {
+				t.Errorf("%q = %s, want %s", tt.raw, got.Format(layout), tt.want.Format(layout))
+			}
+		})
+	}
+	for _, raw := range rejected {
+		t.Run("rejected/"+raw, func(t *testing.T) {
+			got, err := decode(t, raw)
+			if err == nil {
+				t.Fatalf("%q = %s, want a usage error", raw, got.Format(layout))
+			}
+			if want := "--d: invalid date and time " + strconv.Quote(raw); !strings.Contains(err.Error(), want) {
+				t.Errorf("%q: err = %v, want %q", raw, err, want)
 			}
 		})
 	}
