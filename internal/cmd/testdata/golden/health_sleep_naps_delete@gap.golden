@@ -1,4 +1,4 @@
-Error case: on 2026-03-08 the clocks in New York go forward at 02:00 EST, so 02:30 does not exist. The time is refused before the prompt, no write is sent and the exit code is 1.
+Error case: on 2026-03-08 the clocks in New York go forward at 02:00 EST, so 02:30 does not exist. The time is refused before the nap list is read, no write is sent and the exit code is 1.
 -- args --
 health
 sleep
@@ -8,8 +8,6 @@ delete
 02:30
 -- route GET /userprofile-service/userprofile/settings --
 {"displayName":"tester","timeZone":"America/New_York"}
--- route GET /sleep-service/sleep/naps/2026-03-08 --
-[{"napStartTimestampGMT":"2026-03-08T06:30:00","napTimeSec":600}]
 -- table stdout --
 -- table stderr --
 the time 02:30 does not exist on 2026-03-08 in your Garmin time zone (America/New_York) because the clocks go forward
@@ -17,7 +15,6 @@ the time 02:30 does not exist on 2026-03-08 in your Garmin time zone (America/Ne
 1
 -- table requests --
 GET /userprofile-service/userprofile/settings
-GET /sleep-service/sleep/naps/2026-03-08
 -- plain stdout --
 -- plain stderr --
 the time 02:30 does not exist on 2026-03-08 in your Garmin time zone (America/New_York) because the clocks go forward
@@ -25,7 +22,6 @@ the time 02:30 does not exist on 2026-03-08 in your Garmin time zone (America/Ne
 1
 -- plain requests --
 GET /userprofile-service/userprofile/settings
-GET /sleep-service/sleep/naps/2026-03-08
 -- plain-header stdout --
 -- plain-header stderr --
 the time 02:30 does not exist on 2026-03-08 in your Garmin time zone (America/New_York) because the clocks go forward
@@ -33,7 +29,6 @@ the time 02:30 does not exist on 2026-03-08 in your Garmin time zone (America/Ne
 1
 -- plain-header requests --
 GET /userprofile-service/userprofile/settings
-GET /sleep-service/sleep/naps/2026-03-08
 -- json stdout --
 -- json stderr --
 {"error":{"code":"error","message":"the time 02:30 does not exist on 2026-03-08 in your Garmin time zone (America/New_York) because the clocks go forward"}}
@@ -41,4 +36,3 @@ GET /sleep-service/sleep/naps/2026-03-08
 1
 -- json requests --
 GET /userprofile-service/userprofile/settings
-GET /sleep-service/sleep/naps/2026-03-08

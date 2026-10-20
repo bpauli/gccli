@@ -1,4 +1,4 @@
-Error case: on 2026-11-01 the clocks in New York go back at 02:00 EDT, so 01:30 happens twice (05:30 and 06:30 UTC). The list holds a nap at each, so a match could delete the wrong one. The time is refused before the prompt, no write is sent and the exit code is 1.
+Error case: on 2026-11-01 the clocks in New York go back at 02:00 EDT, so 01:30 happens twice (05:30 and 06:30 UTC), and a match by wall time could delete the wrong nap. The time is refused before the nap list is read, no write is sent and the exit code is 1.
 -- args --
 health
 sleep
@@ -8,8 +8,6 @@ delete
 01:30
 -- route GET /userprofile-service/userprofile/settings --
 {"displayName":"tester","timeZone":"America/New_York"}
--- route GET /sleep-service/sleep/naps/2026-11-01 --
-[{"napStartTimestampGMT":"2026-11-01T05:30:00","napTimeSec":600},{"napStartTimestampGMT":"2026-11-01T06:30:00","napTimeSec":600}]
 -- table stdout --
 -- table stderr --
 the time 01:30 is ambiguous on 2026-11-01 in your Garmin time zone (America/New_York) because the clocks go back
@@ -17,7 +15,6 @@ the time 01:30 is ambiguous on 2026-11-01 in your Garmin time zone (America/New_
 1
 -- table requests --
 GET /userprofile-service/userprofile/settings
-GET /sleep-service/sleep/naps/2026-11-01
 -- plain stdout --
 -- plain stderr --
 the time 01:30 is ambiguous on 2026-11-01 in your Garmin time zone (America/New_York) because the clocks go back
@@ -25,7 +22,6 @@ the time 01:30 is ambiguous on 2026-11-01 in your Garmin time zone (America/New_
 1
 -- plain requests --
 GET /userprofile-service/userprofile/settings
-GET /sleep-service/sleep/naps/2026-11-01
 -- plain-header stdout --
 -- plain-header stderr --
 the time 01:30 is ambiguous on 2026-11-01 in your Garmin time zone (America/New_York) because the clocks go back
@@ -33,7 +29,6 @@ the time 01:30 is ambiguous on 2026-11-01 in your Garmin time zone (America/New_
 1
 -- plain-header requests --
 GET /userprofile-service/userprofile/settings
-GET /sleep-service/sleep/naps/2026-11-01
 -- json stdout --
 -- json stderr --
 {"error":{"code":"error","message":"the time 01:30 is ambiguous on 2026-11-01 in your Garmin time zone (America/New_York) because the clocks go back"}}
@@ -41,4 +36,3 @@ GET /sleep-service/sleep/naps/2026-11-01
 1
 -- json requests --
 GET /userprofile-service/userprofile/settings
-GET /sleep-service/sleep/naps/2026-11-01
