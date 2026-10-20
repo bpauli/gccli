@@ -107,7 +107,7 @@ Date shortcuts
   - `--type=STRING`: Activity type key (e.g. running, cycling, swimming).
   - `--distance=FLOAT-64`: Distance in meters.
   - `--duration=DURATION`: Duration (e.g. 30m, 1h15m).
-  - `--date=STRING`: Start date/time (e.g. 2024-06-15T07:30:00). Defaults to now.
+  - `--date=DATE-TIME`: Start date and time in local time: YYYY-MM-DDTHH:MM:SS, YYYY-MM-DDTHH:MM or YYYY-MM-DD, with T or a space. Defaults to now.
 - `gccli activity rename <id> <name>`: Rename an activity.
   - `<id>`: Activity ID.
   - `<name>`: New activity name.

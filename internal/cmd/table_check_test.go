@@ -6,6 +6,7 @@ import (
 	"go/token"
 	"os"
 	"path/filepath"
+	"reflect"
 	"slices"
 	"strings"
 	"testing"
@@ -211,7 +212,7 @@ func TestCheckTableRejects(t *testing.T) {
 					Date string `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
 				}{})
 			},
-			`health sleep view: Date is a date (its help names YYYY-MM-DD), so its type must be Date, not string: Kong then checks it at parse time`,
+			`health sleep view: Date is a date (by its name), so its type must be Date or DateTime, not string: Kong then checks it at parse time`,
 		},
 		{
 			"date flag of type string", "body delete-weight",
@@ -221,7 +222,27 @@ func TestCheckTableRejects(t *testing.T) {
 					Date string `help:"Date of the weigh-in (YYYY-MM-DD)." required:"" name:"date"`
 				}{})
 			},
-			`body delete-weight: Date is a date (its help names YYYY-MM-DD), so its type must be Date, not string: Kong then checks it at parse time`,
+			`body delete-weight: Date is a date (by its name), so its type must be Date or DateTime, not string: Kong then checks it at parse time`,
+		},
+		{
+			"date and time flag of type string, help without a format", "body delete-weight",
+			func(l *Leaf) {
+				l.Spec = argsOf(&struct {
+					PK   string `arg:"" help:"Weigh-in version (primary key)."`
+					Date string `help:"Start date and time (e.g. 2024-06-15T07:30:00). Defaults to now." name:"date"`
+				}{})
+			},
+			`body delete-weight: Date is a date (by its name), so its type must be Date or DateTime, not string: Kong then checks it at parse time`,
+		},
+		{
+			"date flag of type string whose name does not say date", "body delete-weight",
+			func(l *Leaf) {
+				l.Spec = argsOf(&struct {
+					PK  string `arg:"" help:"Weigh-in version (primary key)."`
+					End string `help:"Last day (YYYY-MM-DD)." required:"" name:"end"`
+				}{})
+			},
+			`body delete-weight: End is a date (its help names YYYY-MM-DD), so its type must be Date or DateTime, not string: Kong then checks it at parse time`,
 		},
 		{
 			"JSONNull off the frozen list", "goals list",
@@ -340,6 +361,28 @@ func TestCheckTableRejects(t *testing.T) {
 				t.Errorf("checkTable = %v\nwant %s", errs, tc.want)
 			}
 		})
+	}
+}
+
+func TestDateTypeError(t *testing.T) {
+	cases := []struct {
+		name, help string
+		typ        reflect.Type
+		want       string
+	}{
+		{"Date", "Start date and time. Defaults to now.", reflect.TypeFor[Date](), ""},
+		{"Date", "Start date and time. Defaults to now.", reflect.TypeFor[DateTime](), ""},
+		{"date", "Start date and time. Defaults to now.", reflect.TypeFor[string](), "date is a date (by its name), so its type must be Date or DateTime, not string: Kong then checks it at parse time"},
+		{"StartDate", "Start.", reflect.TypeFor[string](), "StartDate is a date (by its name), so its type must be Date or DateTime, not string: Kong then checks it at parse time"},
+		{"start-date", "Start.", reflect.TypeFor[string](), "start-date is a date (by its name), so its type must be Date or DateTime, not string: Kong then checks it at parse time"},
+		{"End", "Last day (YYYY-MM-DD).", reflect.TypeFor[string](), "End is a date (its help names YYYY-MM-DD), so its type must be Date or DateTime, not string: Kong then checks it at parse time"},
+		{"Update", "Update the item.", reflect.TypeFor[bool](), ""},
+		{"update", "Update the item.", reflect.TypeFor[bool](), ""},
+	}
+	for _, tc := range cases {
+		if got := dateTypeError(tc.name, tc.help, tc.typ); got != tc.want {
+			t.Errorf("dateTypeError(%q, %q, %s) = %q, want %q", tc.name, tc.help, tc.typ, got, tc.want)
+		}
 	}
 }
 

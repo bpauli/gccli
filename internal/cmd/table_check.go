@@ -71,6 +71,25 @@ func walkNodes(nodes []Node, prefix string, visit func(path string, n Node)) {
 	}
 }
 
+// dateTypeError names the defect of a flag, positional or field that is a
+// date but whose type Kong does not check at parse time. A name such as
+// Date, StartDate, date or start-date says that the value is a date, and a
+// name is stable contract, so the type cannot drift from it the way the
+// help text can. The help rule catches the rest, such as --first-use.
+func dateTypeError(name, help string, t reflect.Type) string {
+	if t == reflect.TypeFor[Date]() || t == reflect.TypeFor[DateTime]() {
+		return ""
+	}
+	byName := name == "date" || name == "Date" || strings.HasSuffix(name, "-date") || strings.HasSuffix(name, "Date")
+	switch {
+	case byName:
+		return fmt.Sprintf("%s is a date (by its name), so its type must be Date or DateTime, not %s: Kong then checks it at parse time", name, t)
+	case strings.Contains(help, "YYYY-MM-DD"):
+		return fmt.Sprintf("%s is a date (its help names YYYY-MM-DD), so its type must be Date or DateTime, not %s: Kong then checks it at parse time", name, t)
+	}
+	return ""
+}
+
 func checkLeaf(path string, l Leaf) []error {
 	var errs []error
 	fail := func(format string, a ...any) {
@@ -84,8 +103,8 @@ func checkLeaf(path string, l Leaf) []error {
 	fields := l.spec().fields()
 	for i := range fields.NumField() {
 		f := fields.Field(i)
-		if strings.Contains(f.Tag.Get("help"), "YYYY-MM-DD") && f.Type != reflect.TypeFor[Date]() {
-			fail("%s is a date (its help names YYYY-MM-DD), so its type must be Date, not %s: Kong then checks it at parse time", f.Name, f.Type)
+		if msg := dateTypeError(f.Name, f.Tag.Get("help"), f.Type); msg != "" {
+			fail("%s", msg)
 		}
 	}
 	if isNullJSON(l) && !slices.Contains(v1NullJSON, path) {

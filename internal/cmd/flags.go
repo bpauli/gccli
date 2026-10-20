@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/alecthomas/kong"
 )
@@ -33,6 +34,42 @@ func (d Date) orToday() string {
 		return nowFn().Format("2006-01-02")
 	}
 	return string(d)
+}
+
+// DateTime is a date and time in the local zone. Kong decodes it at parse
+// time, so a bad value is a usage error before the login. The zero value
+// means that the flag was left out.
+type DateTime struct{ time.Time }
+
+var dateTimeFormats = []string{
+	"2006-01-02T15:04:05",
+	"2006-01-02T15:04",
+	"2006-01-02 15:04:05",
+	"2006-01-02 15:04",
+	"2006-01-02",
+}
+
+func (d *DateTime) Decode(ctx *kong.DecodeContext) error {
+	tok, err := ctx.Scan.PopValue("date and time")
+	if err != nil {
+		return err
+	}
+	raw := fmt.Sprint(tok.Value)
+	for _, f := range dateTimeFormats {
+		if t, err := time.ParseInLocation(f, raw, nowFn().Location()); err == nil {
+			d.Time = t
+			return nil
+		}
+	}
+	return fmt.Errorf("invalid date and time %q: expected YYYY-MM-DDTHH:MM:SS, YYYY-MM-DDTHH:MM or YYYY-MM-DD, with T or a space", raw)
+}
+
+// orNow returns the time, or the clock time when the flag was left out.
+func (d DateTime) orNow() time.Time {
+	if d.IsZero() {
+		return nowFn()
+	}
+	return d.Time
 }
 
 type Pagination struct {
