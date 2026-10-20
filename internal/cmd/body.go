@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/bpauli/gccli/internal/fit"
 )
@@ -118,9 +117,11 @@ func (c *BodyCompositionCmd) Run(g *Globals) error {
 	return writeHealthJSON(g, data)
 }
 
-// weightTimestamp is the format of the weigh-in timestamps. Garmin rejects
-// a timestamp without milliseconds with a 500 ValueInstantiationException.
-const weightTimestamp = "2006-01-02T15:04:05.000"
+// garminTimestamp is the format of the local and GMT timestamps of a weigh-in
+// and of a blood pressure reading. Garmin rejects a weigh-in timestamp
+// without milliseconds with a 500 ValueInstantiationException, and a blood
+// pressure timestamp with a zone suffix with a 500 BloodPressureDateException.
+const garminTimestamp = "2006-01-02T15:04:05.000"
 
 // BodyAddWeightCmd adds a weigh-in entry.
 type BodyAddWeightCmd struct {
@@ -135,8 +136,8 @@ func (c *BodyAddWeightCmd) Run(g *Globals) error {
 	}
 
 	now := nowFn()
-	localTS := now.Format(weightTimestamp)
-	gmtTS := now.UTC().Format(weightTimestamp)
+	localTS := now.Format(garminTimestamp)
+	gmtTS := now.UTC().Format(garminTimestamp)
 
 	data, err := client.AddWeight(g.Context, c.Value, c.Unit, localTS, gmtTS)
 	if err != nil {
@@ -207,10 +208,11 @@ func (c *BodyAddBPCmd) Run(g *Globals) error {
 		return err
 	}
 
-	now := nowFn().UTC()
-	ts := now.Format(time.RFC3339Nano)
+	now := nowFn()
+	localTS := now.Format(garminTimestamp)
+	gmtTS := now.UTC().Format(garminTimestamp)
 
-	data, err := client.AddBloodPressure(g.Context, c.Systolic, c.Diastolic, c.Pulse, ts, ts, c.Notes)
+	data, err := client.AddBloodPressure(g.Context, c.Systolic, c.Diastolic, c.Pulse, localTS, gmtTS, c.Notes)
 	if err != nil {
 		return fmt.Errorf("add blood pressure: %w", err)
 	}
