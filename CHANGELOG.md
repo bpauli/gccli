@@ -9,23 +9,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking changes
 
-- **An empty answer is not an error** - When Garmin sends no body, a list command prints `[]` with `--json`, the header only as a table and nothing with `--plain` (the header line with `--header`), and a command that shows one object prints `{}` in every mode. The exit code is 0 in every case. A list answer without its list key gives no rows and exit 0, and `--json` prints the answer unchanged. Before, each command decided on its own: some printed `null`, some `{}`, and some failed with a parse error. A script that tests for `null` must test for `[]` or `{}`, and a script that relied on exit 1 for an empty list must test the output instead. (#192)
+- **An empty answer is not an error** - When Garmin sends no body, a list command prints `[]` with `--json`, and a command that shows one object prints `{}` in every mode. A list command that prints columns prints the header only as a table and nothing with `--plain` (the header line with `--header`). A list command that prints JSON in every mode prints `[]` in every mode. The exit code is 0 in every case. A list answer without its list key gives no rows and exit 0, and `--json` prints the answer unchanged. The README names the list commands. Before, each command decided on its own: some printed `null`, some `{}`, and some failed with a parse error. A script that tests for `null` must test for `[]` or `{}`, and a script that relied on exit 1 for an empty list must test the output instead. (#192)
 
   | Command(s) | Mode | Before | After |
   |---|---|---|---|
-  | `activities list`, `activities search`, `activities types`, `courses list`, `courses favorites`, `events list`, `workouts list` and every other list command | `--json` | `null` for an empty body | `[]` |
-  | the same list commands | table, `--plain` | `parse <noun>: unexpected end of JSON input`, exit 1, for an empty body | the header, nothing with `--plain`, exit 0 |
-  | every list command | table, `--plain` | `parse <noun>: json: cannot unmarshal object ...`, exit 1, for an object answer without the list | no rows, exit 0 |
+  | `activities list`, `activities search`, `activities types`, `courses list`, `courses favorites`, `events list`, `workouts list` | `--json` | `null` for an empty body | `[]` |
+  | the same commands | table, `--plain` | `parse <noun>: unexpected end of JSON input`, exit 1, for an empty body | the header, nothing with `--plain`, exit 0 |
+  | `devices list`, `gear collections list`, `gear list`, `goals list`, `groups list`, `health steps view`, `profile privacy-zones list`, `records list` (also as `records`), `social connections`, `social followers` | all modes | `{}` for an empty body | `[]` |
+  | `activities list`, `activities search`, `activities types`, `courses favorites`, `events list` | table, `--plain` | `parse <noun>: json: cannot unmarshal object ...`, exit 1, for an object answer | no rows, exit 0 |
+  | `courses list` | table, `--plain` | `parse courses: json: cannot unmarshal array ...`, exit 1, for a root array answer | the rows of the array, or the header only for `[]`, exit 0 |
   | `workouts list` | table, `--plain` | `parse workouts: unexpected response format`, exit 1, for an object without a `workouts` or `results` key | no rows, exit 0 |
   | `workouts schedule list` | `--json` | `null` when no workout is scheduled | `[]` |
   | `workouts schedule list` | all modes | `parse calendar: unexpected end of JSON input`, exit 1, for an empty calendar body | the header, nothing with `--plain` or `[]`, exit 0 |
   | `activity details`, `activity exercise-sets show`, `activity gear`, `activity hr-zones`, `activity power-zones`, `activity split-summaries`, `activity splits`, `activity typed-splits`, `activity weather`, `courses detail`, `workouts detail` | all modes | `null` for an empty body | `{}` |
   | `activity summary` | `--json` | `null` for an empty body | `{}` |
   | `activity summary` | table, `--plain` | `parse activity: unexpected end of JSON input`, exit 1, for an empty body | nothing, exit 0 |
-  | `exercises list` | `--json` | `null` for an empty catalog | `{}` |
-  | `exercises list` | table, `--plain` | `parse exercise catalog: unexpected end of JSON input`, exit 1, for an empty catalog | the header, nothing with `--plain`, exit 0; with `--category`, `unknown category` |
+  | `exercises list` | `--json` | `{"error":{"code":"error","message":"json: error calling MarshalJSON for type *jsontext.Value: unexpected end of JSON input"}}` on stderr, exit 1, for an empty catalog | `{}`, exit 0 |
+  | `exercises list` | table, `--plain` | `parse exercise catalog: unexpected end of JSON input`, exit 1, for an empty catalog | the header, nothing with `--plain`, exit 0 |
+  | `exercises list` | all modes | `list exercises: fetch exercise catalog: HTTP 204`, exit 1, for a 204 answer | the same as for an empty catalog, exit 0 |
+  | `exercises list --category <c>` | all modes | `parse exercise catalog: unexpected end of JSON input`, exit 1, for an empty catalog | `unknown category "<c>"`, exit 1 |
 
-  A list command with `--units auto` no longer reads the Garmin unit preference when it has no row to show.
+  The commands added in this release follow the rule from the start. A list command with `--units auto` no longer reads the Garmin unit preference when it has no row to show.
 
 ### Added
 
