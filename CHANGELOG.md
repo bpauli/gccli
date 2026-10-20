@@ -48,6 +48,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Naps** - `health sleep naps` is now a command group. The old command is the default child `view`, so `health sleep naps [<date>]` still works and gives the same output and exit codes. The help and the shell completion now list the children. For a bad date, the usage block above the error line now names `health sleep naps view`. (#70)
 - **Notification preferences** - `notifications preferences` is now a command group. The old command is the default child `view`, so `notifications preferences` still works and gives the same output and exit codes. The help and the shell completion now list the children. For an extra argument, the usage line above the error now names `notifications preferences view`. (#86)
 
+### Fixed
+
+- `body add-weight` failed for every call with `500 Internal Server Error` and `ValueInstantiationException`, because `dateTimestamp` and `gmtTimestamp` had no milliseconds. The command now sends both as `YYYY-MM-DDTHH:MM:SS.000`, the format that Garmin accepts. (#258)
+- `body add-blood-pressure` failed for every call with `500 Internal Server Error` and `BloodPressureDateException`, because `measurementTimestampLocal` and `measurementTimestampGMT` ended in `Z`. It also sent the UTC time in the local field, so the saved local time was wrong in every zone but UTC. The command now sends the local time and the UTC time as `YYYY-MM-DDTHH:MM:SS.000`. (#258)
+
 ## [2.3.0] - 2026-10-19
 
 ### Added

@@ -19,8 +19,8 @@ add blood pressure: garmin api: 400 Bad Request: {"message":"Bad Request"}
 POST /bloodpressure-service/bloodpressure
   {
     "diastolic": 80,
-    "measurementTimestampGMT": "2026-10-15T09:30:00Z",
-    "measurementTimestampLocal": "2026-10-15T09:30:00Z",
+    "measurementTimestampGMT": "2026-10-15T09:30:00.000",
+    "measurementTimestampLocal": "2026-10-15T09:30:00.000",
     "notes": "",
     "pulse": 60,
     "sourceType": "MANUAL",
@@ -35,8 +35,8 @@ add blood pressure: garmin api: 400 Bad Request: {"message":"Bad Request"}
 POST /bloodpressure-service/bloodpressure
   {
     "diastolic": 80,
-    "measurementTimestampGMT": "2026-10-15T09:30:00Z",
-    "measurementTimestampLocal": "2026-10-15T09:30:00Z",
+    "measurementTimestampGMT": "2026-10-15T09:30:00.000",
+    "measurementTimestampLocal": "2026-10-15T09:30:00.000",
     "notes": "",
     "pulse": 60,
     "sourceType": "MANUAL",
@@ -51,8 +51,8 @@ add blood pressure: garmin api: 400 Bad Request: {"message":"Bad Request"}
 POST /bloodpressure-service/bloodpressure
   {
     "diastolic": 80,
-    "measurementTimestampGMT": "2026-10-15T09:30:00Z",
-    "measurementTimestampLocal": "2026-10-15T09:30:00Z",
+    "measurementTimestampGMT": "2026-10-15T09:30:00.000",
+    "measurementTimestampLocal": "2026-10-15T09:30:00.000",
     "notes": "",
     "pulse": 60,
     "sourceType": "MANUAL",
@@ -67,8 +67,8 @@ POST /bloodpressure-service/bloodpressure
 POST /bloodpressure-service/bloodpressure
   {
     "diastolic": 80,
-    "measurementTimestampGMT": "2026-10-15T09:30:00Z",
-    "measurementTimestampLocal": "2026-10-15T09:30:00Z",
+    "measurementTimestampGMT": "2026-10-15T09:30:00.000",
+    "measurementTimestampLocal": "2026-10-15T09:30:00.000",
     "notes": "",
     "pulse": 60,
     "sourceType": "MANUAL",
