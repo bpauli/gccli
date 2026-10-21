@@ -175,7 +175,9 @@ Commands:
   devices sensors                  List paired sensors.
   devices backups                  Show device backup summary.
   devices historical               List historical devices.
-  devices messages                 List device messages.
+  devices messages list            List device messages.
+  devices messages cancel          Cancel a device message, such as a sent
+                                   workout, before the device syncs.
   gear list                        List all gear.
   gear stats                       Show usage statistics for a gear item.
   gear activities                  Show activities linked to a gear item.
@@ -1091,16 +1093,42 @@ Flags:
       --version           Print version information.
 
 Commands:
-  devices list          List registered devices.
-  devices settings      Show settings for a device.
-  devices primary       Show primary training device.
-  devices solar         Show solar charging data for a device.
-  devices alarms        Show alarms from all devices.
-  devices last-used     Show last used device.
-  devices sensors       List paired sensors.
-  devices backups       Show device backup summary.
-  devices historical    List historical devices.
-  devices messages      List device messages.
+  devices list               List registered devices.
+  devices settings           Show settings for a device.
+  devices primary            Show primary training device.
+  devices solar              Show solar charging data for a device.
+  devices alarms             Show alarms from all devices.
+  devices last-used          Show last used device.
+  devices sensors            List paired sensors.
+  devices backups            Show device backup summary.
+  devices historical         List historical devices.
+  devices messages list      List device messages.
+  devices messages cancel    Cancel a device message, such as a sent workout,
+                             before the device syncs.
+
+$ gccli devices messages --help
+Usage: gccli devices messages <command>
+
+List and cancel device messages.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  devices messages list      List device messages.
+  devices messages cancel    Cancel a device message, such as a sent workout,
+                             before the device syncs.
 
 $ gccli gear --help
 Usage: gccli gear <command> [flags]

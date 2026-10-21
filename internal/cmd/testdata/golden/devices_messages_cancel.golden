@@ -1,0 +1,35 @@
+-- args --
+devices
+messages
+cancel
+777
+-- route DELETE /device-service/devicemessage/message/777 noeol --
+true
+-- table stdout --
+-- table stderr --
+Cancelled message 777
+-- table exit --
+0
+-- table requests --
+DELETE /device-service/devicemessage/message/777
+-- plain stdout --
+-- plain stderr --
+Cancelled message 777
+-- plain exit --
+0
+-- plain requests --
+DELETE /device-service/devicemessage/message/777
+-- plain-header stdout --
+-- plain-header stderr --
+Cancelled message 777
+-- plain-header exit --
+0
+-- plain-header requests --
+DELETE /device-service/devicemessage/message/777
+-- json stdout --
+true
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+DELETE /device-service/devicemessage/message/777
