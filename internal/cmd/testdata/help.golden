@@ -69,12 +69,16 @@ Commands:
                                    targets.
   workouts copy                    Copy a workout.
   workouts types                   List workout types.
+  workouts sport-types             List the sport types a workout can have.
   workouts schedule add            Add a workout to the schedule.
   workouts schedule list           List scheduled workouts for a date.
   workouts schedule remove         Remove a scheduled workout from the calendar.
   workouts schedule export         Export the workout schedule from a start
                                    date.
   workouts benchmarks list         List strength benchmarks.
+  workouts benchmarks set          Set a strength benchmark from a weight and
+                                   reps.
+  workouts benchmarks clear        Clear a strength benchmark.
   workouts delete                  Delete a workout.
   health summary                   Show daily health summary.
   health steps view                Show step chart data for a date.
@@ -505,21 +509,24 @@ Flags:
       --version           Print version information.
 
 Commands:
-  workouts list               List workouts.
-  workouts detail             View workout details.
-  workouts download           Download workout as FIT file.
-  workouts upload             Upload workout from JSON file.
-  workouts update             Update an existing workout from a JSON file.
-  workouts create             Create a workout with sport type and optional
-                              targets.
-  workouts copy               Copy a workout.
-  workouts types              List workout types.
-  workouts schedule add       Add a workout to the schedule.
-  workouts schedule list      List scheduled workouts for a date.
-  workouts schedule remove    Remove a scheduled workout from the calendar.
-  workouts schedule export    Export the workout schedule from a start date.
-  workouts benchmarks list    List strength benchmarks.
-  workouts delete             Delete a workout.
+  workouts list                List workouts.
+  workouts detail              View workout details.
+  workouts download            Download workout as FIT file.
+  workouts upload              Upload workout from JSON file.
+  workouts update              Update an existing workout from a JSON file.
+  workouts create              Create a workout with sport type and optional
+                               targets.
+  workouts copy                Copy a workout.
+  workouts types               List workout types.
+  workouts sport-types         List the sport types a workout can have.
+  workouts schedule add        Add a workout to the schedule.
+  workouts schedule list       List scheduled workouts for a date.
+  workouts schedule remove     Remove a scheduled workout from the calendar.
+  workouts schedule export     Export the workout schedule from a start date.
+  workouts benchmarks list     List strength benchmarks.
+  workouts benchmarks set      Set a strength benchmark from a weight and reps.
+  workouts benchmarks clear    Clear a strength benchmark.
+  workouts delete              Delete a workout.
 
 $ gccli workouts schedule --help
 Usage: gccli workouts schedule <command>
@@ -549,7 +556,7 @@ Commands:
 $ gccli workouts benchmarks --help
 Usage: gccli workouts benchmarks <command>
 
-View strength benchmarks.
+View, set and clear strength benchmarks.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -566,7 +573,9 @@ Flags:
       --version           Print version information.
 
 Commands:
-  workouts benchmarks list    List strength benchmarks.
+  workouts benchmarks list     List strength benchmarks.
+  workouts benchmarks set      Set a strength benchmark from a weight and reps.
+  workouts benchmarks clear    Clear a strength benchmark.
 
 $ gccli health --help
 Usage: gccli health <command> [flags]

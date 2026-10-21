@@ -1,0 +1,40 @@
+Error case: the key is not in the list, so no write is sent and the error lists the known keys.
+-- args --
+workouts
+benchmarks
+set
+FRONT_SQUAT
+--weight
+50
+--reps
+5
+-- route GET /workout-service/benchmarks noeol --
+[{"benchmarkCategoryKey":"CURL","benchmarkKey":"BARBELL_BICEPS_CURL"},{"benchmarkCategoryKey":"ROW","benchmarkKey":"BARBELL_ROW"},{"benchmarkCategoryKey":"SQUAT","benchmarkKey":"BARBELL_BACK_SQUAT"}]
+-- table stdout --
+-- table stderr --
+set benchmark: unknown benchmark "FRONT_SQUAT", known: BARBELL_BICEPS_CURL, BARBELL_ROW, BARBELL_BACK_SQUAT
+-- table exit --
+1
+-- table requests --
+GET /workout-service/benchmarks
+-- plain stdout --
+-- plain stderr --
+set benchmark: unknown benchmark "FRONT_SQUAT", known: BARBELL_BICEPS_CURL, BARBELL_ROW, BARBELL_BACK_SQUAT
+-- plain exit --
+1
+-- plain requests --
+GET /workout-service/benchmarks
+-- plain-header stdout --
+-- plain-header stderr --
+set benchmark: unknown benchmark "FRONT_SQUAT", known: BARBELL_BICEPS_CURL, BARBELL_ROW, BARBELL_BACK_SQUAT
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /workout-service/benchmarks
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"set benchmark: unknown benchmark \"FRONT_SQUAT\", known: BARBELL_BICEPS_CURL, BARBELL_ROW, BARBELL_BACK_SQUAT"}}
+-- json exit --
+1
+-- json requests --
+GET /workout-service/benchmarks

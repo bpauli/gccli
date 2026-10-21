@@ -1,0 +1,111 @@
+The benchmark is set, so set sends a PUT of its ID, and a repeat run converges. The key is not case sensitive.
+-- args --
+workouts
+benchmarks
+set
+barbell_row
+--weight
+60
+--reps
+3
+-- route GET /workout-service/benchmarks noeol --
+[{"benchmarkCategoryKey":"CURL","benchmarkKey":"BARBELL_BICEPS_CURL"},{"id":2215652,"benchmarkKey":"BARBELL_ROW","benchmarkCategoryKey":"ROW","reps":5,"maxWeight":50.0,"oneRepMax":56.3,"weightUnit":{"unitId":8,"unitKey":"kilogram","factor":1000.0},"dateSet":"2026-10-21T08:05:00.0","linkedBenchmarkExercises":[{"categoryKey":"ROW","exerciseKey":"BARBELL_ROW"}]},{"benchmarkCategoryKey":"SQUAT","benchmarkKey":"BARBELL_BACK_SQUAT"}]
+-- route PUT /workout-service/benchmarks/2215652 204 --
+-- table stdout --
+-- table stderr --
+Set benchmark BARBELL_ROW to 60 kg x 3 (1RM 63.5 kg)
+-- table exit --
+0
+-- table requests --
+GET /workout-service/benchmarks
+PUT /workout-service/benchmarks/2215652
+  {
+    "benchmarkKey": "BARBELL_ROW",
+    "benchmarkCategoryKey": "ROW",
+    "maxWeight": 60,
+    "reps": 3,
+    "oneRepMax": 63.5,
+    "weightUnit": {
+      "unitKey": "kilogram"
+    },
+    "linkedBenchmarkExercises": [
+      {
+        "exerciseKey": "BARBELL_ROW",
+        "categoryKey": "ROW"
+      }
+    ]
+  }
+-- plain stdout --
+-- plain stderr --
+Set benchmark BARBELL_ROW to 60 kg x 3 (1RM 63.5 kg)
+-- plain exit --
+0
+-- plain requests --
+GET /workout-service/benchmarks
+PUT /workout-service/benchmarks/2215652
+  {
+    "benchmarkKey": "BARBELL_ROW",
+    "benchmarkCategoryKey": "ROW",
+    "maxWeight": 60,
+    "reps": 3,
+    "oneRepMax": 63.5,
+    "weightUnit": {
+      "unitKey": "kilogram"
+    },
+    "linkedBenchmarkExercises": [
+      {
+        "exerciseKey": "BARBELL_ROW",
+        "categoryKey": "ROW"
+      }
+    ]
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Set benchmark BARBELL_ROW to 60 kg x 3 (1RM 63.5 kg)
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /workout-service/benchmarks
+PUT /workout-service/benchmarks/2215652
+  {
+    "benchmarkKey": "BARBELL_ROW",
+    "benchmarkCategoryKey": "ROW",
+    "maxWeight": 60,
+    "reps": 3,
+    "oneRepMax": 63.5,
+    "weightUnit": {
+      "unitKey": "kilogram"
+    },
+    "linkedBenchmarkExercises": [
+      {
+        "exerciseKey": "BARBELL_ROW",
+        "categoryKey": "ROW"
+      }
+    ]
+  }
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /workout-service/benchmarks
+PUT /workout-service/benchmarks/2215652
+  {
+    "benchmarkKey": "BARBELL_ROW",
+    "benchmarkCategoryKey": "ROW",
+    "maxWeight": 60,
+    "reps": 3,
+    "oneRepMax": 63.5,
+    "weightUnit": {
+      "unitKey": "kilogram"
+    },
+    "linkedBenchmarkExercises": [
+      {
+        "exerciseKey": "BARBELL_ROW",
+        "categoryKey": "ROW"
+      }
+    ]
+  }

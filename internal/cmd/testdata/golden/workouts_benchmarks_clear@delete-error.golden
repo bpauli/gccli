@@ -1,0 +1,43 @@
+Error case: Garmin rejects the DELETE.
+-- args --
+workouts
+benchmarks
+clear
+BARBELL_ROW
+--force
+-- route GET /workout-service/benchmarks noeol --
+[{"benchmarkCategoryKey":"CURL","benchmarkKey":"BARBELL_BICEPS_CURL"},{"id":2215652,"benchmarkKey":"BARBELL_ROW","benchmarkCategoryKey":"ROW","reps":5,"maxWeight":50.0,"oneRepMax":56.3,"weightUnit":{"unitId":8,"unitKey":"kilogram","factor":1000.0},"dateSet":"2026-10-21T08:05:00.0","linkedBenchmarkExercises":[{"categoryKey":"ROW","exerciseKey":"BARBELL_ROW"}]},{"benchmarkCategoryKey":"SQUAT","benchmarkKey":"BARBELL_BACK_SQUAT"}]
+-- route DELETE /workout-service/benchmarks/2215652 404 noeol --
+{"message":"The target benchmark to delete doesn't exist.","error":"NotFoundException"}
+-- table stdout --
+-- table stderr --
+clear benchmark: garmin api: 404 Not Found: {"message":"The target benchmark to delete doesn't exist.","error":"NotFoundException"}
+-- table exit --
+4
+-- table requests --
+GET /workout-service/benchmarks
+DELETE /workout-service/benchmarks/2215652
+-- plain stdout --
+-- plain stderr --
+clear benchmark: garmin api: 404 Not Found: {"message":"The target benchmark to delete doesn't exist.","error":"NotFoundException"}
+-- plain exit --
+4
+-- plain requests --
+GET /workout-service/benchmarks
+DELETE /workout-service/benchmarks/2215652
+-- plain-header stdout --
+-- plain-header stderr --
+clear benchmark: garmin api: 404 Not Found: {"message":"The target benchmark to delete doesn't exist.","error":"NotFoundException"}
+-- plain-header exit --
+4
+-- plain-header requests --
+GET /workout-service/benchmarks
+DELETE /workout-service/benchmarks/2215652
+-- json stdout --
+-- json stderr --
+{"error":{"code":"not_found","status":404,"message":"clear benchmark: garmin api: 404 Not Found: {\"message\":\"The target benchmark to delete doesn't exist.\",\"error\":\"NotFoundException\"}"}}
+-- json exit --
+4
+-- json requests --
+GET /workout-service/benchmarks
+DELETE /workout-service/benchmarks/2215652

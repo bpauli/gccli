@@ -1,0 +1,110 @@
+The benchmark is not set, so set sends a POST. Garmin answers the new ID as a bare number. The 1RM is 50 * 36 / 32 = 56.25, rounded half up to 56.3.
+-- args --
+workouts
+benchmarks
+set
+BARBELL_ROW
+--weight
+50
+--reps
+5
+-- route GET /workout-service/benchmarks noeol --
+[{"benchmarkCategoryKey":"CURL","benchmarkKey":"BARBELL_BICEPS_CURL"},{"benchmarkCategoryKey":"ROW","benchmarkKey":"BARBELL_ROW"},{"benchmarkCategoryKey":"SQUAT","benchmarkKey":"BARBELL_BACK_SQUAT"}]
+-- route POST /workout-service/benchmarks noeol --
+2215652
+-- table stdout --
+-- table stderr --
+Set benchmark BARBELL_ROW to 50 kg x 5 (1RM 56.3 kg)
+-- table exit --
+0
+-- table requests --
+GET /workout-service/benchmarks
+POST /workout-service/benchmarks
+  {
+    "benchmarkKey": "BARBELL_ROW",
+    "benchmarkCategoryKey": "ROW",
+    "maxWeight": 50,
+    "reps": 5,
+    "oneRepMax": 56.3,
+    "weightUnit": {
+      "unitKey": "kilogram"
+    },
+    "linkedBenchmarkExercises": [
+      {
+        "exerciseKey": "BARBELL_ROW",
+        "categoryKey": "ROW"
+      }
+    ]
+  }
+-- plain stdout --
+-- plain stderr --
+Set benchmark BARBELL_ROW to 50 kg x 5 (1RM 56.3 kg)
+-- plain exit --
+0
+-- plain requests --
+GET /workout-service/benchmarks
+POST /workout-service/benchmarks
+  {
+    "benchmarkKey": "BARBELL_ROW",
+    "benchmarkCategoryKey": "ROW",
+    "maxWeight": 50,
+    "reps": 5,
+    "oneRepMax": 56.3,
+    "weightUnit": {
+      "unitKey": "kilogram"
+    },
+    "linkedBenchmarkExercises": [
+      {
+        "exerciseKey": "BARBELL_ROW",
+        "categoryKey": "ROW"
+      }
+    ]
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Set benchmark BARBELL_ROW to 50 kg x 5 (1RM 56.3 kg)
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /workout-service/benchmarks
+POST /workout-service/benchmarks
+  {
+    "benchmarkKey": "BARBELL_ROW",
+    "benchmarkCategoryKey": "ROW",
+    "maxWeight": 50,
+    "reps": 5,
+    "oneRepMax": 56.3,
+    "weightUnit": {
+      "unitKey": "kilogram"
+    },
+    "linkedBenchmarkExercises": [
+      {
+        "exerciseKey": "BARBELL_ROW",
+        "categoryKey": "ROW"
+      }
+    ]
+  }
+-- json stdout --
+2215652
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /workout-service/benchmarks
+POST /workout-service/benchmarks
+  {
+    "benchmarkKey": "BARBELL_ROW",
+    "benchmarkCategoryKey": "ROW",
+    "maxWeight": 50,
+    "reps": 5,
+    "oneRepMax": 56.3,
+    "weightUnit": {
+      "unitKey": "kilogram"
+    },
+    "linkedBenchmarkExercises": [
+      {
+        "exerciseKey": "BARBELL_ROW",
+        "categoryKey": "ROW"
+      }
+    ]
+  }
