@@ -1,0 +1,119 @@
+--limit and --offset fill limit and start.
+-- args --
+nutrition
+recent
+2026-10-12
+--limit
+5
+--offset
+10
+-- route GET /nutrition-service/food/recent/2026-10-12?start=10&limit=5 --
+{"moreRecentFoodsAvailable":false,"recentFoods":[{"type":"FOOD","foodMetaData":{"foodId":"1001","foodName":"Test Apple","foodType":"GENERIC","source":"FATSECRET","regionCode":"US","languageCode":"en"},"foodImages":[],"nutritionContents":[{"servingId":"2001","servingUnit":"medium","numberOfUnits":1.0,"calories":95,"carbs":25.1,"protein":0.5,"fat":0.3},{"servingId":"2002","servingUnit":"cup, sliced","numberOfUnits":1.0,"calories":56.5,"carbs":14.9,"protein":0.3,"fat":0.2}],"selectedNutritionContent":{"servingId":"2002","servingUnit":"cup, sliced","numberOfUnits":1.0,"calories":56.5,"carbs":14.9,"protein":0.3,"fat":0.2},"nutritionContent":{"servingId":"2002","servingUnit":"cup, sliced","numberOfUnits":1.0,"calories":56.5,"carbs":14.9,"protein":0.3,"fat":0.2},"servingQty":2.0,"isFavorite":true,"isRecent":true,"logTimestamp":"2026-10-15T07:30:00.000Z"},{"type":"FOOD","foodMetaData":{"foodId":"1002","foodName":"Test Pie","foodType":"BRAND","source":"FATSECRET","regionCode":"US","languageCode":"en"},"foodImages":[],"nutritionContents":[],"servingQty":1.0,"isFavorite":false,"isRecent":true,"logTimestamp":"2026-10-14T12:00:00.000Z"}]}
+-- table stdout --
+ID    NAME        SOURCE     SERVING      QTY  CALORIES
+1001  Test Apple  FATSECRET  cup, sliced  2    56.5
+1002  Test Pie    FATSECRET               1    
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /nutrition-service/food/recent/2026-10-12?start=10&limit=5
+-- plain stdout --
+1001	Test Apple	FATSECRET	cup, sliced	2	56.5
+1002	Test Pie	FATSECRET		1	
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /nutrition-service/food/recent/2026-10-12?start=10&limit=5
+-- plain-header stdout --
+ID	NAME	SOURCE	SERVING	QTY	CALORIES
+1001	Test Apple	FATSECRET	cup, sliced	2	56.5
+1002	Test Pie	FATSECRET		1	
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /nutrition-service/food/recent/2026-10-12?start=10&limit=5
+-- json stdout --
+{
+  "moreRecentFoodsAvailable": false,
+  "recentFoods": [
+    {
+      "type": "FOOD",
+      "foodMetaData": {
+        "foodId": "1001",
+        "foodName": "Test Apple",
+        "foodType": "GENERIC",
+        "source": "FATSECRET",
+        "regionCode": "US",
+        "languageCode": "en"
+      },
+      "foodImages": [],
+      "nutritionContents": [
+        {
+          "servingId": "2001",
+          "servingUnit": "medium",
+          "numberOfUnits": 1.0,
+          "calories": 95,
+          "carbs": 25.1,
+          "protein": 0.5,
+          "fat": 0.3
+        },
+        {
+          "servingId": "2002",
+          "servingUnit": "cup, sliced",
+          "numberOfUnits": 1.0,
+          "calories": 56.5,
+          "carbs": 14.9,
+          "protein": 0.3,
+          "fat": 0.2
+        }
+      ],
+      "selectedNutritionContent": {
+        "servingId": "2002",
+        "servingUnit": "cup, sliced",
+        "numberOfUnits": 1.0,
+        "calories": 56.5,
+        "carbs": 14.9,
+        "protein": 0.3,
+        "fat": 0.2
+      },
+      "nutritionContent": {
+        "servingId": "2002",
+        "servingUnit": "cup, sliced",
+        "numberOfUnits": 1.0,
+        "calories": 56.5,
+        "carbs": 14.9,
+        "protein": 0.3,
+        "fat": 0.2
+      },
+      "servingQty": 2.0,
+      "isFavorite": true,
+      "isRecent": true,
+      "logTimestamp": "2026-10-15T07:30:00.000Z"
+    },
+    {
+      "type": "FOOD",
+      "foodMetaData": {
+        "foodId": "1002",
+        "foodName": "Test Pie",
+        "foodType": "BRAND",
+        "source": "FATSECRET",
+        "regionCode": "US",
+        "languageCode": "en"
+      },
+      "foodImages": [],
+      "nutritionContents": [],
+      "servingQty": 1.0,
+      "isFavorite": false,
+      "isRecent": true,
+      "logTimestamp": "2026-10-14T12:00:00.000Z"
+    }
+  ]
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /nutrition-service/food/recent/2026-10-12?start=10&limit=5
