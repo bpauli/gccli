@@ -247,6 +247,46 @@ func TestCallReturnsAPIErrors(t *testing.T) {
 	}
 }
 
+func TestCallNamesTheMissingSubscription(t *testing.T) {
+	const refusal = `{"message":"HTTP 403 Forbidden","error":"ForbiddenException"}`
+	tests := []struct {
+		name     string
+		requires Subscription
+		status   int
+		body     string
+		want     bool
+	}{
+		{"plan refusal on a Connect+ row", ConnectPlus, http.StatusForbidden, refusal, true},
+		{"plan refusal on a row without a plan", 0, http.StatusForbidden, refusal, false},
+		{"other 403 body on a Connect+ row", ConnectPlus, http.StatusForbidden, `<html>Access denied</html>`, false},
+		{"empty 403 on a Connect+ row", ConnectPlus, http.StatusForbidden, "", false},
+		{"other JSON 403 on a Connect+ row", ConnectPlus, http.StatusForbidden, `{"message":"HTTP 403 Forbidden","error":"AccessDeniedException"}`, false},
+		{"other status with the refusal body", ConnectPlus, http.StatusBadRequest, refusal, false},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			_, client := testServer(t, http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+				w.WriteHeader(tc.status)
+				_, _ = w.Write([]byte(tc.body))
+			}))
+			r := mustRoute(t, Endpoint{Name: "nutrition.food-search", Path: "/nutrition-service/food/search", Requires: tc.requires})
+			_, err := client.call(context.Background(), r, nil, nil)
+
+			var apiErr *GarminAPIError
+			if !errors.As(err, &apiErr) || apiErr.StatusCode != tc.status || apiErr.Message != tc.body {
+				t.Fatalf("err = %v, want a GarminAPIError %d with the body", err, tc.status)
+			}
+			var subErr *SubscriptionRequiredError
+			if got := errors.As(err, &subErr); got != tc.want {
+				t.Fatalf("SubscriptionRequiredError = %v, want %v (err %v)", got, tc.want, err)
+			}
+			if tc.want && err.Error() != "this needs a Garmin Connect+ subscription (403 Forbidden)" {
+				t.Errorf("message = %q", err.Error())
+			}
+		})
+	}
+}
+
 func TestIndexRejectsDuplicateNames(t *testing.T) {
 	row := Endpoint{Name: "goals.list", Method: http.MethodGet, Host: ConnectAPI, Path: "/goal-service/goal/goals"}
 	_, err := index([]Endpoint{row}, []Endpoint{row})
@@ -266,6 +306,7 @@ func TestIndexRejectsMalformedRows(t *testing.T) {
 		{"name without area", func(e *Endpoint) { e.Name = "goals" }, "name must be"},
 		{"method", func(e *Endpoint) { e.Method = "get" }, `method "get"`},
 		{"host unset", func(e *Endpoint) { e.Host = 0 }, "unknown host"},
+		{"unknown subscription", func(e *Endpoint) { e.Requires = ConnectPlus + 1 }, "unknown subscription 2"},
 		{"GET body", func(e *Endpoint) { e.Body = true }, "a GET has no body"},
 		{"relative path", func(e *Endpoint) { e.Path = "x" }, "must start with /"},
 		{"open brace", func(e *Endpoint) { e.Path = "/x/{id" }, "unmatched {"},

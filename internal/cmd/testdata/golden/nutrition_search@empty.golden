@@ -1,0 +1,33 @@
+An empty body prints no rows, and [] in --json mode.
+-- args --
+nutrition
+search
+apple pie
+-- route GET /nutrition-service/food/search?searchExpression=apple+pie&start=0&limit=20 --
+-- table stdout --
+ID  NAME  SOURCE  SERVING  CALORIES
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /nutrition-service/food/search?searchExpression=apple+pie&start=0&limit=20
+-- plain stdout --
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /nutrition-service/food/search?searchExpression=apple+pie&start=0&limit=20
+-- plain-header stdout --
+ID	NAME	SOURCE	SERVING	CALORIES
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /nutrition-service/food/search?searchExpression=apple+pie&start=0&limit=20
+-- json stdout --
+[]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /nutrition-service/food/search?searchExpression=apple+pie&start=0&limit=20

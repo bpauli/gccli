@@ -248,6 +248,11 @@ func TestValueAt(t *testing.T) {
 		{"one segment", map[string]any{"activityType": "running"}, "activityType", "running"},
 		{"three segments", map[string]any{"a": map[string]any{"b": map[string]any{"c": "deep"}}}, "a.b.c", "deep"},
 		{"three segments through a value", map[string]any{"a": map[string]any{"b": "flat"}}, "a.b.c", ""},
+		{"list element", map[string]any{"a": []any{map[string]any{"b": "first"}, map[string]any{"b": "second"}}}, "a.1.b", "second"},
+		{"list index out of range", map[string]any{"a": []any{map[string]any{"b": "first"}}}, "a.1.b", ""},
+		{"empty list", map[string]any{"a": []any{}}, "a.0.b", ""},
+		{"name on a list", map[string]any{"a": []any{map[string]any{"b": "first"}}}, "a.b", ""},
+		{"number key of an object", map[string]any{"a": map[string]any{"0": "zero"}}, "a.0", "zero"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

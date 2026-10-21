@@ -1,0 +1,35 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+nutrition
+search
+apple pie
+-- route GET /nutrition-service/food/search?searchExpression=apple+pie&start=0&limit=20 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+search foods: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /nutrition-service/food/search?searchExpression=apple+pie&start=0&limit=20
+-- plain stdout --
+-- plain stderr --
+search foods: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /nutrition-service/food/search?searchExpression=apple+pie&start=0&limit=20
+-- plain-header stdout --
+-- plain-header stderr --
+search foods: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /nutrition-service/food/search?searchExpression=apple+pie&start=0&limit=20
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"search foods: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /nutrition-service/food/search?searchExpression=apple+pie&start=0&limit=20

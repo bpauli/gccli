@@ -129,9 +129,10 @@ func (id *ID) Decode(ctx *kong.DecodeContext) error {
 	return nil
 }
 
-// FreeText is a required free-text value that a request body carries, such as
-// a name or a type key. Kong rejects an empty or blank value at parse time,
-// so it is a usage error before the login. The value is sent as given.
+// FreeText is a required free-text value that a request carries, such as a
+// name or a type key in a body, or a search text in a query. Kong rejects an
+// empty or blank value at parse time, so it is a usage error before the
+// login. The value is sent as given.
 type FreeText string
 
 func (t *FreeText) Decode(ctx *kong.DecodeContext) error {
