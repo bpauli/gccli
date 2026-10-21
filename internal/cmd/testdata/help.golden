@@ -248,6 +248,8 @@ Commands:
                                    Connect+.
   nutrition recent                 List the foods you logged recently. Needs
                                    Garmin Connect+.
+  nutrition add                    Log a food of the Garmin food database in a
+                                   meal. Needs Garmin Connect+.
   nutrition quick-add              Log calories and macros in a meal without a
                                    food. Needs Garmin Connect+.
   nutrition favorites list         List your favorite foods. Needs Garmin
@@ -1480,6 +1482,8 @@ Commands:
                               Connect+.
   nutrition recent            List the foods you logged recently. Needs Garmin
                               Connect+.
+  nutrition add               Log a food of the Garmin food database in a meal.
+                              Needs Garmin Connect+.
   nutrition quick-add         Log calories and macros in a meal without a food.
                               Needs Garmin Connect+.
   nutrition favorites list    List your favorite foods. Needs Garmin Connect+.

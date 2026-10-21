@@ -52,7 +52,12 @@ func isPassthrough(fn *ast.FuncDecl) bool {
 	}
 	recv := fn.Recv.List[0].Names[0].Name
 	var onRecv []string
+	loops := false
 	ast.Inspect(fn.Body, func(n ast.Node) bool {
+		switch n.(type) {
+		case *ast.ForStmt, *ast.RangeStmt:
+			loops = true
+		}
 		if call, ok := n.(*ast.CallExpr); ok {
 			if sel, ok := call.Fun.(*ast.SelectorExpr); ok {
 				if id, ok := sel.X.(*ast.Ident); ok && id.Name == recv {
@@ -62,5 +67,32 @@ func isPassthrough(fn *ast.FuncDecl) bool {
 		}
 		return true
 	})
-	return len(onRecv) == 1 && (onRecv[0] == "ConnectAPI" || onRecv[0] == "Call")
+	return !loops && len(onRecv) == 1 && (onRecv[0] == "ConnectAPI" || onRecv[0] == "Call")
+}
+
+func TestIsPassthrough(t *testing.T) {
+	src := `package garminapi
+func (c *Client) Forward(ctx context.Context) (json.RawMessage, error) {
+	return c.Call(ctx, "a.b", nil, nil)
+}
+func (c *Client) Pages(ctx context.Context) error {
+	for range 3 {
+		if _, err := c.Call(ctx, "a.b", nil, nil); err != nil {
+			return err
+		}
+	}
+	return nil
+}`
+	f, err := parser.ParseFile(token.NewFileSet(), "src.go", src, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := map[string]bool{}
+	for _, d := range f.Decls {
+		fn := d.(*ast.FuncDecl)
+		got[fn.Name.Name] = isPassthrough(fn)
+	}
+	if want := map[string]bool{"Forward": true, "Pages": false}; !maps.Equal(got, want) {
+		t.Errorf("isPassthrough = %v, want %v: a Call in a loop sends more than one request", got, want)
+	}
 }

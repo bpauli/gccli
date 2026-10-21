@@ -358,6 +358,18 @@ var writeCases = map[string]writeCase{
 		human:    "Deleted menstrual log for 2026-10-01\n",
 		fallback: "Deleted menstrual log for 2026-10-01\n",
 	},
+	"nutrition add": {
+		args: []string{"2026-10-15", "1001", "--query", "apple", "--meal", "snacks"},
+		routes: map[string]string{
+			"GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50": `{"results":[{"foodMetaData":{"foodId":"1001","foodName":"Apple","source":"FATSECRET","regionCode":"US","languageCode":"en"},"nutritionContents":[{"servingId":"2001","servingUnit":"medium"}]}]}`,
+			"GET /nutrition-service/meals/2026-10-15":                                    `{"meals":[{"mealId":105,"mealName":"SNACKS","enabled":true}]}`,
+			"PUT /nutrition-service/food/logs":                                           `{"mealDetails":[{"loggedFoods":[{"logId":"a1","logTimestamp":"2026-10-15T09:30:00.000Z"}]}]}`,
+		},
+		result:   "PUT /nutrition-service/food/logs",
+		json:     "{\n  \"mealDetails\": [\n    {\n      \"loggedFoods\": [\n        {\n          \"logId\": \"a1\",\n          \"logTimestamp\": \"2026-10-15T09:30:00.000Z\"\n        }\n      ]\n    }\n  ]\n}\n",
+		human:    "Added Apple (1 x medium) to snacks on 2026-10-15 (log ID: a1)\n",
+		fallback: "Added Apple (1 x medium) to snacks on 2026-10-15\n",
+	},
 	"nutrition quick-add": {
 		args: []string{"2026-10-15", "--meal", "snacks", "--calories", "120"},
 		routes: map[string]string{

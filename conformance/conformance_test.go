@@ -239,6 +239,7 @@ const foodLogClockSkip = "the request body holds the time of the write, and the 
 
 var skipped = map[string]string{
 	"auth login":                      "the harness stubs the browser SSO login",
+	"nutrition add":                   foodLogClockSkip,
 	"nutrition quick-add":             foodLogClockSkip,
 	"health sleep naps add":           napClockSkip,
 	"wellness menstrual-log set":      menstrualLogClockSkip,
