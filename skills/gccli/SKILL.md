@@ -659,6 +659,7 @@ Worked examples
 - Privacy zone: `gccli profile privacy-zones add --lat 51.5 --lon=-0.12 --radius 500` prints the zone ID. A negative value needs the `=` form. The radius is 500 to 1500 meters. `gccli profile privacy-zones delete <id> --force` deletes it.
 - Race event with a goal time and training priority: `gccli events add --name "Spring 10K" --date 2026-05-10 --type running --race --distance 10km --goal 40m --training`
 - Food search: `gccli nutrition search "greek yogurt" --limit 5 --json` lists foods with their servings under `results[].nutritionContents`. `gccli nutrition recent` and `gccli nutrition favorites` list the foods logged recently and the favorite foods.
+- Send a workout to a watch: `gccli workouts send <id>` sends to the only device that can receive the workout. With more such devices it fails before any write and lists their IDs; then add `--device <device-id>`. The device gets the workout at its next sync. Until then `gccli devices messages cancel <message-id>` removes it; the send prints the message ID (`messageId` with `--json`). The cancel fails with exit code 1 (`message <id> is not pending (already delivered or unknown)`) when the device has synced.
 - Access token for a script: `gccli auth token`. It refreshes an expired token first. If the refresh fails, stdout is empty and the exit code is 3.
 
 Strength training workflow (LLM-assisted exercise matching)
