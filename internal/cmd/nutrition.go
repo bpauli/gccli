@@ -69,4 +69,16 @@ var nutritionGroup = Group{Name: "nutrition", Help: "View nutrition data.", Chil
 		Verb:     "list recent foods",
 		Output:   Rows{Noun: "recent foods", Items: "recentFoods", Columns: savedFoodColumns},
 	},
+	Group{Name: "favorites", Help: "List your favorite foods. Needs Garmin Connect+.", Children: []Node{
+		Leaf{
+			Name: "list", Help: "List your favorite foods. Needs Garmin Connect+.", Default: true,
+			Spec: argsOf(&struct {
+				Pagination `embed:"" set:"items=foods"`
+			}{}),
+			Endpoint: "nutrition.favorite-foods",
+			Params:   Params{"start": In("Offset"), "limit": In("Limit")},
+			Verb:     "list favorite foods",
+			Output:   Rows{Noun: "favorite foods", Items: "consumables", Columns: savedFoodColumns},
+		},
+	}},
 }}

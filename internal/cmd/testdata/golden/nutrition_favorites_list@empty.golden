@@ -1,0 +1,33 @@
+An empty body prints no rows, and [] in --json mode.
+-- args --
+nutrition
+favorites
+list
+-- route GET /nutrition-service/favorite?start=0&limit=20&includeContent=true --
+-- table stdout --
+ID  NAME  SOURCE  SERVING  QTY  CALORIES
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /nutrition-service/favorite?start=0&limit=20&includeContent=true
+-- plain stdout --
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /nutrition-service/favorite?start=0&limit=20&includeContent=true
+-- plain-header stdout --
+ID	NAME	SOURCE	SERVING	QTY	CALORIES
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /nutrition-service/favorite?start=0&limit=20&includeContent=true
+-- json stdout --
+[]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /nutrition-service/favorite?start=0&limit=20&includeContent=true
