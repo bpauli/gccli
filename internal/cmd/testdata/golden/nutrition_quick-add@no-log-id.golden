@@ -1,0 +1,124 @@
+No entry of the answer has the time of the write, so the message names no log ID.
+-- args --
+nutrition
+quick-add
+2026-10-15
+--meal
+snacks
+--calories
+50
+-- route GET /nutrition-service/meals/2026-10-15 noeol --
+{"dailyViewType":"TIMELINE_VIEW","meals":[{"mealId":101,"mealName":"BREAKFAST","startTime":"07:00:00","endTime":"08:59:00","enabled":true},{"mealId":102,"mealName":"LUNCH","startTime":"12:00:00","endTime":"13:59:00","enabled":true},{"mealId":103,"mealName":"DINNER","startTime":"18:00:00","endTime":"20:59:00","enabled":true},{"mealId":104,"mealName":"CUSTOM_MEAL_1","startTime":null,"endTime":null,"enabled":false},{"mealId":105,"mealName":"SNACKS","startTime":null,"endTime":null,"enabled":true}]}
+-- route PUT /nutrition-service/food/logs/quickAdd noeol --
+{"mealDate":"2026-10-15","mealDetails":[]}
+-- table stdout --
+-- table stderr --
+Added 50 kcal to snacks on 2026-10-15
+-- table exit --
+0
+-- table requests --
+GET /nutrition-service/meals/2026-10-15
+PUT /nutrition-service/food/logs/quickAdd
+  {
+    "mealDate": "2026-10-15",
+    "quickAddItems": [
+      {
+        "name": null,
+        "logId": null,
+        "logTimestamp": "2026-10-15T09:30:00.000Z",
+        "logSource": "GCW",
+        "logCategory": "QUICK_ADD",
+        "mealTime": "09:30:00",
+        "mealId": 105,
+        "action": "ADD",
+        "calories": 50,
+        "carbs": null,
+        "protein": null,
+        "fat": null
+      }
+    ]
+  }
+-- plain stdout --
+-- plain stderr --
+Added 50 kcal to snacks on 2026-10-15
+-- plain exit --
+0
+-- plain requests --
+GET /nutrition-service/meals/2026-10-15
+PUT /nutrition-service/food/logs/quickAdd
+  {
+    "mealDate": "2026-10-15",
+    "quickAddItems": [
+      {
+        "name": null,
+        "logId": null,
+        "logTimestamp": "2026-10-15T09:30:00.000Z",
+        "logSource": "GCW",
+        "logCategory": "QUICK_ADD",
+        "mealTime": "09:30:00",
+        "mealId": 105,
+        "action": "ADD",
+        "calories": 50,
+        "carbs": null,
+        "protein": null,
+        "fat": null
+      }
+    ]
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Added 50 kcal to snacks on 2026-10-15
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /nutrition-service/meals/2026-10-15
+PUT /nutrition-service/food/logs/quickAdd
+  {
+    "mealDate": "2026-10-15",
+    "quickAddItems": [
+      {
+        "name": null,
+        "logId": null,
+        "logTimestamp": "2026-10-15T09:30:00.000Z",
+        "logSource": "GCW",
+        "logCategory": "QUICK_ADD",
+        "mealTime": "09:30:00",
+        "mealId": 105,
+        "action": "ADD",
+        "calories": 50,
+        "carbs": null,
+        "protein": null,
+        "fat": null
+      }
+    ]
+  }
+-- json stdout --
+{
+  "mealDate": "2026-10-15",
+  "mealDetails": []
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /nutrition-service/meals/2026-10-15
+PUT /nutrition-service/food/logs/quickAdd
+  {
+    "mealDate": "2026-10-15",
+    "quickAddItems": [
+      {
+        "name": null,
+        "logId": null,
+        "logTimestamp": "2026-10-15T09:30:00.000Z",
+        "logSource": "GCW",
+        "logCategory": "QUICK_ADD",
+        "mealTime": "09:30:00",
+        "mealId": 105,
+        "action": "ADD",
+        "calories": 50,
+        "carbs": null,
+        "protein": null,
+        "fat": null
+      }
+    ]
+  }
