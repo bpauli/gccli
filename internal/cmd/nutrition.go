@@ -136,8 +136,6 @@ func (c *NutritionAddCmd) Run(g *Globals) error {
 	return reportWrite(g, data, "Added %s (%g x %s) to %s on %s%s", food.Name, c.Servings, serving.Unit, mealName(entry.Meal), c.Date, logIDNote(data, entry))
 }
 
-// findFood finds the food with ID id in the results of a search for query,
-// and its serving with the unit or ID serving, or its first serving.
 func findFood(g *Globals, client *garminapi.Client, query, id, serving string) (garminapi.Food, garminapi.Serving, error) {
 	food, ok, err := client.FindFood(g.Context, query, id)
 	if err != nil {
@@ -318,8 +316,6 @@ func (c *NutritionDeleteCmd) Run(g *Globals) error {
 	return reportWrite(g, data, "Deleted %s on %s", what, c.Date)
 }
 
-// mealEntry resolves the meal named name on date and the meal time: at, or
-// the start time of the meal, or the current time for a meal without one.
 func mealEntry(g *Globals, client *garminapi.Client, date Date, name FreeText, at Clock) (garminapi.MealEntry, error) {
 	meals, err := client.Meals(g.Context, string(date))
 	if err != nil {
@@ -363,14 +359,10 @@ func orList(words []string) string {
 	return strings.Join(words[:len(words)-1], ", ") + " or " + words[len(words)-1]
 }
 
-// mealName is the name of m as --meal takes it, such as snacks or
-// custom-meal-1.
 func mealName(m garminapi.Meal) string {
 	return strings.ReplaceAll(strings.ToLower(m.Name), "_", "-")
 }
 
-// logIDNote names the entry that a log write added, found in the day log
-// that Garmin answers by the time of the write.
 func logIDNote(dayLog []byte, e garminapi.MealEntry) string {
 	foods, err := garminapi.ParseFoodLog(dayLog)
 	if err != nil {
