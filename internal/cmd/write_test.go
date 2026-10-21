@@ -358,6 +358,17 @@ var writeCases = map[string]writeCase{
 		human:    "Deleted menstrual log for 2026-10-01\n",
 		fallback: "Deleted menstrual log for 2026-10-01\n",
 	},
+	"nutrition quick-add": {
+		args: []string{"2026-10-15", "--meal", "snacks", "--calories", "120"},
+		routes: map[string]string{
+			"GET /nutrition-service/meals/2026-10-15":   `{"meals":[{"mealId":105,"mealName":"SNACKS","enabled":true}]}`,
+			"PUT /nutrition-service/food/logs/quickAdd": `{"mealDetails":[{"loggedFoods":[{"logId":"b2","logTimestamp":"2026-10-15T09:30:00.000Z"}]}]}`,
+		},
+		result:   "PUT /nutrition-service/food/logs/quickAdd",
+		json:     "{\n  \"mealDetails\": [\n    {\n      \"loggedFoods\": [\n        {\n          \"logId\": \"b2\",\n          \"logTimestamp\": \"2026-10-15T09:30:00.000Z\"\n        }\n      ]\n    }\n  ]\n}\n",
+		human:    "Added 120 kcal to snacks on 2026-10-15 (log ID: b2)\n",
+		fallback: "Added 120 kcal to snacks on 2026-10-15\n",
+	},
 	"hydration add": {
 		args:   []string{"250", "--date", "2024-01-15"},
 		routes: map[string]string{"PUT /usersummary-service/usersummary/hydration/log": `{"valueInML":250}`},

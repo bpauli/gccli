@@ -1,0 +1,155 @@
+Without --time, the meal time is the start time of the meal. Without --name and the macros, the item has null for them. The meal name is matched without regard to case.
+-- args --
+nutrition
+quick-add
+2026-10-15
+--meal
+Breakfast
+--calories
+80
+-- route GET /nutrition-service/meals/2026-10-15 noeol --
+{"dailyViewType":"TIMELINE_VIEW","meals":[{"mealId":101,"mealName":"BREAKFAST","startTime":"07:00:00","endTime":"08:59:00","enabled":true},{"mealId":102,"mealName":"LUNCH","startTime":"12:00:00","endTime":"13:59:00","enabled":true},{"mealId":103,"mealName":"DINNER","startTime":"18:00:00","endTime":"20:59:00","enabled":true},{"mealId":104,"mealName":"CUSTOM_MEAL_1","startTime":null,"endTime":null,"enabled":false},{"mealId":105,"mealName":"SNACKS","startTime":null,"endTime":null,"enabled":true}]}
+-- route PUT /nutrition-service/food/logs/quickAdd noeol --
+{"mealDate":"2026-10-15","mealDetails":[{"meal":{"mealId":101,"mealName":"BREAKFAST"},"loggedFoods":[{"logId":"aaaa1111","logTimestamp":"2026-10-15T06:10:00.000Z","logCategory":"REGULAR_LOG","mealId":101,"mealTime":"07:00:00"}]},{"meal":{"mealId":101,"mealName":"BREAKFAST"},"loggedFoods":[{"logId":"bbbb2222","logTimestamp":"2026-10-15T09:30:00.000Z","logCategory":"QUICK_ADD","mealId":101,"mealTime":"07:00:00"}]}]}
+-- table stdout --
+-- table stderr --
+Added 80 kcal to breakfast on 2026-10-15 (log ID: bbbb2222)
+-- table exit --
+0
+-- table requests --
+GET /nutrition-service/meals/2026-10-15
+PUT /nutrition-service/food/logs/quickAdd
+  {
+    "mealDate": "2026-10-15",
+    "quickAddItems": [
+      {
+        "name": null,
+        "logId": null,
+        "logTimestamp": "2026-10-15T09:30:00.000Z",
+        "logSource": "GCW",
+        "logCategory": "QUICK_ADD",
+        "mealTime": "07:00:00",
+        "mealId": 101,
+        "action": "ADD",
+        "calories": 80,
+        "carbs": null,
+        "protein": null,
+        "fat": null
+      }
+    ]
+  }
+-- plain stdout --
+-- plain stderr --
+Added 80 kcal to breakfast on 2026-10-15 (log ID: bbbb2222)
+-- plain exit --
+0
+-- plain requests --
+GET /nutrition-service/meals/2026-10-15
+PUT /nutrition-service/food/logs/quickAdd
+  {
+    "mealDate": "2026-10-15",
+    "quickAddItems": [
+      {
+        "name": null,
+        "logId": null,
+        "logTimestamp": "2026-10-15T09:30:00.000Z",
+        "logSource": "GCW",
+        "logCategory": "QUICK_ADD",
+        "mealTime": "07:00:00",
+        "mealId": 101,
+        "action": "ADD",
+        "calories": 80,
+        "carbs": null,
+        "protein": null,
+        "fat": null
+      }
+    ]
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Added 80 kcal to breakfast on 2026-10-15 (log ID: bbbb2222)
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /nutrition-service/meals/2026-10-15
+PUT /nutrition-service/food/logs/quickAdd
+  {
+    "mealDate": "2026-10-15",
+    "quickAddItems": [
+      {
+        "name": null,
+        "logId": null,
+        "logTimestamp": "2026-10-15T09:30:00.000Z",
+        "logSource": "GCW",
+        "logCategory": "QUICK_ADD",
+        "mealTime": "07:00:00",
+        "mealId": 101,
+        "action": "ADD",
+        "calories": 80,
+        "carbs": null,
+        "protein": null,
+        "fat": null
+      }
+    ]
+  }
+-- json stdout --
+{
+  "mealDate": "2026-10-15",
+  "mealDetails": [
+    {
+      "meal": {
+        "mealId": 101,
+        "mealName": "BREAKFAST"
+      },
+      "loggedFoods": [
+        {
+          "logId": "aaaa1111",
+          "logTimestamp": "2026-10-15T06:10:00.000Z",
+          "logCategory": "REGULAR_LOG",
+          "mealId": 101,
+          "mealTime": "07:00:00"
+        }
+      ]
+    },
+    {
+      "meal": {
+        "mealId": 101,
+        "mealName": "BREAKFAST"
+      },
+      "loggedFoods": [
+        {
+          "logId": "bbbb2222",
+          "logTimestamp": "2026-10-15T09:30:00.000Z",
+          "logCategory": "QUICK_ADD",
+          "mealId": 101,
+          "mealTime": "07:00:00"
+        }
+      ]
+    }
+  ]
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /nutrition-service/meals/2026-10-15
+PUT /nutrition-service/food/logs/quickAdd
+  {
+    "mealDate": "2026-10-15",
+    "quickAddItems": [
+      {
+        "name": null,
+        "logId": null,
+        "logTimestamp": "2026-10-15T09:30:00.000Z",
+        "logSource": "GCW",
+        "logCategory": "QUICK_ADD",
+        "mealTime": "07:00:00",
+        "mealId": 101,
+        "action": "ADD",
+        "calories": 80,
+        "carbs": null,
+        "protein": null,
+        "fat": null
+      }
+    ]
+  }

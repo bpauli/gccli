@@ -248,6 +248,8 @@ Commands:
                                    Connect+.
   nutrition recent                 List the foods you logged recently. Needs
                                    Garmin Connect+.
+  nutrition quick-add              Log calories and macros in a meal without a
+                                   food. Needs Garmin Connect+.
   nutrition favorites list         List your favorite foods. Needs Garmin
                                    Connect+.
   training plans                   List training plans.
@@ -1454,7 +1456,7 @@ Commands:
 $ gccli nutrition --help
 Usage: gccli nutrition <command> [flags]
 
-View nutrition data.
+View and log nutrition data.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -1478,6 +1480,8 @@ Commands:
                               Connect+.
   nutrition recent            List the foods you logged recently. Needs Garmin
                               Connect+.
+  nutrition quick-add         Log calories and macros in a meal without a food.
+                              Needs Garmin Connect+.
   nutrition favorites list    List your favorite foods. Needs Garmin Connect+.
 
 $ gccli nutrition favorites --help
