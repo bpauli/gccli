@@ -17,6 +17,8 @@ func TestNutritionEndpoints(t *testing.T) {
 		{"nutrition.food-search", map[string]string{"query": "apple pie", "start": "0", "limit": "20"}, "GET /nutrition-service/food/search?searchExpression=apple+pie&start=0&limit=20"},
 		{"nutrition.recent-foods", map[string]string{"date": "2024-01-15", "start": "0", "limit": "20"}, "GET /nutrition-service/food/recent/2024-01-15?start=0&limit=20"},
 		{"nutrition.favorite-foods", map[string]string{"start": "0", "limit": "20"}, "GET /nutrition-service/favorite?start=0&limit=20&includeContent=true"},
+		{"nutrition.add-favorite-food", nil, "PUT /nutrition-service/favorite/food"},
+		{"nutrition.remove-favorite-food", map[string]string{"foodId": "1001"}, "DELETE /nutrition-service/favorite/food/1001"},
 		{"nutrition.log-food", nil, "PUT /nutrition-service/food/logs"},
 		{"nutrition.delete-food-logs", day, "DELETE /nutrition-service/food/logs/2024-01-15"},
 		{"nutrition.quick-add", nil, "PUT /nutrition-service/food/logs/quickAdd"},
@@ -28,7 +30,7 @@ func TestNutritionEndpoints(t *testing.T) {
 // without it, and the food database, recent foods, favorites and every
 // write do not.
 func TestNutritionConnectPlusRows(t *testing.T) {
-	gated := []string{"nutrition.food-search", "nutrition.recent-foods", "nutrition.favorite-foods", "nutrition.log-food", "nutrition.quick-add", "nutrition.delete-food-logs"}
+	gated := []string{"nutrition.food-search", "nutrition.recent-foods", "nutrition.favorite-foods", "nutrition.log-food", "nutrition.quick-add", "nutrition.delete-food-logs", "nutrition.add-favorite-food", "nutrition.remove-favorite-food"}
 	for _, e := range nutritionEndpoints {
 		if want := slices.Contains(gated, e.Name); (e.Requires == ConnectPlus) != want {
 			t.Errorf("%s: Requires = %v, want Connect+ %v", e.Name, e.Requires, want)
@@ -114,5 +116,24 @@ func TestFindFoodTakesTheServingsOfTheFood(t *testing.T) {
 	want := Food{ID: "1001", Name: "Apple", Source: "FATSECRET", RegionCode: "US", LanguageCode: "en", Servings: []Serving{{"2001", "medium"}, {"2002", "g"}}}
 	if food.ID != want.ID || food.Name != want.Name || food.Source != want.Source || food.RegionCode != want.RegionCode || food.LanguageCode != want.LanguageCode || !slices.Equal(food.Servings, want.Servings) {
 		t.Errorf("FindFood = %+v, want %+v", food, want)
+	}
+}
+
+func TestIsFavoriteFoodReadsEveryPage(t *testing.T) {
+	var starts []string
+	_, client := testServer(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		starts = append(starts, r.URL.Query().Get("start"))
+		if r.URL.Query().Get("start") == "100" {
+			_, _ = w.Write([]byte(`{"consumables":[{"foodMetaData":{"foodId":"1001"}}],"hasMore":false}`))
+			return
+		}
+		_, _ = w.Write([]byte(`{"consumables":[{"foodMetaData":{"foodId":"7"}}],"hasMore":true}`))
+	}))
+	ok, err := client.IsFavoriteFood(context.Background(), "1001")
+	if err != nil || !ok {
+		t.Fatalf("IsFavoriteFood = %v, %v, want true", ok, err)
+	}
+	if want := []string{"0", "50", "100"}; !slices.Equal(starts, want) {
+		t.Errorf("start values = %v, want %v", starts, want)
 	}
 }

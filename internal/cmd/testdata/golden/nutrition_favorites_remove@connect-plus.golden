@@ -1,0 +1,36 @@
+Garmin refuses the favorites read of an account without Garmin Connect+ with 403 ForbiddenException. The message names the plan, and the exit code stays 1 (error) with status 403.
+-- args --
+nutrition
+favorites
+remove
+1001
+-- route GET /nutrition-service/favorite?start=0&limit=50&includeContent=true 403 noeol --
+{"message":"HTTP 403 Forbidden","error":"ForbiddenException"}
+-- table stdout --
+-- table stderr --
+list favorite foods: this needs a Garmin Connect+ subscription (403 Forbidden)
+-- table exit --
+1
+-- table requests --
+GET /nutrition-service/favorite?start=0&limit=50&includeContent=true
+-- plain stdout --
+-- plain stderr --
+list favorite foods: this needs a Garmin Connect+ subscription (403 Forbidden)
+-- plain exit --
+1
+-- plain requests --
+GET /nutrition-service/favorite?start=0&limit=50&includeContent=true
+-- plain-header stdout --
+-- plain-header stderr --
+list favorite foods: this needs a Garmin Connect+ subscription (403 Forbidden)
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /nutrition-service/favorite?start=0&limit=50&includeContent=true
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":403,"message":"list favorite foods: this needs a Garmin Connect+ subscription (403 Forbidden)"}}
+-- json exit --
+1
+-- json requests --
+GET /nutrition-service/favorite?start=0&limit=50&includeContent=true

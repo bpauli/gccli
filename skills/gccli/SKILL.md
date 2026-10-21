@@ -609,6 +609,13 @@ Date shortcuts
 - `gccli nutrition favorites list [flags]`: List your favorite foods. Needs Garmin Connect+. Also runs as `gccli nutrition favorites [flags]`.
   - `-l, --limit=20`: Maximum number of foods to return.
   - `--offset=0`: Number of foods to skip.
+- `gccli nutrition favorites add --query=TEXT <food-id> [flags]`: Add a food to your favorite foods. Needs Garmin Connect+.
+  - `<food-id>`: Food ID, as nutrition search prints it.
+  - `-q, --query=TEXT`: Search text that finds the food, as you gave it to nutrition search. Garmin has no read of one food by ID.
+  - `--serving=UNIT`: Serving unit, such as g or oz, or serving ID, as nutrition search --json lists them under nutritionContents. Defaults to the first serving of the food.
+  - `--servings=1`: Number of servings.
+- `gccli nutrition favorites remove <food-id>`: Remove a food from your favorite foods. Needs Garmin Connect+.
+  - `<food-id>`: Food ID, as nutrition favorites prints it.
 - `gccli profile view`: Show user profile. Also runs as `gccli profile`.
 - `gccli profile settings`: Show user settings.
 - `gccli profile privacy view`: Show privacy settings. Also runs as `gccli profile privacy`.

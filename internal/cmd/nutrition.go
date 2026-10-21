@@ -82,7 +82,7 @@ var nutritionGroup = Group{Name: "nutrition", Help: "View and log nutrition data
 	Custom{Name: "add", Help: "Log a food of the Garmin food database in a meal. Needs Garmin Connect+.", Cmd: &NutritionAddCmd{}},
 	Custom{Name: "quick-add", Help: "Log calories and macros in a meal without a food. Needs Garmin Connect+.", Cmd: &NutritionQuickAddCmd{}},
 	Custom{Name: "delete", Help: "Delete food log entries of a day. Needs Garmin Connect+.", Cmd: &NutritionDeleteCmd{}},
-	Group{Name: "favorites", Help: "List your favorite foods. Needs Garmin Connect+.", Children: []Node{
+	Group{Name: "favorites", Help: "List, add and remove favorite foods. Needs Garmin Connect+.", Children: []Node{
 		Leaf{
 			Name: "list", Help: "List your favorite foods. Needs Garmin Connect+.", Default: true,
 			Spec: argsOf(&struct {
@@ -93,6 +93,8 @@ var nutritionGroup = Group{Name: "nutrition", Help: "View and log nutrition data
 			Verb:     "list favorite foods",
 			Output:   Rows{Noun: "favorite foods", Items: "consumables", Columns: savedFoodColumns},
 		},
+		Custom{Name: "add", Help: "Add a food to your favorite foods. Needs Garmin Connect+.", Cmd: &NutritionFavoritesAddCmd{}},
+		Custom{Name: "remove", Help: "Remove a food from your favorite foods. Needs Garmin Connect+.", Cmd: &NutritionFavoritesRemoveCmd{}},
 	}},
 }}
 
@@ -158,6 +160,64 @@ func findFood(g *Globals, client *garminapi.Client, query, id, serving string) (
 		units = append(units, strconv.Quote(s.Unit))
 	}
 	return food, garminapi.Serving{}, fmt.Errorf("food %s has no serving %q: choose %s", id, serving, orList(units))
+}
+
+// NutritionFavoritesAddCmd saves a food of the Garmin food database as a
+// favorite.
+type NutritionFavoritesAddCmd struct {
+	FoodID   ID       `arg:"" name:"food-id" help:"Food ID, as nutrition search prints it."`
+	Query    FreeText `help:"Search text that finds the food, as you gave it to nutrition search. Garmin has no read of one food by ID." required:"" short:"q" placeholder:"TEXT"`
+	Serving  string   `help:"Serving unit, such as g or oz, or serving ID, as nutrition search --json lists them under nutritionContents. Defaults to the first serving of the food." placeholder:"UNIT"`
+	Servings float64  `help:"Number of servings." default:"1"`
+}
+
+func (c *NutritionFavoritesAddCmd) Validate() error {
+	if c.Servings <= 0 {
+		return fmt.Errorf("--servings must be more than 0, got %g", c.Servings)
+	}
+	return nil
+}
+
+func (c *NutritionFavoritesAddCmd) Run(g *Globals) error {
+	client, err := resolveClient(g)
+	if err != nil {
+		return err
+	}
+	food, serving, err := findFood(g, client, string(c.Query), string(c.FoodID), c.Serving)
+	if err != nil {
+		return err
+	}
+	data, err := client.AddFavoriteFood(g.Context, food, serving, c.Servings)
+	if err != nil {
+		return fmt.Errorf("add favorite food: %w", err)
+	}
+	return reportWrite(g, data, "Added %s (%g x %s) to favorite foods", food.Name, c.Servings, serving.Unit)
+}
+
+// NutritionFavoritesRemoveCmd removes a food from the favorite foods.
+type NutritionFavoritesRemoveCmd struct {
+	FoodID ID `arg:"" name:"food-id" help:"Food ID, as nutrition favorites prints it."`
+}
+
+func (c *NutritionFavoritesRemoveCmd) Run(g *Globals) error {
+	client, err := resolveClient(g)
+	if err != nil {
+		return err
+	}
+	// A DELETE of a food that is not a favorite also answers 204, so the
+	// favorites tell whether there is one to remove.
+	ok, err := client.IsFavoriteFood(g.Context, string(c.FoodID))
+	if err != nil {
+		return fmt.Errorf("list favorite foods: %w", err)
+	}
+	if !ok {
+		return fmt.Errorf("food %s is not a favorite food", c.FoodID)
+	}
+	data, err := client.Call(g.Context, "nutrition.remove-favorite-food", map[string]string{"foodId": string(c.FoodID)}, nil)
+	if err != nil {
+		return fmt.Errorf("remove favorite food: %w", err)
+	}
+	return reportWrite(g, data, "Removed food %s from favorite foods", c.FoodID)
 }
 
 // NutritionQuickAddCmd logs calories and macros in a meal without a food.
