@@ -158,3 +158,19 @@ func (p *Pagination) Validate() error {
 	}
 	return nil
 }
+
+// AlignedPagination is Pagination for a Garmin list that starts a page only
+// at a multiple of the page size. Garmin answers any other offset with 400.
+type AlignedPagination struct {
+	Pagination `embed:""`
+}
+
+func (p *AlignedPagination) Validate() error {
+	if err := p.Pagination.Validate(); err != nil {
+		return err
+	}
+	if p.Offset%p.Limit != 0 {
+		return fmt.Errorf("--offset %d is not a multiple of --limit %d: Garmin pages this list by --limit", p.Offset, p.Limit)
+	}
+	return nil
+}
