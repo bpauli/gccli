@@ -252,6 +252,8 @@ Commands:
                                    meal. Needs Garmin Connect+.
   nutrition quick-add              Log calories and macros in a meal without a
                                    food. Needs Garmin Connect+.
+  nutrition delete                 Delete food log entries of a day. Needs
+                                   Garmin Connect+.
   nutrition favorites list         List your favorite foods. Needs Garmin
                                    Connect+.
   training plans                   List training plans.
@@ -1486,6 +1488,8 @@ Commands:
                               Needs Garmin Connect+.
   nutrition quick-add         Log calories and macros in a meal without a food.
                               Needs Garmin Connect+.
+  nutrition delete            Delete food log entries of a day. Needs Garmin
+                              Connect+.
   nutrition favorites list    List your favorite foods. Needs Garmin Connect+.
 
 $ gccli nutrition favorites --help

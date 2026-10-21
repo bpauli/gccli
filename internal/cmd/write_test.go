@@ -370,6 +370,18 @@ var writeCases = map[string]writeCase{
 		human:    "Added Apple (1 x medium) to snacks on 2026-10-15 (log ID: a1)\n",
 		fallback: "Added Apple (1 x medium) to snacks on 2026-10-15\n",
 	},
+	"nutrition delete": {
+		args: []string{"2026-10-15", "a1"},
+		routes: map[string]string{
+			"GET /nutrition-service/food/logs/2026-10-15":    `{"mealDetails":[{"loggedFoods":[{"logId":"a1"}]}]}`,
+			"DELETE /nutrition-service/food/logs/2026-10-15": noContent,
+		},
+		result:   "DELETE /nutrition-service/food/logs/2026-10-15",
+		prompt:   "Delete food log entry a1 on 2026-10-15?",
+		json:     okOut,
+		human:    "Deleted food log entry a1 on 2026-10-15\n",
+		fallback: "Deleted food log entry a1 on 2026-10-15\n",
+	},
 	"nutrition quick-add": {
 		args: []string{"2026-10-15", "--meal", "snacks", "--calories", "120"},
 		routes: map[string]string{

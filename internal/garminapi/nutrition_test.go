@@ -18,6 +18,7 @@ func TestNutritionEndpoints(t *testing.T) {
 		{"nutrition.recent-foods", map[string]string{"date": "2024-01-15", "start": "0", "limit": "20"}, "GET /nutrition-service/food/recent/2024-01-15?start=0&limit=20"},
 		{"nutrition.favorite-foods", map[string]string{"start": "0", "limit": "20"}, "GET /nutrition-service/favorite?start=0&limit=20&includeContent=true"},
 		{"nutrition.log-food", nil, "PUT /nutrition-service/food/logs"},
+		{"nutrition.delete-food-logs", day, "DELETE /nutrition-service/food/logs/2024-01-15"},
 		{"nutrition.quick-add", nil, "PUT /nutrition-service/food/logs/quickAdd"},
 	})
 }
@@ -27,7 +28,7 @@ func TestNutritionEndpoints(t *testing.T) {
 // without it, and the food database, recent foods, favorites and every
 // write do not.
 func TestNutritionConnectPlusRows(t *testing.T) {
-	gated := []string{"nutrition.food-search", "nutrition.recent-foods", "nutrition.favorite-foods", "nutrition.log-food", "nutrition.quick-add"}
+	gated := []string{"nutrition.food-search", "nutrition.recent-foods", "nutrition.favorite-foods", "nutrition.log-food", "nutrition.quick-add", "nutrition.delete-food-logs"}
 	for _, e := range nutritionEndpoints {
 		if want := slices.Contains(gated, e.Name); (e.Requires == ConnectPlus) != want {
 			t.Errorf("%s: Requires = %v, want Connect+ %v", e.Name, e.Requires, want)
