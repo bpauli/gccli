@@ -28,6 +28,7 @@ func TestWorkoutsEndpoints(t *testing.T) {
 		{"workouts.benchmarks", nil, "GET /workout-service/benchmarks"},
 		{"workouts.create-benchmark", nil, "POST /workout-service/benchmarks"},
 		{"workouts.update-benchmark", map[string]string{"benchmarkID": "7"}, "PUT /workout-service/benchmarks/7"},
+		{"workouts.delete-benchmark", map[string]string{"benchmarkID": "7"}, "DELETE /workout-service/benchmarks/7"},
 	})
 }
 

@@ -248,9 +248,10 @@ var workoutScheduleGroup = Group{Name: "schedule", Help: "Manage scheduled worko
 	},
 }}
 
-var workoutBenchmarksGroup = Group{Name: "benchmarks", Help: "View and set strength benchmarks.", Children: []Node{
+var workoutBenchmarksGroup = Group{Name: "benchmarks", Help: "View, set and clear strength benchmarks.", Children: []Node{
 	Leaf{Name: "list", Help: "List strength benchmarks.", Default: true, Endpoint: "workouts.benchmarks", Verb: "get benchmarks", Output: JSON{List: true}},
 	Custom{Name: "set", Help: "Set a strength benchmark from a weight and reps.", Cmd: &WorkoutBenchmarkSetCmd{}},
+	Custom{Name: "clear", Help: "Clear a strength benchmark.", Cmd: &WorkoutBenchmarkClearCmd{}},
 }}
 
 // benchmarkUnits maps each --unit value to its Garmin unit key and the
@@ -300,6 +301,40 @@ func (c *WorkoutBenchmarkSetCmd) Run(g *Globals) error {
 		return fmt.Errorf("set benchmark: %w", err)
 	}
 	return reportWrite(g, data, "Set benchmark %s to %g %s x %d (1RM %g %s)", key, c.Weight, c.Unit, c.Reps, v.OneRepMax(), c.Unit)
+}
+
+// WorkoutBenchmarkClearCmd clears a strength benchmark.
+type WorkoutBenchmarkClearCmd struct {
+	Key   FreeText `arg:"" help:"Benchmark key, such as BARBELL_ROW (from 'workouts benchmarks list')."`
+	Force bool     `help:"Skip confirmation prompt." short:"f"`
+}
+
+func (c *WorkoutBenchmarkClearCmd) Run(g *Globals) error {
+	client, err := resolveClient(g)
+	if err != nil {
+		return err
+	}
+	key := strings.ToUpper(string(c.Key))
+	b, err := client.Benchmark(g.Context, key)
+	if err != nil {
+		return fmt.Errorf("clear benchmark: %w", err)
+	}
+	if b.ID == 0 {
+		return fmt.Errorf("benchmark %s is not set", key)
+	}
+	ok, err := confirm(g.Stderr, fmt.Sprintf("Clear benchmark %s?", key), c.Force)
+	if err != nil {
+		return err
+	}
+	if !ok {
+		g.UI.Infof("Cancelled")
+		return nil
+	}
+	data, err := client.Call(g.Context, "workouts.delete-benchmark", map[string]string{"benchmarkID": strconv.FormatInt(b.ID, 10)}, nil)
+	if err != nil {
+		return fmt.Errorf("clear benchmark: %w", err)
+	}
+	return reportWrite(g, data, "Cleared benchmark %s", key)
 }
 
 // WorkoutScheduleAddCmd schedules a workout on a calendar date.

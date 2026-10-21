@@ -181,6 +181,18 @@ var writeCases = map[string]writeCase{
 		human:    "Set benchmark BARBELL_ROW to 50 kg x 5 (1RM 56.3 kg)\n",
 		fallback: "Set benchmark BARBELL_ROW to 50 kg x 5 (1RM 56.3 kg)\n",
 	},
+	"workouts benchmarks clear": {
+		args: []string{"BARBELL_ROW"},
+		routes: map[string]string{
+			"GET /workout-service/benchmarks":      `[{"id":7,"benchmarkCategoryKey":"ROW","benchmarkKey":"BARBELL_ROW"}]`,
+			"DELETE /workout-service/benchmarks/7": noContent,
+		},
+		result:   "DELETE /workout-service/benchmarks/7",
+		prompt:   "Clear benchmark BARBELL_ROW?",
+		json:     okOut,
+		human:    "Cleared benchmark BARBELL_ROW\n",
+		fallback: "Cleared benchmark BARBELL_ROW\n",
+	},
 	"workouts schedule add": {
 		args:   []string{"9", "2024-01-15"},
 		routes: map[string]string{"POST /workout-service/schedule/9": `{"workoutScheduleId":10}`},

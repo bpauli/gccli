@@ -1205,6 +1205,9 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `--weight=WEIGHT`: Heaviest weight lifted for the reps, 0.1 to 453.5 kg or 0.1 to 999.9 lbs.
   - `--reps=N`: Number of reps lifted with the weight, 1 to 20.
   - `--unit="kg"`: Unit of the weight: kg or lbs.
+- `gccli workouts benchmarks clear <key> [flags]`: Clear a strength benchmark.
+  - `<key>`: Benchmark key, such as BARBELL_ROW (from 'workouts benchmarks list').
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli workouts delete <id> [flags]`: Delete a workout.
   - `<id>`: Workout ID.
   - `-f, --force`: Skip confirmation prompt.
