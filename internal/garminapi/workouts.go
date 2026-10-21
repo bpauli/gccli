@@ -26,6 +26,7 @@ var workoutsEndpoints = []Endpoint{
 	{Name: "workouts.benchmarks", Method: http.MethodGet, Host: ConnectAPI, Path: "/workout-service/benchmarks"},
 	{Name: "workouts.create-benchmark", Method: http.MethodPost, Host: ConnectAPI, Path: "/workout-service/benchmarks", Body: true},
 	{Name: "workouts.update-benchmark", Method: http.MethodPut, Host: ConnectAPI, Path: "/workout-service/benchmarks/{benchmarkID}", Body: true},
+	{Name: "workouts.delete-benchmark", Method: http.MethodDelete, Host: ConnectAPI, Path: "/workout-service/benchmarks/{benchmarkID}"},
 }
 
 // Benchmark is one entry of the benchmark list. The list holds every
