@@ -368,6 +368,11 @@ Date shortcuts
 - `gccli workouts schedule export [flags]`: Export the workout schedule from a start date.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli workouts benchmarks list`: List strength benchmarks. Also runs as `gccli workouts benchmarks`.
+- `gccli workouts benchmarks set --weight=WEIGHT --reps=N <key> [flags]`: Set a strength benchmark from a weight and reps.
+  - `<key>`: Benchmark key, such as BARBELL_ROW (from 'workouts benchmarks list').
+  - `--weight=WEIGHT`: Heaviest weight lifted for the reps, 0.1 to 453.5 kg or 0.1 to 999.9 lbs.
+  - `--reps=N`: Number of reps lifted with the weight, 1 to 20.
+  - `--unit="kg"`: Unit of the weight: kg or lbs.
 - `gccli workouts delete <id> [flags]`: Delete a workout.
   - `<id>`: Workout ID.
   - `-f, --force`: Skip confirmation prompt.

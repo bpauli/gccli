@@ -1,0 +1,39 @@
+-- args --
+workouts
+benchmarks
+set
+BARBELL_ROW
+--weight
+50
+--reps
+5
+-- route GET /workout-service/benchmarks 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+set benchmark: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /workout-service/benchmarks
+-- plain stdout --
+-- plain stderr --
+set benchmark: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /workout-service/benchmarks
+-- plain-header stdout --
+-- plain-header stderr --
+set benchmark: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /workout-service/benchmarks
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"set benchmark: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /workout-service/benchmarks
