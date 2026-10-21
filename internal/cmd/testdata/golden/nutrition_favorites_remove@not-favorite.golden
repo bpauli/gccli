@@ -1,0 +1,36 @@
+Error case: the food is not a favorite, so no DELETE is sent and the exit code is 1.
+-- args --
+nutrition
+favorites
+remove
+1001
+-- route GET /nutrition-service/favorite?start=0&limit=50&includeContent=true noeol --
+{"consumables":[{"type":"FOOD","foodMetaData":{"foodId":"7","foodName":"Food 7","source":"FATSECRET"},"selectedNutritionContent":{"servingId":"s7","servingUnit":"g","calories":10},"servingQty":1.0}],"hasMore":false}
+-- table stdout --
+-- table stderr --
+food 1001 is not a favorite food
+-- table exit --
+1
+-- table requests --
+GET /nutrition-service/favorite?start=0&limit=50&includeContent=true
+-- plain stdout --
+-- plain stderr --
+food 1001 is not a favorite food
+-- plain exit --
+1
+-- plain requests --
+GET /nutrition-service/favorite?start=0&limit=50&includeContent=true
+-- plain-header stdout --
+-- plain-header stderr --
+food 1001 is not a favorite food
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /nutrition-service/favorite?start=0&limit=50&includeContent=true
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"food 1001 is not a favorite food"}}
+-- json exit --
+1
+-- json requests --
+GET /nutrition-service/favorite?start=0&limit=50&includeContent=true

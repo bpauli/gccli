@@ -1,0 +1,110 @@
+Error case: Garmin rejects the POST.
+-- args --
+workouts
+benchmarks
+set
+BARBELL_ROW
+--weight
+50
+--reps
+5
+-- route GET /workout-service/benchmarks noeol --
+[{"benchmarkCategoryKey":"CURL","benchmarkKey":"BARBELL_BICEPS_CURL"},{"benchmarkCategoryKey":"ROW","benchmarkKey":"BARBELL_ROW"},{"benchmarkCategoryKey":"SQUAT","benchmarkKey":"BARBELL_BACK_SQUAT"}]
+-- route POST /workout-service/benchmarks 400 noeol --
+{"message":"Cannot insert an already inserted benchmark with key: BARBELL_ROW","error":"BadRequestException"}
+-- table stdout --
+-- table stderr --
+set benchmark: garmin api: 400 Bad Request: {"message":"Cannot insert an already inserted benchmark with key: BARBELL_ROW","error":"BadRequestException"}
+-- table exit --
+1
+-- table requests --
+GET /workout-service/benchmarks
+POST /workout-service/benchmarks
+  {
+    "benchmarkKey": "BARBELL_ROW",
+    "benchmarkCategoryKey": "ROW",
+    "maxWeight": 50,
+    "reps": 5,
+    "oneRepMax": 56.3,
+    "weightUnit": {
+      "unitKey": "kilogram"
+    },
+    "linkedBenchmarkExercises": [
+      {
+        "exerciseKey": "BARBELL_ROW",
+        "categoryKey": "ROW"
+      }
+    ]
+  }
+-- plain stdout --
+-- plain stderr --
+set benchmark: garmin api: 400 Bad Request: {"message":"Cannot insert an already inserted benchmark with key: BARBELL_ROW","error":"BadRequestException"}
+-- plain exit --
+1
+-- plain requests --
+GET /workout-service/benchmarks
+POST /workout-service/benchmarks
+  {
+    "benchmarkKey": "BARBELL_ROW",
+    "benchmarkCategoryKey": "ROW",
+    "maxWeight": 50,
+    "reps": 5,
+    "oneRepMax": 56.3,
+    "weightUnit": {
+      "unitKey": "kilogram"
+    },
+    "linkedBenchmarkExercises": [
+      {
+        "exerciseKey": "BARBELL_ROW",
+        "categoryKey": "ROW"
+      }
+    ]
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+set benchmark: garmin api: 400 Bad Request: {"message":"Cannot insert an already inserted benchmark with key: BARBELL_ROW","error":"BadRequestException"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /workout-service/benchmarks
+POST /workout-service/benchmarks
+  {
+    "benchmarkKey": "BARBELL_ROW",
+    "benchmarkCategoryKey": "ROW",
+    "maxWeight": 50,
+    "reps": 5,
+    "oneRepMax": 56.3,
+    "weightUnit": {
+      "unitKey": "kilogram"
+    },
+    "linkedBenchmarkExercises": [
+      {
+        "exerciseKey": "BARBELL_ROW",
+        "categoryKey": "ROW"
+      }
+    ]
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"set benchmark: garmin api: 400 Bad Request: {\"message\":\"Cannot insert an already inserted benchmark with key: BARBELL_ROW\",\"error\":\"BadRequestException\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /workout-service/benchmarks
+POST /workout-service/benchmarks
+  {
+    "benchmarkKey": "BARBELL_ROW",
+    "benchmarkCategoryKey": "ROW",
+    "maxWeight": 50,
+    "reps": 5,
+    "oneRepMax": 56.3,
+    "weightUnit": {
+      "unitKey": "kilogram"
+    },
+    "linkedBenchmarkExercises": [
+      {
+        "exerciseKey": "BARBELL_ROW",
+        "categoryKey": "ROW"
+      }
+    ]
+  }

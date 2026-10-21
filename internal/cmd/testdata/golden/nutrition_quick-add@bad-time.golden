@@ -1,0 +1,163 @@
+Usage error: --time takes HH:MM.
+-- args --
+nutrition
+quick-add
+2026-10-15
+--meal
+snacks
+--calories
+50
+--time
+7pm
+-- table stdout --
+-- table stderr --
+Usage: gccli nutrition quick-add --meal=MEAL --calories=KCAL <date> [flags]
+
+Log calories and macros in a meal without a food. Needs Garmin Connect+.
+
+Arguments:
+  <date>    Date of the meal (YYYY-MM-DD, today, yesterday, 3d).
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+  -m, --meal=MEAL         Meal: breakfast, lunch, dinner, snacks, or a custom
+                          meal you enabled.
+      --calories=KCAL     Calories (kcal).
+      --carbs=GRAMS       Carbohydrates in grams.
+      --protein=GRAMS     Protein in grams.
+      --fat=GRAMS         Fat in grams.
+      --name=NAME         Name of the entry, such as Coffee with milk.
+      --time=HH:MM        Meal time (HH:MM). Defaults to the start time of the
+                          meal, or to the current time for a meal without one,
+                          such as snacks.
+
+gccli: error: --time: invalid time "7pm": expected HH:MM (00:00 to 23:59)
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli nutrition quick-add --meal=MEAL --calories=KCAL <date> [flags]
+
+Log calories and macros in a meal without a food. Needs Garmin Connect+.
+
+Arguments:
+  <date>    Date of the meal (YYYY-MM-DD, today, yesterday, 3d).
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+  -m, --meal=MEAL         Meal: breakfast, lunch, dinner, snacks, or a custom
+                          meal you enabled.
+      --calories=KCAL     Calories (kcal).
+      --carbs=GRAMS       Carbohydrates in grams.
+      --protein=GRAMS     Protein in grams.
+      --fat=GRAMS         Fat in grams.
+      --name=NAME         Name of the entry, such as Coffee with milk.
+      --time=HH:MM        Meal time (HH:MM). Defaults to the start time of the
+                          meal, or to the current time for a meal without one,
+                          such as snacks.
+
+gccli: error: --time: invalid time "7pm": expected HH:MM (00:00 to 23:59)
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli nutrition quick-add --meal=MEAL --calories=KCAL <date> [flags]
+
+Log calories and macros in a meal without a food. Needs Garmin Connect+.
+
+Arguments:
+  <date>    Date of the meal (YYYY-MM-DD, today, yesterday, 3d).
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+  -m, --meal=MEAL         Meal: breakfast, lunch, dinner, snacks, or a custom
+                          meal you enabled.
+      --calories=KCAL     Calories (kcal).
+      --carbs=GRAMS       Carbohydrates in grams.
+      --protein=GRAMS     Protein in grams.
+      --fat=GRAMS         Fat in grams.
+      --name=NAME         Name of the entry, such as Coffee with milk.
+      --time=HH:MM        Meal time (HH:MM). Defaults to the start time of the
+                          meal, or to the current time for a meal without one,
+                          such as snacks.
+
+gccli: error: --time: invalid time "7pm": expected HH:MM (00:00 to 23:59)
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli nutrition quick-add --meal=MEAL --calories=KCAL <date> [flags]
+
+Log calories and macros in a meal without a food. Needs Garmin Connect+.
+
+Arguments:
+  <date>    Date of the meal (YYYY-MM-DD, today, yesterday, 3d).
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+  -m, --meal=MEAL         Meal: breakfast, lunch, dinner, snacks, or a custom
+                          meal you enabled.
+      --calories=KCAL     Calories (kcal).
+      --carbs=GRAMS       Carbohydrates in grams.
+      --protein=GRAMS     Protein in grams.
+      --fat=GRAMS         Fat in grams.
+      --name=NAME         Name of the entry, such as Coffee with milk.
+      --time=HH:MM        Meal time (HH:MM). Defaults to the start time of the
+                          meal, or to the current time for a meal without one,
+                          such as snacks.
+
+gccli: error: --time: invalid time "7pm": expected HH:MM (00:00 to 23:59)
+-- json exit --
+2
+-- json requests --

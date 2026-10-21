@@ -1,0 +1,36 @@
+Error case: the day has no food log (204), so the log ID is not there.
+-- args --
+nutrition
+delete
+2026-10-15
+bbbb2222
+--force
+-- route GET /nutrition-service/food/logs/2026-10-15 204 --
+-- table stdout --
+-- table stderr --
+no food log entry bbbb2222 on 2026-10-15
+-- table exit --
+1
+-- table requests --
+GET /nutrition-service/food/logs/2026-10-15
+-- plain stdout --
+-- plain stderr --
+no food log entry bbbb2222 on 2026-10-15
+-- plain exit --
+1
+-- plain requests --
+GET /nutrition-service/food/logs/2026-10-15
+-- plain-header stdout --
+-- plain-header stderr --
+no food log entry bbbb2222 on 2026-10-15
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /nutrition-service/food/logs/2026-10-15
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"no food log entry bbbb2222 on 2026-10-15"}}
+-- json exit --
+1
+-- json requests --
+GET /nutrition-service/food/logs/2026-10-15

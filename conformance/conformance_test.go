@@ -235,8 +235,12 @@ const napClockSkip = "the nap is for today and must end by now, which the binary
 
 const menstrualLogClockSkip = "the request body holds the time of the write, which the binary takes from its clock"
 
+const foodLogClockSkip = "the request body holds the time of the write, and the message finds the new entry by it, which the binary takes from its clock"
+
 var skipped = map[string]string{
 	"auth login":                      "the harness stubs the browser SSO login",
+	"nutrition add":                   foodLogClockSkip,
+	"nutrition quick-add":             foodLogClockSkip,
 	"health sleep naps add":           napClockSkip,
 	"wellness menstrual-log set":      menstrualLogClockSkip,
 	"body glucose":                    clockSkip,

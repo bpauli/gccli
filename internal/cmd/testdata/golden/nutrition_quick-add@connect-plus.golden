@@ -1,0 +1,121 @@
+The meals read passes without Garmin Connect+, and Garmin refuses the write with 403 ForbiddenException. The message names the plan, and the exit code stays 1 (error) with status 403.
+-- args --
+nutrition
+quick-add
+2026-10-15
+--meal
+snacks
+--calories
+50
+-- route GET /nutrition-service/meals/2026-10-15 noeol --
+{"dailyViewType":"TIMELINE_VIEW","meals":[{"mealId":101,"mealName":"BREAKFAST","startTime":"07:00:00","endTime":"08:59:00","enabled":true},{"mealId":102,"mealName":"LUNCH","startTime":"12:00:00","endTime":"13:59:00","enabled":true},{"mealId":103,"mealName":"DINNER","startTime":"18:00:00","endTime":"20:59:00","enabled":true},{"mealId":104,"mealName":"CUSTOM_MEAL_1","startTime":null,"endTime":null,"enabled":false},{"mealId":105,"mealName":"SNACKS","startTime":null,"endTime":null,"enabled":true}]}
+-- route PUT /nutrition-service/food/logs/quickAdd 403 noeol --
+{"message":"HTTP 403 Forbidden","error":"ForbiddenException"}
+-- table stdout --
+-- table stderr --
+quick add: this needs a Garmin Connect+ subscription (403 Forbidden)
+-- table exit --
+1
+-- table requests --
+GET /nutrition-service/meals/2026-10-15
+PUT /nutrition-service/food/logs/quickAdd
+  {
+    "mealDate": "2026-10-15",
+    "quickAddItems": [
+      {
+        "name": null,
+        "logId": null,
+        "logTimestamp": "2026-10-15T09:30:00.000Z",
+        "logSource": "GCW",
+        "logCategory": "QUICK_ADD",
+        "mealTime": "09:30:00",
+        "mealId": 105,
+        "action": "ADD",
+        "calories": 50,
+        "carbs": null,
+        "protein": null,
+        "fat": null
+      }
+    ]
+  }
+-- plain stdout --
+-- plain stderr --
+quick add: this needs a Garmin Connect+ subscription (403 Forbidden)
+-- plain exit --
+1
+-- plain requests --
+GET /nutrition-service/meals/2026-10-15
+PUT /nutrition-service/food/logs/quickAdd
+  {
+    "mealDate": "2026-10-15",
+    "quickAddItems": [
+      {
+        "name": null,
+        "logId": null,
+        "logTimestamp": "2026-10-15T09:30:00.000Z",
+        "logSource": "GCW",
+        "logCategory": "QUICK_ADD",
+        "mealTime": "09:30:00",
+        "mealId": 105,
+        "action": "ADD",
+        "calories": 50,
+        "carbs": null,
+        "protein": null,
+        "fat": null
+      }
+    ]
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+quick add: this needs a Garmin Connect+ subscription (403 Forbidden)
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /nutrition-service/meals/2026-10-15
+PUT /nutrition-service/food/logs/quickAdd
+  {
+    "mealDate": "2026-10-15",
+    "quickAddItems": [
+      {
+        "name": null,
+        "logId": null,
+        "logTimestamp": "2026-10-15T09:30:00.000Z",
+        "logSource": "GCW",
+        "logCategory": "QUICK_ADD",
+        "mealTime": "09:30:00",
+        "mealId": 105,
+        "action": "ADD",
+        "calories": 50,
+        "carbs": null,
+        "protein": null,
+        "fat": null
+      }
+    ]
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":403,"message":"quick add: this needs a Garmin Connect+ subscription (403 Forbidden)"}}
+-- json exit --
+1
+-- json requests --
+GET /nutrition-service/meals/2026-10-15
+PUT /nutrition-service/food/logs/quickAdd
+  {
+    "mealDate": "2026-10-15",
+    "quickAddItems": [
+      {
+        "name": null,
+        "logId": null,
+        "logTimestamp": "2026-10-15T09:30:00.000Z",
+        "logSource": "GCW",
+        "logCategory": "QUICK_ADD",
+        "mealTime": "09:30:00",
+        "mealId": 105,
+        "action": "ADD",
+        "calories": 50,
+        "carbs": null,
+        "protein": null,
+        "fat": null
+      }
+    ]
+  }

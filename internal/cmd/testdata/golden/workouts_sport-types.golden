@@ -1,0 +1,57 @@
+-- args --
+workouts
+sport-types
+-- route GET /workout-service/workout/types/sport noeol --
+[{"sportTypeId":1,"sportTypeKey":"running","displayOrder":1},{"sportTypeId":5,"sportTypeKey":"strength_training","displayOrder":3},{"sportTypeId":2,"sportTypeKey":"cycling","displayOrder":2}]
+-- table stdout --
+ID  KEY                ORDER
+1   running            1
+5   strength_training  3
+2   cycling            2
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /workout-service/workout/types/sport
+-- plain stdout --
+1	running	1
+5	strength_training	3
+2	cycling	2
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /workout-service/workout/types/sport
+-- plain-header stdout --
+ID	KEY	ORDER
+1	running	1
+5	strength_training	3
+2	cycling	2
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /workout-service/workout/types/sport
+-- json stdout --
+[
+  {
+    "sportTypeId": 1,
+    "sportTypeKey": "running",
+    "displayOrder": 1
+  },
+  {
+    "sportTypeId": 5,
+    "sportTypeKey": "strength_training",
+    "displayOrder": 3
+  },
+  {
+    "sportTypeId": 2,
+    "sportTypeKey": "cycling",
+    "displayOrder": 2
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /workout-service/workout/types/sport

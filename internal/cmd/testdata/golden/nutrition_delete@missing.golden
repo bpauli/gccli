@@ -1,0 +1,37 @@
+Error case: one log ID is not in the day log, so no prompt is shown, no DELETE is sent and the exit code is 1.
+-- args --
+nutrition
+delete
+2026-10-15
+bbbb2222
+cccc3333
+-- route GET /nutrition-service/food/logs/2026-10-15 noeol --
+{"mealDate":"2026-10-15","mealDetails":[{"meal":{"mealId":101,"mealName":"BREAKFAST"},"loggedFoods":[{"logId":"aaaa1111","logTimestamp":"2026-10-15T06:10:00.000Z","logCategory":"REGULAR_LOG","mealId":101,"mealTime":"07:00:00"}]},{"meal":{"mealId":105,"mealName":"SNACKS"},"loggedFoods":[{"logId":"bbbb2222","logTimestamp":"2026-10-15T09:30:00.000Z","logCategory":"QUICK_ADD","mealId":105,"mealTime":"09:30:00"}]}]}
+-- table stdout --
+-- table stderr --
+no food log entry cccc3333 on 2026-10-15
+-- table exit --
+1
+-- table requests --
+GET /nutrition-service/food/logs/2026-10-15
+-- plain stdout --
+-- plain stderr --
+no food log entry cccc3333 on 2026-10-15
+-- plain exit --
+1
+-- plain requests --
+GET /nutrition-service/food/logs/2026-10-15
+-- plain-header stdout --
+-- plain-header stderr --
+no food log entry cccc3333 on 2026-10-15
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /nutrition-service/food/logs/2026-10-15
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"no food log entry cccc3333 on 2026-10-15"}}
+-- json exit --
+1
+-- json requests --
+GET /nutrition-service/food/logs/2026-10-15
