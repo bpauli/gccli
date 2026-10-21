@@ -17,6 +17,7 @@ var devicesEndpoints = []Endpoint{
 	{Name: "devices.backup-summary", Method: http.MethodGet, Host: ConnectAPI, Path: "/devicebackup-service/backup/summary"},
 	{Name: "devices.historical", Method: http.MethodGet, Host: ConnectAPI, Path: "/device-service/deviceregistration/devices/historical"},
 	{Name: "devices.messages", Method: http.MethodGet, Host: ConnectAPI, Path: "/device-service/devicemessage/messages"},
+	{Name: "devices.send-message", Method: http.MethodPost, Host: ConnectAPI, Path: "/device-service/devicemessage/messages", Body: true},
 }
 
 // GetDeviceAlarms returns the alarms of all devices in one list, from the
