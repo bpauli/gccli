@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `nutrition search <query>` searches the Garmin food database. The table shows the food ID, the name, the source, and the unit and calories of the first serving. `--limit` (default 20) and `--offset` page through the results, and `--json` prints the Garmin answer. (#84)
 - `nutrition recent [<date>]` lists the foods logged recently (default today), and `nutrition favorites` (also as `nutrition favorites list`) lists the favorite foods. The table shows the serving and the quantity that were chosen, and the calories of one serving. Both take `--limit` and `--offset`. (#84)
 - These three commands need a Garmin Connect+ subscription, because Garmin refuses them for other accounts with 403. The error message now says so: `search foods: this needs a Garmin Connect+ subscription (403 Forbidden)`. The exit code stays 1, and the JSON error object keeps `"code":"error"` and `"status":403`. `nutrition food-log`, `nutrition meals` and `nutrition settings` work without Connect+. (#84)
+- `workouts send <id> [--device <device-id>]` sends a workout to a device. The device downloads it at its next sync. gccli keeps the devices that can receive the workout, as the Garmin Connect web app does: `workoutCapable`, the capability of the sport, and for a multisport workout the capability of each segment sport. Without `--device` it sends when exactly one device is left; otherwise it exits 1 before any write and lists the device IDs and names. `--json` prints the Garmin answer, with the `messageId`. (#81)
+- `devices messages cancel <id>` cancels a pending device message, such as a sent workout, until the device syncs. When Garmin answers `false` (the device synced the message, or the ID is unknown), it exits 1 with `message <id> is not pending (already delivered or unknown)`. There is no prompt: a new send restores the message. (#81)
+
+### Changed
+
+- `devices messages` is now a group with `list` and `cancel`. `devices messages` without a child runs `devices messages list`, with the same output and exit codes as before. (#81)
 
 ### Fixed
 
