@@ -23,7 +23,7 @@ Output
 - `--header` works only with `--plain`. With table or `--json` output it is a usage error (exit code 2). `GCCLI_HEADER=1` does the same as `--header` in plain mode, and table and JSON output ignore it.
 - Table and `--plain` output escape a backslash as `\\`, a tab as `\t`, a newline as `\n`, a carriage return as `\r`, a vertical tab as `\v` and a form feed as `\f`, so each record is one line. `--json` is not escaped this way.
 - Data goes to stdout, messages/errors to stderr.
-- Write commands (add, create, upload, import, update, set, rename, retype, describe, change, favorite, unfavorite, schedule, send, link, unlink, remove, reload, delete) print the Garmin response with `--json`, or `{"ok": true}` when the response is empty. Without `--json` they print a message on stderr and nothing on stdout. Only `courses import` prints a table on stdout instead (TSV with `--plain`).
+- Write commands (add, create, upload, import, update, set, clear, rename, retype, describe, change, favorite, unfavorite, schedule, send, link, unlink, remove, reload, delete) print the Garmin response with `--json`, or `{"ok": true}` when the response is empty. Without `--json` they print a message on stderr and nothing on stdout. Only `courses import` prints a table on stdout instead (TSV with `--plain`).
 - An empty answer is not an error. When Garmin sends no body, the exit code is 0 and the output follows the shape of the Garmin answer: a command whose answer is a list prints `[]` with `--json`, and a command whose answer is one object prints `{}` in every mode. A list command that prints columns (`activities list`, `activities search`, `activities types`, `body weekly`, `courses list`, `courses favorites`, `events list`, `nutrition search`, `nutrition recent`, `nutrition favorites`, `workouts list` and `workouts schedule list`) prints the header only as a table and nothing with `--plain` (the header line with `--header`); every other list command prints `[]` in every mode. `activity summary` and `exercises list` show one object, so they print `{}` with `--json` and no row otherwise. The file `internal/cmd/testdata/answer_shapes.tsv` in the gccli repository records the shape of the Garmin answer of every command that prints it (`array`, `object` or `unknown`, with the evidence for each; a shape that no Garmin answer confirmed is `unknown` and prints `{}`), and a test keeps the commands in step with it. `activities count` prints `0` (`{"count": 0}` with `--json`). A list answer without its list key gives no rows, and `--json` prints the answer unchanged.
 - Always use `--json` when parsing output programmatically.
 - Tables show distance, speed, pace, elevation and weight in the user's Garmin unit system (`metric`, `statute_us`, or `statute_uk`, which is miles with elevation in metres). Weight is kg in `metric` and lbs in both statute systems. Override with `--units <system>` or `GCCLI_UNITS`. JSON is never converted (meters, m/s, grams).
@@ -357,6 +357,7 @@ Date shortcuts
   - `<id>`: Workout ID.
   - `--device=ID`: Device ID (from 'devices list'). Needed when more than one device can receive the workout.
 - `gccli workouts types`: List workout types.
+- `gccli workouts sport-types`: List the sport types a workout can have.
 - `gccli workouts schedule add <id> <date>`: Add a workout to the schedule.
   - `<id>`: Workout ID.
   - `<date>`: Date to schedule (YYYY-MM-DD, today, yesterday, 3d).
@@ -370,6 +371,14 @@ Date shortcuts
 - `gccli workouts schedule export [flags]`: Export the workout schedule from a start date.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli workouts benchmarks list`: List strength benchmarks. Also runs as `gccli workouts benchmarks`.
+- `gccli workouts benchmarks set --weight=WEIGHT --reps=N <key> [flags]`: Set a strength benchmark from a weight and reps.
+  - `<key>`: Benchmark key, such as BARBELL_ROW (from 'workouts benchmarks list').
+  - `--weight=WEIGHT`: Heaviest weight lifted for the reps, 0.1 to 453.5 kg or 0.1 to 999.9 lbs.
+  - `--reps=N`: Number of reps lifted with the weight, 1 to 20.
+  - `--unit="kg"`: Unit of the weight: kg or lbs.
+- `gccli workouts benchmarks clear <key> [flags]`: Clear a strength benchmark.
+  - `<key>`: Benchmark key, such as BARBELL_ROW (from 'workouts benchmarks list').
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli workouts delete <id> [flags]`: Delete a workout.
   - `<id>`: Workout ID.
   - `-f, --force`: Skip confirmation prompt.
@@ -590,9 +599,37 @@ Date shortcuts
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
   - `-l, --limit=20`: Maximum number of foods to return.
   - `--offset=0`: Number of foods to skip.
+- `gccli nutrition add --query=TEXT --meal=MEAL <date> <food-id> [flags]`: Log a food of the Garmin food database in a meal. Needs Garmin Connect+.
+  - `<date>`: Date of the meal (YYYY-MM-DD, today, yesterday, 3d).
+  - `<food-id>`: Food ID, as nutrition search prints it.
+  - `-q, --query=TEXT`: Search text that finds the food, as you gave it to nutrition search. Garmin has no read of one food by ID.
+  - `-m, --meal=MEAL`: Meal: breakfast, lunch, dinner, snacks, or a custom meal you enabled.
+  - `--serving=UNIT`: Serving unit, such as g or oz, or serving ID, as nutrition search --json lists them under nutritionContents. Defaults to the first serving of the food.
+  - `--servings=1`: Number of servings. A serving can hold more than one unit, such as 100 g.
+  - `--time=HH:MM`: Meal time (HH:MM). Defaults to the start time of the meal, or to the current time for a meal without one, such as snacks.
+- `gccli nutrition quick-add --meal=MEAL --calories=KCAL <date> [flags]`: Log calories and macros in a meal without a food. Needs Garmin Connect+.
+  - `<date>`: Date of the meal (YYYY-MM-DD, today, yesterday, 3d).
+  - `-m, --meal=MEAL`: Meal: breakfast, lunch, dinner, snacks, or a custom meal you enabled.
+  - `--calories=KCAL`: Calories (kcal).
+  - `--carbs=GRAMS`: Carbohydrates in grams.
+  - `--protein=GRAMS`: Protein in grams.
+  - `--fat=GRAMS`: Fat in grams.
+  - `--name=NAME`: Name of the entry, such as Coffee with milk.
+  - `--time=HH:MM`: Meal time (HH:MM). Defaults to the start time of the meal, or to the current time for a meal without one, such as snacks.
+- `gccli nutrition delete <date> <log-id> ... [flags]`: Delete food log entries of a day. Needs Garmin Connect+.
+  - `<date>`: Date of the entries (YYYY-MM-DD, today, yesterday, 3d).
+  - `<log-id> ...`: Log ID of an entry, as the add commands print it or nutrition food-log --json lists it.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli nutrition favorites list [flags]`: List your favorite foods. Needs Garmin Connect+. Also runs as `gccli nutrition favorites [flags]`.
   - `-l, --limit=20`: Maximum number of foods to return.
   - `--offset=0`: Number of foods to skip.
+- `gccli nutrition favorites add --query=TEXT <food-id> [flags]`: Add a food to your favorite foods. Needs Garmin Connect+.
+  - `<food-id>`: Food ID, as nutrition search prints it.
+  - `-q, --query=TEXT`: Search text that finds the food, as you gave it to nutrition search. Garmin has no read of one food by ID.
+  - `--serving=UNIT`: Serving unit, such as g or oz, or serving ID, as nutrition search --json lists them under nutritionContents. Defaults to the first serving of the food.
+  - `--servings=1`: Number of servings. A serving can hold more than one unit, such as 100 g.
+- `gccli nutrition favorites remove <food-id>`: Remove a food from your favorite foods. Needs Garmin Connect+.
+  - `<food-id>`: Food ID, as nutrition favorites prints it.
 - `gccli profile view`: Show user profile. Also runs as `gccli profile`.
 - `gccli profile settings`: Show user settings.
 - `gccli profile privacy view`: Show privacy settings. Also runs as `gccli profile privacy`.
@@ -659,6 +696,12 @@ Worked examples
 - Privacy zone: `gccli profile privacy-zones add --lat 51.5 --lon=-0.12 --radius 500` prints the zone ID. A negative value needs the `=` form. The radius is 500 to 1500 meters. `gccli profile privacy-zones delete <id> --force` deletes it.
 - Race event with a goal time and training priority: `gccli events add --name "Spring 10K" --date 2026-05-10 --type running --race --distance 10km --goal 40m --training`
 - Food search: `gccli nutrition search "greek yogurt" --limit 5 --json` lists foods with their servings under `results[].nutritionContents`. `gccli nutrition recent` and `gccli nutrition favorites` list the foods logged recently and the favorite foods.
+- Log a food: search first, then pass the food ID and the same search text: `gccli nutrition add today 35718 --query apple --meal lunch --serving oz --servings 3`. Garmin has no read of one food by ID, so `--query` is required. `--serving` takes a `servingUnit` or `servingId` from the search JSON (default the first). `--servings` counts that serving, and a serving can hold more than one unit: the `g` serving of a food is often 100 g (`numberOfUnits`). The message prints the log ID of the new entry.
+- Log calories without a food: `gccli nutrition quick-add today --meal snacks --calories 120 --protein 6 --name "Greek yogurt"`. `--meal` is breakfast, lunch, dinner, snacks or an enabled custom meal. `--time HH:MM` sets the meal time (default the start of the meal, or now for snacks).
+- Undo a log entry: `gccli nutrition delete today <log-id> --force`. Find log IDs under `mealDetails[].loggedFoods[].logId` in `gccli nutrition food-log --json`. A log ID that the day does not have fails with exit 1.
+- Favorite foods: `gccli nutrition favorites add 35718 --query apple` and `gccli nutrition favorites remove 35718`. Garmin refuses an add of a food that is a favorite already (exit 1), and a remove of a food that is not a favorite fails with exit 1.
+- Strength benchmark: `gccli workouts benchmarks list` shows each benchmark key. `gccli workouts benchmarks set BARBELL_ROW --weight 50 --reps 5` saves the benchmark with an estimated one-rep max of 56.3 kg (Brzycki, as the Garmin Connect web app). A repeat run updates the same benchmark. `--unit lbs` takes pounds. `gccli workouts benchmarks clear BARBELL_ROW --force` clears it, and fails with exit code 1 when the benchmark is not set.
+- Workout sport types: `gccli workouts sport-types` lists the ID and the key of each sport type a workout can have.
 - Send a workout to a watch: `gccli workouts send <id>` sends to the only device that can receive the workout. With more such devices it fails before any write and lists their IDs; then add `--device <device-id>`. The device gets the workout at its next sync. Until then `gccli devices messages cancel <message-id>` removes it; the send prints the message ID (`messageId` with `--json`). The cancel fails with exit code 1 (`message <id> is not pending (already delivered or unknown)`) when the device has synced.
 - Access token for a script: `gccli auth token`. It refreshes an expired token first. If the refresh fails, stdout is empty and the exit code is 3.
 
@@ -672,6 +715,7 @@ When a user wants to log a strength training activity with exercises described i
 4. Create the activity: `gccli activity create --name "Upper Body" --type strength_training --duration 34m --date 2024-06-15T19:01:00`
 5. Extract the activity ID from the output (JSON: activityId field, table: "Created activity <id>").
 6. Add exercise sets: `gccli activity exercise-sets set <id> -e "CATEGORY/NAME:reps@weightkg[:dSECS][:rSECS]" [-e ...]`
+7. Optional: when a set is a new best for an exercise that has a benchmark key in `gccli workouts benchmarks list` (e.g. BARBELL_BENCH_PRESS), ask the user, then save it: `gccli workouts benchmarks set BARBELL_BENCH_PRESS --weight 20 --reps 12`
 
 Exercise set format: `CATEGORY/NAME:reps@weightkg[:dSECS][:rSECS]`
 - CATEGORY: exercise category (e.g. BENCH_PRESS, PULL_UP, LATERAL_RAISE, LUNGE, CALF_RAISE)
@@ -709,7 +753,7 @@ Notes
 - Tokens auto-refresh on 401. A 429 is retried up to 3 times when `Retry-After` is 30 s or less; a longer wait is reported as exit code 5. A 5xx is retried up to 2 times for read requests (GET) only, with exponential backoff. A write that gets a 5xx fails at once; check the state before you run it again. An API request fails when no data moves for 60 s; a transfer that keeps moving has no time limit.
 - For Garmin China accounts: `export GCCLI_DOMAIN=garmin.cn`.
 - Exit codes: 1 other error, 2 usage error, 3 login needed (ask the user to run `gccli auth login`), 4 not found, 5 rate limited (wait, then retry). With `--json`, errors are a JSON object on stderr: `{"error":{"code":"...","status":429,"message":"..."}}`.
-- `nutrition search`, `nutrition recent` and `nutrition favorites` need a Garmin Connect+ subscription. Without it they exit 1 with `this needs a Garmin Connect+ subscription (403 Forbidden)`, so tell the user. `nutrition food-log`, `nutrition meals` and `nutrition settings` work without it.
+- Every `nutrition` command except `food-log`, `meals` and `settings` needs a Garmin Connect+ subscription. Without it they exit 1 with `this needs a Garmin Connect+ subscription (403 Forbidden)`, so tell the user. `nutrition add` and `nutrition quick-add` also need nutrition set up in Garmin Connect: without it the day has no meals, and they exit 1 with `no meals on <date>: set up nutrition in Garmin Connect first`. gccli does not set up nutrition.
 - Delete commands fail without a terminal unless `--force` is set. Confirm with the user first, then pass `--force`.
 - Download formats: FIT (default), GPX, TCX, KML, CSV.
 - Workout step format: `type:duration[@target:low-high]`. Types: warmup, run, recovery, cooldown; targets: pace (min:sec), hr (bpm), power (watts), cadence.

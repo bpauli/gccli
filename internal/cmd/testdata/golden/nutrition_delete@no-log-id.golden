@@ -1,0 +1,129 @@
+Usage error: at least one log ID is required.
+-- args --
+nutrition
+delete
+2026-10-15
+-- table stdout --
+-- table stderr --
+Usage: gccli nutrition delete <date> <log-id> ... [flags]
+
+Delete food log entries of a day. Needs Garmin Connect+.
+
+Arguments:
+  <date>          Date of the entries (YYYY-MM-DD, today, yesterday, 3d).
+  <log-id> ...    Log ID of an entry, as the add commands print it or nutrition
+                  food-log --json lists it.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+  -f, --force             Skip confirmation prompt.
+
+gccli: error: expected "<log-id> ..."
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli nutrition delete <date> <log-id> ... [flags]
+
+Delete food log entries of a day. Needs Garmin Connect+.
+
+Arguments:
+  <date>          Date of the entries (YYYY-MM-DD, today, yesterday, 3d).
+  <log-id> ...    Log ID of an entry, as the add commands print it or nutrition
+                  food-log --json lists it.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+  -f, --force             Skip confirmation prompt.
+
+gccli: error: expected "<log-id> ..."
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli nutrition delete <date> <log-id> ... [flags]
+
+Delete food log entries of a day. Needs Garmin Connect+.
+
+Arguments:
+  <date>          Date of the entries (YYYY-MM-DD, today, yesterday, 3d).
+  <log-id> ...    Log ID of an entry, as the add commands print it or nutrition
+                  food-log --json lists it.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+  -f, --force             Skip confirmation prompt.
+
+gccli: error: expected "<log-id> ..."
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli nutrition delete <date> <log-id> ... [flags]
+
+Delete food log entries of a day. Needs Garmin Connect+.
+
+Arguments:
+  <date>          Date of the entries (YYYY-MM-DD, today, yesterday, 3d).
+  <log-id> ...    Log ID of an entry, as the add commands print it or nutrition
+                  food-log --json lists it.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+  -f, --force             Skip confirmation prompt.
+
+gccli: error: expected "<log-id> ..."
+-- json exit --
+2
+-- json requests --

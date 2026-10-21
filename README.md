@@ -15,7 +15,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Exercise Catalog** — browse Garmin's exercise categories and exercises for strength training
 - **Health Data** — daily summaries, steps, heart rate, resting HR, sleep, stress, HRV, SpO2, respiration, body battery, floors, training readiness/status, VO2max, fitness age, race predictions, endurance/hill scores, intensity minutes, lactate threshold, cycling FTP, critical swim speed, power curve, running economy
 - **Body Composition** - weight tracking, latest weigh-in, weekly weight summaries, body fat, muscle mass, blood pressure, glucose, FIT file encoding for composition uploads
-- **Workouts** - list, view, download as FIT, upload from JSON, update in place from JSON, create with sport types and targets (pace/HR/power/cadence), schedule (add/list/remove/export), send to a device, list workout types, strength benchmarks, delete
+- **Workouts** - list, view, download as FIT, upload from JSON, update in place from JSON, create with sport types and targets (pace/HR/power/cadence), schedule (add/list/remove/export), send to a device, list workout types and sport types, view, set and clear strength benchmarks, delete
 - **Courses** — list courses, view favorites, get full course detail, download as FIT/GPX, import GPX files as new courses, send courses directly to a device, delete courses
 - **Devices** - list registered devices, view settings, solar data, alarms, primary/last-used device, paired sensors, backup summary, historical devices, device messages, cancel a pending device message
 - **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities, gear types, add, update, retire, unretire and delete gear, list, create, rename and delete gear collections, add gear to a collection
@@ -23,7 +23,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Training** - browse and view training plans, show your active plans, list adaptive coaching workout types
 - **Profile** — user profile and settings, privacy settings, list, add and delete privacy zones, heart rate and power zones
 - **Hydration** — view and log daily water intake
-- **Nutrition** - view daily food logs, meals, and nutrition settings, search the Garmin food database, and list recent and favorite foods (the last three need Garmin Connect+)
+- **Nutrition** - view daily food logs, meals, and nutrition settings, search the Garmin food database, list recent and favorite foods, log foods and quick entries in a meal, delete log entries, and add and remove favorite foods (all but the first three need Garmin Connect+)
 - **Events** — list, list upcoming, add, and delete calendar events (races, group rides, etc.) with goals and training priority support
 - **Calendar** - add, update, move and delete calendar notes
 - **Wellness** - menstrual cycle data and calendar, menstrual daily log (view, set, delete), pregnancy summary, jet lag trips and status
@@ -512,7 +512,11 @@ gccli workouts schedule remove <schedule-id>
 gccli workouts schedule remove <schedule-id> --force
 gccli workouts schedule export --start 2024-06-01
 gccli workouts types
+gccli workouts sport-types
 gccli workouts benchmarks list
+gccli workouts benchmarks set BARBELL_ROW --weight 50 --reps 5   # 1RM 56.3 kg
+gccli workouts benchmarks set BARBELL_ROW --weight 110 --reps 5 --unit lbs
+gccli workouts benchmarks clear BARBELL_ROW --force
 gccli workouts send <id>                       # Works when one device can receive it
 gccli workouts send <id> --device <device-id>
 gccli workouts delete <id>
@@ -746,7 +750,17 @@ gccli nutrition settings [date]        # View nutrition settings
 gccli nutrition search "greek yogurt"  # Search the food database (needs Garmin Connect+)
 gccli nutrition recent                 # Foods logged recently (needs Garmin Connect+)
 gccli nutrition favorites              # Favorite foods (needs Garmin Connect+)
+
+# Writes (need Garmin Connect+ and nutrition set up in Garmin Connect)
+gccli nutrition add today 35718 --query apple --meal breakfast     # Log a food that search found
+gccli nutrition add today 35718 -q apple -m lunch --serving oz --servings 3
+gccli nutrition quick-add today --meal snacks --calories 120 --carbs 15 --name "Coffee with milk"
+gccli nutrition delete today <log-id> --force                       # Delete log entries
+gccli nutrition favorites add 35718 --query apple                  # Save a favorite food
+gccli nutrition favorites remove 35718
 ```
+
+`nutrition add` and `nutrition favorites add` need `--query`, the search text with which `nutrition search` lists the food, because Garmin has no read of one food by ID. `--serving` picks a serving by its unit or ID (default the first serving of the food). `--meal` takes the meals of the day: `breakfast`, `lunch`, `dinner`, `snacks`, or a custom meal you enabled. The meal time defaults to the start time of the meal, or to the current time for a meal without one, such as snacks. The add commands print the log ID of the new entry, and `nutrition delete` takes it.
 
 ### Training Plans
 
@@ -1194,6 +1208,7 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `<id>`: Workout ID.
   - `--device=ID`: Device ID (from 'devices list'). Needed when more than one device can receive the workout.
 - `gccli workouts types`: List workout types.
+- `gccli workouts sport-types`: List the sport types a workout can have.
 - `gccli workouts schedule add <id> <date>`: Add a workout to the schedule.
   - `<id>`: Workout ID.
   - `<date>`: Date to schedule (YYYY-MM-DD, today, yesterday, 3d).
@@ -1207,6 +1222,14 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli workouts schedule export [flags]`: Export the workout schedule from a start date.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli workouts benchmarks list`: List strength benchmarks. Also runs as `gccli workouts benchmarks`.
+- `gccli workouts benchmarks set --weight=WEIGHT --reps=N <key> [flags]`: Set a strength benchmark from a weight and reps.
+  - `<key>`: Benchmark key, such as BARBELL_ROW (from 'workouts benchmarks list').
+  - `--weight=WEIGHT`: Heaviest weight lifted for the reps, 0.1 to 453.5 kg or 0.1 to 999.9 lbs.
+  - `--reps=N`: Number of reps lifted with the weight, 1 to 20.
+  - `--unit="kg"`: Unit of the weight: kg or lbs.
+- `gccli workouts benchmarks clear <key> [flags]`: Clear a strength benchmark.
+  - `<key>`: Benchmark key, such as BARBELL_ROW (from 'workouts benchmarks list').
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli workouts delete <id> [flags]`: Delete a workout.
   - `<id>`: Workout ID.
   - `-f, --force`: Skip confirmation prompt.
@@ -1427,9 +1450,37 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
   - `-l, --limit=20`: Maximum number of foods to return.
   - `--offset=0`: Number of foods to skip.
+- `gccli nutrition add --query=TEXT --meal=MEAL <date> <food-id> [flags]`: Log a food of the Garmin food database in a meal. Needs Garmin Connect+.
+  - `<date>`: Date of the meal (YYYY-MM-DD, today, yesterday, 3d).
+  - `<food-id>`: Food ID, as nutrition search prints it.
+  - `-q, --query=TEXT`: Search text that finds the food, as you gave it to nutrition search. Garmin has no read of one food by ID.
+  - `-m, --meal=MEAL`: Meal: breakfast, lunch, dinner, snacks, or a custom meal you enabled.
+  - `--serving=UNIT`: Serving unit, such as g or oz, or serving ID, as nutrition search --json lists them under nutritionContents. Defaults to the first serving of the food.
+  - `--servings=1`: Number of servings. A serving can hold more than one unit, such as 100 g.
+  - `--time=HH:MM`: Meal time (HH:MM). Defaults to the start time of the meal, or to the current time for a meal without one, such as snacks.
+- `gccli nutrition quick-add --meal=MEAL --calories=KCAL <date> [flags]`: Log calories and macros in a meal without a food. Needs Garmin Connect+.
+  - `<date>`: Date of the meal (YYYY-MM-DD, today, yesterday, 3d).
+  - `-m, --meal=MEAL`: Meal: breakfast, lunch, dinner, snacks, or a custom meal you enabled.
+  - `--calories=KCAL`: Calories (kcal).
+  - `--carbs=GRAMS`: Carbohydrates in grams.
+  - `--protein=GRAMS`: Protein in grams.
+  - `--fat=GRAMS`: Fat in grams.
+  - `--name=NAME`: Name of the entry, such as Coffee with milk.
+  - `--time=HH:MM`: Meal time (HH:MM). Defaults to the start time of the meal, or to the current time for a meal without one, such as snacks.
+- `gccli nutrition delete <date> <log-id> ... [flags]`: Delete food log entries of a day. Needs Garmin Connect+.
+  - `<date>`: Date of the entries (YYYY-MM-DD, today, yesterday, 3d).
+  - `<log-id> ...`: Log ID of an entry, as the add commands print it or nutrition food-log --json lists it.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli nutrition favorites list [flags]`: List your favorite foods. Needs Garmin Connect+. Also runs as `gccli nutrition favorites [flags]`.
   - `-l, --limit=20`: Maximum number of foods to return.
   - `--offset=0`: Number of foods to skip.
+- `gccli nutrition favorites add --query=TEXT <food-id> [flags]`: Add a food to your favorite foods. Needs Garmin Connect+.
+  - `<food-id>`: Food ID, as nutrition search prints it.
+  - `-q, --query=TEXT`: Search text that finds the food, as you gave it to nutrition search. Garmin has no read of one food by ID.
+  - `--serving=UNIT`: Serving unit, such as g or oz, or serving ID, as nutrition search --json lists them under nutritionContents. Defaults to the first serving of the food.
+  - `--servings=1`: Number of servings. A serving can hold more than one unit, such as 100 g.
+- `gccli nutrition favorites remove <food-id>`: Remove a food from your favorite foods. Needs Garmin Connect+.
+  - `<food-id>`: Food ID, as nutrition favorites prints it.
 - `gccli profile view`: Show user profile. Also runs as `gccli profile`.
 - `gccli profile settings`: Show user settings.
 - `gccli profile privacy view`: Show privacy settings. Also runs as `gccli profile privacy`.

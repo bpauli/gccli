@@ -1,0 +1,39 @@
+A meal name that is not an enabled meal of the day fails before the write, and the message lists the meals. A custom meal that is not enabled is not listed.
+-- args --
+nutrition
+quick-add
+2026-10-15
+--meal
+custom-meal-1
+--calories
+50
+-- route GET /nutrition-service/meals/2026-10-15 noeol --
+{"dailyViewType":"TIMELINE_VIEW","meals":[{"mealId":101,"mealName":"BREAKFAST","startTime":"07:00:00","endTime":"08:59:00","enabled":true},{"mealId":102,"mealName":"LUNCH","startTime":"12:00:00","endTime":"13:59:00","enabled":true},{"mealId":103,"mealName":"DINNER","startTime":"18:00:00","endTime":"20:59:00","enabled":true},{"mealId":104,"mealName":"CUSTOM_MEAL_1","startTime":null,"endTime":null,"enabled":false},{"mealId":105,"mealName":"SNACKS","startTime":null,"endTime":null,"enabled":true}]}
+-- table stdout --
+-- table stderr --
+no meal "custom-meal-1" on 2026-10-15: choose breakfast, lunch, dinner or snacks
+-- table exit --
+1
+-- table requests --
+GET /nutrition-service/meals/2026-10-15
+-- plain stdout --
+-- plain stderr --
+no meal "custom-meal-1" on 2026-10-15: choose breakfast, lunch, dinner or snacks
+-- plain exit --
+1
+-- plain requests --
+GET /nutrition-service/meals/2026-10-15
+-- plain-header stdout --
+-- plain-header stderr --
+no meal "custom-meal-1" on 2026-10-15: choose breakfast, lunch, dinner or snacks
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /nutrition-service/meals/2026-10-15
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"no meal \"custom-meal-1\" on 2026-10-15: choose breakfast, lunch, dinner or snacks"}}
+-- json exit --
+1
+-- json requests --
+GET /nutrition-service/meals/2026-10-15

@@ -1,0 +1,40 @@
+The search has no food with the ID, so no write is sent, and the exit code is 1.
+-- args --
+nutrition
+add
+2026-10-15
+1001
+--query
+apple
+-m
+lunch
+-- route GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50 noeol --
+{"moreDataAvailable":false,"results":[{"type":"FOOD","foodMetaData":{"foodId":"1002","foodName":"Test Pie","foodType":"GENERIC","source":"FATSECRET","regionCode":"US","languageCode":"en"},"foodImages":[],"nutritionContents":[{"servingId":"2101","servingUnit":"slice","numberOfUnits":1.0,"calories":300}],"isRecent":false,"isFavorite":false}]}
+-- table stdout --
+-- table stderr --
+no food 1001 in the search results for "apple": give --query the search text with which nutrition search lists it
+-- table exit --
+1
+-- table requests --
+GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50
+-- plain stdout --
+-- plain stderr --
+no food 1001 in the search results for "apple": give --query the search text with which nutrition search lists it
+-- plain exit --
+1
+-- plain requests --
+GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50
+-- plain-header stdout --
+-- plain-header stderr --
+no food 1001 in the search results for "apple": give --query the search text with which nutrition search lists it
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"no food 1001 in the search results for \"apple\": give --query the search text with which nutrition search lists it"}}
+-- json exit --
+1
+-- json requests --
+GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50

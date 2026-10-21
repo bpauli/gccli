@@ -1,0 +1,136 @@
+Error case: Garmin answers the write with 400, so the exit code is 1 (error).
+-- args --
+nutrition
+add
+2026-10-15
+1001
+--query
+apple
+-m
+lunch
+-- route GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50 noeol --
+{"moreDataAvailable":false,"results":[{"type":"FOOD","foodMetaData":{"foodId":"1001","foodName":"Test Apple","foodType":"GENERIC","source":"FATSECRET","regionCode":"US","languageCode":"en"},"foodImages":[],"nutritionContents":[{"servingId":"2001","servingUnit":"medium","numberOfUnits":1.0,"calories":95},{"servingId":"2002","servingUnit":"cup, sliced","numberOfUnits":1.0,"calories":56.5}],"isRecent":false,"isFavorite":false}]}
+-- route GET /nutrition-service/meals/2026-10-15 noeol --
+{"dailyViewType":"TIMELINE_VIEW","meals":[{"mealId":101,"mealName":"BREAKFAST","startTime":"07:00:00","endTime":"08:59:00","enabled":true},{"mealId":102,"mealName":"LUNCH","startTime":"12:00:00","endTime":"13:59:00","enabled":true},{"mealId":103,"mealName":"DINNER","startTime":"18:00:00","endTime":"20:59:00","enabled":true},{"mealId":104,"mealName":"CUSTOM_MEAL_1","startTime":null,"endTime":null,"enabled":false},{"mealId":105,"mealName":"SNACKS","startTime":null,"endTime":null,"enabled":true}]}
+-- route PUT /nutrition-service/food/logs 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+log food: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50
+GET /nutrition-service/meals/2026-10-15
+PUT /nutrition-service/food/logs
+  {
+    "foodLogItems": [
+      {
+        "logId": null,
+        "logTimestamp": "2026-10-15T09:30:00.000Z",
+        "logSource": "GCW",
+        "logCategory": "REGULAR_LOG",
+        "mealTime": "12:00:00",
+        "action": "ADD",
+        "mealId": 102,
+        "foodId": "1001",
+        "servingId": "2001",
+        "source": "FATSECRET",
+        "regionCode": "US",
+        "languageCode": "en",
+        "servingQty": 1,
+        "customMealId": null
+      }
+    ],
+    "mealDate": "2026-10-15"
+  }
+-- plain stdout --
+-- plain stderr --
+log food: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50
+GET /nutrition-service/meals/2026-10-15
+PUT /nutrition-service/food/logs
+  {
+    "foodLogItems": [
+      {
+        "logId": null,
+        "logTimestamp": "2026-10-15T09:30:00.000Z",
+        "logSource": "GCW",
+        "logCategory": "REGULAR_LOG",
+        "mealTime": "12:00:00",
+        "action": "ADD",
+        "mealId": 102,
+        "foodId": "1001",
+        "servingId": "2001",
+        "source": "FATSECRET",
+        "regionCode": "US",
+        "languageCode": "en",
+        "servingQty": 1,
+        "customMealId": null
+      }
+    ],
+    "mealDate": "2026-10-15"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+log food: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50
+GET /nutrition-service/meals/2026-10-15
+PUT /nutrition-service/food/logs
+  {
+    "foodLogItems": [
+      {
+        "logId": null,
+        "logTimestamp": "2026-10-15T09:30:00.000Z",
+        "logSource": "GCW",
+        "logCategory": "REGULAR_LOG",
+        "mealTime": "12:00:00",
+        "action": "ADD",
+        "mealId": 102,
+        "foodId": "1001",
+        "servingId": "2001",
+        "source": "FATSECRET",
+        "regionCode": "US",
+        "languageCode": "en",
+        "servingQty": 1,
+        "customMealId": null
+      }
+    ],
+    "mealDate": "2026-10-15"
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"log food: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50
+GET /nutrition-service/meals/2026-10-15
+PUT /nutrition-service/food/logs
+  {
+    "foodLogItems": [
+      {
+        "logId": null,
+        "logTimestamp": "2026-10-15T09:30:00.000Z",
+        "logSource": "GCW",
+        "logCategory": "REGULAR_LOG",
+        "mealTime": "12:00:00",
+        "action": "ADD",
+        "mealId": 102,
+        "foodId": "1001",
+        "servingId": "2001",
+        "source": "FATSECRET",
+        "regionCode": "US",
+        "languageCode": "en",
+        "servingQty": 1,
+        "customMealId": null
+      }
+    ],
+    "mealDate": "2026-10-15"
+  }

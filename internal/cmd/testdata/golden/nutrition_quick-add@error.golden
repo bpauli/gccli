@@ -1,0 +1,121 @@
+Error case: Garmin answers the write with 400, so the exit code is 1 (error).
+-- args --
+nutrition
+quick-add
+2026-10-15
+--meal
+snacks
+--calories
+50
+-- route GET /nutrition-service/meals/2026-10-15 noeol --
+{"dailyViewType":"TIMELINE_VIEW","meals":[{"mealId":101,"mealName":"BREAKFAST","startTime":"07:00:00","endTime":"08:59:00","enabled":true},{"mealId":102,"mealName":"LUNCH","startTime":"12:00:00","endTime":"13:59:00","enabled":true},{"mealId":103,"mealName":"DINNER","startTime":"18:00:00","endTime":"20:59:00","enabled":true},{"mealId":104,"mealName":"CUSTOM_MEAL_1","startTime":null,"endTime":null,"enabled":false},{"mealId":105,"mealName":"SNACKS","startTime":null,"endTime":null,"enabled":true}]}
+-- route PUT /nutrition-service/food/logs/quickAdd 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+quick add: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /nutrition-service/meals/2026-10-15
+PUT /nutrition-service/food/logs/quickAdd
+  {
+    "mealDate": "2026-10-15",
+    "quickAddItems": [
+      {
+        "name": null,
+        "logId": null,
+        "logTimestamp": "2026-10-15T09:30:00.000Z",
+        "logSource": "GCW",
+        "logCategory": "QUICK_ADD",
+        "mealTime": "09:30:00",
+        "mealId": 105,
+        "action": "ADD",
+        "calories": 50,
+        "carbs": null,
+        "protein": null,
+        "fat": null
+      }
+    ]
+  }
+-- plain stdout --
+-- plain stderr --
+quick add: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /nutrition-service/meals/2026-10-15
+PUT /nutrition-service/food/logs/quickAdd
+  {
+    "mealDate": "2026-10-15",
+    "quickAddItems": [
+      {
+        "name": null,
+        "logId": null,
+        "logTimestamp": "2026-10-15T09:30:00.000Z",
+        "logSource": "GCW",
+        "logCategory": "QUICK_ADD",
+        "mealTime": "09:30:00",
+        "mealId": 105,
+        "action": "ADD",
+        "calories": 50,
+        "carbs": null,
+        "protein": null,
+        "fat": null
+      }
+    ]
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+quick add: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /nutrition-service/meals/2026-10-15
+PUT /nutrition-service/food/logs/quickAdd
+  {
+    "mealDate": "2026-10-15",
+    "quickAddItems": [
+      {
+        "name": null,
+        "logId": null,
+        "logTimestamp": "2026-10-15T09:30:00.000Z",
+        "logSource": "GCW",
+        "logCategory": "QUICK_ADD",
+        "mealTime": "09:30:00",
+        "mealId": 105,
+        "action": "ADD",
+        "calories": 50,
+        "carbs": null,
+        "protein": null,
+        "fat": null
+      }
+    ]
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"quick add: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /nutrition-service/meals/2026-10-15
+PUT /nutrition-service/food/logs/quickAdd
+  {
+    "mealDate": "2026-10-15",
+    "quickAddItems": [
+      {
+        "name": null,
+        "logId": null,
+        "logTimestamp": "2026-10-15T09:30:00.000Z",
+        "logSource": "GCW",
+        "logCategory": "QUICK_ADD",
+        "mealTime": "09:30:00",
+        "mealId": 105,
+        "action": "ADD",
+        "calories": 50,
+        "carbs": null,
+        "protein": null,
+        "fat": null
+      }
+    ]
+  }
