@@ -15,7 +15,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Exercise Catalog** — browse Garmin's exercise categories and exercises for strength training
 - **Health Data** — daily summaries, steps, heart rate, resting HR, sleep, stress, HRV, SpO2, respiration, body battery, floors, training readiness/status, VO2max, fitness age, race predictions, endurance/hill scores, intensity minutes, lactate threshold, cycling FTP, critical swim speed, power curve, running economy
 - **Body Composition** - weight tracking, latest weigh-in, weekly weight summaries, body fat, muscle mass, blood pressure, glucose, FIT file encoding for composition uploads
-- **Workouts** — list, view, download as FIT, upload from JSON, update in place from JSON, create with sport types and targets (pace/HR/power/cadence), schedule (add/list/remove/export), list workout types, strength benchmarks, delete
+- **Workouts** - list, view, download as FIT, upload from JSON, update in place from JSON, create with sport types and targets (pace/HR/power/cadence), schedule (add/list/remove/export), list workout types and sport types, view, set and clear strength benchmarks, delete
 - **Courses** — list courses, view favorites, get full course detail, download as FIT/GPX, import GPX files as new courses, send courses directly to a device, delete courses
 - **Devices** - list registered devices, view settings, solar data, alarms, primary/last-used device, paired sensors, backup summary, historical devices, device messages
 - **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities, gear types, add, update, retire, unretire and delete gear, list, create, rename and delete gear collections, add gear to a collection
@@ -512,7 +512,11 @@ gccli workouts schedule remove <schedule-id>
 gccli workouts schedule remove <schedule-id> --force
 gccli workouts schedule export --start 2024-06-01
 gccli workouts types
+gccli workouts sport-types
 gccli workouts benchmarks list
+gccli workouts benchmarks set BARBELL_ROW --weight 50 --reps 5   # 1RM 56.3 kg
+gccli workouts benchmarks set BARBELL_ROW --weight 110 --reps 5 --unit lbs
+gccli workouts benchmarks clear BARBELL_ROW --force
 gccli workouts delete <id>
 
 # Create a running workout with pace targets
