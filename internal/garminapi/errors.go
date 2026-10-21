@@ -56,6 +56,20 @@ func (e *GarminAPIError) Error() string {
 	return fmt.Sprintf("garmin api: %s", status)
 }
 
+// SubscriptionRequiredError is Garmin's 403 refusal of an endpoint for an
+// account without the Subscription that the endpoint requires. Err is that
+// 403, so errors.As to *GarminAPIError still finds it.
+type SubscriptionRequiredError struct {
+	Subscription Subscription
+	Err          *GarminAPIError
+}
+
+func (e *SubscriptionRequiredError) Error() string {
+	return fmt.Sprintf("this needs a %s subscription (%d %s)", e.Subscription, e.Err.StatusCode, http.StatusText(e.Err.StatusCode))
+}
+
+func (e *SubscriptionRequiredError) Unwrap() error { return e.Err }
+
 // InvalidFileFormatError indicates an unsupported file format was requested.
 type InvalidFileFormatError struct {
 	Format string
