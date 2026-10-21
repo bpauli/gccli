@@ -105,7 +105,7 @@ type NutritionAddCmd struct {
 	Query    FreeText `help:"Search text that finds the food, as you gave it to nutrition search. Garmin has no read of one food by ID." required:"" short:"q" placeholder:"TEXT"`
 	Meal     FreeText `help:"Meal: breakfast, lunch, dinner, snacks, or a custom meal you enabled." required:"" short:"m" placeholder:"MEAL"`
 	Serving  string   `help:"Serving unit, such as g or oz, or serving ID, as nutrition search --json lists them under nutritionContents. Defaults to the first serving of the food." placeholder:"UNIT"`
-	Servings float64  `help:"Number of servings." default:"1"`
+	Servings float64  `help:"Number of servings. A serving can hold more than one unit, such as 100 g." default:"1"`
 	Time     Clock    `help:"Meal time (HH:MM). Defaults to the start time of the meal, or to the current time for a meal without one, such as snacks." placeholder:"HH:MM"`
 }
 
@@ -168,7 +168,7 @@ type NutritionFavoritesAddCmd struct {
 	FoodID   ID       `arg:"" name:"food-id" help:"Food ID, as nutrition search prints it."`
 	Query    FreeText `help:"Search text that finds the food, as you gave it to nutrition search. Garmin has no read of one food by ID." required:"" short:"q" placeholder:"TEXT"`
 	Serving  string   `help:"Serving unit, such as g or oz, or serving ID, as nutrition search --json lists them under nutritionContents. Defaults to the first serving of the food." placeholder:"UNIT"`
-	Servings float64  `help:"Number of servings." default:"1"`
+	Servings float64  `help:"Number of servings. A serving can hold more than one unit, such as 100 g." default:"1"`
 }
 
 func (c *NutritionFavoritesAddCmd) Validate() error {

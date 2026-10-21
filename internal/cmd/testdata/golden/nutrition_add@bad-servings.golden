@@ -43,7 +43,8 @@ Flags:
                           as nutrition search --json lists them under
                           nutritionContents. Defaults to the first serving of
                           the food.
-      --servings=1        Number of servings.
+      --servings=1        Number of servings. A serving can hold more than one
+                          unit, such as 100 g.
       --time=HH:MM        Meal time (HH:MM). Defaults to the start time of the
                           meal, or to the current time for a meal without one,
                           such as snacks.
@@ -85,7 +86,8 @@ Flags:
                           as nutrition search --json lists them under
                           nutritionContents. Defaults to the first serving of
                           the food.
-      --servings=1        Number of servings.
+      --servings=1        Number of servings. A serving can hold more than one
+                          unit, such as 100 g.
       --time=HH:MM        Meal time (HH:MM). Defaults to the start time of the
                           meal, or to the current time for a meal without one,
                           such as snacks.
@@ -127,7 +129,8 @@ Flags:
                           as nutrition search --json lists them under
                           nutritionContents. Defaults to the first serving of
                           the food.
-      --servings=1        Number of servings.
+      --servings=1        Number of servings. A serving can hold more than one
+                          unit, such as 100 g.
       --time=HH:MM        Meal time (HH:MM). Defaults to the start time of the
                           meal, or to the current time for a meal without one,
                           such as snacks.
@@ -169,7 +172,8 @@ Flags:
                           as nutrition search --json lists them under
                           nutritionContents. Defaults to the first serving of
                           the food.
-      --servings=1        Number of servings.
+      --servings=1        Number of servings. A serving can hold more than one
+                          unit, such as 100 g.
       --time=HH:MM        Meal time (HH:MM). Defaults to the start time of the
                           meal, or to the current time for a meal without one,
                           such as snacks.
