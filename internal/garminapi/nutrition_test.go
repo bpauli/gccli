@@ -17,6 +17,7 @@ func TestNutritionEndpoints(t *testing.T) {
 		{"nutrition.food-search", map[string]string{"query": "apple pie", "start": "0", "limit": "20"}, "GET /nutrition-service/food/search?searchExpression=apple+pie&start=0&limit=20"},
 		{"nutrition.recent-foods", map[string]string{"date": "2024-01-15", "start": "0", "limit": "20"}, "GET /nutrition-service/food/recent/2024-01-15?start=0&limit=20"},
 		{"nutrition.favorite-foods", map[string]string{"start": "0", "limit": "20"}, "GET /nutrition-service/favorite?start=0&limit=20&includeContent=true"},
+		{"nutrition.log-food", nil, "PUT /nutrition-service/food/logs"},
 		{"nutrition.quick-add", nil, "PUT /nutrition-service/food/logs/quickAdd"},
 	})
 }
@@ -26,7 +27,7 @@ func TestNutritionEndpoints(t *testing.T) {
 // without it, and the food database, recent foods, favorites and every
 // write do not.
 func TestNutritionConnectPlusRows(t *testing.T) {
-	gated := []string{"nutrition.food-search", "nutrition.recent-foods", "nutrition.favorite-foods", "nutrition.quick-add"}
+	gated := []string{"nutrition.food-search", "nutrition.recent-foods", "nutrition.favorite-foods", "nutrition.log-food", "nutrition.quick-add"}
 	for _, e := range nutritionEndpoints {
 		if want := slices.Contains(gated, e.Name); (e.Requires == ConnectPlus) != want {
 			t.Errorf("%s: Requires = %v, want Connect+ %v", e.Name, e.Requires, want)
@@ -83,5 +84,34 @@ func TestLogTimestampIsUTCWithMilliseconds(t *testing.T) {
 	at := time.Date(2026, 10, 21, 15, 5, 9, 123456789, time.FixedZone("CEST", 2*60*60))
 	if got, want := LogTimestamp(at), "2026-10-21T13:05:09.123Z"; got != want {
 		t.Errorf("LogTimestamp = %q, want %q", got, want)
+	}
+}
+
+func TestFindFoodReadsAtMostFivePages(t *testing.T) {
+	var starts []string
+	_, client := testServer(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		starts = append(starts, r.URL.Query().Get("start"))
+		_, _ = w.Write([]byte(`{"moreDataAvailable":true,"results":[{"foodMetaData":{"foodId":"7"}}]}`))
+	}))
+	_, ok, err := client.FindFood(context.Background(), "apple", "1001")
+	if err != nil || ok {
+		t.Fatalf("FindFood = ok %v, %v, want not found and no error", ok, err)
+	}
+	if want := []string{"0", "50", "100", "150", "200"}; !slices.Equal(starts, want) {
+		t.Errorf("start values = %v, want %v", starts, want)
+	}
+}
+
+func TestFindFoodTakesTheServingsOfTheFood(t *testing.T) {
+	_, client := testServer(t, http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		_, _ = w.Write([]byte(`{"moreDataAvailable":true,"results":[{"foodMetaData":{"foodId":"7"},"nutritionContents":[{"servingId":"9"}]},{"foodMetaData":{"foodId":"1001","foodName":"Apple","source":"FATSECRET","regionCode":"US","languageCode":"en"},"nutritionContents":[{"servingId":"2001","servingUnit":"medium"},{"servingId":"2002","servingUnit":"g"}]}]}`))
+	}))
+	food, ok, err := client.FindFood(context.Background(), "apple", "1001")
+	if err != nil || !ok {
+		t.Fatalf("FindFood = ok %v, %v, want found", ok, err)
+	}
+	want := Food{ID: "1001", Name: "Apple", Source: "FATSECRET", RegionCode: "US", LanguageCode: "en", Servings: []Serving{{"2001", "medium"}, {"2002", "g"}}}
+	if food.ID != want.ID || food.Name != want.Name || food.Source != want.Source || food.RegionCode != want.RegionCode || food.LanguageCode != want.LanguageCode || !slices.Equal(food.Servings, want.Servings) {
+		t.Errorf("FindFood = %+v, want %+v", food, want)
 	}
 }

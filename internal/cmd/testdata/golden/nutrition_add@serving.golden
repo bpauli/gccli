@@ -1,0 +1,176 @@
+--serving picks a serving by its unit, without regard to case. --servings sets the quantity, and --time the meal time.
+-- args --
+nutrition
+add
+2026-10-15
+1001
+--query
+apple
+-m
+lunch
+--serving
+Cup, Sliced
+--servings
+2.5
+--time
+12:30
+-- route GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50 noeol --
+{"moreDataAvailable":false,"results":[{"type":"FOOD","foodMetaData":{"foodId":"1001","foodName":"Test Apple","foodType":"GENERIC","source":"FATSECRET","regionCode":"US","languageCode":"en"},"foodImages":[],"nutritionContents":[{"servingId":"2001","servingUnit":"medium","numberOfUnits":1.0,"calories":95},{"servingId":"2002","servingUnit":"cup, sliced","numberOfUnits":1.0,"calories":56.5}],"isRecent":false,"isFavorite":false}]}
+-- route GET /nutrition-service/meals/2026-10-15 noeol --
+{"dailyViewType":"TIMELINE_VIEW","meals":[{"mealId":101,"mealName":"BREAKFAST","startTime":"07:00:00","endTime":"08:59:00","enabled":true},{"mealId":102,"mealName":"LUNCH","startTime":"12:00:00","endTime":"13:59:00","enabled":true},{"mealId":103,"mealName":"DINNER","startTime":"18:00:00","endTime":"20:59:00","enabled":true},{"mealId":104,"mealName":"CUSTOM_MEAL_1","startTime":null,"endTime":null,"enabled":false},{"mealId":105,"mealName":"SNACKS","startTime":null,"endTime":null,"enabled":true}]}
+-- route PUT /nutrition-service/food/logs noeol --
+{"mealDate":"2026-10-15","mealDetails":[{"meal":{"mealId":101,"mealName":"BREAKFAST"},"loggedFoods":[{"logId":"aaaa1111","logTimestamp":"2026-10-15T06:10:00.000Z","logCategory":"REGULAR_LOG","mealId":101,"mealTime":"07:00:00"}]},{"meal":{"mealId":102,"mealName":"LUNCH"},"loggedFoods":[{"logId":"bbbb2222","logTimestamp":"2026-10-15T09:30:00.000Z","logCategory":"REGULAR_LOG","mealId":102,"mealTime":"12:30:00"}]}]}
+-- table stdout --
+-- table stderr --
+Added Test Apple (2.5 x cup, sliced) to lunch on 2026-10-15 (log ID: bbbb2222)
+-- table exit --
+0
+-- table requests --
+GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50
+GET /nutrition-service/meals/2026-10-15
+PUT /nutrition-service/food/logs
+  {
+    "foodLogItems": [
+      {
+        "logId": null,
+        "logTimestamp": "2026-10-15T09:30:00.000Z",
+        "logSource": "GCW",
+        "logCategory": "REGULAR_LOG",
+        "mealTime": "12:30:00",
+        "action": "ADD",
+        "mealId": 102,
+        "foodId": "1001",
+        "servingId": "2002",
+        "source": "FATSECRET",
+        "regionCode": "US",
+        "languageCode": "en",
+        "servingQty": 2.5,
+        "customMealId": null
+      }
+    ],
+    "mealDate": "2026-10-15"
+  }
+-- plain stdout --
+-- plain stderr --
+Added Test Apple (2.5 x cup, sliced) to lunch on 2026-10-15 (log ID: bbbb2222)
+-- plain exit --
+0
+-- plain requests --
+GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50
+GET /nutrition-service/meals/2026-10-15
+PUT /nutrition-service/food/logs
+  {
+    "foodLogItems": [
+      {
+        "logId": null,
+        "logTimestamp": "2026-10-15T09:30:00.000Z",
+        "logSource": "GCW",
+        "logCategory": "REGULAR_LOG",
+        "mealTime": "12:30:00",
+        "action": "ADD",
+        "mealId": 102,
+        "foodId": "1001",
+        "servingId": "2002",
+        "source": "FATSECRET",
+        "regionCode": "US",
+        "languageCode": "en",
+        "servingQty": 2.5,
+        "customMealId": null
+      }
+    ],
+    "mealDate": "2026-10-15"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Added Test Apple (2.5 x cup, sliced) to lunch on 2026-10-15 (log ID: bbbb2222)
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50
+GET /nutrition-service/meals/2026-10-15
+PUT /nutrition-service/food/logs
+  {
+    "foodLogItems": [
+      {
+        "logId": null,
+        "logTimestamp": "2026-10-15T09:30:00.000Z",
+        "logSource": "GCW",
+        "logCategory": "REGULAR_LOG",
+        "mealTime": "12:30:00",
+        "action": "ADD",
+        "mealId": 102,
+        "foodId": "1001",
+        "servingId": "2002",
+        "source": "FATSECRET",
+        "regionCode": "US",
+        "languageCode": "en",
+        "servingQty": 2.5,
+        "customMealId": null
+      }
+    ],
+    "mealDate": "2026-10-15"
+  }
+-- json stdout --
+{
+  "mealDate": "2026-10-15",
+  "mealDetails": [
+    {
+      "meal": {
+        "mealId": 101,
+        "mealName": "BREAKFAST"
+      },
+      "loggedFoods": [
+        {
+          "logId": "aaaa1111",
+          "logTimestamp": "2026-10-15T06:10:00.000Z",
+          "logCategory": "REGULAR_LOG",
+          "mealId": 101,
+          "mealTime": "07:00:00"
+        }
+      ]
+    },
+    {
+      "meal": {
+        "mealId": 102,
+        "mealName": "LUNCH"
+      },
+      "loggedFoods": [
+        {
+          "logId": "bbbb2222",
+          "logTimestamp": "2026-10-15T09:30:00.000Z",
+          "logCategory": "REGULAR_LOG",
+          "mealId": 102,
+          "mealTime": "12:30:00"
+        }
+      ]
+    }
+  ]
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50
+GET /nutrition-service/meals/2026-10-15
+PUT /nutrition-service/food/logs
+  {
+    "foodLogItems": [
+      {
+        "logId": null,
+        "logTimestamp": "2026-10-15T09:30:00.000Z",
+        "logSource": "GCW",
+        "logCategory": "REGULAR_LOG",
+        "mealTime": "12:30:00",
+        "action": "ADD",
+        "mealId": 102,
+        "foodId": "1001",
+        "servingId": "2002",
+        "source": "FATSECRET",
+        "regionCode": "US",
+        "languageCode": "en",
+        "servingQty": 2.5,
+        "customMealId": null
+      }
+    ],
+    "mealDate": "2026-10-15"
+  }

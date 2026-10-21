@@ -1,0 +1,42 @@
+A serving that the food does not have fails before the meals read and the write, and the message lists the servings.
+-- args --
+nutrition
+add
+2026-10-15
+1001
+--query
+apple
+-m
+lunch
+--serving
+tbsp
+-- route GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50 noeol --
+{"moreDataAvailable":false,"results":[{"type":"FOOD","foodMetaData":{"foodId":"1001","foodName":"Test Apple","foodType":"GENERIC","source":"FATSECRET","regionCode":"US","languageCode":"en"},"foodImages":[],"nutritionContents":[{"servingId":"2001","servingUnit":"medium","numberOfUnits":1.0,"calories":95},{"servingId":"2002","servingUnit":"cup, sliced","numberOfUnits":1.0,"calories":56.5}],"isRecent":false,"isFavorite":false}]}
+-- table stdout --
+-- table stderr --
+food 1001 has no serving "tbsp": choose "medium" or "cup, sliced"
+-- table exit --
+1
+-- table requests --
+GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50
+-- plain stdout --
+-- plain stderr --
+food 1001 has no serving "tbsp": choose "medium" or "cup, sliced"
+-- plain exit --
+1
+-- plain requests --
+GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50
+-- plain-header stdout --
+-- plain-header stderr --
+food 1001 has no serving "tbsp": choose "medium" or "cup, sliced"
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"food 1001 has no serving \"tbsp\": choose \"medium\" or \"cup, sliced\""}}
+-- json exit --
+1
+-- json requests --
+GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50

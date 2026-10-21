@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/bpauli/gccli/internal/garminapi"
@@ -76,6 +77,7 @@ var nutritionGroup = Group{Name: "nutrition", Help: "View and log nutrition data
 		Verb:     "list recent foods",
 		Output:   Rows{Noun: "recent foods", Items: "recentFoods", Columns: savedFoodColumns},
 	},
+	Custom{Name: "add", Help: "Log a food of the Garmin food database in a meal. Needs Garmin Connect+.", Cmd: &NutritionAddCmd{}},
 	Custom{Name: "quick-add", Help: "Log calories and macros in a meal without a food. Needs Garmin Connect+.", Cmd: &NutritionQuickAddCmd{}},
 	Group{Name: "favorites", Help: "List your favorite foods. Needs Garmin Connect+.", Children: []Node{
 		Leaf{
@@ -90,6 +92,70 @@ var nutritionGroup = Group{Name: "nutrition", Help: "View and log nutrition data
 		},
 	}},
 }}
+
+// NutritionAddCmd logs a food of the Garmin food database in a meal.
+type NutritionAddCmd struct {
+	Date     Date     `arg:"" help:"Date of the meal (YYYY-MM-DD, today, yesterday, 3d)."`
+	FoodID   ID       `arg:"" name:"food-id" help:"Food ID, as nutrition search prints it."`
+	Query    FreeText `help:"Search text that finds the food, as you gave it to nutrition search. Garmin has no read of one food by ID." required:"" short:"q" placeholder:"TEXT"`
+	Meal     FreeText `help:"Meal: breakfast, lunch, dinner, snacks, or a custom meal you enabled." required:"" short:"m" placeholder:"MEAL"`
+	Serving  string   `help:"Serving unit, such as g or oz, or serving ID, as nutrition search --json lists them under nutritionContents. Defaults to the first serving of the food." placeholder:"UNIT"`
+	Servings float64  `help:"Number of servings." default:"1"`
+	Time     Clock    `help:"Meal time (HH:MM). Defaults to the start time of the meal, or to the current time for a meal without one, such as snacks." placeholder:"HH:MM"`
+}
+
+func (c *NutritionAddCmd) Validate() error {
+	if c.Servings <= 0 {
+		return fmt.Errorf("--servings must be more than 0, got %g", c.Servings)
+	}
+	return nil
+}
+
+func (c *NutritionAddCmd) Run(g *Globals) error {
+	client, err := resolveClient(g)
+	if err != nil {
+		return err
+	}
+	food, serving, err := findFood(g, client, string(c.Query), string(c.FoodID), c.Serving)
+	if err != nil {
+		return err
+	}
+	entry, err := mealEntry(g, client, c.Date, c.Meal, c.Time)
+	if err != nil {
+		return err
+	}
+	data, err := client.LogFood(g.Context, garminapi.FoodLogEntry{MealEntry: entry, Food: food, Serving: serving, Quantity: c.Servings})
+	if err != nil {
+		return fmt.Errorf("log food: %w", err)
+	}
+	return reportWrite(g, data, "Added %s (%g x %s) to %s on %s%s", food.Name, c.Servings, serving.Unit, mealName(entry.Meal), c.Date, logIDNote(data, entry))
+}
+
+// findFood finds the food with ID id in the results of a search for query,
+// and its serving with the unit or ID serving, or its first serving.
+func findFood(g *Globals, client *garminapi.Client, query, id, serving string) (garminapi.Food, garminapi.Serving, error) {
+	food, ok, err := client.FindFood(g.Context, query, id)
+	if err != nil {
+		return food, garminapi.Serving{}, fmt.Errorf("find food: %w", err)
+	}
+	if !ok {
+		return food, garminapi.Serving{}, fmt.Errorf("no food %s in the search results for %q: give --query the search text with which nutrition search lists it", id, query)
+	}
+	if len(food.Servings) == 0 {
+		return food, garminapi.Serving{}, fmt.Errorf("food %s has no serving", id)
+	}
+	if serving == "" {
+		return food, food.Servings[0], nil
+	}
+	var units []string
+	for _, s := range food.Servings {
+		if s.ID == serving || strings.EqualFold(s.Unit, strings.TrimSpace(serving)) {
+			return food, s, nil
+		}
+		units = append(units, strconv.Quote(s.Unit))
+	}
+	return food, garminapi.Serving{}, fmt.Errorf("food %s has no serving %q: choose %s", id, serving, orList(units))
+}
 
 // NutritionQuickAddCmd logs calories and macros in a meal without a food.
 type NutritionQuickAddCmd struct {

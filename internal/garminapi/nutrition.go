@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -15,6 +16,7 @@ var nutritionEndpoints = []Endpoint{
 	{Name: "nutrition.food-search", Method: http.MethodGet, Host: ConnectAPI, Path: "/nutrition-service/food/search?searchExpression={query}&start={start}&limit={limit}", Requires: ConnectPlus},
 	{Name: "nutrition.recent-foods", Method: http.MethodGet, Host: ConnectAPI, Path: "/nutrition-service/food/recent/{date}?start={start}&limit={limit}", Requires: ConnectPlus},
 	{Name: "nutrition.favorite-foods", Method: http.MethodGet, Host: ConnectAPI, Path: "/nutrition-service/favorite?start={start}&limit={limit}&includeContent=true", Requires: ConnectPlus},
+	{Name: "nutrition.log-food", Method: http.MethodPut, Host: ConnectAPI, Path: "/nutrition-service/food/logs", Body: true, Requires: ConnectPlus},
 	{Name: "nutrition.quick-add", Method: http.MethodPut, Host: ConnectAPI, Path: "/nutrition-service/food/logs/quickAdd", Body: true, Requires: ConnectPlus},
 }
 
@@ -51,6 +53,66 @@ func (c *Client) Meals(ctx context.Context, date string) ([]Meal, error) {
 		}
 	}
 	return enabled, nil
+}
+
+// Food is a food of the Garmin food database with the fields that a log
+// entry and a favorite need.
+type Food struct {
+	ID           string    `json:"foodId"`
+	Name         string    `json:"foodName"`
+	Source       string    `json:"source"`
+	RegionCode   string    `json:"regionCode"`
+	LanguageCode string    `json:"languageCode"`
+	Servings     []Serving `json:"-"`
+}
+
+// Serving is one serving size of a food.
+type Serving struct {
+	ID   string `json:"servingId"`
+	Unit string `json:"servingUnit"`
+}
+
+// foodSearchPage and foodSearchPages bound FindFood to the first 250
+// results of a search.
+const (
+	foodSearchPage  = 50
+	foodSearchPages = 5
+)
+
+// FindFood returns the food with ID id from the results of a food search
+// for query. Garmin has no read of one food by ID, and a log entry needs
+// the source, region, language and serving of the food. ok is false when
+// the first 250 results do not have it.
+func (c *Client) FindFood(ctx context.Context, query, id string) (food Food, ok bool, err error) {
+	for page := range foodSearchPages {
+		args := map[string]string{"query": query, "start": strconv.Itoa(page * foodSearchPage), "limit": strconv.Itoa(foodSearchPage)}
+		data, err := c.Call(ctx, "nutrition.food-search", args, nil)
+		if err != nil {
+			return Food{}, false, err
+		}
+		var res struct {
+			More    bool `json:"moreDataAvailable"`
+			Results []struct {
+				Food     Food      `json:"foodMetaData"`
+				Servings []Serving `json:"nutritionContents"`
+			} `json:"results"`
+		}
+		if len(data) > 0 {
+			if err := json.Unmarshal(data, &res); err != nil {
+				return Food{}, false, fmt.Errorf("parse foods: %w", err)
+			}
+		}
+		for _, r := range res.Results {
+			if r.Food.ID == id {
+				r.Food.Servings = r.Servings
+				return r.Food, true, nil
+			}
+		}
+		if !res.More {
+			break
+		}
+	}
+	return Food{}, false, nil
 }
 
 // LoggedFood is one entry of the food log of a day.
@@ -137,4 +199,43 @@ func (c *Client) QuickAdd(ctx context.Context, e QuickAddEntry) (json.RawMessage
 		return nil, err
 	}
 	return c.Call(ctx, "nutrition.quick-add", nil, body)
+}
+
+// FoodLogEntry is a quantity of one serving of a food logged in a meal.
+type FoodLogEntry struct {
+	MealEntry
+	Food     Food
+	Serving  Serving
+	Quantity float64
+}
+
+// LogFood logs e and returns the food log of its day.
+func (c *Client) LogFood(ctx context.Context, e FoodLogEntry) (json.RawMessage, error) {
+	type item struct {
+		LogID        *string     `json:"logId"`
+		LogTimestamp string      `json:"logTimestamp"`
+		LogSource    string      `json:"logSource"`
+		LogCategory  string      `json:"logCategory"`
+		MealTime     string      `json:"mealTime"`
+		Action       string      `json:"action"`
+		MealID       json.Number `json:"mealId"`
+		FoodID       string      `json:"foodId"`
+		ServingID    string      `json:"servingId"`
+		Source       string      `json:"source"`
+		RegionCode   string      `json:"regionCode"`
+		LanguageCode string      `json:"languageCode"`
+		ServingQty   float64     `json:"servingQty"`
+		CustomMealID *string     `json:"customMealId"`
+	}
+	it := item{
+		LogTimestamp: LogTimestamp(e.LoggedAt), LogSource: "GCW", LogCategory: "REGULAR_LOG",
+		MealTime: e.mealTime(), Action: "ADD", MealID: e.Meal.ID,
+		FoodID: e.Food.ID, ServingID: e.Serving.ID, Source: e.Food.Source,
+		RegionCode: e.Food.RegionCode, LanguageCode: e.Food.LanguageCode, ServingQty: e.Quantity,
+	}
+	body, err := json.Marshal(map[string]any{"mealDate": e.Date, "foodLogItems": []item{it}})
+	if err != nil {
+		return nil, err
+	}
+	return c.Call(ctx, "nutrition.log-food", nil, body)
 }
