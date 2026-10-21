@@ -577,6 +577,10 @@ Date shortcuts
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli nutrition settings [<date>]`: Show nutrition settings for a date.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
+- `gccli nutrition search <query> [flags]`: Search the Garmin food database. Needs Garmin Connect+.
+  - `<query>`: Text to search for, such as a food name.
+  - `-l, --limit=20`: Maximum number of foods to return.
+  - `--offset=0`: Number of foods to skip.
 - `gccli profile view`: Show user profile. Also runs as `gccli profile`.
 - `gccli profile settings`: Show user settings.
 - `gccli profile privacy view`: Show privacy settings. Also runs as `gccli profile privacy`.
