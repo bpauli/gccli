@@ -244,6 +244,12 @@ Commands:
   nutrition food-log               Show daily food log for a date.
   nutrition meals                  Show meal summaries for a date.
   nutrition settings               Show nutrition settings for a date.
+  nutrition search                 Search the Garmin food database. Needs Garmin
+                                   Connect+.
+  nutrition recent                 List the foods you logged recently. Needs
+                                   Garmin Connect+.
+  nutrition favorites list         List your favorite foods. Needs Garmin
+                                   Connect+.
   training plans                   List training plans.
   training plan                    Show a specific training plan.
   training active                  Show active training plans.
@@ -1465,9 +1471,36 @@ Flags:
       --version           Print version information.
 
 Commands:
-  nutrition food-log    Show daily food log for a date.
-  nutrition meals       Show meal summaries for a date.
-  nutrition settings    Show nutrition settings for a date.
+  nutrition food-log          Show daily food log for a date.
+  nutrition meals             Show meal summaries for a date.
+  nutrition settings          Show nutrition settings for a date.
+  nutrition search            Search the Garmin food database. Needs Garmin
+                              Connect+.
+  nutrition recent            List the foods you logged recently. Needs Garmin
+                              Connect+.
+  nutrition favorites list    List your favorite foods. Needs Garmin Connect+.
+
+$ gccli nutrition favorites --help
+Usage: gccli nutrition favorites <command>
+
+List your favorite foods. Needs Garmin Connect+.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  nutrition favorites list    List your favorite foods. Needs Garmin Connect+.
 
 $ gccli training --help
 Usage: gccli training <command> [flags]

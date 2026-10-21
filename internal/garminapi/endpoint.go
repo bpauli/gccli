@@ -43,6 +43,26 @@ const (
 	ConnectAPI
 )
 
+// Subscription is a paid Garmin plan that an endpoint needs. The zero value
+// is none.
+type Subscription uint8
+
+const (
+	_ Subscription = iota
+	// ConnectPlus is Garmin Connect+. Garmin refuses its endpoints for an
+	// account without it with 403 {"error":"ForbiddenException"}.
+	ConnectPlus
+)
+
+var subscriptionNames = [...]string{ConnectPlus: "Garmin Connect+"}
+
+func (s Subscription) String() string {
+	if int(s) < len(subscriptionNames) && subscriptionNames[s] != "" {
+		return subscriptionNames[s]
+	}
+	return fmt.Sprintf("Subscription(%d)", uint8(s))
+}
+
 // Endpoint is one Garmin request that the CLI sends as the table states it.
 //
 // Name is <area>.<action>, where area is the Garmin service, such as
@@ -67,6 +87,9 @@ type Endpoint struct {
 	// Body is true when the request carries a JSON body. Call rejects a body
 	// on an endpoint without one, and a missing body on one with it.
 	Body bool
+	// Requires is the plan the account needs. Call turns Garmin's refusal
+	// of an account without it into a SubscriptionRequiredError.
+	Requires Subscription
 }
 
 // Param gives rules to the placeholder with the same Name in Path.
@@ -146,9 +169,27 @@ func (c *Client) call(ctx context.Context, r *route, args map[string]string, bod
 	}
 	resp, err := c.do(ctx, req)
 	if err != nil {
-		return nil, err
+		return nil, r.refusal(err)
 	}
 	return jsonResult(resp), nil
+}
+
+// refusal returns err as a SubscriptionRequiredError when it is the 403 that
+// Garmin gives an account without the plan the row requires. Only the
+// ForbiddenException body counts: a 403 can also come from Garmin's edge,
+// and that one must not claim a missing plan.
+func (r *route) refusal(err error) error {
+	var apiErr *GarminAPIError
+	if r.Requires == 0 || !errors.As(err, &apiErr) || apiErr.StatusCode != http.StatusForbidden {
+		return err
+	}
+	var body struct {
+		Error string `json:"error"`
+	}
+	if json.Unmarshal([]byte(apiErr.Message), &body) != nil || body.Error != "ForbiddenException" {
+		return err
+	}
+	return &SubscriptionRequiredError{Subscription: r.Requires, Err: apiErr}
 }
 
 func jsonResult(resp response) json.RawMessage {
@@ -275,6 +316,8 @@ func compile(e Endpoint) (*route, error) {
 		return nil, fmt.Errorf("method %q is not GET, POST, PUT, PATCH or DELETE", e.Method)
 	case e.Host != ConnectAPI:
 		return nil, fmt.Errorf("unknown host %d", e.Host)
+	case int(e.Requires) >= len(subscriptionNames):
+		return nil, fmt.Errorf("unknown subscription %d", e.Requires)
 	case e.Body && e.Method == http.MethodGet:
 		return nil, errors.New("a GET has no body")
 	case !strings.HasPrefix(e.Path, "/"):
