@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `nutrition favorites add <food-id> --query <text>` saves a food as a favorite, with `--serving` and `--servings` as in `nutrition add`. `nutrition favorites remove <food-id>` removes one, and fails with exit 1 for a food that is not a favorite. (#84)
 - These five commands need Garmin Connect+ too, and say so for an account without it. (#84)
 - `nutrition search --offset` must be a multiple of `--limit`, because Garmin starts a page only there. Another offset is now a usage error (exit 2) before the request, not a Garmin 400. (#84)
+- `workouts benchmarks set <key> --weight W --reps N` saves a strength benchmark, and `workouts benchmarks clear <key>` clears it. `set` computes the one-rep max like the Garmin Connect web app (Brzycki, rounded to 0.1). `--unit` is kg (the default) or lbs, as for `body add-weight`. `set` sends a POST for a benchmark that is not set and a PUT for one that is set, so a repeat run updates the same benchmark. `clear` fails with exit code 1 when the benchmark is not set. `workouts sport-types` lists the sport types a workout can have. (#81)
 
 ### Fixed
 

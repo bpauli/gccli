@@ -1,0 +1,37 @@
+Error case: the benchmark has no ID, so there is nothing to clear. No prompt is shown, no DELETE is sent and the exit code is 1.
+-- args --
+workouts
+benchmarks
+clear
+BARBELL_ROW
+--force
+-- route GET /workout-service/benchmarks noeol --
+[{"benchmarkCategoryKey":"CURL","benchmarkKey":"BARBELL_BICEPS_CURL"},{"benchmarkCategoryKey":"ROW","benchmarkKey":"BARBELL_ROW"},{"benchmarkCategoryKey":"SQUAT","benchmarkKey":"BARBELL_BACK_SQUAT"}]
+-- table stdout --
+-- table stderr --
+benchmark BARBELL_ROW is not set
+-- table exit --
+1
+-- table requests --
+GET /workout-service/benchmarks
+-- plain stdout --
+-- plain stderr --
+benchmark BARBELL_ROW is not set
+-- plain exit --
+1
+-- plain requests --
+GET /workout-service/benchmarks
+-- plain-header stdout --
+-- plain-header stderr --
+benchmark BARBELL_ROW is not set
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /workout-service/benchmarks
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"benchmark BARBELL_ROW is not set"}}
+-- json exit --
+1
+-- json requests --
+GET /workout-service/benchmarks

@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/bpauli/gccli/internal/garminapi"
 )
 
 var workoutsGroup = Group{Name: "workouts", Help: "Manage workouts.", Children: []Node{
@@ -18,6 +20,15 @@ var workoutsGroup = Group{Name: "workouts", Help: "Manage workouts.", Children: 
 	Custom{Name: "create", Help: "Create a workout with sport type and optional targets.", Cmd: &WorkoutCreateCmd{}},
 	Custom{Name: "copy", Help: "Copy a workout.", Cmd: &WorkoutCopyCmd{}},
 	Leaf{Name: "types", Help: "List workout types.", Endpoint: "workouts.types", Verb: "get workout types", Output: JSON{}},
+	Leaf{
+		Name: "sport-types", Help: "List the sport types a workout can have.",
+		Endpoint: "workouts.sport-types", Verb: "get workout sport types",
+		Output: Rows{Noun: "sport types", Columns: []Column{
+			{Label: "ID", Path: "sportTypeId"},
+			{Label: "KEY", Path: "sportTypeKey"},
+			{Label: "ORDER", Path: "displayOrder"},
+		}},
+	},
 	workoutScheduleGroup,
 	workoutBenchmarksGroup,
 	Leaf{
@@ -237,9 +248,94 @@ var workoutScheduleGroup = Group{Name: "schedule", Help: "Manage scheduled worko
 	},
 }}
 
-var workoutBenchmarksGroup = Group{Name: "benchmarks", Help: "View strength benchmarks.", Children: []Node{
+var workoutBenchmarksGroup = Group{Name: "benchmarks", Help: "View, set and clear strength benchmarks.", Children: []Node{
 	Leaf{Name: "list", Help: "List strength benchmarks.", Default: true, Endpoint: "workouts.benchmarks", Verb: "get benchmarks", Output: JSON{List: true}},
+	Custom{Name: "set", Help: "Set a strength benchmark from a weight and reps.", Cmd: &WorkoutBenchmarkSetCmd{}},
+	Custom{Name: "clear", Help: "Clear a strength benchmark.", Cmd: &WorkoutBenchmarkClearCmd{}},
 }}
+
+// benchmarkUnits maps each --unit value to its Garmin unit key and the
+// heaviest weight the Garmin Connect web app accepts in that unit.
+var benchmarkUnits = map[string]struct {
+	key string
+	max float64
+}{
+	"kg":  {key: "kilogram", max: 453.5},
+	"lbs": {key: "pound", max: 999.9},
+}
+
+const (
+	minBenchmarkWeight = 0.1
+	maxBenchmarkReps   = 20
+)
+
+// WorkoutBenchmarkSetCmd sets a strength benchmark.
+type WorkoutBenchmarkSetCmd struct {
+	Key    FreeText `arg:"" help:"Benchmark key, such as BARBELL_ROW (from 'workouts benchmarks list')."`
+	Weight float64  `required:"" placeholder:"WEIGHT" help:"Heaviest weight lifted for the reps, 0.1 to 453.5 kg or 0.1 to 999.9 lbs."`
+	Reps   int      `required:"" placeholder:"N" help:"Number of reps lifted with the weight, 1 to 20."`
+	Unit   string   `help:"Unit of the weight: kg or lbs." default:"kg" enum:"kg,lbs"`
+}
+
+func (c *WorkoutBenchmarkSetCmd) Validate() error {
+	limit := benchmarkUnits[c.Unit].max
+	// The negated range check also refuses NaN.
+	switch {
+	case c.Reps < 1 || c.Reps > maxBenchmarkReps:
+		return fmt.Errorf("--reps must be between 1 and %d", maxBenchmarkReps)
+	case !(c.Weight >= minBenchmarkWeight && c.Weight <= limit):
+		return fmt.Errorf("--weight must be between %g and %g %s", minBenchmarkWeight, limit, c.Unit)
+	}
+	return nil
+}
+
+func (c *WorkoutBenchmarkSetCmd) Run(g *Globals) error {
+	client, err := resolveClient(g)
+	if err != nil {
+		return err
+	}
+	key := strings.ToUpper(string(c.Key))
+	v := garminapi.BenchmarkValue{Weight: c.Weight, Reps: c.Reps, UnitKey: benchmarkUnits[c.Unit].key}
+	data, err := client.SetBenchmark(g.Context, key, v)
+	if err != nil {
+		return fmt.Errorf("set benchmark: %w", err)
+	}
+	return reportWrite(g, data, "Set benchmark %s to %g %s x %d (1RM %g %s)", key, c.Weight, c.Unit, c.Reps, v.OneRepMax(), c.Unit)
+}
+
+// WorkoutBenchmarkClearCmd clears a strength benchmark.
+type WorkoutBenchmarkClearCmd struct {
+	Key   FreeText `arg:"" help:"Benchmark key, such as BARBELL_ROW (from 'workouts benchmarks list')."`
+	Force bool     `help:"Skip confirmation prompt." short:"f"`
+}
+
+func (c *WorkoutBenchmarkClearCmd) Run(g *Globals) error {
+	client, err := resolveClient(g)
+	if err != nil {
+		return err
+	}
+	key := strings.ToUpper(string(c.Key))
+	b, err := client.Benchmark(g.Context, key)
+	if err != nil {
+		return fmt.Errorf("clear benchmark: %w", err)
+	}
+	if b.ID == 0 {
+		return fmt.Errorf("benchmark %s is not set", key)
+	}
+	ok, err := confirm(g.Stderr, fmt.Sprintf("Clear benchmark %s?", key), c.Force)
+	if err != nil {
+		return err
+	}
+	if !ok {
+		g.UI.Infof("Cancelled")
+		return nil
+	}
+	data, err := client.Call(g.Context, "workouts.delete-benchmark", map[string]string{"benchmarkID": strconv.FormatInt(b.ID, 10)}, nil)
+	if err != nil {
+		return fmt.Errorf("clear benchmark: %w", err)
+	}
+	return reportWrite(g, data, "Cleared benchmark %s", key)
+}
 
 // WorkoutScheduleAddCmd schedules a workout on a calendar date.
 type WorkoutScheduleAddCmd struct {
