@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -79,6 +81,7 @@ var nutritionGroup = Group{Name: "nutrition", Help: "View and log nutrition data
 	},
 	Custom{Name: "add", Help: "Log a food of the Garmin food database in a meal. Needs Garmin Connect+.", Cmd: &NutritionAddCmd{}},
 	Custom{Name: "quick-add", Help: "Log calories and macros in a meal without a food. Needs Garmin Connect+.", Cmd: &NutritionQuickAddCmd{}},
+	Custom{Name: "delete", Help: "Delete food log entries of a day. Needs Garmin Connect+.", Cmd: &NutritionDeleteCmd{}},
 	Group{Name: "favorites", Help: "List your favorite foods. Needs Garmin Connect+.", Children: []Node{
 		Leaf{
 			Name: "list", Help: "List your favorite foods. Needs Garmin Connect+.", Default: true,
@@ -198,6 +201,61 @@ func (c *NutritionQuickAddCmd) Run(g *Globals) error {
 		return fmt.Errorf("quick add: %w", err)
 	}
 	return reportWrite(g, data, "Added %g kcal to %s on %s%s", c.Calories, mealName(entry.Meal), c.Date, logIDNote(data, entry))
+}
+
+// NutritionDeleteCmd deletes food log entries of a day.
+type NutritionDeleteCmd struct {
+	Date   Date `arg:"" help:"Date of the entries (YYYY-MM-DD, today, yesterday, 3d)."`
+	LogIDs []ID `arg:"" name:"log-id" help:"Log ID of an entry, as the add commands print it or nutrition food-log --json lists it."`
+	Force  bool `help:"Skip confirmation prompt." short:"f"`
+}
+
+func (c *NutritionDeleteCmd) Run(g *Globals) error {
+	client, err := resolveClient(g)
+	if err != nil {
+		return err
+	}
+	date := map[string]string{"date": string(c.Date)}
+	// A DELETE of a log ID that does not exist also answers 204, so the day
+	// log tells whether each entry is there.
+	data, err := client.Call(g.Context, "nutrition.daily-food-log", date, nil)
+	if err != nil {
+		return fmt.Errorf("get food log: %w", err)
+	}
+	logged, err := garminapi.ParseFoodLog(data)
+	if err != nil {
+		return err
+	}
+	var ids []string
+	for _, id := range c.LogIDs {
+		if !slices.ContainsFunc(logged, func(f garminapi.LoggedFood) bool { return f.LogID == string(id) }) {
+			return fmt.Errorf("no food log entry %s on %s", id, c.Date)
+		}
+		if !slices.Contains(ids, string(id)) {
+			ids = append(ids, string(id))
+		}
+	}
+	what := "food log entry " + ids[0]
+	if len(ids) > 1 {
+		what = strconv.Itoa(len(ids)) + " food log entries"
+	}
+	ok, err := confirm(g.Stderr, fmt.Sprintf("Delete %s on %s?", what, c.Date), c.Force)
+	if err != nil {
+		return err
+	}
+	if !ok {
+		g.UI.Infof("Cancelled")
+		return nil
+	}
+	body, err := json.Marshal(map[string][]string{"logIds": ids})
+	if err != nil {
+		return err
+	}
+	data, err = client.Call(g.Context, "nutrition.delete-food-logs", date, body)
+	if err != nil {
+		return fmt.Errorf("delete food log entries: %w", err)
+	}
+	return reportWrite(g, data, "Deleted %s on %s", what, c.Date)
 }
 
 // mealEntry resolves the meal named name on date and the meal time: at, or

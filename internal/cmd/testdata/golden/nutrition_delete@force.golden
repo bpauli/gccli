@@ -1,0 +1,70 @@
+--force skips the prompt. A log ID given twice goes once into the body.
+-- args --
+nutrition
+delete
+2026-10-15
+aaaa1111
+bbbb2222
+aaaa1111
+--force
+-- route GET /nutrition-service/food/logs/2026-10-15 noeol --
+{"mealDate":"2026-10-15","mealDetails":[{"meal":{"mealId":101,"mealName":"BREAKFAST"},"loggedFoods":[{"logId":"aaaa1111","logTimestamp":"2026-10-15T06:10:00.000Z","logCategory":"REGULAR_LOG","mealId":101,"mealTime":"07:00:00"}]},{"meal":{"mealId":105,"mealName":"SNACKS"},"loggedFoods":[{"logId":"bbbb2222","logTimestamp":"2026-10-15T09:30:00.000Z","logCategory":"QUICK_ADD","mealId":105,"mealTime":"09:30:00"}]}]}
+-- route DELETE /nutrition-service/food/logs/2026-10-15 204 --
+-- table stdout --
+-- table stderr --
+Deleted 2 food log entries on 2026-10-15
+-- table exit --
+0
+-- table requests --
+GET /nutrition-service/food/logs/2026-10-15
+DELETE /nutrition-service/food/logs/2026-10-15
+  {
+    "logIds": [
+      "aaaa1111",
+      "bbbb2222"
+    ]
+  }
+-- plain stdout --
+-- plain stderr --
+Deleted 2 food log entries on 2026-10-15
+-- plain exit --
+0
+-- plain requests --
+GET /nutrition-service/food/logs/2026-10-15
+DELETE /nutrition-service/food/logs/2026-10-15
+  {
+    "logIds": [
+      "aaaa1111",
+      "bbbb2222"
+    ]
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Deleted 2 food log entries on 2026-10-15
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /nutrition-service/food/logs/2026-10-15
+DELETE /nutrition-service/food/logs/2026-10-15
+  {
+    "logIds": [
+      "aaaa1111",
+      "bbbb2222"
+    ]
+  }
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /nutrition-service/food/logs/2026-10-15
+DELETE /nutrition-service/food/logs/2026-10-15
+  {
+    "logIds": [
+      "aaaa1111",
+      "bbbb2222"
+    ]
+  }

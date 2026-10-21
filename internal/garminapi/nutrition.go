@@ -17,6 +17,7 @@ var nutritionEndpoints = []Endpoint{
 	{Name: "nutrition.recent-foods", Method: http.MethodGet, Host: ConnectAPI, Path: "/nutrition-service/food/recent/{date}?start={start}&limit={limit}", Requires: ConnectPlus},
 	{Name: "nutrition.favorite-foods", Method: http.MethodGet, Host: ConnectAPI, Path: "/nutrition-service/favorite?start={start}&limit={limit}&includeContent=true", Requires: ConnectPlus},
 	{Name: "nutrition.log-food", Method: http.MethodPut, Host: ConnectAPI, Path: "/nutrition-service/food/logs", Body: true, Requires: ConnectPlus},
+	{Name: "nutrition.delete-food-logs", Method: http.MethodDelete, Host: ConnectAPI, Path: "/nutrition-service/food/logs/{date}", Body: true, Requires: ConnectPlus},
 	{Name: "nutrition.quick-add", Method: http.MethodPut, Host: ConnectAPI, Path: "/nutrition-service/food/logs/quickAdd", Body: true, Requires: ConnectPlus},
 }
 

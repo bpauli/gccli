@@ -602,6 +602,10 @@ Date shortcuts
   - `--fat=GRAMS`: Fat in grams.
   - `--name=NAME`: Name of the entry, such as Coffee with milk.
   - `--time=HH:MM`: Meal time (HH:MM). Defaults to the start time of the meal, or to the current time for a meal without one, such as snacks.
+- `gccli nutrition delete <date> <log-id> ... [flags]`: Delete food log entries of a day. Needs Garmin Connect+.
+  - `<date>`: Date of the entries (YYYY-MM-DD, today, yesterday, 3d).
+  - `<log-id> ...`: Log ID of an entry, as the add commands print it or nutrition food-log --json lists it.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli nutrition favorites list [flags]`: List your favorite foods. Needs Garmin Connect+. Also runs as `gccli nutrition favorites [flags]`.
   - `-l, --limit=20`: Maximum number of foods to return.
   - `--offset=0`: Number of foods to skip.
