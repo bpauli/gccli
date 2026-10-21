@@ -244,6 +244,8 @@ Commands:
   nutrition food-log               Show daily food log for a date.
   nutrition meals                  Show meal summaries for a date.
   nutrition settings               Show nutrition settings for a date.
+  nutrition search                 Search the Garmin food database. Needs Garmin
+                                   Connect+.
   training plans                   List training plans.
   training plan                    Show a specific training plan.
   training active                  Show active training plans.
@@ -1468,6 +1470,7 @@ Commands:
   nutrition food-log    Show daily food log for a date.
   nutrition meals       Show meal summaries for a date.
   nutrition settings    Show nutrition settings for a date.
+  nutrition search      Search the Garmin food database. Needs Garmin Connect+.
 
 $ gccli training --help
 Usage: gccli training <command> [flags]
