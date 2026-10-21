@@ -68,6 +68,8 @@ Commands:
   workouts create                  Create a workout with sport type and optional
                                    targets.
   workouts copy                    Copy a workout.
+  workouts send                    Send a workout to a device at its next sync.
+                                   Undo: devices messages cancel.
   workouts types                   List workout types.
   workouts schedule add            Add a workout to the schedule.
   workouts schedule list           List scheduled workouts for a date.
@@ -515,6 +517,8 @@ Commands:
   workouts create             Create a workout with sport type and optional
                               targets.
   workouts copy               Copy a workout.
+  workouts send               Send a workout to a device at its next sync. Undo:
+                              devices messages cancel.
   workouts types              List workout types.
   workouts schedule add       Add a workout to the schedule.
   workouts schedule list      List scheduled workouts for a date.

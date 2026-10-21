@@ -1,0 +1,105 @@
+--device picks one of several devices.
+-- args --
+workouts
+send
+111
+--device
+3003
+-- route GET /workout-service/workout/111 --
+{"workoutId":111,"workoutName":"Tempo Run","sportType":{"sportTypeId":1,"sportTypeKey":"running"}}
+-- route GET /device-service/deviceregistration/devices --
+[{"deviceId":3001,"displayName":"Forerunner 265","workoutCapable":true,"runningWorkoutCapable":true,"cyclingWorkoutCapable":false,"swimWorkoutCapable":true,"swimWorkout2Capable":false,"workoutFileType":"FIT"},{"deviceId":3003,"displayName":"fenix 8","workoutCapable":true,"runningWorkoutCapable":true,"cyclingWorkoutCapable":true,"swimWorkoutCapable":true,"swimWorkout2Capable":true,"multisportWorkoutCapable":true,"workoutFileType":"FIT"},{"deviceId":3004,"displayName":"vivoactive HR","workoutCapable":false,"workoutFileType":null}]
+-- route POST /device-service/devicemessage/messages --
+[{"deviceId":3003,"deviceName":"fenix 8","messageId":889,"messageStatus":"new","metaDataId":111}]
+-- table stdout --
+-- table stderr --
+Sent workout "Tempo Run" to fenix 8 (message 889). It reaches the device at its next sync. To cancel it before then, run: gccli devices messages cancel 889
+-- table exit --
+0
+-- table requests --
+GET /workout-service/workout/111
+GET /device-service/deviceregistration/devices
+POST /device-service/devicemessage/messages
+  [
+    {
+      "deviceId": 3003,
+      "fileType": "FIT",
+      "groupName": null,
+      "messageName": "Tempo Run",
+      "messageType": "workouts",
+      "messageUrl": "workout-service/workout/FIT/111",
+      "metaDataId": 111,
+      "priority": 1
+    }
+  ]
+-- plain stdout --
+-- plain stderr --
+Sent workout "Tempo Run" to fenix 8 (message 889). It reaches the device at its next sync. To cancel it before then, run: gccli devices messages cancel 889
+-- plain exit --
+0
+-- plain requests --
+GET /workout-service/workout/111
+GET /device-service/deviceregistration/devices
+POST /device-service/devicemessage/messages
+  [
+    {
+      "deviceId": 3003,
+      "fileType": "FIT",
+      "groupName": null,
+      "messageName": "Tempo Run",
+      "messageType": "workouts",
+      "messageUrl": "workout-service/workout/FIT/111",
+      "metaDataId": 111,
+      "priority": 1
+    }
+  ]
+-- plain-header stdout --
+-- plain-header stderr --
+Sent workout "Tempo Run" to fenix 8 (message 889). It reaches the device at its next sync. To cancel it before then, run: gccli devices messages cancel 889
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /workout-service/workout/111
+GET /device-service/deviceregistration/devices
+POST /device-service/devicemessage/messages
+  [
+    {
+      "deviceId": 3003,
+      "fileType": "FIT",
+      "groupName": null,
+      "messageName": "Tempo Run",
+      "messageType": "workouts",
+      "messageUrl": "workout-service/workout/FIT/111",
+      "metaDataId": 111,
+      "priority": 1
+    }
+  ]
+-- json stdout --
+[
+  {
+    "deviceId": 3003,
+    "deviceName": "fenix 8",
+    "messageId": 889,
+    "messageStatus": "new",
+    "metaDataId": 111
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /workout-service/workout/111
+GET /device-service/deviceregistration/devices
+POST /device-service/devicemessage/messages
+  [
+    {
+      "deviceId": 3003,
+      "fileType": "FIT",
+      "groupName": null,
+      "messageName": "Tempo Run",
+      "messageType": "workouts",
+      "messageUrl": "workout-service/workout/FIT/111",
+      "metaDataId": 111,
+      "priority": 1
+    }
+  ]

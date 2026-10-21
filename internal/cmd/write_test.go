@@ -170,6 +170,18 @@ var writeCases = map[string]writeCase{
 		human:    "Copied workout 9 to \"Tempo B\" (ID: 10)\n",
 		fallback: "Copied workout 9\n",
 	},
+	"workouts send": {
+		args: []string{"9"},
+		routes: map[string]string{
+			"GET /workout-service/workout/9":                 `{"workoutName":"Tempo"}`,
+			"GET /device-service/deviceregistration/devices": `[{"deviceId":5,"displayName":"Edge","workoutCapable":true}]`,
+			"POST /device-service/devicemessage/messages":    `[{"messageId":7}]`,
+		},
+		result:   "POST /device-service/devicemessage/messages",
+		json:     "[\n  {\n    \"messageId\": 7\n  }\n]\n",
+		human:    "Sent workout \"Tempo\" to Edge (message 7). It reaches the device at its next sync. To cancel it before then, run: gccli devices messages cancel 7\n",
+		fallback: "Sent workout \"Tempo\" to Edge. It reaches the device at its next sync. To cancel it before then, find the message in: gccli devices messages\n",
+	},
 	"workouts schedule add": {
 		args:   []string{"9", "2024-01-15"},
 		routes: map[string]string{"POST /workout-service/schedule/9": `{"workoutScheduleId":10}`},

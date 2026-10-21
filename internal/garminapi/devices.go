@@ -68,3 +68,73 @@ func (c *Client) GetDeviceAlarms(ctx context.Context) (json.RawMessage, error) {
 	}
 	return json.RawMessage(result), nil
 }
+
+// Device is a registered device from the devices.list answer.
+type Device struct {
+	ID              json.Number
+	Name            string
+	WorkoutFileType string
+	// flags holds every boolean field of the answer, such as workoutCapable.
+	flags map[string]bool
+}
+
+func (d *Device) UnmarshalJSON(b []byte) error {
+	var named struct {
+		ID              json.Number `json:"deviceId"`
+		Name            string      `json:"displayName"`
+		WorkoutFileType string      `json:"workoutFileType"`
+	}
+	if err := json.Unmarshal(b, &named); err != nil {
+		return err
+	}
+	var fields map[string]json.RawMessage
+	if err := json.Unmarshal(b, &fields); err != nil {
+		return err
+	}
+	*d = Device{ID: named.ID, Name: named.Name, WorkoutFileType: named.WorkoutFileType, flags: map[string]bool{}}
+	for key, raw := range fields {
+		var on bool
+		if json.Unmarshal(raw, &on) == nil {
+			d.flags[key] = on
+		}
+	}
+	return nil
+}
+
+// workoutSportCapability is the device flag that the Garmin Connect web app
+// requires, on top of workoutCapable, for a workout of each sport.
+var workoutSportCapability = map[string]string{
+	"running":           "runningWorkoutCapable",
+	"cycling":           "cyclingWorkoutCapable",
+	"other":             "customWorkoutCapable",
+	"swimming":          "swimWorkoutCapable",
+	"strength_training": "strengthWorkoutCapable",
+	"cardio_training":   "cardioWorkoutCapable",
+	"yoga":              "yogaWorkoutCapable",
+	"pilates":           "pilatesWorkoutCapable",
+	"mobility":          "mobilityWorkoutCapable",
+	"hiit":              "hiitWorkoutCapable",
+	"multi_sport":       "multisportWorkoutCapable",
+	"rucking":           "ruckingWorkoutsCapable",
+	"walking":           "walkWorkoutCapable",
+}
+
+// CanReceive reports whether the device takes the workout. A multisport
+// workout also needs the flag of the sport of each segment.
+func (d Device) CanReceive(w Workout) bool {
+	if !d.flags["workoutCapable"] {
+		return false
+	}
+	sports := []string{w.SportType.Key}
+	if w.SportType.Key == "multi_sport" {
+		for _, s := range w.Segments {
+			sports = append(sports, s.SportType.Key)
+		}
+	}
+	for _, sport := range sports {
+		if flag, ok := workoutSportCapability[sport]; ok && !d.flags[flag] {
+			return false
+		}
+	}
+	return true
+}
