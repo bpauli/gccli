@@ -50,8 +50,8 @@ var nutritionGroup = Group{Name: "nutrition", Help: "View nutrition data.", Chil
 	Leaf{
 		Name: "search", Help: "Search the Garmin food database. Needs Garmin Connect+.",
 		Spec: argsOf(&struct {
-			Query      FreeText `arg:"" help:"Text to search for, such as a food name."`
-			Pagination `embed:"" set:"items=foods"`
+			Query             FreeText `arg:"" help:"Text to search for, such as a food name."`
+			AlignedPagination `embed:"" set:"items=foods"`
 		}{}),
 		Endpoint: "nutrition.food-search",
 		Params:   Params{"query": In("Query"), "start": In("Offset"), "limit": In("Limit")},
