@@ -20,12 +20,16 @@ func TestGoalsEndpoints(t *testing.T) {
 		{"goals.set-steps", map[string]string{"date": "2026-10-19"}, "PUT /wellness-service/wellness/wellness-goals/consolidated/steps/2026-10-19"},
 		{"badges.earned", nil, "GET /badge-service/badge/earned"},
 		{"badges.available", nil, "GET /badge-service/badge/available"},
-		{"badges.in-progress", nil, "GET /badge-service/badge/in-progress"},
+		{"badges.available", map[string]string{"showExclusiveBadge": "true"}, "GET /badge-service/badge/available?showExclusiveBadge=true"},
 		{"badges.detail", map[string]string{"badgeID": "42"}, "GET /badge-service/badge/detail/v2/42"},
 		{"badges.compare", map[string]string{"displayName": "jo/b"}, "GET /badge-service/badge/compare/jo%2Fb"},
 		{"badges.leaderboard", nil, "GET /badge-service/badge/leaderboard"},
-		{"badges.challenges", nil, "GET /badge-service/badge/challenges"},
-		{"challenges.joined", nil, "GET /challenge-service/challenge/joined"},
+		{"challenges.auto-active", nil, "GET /challenge-service/challenge/active"},
+		{"challenges.group-non-completed", nil, "GET /groupchallenge-service/groupchallenge/nonCompleted"},
+		{"challenges.adhoc-non-completed", nil, "GET /adhocchallenge-service/adHocChallenge/nonCompleted"},
+		{"challenges.vivokid-adhoc-non-completed", nil, "GET /vivokidchallenge-service/adHocChallenge/nonCompleted"},
+		{"challenges.vivokid-team-non-completed", nil, "GET /vivokidchallenge-service/teamChallenge/nonCompleted"},
+		{"challenges.non-completed", nil, "GET /badgechallenge-service/badgeChallenge/non-completed?desc=true&start=1&limit=10000"},
 		{"challenges.available", nil, "GET /badgechallenge-service/badgeChallenge/available"},
 		{"challenges.completed", nil, "GET /badgechallenge-service/badgeChallenge/completed"},
 		{"challenges.virtual-available", nil, "GET /badgechallenge-service/virtualChallenge/available"},
@@ -121,5 +125,60 @@ func TestSetStepGoal_GetError(t *testing.T) {
 	}
 	if puts != 0 {
 		t.Errorf("%d writes sent after the GET failed, want 0", puts)
+	}
+}
+
+func TestInProgressBadges(t *testing.T) {
+	tests := []struct {
+		name              string
+		earned, available []string
+		want              []string
+	}{
+		{"progress short of the target", nil, []string{`{"badgeId":1,"badgeProgressValue":5,"badgeTargetValue":10}`}, []string{`{"badgeId":1,"badgeProgressValue":5,"badgeTargetValue":10}`}},
+		{"fraction of the target", nil, []string{`{"badgeId":1,"badgeProgressValue":0.5,"badgeTargetValue":1}`}, []string{`{"badgeId":1,"badgeProgressValue":0.5,"badgeTargetValue":1}`}},
+		{"progress without a target", nil, []string{`{"badgeId":1,"badgeProgressValue":5}`}, []string{`{"badgeId":1,"badgeProgressValue":5}`}},
+		{"progress past the target", nil, []string{`{"badgeId":1,"badgeProgressValue":12,"badgeTargetValue":10}`}, []string{`{"badgeId":1,"badgeProgressValue":12,"badgeTargetValue":10}`}},
+		{"no progress", nil, []string{`{"badgeId":1,"badgeTargetValue":10}`}, nil},
+		{"null progress", nil, []string{`{"badgeId":1,"badgeProgressValue":null,"badgeTargetValue":10}`}, nil},
+		{"zero progress", nil, []string{`{"badgeId":1,"badgeProgressValue":0,"badgeTargetValue":10}`}, nil},
+		{"target reached without a limit", []string{`{"badgeId":1,"badgeProgressValue":10,"badgeTargetValue":10}`}, nil, nil},
+		{"target reached with a null limit", []string{`{"badgeId":1,"badgeProgressValue":10,"badgeTargetValue":10,"badgeLimitCount":null,"badgeEarnedNumber":1}`}, nil, nil},
+		{"target reached, can be earned again", []string{`{"badgeId":1,"badgeProgressValue":1,"badgeTargetValue":1,"badgeLimitCount":5,"badgeEarnedNumber":2}`}, nil, []string{`{"badgeId":1,"badgeProgressValue":1,"badgeTargetValue":1,"badgeLimitCount":5,"badgeEarnedNumber":2}`}},
+		{"target reached, earned to the limit", []string{`{"badgeId":1,"badgeProgressValue":1,"badgeTargetValue":1,"badgeLimitCount":5,"badgeEarnedNumber":5}`}, nil, nil},
+		{"target reached with a limit, never earned", nil, []string{`{"badgeId":1,"badgeProgressValue":1,"badgeTargetValue":1,"badgeLimitCount":1}`}, []string{`{"badgeId":1,"badgeProgressValue":1,"badgeTargetValue":1,"badgeLimitCount":1}`}},
+		{
+			"a badge in both lists keeps the earned place and the available entry",
+			[]string{`{"badgeId":1,"badgeProgressValue":5,"badgeTargetValue":10,"from":"earned"}`, `{"badgeId":2,"badgeProgressValue":3,"badgeTargetValue":10}`},
+			[]string{`{"badgeId":3,"badgeProgressValue":1,"badgeTargetValue":10}`, `{"badgeId":1,"badgeProgressValue":6,"badgeTargetValue":10,"from":"available"}`},
+			[]string{`{"badgeId":1,"badgeProgressValue":6,"badgeTargetValue":10,"from":"available"}`, `{"badgeId":2,"badgeProgressValue":3,"badgeTargetValue":10}`, `{"badgeId":3,"badgeProgressValue":1,"badgeTargetValue":10}`},
+		},
+		{
+			"an available badge that is not in progress leaves the earned one",
+			[]string{`{"badgeId":1,"badgeProgressValue":5,"badgeTargetValue":10}`},
+			[]string{`{"badgeId":1,"badgeProgressValue":0,"badgeTargetValue":10}`},
+			[]string{`{"badgeId":1,"badgeProgressValue":5,"badgeTargetValue":10}`},
+		},
+	}
+	raws := func(list []string) []json.RawMessage {
+		var out []json.RawMessage
+		for _, s := range list {
+			out = append(out, json.RawMessage(s))
+		}
+		return out
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			got, err := inProgressBadges(raws(tc.earned), raws(tc.available))
+			if err != nil {
+				t.Fatal(err)
+			}
+			var gotS []string
+			for _, b := range got {
+				gotS = append(gotS, string(b))
+			}
+			if !slices.Equal(gotS, tc.want) {
+				t.Errorf("kept %q, want %q", gotS, tc.want)
+			}
+		})
 	}
 }

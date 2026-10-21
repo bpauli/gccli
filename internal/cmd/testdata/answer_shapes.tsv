@@ -27,7 +27,7 @@ badges available	array	live 2026-10-20
 badges compare	object	live 2026-10-19 with a real display name
 badges detail	object	live 2026-10-20
 badges earned	array	live 2026-10-20
-badges in-progress	unknown	404 live 2026-10-20 (#267)
+badges in-progress	array	built by gccli: the earned and available badges in progress (#267)
 badges leaderboard	object	live 2026-10-20
 body blood-pressure	object	live 2026-10-20
 body composition	object	live 2026-10-20
@@ -36,9 +36,8 @@ body glucose	object	live 2026-10-20
 body latest	object	live 2026-10-20
 body weigh-ins	object	live 2026-10-20
 challenges available	array	live 2026-10-20
-challenges badge	unknown	404 live 2026-10-20 (#267)
+challenges badge	array	live 2026-10-21 (#267)
 challenges completed	array	live 2026-10-20
-challenges list	unknown	404 live 2026-10-20 (#267)
 challenges virtual available	array	live 2026-10-20
 challenges virtual completed	array	live 2026-10-20
 challenges virtual in-progress	array	live 2026-10-20

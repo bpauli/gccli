@@ -2,7 +2,7 @@ Error case: Garmin answers 400, so the exit code is 1 (error).
 -- args --
 challenges
 list
--- route GET /challenge-service/challenge/joined 400 noeol --
+-- route GET /challenge-service/challenge/active 400 noeol --
 {"message":"Bad Request"}
 -- table stdout --
 -- table stderr --
@@ -10,25 +10,25 @@ get challenges: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- table exit --
 1
 -- table requests --
-GET /challenge-service/challenge/joined
+GET /challenge-service/challenge/active
 -- plain stdout --
 -- plain stderr --
 get challenges: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- plain exit --
 1
 -- plain requests --
-GET /challenge-service/challenge/joined
+GET /challenge-service/challenge/active
 -- plain-header stdout --
 -- plain-header stderr --
 get challenges: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- plain-header exit --
 1
 -- plain-header requests --
-GET /challenge-service/challenge/joined
+GET /challenge-service/challenge/active
 -- json stdout --
 -- json stderr --
 {"error":{"code":"error","status":400,"message":"get challenges: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
 -- json exit --
 1
 -- json requests --
-GET /challenge-service/challenge/joined
+GET /challenge-service/challenge/active

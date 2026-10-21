@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `challenges list` (also as `challenges`) failed for every call with exit 4, because Garmin no longer has its route. It now sends the seven reads of the current challenges page of the Garmin Connect web app and prints one JSON object with the answer of each read under the key of the web app: `autoChallenge`, `groupChallenges`, `adHocChallenges`, `vivokidChallenges`, `teamStepsVivokidChallenges`, `badgeChallenges` and `virtualChallenges`. An empty answer is `{}` for `autoChallenge` and `[]` for the others. If one read fails, the command fails. (#267)
+- `challenges badge` failed for every call with exit 4, because Garmin no longer has its route. It now reads `/badgechallenge-service/badgeChallenge/non-completed`, the path of the web app, and shows the joined badge challenges that are not completed. An empty answer prints `[]`. (#267)
+- `badges in-progress` failed for every call with exit 4, because Garmin has no read for badges in progress any more. It now reads the earned and the available badges and keeps each badge with progress short of its target, or with its target reached and earned fewer times than its limit, as python-garminconnect does. It prints the kept badges as a JSON array, `[]` when there are none. (#267)
+
 ## [3.0.0] - 2026-10-20
 
 v3.0 changes two rules. An empty Garmin answer is no longer an error, and a bad or empty input value is a usage error (exit 2) before the login. Scripts that test for `null`, or that rely on exit 1 for an empty list, must change. The tables under Breaking changes list each change. This release also adds about 80 commands, 30 of them writes. It fixes 8 commands that failed on every call.
