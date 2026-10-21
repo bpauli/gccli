@@ -1,0 +1,112 @@
+--unit lbs sends the weight in pounds.
+-- args --
+workouts
+benchmarks
+set
+BARBELL_BACK_SQUAT
+--weight
+225.5
+--reps
+8
+--unit
+lbs
+-- route GET /workout-service/benchmarks noeol --
+[{"benchmarkCategoryKey":"CURL","benchmarkKey":"BARBELL_BICEPS_CURL"},{"benchmarkCategoryKey":"ROW","benchmarkKey":"BARBELL_ROW"},{"benchmarkCategoryKey":"SQUAT","benchmarkKey":"BARBELL_BACK_SQUAT"}]
+-- route POST /workout-service/benchmarks noeol --
+2215653
+-- table stdout --
+-- table stderr --
+Set benchmark BARBELL_BACK_SQUAT to 225.5 lbs x 8 (1RM 279.9 lbs)
+-- table exit --
+0
+-- table requests --
+GET /workout-service/benchmarks
+POST /workout-service/benchmarks
+  {
+    "benchmarkKey": "BARBELL_BACK_SQUAT",
+    "benchmarkCategoryKey": "SQUAT",
+    "maxWeight": 225.5,
+    "reps": 8,
+    "oneRepMax": 279.9,
+    "weightUnit": {
+      "unitKey": "pound"
+    },
+    "linkedBenchmarkExercises": [
+      {
+        "exerciseKey": "BARBELL_BACK_SQUAT",
+        "categoryKey": "SQUAT"
+      }
+    ]
+  }
+-- plain stdout --
+-- plain stderr --
+Set benchmark BARBELL_BACK_SQUAT to 225.5 lbs x 8 (1RM 279.9 lbs)
+-- plain exit --
+0
+-- plain requests --
+GET /workout-service/benchmarks
+POST /workout-service/benchmarks
+  {
+    "benchmarkKey": "BARBELL_BACK_SQUAT",
+    "benchmarkCategoryKey": "SQUAT",
+    "maxWeight": 225.5,
+    "reps": 8,
+    "oneRepMax": 279.9,
+    "weightUnit": {
+      "unitKey": "pound"
+    },
+    "linkedBenchmarkExercises": [
+      {
+        "exerciseKey": "BARBELL_BACK_SQUAT",
+        "categoryKey": "SQUAT"
+      }
+    ]
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Set benchmark BARBELL_BACK_SQUAT to 225.5 lbs x 8 (1RM 279.9 lbs)
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /workout-service/benchmarks
+POST /workout-service/benchmarks
+  {
+    "benchmarkKey": "BARBELL_BACK_SQUAT",
+    "benchmarkCategoryKey": "SQUAT",
+    "maxWeight": 225.5,
+    "reps": 8,
+    "oneRepMax": 279.9,
+    "weightUnit": {
+      "unitKey": "pound"
+    },
+    "linkedBenchmarkExercises": [
+      {
+        "exerciseKey": "BARBELL_BACK_SQUAT",
+        "categoryKey": "SQUAT"
+      }
+    ]
+  }
+-- json stdout --
+2215653
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /workout-service/benchmarks
+POST /workout-service/benchmarks
+  {
+    "benchmarkKey": "BARBELL_BACK_SQUAT",
+    "benchmarkCategoryKey": "SQUAT",
+    "maxWeight": 225.5,
+    "reps": 8,
+    "oneRepMax": 279.9,
+    "weightUnit": {
+      "unitKey": "pound"
+    },
+    "linkedBenchmarkExercises": [
+      {
+        "exerciseKey": "BARBELL_BACK_SQUAT",
+        "categoryKey": "SQUAT"
+      }
+    ]
+  }

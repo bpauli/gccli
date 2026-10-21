@@ -26,7 +26,29 @@ func TestWorkoutsEndpoints(t *testing.T) {
 		{"workouts.sport-types", nil, "GET /workout-service/workout/types/sport"},
 		{"workouts.export-schedule", map[string]string{"startDate": "2024-01-15"}, "GET /workout-service/schedule/export/JSON?startDate=2024-01-15"},
 		{"workouts.benchmarks", nil, "GET /workout-service/benchmarks"},
+		{"workouts.create-benchmark", nil, "POST /workout-service/benchmarks"},
+		{"workouts.update-benchmark", map[string]string{"benchmarkID": "7"}, "PUT /workout-service/benchmarks/7"},
 	})
+}
+
+func TestBenchmarkValueOneRepMax(t *testing.T) {
+	tests := []struct {
+		weight float64
+		reps   int
+		want   float64
+	}{
+		{100, 1, 100},
+		{50, 5, 56.3}, // 56.25 rounds half up, as in the web app
+		{60, 3, 63.5},
+		{225.5, 8, 279.9},
+		{100, 20, 211.8},
+		{100, 37, 0},
+	}
+	for _, tc := range tests {
+		if got := (BenchmarkValue{Weight: tc.weight, Reps: tc.reps}).OneRepMax(); got != tc.want {
+			t.Errorf("OneRepMax(%g kg x %d) = %g, want %g", tc.weight, tc.reps, got, tc.want)
+		}
+	}
 }
 
 // --- DownloadWorkout tests ---
