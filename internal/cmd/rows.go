@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"slices"
+	"strconv"
 	"strings"
 
 	"github.com/bpauli/gccli/internal/garminapi"
@@ -83,12 +84,22 @@ func (r Rows) print(g *Globals, client *garminapi.Client, data json.RawMessage) 
 }
 
 func valueAt(m map[string]any, path string) any {
-	key, rest, nested := strings.Cut(path, ".")
-	if !nested {
-		return m[key]
+	var v any = m
+	for _, key := range strings.Split(path, ".") {
+		switch x := v.(type) {
+		case map[string]any:
+			v = x[key]
+		case []any:
+			i, err := strconv.Atoi(key)
+			if err != nil || i < 0 || i >= len(x) {
+				return nil
+			}
+			v = x[i]
+		default:
+			return nil
+		}
 	}
-	next, _ := m[key].(map[string]any)
-	return valueAt(next, rest)
+	return v
 }
 
 func textOf(v any) string {

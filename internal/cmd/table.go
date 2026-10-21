@@ -157,8 +157,9 @@ type Rows struct {
 	Columns []Column
 }
 
-// Column is one table column. Path is a dotted JSON path, and Format is
-// how the value there is rendered (Text by default).
+// Column is one table column. Path is a dotted JSON path, where a number
+// picks that element of a list, and Format is how the value there is
+// rendered (Text by default).
 type Column struct {
 	Label  string
 	Path   string
