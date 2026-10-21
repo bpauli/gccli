@@ -23,7 +23,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Training** - browse and view training plans, show your active plans, list adaptive coaching workout types
 - **Profile** — user profile and settings, privacy settings, list, add and delete privacy zones, heart rate and power zones
 - **Hydration** — view and log daily water intake
-- **Nutrition** — view daily food logs, meals, and nutrition settings
+- **Nutrition** - view daily food logs, meals, and nutrition settings, search the Garmin food database, and list recent and favorite foods (the last three need Garmin Connect+)
 - **Events** — list, list upcoming, add, and delete calendar events (races, group rides, etc.) with goals and training priority support
 - **Calendar** - add, update, move and delete calendar notes
 - **Wellness** - menstrual cycle data and calendar, menstrual daily log (view, set, delete), pregnancy summary, jet lag trips and status
@@ -225,13 +225,13 @@ gccli activities list
 
 - Default: human-friendly tables on stdout.
 - `--json` / `-j`: JSON on stdout (best for scripting).
-- `--plain`: tab-separated values on stdout, with no header row unless you add `--header`. Only these commands print TSV: `activities list`, `activities search`, `activities types`, `activity summary`, `body weekly`, `courses list`, `courses favorites`, `courses import`, `events list`, `workouts list`, `workouts schedule list` and `exercises list` (without `--category`). Most other commands that return data print the same JSON in all modes, also without `--json`. `activities count` prints a single number. Use `--json` when a script parses the output.
+- `--plain`: tab-separated values on stdout, with no header row unless you add `--header`. Only these commands print TSV: `activities list`, `activities search`, `activities types`, `activity summary`, `body weekly`, `courses list`, `courses favorites`, `courses import`, `events list`, `nutrition search`, `nutrition recent`, `nutrition favorites`, `workouts list`, `workouts schedule list` and `exercises list` (without `--category`). Most other commands that return data print the same JSON in all modes, also without `--json`. `activities count` prints a single number. Use `--json` when a script parses the output.
 - `--header`: with `--plain`, the first line holds the column names. `activity summary` has no column names, so it prints no header line. `--header` without `--plain`, or with `--json`, is a usage error (exit code 2). `GCCLI_HEADER` is not an error: table and JSON output ignore it.
 - Table and `--plain` output escape the characters that would break a row or a column. A backslash prints as `\\`, a tab as `\t`, a newline as `\n`, a carriage return as `\r`, a vertical tab as `\v` and a form feed as `\f`. So each record is one line, and in `--plain` output only real tabs separate the fields. `--json` output does not change.
 - Write commands (the commands that add, create, upload, import, update, set, rename, retype, describe, change, favorite, unfavorite, schedule, send, link, unlink, remove, reload or delete data in Garmin Connect) all follow one rule:
   - With `--json`, they print the Garmin response on stdout, indented like all JSON output. When Garmin sends an empty response, they print `{"ok": true}`.
   - Without `--json`, they print one message on stderr and nothing on stdout. `courses import` is the only exception. It prints the saved course as a table on stdout (TSV with `--plain`).
-- An empty answer is not an error. When Garmin sends no body, the exit code is 0 and the output follows the shape of the Garmin answer: a command whose answer is a list prints `[]` with `--json`, and a command whose answer is one object prints `{}` in every mode. A list command that prints columns (`activities list`, `activities search`, `activities types`, `body weekly`, `courses list`, `courses favorites`, `events list`, `workouts list` and `workouts schedule list`) prints the header only as a table and nothing with `--plain` (the header line with `--header`); every other list command prints `[]` in every mode. `activity summary` and `exercises list` show one object, so they print `{}` with `--json` and no row otherwise. [`internal/cmd/testdata/answer_shapes.tsv`](internal/cmd/testdata/answer_shapes.tsv) records the shape of the Garmin answer of every command that prints it (`array`, `object` or `unknown`, with the evidence for each; a shape that no Garmin answer confirmed is `unknown` and prints `{}`), and a test keeps the commands in step with it. `activities count` prints `0` (`{"count": 0}` with `--json`). A list answer without its list key gives no rows, and `--json` prints the answer unchanged.
+- An empty answer is not an error. When Garmin sends no body, the exit code is 0 and the output follows the shape of the Garmin answer: a command whose answer is a list prints `[]` with `--json`, and a command whose answer is one object prints `{}` in every mode. A list command that prints columns (`activities list`, `activities search`, `activities types`, `body weekly`, `courses list`, `courses favorites`, `events list`, `nutrition search`, `nutrition recent`, `nutrition favorites`, `workouts list` and `workouts schedule list`) prints the header only as a table and nothing with `--plain` (the header line with `--header`); every other list command prints `[]` in every mode. `activity summary` and `exercises list` show one object, so they print `{}` with `--json` and no row otherwise. [`internal/cmd/testdata/answer_shapes.tsv`](internal/cmd/testdata/answer_shapes.tsv) records the shape of the Garmin answer of every command that prints it (`array`, `object` or `unknown`, with the evidence for each; a shape that no Garmin answer confirmed is `unknown` and prints `{}`), and a test keeps the commands in step with it. `activities count` prints `0` (`{"count": 0}` with `--json`). A list answer without its list key gives no rows, and `--json` prints the answer unchanged.
 - Human-facing messages (errors, warnings, info) go to stderr.
 - Delete commands ask for confirmation in a terminal. Without a terminal (scripts, pipes, agents), they exit with an error unless you pass `--force`. If you answer no, the command prints `Cancelled` on stderr, prints nothing on stdout and exits with 0.
 - Tables, TSV and JSON on stdout have no colors. The messages on stderr use colors. The `--help` text uses bold and faint text when stdout is a terminal, and `--color` does not change this.
@@ -242,7 +242,7 @@ gccli activities list
 | Code | Meaning |
 |---|---|
 | 0 | Success |
-| 1 | Other error |
+| 1 | Other error. A command that needs Garmin Connect+ also exits 1 on an account without it, and the message says so. |
 | 2 | Usage error (unknown command, flag or value). The usage text goes to stderr. |
 | 3 | Login needed: no account, no stored credentials, or the token expired and could not be refreshed |
 | 4 | Garmin returned 404 Not Found |
@@ -738,6 +738,9 @@ gccli hydration add 500 --date 2024-06-15
 gccli nutrition [date]                 # View daily food log
 gccli nutrition meals [date]           # View meal summaries
 gccli nutrition settings [date]        # View nutrition settings
+gccli nutrition search "greek yogurt"  # Search the food database (needs Garmin Connect+)
+gccli nutrition recent                 # Foods logged recently (needs Garmin Connect+)
+gccli nutrition favorites              # Favorite foods (needs Garmin Connect+)
 ```
 
 ### Training Plans
