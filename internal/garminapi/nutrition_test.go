@@ -107,13 +107,13 @@ func TestFindFoodReadsAtMostFivePages(t *testing.T) {
 
 func TestFindFoodTakesTheServingsOfTheFood(t *testing.T) {
 	_, client := testServer(t, http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		_, _ = w.Write([]byte(`{"moreDataAvailable":true,"results":[{"foodMetaData":{"foodId":"7"},"nutritionContents":[{"servingId":"9"}]},{"foodMetaData":{"foodId":"1001","foodName":"Apple","source":"FATSECRET","regionCode":"US","languageCode":"en"},"nutritionContents":[{"servingId":"2001","servingUnit":"medium"},{"servingId":"2002","servingUnit":"g"}]}]}`))
+		_, _ = w.Write([]byte(`{"moreDataAvailable":true,"results":[{"foodMetaData":{"foodId":"7"},"nutritionContents":[{"servingId":"9"}]},{"foodMetaData":{"foodId":"1001","foodName":"Apple","source":"FATSECRET","regionCode":"US","languageCode":"en"},"nutritionContents":[{"servingId":"2001","servingUnit":"medium","numberOfUnits":1.0},{"servingId":"2002","servingUnit":"g","numberOfUnits":100.0}]}]}`))
 	}))
 	food, ok, err := client.FindFood(context.Background(), "apple", "1001")
 	if err != nil || !ok {
 		t.Fatalf("FindFood = ok %v, %v, want found", ok, err)
 	}
-	want := Food{ID: "1001", Name: "Apple", Source: "FATSECRET", RegionCode: "US", LanguageCode: "en", Servings: []Serving{{"2001", "medium"}, {"2002", "g"}}}
+	want := Food{ID: "1001", Name: "Apple", Source: "FATSECRET", RegionCode: "US", LanguageCode: "en", Servings: []Serving{{"2001", "medium", 1}, {"2002", "g", 100}}}
 	if food.ID != want.ID || food.Name != want.Name || food.Source != want.Source || food.RegionCode != want.RegionCode || food.LanguageCode != want.LanguageCode || !slices.Equal(food.Servings, want.Servings) {
 		t.Errorf("FindFood = %+v, want %+v", food, want)
 	}

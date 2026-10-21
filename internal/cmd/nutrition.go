@@ -133,7 +133,7 @@ func (c *NutritionAddCmd) Run(g *Globals) error {
 	if err != nil {
 		return fmt.Errorf("log food: %w", err)
 	}
-	return reportWrite(g, data, "Added %s (%g x %s) to %s on %s%s", food.Name, c.Servings, serving.Unit, mealName(entry.Meal), c.Date, logIDNote(data, entry))
+	return reportWrite(g, data, "Added %s (%g x %s) to %s on %s%s", food.Name, c.Servings, servingSize(serving), mealName(entry.Meal), c.Date, logIDNote(data, entry))
 }
 
 func findFood(g *Globals, client *garminapi.Client, query, id, serving string) (garminapi.Food, garminapi.Serving, error) {
@@ -158,6 +158,15 @@ func findFood(g *Globals, client *garminapi.Client, query, id, serving string) (
 		units = append(units, strconv.Quote(s.Unit))
 	}
 	return food, garminapi.Serving{}, fmt.Errorf("food %s has no serving %q: choose %s", id, serving, orList(units))
+}
+
+// servingSize names the amount of one serving, such as "100 g", because a
+// count of servings with the unit alone ("2 x g") reads as 2 grams.
+func servingSize(s garminapi.Serving) string {
+	if s.Units == 0 || s.Units == 1 {
+		return s.Unit
+	}
+	return fmt.Sprintf("%g %s", s.Units, s.Unit)
 }
 
 // NutritionFavoritesAddCmd saves a food of the Garmin food database as a
@@ -189,7 +198,7 @@ func (c *NutritionFavoritesAddCmd) Run(g *Globals) error {
 	if err != nil {
 		return fmt.Errorf("add favorite food: %w", err)
 	}
-	return reportWrite(g, data, "Added %s (%g x %s) to favorite foods", food.Name, c.Servings, serving.Unit)
+	return reportWrite(g, data, "Added %s (%g x %s) to favorite foods", food.Name, c.Servings, servingSize(serving))
 }
 
 // NutritionFavoritesRemoveCmd removes a food from the favorite foods.

@@ -71,8 +71,9 @@ type Food struct {
 
 // Serving is one serving size of a food.
 type Serving struct {
-	ID   string `json:"servingId"`
-	Unit string `json:"servingUnit"`
+	ID    string  `json:"servingId"`
+	Unit  string  `json:"servingUnit"`
+	Units float64 `json:"numberOfUnits"`
 }
 
 const (
