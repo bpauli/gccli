@@ -1,41 +1,49 @@
 -- args --
 challenges
 badge
--- route GET /badge-service/badge/challenges --
-{"value":1}
+-- route GET /badgechallenge-service/badgeChallenge/non-completed?desc=true&start=1&limit=10000 --
+[{"value":1}]
 -- table stdout --
-{
-  "value": 1
-}
+[
+  {
+    "value": 1
+  }
+]
 -- table stderr --
 -- table exit --
 0
 -- table requests --
-GET /badge-service/badge/challenges
+GET /badgechallenge-service/badgeChallenge/non-completed?desc=true&start=1&limit=10000
 -- plain stdout --
-{
-  "value": 1
-}
+[
+  {
+    "value": 1
+  }
+]
 -- plain stderr --
 -- plain exit --
 0
 -- plain requests --
-GET /badge-service/badge/challenges
+GET /badgechallenge-service/badgeChallenge/non-completed?desc=true&start=1&limit=10000
 -- plain-header stdout --
-{
-  "value": 1
-}
+[
+  {
+    "value": 1
+  }
+]
 -- plain-header stderr --
 -- plain-header exit --
 0
 -- plain-header requests --
-GET /badge-service/badge/challenges
+GET /badgechallenge-service/badgeChallenge/non-completed?desc=true&start=1&limit=10000
 -- json stdout --
-{
-  "value": 1
-}
+[
+  {
+    "value": 1
+  }
+]
 -- json stderr --
 -- json exit --
 0
 -- json requests --
-GET /badge-service/badge/challenges
+GET /badgechallenge-service/badgeChallenge/non-completed?desc=true&start=1&limit=10000

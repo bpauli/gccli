@@ -216,8 +216,9 @@ Commands:
   courses import                   Import a GPX file as a new course.
   courses send                     Send a course to a device.
   courses delete                   Delete a course.
-  challenges list                  Show joined challenges.
-  challenges badge                 Show badge challenges.
+  challenges list                  Show current challenges.
+  challenges badge                 Show joined badge challenges that are not
+                                   completed.
   challenges available             Show available badge challenges.
   challenges completed             Show completed badge challenges.
   challenges virtual available     Show available virtual challenges.
@@ -1285,8 +1286,9 @@ Flags:
       --version           Print version information.
 
 Commands:
-  challenges list                 Show joined challenges.
-  challenges badge                Show badge challenges.
+  challenges list                 Show current challenges.
+  challenges badge                Show joined badge challenges that are not
+                                  completed.
   challenges available            Show available badge challenges.
   challenges completed            Show completed badge challenges.
   challenges virtual available    Show available virtual challenges.
