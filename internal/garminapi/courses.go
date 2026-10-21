@@ -20,7 +20,6 @@ var coursesEndpoints = []Endpoint{
 	{Name: "courses.elevation", Method: http.MethodPost, Host: ConnectAPI, Path: "/course-service/course/elevation?smoothingEnabled=true", Body: true},
 	{Name: "courses.save", Method: http.MethodPost, Host: ConnectAPI, Path: "/course-service/course", Body: true},
 	{Name: "courses.delete", Method: http.MethodDelete, Host: ConnectAPI, Path: "/course-service/course/{courseID}"},
-	{Name: "courses.send-to-device", Method: http.MethodPost, Host: ConnectAPI, Path: "/device-service/devicemessage/messages", Body: true},
 }
 
 // downloadCoursePath returns the API path for downloading a course in the given format.
@@ -219,5 +218,5 @@ func (c *Client) SendCourseToDevice(ctx context.Context, courseID, deviceID int6
 		return nil, fmt.Errorf("marshal send payload: %w", err)
 	}
 
-	return c.Call(ctx, "courses.send-to-device", nil, body)
+	return c.Call(ctx, "devices.send-message", nil, body)
 }

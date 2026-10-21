@@ -15,9 +15,9 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Exercise Catalog** — browse Garmin's exercise categories and exercises for strength training
 - **Health Data** — daily summaries, steps, heart rate, resting HR, sleep, stress, HRV, SpO2, respiration, body battery, floors, training readiness/status, VO2max, fitness age, race predictions, endurance/hill scores, intensity minutes, lactate threshold, cycling FTP, critical swim speed, power curve, running economy
 - **Body Composition** - weight tracking, latest weigh-in, weekly weight summaries, body fat, muscle mass, blood pressure, glucose, FIT file encoding for composition uploads
-- **Workouts** - list, view, download as FIT, upload from JSON, update in place from JSON, create with sport types and targets (pace/HR/power/cadence), schedule (add/list/remove/export), list workout types and sport types, view, set and clear strength benchmarks, delete
+- **Workouts** - list, view, download as FIT, upload from JSON, update in place from JSON, create with sport types and targets (pace/HR/power/cadence), schedule (add/list/remove/export), send to a device, list workout types and sport types, view, set and clear strength benchmarks, delete
 - **Courses** — list courses, view favorites, get full course detail, download as FIT/GPX, import GPX files as new courses, send courses directly to a device, delete courses
-- **Devices** - list registered devices, view settings, solar data, alarms, primary/last-used device, paired sensors, backup summary, historical devices, device messages
+- **Devices** - list registered devices, view settings, solar data, alarms, primary/last-used device, paired sensors, backup summary, historical devices, device messages, cancel a pending device message
 - **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities, gear types, add, update, retire, unretire and delete gear, list, create, rename and delete gear collections, add gear to a collection
 - **Goals & Badges** — active goals, set daily goals for steps, floors, intensity minutes and hydration, earned/available/in-progress badges, badge details, challenges, personal records
 - **Training** - browse and view training plans, show your active plans, list adaptive coaching workout types
@@ -517,6 +517,8 @@ gccli workouts benchmarks list
 gccli workouts benchmarks set BARBELL_ROW --weight 50 --reps 5   # 1RM 56.3 kg
 gccli workouts benchmarks set BARBELL_ROW --weight 110 --reps 5 --unit lbs
 gccli workouts benchmarks clear BARBELL_ROW --force
+gccli workouts send <id>                       # Works when one device can receive it
+gccli workouts send <id> --device <device-id>
 gccli workouts delete <id>
 
 # Create a running workout with pace targets
@@ -562,6 +564,8 @@ gccli workouts update 123456 workout.json
 ```
 
 The workout keeps its ID and any calendar entries that point at it. `workoutId` in the file is set from the ID argument before the request goes out, so a payload written for `upload` works as-is; if the file already names a different workout, gccli warns and still updates the one given on the command line.
+
+**Sending a workout to a device.** `gccli workouts send <id>` puts the workout in the message queue of a device. The device downloads it at its next sync. gccli keeps the devices that can receive the workout, as the Garmin Connect web app does: the device must be workout-capable and support the sport of the workout. When exactly one device is left, gccli sends to it. When more are left, the command fails before any write, and the error lists their IDs for `--device`. The send prints the message ID. Until the device syncs, `gccli devices messages cancel <message-id>` removes the message. After the sync, the cancel fails with exit code 1.
 
 **Workout JSON structure** for `gccli workouts upload`:
 
@@ -663,6 +667,7 @@ gccli devices sensors
 gccli devices backups
 gccli devices historical
 gccli devices messages
+gccli devices messages cancel <message-id>
 ```
 
 ### Gear
@@ -1199,6 +1204,9 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli workouts copy <id> [<name>]`: Copy a workout.
   - `<id>`: Workout ID.
   - `[<name>]`: Name of the copy. Without it, the copy gets the name of the original.
+- `gccli workouts send <id> [flags]`: Send a workout to a device at its next sync. Undo: devices messages cancel.
+  - `<id>`: Workout ID.
+  - `--device=ID`: Device ID (from 'devices list'). Needed when more than one device can receive the workout.
 - `gccli workouts types`: List workout types.
 - `gccli workouts sport-types`: List the sport types a workout can have.
 - `gccli workouts schedule add <id> <date>`: Add a workout to the schedule.
@@ -1263,7 +1271,9 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli devices sensors`: List paired sensors.
 - `gccli devices backups`: Show device backup summary.
 - `gccli devices historical`: List historical devices.
-- `gccli devices messages`: List device messages.
+- `gccli devices messages list`: List device messages. Also runs as `gccli devices messages`.
+- `gccli devices messages cancel <id>`: Cancel a device message, such as a sent workout, before the device syncs.
+  - `<id>`: Message ID (from 'devices messages').
 
 ### Gear
 

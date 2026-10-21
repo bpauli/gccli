@@ -1,0 +1,100 @@
+The device names its workout file type, and the message uses it in the URL and in fileType.
+-- args --
+workouts
+send
+111
+-- route GET /workout-service/workout/111 --
+{"workoutId":111,"workoutName":"Tempo Run","sportType":{"sportTypeId":1,"sportTypeKey":"running"}}
+-- route GET /device-service/deviceregistration/devices --
+[{"deviceId":3005,"displayName":"Forerunner 265","workoutCapable":true,"runningWorkoutCapable":true,"cyclingWorkoutCapable":false,"swimWorkoutCapable":true,"swimWorkout2Capable":false,"workoutFileType":"TCX"}]
+-- route POST /device-service/devicemessage/messages --
+[{"deviceId":3005,"messageId":890}]
+-- table stdout --
+-- table stderr --
+Sent workout "Tempo Run" to Forerunner 265 (message 890). It reaches the device at its next sync. To cancel it before then, run: gccli devices messages cancel 890
+-- table exit --
+0
+-- table requests --
+GET /workout-service/workout/111
+GET /device-service/deviceregistration/devices
+POST /device-service/devicemessage/messages
+  [
+    {
+      "deviceId": 3005,
+      "fileType": "TCX",
+      "groupName": null,
+      "messageName": "Tempo Run",
+      "messageType": "workouts",
+      "messageUrl": "workout-service/workout/TCX/111",
+      "metaDataId": 111,
+      "priority": 1
+    }
+  ]
+-- plain stdout --
+-- plain stderr --
+Sent workout "Tempo Run" to Forerunner 265 (message 890). It reaches the device at its next sync. To cancel it before then, run: gccli devices messages cancel 890
+-- plain exit --
+0
+-- plain requests --
+GET /workout-service/workout/111
+GET /device-service/deviceregistration/devices
+POST /device-service/devicemessage/messages
+  [
+    {
+      "deviceId": 3005,
+      "fileType": "TCX",
+      "groupName": null,
+      "messageName": "Tempo Run",
+      "messageType": "workouts",
+      "messageUrl": "workout-service/workout/TCX/111",
+      "metaDataId": 111,
+      "priority": 1
+    }
+  ]
+-- plain-header stdout --
+-- plain-header stderr --
+Sent workout "Tempo Run" to Forerunner 265 (message 890). It reaches the device at its next sync. To cancel it before then, run: gccli devices messages cancel 890
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /workout-service/workout/111
+GET /device-service/deviceregistration/devices
+POST /device-service/devicemessage/messages
+  [
+    {
+      "deviceId": 3005,
+      "fileType": "TCX",
+      "groupName": null,
+      "messageName": "Tempo Run",
+      "messageType": "workouts",
+      "messageUrl": "workout-service/workout/TCX/111",
+      "metaDataId": 111,
+      "priority": 1
+    }
+  ]
+-- json stdout --
+[
+  {
+    "deviceId": 3005,
+    "messageId": 890
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /workout-service/workout/111
+GET /device-service/deviceregistration/devices
+POST /device-service/devicemessage/messages
+  [
+    {
+      "deviceId": 3005,
+      "fileType": "TCX",
+      "groupName": null,
+      "messageName": "Tempo Run",
+      "messageType": "workouts",
+      "messageUrl": "workout-service/workout/TCX/111",
+      "metaDataId": 111,
+      "priority": 1
+    }
+  ]
