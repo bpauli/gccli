@@ -21,6 +21,8 @@ func TestDevicesEndpoints(t *testing.T) {
 		{"devices.backup-summary", nil, "GET /devicebackup-service/backup/summary"},
 		{"devices.historical", nil, "GET /device-service/deviceregistration/devices/historical"},
 		{"devices.messages", nil, "GET /device-service/devicemessage/messages"},
+		{"devices.send-message", nil, "POST /device-service/devicemessage/messages"},
+		{"devices.cancel-message", map[string]string{"messageID": "777"}, "DELETE /device-service/devicemessage/message/777"},
 	})
 }
 
@@ -181,5 +183,55 @@ func TestGetDeviceAlarms_SettingsError(t *testing.T) {
 	}
 	if len(result) != 0 {
 		t.Fatalf("expected 0 alarms (settings failed), got %d", len(result))
+	}
+}
+
+func TestDeviceCanReceive(t *testing.T) {
+	workout := func(raw string) Workout {
+		var w Workout
+		if err := json.Unmarshal([]byte(raw), &w); err != nil {
+			t.Fatal(err)
+		}
+		return w
+	}
+	run := workout(`{"sportType":{"sportTypeKey":"running"}}`)
+	brick := workout(`{"sportType":{"sportTypeKey":"multi_sport"},"workoutSegments":[{"sportType":{"sportTypeKey":"cycling"}},{"sportType":{"sportTypeKey":"running"}}]}`)
+	unknown := workout(`{"sportType":{"sportTypeKey":"new_sport"}}`)
+
+	tests := []struct {
+		name    string
+		device  string
+		workout Workout
+		want    bool
+	}{
+		{"workout and sport capable", `{"workoutCapable":true,"runningWorkoutCapable":true}`, run, true},
+		{"not workout capable", `{"workoutCapable":false,"runningWorkoutCapable":true}`, run, false},
+		{"sport flag false", `{"workoutCapable":true,"runningWorkoutCapable":false}`, run, false},
+		{"sport flag missing", `{"workoutCapable":true}`, run, false},
+		{"sport without a flag needs only workoutCapable", `{"workoutCapable":true}`, unknown, true},
+		{"multisport with every segment flag", `{"workoutCapable":true,"multisportWorkoutCapable":true,"cyclingWorkoutCapable":true,"runningWorkoutCapable":true}`, brick, true},
+		{"multisport without a segment flag", `{"workoutCapable":true,"multisportWorkoutCapable":true,"cyclingWorkoutCapable":true}`, brick, false},
+		{"multisport without the multisport flag", `{"workoutCapable":true,"cyclingWorkoutCapable":true,"runningWorkoutCapable":true}`, brick, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			var d Device
+			if err := json.Unmarshal([]byte(tt.device), &d); err != nil {
+				t.Fatal(err)
+			}
+			if got := d.CanReceive(tt.workout); got != tt.want {
+				t.Errorf("CanReceive = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestDeviceUnmarshal(t *testing.T) {
+	var d Device
+	if err := json.Unmarshal([]byte(`{"deviceId":3632535288,"displayName":"Forerunner 965","workoutFileType":null,"workoutCapable":true}`), &d); err != nil {
+		t.Fatal(err)
+	}
+	if d.ID.String() != "3632535288" || d.Name != "Forerunner 965" || d.WorkoutFileType != "" {
+		t.Errorf("Device = %+v", d)
 	}
 }

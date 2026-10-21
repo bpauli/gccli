@@ -1,0 +1,35 @@
+The workout answer has no workoutName: exit 1 before any write.
+-- args --
+workouts
+send
+111
+-- route GET /workout-service/workout/111 --
+{"workoutId":111}
+-- table stdout --
+-- table stderr --
+parse workout: no workoutName
+-- table exit --
+1
+-- table requests --
+GET /workout-service/workout/111
+-- plain stdout --
+-- plain stderr --
+parse workout: no workoutName
+-- plain exit --
+1
+-- plain requests --
+GET /workout-service/workout/111
+-- plain-header stdout --
+-- plain-header stderr --
+parse workout: no workoutName
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /workout-service/workout/111
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"parse workout: no workoutName"}}
+-- json exit --
+1
+-- json requests --
+GET /workout-service/workout/111

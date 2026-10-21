@@ -23,7 +23,6 @@ func TestCoursesEndpoints(t *testing.T) {
 		{"courses.elevation", nil, "POST /course-service/course/elevation?smoothingEnabled=true"},
 		{"courses.save", nil, "POST /course-service/course"},
 		{"courses.delete", id, "DELETE /course-service/course/12345"},
-		{"courses.send-to-device", nil, "POST /device-service/devicemessage/messages"},
 	})
 }
 

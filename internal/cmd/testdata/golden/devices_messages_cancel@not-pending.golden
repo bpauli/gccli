@@ -1,0 +1,36 @@
+Garmin answers false when the device has synced the message or the ID is unknown.
+-- args --
+devices
+messages
+cancel
+777
+-- route DELETE /device-service/devicemessage/message/777 noeol --
+false
+-- table stdout --
+-- table stderr --
+message 777 is not pending (already delivered or unknown)
+-- table exit --
+1
+-- table requests --
+DELETE /device-service/devicemessage/message/777
+-- plain stdout --
+-- plain stderr --
+message 777 is not pending (already delivered or unknown)
+-- plain exit --
+1
+-- plain requests --
+DELETE /device-service/devicemessage/message/777
+-- plain-header stdout --
+-- plain-header stderr --
+message 777 is not pending (already delivered or unknown)
+-- plain-header exit --
+1
+-- plain-header requests --
+DELETE /device-service/devicemessage/message/777
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"message 777 is not pending (already delivered or unknown)"}}
+-- json exit --
+1
+-- json requests --
+DELETE /device-service/devicemessage/message/777

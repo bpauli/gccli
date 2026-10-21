@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bytes"
 	"fmt"
 )
 
@@ -36,8 +37,35 @@ var devicesGroup = Group{Name: "devices", Help: "Manage devices.", Children: []N
 	Leaf{Name: "sensors", Help: "List paired sensors.", Endpoint: "devices.sensors", Verb: "get sensors", Output: JSON{List: true}},
 	Leaf{Name: "backups", Help: "Show device backup summary.", Endpoint: "devices.backup-summary", Verb: "get device backup summary", Output: JSON{}},
 	Leaf{Name: "historical", Help: "List historical devices.", Endpoint: "devices.historical", Verb: "get historical devices", Output: JSON{List: true}},
-	Leaf{Name: "messages", Help: "List device messages.", Endpoint: "devices.messages", Verb: "get device messages", Output: JSON{}},
+	devicesMessagesGroup,
 }}
+
+var devicesMessagesGroup = Group{Name: "messages", Help: "List and cancel device messages.", Children: []Node{
+	Leaf{Name: "list", Help: "List device messages.", Default: true, Endpoint: "devices.messages", Verb: "get device messages", Output: JSON{}},
+	Custom{Name: "cancel", Help: "Cancel a device message, such as a sent workout, before the device syncs.", Cmd: &DeviceMessageCancelCmd{}},
+}}
+
+// DeviceMessageCancelCmd cancels a pending device message.
+type DeviceMessageCancelCmd struct {
+	ID ID `arg:"" help:"Message ID (from 'devices messages')."`
+}
+
+// Run cancels the message. Garmin answers false when there was nothing to
+// cancel: the device synced the message, or the ID is unknown.
+func (c *DeviceMessageCancelCmd) Run(g *Globals) error {
+	client, err := resolveClient(g)
+	if err != nil {
+		return err
+	}
+	data, err := client.Call(g.Context, "devices.cancel-message", map[string]string{"messageID": string(c.ID)}, nil)
+	if err != nil {
+		return fmt.Errorf("cancel device message: %w", err)
+	}
+	if string(bytes.TrimSpace(data)) == "false" {
+		return fmt.Errorf("message %s is not pending (already delivered or unknown)", c.ID)
+	}
+	return reportWrite(g, data, "Cancelled message %s", c.ID)
+}
 
 // DeviceAlarmsCmd shows alarms from all devices.
 type DeviceAlarmsCmd struct{}

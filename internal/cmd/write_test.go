@@ -170,6 +170,18 @@ var writeCases = map[string]writeCase{
 		human:    "Copied workout 9 to \"Tempo B\" (ID: 10)\n",
 		fallback: "Copied workout 9\n",
 	},
+	"workouts send": {
+		args: []string{"9"},
+		routes: map[string]string{
+			"GET /workout-service/workout/9":                 `{"workoutName":"Tempo"}`,
+			"GET /device-service/deviceregistration/devices": `[{"deviceId":5,"displayName":"Edge","workoutCapable":true}]`,
+			"POST /device-service/devicemessage/messages":    `[{"messageId":7}]`,
+		},
+		result:   "POST /device-service/devicemessage/messages",
+		json:     "[\n  {\n    \"messageId\": 7\n  }\n]\n",
+		human:    "Sent workout \"Tempo\" to Edge (message 7). It reaches the device at its next sync. To cancel it before then, run: gccli devices messages cancel 7\n",
+		fallback: "Sent workout \"Tempo\" to Edge. It reaches the device at its next sync. To cancel it before then, find the message in: gccli devices messages\n",
+	},
 	"workouts benchmarks set": {
 		args: []string{"BARBELL_ROW", "--weight", "50", "--reps", "5"},
 		routes: map[string]string{
@@ -224,6 +236,12 @@ var writeCases = map[string]writeCase{
 		json:     "[\n  {\n    \"deviceName\": \"Edge\",\n    \"messageId\": 7\n  }\n]\n",
 		human:    "Sent course \"Loop\" to device Edge (message 7)\n",
 		fallback: "Sent course \"Loop\" to device 99\n",
+	},
+	"devices messages cancel": {
+		args:   []string{"777"},
+		routes: map[string]string{"DELETE /device-service/devicemessage/message/777": "true"},
+		json:   "true\n",
+		human:  "Cancelled message 777\n",
 	},
 	"events add": {
 		args:     []string{"--name", "Race", "--date", "2024-06-01", "--type", "running"},
