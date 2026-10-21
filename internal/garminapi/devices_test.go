@@ -22,6 +22,7 @@ func TestDevicesEndpoints(t *testing.T) {
 		{"devices.historical", nil, "GET /device-service/deviceregistration/devices/historical"},
 		{"devices.messages", nil, "GET /device-service/devicemessage/messages"},
 		{"devices.send-message", nil, "POST /device-service/devicemessage/messages"},
+		{"devices.cancel-message", map[string]string{"messageID": "777"}, "DELETE /device-service/devicemessage/message/777"},
 	})
 }
 

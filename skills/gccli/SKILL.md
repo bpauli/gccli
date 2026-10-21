@@ -408,7 +408,9 @@ Date shortcuts
 - `gccli devices sensors`: List paired sensors.
 - `gccli devices backups`: Show device backup summary.
 - `gccli devices historical`: List historical devices.
-- `gccli devices messages`: List device messages.
+- `gccli devices messages list`: List device messages. Also runs as `gccli devices messages`.
+- `gccli devices messages cancel <id>`: Cancel a device message, such as a sent workout, before the device syncs.
+  - `<id>`: Message ID (from 'devices messages').
 
 ### Gear
 

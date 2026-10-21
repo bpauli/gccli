@@ -2,6 +2,7 @@ Error case: Garmin answers 400, so the exit code is 1 (error).
 -- args --
 devices
 messages
+list
 -- route GET /device-service/devicemessage/messages 400 noeol --
 {"message":"Bad Request"}
 -- table stdout --

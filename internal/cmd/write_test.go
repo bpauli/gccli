@@ -202,6 +202,12 @@ var writeCases = map[string]writeCase{
 		human:    "Sent course \"Loop\" to device Edge (message 7)\n",
 		fallback: "Sent course \"Loop\" to device 99\n",
 	},
+	"devices messages cancel": {
+		args:   []string{"777"},
+		routes: map[string]string{"DELETE /device-service/devicemessage/message/777": "true"},
+		json:   "true\n",
+		human:  "Cancelled message 777\n",
+	},
 	"events add": {
 		args:     []string{"--name", "Race", "--date", "2024-06-01", "--type", "running"},
 		routes:   map[string]string{"POST /calendar-service/event": `{"id":11,"eventName":"Race","date":"2024-06-01"}`},
