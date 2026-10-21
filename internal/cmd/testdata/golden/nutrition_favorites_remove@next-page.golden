@@ -1,0 +1,49 @@
+The food is not in the first page of 50 favorites, and Garmin has more, so the command reads the next page.
+-- args --
+nutrition
+favorites
+remove
+1001
+-- route GET /nutrition-service/favorite?start=0&limit=50&includeContent=true noeol --
+{"consumables":[{"type":"FOOD","foodMetaData":{"foodId":"7","foodName":"Food 7","source":"FATSECRET"},"selectedNutritionContent":{"servingId":"s7","servingUnit":"g","calories":10},"servingQty":1.0}],"hasMore":true}
+-- route GET /nutrition-service/favorite?start=50&limit=50&includeContent=true noeol --
+{"consumables":[{"type":"FOOD","foodMetaData":{"foodId":"1001","foodName":"Food 1001","source":"FATSECRET"},"selectedNutritionContent":{"servingId":"s1001","servingUnit":"g","calories":10},"servingQty":1.0}],"hasMore":false}
+-- route DELETE /nutrition-service/favorite/food/1001 204 --
+-- table stdout --
+-- table stderr --
+Removed food 1001 from favorite foods
+-- table exit --
+0
+-- table requests --
+GET /nutrition-service/favorite?start=0&limit=50&includeContent=true
+GET /nutrition-service/favorite?start=50&limit=50&includeContent=true
+DELETE /nutrition-service/favorite/food/1001
+-- plain stdout --
+-- plain stderr --
+Removed food 1001 from favorite foods
+-- plain exit --
+0
+-- plain requests --
+GET /nutrition-service/favorite?start=0&limit=50&includeContent=true
+GET /nutrition-service/favorite?start=50&limit=50&includeContent=true
+DELETE /nutrition-service/favorite/food/1001
+-- plain-header stdout --
+-- plain-header stderr --
+Removed food 1001 from favorite foods
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /nutrition-service/favorite?start=0&limit=50&includeContent=true
+GET /nutrition-service/favorite?start=50&limit=50&includeContent=true
+DELETE /nutrition-service/favorite/food/1001
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /nutrition-service/favorite?start=0&limit=50&includeContent=true
+GET /nutrition-service/favorite?start=50&limit=50&includeContent=true
+DELETE /nutrition-service/favorite/food/1001

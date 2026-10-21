@@ -1,0 +1,39 @@
+The meal lookup fails, so no write is sent.
+-- args --
+nutrition
+quick-add
+2026-10-15
+--meal
+snacks
+--calories
+50
+-- route GET /nutrition-service/meals/2026-10-15 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+get meals: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /nutrition-service/meals/2026-10-15
+-- plain stdout --
+-- plain stderr --
+get meals: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /nutrition-service/meals/2026-10-15
+-- plain-header stdout --
+-- plain-header stderr --
+get meals: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /nutrition-service/meals/2026-10-15
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"get meals: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /nutrition-service/meals/2026-10-15

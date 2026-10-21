@@ -381,6 +381,63 @@ var writeCases = map[string]writeCase{
 		human:    "Deleted menstrual log for 2026-10-01\n",
 		fallback: "Deleted menstrual log for 2026-10-01\n",
 	},
+	"nutrition add": {
+		args: []string{"2026-10-15", "1001", "--query", "apple", "--meal", "snacks"},
+		routes: map[string]string{
+			"GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50": `{"results":[{"foodMetaData":{"foodId":"1001","foodName":"Apple","source":"FATSECRET","regionCode":"US","languageCode":"en"},"nutritionContents":[{"servingId":"2001","servingUnit":"medium"}]}]}`,
+			"GET /nutrition-service/meals/2026-10-15":                                    `{"meals":[{"mealId":105,"mealName":"SNACKS","enabled":true}]}`,
+			"PUT /nutrition-service/food/logs":                                           `{"mealDetails":[{"loggedFoods":[{"logId":"a1","logTimestamp":"2026-10-15T09:30:00.000Z"}]}]}`,
+		},
+		result:   "PUT /nutrition-service/food/logs",
+		json:     "{\n  \"mealDetails\": [\n    {\n      \"loggedFoods\": [\n        {\n          \"logId\": \"a1\",\n          \"logTimestamp\": \"2026-10-15T09:30:00.000Z\"\n        }\n      ]\n    }\n  ]\n}\n",
+		human:    "Added Apple (1 x medium) to snacks on 2026-10-15 (log ID: a1)\n",
+		fallback: "Added Apple (1 x medium) to snacks on 2026-10-15\n",
+	},
+	"nutrition delete": {
+		args: []string{"2026-10-15", "a1"},
+		routes: map[string]string{
+			"GET /nutrition-service/food/logs/2026-10-15":    `{"mealDetails":[{"loggedFoods":[{"logId":"a1"}]}]}`,
+			"DELETE /nutrition-service/food/logs/2026-10-15": noContent,
+		},
+		result:   "DELETE /nutrition-service/food/logs/2026-10-15",
+		prompt:   "Delete food log entry a1 on 2026-10-15?",
+		json:     okOut,
+		human:    "Deleted food log entry a1 on 2026-10-15\n",
+		fallback: "Deleted food log entry a1 on 2026-10-15\n",
+	},
+	"nutrition favorites add": {
+		args: []string{"1001", "--query", "apple"},
+		routes: map[string]string{
+			"GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50": `{"results":[{"foodMetaData":{"foodId":"1001","foodName":"Apple","source":"FATSECRET","regionCode":"US","languageCode":"en"},"nutritionContents":[{"servingId":"2001","servingUnit":"medium"}]}]}`,
+			"PUT /nutrition-service/favorite/food":                                       `{"foodId":"1001"}`,
+		},
+		result:   "PUT /nutrition-service/favorite/food",
+		json:     "{\n  \"foodId\": \"1001\"\n}\n",
+		human:    "Added Apple (1 x medium) to favorite foods\n",
+		fallback: "Added Apple (1 x medium) to favorite foods\n",
+	},
+	"nutrition favorites remove": {
+		args: []string{"1001"},
+		routes: map[string]string{
+			"GET /nutrition-service/favorite?start=0&limit=50&includeContent=true": `{"consumables":[{"foodMetaData":{"foodId":"1001"}}],"hasMore":false}`,
+			"DELETE /nutrition-service/favorite/food/1001":                         noContent,
+		},
+		result:   "DELETE /nutrition-service/favorite/food/1001",
+		json:     okOut,
+		human:    "Removed food 1001 from favorite foods\n",
+		fallback: "Removed food 1001 from favorite foods\n",
+	},
+	"nutrition quick-add": {
+		args: []string{"2026-10-15", "--meal", "snacks", "--calories", "120"},
+		routes: map[string]string{
+			"GET /nutrition-service/meals/2026-10-15":   `{"meals":[{"mealId":105,"mealName":"SNACKS","enabled":true}]}`,
+			"PUT /nutrition-service/food/logs/quickAdd": `{"mealDetails":[{"loggedFoods":[{"logId":"b2","logTimestamp":"2026-10-15T09:30:00.000Z"}]}]}`,
+		},
+		result:   "PUT /nutrition-service/food/logs/quickAdd",
+		json:     "{\n  \"mealDetails\": [\n    {\n      \"loggedFoods\": [\n        {\n          \"logId\": \"b2\",\n          \"logTimestamp\": \"2026-10-15T09:30:00.000Z\"\n        }\n      ]\n    }\n  ]\n}\n",
+		human:    "Added 120 kcal to snacks on 2026-10-15 (log ID: b2)\n",
+		fallback: "Added 120 kcal to snacks on 2026-10-15\n",
+	},
 	"hydration add": {
 		args:   []string{"250", "--date", "2024-01-15"},
 		routes: map[string]string{"PUT /usersummary-service/usersummary/hydration/log": `{"valueInML":250}`},
