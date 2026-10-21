@@ -382,6 +382,28 @@ var writeCases = map[string]writeCase{
 		human:    "Deleted food log entry a1 on 2026-10-15\n",
 		fallback: "Deleted food log entry a1 on 2026-10-15\n",
 	},
+	"nutrition favorites add": {
+		args: []string{"1001", "--query", "apple"},
+		routes: map[string]string{
+			"GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50": `{"results":[{"foodMetaData":{"foodId":"1001","foodName":"Apple","source":"FATSECRET","regionCode":"US","languageCode":"en"},"nutritionContents":[{"servingId":"2001","servingUnit":"medium"}]}]}`,
+			"PUT /nutrition-service/favorite/food":                                       `{"foodId":"1001"}`,
+		},
+		result:   "PUT /nutrition-service/favorite/food",
+		json:     "{\n  \"foodId\": \"1001\"\n}\n",
+		human:    "Added Apple (1 x medium) to favorite foods\n",
+		fallback: "Added Apple (1 x medium) to favorite foods\n",
+	},
+	"nutrition favorites remove": {
+		args: []string{"1001"},
+		routes: map[string]string{
+			"GET /nutrition-service/favorite?start=0&limit=50&includeContent=true": `{"consumables":[{"foodMetaData":{"foodId":"1001"}}],"hasMore":false}`,
+			"DELETE /nutrition-service/favorite/food/1001":                         noContent,
+		},
+		result:   "DELETE /nutrition-service/favorite/food/1001",
+		json:     okOut,
+		human:    "Removed food 1001 from favorite foods\n",
+		fallback: "Removed food 1001 from favorite foods\n",
+	},
 	"nutrition quick-add": {
 		args: []string{"2026-10-15", "--meal", "snacks", "--calories", "120"},
 		routes: map[string]string{

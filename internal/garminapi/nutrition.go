@@ -16,6 +16,8 @@ var nutritionEndpoints = []Endpoint{
 	{Name: "nutrition.food-search", Method: http.MethodGet, Host: ConnectAPI, Path: "/nutrition-service/food/search?searchExpression={query}&start={start}&limit={limit}", Requires: ConnectPlus},
 	{Name: "nutrition.recent-foods", Method: http.MethodGet, Host: ConnectAPI, Path: "/nutrition-service/food/recent/{date}?start={start}&limit={limit}", Requires: ConnectPlus},
 	{Name: "nutrition.favorite-foods", Method: http.MethodGet, Host: ConnectAPI, Path: "/nutrition-service/favorite?start={start}&limit={limit}&includeContent=true", Requires: ConnectPlus},
+	{Name: "nutrition.add-favorite-food", Method: http.MethodPut, Host: ConnectAPI, Path: "/nutrition-service/favorite/food", Body: true, Requires: ConnectPlus},
+	{Name: "nutrition.remove-favorite-food", Method: http.MethodDelete, Host: ConnectAPI, Path: "/nutrition-service/favorite/food/{foodId}", Requires: ConnectPlus},
 	{Name: "nutrition.log-food", Method: http.MethodPut, Host: ConnectAPI, Path: "/nutrition-service/food/logs", Body: true, Requires: ConnectPlus},
 	{Name: "nutrition.delete-food-logs", Method: http.MethodDelete, Host: ConnectAPI, Path: "/nutrition-service/food/logs/{date}", Body: true, Requires: ConnectPlus},
 	{Name: "nutrition.quick-add", Method: http.MethodPut, Host: ConnectAPI, Path: "/nutrition-service/food/logs/quickAdd", Body: true, Requires: ConnectPlus},
@@ -239,4 +241,58 @@ func (c *Client) LogFood(ctx context.Context, e FoodLogEntry) (json.RawMessage, 
 		return nil, err
 	}
 	return c.Call(ctx, "nutrition.log-food", nil, body)
+}
+
+// AddFavoriteFood saves a quantity of one serving of food as a favorite.
+func (c *Client) AddFavoriteFood(ctx context.Context, food Food, serving Serving, quantity float64) (json.RawMessage, error) {
+	favorite := struct {
+		FoodID       string  `json:"foodId"`
+		ServingID    string  `json:"servingId"`
+		Source       string  `json:"source"`
+		ServingQty   float64 `json:"servingQty"`
+		RegionCode   string  `json:"regionCode"`
+		LanguageCode string  `json:"languageCode"`
+	}{food.ID, serving.ID, food.Source, quantity, food.RegionCode, food.LanguageCode}
+	body, err := json.Marshal(favorite)
+	if err != nil {
+		return nil, err
+	}
+	return c.Call(ctx, "nutrition.add-favorite-food", nil, body)
+}
+
+// favoritePage and favoritePages bound IsFavoriteFood to 5000 favorites.
+const (
+	favoritePage  = 50
+	favoritePages = 100
+)
+
+// IsFavoriteFood reports whether the food with ID id is a favorite food.
+func (c *Client) IsFavoriteFood(ctx context.Context, id string) (bool, error) {
+	for page := range favoritePages {
+		args := map[string]string{"start": strconv.Itoa(page * favoritePage), "limit": strconv.Itoa(favoritePage)}
+		data, err := c.Call(ctx, "nutrition.favorite-foods", args, nil)
+		if err != nil {
+			return false, err
+		}
+		var res struct {
+			HasMore     bool `json:"hasMore"`
+			Consumables []struct {
+				Food Food `json:"foodMetaData"`
+			} `json:"consumables"`
+		}
+		if len(data) > 0 {
+			if err := json.Unmarshal(data, &res); err != nil {
+				return false, fmt.Errorf("parse favorite foods: %w", err)
+			}
+		}
+		for _, f := range res.Consumables {
+			if f.Food.ID == id {
+				return true, nil
+			}
+		}
+		if !res.HasMore {
+			break
+		}
+	}
+	return false, nil
 }
