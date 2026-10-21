@@ -46,7 +46,7 @@ const (
 // Endpoint is one Garmin request that the CLI sends as the table states it.
 //
 // Name is <area>.<action>, where area is the Garmin service, such as
-// goals.list or badges.in-progress.
+// goals.list or badges.earned.
 //
 // Path is the request target after the host, with the query, as it goes on
 // the wire. A {name} placeholder in the path part is escaped with
@@ -270,7 +270,7 @@ var (
 func compile(e Endpoint) (*route, error) {
 	switch {
 	case !endpointNameRe.MatchString(e.Name):
-		return nil, errors.New("name must be dot-separated lower-case words, like badges.in-progress")
+		return nil, errors.New("name must be dot-separated lower-case words, like badges.earned")
 	case !slices.Contains(methods, e.Method):
 		return nil, fmt.Errorf("method %q is not GET, POST, PUT, PATCH or DELETE", e.Method)
 	case e.Host != ConnectAPI:
