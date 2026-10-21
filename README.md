@@ -1410,6 +1410,10 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `<query>`: Text to search for, such as a food name.
   - `-l, --limit=20`: Maximum number of foods to return.
   - `--offset=0`: Number of foods to skip.
+- `gccli nutrition recent [<date>] [flags]`: List the foods you logged recently. Needs Garmin Connect+.
+  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
+  - `-l, --limit=20`: Maximum number of foods to return.
+  - `--offset=0`: Number of foods to skip.
 - `gccli profile view`: Show user profile. Also runs as `gccli profile`.
 - `gccli profile settings`: Show user settings.
 - `gccli profile privacy view`: Show privacy settings. Also runs as `gccli profile privacy`.
