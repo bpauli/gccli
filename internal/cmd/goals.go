@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/bpauli/gccli/internal/garminapi"
+	"github.com/bpauli/gccli/internal/outfmt"
 )
 
 var goalsGroup = Group{Name: "goals", Help: "View and set goals.", Children: []Node{
@@ -118,7 +119,7 @@ func setStepGoal(g *Globals, date Date, goal garminapi.StepGoal) (json.RawMessag
 var badgesGroup = Group{Name: "badges", Help: "View badges.", Children: []Node{
 	Leaf{Name: "earned", Help: "Show earned badges.", Default: true, Endpoint: "badges.earned", Verb: "get earned badges", Output: JSON{List: true}},
 	Leaf{Name: "available", Help: "Show available badges.", Endpoint: "badges.available", Verb: "get available badges", Output: JSON{List: true}},
-	Leaf{Name: "in-progress", Help: "Show badges in progress.", Endpoint: "badges.in-progress", Verb: "get in-progress badges", Output: JSON{}},
+	Custom{Name: "in-progress", Help: "Show badges in progress.", Cmd: &BadgesInProgressCmd{}},
 	Leaf{
 		Name: "detail", Help: "Show details of a badge.",
 		Spec: argsOf(&struct {
@@ -141,8 +142,8 @@ var badgesGroup = Group{Name: "badges", Help: "View badges.", Children: []Node{
 }}
 
 var challengesGroup = Group{Name: "challenges", Help: "View challenges.", Children: []Node{
-	Leaf{Name: "list", Help: "Show joined challenges.", Default: true, Endpoint: "challenges.joined", Verb: "get challenges", Output: JSON{}},
-	Leaf{Name: "badge", Help: "Show badge challenges.", Endpoint: "badges.challenges", Verb: "get badge challenges", Output: JSON{}},
+	Custom{Name: "list", Help: "Show current challenges.", Default: true, Cmd: &ChallengesListCmd{}},
+	Leaf{Name: "badge", Help: "Show joined badge challenges that are not completed.", Endpoint: "challenges.non-completed", Verb: "get badge challenges", Output: JSON{List: true}},
 	Leaf{Name: "available", Help: "Show available badge challenges.", Endpoint: "challenges.available", Verb: "get available challenges", Output: JSON{List: true}},
 	Leaf{Name: "completed", Help: "Show completed badge challenges.", Endpoint: "challenges.completed", Verb: "get completed challenges", Output: JSON{List: true}},
 	Group{Name: "virtual", Help: "View virtual challenges.", Children: []Node{
@@ -151,6 +152,36 @@ var challengesGroup = Group{Name: "challenges", Help: "View challenges.", Childr
 		Leaf{Name: "in-progress", Help: "Show virtual challenges in progress.", Endpoint: "challenges.virtual-in-progress", Verb: "get in-progress virtual challenges", Output: JSON{List: true}},
 	}},
 }}
+
+// BadgesInProgressCmd shows the badges in progress.
+type BadgesInProgressCmd struct{}
+
+func (c *BadgesInProgressCmd) Run(g *Globals) error {
+	client, err := resolveClient(g)
+	if err != nil {
+		return err
+	}
+	data, err := client.InProgressBadges(g.Context)
+	if err != nil {
+		return fmt.Errorf("get in-progress badges: %w", err)
+	}
+	return writeAnswer(g, data, "[]")
+}
+
+// ChallengesListCmd shows the current challenges as the web app lists them.
+type ChallengesListCmd struct{}
+
+func (c *ChallengesListCmd) Run(g *Globals) error {
+	client, err := resolveClient(g)
+	if err != nil {
+		return err
+	}
+	data, err := client.CurrentChallenges(g.Context)
+	if err != nil {
+		return fmt.Errorf("get challenges: %w", err)
+	}
+	return outfmt.WriteJSON(g.Stdout, data)
+}
 
 var recordsGroup = Group{Name: "records", Help: "View personal records.", Children: []Node{
 	Leaf{

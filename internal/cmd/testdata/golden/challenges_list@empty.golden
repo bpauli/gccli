@@ -1,0 +1,95 @@
+Empty case: Garmin answers each read with an empty body, so autoChallenge is {} and each list is [].
+-- args --
+challenges
+list
+-- route GET /challenge-service/challenge/active --
+-- route GET /groupchallenge-service/groupchallenge/nonCompleted --
+-- route GET /adhocchallenge-service/adHocChallenge/nonCompleted --
+-- route GET /vivokidchallenge-service/adHocChallenge/nonCompleted --
+-- route GET /vivokidchallenge-service/teamChallenge/nonCompleted --
+-- route GET /badgechallenge-service/badgeChallenge/non-completed?desc=true&start=1&limit=10000 --
+-- route GET /badgechallenge-service/virtualChallenge/inProgress --
+-- table stdout --
+{
+  "autoChallenge": {},
+  "groupChallenges": [],
+  "adHocChallenges": [],
+  "vivokidChallenges": [],
+  "teamStepsVivokidChallenges": [],
+  "badgeChallenges": [],
+  "virtualChallenges": []
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /challenge-service/challenge/active
+GET /groupchallenge-service/groupchallenge/nonCompleted
+GET /adhocchallenge-service/adHocChallenge/nonCompleted
+GET /vivokidchallenge-service/adHocChallenge/nonCompleted
+GET /vivokidchallenge-service/teamChallenge/nonCompleted
+GET /badgechallenge-service/badgeChallenge/non-completed?desc=true&start=1&limit=10000
+GET /badgechallenge-service/virtualChallenge/inProgress
+-- plain stdout --
+{
+  "autoChallenge": {},
+  "groupChallenges": [],
+  "adHocChallenges": [],
+  "vivokidChallenges": [],
+  "teamStepsVivokidChallenges": [],
+  "badgeChallenges": [],
+  "virtualChallenges": []
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /challenge-service/challenge/active
+GET /groupchallenge-service/groupchallenge/nonCompleted
+GET /adhocchallenge-service/adHocChallenge/nonCompleted
+GET /vivokidchallenge-service/adHocChallenge/nonCompleted
+GET /vivokidchallenge-service/teamChallenge/nonCompleted
+GET /badgechallenge-service/badgeChallenge/non-completed?desc=true&start=1&limit=10000
+GET /badgechallenge-service/virtualChallenge/inProgress
+-- plain-header stdout --
+{
+  "autoChallenge": {},
+  "groupChallenges": [],
+  "adHocChallenges": [],
+  "vivokidChallenges": [],
+  "teamStepsVivokidChallenges": [],
+  "badgeChallenges": [],
+  "virtualChallenges": []
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /challenge-service/challenge/active
+GET /groupchallenge-service/groupchallenge/nonCompleted
+GET /adhocchallenge-service/adHocChallenge/nonCompleted
+GET /vivokidchallenge-service/adHocChallenge/nonCompleted
+GET /vivokidchallenge-service/teamChallenge/nonCompleted
+GET /badgechallenge-service/badgeChallenge/non-completed?desc=true&start=1&limit=10000
+GET /badgechallenge-service/virtualChallenge/inProgress
+-- json stdout --
+{
+  "autoChallenge": {},
+  "groupChallenges": [],
+  "adHocChallenges": [],
+  "vivokidChallenges": [],
+  "teamStepsVivokidChallenges": [],
+  "badgeChallenges": [],
+  "virtualChallenges": []
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /challenge-service/challenge/active
+GET /groupchallenge-service/groupchallenge/nonCompleted
+GET /adhocchallenge-service/adHocChallenge/nonCompleted
+GET /vivokidchallenge-service/adHocChallenge/nonCompleted
+GET /vivokidchallenge-service/teamChallenge/nonCompleted
+GET /badgechallenge-service/badgeChallenge/non-completed?desc=true&start=1&limit=10000
+GET /badgechallenge-service/virtualChallenge/inProgress

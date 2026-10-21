@@ -484,8 +484,8 @@ Date shortcuts
 - `gccli badges compare <display-name>`: Compare your badges with a connection.
   - `<display-name>`: Display name of the connection.
 - `gccli badges leaderboard`: Show the badge points leaderboard of your connections.
-- `gccli challenges list`: Show joined challenges. Also runs as `gccli challenges`.
-- `gccli challenges badge`: Show badge challenges.
+- `gccli challenges list`: Show current challenges. Also runs as `gccli challenges`.
+- `gccli challenges badge`: Show joined badge challenges that are not completed.
 - `gccli challenges available`: Show available badge challenges.
 - `gccli challenges completed`: Show completed badge challenges.
 - `gccli challenges virtual available`: Show available virtual challenges.
