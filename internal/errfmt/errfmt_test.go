@@ -45,6 +45,11 @@ func TestFormat(t *testing.T) {
 			want: "get goals: garmin api: 404 Not Found: not found",
 		},
 		{
+			name: "missing subscription keeps the operation context",
+			err:  fmt.Errorf("search foods: %w", &garminapi.SubscriptionRequiredError{Subscription: garminapi.ConnectPlus, Err: &garminapi.GarminAPIError{StatusCode: 403, Message: "{}"}}),
+			want: "search foods: this needs a Garmin Connect+ subscription (403 Forbidden)",
+		},
+		{
 			name: "unknown error",
 			err:  errors.New("something went wrong"),
 			want: "something went wrong",
