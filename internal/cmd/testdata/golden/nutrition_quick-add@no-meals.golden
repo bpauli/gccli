@@ -1,0 +1,39 @@
+A user who has not set up nutrition has no meals. No write is sent, and the message says to set up nutrition first.
+-- args --
+nutrition
+quick-add
+2026-10-15
+--meal
+snacks
+--calories
+50
+-- route GET /nutrition-service/meals/2026-10-15 noeol --
+{"dailyTimelineStartTime":null,"dailyTimelineEndTime":null,"dailyViewType":null,"meals":[]}
+-- table stdout --
+-- table stderr --
+no meals on 2026-10-15: set up nutrition in Garmin Connect first (it needs a Garmin Connect+ subscription)
+-- table exit --
+1
+-- table requests --
+GET /nutrition-service/meals/2026-10-15
+-- plain stdout --
+-- plain stderr --
+no meals on 2026-10-15: set up nutrition in Garmin Connect first (it needs a Garmin Connect+ subscription)
+-- plain exit --
+1
+-- plain requests --
+GET /nutrition-service/meals/2026-10-15
+-- plain-header stdout --
+-- plain-header stderr --
+no meals on 2026-10-15: set up nutrition in Garmin Connect first (it needs a Garmin Connect+ subscription)
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /nutrition-service/meals/2026-10-15
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"no meals on 2026-10-15: set up nutrition in Garmin Connect first (it needs a Garmin Connect+ subscription)"}}
+-- json exit --
+1
+-- json requests --
+GET /nutrition-service/meals/2026-10-15

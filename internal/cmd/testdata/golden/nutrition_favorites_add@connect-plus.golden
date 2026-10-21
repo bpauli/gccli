@@ -1,0 +1,38 @@
+Garmin refuses the food search of an account without Garmin Connect+ with 403 ForbiddenException. The message names the plan, and the exit code stays 1 (error) with status 403.
+-- args --
+nutrition
+favorites
+add
+1001
+--query
+apple
+-- route GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50 403 noeol --
+{"message":"HTTP 403 Forbidden","error":"ForbiddenException"}
+-- table stdout --
+-- table stderr --
+find food: this needs a Garmin Connect+ subscription (403 Forbidden)
+-- table exit --
+1
+-- table requests --
+GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50
+-- plain stdout --
+-- plain stderr --
+find food: this needs a Garmin Connect+ subscription (403 Forbidden)
+-- plain exit --
+1
+-- plain requests --
+GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50
+-- plain-header stdout --
+-- plain-header stderr --
+find food: this needs a Garmin Connect+ subscription (403 Forbidden)
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":403,"message":"find food: this needs a Garmin Connect+ subscription (403 Forbidden)"}}
+-- json exit --
+1
+-- json requests --
+GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50

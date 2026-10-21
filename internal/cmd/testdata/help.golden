@@ -252,8 +252,18 @@ Commands:
                                    Connect+.
   nutrition recent                 List the foods you logged recently. Needs
                                    Garmin Connect+.
+  nutrition add                    Log a food of the Garmin food database in a
+                                   meal. Needs Garmin Connect+.
+  nutrition quick-add              Log calories and macros in a meal without a
+                                   food. Needs Garmin Connect+.
+  nutrition delete                 Delete food log entries of a day. Needs
+                                   Garmin Connect+.
   nutrition favorites list         List your favorite foods. Needs Garmin
                                    Connect+.
+  nutrition favorites add          Add a food to your favorite foods. Needs
+                                   Garmin Connect+.
+  nutrition favorites remove       Remove a food from your favorite foods.
+                                   Needs Garmin Connect+.
   training plans                   List training plans.
   training plan                    Show a specific training plan.
   training active                  Show active training plans.
@@ -1463,7 +1473,7 @@ Commands:
 $ gccli nutrition --help
 Usage: gccli nutrition <command> [flags]
 
-View nutrition data.
+View and log nutrition data.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -1480,19 +1490,29 @@ Flags:
       --version           Print version information.
 
 Commands:
-  nutrition food-log          Show daily food log for a date.
-  nutrition meals             Show meal summaries for a date.
-  nutrition settings          Show nutrition settings for a date.
-  nutrition search            Search the Garmin food database. Needs Garmin
-                              Connect+.
-  nutrition recent            List the foods you logged recently. Needs Garmin
-                              Connect+.
-  nutrition favorites list    List your favorite foods. Needs Garmin Connect+.
+  nutrition food-log            Show daily food log for a date.
+  nutrition meals               Show meal summaries for a date.
+  nutrition settings            Show nutrition settings for a date.
+  nutrition search              Search the Garmin food database. Needs Garmin
+                                Connect+.
+  nutrition recent              List the foods you logged recently. Needs Garmin
+                                Connect+.
+  nutrition add                 Log a food of the Garmin food database in a
+                                meal. Needs Garmin Connect+.
+  nutrition quick-add           Log calories and macros in a meal without a
+                                food. Needs Garmin Connect+.
+  nutrition delete              Delete food log entries of a day. Needs Garmin
+                                Connect+.
+  nutrition favorites list      List your favorite foods. Needs Garmin Connect+.
+  nutrition favorites add       Add a food to your favorite foods. Needs Garmin
+                                Connect+.
+  nutrition favorites remove    Remove a food from your favorite foods. Needs
+                                Garmin Connect+.
 
 $ gccli nutrition favorites --help
 Usage: gccli nutrition favorites <command>
 
-List your favorite foods. Needs Garmin Connect+.
+List, add and remove favorite foods. Needs Garmin Connect+.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -1509,7 +1529,11 @@ Flags:
       --version           Print version information.
 
 Commands:
-  nutrition favorites list    List your favorite foods. Needs Garmin Connect+.
+  nutrition favorites list      List your favorite foods. Needs Garmin Connect+.
+  nutrition favorites add       Add a food to your favorite foods. Needs Garmin
+                                Connect+.
+  nutrition favorites remove    Remove a food from your favorite foods. Needs
+                                Garmin Connect+.
 
 $ gccli training --help
 Usage: gccli training <command> [flags]

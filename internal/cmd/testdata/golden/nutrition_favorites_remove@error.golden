@@ -1,0 +1,42 @@
+Error case: Garmin answers the DELETE with 400, so the exit code is 1 (error).
+-- args --
+nutrition
+favorites
+remove
+1001
+-- route GET /nutrition-service/favorite?start=0&limit=50&includeContent=true noeol --
+{"consumables":[{"type":"FOOD","foodMetaData":{"foodId":"1001","foodName":"Food 1001","source":"FATSECRET"},"selectedNutritionContent":{"servingId":"s1001","servingUnit":"g","calories":10},"servingQty":1.0}],"hasMore":false}
+-- route DELETE /nutrition-service/favorite/food/1001 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+remove favorite food: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /nutrition-service/favorite?start=0&limit=50&includeContent=true
+DELETE /nutrition-service/favorite/food/1001
+-- plain stdout --
+-- plain stderr --
+remove favorite food: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /nutrition-service/favorite?start=0&limit=50&includeContent=true
+DELETE /nutrition-service/favorite/food/1001
+-- plain-header stdout --
+-- plain-header stderr --
+remove favorite food: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /nutrition-service/favorite?start=0&limit=50&includeContent=true
+DELETE /nutrition-service/favorite/food/1001
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"remove favorite food: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /nutrition-service/favorite?start=0&limit=50&includeContent=true
+DELETE /nutrition-service/favorite/food/1001

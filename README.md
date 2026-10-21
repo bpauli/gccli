@@ -23,7 +23,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Training** - browse and view training plans, show your active plans, list adaptive coaching workout types
 - **Profile** — user profile and settings, privacy settings, list, add and delete privacy zones, heart rate and power zones
 - **Hydration** — view and log daily water intake
-- **Nutrition** - view daily food logs, meals, and nutrition settings, search the Garmin food database, and list recent and favorite foods (the last three need Garmin Connect+)
+- **Nutrition** - view daily food logs, meals, and nutrition settings, search the Garmin food database, list recent and favorite foods, log foods and quick entries in a meal, delete log entries, and add and remove favorite foods (all but the first three need Garmin Connect+)
 - **Events** — list, list upcoming, add, and delete calendar events (races, group rides, etc.) with goals and training priority support
 - **Calendar** - add, update, move and delete calendar notes
 - **Wellness** - menstrual cycle data and calendar, menstrual daily log (view, set, delete), pregnancy summary, jet lag trips and status
@@ -745,7 +745,17 @@ gccli nutrition settings [date]        # View nutrition settings
 gccli nutrition search "greek yogurt"  # Search the food database (needs Garmin Connect+)
 gccli nutrition recent                 # Foods logged recently (needs Garmin Connect+)
 gccli nutrition favorites              # Favorite foods (needs Garmin Connect+)
+
+# Writes (need Garmin Connect+ and nutrition set up in Garmin Connect)
+gccli nutrition add today 35718 --query apple --meal breakfast     # Log a food that search found
+gccli nutrition add today 35718 -q apple -m lunch --serving oz --servings 3
+gccli nutrition quick-add today --meal snacks --calories 120 --carbs 15 --name "Coffee with milk"
+gccli nutrition delete today <log-id> --force                       # Delete log entries
+gccli nutrition favorites add 35718 --query apple                  # Save a favorite food
+gccli nutrition favorites remove 35718
 ```
+
+`nutrition add` and `nutrition favorites add` need `--query`, the search text with which `nutrition search` lists the food, because Garmin has no read of one food by ID. `--serving` picks a serving by its unit or ID (default the first serving of the food). `--meal` takes the meals of the day: `breakfast`, `lunch`, `dinner`, `snacks`, or a custom meal you enabled. The meal time defaults to the start time of the meal, or to the current time for a meal without one, such as snacks. The add commands print the log ID of the new entry, and `nutrition delete` takes it.
 
 ### Training Plans
 
@@ -1430,9 +1440,37 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
   - `-l, --limit=20`: Maximum number of foods to return.
   - `--offset=0`: Number of foods to skip.
+- `gccli nutrition add --query=TEXT --meal=MEAL <date> <food-id> [flags]`: Log a food of the Garmin food database in a meal. Needs Garmin Connect+.
+  - `<date>`: Date of the meal (YYYY-MM-DD, today, yesterday, 3d).
+  - `<food-id>`: Food ID, as nutrition search prints it.
+  - `-q, --query=TEXT`: Search text that finds the food, as you gave it to nutrition search. Garmin has no read of one food by ID.
+  - `-m, --meal=MEAL`: Meal: breakfast, lunch, dinner, snacks, or a custom meal you enabled.
+  - `--serving=UNIT`: Serving unit, such as g or oz, or serving ID, as nutrition search --json lists them under nutritionContents. Defaults to the first serving of the food.
+  - `--servings=1`: Number of servings. A serving can hold more than one unit, such as 100 g.
+  - `--time=HH:MM`: Meal time (HH:MM). Defaults to the start time of the meal, or to the current time for a meal without one, such as snacks.
+- `gccli nutrition quick-add --meal=MEAL --calories=KCAL <date> [flags]`: Log calories and macros in a meal without a food. Needs Garmin Connect+.
+  - `<date>`: Date of the meal (YYYY-MM-DD, today, yesterday, 3d).
+  - `-m, --meal=MEAL`: Meal: breakfast, lunch, dinner, snacks, or a custom meal you enabled.
+  - `--calories=KCAL`: Calories (kcal).
+  - `--carbs=GRAMS`: Carbohydrates in grams.
+  - `--protein=GRAMS`: Protein in grams.
+  - `--fat=GRAMS`: Fat in grams.
+  - `--name=NAME`: Name of the entry, such as Coffee with milk.
+  - `--time=HH:MM`: Meal time (HH:MM). Defaults to the start time of the meal, or to the current time for a meal without one, such as snacks.
+- `gccli nutrition delete <date> <log-id> ... [flags]`: Delete food log entries of a day. Needs Garmin Connect+.
+  - `<date>`: Date of the entries (YYYY-MM-DD, today, yesterday, 3d).
+  - `<log-id> ...`: Log ID of an entry, as the add commands print it or nutrition food-log --json lists it.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli nutrition favorites list [flags]`: List your favorite foods. Needs Garmin Connect+. Also runs as `gccli nutrition favorites [flags]`.
   - `-l, --limit=20`: Maximum number of foods to return.
   - `--offset=0`: Number of foods to skip.
+- `gccli nutrition favorites add --query=TEXT <food-id> [flags]`: Add a food to your favorite foods. Needs Garmin Connect+.
+  - `<food-id>`: Food ID, as nutrition search prints it.
+  - `-q, --query=TEXT`: Search text that finds the food, as you gave it to nutrition search. Garmin has no read of one food by ID.
+  - `--serving=UNIT`: Serving unit, such as g or oz, or serving ID, as nutrition search --json lists them under nutritionContents. Defaults to the first serving of the food.
+  - `--servings=1`: Number of servings. A serving can hold more than one unit, such as 100 g.
+- `gccli nutrition favorites remove <food-id>`: Remove a food from your favorite foods. Needs Garmin Connect+.
+  - `<food-id>`: Food ID, as nutrition favorites prints it.
 - `gccli profile view`: Show user profile. Also runs as `gccli profile`.
 - `gccli profile settings`: Show user settings.
 - `gccli profile privacy view`: Show privacy settings. Also runs as `gccli profile privacy`.
