@@ -41,6 +41,50 @@ func (c *Client) CopyWorkout(ctx context.Context, workoutID, name string) (json.
 	return jsonResult(resp), nil
 }
 
+// Workout holds the fields of a workouts.get answer that a send to a device
+// reads.
+type Workout struct {
+	Name      string    `json:"workoutName"`
+	SportType SportType `json:"sportType"`
+	Segments  []struct {
+		SportType SportType `json:"sportType"`
+	} `json:"workoutSegments"`
+}
+
+// SportType is the sport of a workout or of a workout segment.
+type SportType struct {
+	Key string `json:"sportTypeKey"`
+}
+
+// SendWorkoutToDevice queues the workout for the device, which downloads it
+// at its next sync. The message matches the one of the Garmin Connect web
+// app: a swim workout names the device in its URL when the device lacks
+// swimWorkout2Capable.
+func (c *Client) SendWorkoutToDevice(ctx context.Context, workoutID int64, w Workout, d Device) (json.RawMessage, error) {
+	fileType := d.WorkoutFileType
+	if fileType == "" {
+		fileType = "FIT"
+	}
+	messageURL := fmt.Sprintf("workout-service/workout/%s/%d", fileType, workoutID)
+	if w.SportType.Key == "swimming" && !d.flags["swimWorkout2Capable"] {
+		messageURL += "?deviceId=" + d.ID.String()
+	}
+	body, err := json.Marshal([]map[string]any{{
+		"deviceId":    d.ID,
+		"messageUrl":  messageURL,
+		"messageType": "workouts",
+		"messageName": w.Name,
+		"groupName":   nil,
+		"priority":    1,
+		"fileType":    fileType,
+		"metaDataId":  workoutID,
+	}})
+	if err != nil {
+		return nil, fmt.Errorf("marshal send payload: %w", err)
+	}
+	return c.Call(ctx, "devices.send-message", nil, body)
+}
+
 // GetCalendarWeek returns the calendar data for the week containing the given date.
 // The date must be in YYYY-MM-DD format. The Garmin calendar API uses 0-indexed months.
 func (c *Client) GetCalendarWeek(ctx context.Context, date string) (json.RawMessage, error) {

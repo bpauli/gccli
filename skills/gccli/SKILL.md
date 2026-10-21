@@ -353,6 +353,9 @@ Date shortcuts
 - `gccli workouts copy <id> [<name>]`: Copy a workout.
   - `<id>`: Workout ID.
   - `[<name>]`: Name of the copy. Without it, the copy gets the name of the original.
+- `gccli workouts send <id> [flags]`: Send a workout to a device at its next sync. Undo: devices messages cancel.
+  - `<id>`: Workout ID.
+  - `--device=ID`: Device ID (from 'devices list'). Needed when more than one device can receive the workout.
 - `gccli workouts types`: List workout types.
 - `gccli workouts schedule add <id> <date>`: Add a workout to the schedule.
   - `<id>`: Workout ID.

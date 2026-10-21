@@ -1,0 +1,95 @@
+Garmin answers 400 to the send.
+-- args --
+workouts
+send
+111
+-- route GET /workout-service/workout/111 --
+{"workoutId":111,"workoutName":"Tempo Run","sportType":{"sportTypeId":1,"sportTypeKey":"running"}}
+-- route GET /device-service/deviceregistration/devices --
+[{"deviceId":3001,"displayName":"Forerunner 265","workoutCapable":true,"runningWorkoutCapable":true,"cyclingWorkoutCapable":false,"swimWorkoutCapable":true,"swimWorkout2Capable":false,"workoutFileType":"FIT"}]
+-- route POST /device-service/devicemessage/messages 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+send workout: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /workout-service/workout/111
+GET /device-service/deviceregistration/devices
+POST /device-service/devicemessage/messages
+  [
+    {
+      "deviceId": 3001,
+      "fileType": "FIT",
+      "groupName": null,
+      "messageName": "Tempo Run",
+      "messageType": "workouts",
+      "messageUrl": "workout-service/workout/FIT/111",
+      "metaDataId": 111,
+      "priority": 1
+    }
+  ]
+-- plain stdout --
+-- plain stderr --
+send workout: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /workout-service/workout/111
+GET /device-service/deviceregistration/devices
+POST /device-service/devicemessage/messages
+  [
+    {
+      "deviceId": 3001,
+      "fileType": "FIT",
+      "groupName": null,
+      "messageName": "Tempo Run",
+      "messageType": "workouts",
+      "messageUrl": "workout-service/workout/FIT/111",
+      "metaDataId": 111,
+      "priority": 1
+    }
+  ]
+-- plain-header stdout --
+-- plain-header stderr --
+send workout: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /workout-service/workout/111
+GET /device-service/deviceregistration/devices
+POST /device-service/devicemessage/messages
+  [
+    {
+      "deviceId": 3001,
+      "fileType": "FIT",
+      "groupName": null,
+      "messageName": "Tempo Run",
+      "messageType": "workouts",
+      "messageUrl": "workout-service/workout/FIT/111",
+      "metaDataId": 111,
+      "priority": 1
+    }
+  ]
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"send workout: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /workout-service/workout/111
+GET /device-service/deviceregistration/devices
+POST /device-service/devicemessage/messages
+  [
+    {
+      "deviceId": 3001,
+      "fileType": "FIT",
+      "groupName": null,
+      "messageName": "Tempo Run",
+      "messageType": "workouts",
+      "messageUrl": "workout-service/workout/FIT/111",
+      "metaDataId": 111,
+      "priority": 1
+    }
+  ]

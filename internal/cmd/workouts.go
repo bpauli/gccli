@@ -1,12 +1,16 @@
 package cmd
 
 import (
+	"cmp"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/bpauli/gccli/internal/garminapi"
 )
 
 var workoutsGroup = Group{Name: "workouts", Help: "Manage workouts.", Children: []Node{
@@ -17,6 +21,7 @@ var workoutsGroup = Group{Name: "workouts", Help: "Manage workouts.", Children: 
 	Custom{Name: "update", Help: "Update an existing workout from a JSON file.", Cmd: &WorkoutUpdateCmd{}},
 	Custom{Name: "create", Help: "Create a workout with sport type and optional targets.", Cmd: &WorkoutCreateCmd{}},
 	Custom{Name: "copy", Help: "Copy a workout.", Cmd: &WorkoutCopyCmd{}},
+	Custom{Name: "send", Help: "Send a workout to a device at its next sync. Undo: devices messages cancel.", Cmd: &WorkoutSendCmd{}},
 	Leaf{Name: "types", Help: "List workout types.", Endpoint: "workouts.types", Verb: "get workout types", Output: JSON{}},
 	workoutScheduleGroup,
 	workoutBenchmarksGroup,
@@ -185,6 +190,107 @@ func (c *WorkoutCopyCmd) Run(g *Globals) error {
 		return reportWrite(g, data, "Copied workout %s to %q (ID: %s)", c.ID, jsonString(resp, "workoutName"), id)
 	}
 	return reportWrite(g, data, "Copied workout %s", c.ID)
+}
+
+// WorkoutSendCmd sends a workout to a device.
+type WorkoutSendCmd struct {
+	ID     NumericID `arg:"" help:"Workout ID."`
+	Device ID        `help:"Device ID (from 'devices list'). Needed when more than one device can receive the workout."`
+}
+
+func (c *WorkoutSendCmd) Run(g *Globals) error {
+	client, err := resolveClient(g)
+	if err != nil {
+		return err
+	}
+
+	data, err := client.Call(g.Context, "workouts.get", map[string]string{"workoutID": c.ID.String()}, nil)
+	if err != nil {
+		return fmt.Errorf("get workout: %w", err)
+	}
+	var workout garminapi.Workout
+	if err := unmarshalAnswer(data, &workout); err != nil {
+		return fmt.Errorf("parse workout: %w", err)
+	}
+	if workout.Name == "" {
+		return errors.New("parse workout: no workoutName")
+	}
+
+	data, err = client.Call(g.Context, "devices.list", nil, nil)
+	if err != nil {
+		return fmt.Errorf("get devices: %w", err)
+	}
+	var devices []garminapi.Device
+	if err := unmarshalAnswer(data, &devices); err != nil {
+		return fmt.Errorf("parse devices: %w", err)
+	}
+	device, err := pickWorkoutDevice(devices, workout, string(c.Device))
+	if err != nil {
+		return err
+	}
+
+	data, err = client.SendWorkoutToDevice(g.Context, int64(c.ID), workout, device)
+	if err != nil {
+		return fmt.Errorf("send workout: %w", err)
+	}
+	name := cmp.Or(device.Name, device.ID.String())
+	var msgs []map[string]any
+	_ = json.Unmarshal(data, &msgs)
+	if len(msgs) > 0 {
+		if id := jsonString(msgs[0], "messageId"); id != "" {
+			return reportWrite(g, data, "Sent workout %q to %s (message %s). It reaches the device at its next sync. To cancel it before then, run: gccli devices messages cancel %s",
+				workout.Name, name, id, id)
+		}
+	}
+	return reportWrite(g, data, "Sent workout %q to %s. It reaches the device at its next sync. To cancel it before then, find the message in: gccli devices messages",
+		workout.Name, name)
+}
+
+// pickWorkoutDevice returns the device that want names, or without want the
+// only device that can receive the workout. It fails before any write.
+func pickWorkoutDevice(devices []garminapi.Device, w garminapi.Workout, want string) (garminapi.Device, error) {
+	var able []garminapi.Device
+	for _, d := range devices {
+		if d.CanReceive(w) {
+			able = append(able, d)
+		}
+	}
+	choose := "no registered device can receive this workout"
+	if len(able) > 0 {
+		labels := make([]string, len(able))
+		for i, d := range able {
+			labels[i] = deviceLabel(d)
+		}
+		choose = "pass --device with one of: " + strings.Join(labels, ", ")
+	}
+
+	if want == "" {
+		switch len(able) {
+		case 0:
+			return garminapi.Device{}, errors.New(choose)
+		case 1:
+			return able[0], nil
+		}
+		return garminapi.Device{}, fmt.Errorf("%d devices can receive this workout, %s", len(able), choose)
+	}
+	for _, d := range devices {
+		if d.ID.String() != want {
+			continue
+		}
+		if !d.CanReceive(w) {
+			return garminapi.Device{}, fmt.Errorf("device %s cannot receive this workout, %s", deviceLabel(d), choose)
+		}
+		return d, nil
+	}
+	return garminapi.Device{}, fmt.Errorf("device %s is not registered, %s", want, choose)
+}
+
+// deviceLabel names a device as "<id> (<name>)".
+func deviceLabel(d garminapi.Device) string {
+	if d.Name == "" {
+		return d.ID.String()
+	}
+	return fmt.Sprintf("%s (%s)", d.ID, d.Name)
 }
 
 // setWorkoutID returns the payload with workoutId set to workoutID. Garmin
