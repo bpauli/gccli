@@ -75,8 +75,6 @@ type Serving struct {
 	Unit string `json:"servingUnit"`
 }
 
-// foodSearchPage and foodSearchPages bound FindFood to the first 250
-// results of a search.
 const (
 	foodSearchPage  = 50
 	foodSearchPages = 5
@@ -155,8 +153,7 @@ type MealEntry struct {
 	Date string
 	Meal Meal
 	// Time is the meal time, HH:MM.
-	Time string
-	// LoggedAt is the time of the write.
+	Time     string
 	LoggedAt time.Time
 }
 
@@ -260,7 +257,6 @@ func (c *Client) AddFavoriteFood(ctx context.Context, food Food, serving Serving
 	return c.Call(ctx, "nutrition.add-favorite-food", nil, body)
 }
 
-// favoritePage and favoritePages bound IsFavoriteFood to 5000 favorites.
 const (
 	favoritePage  = 50
 	favoritePages = 100
