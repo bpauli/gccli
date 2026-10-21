@@ -354,6 +354,7 @@ Date shortcuts
   - `<id>`: Workout ID.
   - `[<name>]`: Name of the copy. Without it, the copy gets the name of the original.
 - `gccli workouts types`: List workout types.
+- `gccli workouts sport-types`: List the sport types a workout can have.
 - `gccli workouts schedule add <id> <date>`: Add a workout to the schedule.
   - `<id>`: Workout ID.
   - `<date>`: Date to schedule (YYYY-MM-DD, today, yesterday, 3d).

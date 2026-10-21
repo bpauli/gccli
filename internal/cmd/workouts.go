@@ -18,6 +18,15 @@ var workoutsGroup = Group{Name: "workouts", Help: "Manage workouts.", Children: 
 	Custom{Name: "create", Help: "Create a workout with sport type and optional targets.", Cmd: &WorkoutCreateCmd{}},
 	Custom{Name: "copy", Help: "Copy a workout.", Cmd: &WorkoutCopyCmd{}},
 	Leaf{Name: "types", Help: "List workout types.", Endpoint: "workouts.types", Verb: "get workout types", Output: JSON{}},
+	Leaf{
+		Name: "sport-types", Help: "List the sport types a workout can have.",
+		Endpoint: "workouts.sport-types", Verb: "get workout sport types",
+		Output: Rows{Noun: "sport types", Columns: []Column{
+			{Label: "ID", Path: "sportTypeId"},
+			{Label: "KEY", Path: "sportTypeKey"},
+			{Label: "ORDER", Path: "displayOrder"},
+		}},
+	},
 	workoutScheduleGroup,
 	workoutBenchmarksGroup,
 	Leaf{
