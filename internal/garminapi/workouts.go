@@ -18,6 +18,7 @@ var workoutsEndpoints = []Endpoint{
 	{Name: "workouts.unschedule", Method: http.MethodDelete, Host: ConnectAPI, Path: "/workout-service/schedule/{scheduleID}"},
 	{Name: "workouts.delete", Method: http.MethodDelete, Host: ConnectAPI, Path: "/workout-service/workout/{workoutID}"},
 	{Name: "workouts.types", Method: http.MethodGet, Host: ConnectAPI, Path: "/workout-service/workout/types"},
+	{Name: "workouts.sport-types", Method: http.MethodGet, Host: ConnectAPI, Path: "/workout-service/workout/types/sport"},
 	{Name: "workouts.export-schedule", Method: http.MethodGet, Host: ConnectAPI, Path: "/workout-service/schedule/export/JSON?startDate={startDate}"},
 	{Name: "workouts.benchmarks", Method: http.MethodGet, Host: ConnectAPI, Path: "/workout-service/benchmarks"},
 }
