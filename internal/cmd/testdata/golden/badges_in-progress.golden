@@ -1,41 +1,100 @@
+Badge 1 is in progress and in both lists, so it prints once with the available entry. Badge 2 reached its target and has no limit. Badge 3 reached its target but can be earned again. Badge 4 has no progress.
 -- args --
 badges
 in-progress
--- route GET /badge-service/badge/in-progress --
-{"value":1}
+-- route GET /badge-service/badge/earned --
+[{"badgeId":1,"badgeProgressValue":5,"badgeTargetValue":10,"badgeLimitCount":null,"badgeEarnedNumber":0},{"badgeId":2,"badgeProgressValue":10,"badgeTargetValue":10,"badgeLimitCount":null,"badgeEarnedNumber":1}]
+-- route GET /badge-service/badge/available?showExclusiveBadge=true --
+[{"badgeId":4,"badgeProgressValue":0,"badgeTargetValue":10},{"badgeId":3,"badgeProgressValue":1,"badgeTargetValue":1,"badgeLimitCount":5,"badgeEarnedNumber":2},{"badgeId":1,"badgeProgressValue":6,"badgeTargetValue":10,"badgeLimitCount":null,"badgeEarnedNumber":0}]
 -- table stdout --
-{
-  "value": 1
-}
+[
+  {
+    "badgeId": 1,
+    "badgeProgressValue": 6,
+    "badgeTargetValue": 10,
+    "badgeLimitCount": null,
+    "badgeEarnedNumber": 0
+  },
+  {
+    "badgeId": 3,
+    "badgeProgressValue": 1,
+    "badgeTargetValue": 1,
+    "badgeLimitCount": 5,
+    "badgeEarnedNumber": 2
+  }
+]
 -- table stderr --
 -- table exit --
 0
 -- table requests --
-GET /badge-service/badge/in-progress
+GET /badge-service/badge/earned
+GET /badge-service/badge/available?showExclusiveBadge=true
 -- plain stdout --
-{
-  "value": 1
-}
+[
+  {
+    "badgeId": 1,
+    "badgeProgressValue": 6,
+    "badgeTargetValue": 10,
+    "badgeLimitCount": null,
+    "badgeEarnedNumber": 0
+  },
+  {
+    "badgeId": 3,
+    "badgeProgressValue": 1,
+    "badgeTargetValue": 1,
+    "badgeLimitCount": 5,
+    "badgeEarnedNumber": 2
+  }
+]
 -- plain stderr --
 -- plain exit --
 0
 -- plain requests --
-GET /badge-service/badge/in-progress
+GET /badge-service/badge/earned
+GET /badge-service/badge/available?showExclusiveBadge=true
 -- plain-header stdout --
-{
-  "value": 1
-}
+[
+  {
+    "badgeId": 1,
+    "badgeProgressValue": 6,
+    "badgeTargetValue": 10,
+    "badgeLimitCount": null,
+    "badgeEarnedNumber": 0
+  },
+  {
+    "badgeId": 3,
+    "badgeProgressValue": 1,
+    "badgeTargetValue": 1,
+    "badgeLimitCount": 5,
+    "badgeEarnedNumber": 2
+  }
+]
 -- plain-header stderr --
 -- plain-header exit --
 0
 -- plain-header requests --
-GET /badge-service/badge/in-progress
+GET /badge-service/badge/earned
+GET /badge-service/badge/available?showExclusiveBadge=true
 -- json stdout --
-{
-  "value": 1
-}
+[
+  {
+    "badgeId": 1,
+    "badgeProgressValue": 6,
+    "badgeTargetValue": 10,
+    "badgeLimitCount": null,
+    "badgeEarnedNumber": 0
+  },
+  {
+    "badgeId": 3,
+    "badgeProgressValue": 1,
+    "badgeTargetValue": 1,
+    "badgeLimitCount": 5,
+    "badgeEarnedNumber": 2
+  }
+]
 -- json stderr --
 -- json exit --
 0
 -- json requests --
-GET /badge-service/badge/in-progress
+GET /badge-service/badge/earned
+GET /badge-service/badge/available?showExclusiveBadge=true

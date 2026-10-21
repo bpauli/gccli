@@ -1,41 +1,229 @@
 -- args --
 challenges
 list
--- route GET /challenge-service/challenge/joined --
-{"value":1}
+-- route GET /challenge-service/challenge/active --
+{"reasonCode":null,"reasonMessage":null,"challengeDTOs":[{"challengeId":1}]}
+-- route GET /groupchallenge-service/groupchallenge/nonCompleted --
+[{"uuid":"group"}]
+-- route GET /adhocchallenge-service/adHocChallenge/nonCompleted --
+[{"uuid":"adhoc"}]
+-- route GET /vivokidchallenge-service/adHocChallenge/nonCompleted --
+[{"uuid":"vivokid"}]
+-- route GET /vivokidchallenge-service/teamChallenge/nonCompleted --
+[{"uuid":"team"}]
+-- route GET /badgechallenge-service/badgeChallenge/non-completed?desc=true&start=1&limit=10000 --
+[{"uuid":"badge"}]
+-- route GET /badgechallenge-service/virtualChallenge/inProgress --
+[{"uuid":"virtual"}]
 -- table stdout --
 {
-  "value": 1
+  "autoChallenge": {
+    "reasonCode": null,
+    "reasonMessage": null,
+    "challengeDTOs": [
+      {
+        "challengeId": 1
+      }
+    ]
+  },
+  "groupChallenges": [
+    {
+      "uuid": "group"
+    }
+  ],
+  "adHocChallenges": [
+    {
+      "uuid": "adhoc"
+    }
+  ],
+  "vivokidChallenges": [
+    {
+      "uuid": "vivokid"
+    }
+  ],
+  "teamStepsVivokidChallenges": [
+    {
+      "uuid": "team"
+    }
+  ],
+  "badgeChallenges": [
+    {
+      "uuid": "badge"
+    }
+  ],
+  "virtualChallenges": [
+    {
+      "uuid": "virtual"
+    }
+  ]
 }
 -- table stderr --
 -- table exit --
 0
 -- table requests --
-GET /challenge-service/challenge/joined
+GET /challenge-service/challenge/active
+GET /groupchallenge-service/groupchallenge/nonCompleted
+GET /adhocchallenge-service/adHocChallenge/nonCompleted
+GET /vivokidchallenge-service/adHocChallenge/nonCompleted
+GET /vivokidchallenge-service/teamChallenge/nonCompleted
+GET /badgechallenge-service/badgeChallenge/non-completed?desc=true&start=1&limit=10000
+GET /badgechallenge-service/virtualChallenge/inProgress
 -- plain stdout --
 {
-  "value": 1
+  "autoChallenge": {
+    "reasonCode": null,
+    "reasonMessage": null,
+    "challengeDTOs": [
+      {
+        "challengeId": 1
+      }
+    ]
+  },
+  "groupChallenges": [
+    {
+      "uuid": "group"
+    }
+  ],
+  "adHocChallenges": [
+    {
+      "uuid": "adhoc"
+    }
+  ],
+  "vivokidChallenges": [
+    {
+      "uuid": "vivokid"
+    }
+  ],
+  "teamStepsVivokidChallenges": [
+    {
+      "uuid": "team"
+    }
+  ],
+  "badgeChallenges": [
+    {
+      "uuid": "badge"
+    }
+  ],
+  "virtualChallenges": [
+    {
+      "uuid": "virtual"
+    }
+  ]
 }
 -- plain stderr --
 -- plain exit --
 0
 -- plain requests --
-GET /challenge-service/challenge/joined
+GET /challenge-service/challenge/active
+GET /groupchallenge-service/groupchallenge/nonCompleted
+GET /adhocchallenge-service/adHocChallenge/nonCompleted
+GET /vivokidchallenge-service/adHocChallenge/nonCompleted
+GET /vivokidchallenge-service/teamChallenge/nonCompleted
+GET /badgechallenge-service/badgeChallenge/non-completed?desc=true&start=1&limit=10000
+GET /badgechallenge-service/virtualChallenge/inProgress
 -- plain-header stdout --
 {
-  "value": 1
+  "autoChallenge": {
+    "reasonCode": null,
+    "reasonMessage": null,
+    "challengeDTOs": [
+      {
+        "challengeId": 1
+      }
+    ]
+  },
+  "groupChallenges": [
+    {
+      "uuid": "group"
+    }
+  ],
+  "adHocChallenges": [
+    {
+      "uuid": "adhoc"
+    }
+  ],
+  "vivokidChallenges": [
+    {
+      "uuid": "vivokid"
+    }
+  ],
+  "teamStepsVivokidChallenges": [
+    {
+      "uuid": "team"
+    }
+  ],
+  "badgeChallenges": [
+    {
+      "uuid": "badge"
+    }
+  ],
+  "virtualChallenges": [
+    {
+      "uuid": "virtual"
+    }
+  ]
 }
 -- plain-header stderr --
 -- plain-header exit --
 0
 -- plain-header requests --
-GET /challenge-service/challenge/joined
+GET /challenge-service/challenge/active
+GET /groupchallenge-service/groupchallenge/nonCompleted
+GET /adhocchallenge-service/adHocChallenge/nonCompleted
+GET /vivokidchallenge-service/adHocChallenge/nonCompleted
+GET /vivokidchallenge-service/teamChallenge/nonCompleted
+GET /badgechallenge-service/badgeChallenge/non-completed?desc=true&start=1&limit=10000
+GET /badgechallenge-service/virtualChallenge/inProgress
 -- json stdout --
 {
-  "value": 1
+  "autoChallenge": {
+    "reasonCode": null,
+    "reasonMessage": null,
+    "challengeDTOs": [
+      {
+        "challengeId": 1
+      }
+    ]
+  },
+  "groupChallenges": [
+    {
+      "uuid": "group"
+    }
+  ],
+  "adHocChallenges": [
+    {
+      "uuid": "adhoc"
+    }
+  ],
+  "vivokidChallenges": [
+    {
+      "uuid": "vivokid"
+    }
+  ],
+  "teamStepsVivokidChallenges": [
+    {
+      "uuid": "team"
+    }
+  ],
+  "badgeChallenges": [
+    {
+      "uuid": "badge"
+    }
+  ],
+  "virtualChallenges": [
+    {
+      "uuid": "virtual"
+    }
+  ]
 }
 -- json stderr --
 -- json exit --
 0
 -- json requests --
-GET /challenge-service/challenge/joined
+GET /challenge-service/challenge/active
+GET /groupchallenge-service/groupchallenge/nonCompleted
+GET /adhocchallenge-service/adHocChallenge/nonCompleted
+GET /vivokidchallenge-service/adHocChallenge/nonCompleted
+GET /vivokidchallenge-service/teamChallenge/nonCompleted
+GET /badgechallenge-service/badgeChallenge/non-completed?desc=true&start=1&limit=10000
+GET /badgechallenge-service/virtualChallenge/inProgress
