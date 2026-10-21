@@ -37,7 +37,8 @@ Flags:
                           as nutrition search --json lists them under
                           nutritionContents. Defaults to the first serving of
                           the food.
-      --servings=1        Number of servings.
+      --servings=1        Number of servings. A serving can hold more than one
+                          unit, such as 100 g.
 
 gccli: error: nutrition favorites add: --servings must be more than 0, got -1
 -- table exit --
@@ -73,7 +74,8 @@ Flags:
                           as nutrition search --json lists them under
                           nutritionContents. Defaults to the first serving of
                           the food.
-      --servings=1        Number of servings.
+      --servings=1        Number of servings. A serving can hold more than one
+                          unit, such as 100 g.
 
 gccli: error: nutrition favorites add: --servings must be more than 0, got -1
 -- plain exit --
@@ -109,7 +111,8 @@ Flags:
                           as nutrition search --json lists them under
                           nutritionContents. Defaults to the first serving of
                           the food.
-      --servings=1        Number of servings.
+      --servings=1        Number of servings. A serving can hold more than one
+                          unit, such as 100 g.
 
 gccli: error: nutrition favorites add: --servings must be more than 0, got -1
 -- plain-header exit --
@@ -145,7 +148,8 @@ Flags:
                           as nutrition search --json lists them under
                           nutritionContents. Defaults to the first serving of
                           the food.
-      --servings=1        Number of servings.
+      --servings=1        Number of servings. A serving can hold more than one
+                          unit, such as 100 g.
 
 gccli: error: nutrition favorites add: --servings must be more than 0, got -1
 -- json exit --
