@@ -1,0 +1,41 @@
+-- args --
+golf
+stats
+-- route GET /gcs-golfcommunity/api/v2/player/stats --
+{"numRounds":3}
+-- table stdout --
+{
+  "numRounds": 3
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /gcs-golfcommunity/api/v2/player/stats
+-- plain stdout --
+{
+  "numRounds": 3
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /gcs-golfcommunity/api/v2/player/stats
+-- plain-header stdout --
+{
+  "numRounds": 3
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /gcs-golfcommunity/api/v2/player/stats
+-- json stdout --
+{
+  "numRounds": 3
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /gcs-golfcommunity/api/v2/player/stats

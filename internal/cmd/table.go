@@ -71,7 +71,7 @@ func (l Leaf) confirms() bool {
 type Params map[string]Source
 
 // Source is where one request value comes from: In(field), DisplayName,
-// ProfilePK or Today. Or adds a fallback that is used when every source
+// ProfilePK, Today or Page. Or adds a fallback that is used when every source
 // before it is empty.
 type Source struct{ alts []alt }
 
@@ -87,6 +87,7 @@ const (
 	lookupDisplayName
 	lookupProfilePK
 	lookupToday
+	lookupPage
 )
 
 // In reads the args field with this Go name, found by Go's promotion
@@ -101,6 +102,9 @@ var (
 	ProfilePK = Source{[]alt{{lookup: lookupProfilePK}}}
 	// Today is the clock date, YYYY-MM-DD, from nowFn.
 	Today = Source{[]alt{{lookup: lookupToday}}}
+	// Page is the page number from 1, Offset/Limit + 1, for a Garmin list
+	// that counts pages. The args struct must embed AlignedPagination.
+	Page = Source{[]alt{{lookup: lookupPage}}}
 )
 
 func (s Source) Or(fallback Source) Source {
@@ -126,6 +130,8 @@ func (a alt) String() string {
 		return "ProfilePK"
 	case lookupToday:
 		return "Today"
+	case lookupPage:
+		return "Page"
 	}
 	return "In(" + strconv.Quote(a.field) + ")"
 }
