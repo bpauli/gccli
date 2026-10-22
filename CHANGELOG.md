@@ -37,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `wellness jet-lag add --from <place> --to <place> --depart <time> --arrive <time>` adds a jet lag trip, with an optional return flight (`--return-depart`, `--return-arrive`). Each time is a local time with its UTC offset, such as `2026-11-02T10:00+01:00`. The trip runs from the day of the first departure to the day of the last arrival. `wellness jet-lag update <id>` changes its places or times, and `wellness jet-lag delete <id>` deletes it after a prompt (`--force` skips it). Garmin has no read of one trip, so both find the trip in the trip list, and an unknown ID exits 1 before any write. `update` refuses a trip of more than two flights. (#89)
 - `health acclimation daily [<date>]` shows the SpO2 acclimation of one day (default today). (#73)
 - `profile power-zones sport <sport>` shows the power zones of one sport: `cycling`, `running`, `rowing` or `cross-country-skiing`. (#74)
+- `notifications list --limit N --cursor <cursor>` pages through the notifications. `--limit` defaults to 50, the Garmin default. For the next page, pass `pagination.nextCursor` of the JSON output as `--cursor`. `notifications dismiss <id>` dismisses a notification, and `notifications undismiss <id>` brings it back, like the undo of the Garmin Connect web app. `notifications unread` prints whether there are unread notifications (`{"unreadBubble": true}`). (#86)
 
 ### Changed
 
