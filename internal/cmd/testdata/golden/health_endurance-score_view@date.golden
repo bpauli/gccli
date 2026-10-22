@@ -1,6 +1,7 @@
 -- args --
 health
 endurance-score
+view
 2026-10-01
 -- route GET /metrics-service/metrics/endurancescore?calendarDate=2026-10-01 --
 {"value":1}

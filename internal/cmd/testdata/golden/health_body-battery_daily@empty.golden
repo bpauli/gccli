@@ -1,0 +1,35 @@
+-- args --
+health
+body-battery
+daily
+--start=2026-10-01
+--end=2026-10-03
+-- route GET /usersummary-service/stats/bodybattery/daily/2026-10-01/2026-10-03 --
+[]
+-- table stdout --
+DATE  LOW  HIGH
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /usersummary-service/stats/bodybattery/daily/2026-10-01/2026-10-03
+-- plain stdout --
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /usersummary-service/stats/bodybattery/daily/2026-10-01/2026-10-03
+-- plain-header stdout --
+DATE	LOW	HIGH
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /usersummary-service/stats/bodybattery/daily/2026-10-01/2026-10-03
+-- json stdout --
+[]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /usersummary-service/stats/bodybattery/daily/2026-10-01/2026-10-03

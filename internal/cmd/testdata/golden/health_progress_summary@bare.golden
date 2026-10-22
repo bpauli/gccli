@@ -1,0 +1,101 @@
+-- args --
+health
+progress
+--start=2026-09-01
+--end=2026-10-15
+--metric=distance
+--aggregation=monthly
+-- route GET /fitnessstats-service/activity?aggregation=monthly&startDate=2026-09-01&endDate=2026-10-15&metric=distance&standardizedUnits=true --
+[{"date":"2026-08-31","countOfActivities":2,"stats":{"all":{"distance":{"count":2,"min":5000,"max":10000,"avg":7500,"sum":15000}}}}]
+-- table stdout --
+[
+  {
+    "date": "2026-08-31",
+    "countOfActivities": 2,
+    "stats": {
+      "all": {
+        "distance": {
+          "count": 2,
+          "min": 5000,
+          "max": 10000,
+          "avg": 7500,
+          "sum": 15000
+        }
+      }
+    }
+  }
+]
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /fitnessstats-service/activity?aggregation=monthly&startDate=2026-09-01&endDate=2026-10-15&metric=distance&standardizedUnits=true
+-- plain stdout --
+[
+  {
+    "date": "2026-08-31",
+    "countOfActivities": 2,
+    "stats": {
+      "all": {
+        "distance": {
+          "count": 2,
+          "min": 5000,
+          "max": 10000,
+          "avg": 7500,
+          "sum": 15000
+        }
+      }
+    }
+  }
+]
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /fitnessstats-service/activity?aggregation=monthly&startDate=2026-09-01&endDate=2026-10-15&metric=distance&standardizedUnits=true
+-- plain-header stdout --
+[
+  {
+    "date": "2026-08-31",
+    "countOfActivities": 2,
+    "stats": {
+      "all": {
+        "distance": {
+          "count": 2,
+          "min": 5000,
+          "max": 10000,
+          "avg": 7500,
+          "sum": 15000
+        }
+      }
+    }
+  }
+]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /fitnessstats-service/activity?aggregation=monthly&startDate=2026-09-01&endDate=2026-10-15&metric=distance&standardizedUnits=true
+-- json stdout --
+[
+  {
+    "date": "2026-08-31",
+    "countOfActivities": 2,
+    "stats": {
+      "all": {
+        "distance": {
+          "count": 2,
+          "min": 5000,
+          "max": 10000,
+          "avg": 7500,
+          "sum": 15000
+        }
+      }
+    }
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /fitnessstats-service/activity?aggregation=monthly&startDate=2026-09-01&endDate=2026-10-15&metric=distance&standardizedUnits=true

@@ -1,0 +1,45 @@
+-- args --
+health
+endurance-score
+stats
+--start=2026-09-01
+--end=2026-10-15
+--aggregation=monthly
+-- route GET /metrics-service/metrics/endurancescore/stats?startDate=2026-09-01&endDate=2026-10-15&aggregation=monthly --
+{"groupMap":{}}
+-- table stdout --
+{
+  "groupMap": {}
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /metrics-service/metrics/endurancescore/stats?startDate=2026-09-01&endDate=2026-10-15&aggregation=monthly
+-- plain stdout --
+{
+  "groupMap": {}
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /metrics-service/metrics/endurancescore/stats?startDate=2026-09-01&endDate=2026-10-15&aggregation=monthly
+-- plain-header stdout --
+{
+  "groupMap": {}
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /metrics-service/metrics/endurancescore/stats?startDate=2026-09-01&endDate=2026-10-15&aggregation=monthly
+-- json stdout --
+{
+  "groupMap": {}
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /metrics-service/metrics/endurancescore/stats?startDate=2026-09-01&endDate=2026-10-15&aggregation=monthly

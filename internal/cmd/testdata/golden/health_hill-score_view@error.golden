@@ -2,6 +2,7 @@ Error case: Garmin answers 400, so the exit code is 1 (error).
 -- args --
 health
 hill-score
+view
 2026-10-15
 -- route GET /metrics-service/metrics/hillscore?calendarDate=2026-10-15 400 noeol --
 {"message":"Bad Request"}

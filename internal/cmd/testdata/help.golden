@@ -122,6 +122,8 @@ Commands:
   health hrv                       Show heart rate variability data.
   health body-battery view         Show body battery data for a date.
   health body-battery range        Show body battery data for a date range.
+  health body-battery daily        Show the daily low and high body battery for
+                                   a date range (at most 28 days).
   health intensity-minutes view    Show intensity minutes for a date.
   health intensity-minutes weekly
                                    Show weekly intensity minutes for a date
@@ -129,6 +131,7 @@ Commands:
   health training-readiness        Show training readiness data.
   health training-status view      Show aggregated training status for a date.
   health training-status daily     Show daily training status for a date.
+  health training-status weekly    Show weekly training status for a date range.
   health fitness-age               Show fitness age data.
   health max-metrics               Show VO2max and max metrics data.
   health lactate-threshold         Show latest lactate threshold.
@@ -150,9 +153,20 @@ Commands:
                                    Show power-to-weight data for a date range.
   health race-predictions view     Show current race predictions.
   health race-predictions range    Show race predictions for a date range.
-  health endurance-score           Show endurance score data.
-  health hill-score                Show hill score data.
+  health endurance-score view      Show endurance score data for a date.
+  health endurance-score stats     Show endurance score statistics for a date
+                                   range (at most 400 days).
+  health hill-score view           Show hill score data for a date.
+  health hill-score stats          Show hill score statistics for a date range
+                                   (at most 400 days).
   health power-curve               Show power curve for a date range.
+  health running-tolerance         Show running tolerance for a date range.
+  health cycling-ability           Show cycling ability for a date range.
+  health progress summary          Show activity totals per period for a date
+                                   range.
+  health progress activities       Show metric values of each activity in a date
+                                   range.
+  health progress metrics          List the metrics of each activity type.
   health running-economy           Show latest running economy as of a date.
   health acclimation               Show acclimation data for a date range.
   health one-rep-max               Show current estimated one-rep max values as
@@ -685,6 +699,8 @@ Commands:
   health hrv                       Show heart rate variability data.
   health body-battery view         Show body battery data for a date.
   health body-battery range        Show body battery data for a date range.
+  health body-battery daily        Show the daily low and high body battery for
+                                   a date range (at most 28 days).
   health intensity-minutes view    Show intensity minutes for a date.
   health intensity-minutes weekly
                                    Show weekly intensity minutes for a date
@@ -692,6 +708,7 @@ Commands:
   health training-readiness        Show training readiness data.
   health training-status view      Show aggregated training status for a date.
   health training-status daily     Show daily training status for a date.
+  health training-status weekly    Show weekly training status for a date range.
   health fitness-age               Show fitness age data.
   health max-metrics               Show VO2max and max metrics data.
   health lactate-threshold         Show latest lactate threshold.
@@ -713,9 +730,20 @@ Commands:
                                    Show power-to-weight data for a date range.
   health race-predictions view     Show current race predictions.
   health race-predictions range    Show race predictions for a date range.
-  health endurance-score           Show endurance score data.
-  health hill-score                Show hill score data.
+  health endurance-score view      Show endurance score data for a date.
+  health endurance-score stats     Show endurance score statistics for a date
+                                   range (at most 400 days).
+  health hill-score view           Show hill score data for a date.
+  health hill-score stats          Show hill score statistics for a date range
+                                   (at most 400 days).
   health power-curve               Show power curve for a date range.
+  health running-tolerance         Show running tolerance for a date range.
+  health cycling-ability           Show cycling ability for a date range.
+  health progress summary          Show activity totals per period for a date
+                                   range.
+  health progress activities       Show metric values of each activity in a date
+                                   range.
+  health progress metrics          List the metrics of each activity type.
   health running-economy           Show latest running economy as of a date.
   health acclimation               Show acclimation data for a date range.
   health one-rep-max               Show current estimated one-rep max values as
@@ -967,6 +995,8 @@ Flags:
 Commands:
   health body-battery view     Show body battery data for a date.
   health body-battery range    Show body battery data for a date range.
+  health body-battery daily    Show the daily low and high body battery for a
+                               date range (at most 28 days).
 
 $ gccli health intensity-minutes --help
 Usage: gccli health intensity-minutes <command>
@@ -1013,8 +1043,9 @@ Flags:
       --version           Print version information.
 
 Commands:
-  health training-status view     Show aggregated training status for a date.
-  health training-status daily    Show daily training status for a date.
+  health training-status view      Show aggregated training status for a date.
+  health training-status daily     Show daily training status for a date.
+  health training-status weekly    Show weekly training status for a date range.
 
 $ gccli health critical-swim-speed --help
 Usage: gccli health critical-swim-speed <command>
@@ -1093,6 +1124,80 @@ Flags:
 Commands:
   health race-predictions view     Show current race predictions.
   health race-predictions range    Show race predictions for a date range.
+
+$ gccli health endurance-score --help
+Usage: gccli health endurance-score <command>
+
+Show endurance score data.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  health endurance-score view     Show endurance score data for a date.
+  health endurance-score stats    Show endurance score statistics for a date
+                                  range (at most 400 days).
+
+$ gccli health hill-score --help
+Usage: gccli health hill-score <command>
+
+Show hill score data.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  health hill-score view     Show hill score data for a date.
+  health hill-score stats    Show hill score statistics for a date range (at
+                             most 400 days).
+
+$ gccli health progress --help
+Usage: gccli health progress <command>
+
+Show activity totals and values over time.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  health progress summary       Show activity totals per period for a date
+                                range.
+  health progress activities    Show metric values of each activity in a date
+                                range.
+  health progress metrics       List the metrics of each activity type.
 
 $ gccli body --help
 Usage: gccli body <command> [flags]

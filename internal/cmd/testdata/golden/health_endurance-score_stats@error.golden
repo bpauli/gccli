@@ -1,0 +1,37 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+health
+endurance-score
+stats
+--start=2026-09-01
+--end=2026-10-15
+-- route GET /metrics-service/metrics/endurancescore/stats?startDate=2026-09-01&endDate=2026-10-15&aggregation=weekly 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+get endurance score stats: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /metrics-service/metrics/endurancescore/stats?startDate=2026-09-01&endDate=2026-10-15&aggregation=weekly
+-- plain stdout --
+-- plain stderr --
+get endurance score stats: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /metrics-service/metrics/endurancescore/stats?startDate=2026-09-01&endDate=2026-10-15&aggregation=weekly
+-- plain-header stdout --
+-- plain-header stderr --
+get endurance score stats: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /metrics-service/metrics/endurancescore/stats?startDate=2026-09-01&endDate=2026-10-15&aggregation=weekly
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"get endurance score stats: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /metrics-service/metrics/endurancescore/stats?startDate=2026-09-01&endDate=2026-10-15&aggregation=weekly
