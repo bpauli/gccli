@@ -1,0 +1,185 @@
+-- args --
+insights
+options
+-- route GET /gcs-insights/api/demographics/selections?lang=en&localeUnit=METRIC --
+{"activityMapping":[{"localizedActivity":"Running","activity":"RUNNING","fields":[{"localizedField":"VO2 Max","field":"VO2_MAX_VALUE","fieldUnit":"ml/kg/min"}]}],"ages":["18-24","75+"],"dates":[{"year":2025,"month":-1},{"year":2025,"month":3}],"genders":[{"localizedGender":"All","gender":"ALL"},{"localizedGender":"Female","gender":"F"}]}
+-- table stdout --
+{
+  "activityMapping": [
+    {
+      "localizedActivity": "Running",
+      "activity": "RUNNING",
+      "fields": [
+        {
+          "localizedField": "VO2 Max",
+          "field": "VO2_MAX_VALUE",
+          "fieldUnit": "ml/kg/min"
+        }
+      ]
+    }
+  ],
+  "ages": [
+    "18-24",
+    "75+"
+  ],
+  "dates": [
+    {
+      "year": 2025,
+      "month": -1
+    },
+    {
+      "year": 2025,
+      "month": 3
+    }
+  ],
+  "genders": [
+    {
+      "localizedGender": "All",
+      "gender": "ALL"
+    },
+    {
+      "localizedGender": "Female",
+      "gender": "F"
+    }
+  ]
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /gcs-insights/api/demographics/selections?lang=en&localeUnit=METRIC
+-- plain stdout --
+{
+  "activityMapping": [
+    {
+      "localizedActivity": "Running",
+      "activity": "RUNNING",
+      "fields": [
+        {
+          "localizedField": "VO2 Max",
+          "field": "VO2_MAX_VALUE",
+          "fieldUnit": "ml/kg/min"
+        }
+      ]
+    }
+  ],
+  "ages": [
+    "18-24",
+    "75+"
+  ],
+  "dates": [
+    {
+      "year": 2025,
+      "month": -1
+    },
+    {
+      "year": 2025,
+      "month": 3
+    }
+  ],
+  "genders": [
+    {
+      "localizedGender": "All",
+      "gender": "ALL"
+    },
+    {
+      "localizedGender": "Female",
+      "gender": "F"
+    }
+  ]
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /gcs-insights/api/demographics/selections?lang=en&localeUnit=METRIC
+-- plain-header stdout --
+{
+  "activityMapping": [
+    {
+      "localizedActivity": "Running",
+      "activity": "RUNNING",
+      "fields": [
+        {
+          "localizedField": "VO2 Max",
+          "field": "VO2_MAX_VALUE",
+          "fieldUnit": "ml/kg/min"
+        }
+      ]
+    }
+  ],
+  "ages": [
+    "18-24",
+    "75+"
+  ],
+  "dates": [
+    {
+      "year": 2025,
+      "month": -1
+    },
+    {
+      "year": 2025,
+      "month": 3
+    }
+  ],
+  "genders": [
+    {
+      "localizedGender": "All",
+      "gender": "ALL"
+    },
+    {
+      "localizedGender": "Female",
+      "gender": "F"
+    }
+  ]
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /gcs-insights/api/demographics/selections?lang=en&localeUnit=METRIC
+-- json stdout --
+{
+  "activityMapping": [
+    {
+      "localizedActivity": "Running",
+      "activity": "RUNNING",
+      "fields": [
+        {
+          "localizedField": "VO2 Max",
+          "field": "VO2_MAX_VALUE",
+          "fieldUnit": "ml/kg/min"
+        }
+      ]
+    }
+  ],
+  "ages": [
+    "18-24",
+    "75+"
+  ],
+  "dates": [
+    {
+      "year": 2025,
+      "month": -1
+    },
+    {
+      "year": 2025,
+      "month": 3
+    }
+  ],
+  "genders": [
+    {
+      "localizedGender": "All",
+      "gender": "ALL"
+    },
+    {
+      "localizedGender": "Female",
+      "gender": "F"
+    }
+  ]
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /gcs-insights/api/demographics/selections?lang=en&localeUnit=METRIC

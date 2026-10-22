@@ -1,0 +1,49 @@
+-- args --
+insights
+preferences
+-- route GET /userpreference-service/demographicComparisonPreferences --
+[{"value":1}]
+-- table stdout --
+[
+  {
+    "value": 1
+  }
+]
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /userpreference-service/demographicComparisonPreferences
+-- plain stdout --
+[
+  {
+    "value": 1
+  }
+]
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /userpreference-service/demographicComparisonPreferences
+-- plain-header stdout --
+[
+  {
+    "value": 1
+  }
+]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /userpreference-service/demographicComparisonPreferences
+-- json stdout --
+[
+  {
+    "value": 1
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /userpreference-service/demographicComparisonPreferences

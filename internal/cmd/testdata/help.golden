@@ -303,6 +303,11 @@ Commands:
   social requests                  List pending connection requests.
   social feed                      Show your newsfeed.
   groups list                      List your groups.
+  insights options                 List the genders, ages, dates, activities and
+                                   fields for insights compare.
+  insights compare                 Compare a metric with your age group.
+                                   Needs Insights on in Garmin Connect.
+  insights preferences             Show your saved Insights comparisons.
   reload                           Request data reload for a date.
   completion                       Generate shell completion script.
 
@@ -1865,4 +1870,30 @@ Flags:
 
 Commands:
   groups list    List your groups.
+
+$ gccli insights --help
+Usage: gccli insights <command> [flags]
+
+Compare your metrics with people of your age and gender.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  insights options        List the genders, ages, dates, activities and fields
+                          for insights compare.
+  insights compare        Compare a metric with your age group. Needs Insights
+                          on in Garmin Connect.
+  insights preferences    Show your saved Insights comparisons.
 

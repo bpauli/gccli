@@ -1,0 +1,155 @@
+-- args --
+insights
+compare
+--activity
+STEPS
+--field
+STEPS
+--age
+75+
+--gender
+F
+--year
+2025
+--month
+3
+--locale-unit
+STATUTE
+-- route GET /gcs-insights/api/demographics/compare?gender=F&age=75%2B&type=STEPS&field=STEPS&lang=en&localeUnit=STATUTE&year=2025&month=3 --
+{"chart":{"options":{"percentile":"48","unit-y":"%","unit-x":"steps","emphasisLabel":"You"},"chartType":"bar","title":"Sample Steps","dataset":[{"values":[{"x":5000,"y":20.0},{"x":10000,"y":5.5}]}]},"year":2025,"month":3}
+-- table stdout --
+{
+  "chart": {
+    "options": {
+      "percentile": "48",
+      "unit-y": "%",
+      "unit-x": "steps",
+      "emphasisLabel": "You"
+    },
+    "chartType": "bar",
+    "title": "Sample Steps",
+    "dataset": [
+      {
+        "values": [
+          {
+            "x": 5000,
+            "y": 20.0
+          },
+          {
+            "x": 10000,
+            "y": 5.5
+          }
+        ]
+      }
+    ]
+  },
+  "year": 2025,
+  "month": 3
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /gcs-insights/api/demographics/compare?gender=F&age=75%2B&type=STEPS&field=STEPS&lang=en&localeUnit=STATUTE&year=2025&month=3
+-- plain stdout --
+{
+  "chart": {
+    "options": {
+      "percentile": "48",
+      "unit-y": "%",
+      "unit-x": "steps",
+      "emphasisLabel": "You"
+    },
+    "chartType": "bar",
+    "title": "Sample Steps",
+    "dataset": [
+      {
+        "values": [
+          {
+            "x": 5000,
+            "y": 20.0
+          },
+          {
+            "x": 10000,
+            "y": 5.5
+          }
+        ]
+      }
+    ]
+  },
+  "year": 2025,
+  "month": 3
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /gcs-insights/api/demographics/compare?gender=F&age=75%2B&type=STEPS&field=STEPS&lang=en&localeUnit=STATUTE&year=2025&month=3
+-- plain-header stdout --
+{
+  "chart": {
+    "options": {
+      "percentile": "48",
+      "unit-y": "%",
+      "unit-x": "steps",
+      "emphasisLabel": "You"
+    },
+    "chartType": "bar",
+    "title": "Sample Steps",
+    "dataset": [
+      {
+        "values": [
+          {
+            "x": 5000,
+            "y": 20.0
+          },
+          {
+            "x": 10000,
+            "y": 5.5
+          }
+        ]
+      }
+    ]
+  },
+  "year": 2025,
+  "month": 3
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /gcs-insights/api/demographics/compare?gender=F&age=75%2B&type=STEPS&field=STEPS&lang=en&localeUnit=STATUTE&year=2025&month=3
+-- json stdout --
+{
+  "chart": {
+    "options": {
+      "percentile": "48",
+      "unit-y": "%",
+      "unit-x": "steps",
+      "emphasisLabel": "You"
+    },
+    "chartType": "bar",
+    "title": "Sample Steps",
+    "dataset": [
+      {
+        "values": [
+          {
+            "x": 5000,
+            "y": 20.0
+          },
+          {
+            "x": 10000,
+            "y": 5.5
+          }
+        ]
+      }
+    ]
+  },
+  "year": 2025,
+  "month": 3
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /gcs-insights/api/demographics/compare?gender=F&age=75%2B&type=STEPS&field=STEPS&lang=en&localeUnit=STATUTE&year=2025&month=3
