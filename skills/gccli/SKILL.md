@@ -471,6 +471,21 @@ Date shortcuts
   - `<uuid>`: Segment UUID.
 - `gccli segments classifications`: List the segment classifications.
 - `gccli segments surface-types`: List the segment surface types.
+- `gccli segments create --from-activity=ID --start-km=KM --end-km=KM --name=NAME --activity-type=TYPE [flags]`: Create a segment from a part of an activity track.
+  - `--from-activity=ID`: ID of the activity whose track the segment follows.
+  - `--start-km=KM`: Start of the segment, in kilometers from the start of the activity.
+  - `--end-km=KM`: End of the segment, in kilometers from the start of the activity.
+  - `--name=NAME`: Segment name.
+  - `--activity-type=TYPE`: Activity type: cycling or running.
+  - `--classification="other"`: Classification as segments classifications prints it: downhill, hill_climb, hills, other or sprint.
+  - `--surface="paved"`: Surface as segments surface-types prints it: dirt, gravel, mixed or paved.
+- `gccli segments favorite <uuid>`: Add a segment to your favorites.
+  - `<uuid>`: Segment UUID.
+- `gccli segments unfavorite <uuid>`: Remove a segment from your favorites.
+  - `<uuid>`: Segment UUID.
+- `gccli segments delete <uuid> [flags]`: Delete a segment that you created.
+  - `<uuid>`: Segment UUID.
+  - `-f, --force`: Skip confirmation prompt.
 
 ### Devices
 

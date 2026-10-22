@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+
+	"github.com/bpauli/gccli/internal/garminapi"
 )
 
-var segmentsGroup = Group{Name: "segments", Help: "Find segments and see their leaderboards.", Children: []Node{
+var segmentsGroup = Group{Name: "segments", Help: "Find and create segments, and see their leaderboards.", Children: []Node{
 	Custom{Name: "list", Help: "List the segments you created, or your favorites with --favorites.", Default: true, Cmd: &SegmentsListCmd{}},
 	Custom{Name: "search", Help: "Search segments by name or map area.", Cmd: &SegmentsSearchCmd{}},
 	Leaf{
@@ -32,6 +34,19 @@ var segmentsGroup = Group{Name: "segments", Help: "Find segments and see their l
 	},
 	Leaf{Name: "classifications", Help: "List the segment classifications.", Endpoint: "segments.classifications", Verb: "get segment classifications", Output: JSON{List: true}},
 	Leaf{Name: "surface-types", Help: "List the segment surface types.", Endpoint: "segments.surface-types", Verb: "get segment surface types", Output: JSON{List: true}},
+	Custom{Name: "create", Help: "Create a segment from a part of an activity track.", Cmd: &SegmentsCreateCmd{}},
+	Custom{Name: "favorite", Help: "Add a segment to your favorites.", Cmd: &SegmentsFavoriteCmd{}},
+	Custom{Name: "unfavorite", Help: "Remove a segment from your favorites.", Cmd: &SegmentsUnfavoriteCmd{}},
+	Leaf{
+		Name: "delete", Help: "Delete a segment that you created.",
+		Spec: argsOf(&struct {
+			UUID ID `arg:"" help:"Segment UUID."`
+		}{}),
+		Endpoint: "segments.delete",
+		Params:   Params{"uuid": In("UUID")},
+		Verb:     "delete segment",
+		Output:   Write{Done: "Deleted segment {UUID}", Confirm: "Delete segment {UUID}?"},
+	},
 }}
 
 // The flag values of the segment kinds, mapped to Garmin's typeId. The
@@ -225,4 +240,61 @@ func (c *SegmentsLeaderboardCmd) Run(g *Globals) error {
 		return fmt.Errorf("get segment leaderboard: %w", err)
 	}
 	return Rows{Noun: "leaderboard", Items: "leaderboardRowDTOList", Columns: leaderboardColumns}.print(g, client, data)
+}
+
+// segmentPK reads the numeric segmentPk of a segment, which the favorite
+// mark takes in place of the UUID.
+func segmentPK(g *Globals, uuid ID) (*garminapi.Client, string, error) {
+	client, err := resolveClient(g)
+	if err != nil {
+		return nil, "", err
+	}
+	data, err := client.Call(g.Context, "segments.get", map[string]string{"uuid": string(uuid)}, nil)
+	if err != nil {
+		return nil, "", fmt.Errorf("get segment: %w", err)
+	}
+	var segment struct {
+		SegmentPk json.Number `json:"segmentPk"`
+	}
+	if err := unmarshalAnswer(data, &segment); err != nil {
+		return nil, "", fmt.Errorf("parse segment: %w", err)
+	}
+	if segment.SegmentPk == "" {
+		return nil, "", fmt.Errorf("segment %s has no segmentPk", uuid)
+	}
+	return client, segment.SegmentPk.String(), nil
+}
+
+// SegmentsFavoriteCmd adds a segment to the favorites.
+type SegmentsFavoriteCmd struct {
+	UUID ID `arg:"" help:"Segment UUID."`
+}
+
+func (c *SegmentsFavoriteCmd) Run(g *Globals) error {
+	client, pk, err := segmentPK(g, c.UUID)
+	if err != nil {
+		return err
+	}
+	data, err := client.Call(g.Context, "segments.favorite", map[string]string{"segmentPK": pk}, nil)
+	if err != nil {
+		return fmt.Errorf("favorite segment: %w", err)
+	}
+	return reportWrite(g, data, "Added segment %s to favorites", c.UUID)
+}
+
+// SegmentsUnfavoriteCmd removes a segment from the favorites.
+type SegmentsUnfavoriteCmd struct {
+	UUID ID `arg:"" help:"Segment UUID."`
+}
+
+func (c *SegmentsUnfavoriteCmd) Run(g *Globals) error {
+	client, pk, err := segmentPK(g, c.UUID)
+	if err != nil {
+		return err
+	}
+	data, err := client.Call(g.Context, "segments.unfavorite", map[string]string{"segmentPK": pk}, nil)
+	if err != nil {
+		return fmt.Errorf("unfavorite segment: %w", err)
+	}
+	return reportWrite(g, data, "Removed segment %s from favorites", c.UUID)
 }

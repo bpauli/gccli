@@ -1,0 +1,39 @@
+Garmin answers the delete with 200 and an empty body.
+-- args --
+segments
+delete
+a1b2c3d4-0000-4000-8000-000000000001
+-- stdin --
+y
+-- route DELETE /segment-service/segment/a1b2c3d4-0000-4000-8000-000000000001 --
+-- table stdout --
+-- table stderr --
+Delete segment a1b2c3d4-0000-4000-8000-000000000001? [y/N]: Deleted segment a1b2c3d4-0000-4000-8000-000000000001
+-- table exit --
+0
+-- table requests --
+DELETE /segment-service/segment/a1b2c3d4-0000-4000-8000-000000000001
+-- plain stdout --
+-- plain stderr --
+Delete segment a1b2c3d4-0000-4000-8000-000000000001? [y/N]: Deleted segment a1b2c3d4-0000-4000-8000-000000000001
+-- plain exit --
+0
+-- plain requests --
+DELETE /segment-service/segment/a1b2c3d4-0000-4000-8000-000000000001
+-- plain-header stdout --
+-- plain-header stderr --
+Delete segment a1b2c3d4-0000-4000-8000-000000000001? [y/N]: Deleted segment a1b2c3d4-0000-4000-8000-000000000001
+-- plain-header exit --
+0
+-- plain-header requests --
+DELETE /segment-service/segment/a1b2c3d4-0000-4000-8000-000000000001
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr noeol --
+Delete segment a1b2c3d4-0000-4000-8000-000000000001? [y/N]: 
+-- json exit --
+0
+-- json requests --
+DELETE /segment-service/segment/a1b2c3d4-0000-4000-8000-000000000001
