@@ -305,6 +305,17 @@ Commands:
   training plans                   List training plans.
   training plan                    Show a specific training plan.
   training active                  Show active training plans.
+  training search                  Search the Garmin catalog of training plans.
+  training schedule                List the workouts and notes of a training
+                                   plan by week and day.
+  training join                    Join a catalog training plan and schedule its
+                                   workouts in the calendar.
+  training leave                   Leave a joined training plan and remove its
+                                   workouts from the calendar.
+  training task move               Move a workout of a joined training plan to
+                                   another day.
+  training task delete             Delete a workout of a joined training plan.
+                                   Garmin puts a rest day in its place.
   training coach-workouts          List adaptive coaching workout types.
   events list                      List calendar events.
   events upcoming                  List upcoming events.
@@ -1834,7 +1845,7 @@ Commands:
 $ gccli training --help
 Usage: gccli training <command> [flags]
 
-View training plans and adaptive coaching workouts.
+Find, join and change training plans, and view adaptive coaching workouts.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -1854,7 +1865,43 @@ Commands:
   training plans             List training plans.
   training plan              Show a specific training plan.
   training active            Show active training plans.
+  training search            Search the Garmin catalog of training plans.
+  training schedule          List the workouts and notes of a training plan by
+                             week and day.
+  training join              Join a catalog training plan and schedule its
+                             workouts in the calendar.
+  training leave             Leave a joined training plan and remove its
+                             workouts from the calendar.
+  training task move         Move a workout of a joined training plan to another
+                             day.
+  training task delete       Delete a workout of a joined training plan.
+                             Garmin puts a rest day in its place.
   training coach-workouts    List adaptive coaching workout types.
+
+$ gccli training task --help
+Usage: gccli training task <command>
+
+Move and delete the workouts of a joined training plan.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  training task move      Move a workout of a joined training plan to another
+                          day.
+  training task delete    Delete a workout of a joined training plan. Garmin
+                          puts a rest day in its place.
 
 $ gccli events --help
 Usage: gccli events <command> [flags]

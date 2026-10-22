@@ -1,0 +1,64 @@
+A joined plan has a date for each task and a task ID for each workout.
+-- args --
+training
+schedule
+456
+-- route GET /trainingplan-service/trainingplan/tasks/456?localeKey=en --
+[{"trainingPlanId":456,"weekId":1,"dayOfWeekId":1,"calendarDate":"2026-10-26","taskNote":{"note":"Rest","noteScheduleId":9001},"taskWorkout":null},{"trainingPlanId":456,"weekId":1,"dayOfWeekId":2,"calendarDate":"2026-10-27","taskNote":null,"taskWorkout":{"workoutId":5001,"workoutName":"W01D2-Easy Run","workoutScheduleId":789}}]
+-- table stdout --
+WEEK  DAY  DATE        TASK ID  WORKOUT         NOTE
+1     1    2026-10-26                           Rest
+1     2    2026-10-27  789      W01D2-Easy Run  
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /trainingplan-service/trainingplan/tasks/456?localeKey=en
+-- plain stdout --
+1	1	2026-10-26			Rest
+1	2	2026-10-27	789	W01D2-Easy Run	
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /trainingplan-service/trainingplan/tasks/456?localeKey=en
+-- plain-header stdout --
+WEEK	DAY	DATE	TASK ID	WORKOUT	NOTE
+1	1	2026-10-26			Rest
+1	2	2026-10-27	789	W01D2-Easy Run	
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /trainingplan-service/trainingplan/tasks/456?localeKey=en
+-- json stdout --
+[
+  {
+    "trainingPlanId": 456,
+    "weekId": 1,
+    "dayOfWeekId": 1,
+    "calendarDate": "2026-10-26",
+    "taskNote": {
+      "note": "Rest",
+      "noteScheduleId": 9001
+    },
+    "taskWorkout": null
+  },
+  {
+    "trainingPlanId": 456,
+    "weekId": 1,
+    "dayOfWeekId": 2,
+    "calendarDate": "2026-10-27",
+    "taskNote": null,
+    "taskWorkout": {
+      "workoutId": 5001,
+      "workoutName": "W01D2-Easy Run",
+      "workoutScheduleId": 789
+    }
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /trainingplan-service/trainingplan/tasks/456?localeKey=en

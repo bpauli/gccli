@@ -1,0 +1,37 @@
+--force skips the prompt.
+-- args --
+training
+leave
+456
+--force
+-- route DELETE /trainingplan-service/trainingplan/trainingplan/456 204 --
+-- table stdout --
+-- table stderr --
+Left training plan 456
+-- table exit --
+0
+-- table requests --
+DELETE /trainingplan-service/trainingplan/trainingplan/456
+-- plain stdout --
+-- plain stderr --
+Left training plan 456
+-- plain exit --
+0
+-- plain requests --
+DELETE /trainingplan-service/trainingplan/trainingplan/456
+-- plain-header stdout --
+-- plain-header stderr --
+Left training plan 456
+-- plain-header exit --
+0
+-- plain-header requests --
+DELETE /trainingplan-service/trainingplan/trainingplan/456
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+DELETE /trainingplan-service/trainingplan/trainingplan/456

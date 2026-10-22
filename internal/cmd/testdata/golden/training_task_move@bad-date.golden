@@ -1,0 +1,124 @@
+Usage error: the date is not valid, so no request is sent.
+-- args --
+training
+task
+move
+456
+789
+2026-13-40
+-- table stdout --
+-- table stderr --
+Usage: gccli training task move <plan-id> <task-id> <date>
+
+Move a workout of a joined training plan to another day.
+
+Arguments:
+  <plan-id>    ID of the joined training plan.
+  <task-id>    Task ID of the workout, as training schedule prints it.
+  <date>       New date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+gccli: error: <date>: invalid date "2026-13-40": expected YYYY-MM-DD, today, yesterday, Nd (e.g. 3d), or +Nd (e.g. +30d)
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli training task move <plan-id> <task-id> <date>
+
+Move a workout of a joined training plan to another day.
+
+Arguments:
+  <plan-id>    ID of the joined training plan.
+  <task-id>    Task ID of the workout, as training schedule prints it.
+  <date>       New date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+gccli: error: <date>: invalid date "2026-13-40": expected YYYY-MM-DD, today, yesterday, Nd (e.g. 3d), or +Nd (e.g. +30d)
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli training task move <plan-id> <task-id> <date>
+
+Move a workout of a joined training plan to another day.
+
+Arguments:
+  <plan-id>    ID of the joined training plan.
+  <task-id>    Task ID of the workout, as training schedule prints it.
+  <date>       New date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+gccli: error: <date>: invalid date "2026-13-40": expected YYYY-MM-DD, today, yesterday, Nd (e.g. 3d), or +Nd (e.g. +30d)
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli training task move <plan-id> <task-id> <date>
+
+Move a workout of a joined training plan to another day.
+
+Arguments:
+  <plan-id>    ID of the joined training plan.
+  <task-id>    Task ID of the workout, as training schedule prints it.
+  <date>       New date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+gccli: error: <date>: invalid date "2026-13-40": expected YYYY-MM-DD, today, yesterday, Nd (e.g. 3d), or +Nd (e.g. +30d)
+-- json exit --
+2
+-- json requests --

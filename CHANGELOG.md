@@ -40,6 +40,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `health acclimation daily [<date>]` shows the SpO2 acclimation of one day (default today). (#73)
 - `profile power-zones sport <sport>` shows the power zones of one sport: `cycling`, `running`, `rowing` or `cross-country-skiing`. (#74)
 - `notifications list --limit N --cursor <cursor>` pages through the notifications. `--limit` defaults to 50, the Garmin default. For the next page, pass `pagination.nextCursor` of the JSON output as `--cursor`. `notifications dismiss <id>` dismisses a notification, and `notifications undismiss <id>` brings it back, like the undo of the Garmin Connect web app. `notifications unread` prints whether there are unread notifications (`{"unreadBubble": true}`). (#86)
+- `training search` searches the Garmin catalog of training plans and lists the ID, name, sport, goal, level, workout target and weeks of each plan. `--sport`, `--goal`, `--level` and `--target` filter with Garmin's own values as the table prints them, such as `Running`, `5k`, `Beginner` and `HeartRate`. (#83)
+- `training schedule <id>` lists the workouts and notes of a training plan by week and day, with the date and the task ID of each workout of a joined plan. (#83)
+- `training join <id> [--start DATE]` joins a catalog plan from a day (default today) and puts its workouts in the calendar. Garmin copies the plan under a new ID, which the command prints. `training leave <id>` leaves a joined plan after a prompt (`--force` skips it) and removes its workouts from the calendar. (#83)
+- `training task move <plan-id> <task-id> <date>` moves a workout of a joined plan to another day and prints its new task ID, because Garmin gives the moved workout a new one. `training task delete <plan-id> <task-id>` deletes a workout after a prompt (`--force` skips it); Garmin puts a rest day in its place. (#83)
 
 ### Changed
 
@@ -51,6 +55,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `training plan <id>` failed for every plan with exit 4 (Garmin 404), because Garmin has no `/trainingplan/plan/{id}` route. It now reads `/trainingplan-service/trainingplan/{id}`, the path of the web app, and shows catalog plans and joined plans. (#83)
 - `challenges list` (also as `challenges`) failed for every call with exit 4, because Garmin no longer has its route. It now sends the seven reads of the current challenges page of the Garmin Connect web app and prints one JSON object with the answer of each read under the key of the web app: `autoChallenge`, `groupChallenges`, `adHocChallenges`, `vivokidChallenges`, `teamStepsVivokidChallenges`, `badgeChallenges` and `virtualChallenges`. An empty answer is `{}` for `autoChallenge` and `[]` for the others. If one read fails, the command fails. (#267)
 - `challenges badge` failed for every call with exit 4, because Garmin no longer has its route. It now reads `/badgechallenge-service/badgeChallenge/non-completed`, the path of the web app, and shows the joined badge challenges that are not completed. An empty answer prints `[]`. (#267)
 - `badges in-progress` failed for every call with exit 4, because Garmin has no read for badges in progress any more. It now reads the earned and the available badges and keeps each badge with progress short of its target, or with its target reached and earned fewer times than its limit, as python-garminconnect does. It prints the kept badges as a JSON array, `[]` when there are none. (#267)

@@ -1,0 +1,33 @@
+Any answer other than y or yes cancels, so no request is sent.
+-- args --
+training
+task
+delete
+456
+789
+-- stdin --
+n
+-- table stdout --
+-- table stderr --
+Delete task 789 of training plan 456? [y/N]: Cancelled
+-- table exit --
+0
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Delete task 789 of training plan 456? [y/N]: Cancelled
+-- plain exit --
+0
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Delete task 789 of training plan 456? [y/N]: Cancelled
+-- plain-header exit --
+0
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Delete task 789 of training plan 456? [y/N]: Cancelled
+-- json exit --
+0
+-- json requests --
