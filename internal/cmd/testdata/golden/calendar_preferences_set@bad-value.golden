@@ -1,0 +1,123 @@
+Usage error: a value other than true or false fails at parse time.
+-- args --
+calendar
+preferences
+set
+showWeeklyTotal
+off
+-- table stdout --
+-- table stderr --
+Usage: gccli calendar preferences set <key> <value>
+
+Turn a calendar preference on or off.
+
+Arguments:
+  <key>      Preference key, such as showWeeklyTotal. Run gccli calendar
+             preferences to see the keys.
+  <value>    true turns the preference on, false turns it off.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+gccli: error: <value> must be one of "true","false" but got "off"
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli calendar preferences set <key> <value>
+
+Turn a calendar preference on or off.
+
+Arguments:
+  <key>      Preference key, such as showWeeklyTotal. Run gccli calendar
+             preferences to see the keys.
+  <value>    true turns the preference on, false turns it off.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+gccli: error: <value> must be one of "true","false" but got "off"
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli calendar preferences set <key> <value>
+
+Turn a calendar preference on or off.
+
+Arguments:
+  <key>      Preference key, such as showWeeklyTotal. Run gccli calendar
+             preferences to see the keys.
+  <value>    true turns the preference on, false turns it off.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+gccli: error: <value> must be one of "true","false" but got "off"
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli calendar preferences set <key> <value>
+
+Turn a calendar preference on or off.
+
+Arguments:
+  <key>      Preference key, such as showWeeklyTotal. Run gccli calendar
+             preferences to see the keys.
+  <value>    true turns the preference on, false turns it off.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+gccli: error: <value> must be one of "true","false" but got "off"
+-- json exit --
+2
+-- json requests --

@@ -1,0 +1,43 @@
+--force skips the question.
+-- args --
+calendar
+export
+disable
+--force
+-- route GET /calendar-service/export --
+{"baseUrl":"http://localhost/proxy/calendar-service/export","id":"0123456789abcdef0123456789abcdef"}
+-- route DELETE /calendar-service/export/0123456789abcdef0123456789abcdef 204 --
+-- table stdout --
+-- table stderr --
+Turned off the calendar feed
+-- table exit --
+0
+-- table requests --
+GET /calendar-service/export
+DELETE /calendar-service/export/0123456789abcdef0123456789abcdef
+-- plain stdout --
+-- plain stderr --
+Turned off the calendar feed
+-- plain exit --
+0
+-- plain requests --
+GET /calendar-service/export
+DELETE /calendar-service/export/0123456789abcdef0123456789abcdef
+-- plain-header stdout --
+-- plain-header stderr --
+Turned off the calendar feed
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /calendar-service/export
+DELETE /calendar-service/export/0123456789abcdef0123456789abcdef
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /calendar-service/export
+DELETE /calendar-service/export/0123456789abcdef0123456789abcdef

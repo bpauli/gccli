@@ -1,0 +1,37 @@
+Error case: a key that is not in the preferences fails after the GET and before any write. The error lists the keys that take true or false.
+-- args --
+calendar
+preferences
+set
+showNotes
+false
+-- route GET /calendar-service/preferences --
+{"view":1,"showEvent":true,"showGoal":true,"showWeeklyTotal":true,"eventColor":0,"groups":null,"activityTypes":[{"key":"running","color":0,"show":false}],"hideJetLag":false}
+-- table stdout --
+-- table stderr --
+set calendar preference: no calendar preference "showNotes"; the keys are: hideJetLag, showEvent, showGoal, showWeeklyTotal
+-- table exit --
+1
+-- table requests --
+GET /calendar-service/preferences
+-- plain stdout --
+-- plain stderr --
+set calendar preference: no calendar preference "showNotes"; the keys are: hideJetLag, showEvent, showGoal, showWeeklyTotal
+-- plain exit --
+1
+-- plain requests --
+GET /calendar-service/preferences
+-- plain-header stdout --
+-- plain-header stderr --
+set calendar preference: no calendar preference "showNotes"; the keys are: hideJetLag, showEvent, showGoal, showWeeklyTotal
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /calendar-service/preferences
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"set calendar preference: no calendar preference \"showNotes\"; the keys are: hideJetLag, showEvent, showGoal, showWeeklyTotal"}}
+-- json exit --
+1
+-- json requests --
+GET /calendar-service/preferences

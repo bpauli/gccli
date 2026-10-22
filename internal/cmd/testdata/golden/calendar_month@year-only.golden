@@ -1,0 +1,121 @@
+Usage error: a YEAR without a MONTH fails before any request.
+-- args --
+calendar
+month
+2026
+-- table stdout --
+-- table stderr --
+Usage: gccli calendar month [<year> [<month>]]
+
+List the items of a calendar month, such as activities and notes.
+
+Arguments:
+  [<year>]     Year (e.g. 2026). Give it with MONTH. Without both, the command
+               shows this month.
+  [<month>]    Month (1-12).
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+gccli: error: calendar month: give both YEAR and MONTH, or neither for this month
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli calendar month [<year> [<month>]]
+
+List the items of a calendar month, such as activities and notes.
+
+Arguments:
+  [<year>]     Year (e.g. 2026). Give it with MONTH. Without both, the command
+               shows this month.
+  [<month>]    Month (1-12).
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+gccli: error: calendar month: give both YEAR and MONTH, or neither for this month
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli calendar month [<year> [<month>]]
+
+List the items of a calendar month, such as activities and notes.
+
+Arguments:
+  [<year>]     Year (e.g. 2026). Give it with MONTH. Without both, the command
+               shows this month.
+  [<month>]    Month (1-12).
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+gccli: error: calendar month: give both YEAR and MONTH, or neither for this month
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli calendar month [<year> [<month>]]
+
+List the items of a calendar month, such as activities and notes.
+
+Arguments:
+  [<year>]     Year (e.g. 2026). Give it with MONTH. Without both, the command
+               shows this month.
+  [<month>]    Month (1-12).
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+gccli: error: calendar month: give both YEAR and MONTH, or neither for this month
+-- json exit --
+2
+-- json requests --

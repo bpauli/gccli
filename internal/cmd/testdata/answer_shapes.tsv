@@ -35,6 +35,8 @@ body daily-weigh-ins	object	live 2026-10-20
 body glucose	object	live 2026-10-20
 body latest	object	live 2026-10-20
 body weigh-ins	object	live 2026-10-20
+calendar export show	object	live GET 2026-10-22 connectapi
+calendar preferences view	object	live GET 2026-10-22 connectapi
 challenges available	array	live 2026-10-20
 challenges badge	array	live 2026-10-21 (#267)
 challenges completed	array	live 2026-10-20

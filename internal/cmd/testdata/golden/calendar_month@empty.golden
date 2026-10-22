@@ -1,0 +1,34 @@
+An empty answer prints no rows.
+-- args --
+calendar
+month
+2026
+10
+-- route GET /calendar-service/year/2026/month/9 --
+-- table stdout --
+DATE  TYPE  ID  TITLE
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /calendar-service/year/2026/month/9
+-- plain stdout --
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /calendar-service/year/2026/month/9
+-- plain-header stdout --
+DATE	TYPE	ID	TITLE
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /calendar-service/year/2026/month/9
+-- json stdout --
+[]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /calendar-service/year/2026/month/9
