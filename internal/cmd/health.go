@@ -150,16 +150,7 @@ var healthGroup = Group{Name: "health", Help: "View health data.", Children: []N
 		Params:   Params{"date": In("Date")},
 		Verb:     "get running economy", Output: JSON{},
 	},
-	Leaf{
-		Name: "acclimation", Help: "Show acclimation data for a date range.",
-		Spec: argsOf(&struct {
-			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
-			EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
-		}{}),
-		Endpoint: "health.acclimation",
-		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
-		Verb:     "get acclimation", Output: JSON{},
-	},
+	healthAcclimationGroup,
 	Leaf{
 		Name: "one-rep-max", Help: "Show current estimated one-rep max values as of a date.",
 		Spec: argsOf(&struct {
@@ -387,6 +378,28 @@ var healthTrainingStatusGroup = Group{Name: "training-status", Help: "Show train
 		Endpoint: "health.weekly-training-status",
 		Params:   Params{"displayName": DisplayName, "startDate": In("StartDate"), "endDate": In("EndDate")},
 		Verb:     "get weekly training status", Output: JSON{},
+	},
+}}
+
+var healthAcclimationGroup = Group{Name: "acclimation", Help: "Show heat and altitude acclimation data.", Children: []Node{
+	Leaf{
+		Name: "range", Help: "Show acclimation data for a date range.", Default: true,
+		Spec: argsOf(&struct {
+			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+			EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
+		}{}),
+		Endpoint: "health.acclimation",
+		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
+		Verb:     "get acclimation", Output: JSON{},
+	},
+	Leaf{
+		Name: "daily", Help: "Show SpO2 acclimation for a date.",
+		Spec: argsOf(&struct {
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today."`
+		}{}),
+		Endpoint: "health.daily-acclimation",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get daily acclimation", Output: JSON{},
 	},
 }}
 

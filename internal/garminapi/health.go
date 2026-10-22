@@ -91,6 +91,7 @@ var healthEndpoints = []Endpoint{
 		Params: []Param{{Name: "aggregation", Enum: []string{"DAILY", "WEEKLY", "MONTHLY"}}},
 	},
 	{Name: "health.acclimation", Method: http.MethodGet, Host: ConnectAPI, Path: "/wellness-service/stats/daily/acclimation?fromDate={startDate}&untilDate={endDate}"},
+	{Name: "health.daily-acclimation", Method: http.MethodGet, Host: ConnectAPI, Path: "/wellness-service/wellness/daily/spo2acclimation/{date}"},
 	{Name: "health.race-predictions", Method: http.MethodGet, Host: ConnectAPI, Path: "/metrics-service/metrics/racepredictions/latest/{displayName}"},
 	{Name: "health.race-predictions-range", Method: http.MethodGet, Host: ConnectAPI, Path: "/metrics-service/metrics/racepredictions/daily/{displayName}?fromCalendarDate={startDate}&toCalendarDate={endDate}"},
 	{Name: "health.one-rep-max", Method: http.MethodGet, Host: ConnectAPI, Path: "/fitnessstats-service/vbt-stats/one-rep-max/current/{date}"},

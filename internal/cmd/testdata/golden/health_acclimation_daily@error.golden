@@ -1,0 +1,36 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+health
+acclimation
+daily
+2026-10-14
+-- route GET /wellness-service/wellness/daily/spo2acclimation/2026-10-14 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+get daily acclimation: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /wellness-service/wellness/daily/spo2acclimation/2026-10-14
+-- plain stdout --
+-- plain stderr --
+get daily acclimation: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /wellness-service/wellness/daily/spo2acclimation/2026-10-14
+-- plain-header stdout --
+-- plain-header stderr --
+get daily acclimation: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /wellness-service/wellness/daily/spo2acclimation/2026-10-14
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"get daily acclimation: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /wellness-service/wellness/daily/spo2acclimation/2026-10-14

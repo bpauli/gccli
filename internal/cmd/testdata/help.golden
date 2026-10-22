@@ -168,7 +168,8 @@ Commands:
                                    range.
   health progress metrics          List the metrics of each activity type.
   health running-economy           Show latest running economy as of a date.
-  health acclimation               Show acclimation data for a date range.
+  health acclimation range         Show acclimation data for a date range.
+  health acclimation daily         Show SpO2 acclimation for a date.
   health one-rep-max               Show current estimated one-rep max values as
                                    of a date.
   health events                    Show daily wellness events.
@@ -755,7 +756,8 @@ Commands:
                                    range.
   health progress metrics          List the metrics of each activity type.
   health running-economy           Show latest running economy as of a date.
-  health acclimation               Show acclimation data for a date range.
+  health acclimation range         Show acclimation data for a date range.
+  health acclimation daily         Show SpO2 acclimation for a date.
   health one-rep-max               Show current estimated one-rep max values as
                                    of a date.
   health events                    Show daily wellness events.
@@ -1208,6 +1210,29 @@ Commands:
   health progress activities    Show metric values of each activity in a date
                                 range.
   health progress metrics       List the metrics of each activity type.
+
+$ gccli health acclimation --help
+Usage: gccli health acclimation <command>
+
+Show heat and altitude acclimation data.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  health acclimation range    Show acclimation data for a date range.
+  health acclimation daily    Show SpO2 acclimation for a date.
 
 $ gccli body --help
 Usage: gccli body <command> [flags]

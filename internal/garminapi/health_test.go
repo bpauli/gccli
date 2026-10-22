@@ -86,6 +86,7 @@ func TestHealthEndpoints(t *testing.T) {
 		{"health.running-tolerance", withAggregation(span, "weekly"), "GET /metrics-service/metrics/runningtolerance/stats?startDate=2024-01-01&endDate=2024-01-31&aggregation=weekly"},
 		{"health.cycling-ability", withAggregation(span, "WEEKLY"), "GET /metrics-service/metrics/cycling-ability?startDate=2024-01-01&endDate=2024-01-31&aggregation=WEEKLY"},
 		{"health.acclimation", span, "GET /wellness-service/stats/daily/acclimation?fromDate=2024-01-01&untilDate=2024-01-31"},
+		{"health.daily-acclimation", day, "GET /wellness-service/wellness/daily/spo2acclimation/2024-01-15"},
 		{"health.race-predictions", map[string]string{"displayName": "jo"}, "GET /metrics-service/metrics/racepredictions/latest/jo"},
 		{"health.race-predictions-range", map[string]string{"displayName": "jo", "startDate": "2024-01-01", "endDate": "2024-01-31"}, "GET /metrics-service/metrics/racepredictions/daily/jo?fromCalendarDate=2024-01-01&toCalendarDate=2024-01-31"},
 		{"health.one-rep-max", day, "GET /fitnessstats-service/vbt-stats/one-rep-max/current/2024-01-15"},

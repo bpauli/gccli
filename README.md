@@ -1194,9 +1194,11 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Needs --start.
 - `gccli health running-economy [<date>]`: Show latest running economy as of a date.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
-- `gccli health acclimation --start=DATE --end=DATE`: Show acclimation data for a date range.
+- `gccli health acclimation range --start=DATE --end=DATE`: Show acclimation data for a date range. Also runs as `gccli health acclimation --start=DATE --end=DATE`.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli health acclimation daily [<date>]`: Show SpO2 acclimation for a date.
+  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli health one-rep-max [<date>]`: Show current estimated one-rep max values as of a date.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli health events [<date>]`: Show daily wellness events.
