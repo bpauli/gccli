@@ -21,6 +21,9 @@ func TestSegmentKindsMatchEnums(t *testing.T) {
 		{reflect.TypeFor[SegmentsSearchCmd](), "Classification", slices.Collect(maps.Keys(segmentClassifications))},
 		{reflect.TypeFor[SegmentsSearchCmd](), "Surface", slices.Collect(maps.Keys(segmentSurfaces))},
 		{reflect.TypeFor[SegmentsLeaderboardCmd](), "Scope", slices.Collect(maps.Keys(leaderboardScopes))},
+		{reflect.TypeFor[SegmentsCreateCmd](), "ActivityType", slices.Collect(maps.Keys(segmentActivityTypes))},
+		{reflect.TypeFor[SegmentsCreateCmd](), "Classification", slices.Collect(maps.Keys(segmentClassifications))},
+		{reflect.TypeFor[SegmentsCreateCmd](), "Surface", slices.Collect(maps.Keys(segmentSurfaces))},
 	}
 	for _, tt := range tests {
 		t.Run(tt.cmd.Name()+"."+tt.field, func(t *testing.T) {

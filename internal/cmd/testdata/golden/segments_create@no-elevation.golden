@@ -1,0 +1,173 @@
+A track without elevations gives grade 0, and the defaults send the other classification and the paved surface.
+-- args --
+segments
+create
+--from-activity
+5000001
+--start-km
+0.1
+--end-km
+0.35
+--name
+Park Hill
+--activity-type
+running
+-- route GET /segment-service/segment/activity/5000001 --
+{"activityId":null,"name":"Morning Run","elevation":{"x":0,"y":0},"polyline":[{"latitude":52.5,"longitude":13.4,"distance":0,"timestamp":1786000000000},{"latitude":52.501,"longitude":13.4,"distance":80,"timestamp":1786000030000},{"latitude":52.502,"longitude":13.4,"distance":160,"timestamp":1786000060000},{"latitude":52.503,"longitude":13.4,"distance":250,"timestamp":1786000090000},{"latitude":52.504,"longitude":13.4,"distance":340,"timestamp":1786000120000},{"latitude":52.505,"longitude":13.4,"distance":420,"timestamp":1786000150000},{"latitude":52.506,"longitude":13.4,"distance":500,"timestamp":1786000180000}]}
+-- route POST /segment-service/segment/ --
+{"segmentPk":900009,"uuid":"a1b2c3d4-0000-4000-8000-000000000009","name":"Park Hill","distance":0.18,"grade":3.11,"favorite":false}
+-- table stdout --
+-- table stderr --
+Created segment "Park Hill" (UUID: a1b2c3d4-0000-4000-8000-000000000009)
+-- table exit --
+0
+-- table requests --
+GET /segment-service/segment/activity/5000001
+POST /segment-service/segment/
+  {
+    "name": "Park Hill",
+    "activityId": 5000001,
+    "activityTypePk": 1,
+    "classificationPk": 13,
+    "surfaceTypePk": 2,
+    "distance": 0.18,
+    "grade": 0,
+    "geoPoints": [
+      {
+        "latitude": 52.502,
+        "longitude": 13.4,
+        "distance": 160,
+        "timestamp": 1786000060000
+      },
+      {
+        "latitude": 52.503,
+        "longitude": 13.4,
+        "distance": 250,
+        "timestamp": 1786000090000
+      },
+      {
+        "latitude": 52.504,
+        "longitude": 13.4,
+        "distance": 340,
+        "timestamp": 1786000120000
+      }
+    ]
+  }
+-- plain stdout --
+-- plain stderr --
+Created segment "Park Hill" (UUID: a1b2c3d4-0000-4000-8000-000000000009)
+-- plain exit --
+0
+-- plain requests --
+GET /segment-service/segment/activity/5000001
+POST /segment-service/segment/
+  {
+    "name": "Park Hill",
+    "activityId": 5000001,
+    "activityTypePk": 1,
+    "classificationPk": 13,
+    "surfaceTypePk": 2,
+    "distance": 0.18,
+    "grade": 0,
+    "geoPoints": [
+      {
+        "latitude": 52.502,
+        "longitude": 13.4,
+        "distance": 160,
+        "timestamp": 1786000060000
+      },
+      {
+        "latitude": 52.503,
+        "longitude": 13.4,
+        "distance": 250,
+        "timestamp": 1786000090000
+      },
+      {
+        "latitude": 52.504,
+        "longitude": 13.4,
+        "distance": 340,
+        "timestamp": 1786000120000
+      }
+    ]
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Created segment "Park Hill" (UUID: a1b2c3d4-0000-4000-8000-000000000009)
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /segment-service/segment/activity/5000001
+POST /segment-service/segment/
+  {
+    "name": "Park Hill",
+    "activityId": 5000001,
+    "activityTypePk": 1,
+    "classificationPk": 13,
+    "surfaceTypePk": 2,
+    "distance": 0.18,
+    "grade": 0,
+    "geoPoints": [
+      {
+        "latitude": 52.502,
+        "longitude": 13.4,
+        "distance": 160,
+        "timestamp": 1786000060000
+      },
+      {
+        "latitude": 52.503,
+        "longitude": 13.4,
+        "distance": 250,
+        "timestamp": 1786000090000
+      },
+      {
+        "latitude": 52.504,
+        "longitude": 13.4,
+        "distance": 340,
+        "timestamp": 1786000120000
+      }
+    ]
+  }
+-- json stdout --
+{
+  "segmentPk": 900009,
+  "uuid": "a1b2c3d4-0000-4000-8000-000000000009",
+  "name": "Park Hill",
+  "distance": 0.18,
+  "grade": 3.11,
+  "favorite": false
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /segment-service/segment/activity/5000001
+POST /segment-service/segment/
+  {
+    "name": "Park Hill",
+    "activityId": 5000001,
+    "activityTypePk": 1,
+    "classificationPk": 13,
+    "surfaceTypePk": 2,
+    "distance": 0.18,
+    "grade": 0,
+    "geoPoints": [
+      {
+        "latitude": 52.502,
+        "longitude": 13.4,
+        "distance": 160,
+        "timestamp": 1786000060000
+      },
+      {
+        "latitude": 52.503,
+        "longitude": 13.4,
+        "distance": 250,
+        "timestamp": 1786000090000
+      },
+      {
+        "latitude": 52.504,
+        "longitude": 13.4,
+        "distance": 340,
+        "timestamp": 1786000120000
+      }
+    ]
+  }

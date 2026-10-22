@@ -1,0 +1,189 @@
+The body has the points from 160 m to 340 m as Garmin sent them, the distance in km and the grade in percent.
+-- args --
+segments
+create
+--from-activity
+5000001
+--start-km
+0.1
+--end-km
+0.35
+--name
+Park Hill
+--activity-type
+running
+--classification
+hill_climb
+--surface
+gravel
+-- route GET /segment-service/segment/activity/5000001 --
+{"activityId":null,"name":"Morning Run","elevation":{"x":0,"y":0},"polyline":[{"latitude":52.5,"longitude":13.4,"distance":0,"timestamp":1786000000000,"elevation":40.0},{"latitude":52.501,"longitude":13.4,"distance":80,"timestamp":1786000030000,"elevation":42.0},{"latitude":52.502,"longitude":13.4,"distance":160,"timestamp":1786000060000,"elevation":45.0},{"latitude":52.503,"longitude":13.4,"distance":250,"timestamp":1786000090000,"elevation":47.5},{"latitude":52.504,"longitude":13.4,"distance":340,"timestamp":1786000120000,"elevation":50.6},{"latitude":52.505,"longitude":13.4,"distance":420,"timestamp":1786000150000,"elevation":52.0},{"latitude":52.506,"longitude":13.4,"distance":500,"timestamp":1786000180000,"elevation":53.0}]}
+-- route POST /segment-service/segment/ --
+{"segmentPk":900009,"uuid":"a1b2c3d4-0000-4000-8000-000000000009","name":"Park Hill","distance":0.18,"grade":3.11,"favorite":false}
+-- table stdout --
+-- table stderr --
+Created segment "Park Hill" (UUID: a1b2c3d4-0000-4000-8000-000000000009)
+-- table exit --
+0
+-- table requests --
+GET /segment-service/segment/activity/5000001
+POST /segment-service/segment/
+  {
+    "name": "Park Hill",
+    "activityId": 5000001,
+    "activityTypePk": 1,
+    "classificationPk": 8,
+    "surfaceTypePk": 6,
+    "distance": 0.18,
+    "grade": 3.11,
+    "geoPoints": [
+      {
+        "latitude": 52.502,
+        "longitude": 13.4,
+        "distance": 160,
+        "timestamp": 1786000060000,
+        "elevation": 45.0
+      },
+      {
+        "latitude": 52.503,
+        "longitude": 13.4,
+        "distance": 250,
+        "timestamp": 1786000090000,
+        "elevation": 47.5
+      },
+      {
+        "latitude": 52.504,
+        "longitude": 13.4,
+        "distance": 340,
+        "timestamp": 1786000120000,
+        "elevation": 50.6
+      }
+    ]
+  }
+-- plain stdout --
+-- plain stderr --
+Created segment "Park Hill" (UUID: a1b2c3d4-0000-4000-8000-000000000009)
+-- plain exit --
+0
+-- plain requests --
+GET /segment-service/segment/activity/5000001
+POST /segment-service/segment/
+  {
+    "name": "Park Hill",
+    "activityId": 5000001,
+    "activityTypePk": 1,
+    "classificationPk": 8,
+    "surfaceTypePk": 6,
+    "distance": 0.18,
+    "grade": 3.11,
+    "geoPoints": [
+      {
+        "latitude": 52.502,
+        "longitude": 13.4,
+        "distance": 160,
+        "timestamp": 1786000060000,
+        "elevation": 45.0
+      },
+      {
+        "latitude": 52.503,
+        "longitude": 13.4,
+        "distance": 250,
+        "timestamp": 1786000090000,
+        "elevation": 47.5
+      },
+      {
+        "latitude": 52.504,
+        "longitude": 13.4,
+        "distance": 340,
+        "timestamp": 1786000120000,
+        "elevation": 50.6
+      }
+    ]
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Created segment "Park Hill" (UUID: a1b2c3d4-0000-4000-8000-000000000009)
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /segment-service/segment/activity/5000001
+POST /segment-service/segment/
+  {
+    "name": "Park Hill",
+    "activityId": 5000001,
+    "activityTypePk": 1,
+    "classificationPk": 8,
+    "surfaceTypePk": 6,
+    "distance": 0.18,
+    "grade": 3.11,
+    "geoPoints": [
+      {
+        "latitude": 52.502,
+        "longitude": 13.4,
+        "distance": 160,
+        "timestamp": 1786000060000,
+        "elevation": 45.0
+      },
+      {
+        "latitude": 52.503,
+        "longitude": 13.4,
+        "distance": 250,
+        "timestamp": 1786000090000,
+        "elevation": 47.5
+      },
+      {
+        "latitude": 52.504,
+        "longitude": 13.4,
+        "distance": 340,
+        "timestamp": 1786000120000,
+        "elevation": 50.6
+      }
+    ]
+  }
+-- json stdout --
+{
+  "segmentPk": 900009,
+  "uuid": "a1b2c3d4-0000-4000-8000-000000000009",
+  "name": "Park Hill",
+  "distance": 0.18,
+  "grade": 3.11,
+  "favorite": false
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /segment-service/segment/activity/5000001
+POST /segment-service/segment/
+  {
+    "name": "Park Hill",
+    "activityId": 5000001,
+    "activityTypePk": 1,
+    "classificationPk": 8,
+    "surfaceTypePk": 6,
+    "distance": 0.18,
+    "grade": 3.11,
+    "geoPoints": [
+      {
+        "latitude": 52.502,
+        "longitude": 13.4,
+        "distance": 160,
+        "timestamp": 1786000060000,
+        "elevation": 45.0
+      },
+      {
+        "latitude": 52.503,
+        "longitude": 13.4,
+        "distance": 250,
+        "timestamp": 1786000090000,
+        "elevation": 47.5
+      },
+      {
+        "latitude": 52.504,
+        "longitude": 13.4,
+        "distance": 340,
+        "timestamp": 1786000120000,
+        "elevation": 50.6
+      }
+    ]
+  }

@@ -1,0 +1,44 @@
+Error case: the track has no two points in the range, so there is no write and the exit code is 1 (error).
+-- args --
+segments
+create
+--from-activity
+5000001
+--start-km
+2
+--end-km
+3
+--name
+Park Hill
+--activity-type
+running
+-- route GET /segment-service/segment/activity/5000001 --
+{"activityId":null,"name":"Morning Run","elevation":{"x":0,"y":0},"polyline":[{"latitude":52.5,"longitude":13.4,"distance":0,"timestamp":1786000000000,"elevation":40.0},{"latitude":52.501,"longitude":13.4,"distance":80,"timestamp":1786000030000,"elevation":42.0},{"latitude":52.502,"longitude":13.4,"distance":160,"timestamp":1786000060000,"elevation":45.0},{"latitude":52.503,"longitude":13.4,"distance":250,"timestamp":1786000090000,"elevation":47.5},{"latitude":52.504,"longitude":13.4,"distance":340,"timestamp":1786000120000,"elevation":50.6},{"latitude":52.505,"longitude":13.4,"distance":420,"timestamp":1786000150000,"elevation":52.0},{"latitude":52.506,"longitude":13.4,"distance":500,"timestamp":1786000180000,"elevation":53.0}]}
+-- table stdout --
+-- table stderr --
+the track of activity 5000001 has fewer than 2 points from 2 km to 3 km: the track is 0.50 km long
+-- table exit --
+1
+-- table requests --
+GET /segment-service/segment/activity/5000001
+-- plain stdout --
+-- plain stderr --
+the track of activity 5000001 has fewer than 2 points from 2 km to 3 km: the track is 0.50 km long
+-- plain exit --
+1
+-- plain requests --
+GET /segment-service/segment/activity/5000001
+-- plain-header stdout --
+-- plain-header stderr --
+the track of activity 5000001 has fewer than 2 points from 2 km to 3 km: the track is 0.50 km long
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /segment-service/segment/activity/5000001
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"the track of activity 5000001 has fewer than 2 points from 2 km to 3 km: the track is 0.50 km long"}}
+-- json exit --
+1
+-- json requests --
+GET /segment-service/segment/activity/5000001

@@ -1,0 +1,48 @@
+The segment read gives the segmentPk, and the change names it, not the UUID.
+-- args --
+segments
+unfavorite
+a1b2c3d4-0000-4000-8000-000000000001
+-- route GET /segment-service/segment/a1b2c3d4-0000-4000-8000-000000000001 --
+{"segmentPk":900001,"uuid":"a1b2c3d4-0000-4000-8000-000000000001","name":"Park Hill","distance":1.234,"favorite":false}
+-- route DELETE /segment-service/segment/user/900001 --
+{"segmentPk":900001,"segmentName":"Park Hill","segmentUuid":"a1b2c3d4-0000-4000-8000-000000000001","segmentDistance":1.234,"favorite":false,"userProfilePk":7001}
+-- table stdout --
+-- table stderr --
+Removed segment a1b2c3d4-0000-4000-8000-000000000001 from favorites
+-- table exit --
+0
+-- table requests --
+GET /segment-service/segment/a1b2c3d4-0000-4000-8000-000000000001
+DELETE /segment-service/segment/user/900001
+-- plain stdout --
+-- plain stderr --
+Removed segment a1b2c3d4-0000-4000-8000-000000000001 from favorites
+-- plain exit --
+0
+-- plain requests --
+GET /segment-service/segment/a1b2c3d4-0000-4000-8000-000000000001
+DELETE /segment-service/segment/user/900001
+-- plain-header stdout --
+-- plain-header stderr --
+Removed segment a1b2c3d4-0000-4000-8000-000000000001 from favorites
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /segment-service/segment/a1b2c3d4-0000-4000-8000-000000000001
+DELETE /segment-service/segment/user/900001
+-- json stdout --
+{
+  "segmentPk": 900001,
+  "segmentName": "Park Hill",
+  "segmentUuid": "a1b2c3d4-0000-4000-8000-000000000001",
+  "segmentDistance": 1.234,
+  "favorite": false,
+  "userProfilePk": 7001
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /segment-service/segment/a1b2c3d4-0000-4000-8000-000000000001
+DELETE /segment-service/segment/user/900001

@@ -1,0 +1,170 @@
+Error case: a name of only spaces is a usage error, exit 2, before any request.
+-- args --
+segments
+create
+--from-activity
+5000001
+--start-km
+0.1
+--end-km
+0.35
+--name
+  
+--activity-type
+running
+-- table stdout --
+-- table stderr --
+Usage: gccli segments create --from-activity=ID --start-km=KM --end-km=KM --name=NAME --activity-type=TYPE [flags]
+
+Create a segment from a part of an activity track.
+
+Flags:
+  -h, --help                      Show context-sensitive help.
+  -j, --json                      Output as JSON ($GCCLI_JSON).
+      --plain                     Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                    Print the column names as the first line of
+                                  --plain output ($GCCLI_HEADER).
+      --color="auto"              Color mode: auto, always, never
+                                  ($GCCLI_COLOR).
+      --account=STRING            Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"              Unit system for distances, speeds, paces,
+                                  elevations and weights in table and plain
+                                  output: auto (Garmin profile), metric,
+                                  statute_us, statute_uk ($GCCLI_UNITS).
+      --version                   Print version information.
+
+      --from-activity=ID          ID of the activity whose track the segment
+                                  follows.
+      --start-km=KM               Start of the segment, in kilometers from the
+                                  start of the activity.
+      --end-km=KM                 End of the segment, in kilometers from the
+                                  start of the activity.
+      --name=NAME                 Segment name.
+      --activity-type=TYPE        Activity type: cycling or running.
+      --classification="other"    Classification as segments classifications
+                                  prints it: downhill, hill_climb, hills,
+                                  other or sprint.
+      --surface="paved"           Surface as segments surface-types prints it:
+                                  dirt, gravel, mixed or paved.
+
+gccli: error: --name: must not be empty
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli segments create --from-activity=ID --start-km=KM --end-km=KM --name=NAME --activity-type=TYPE [flags]
+
+Create a segment from a part of an activity track.
+
+Flags:
+  -h, --help                      Show context-sensitive help.
+  -j, --json                      Output as JSON ($GCCLI_JSON).
+      --plain                     Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                    Print the column names as the first line of
+                                  --plain output ($GCCLI_HEADER).
+      --color="auto"              Color mode: auto, always, never
+                                  ($GCCLI_COLOR).
+      --account=STRING            Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"              Unit system for distances, speeds, paces,
+                                  elevations and weights in table and plain
+                                  output: auto (Garmin profile), metric,
+                                  statute_us, statute_uk ($GCCLI_UNITS).
+      --version                   Print version information.
+
+      --from-activity=ID          ID of the activity whose track the segment
+                                  follows.
+      --start-km=KM               Start of the segment, in kilometers from the
+                                  start of the activity.
+      --end-km=KM                 End of the segment, in kilometers from the
+                                  start of the activity.
+      --name=NAME                 Segment name.
+      --activity-type=TYPE        Activity type: cycling or running.
+      --classification="other"    Classification as segments classifications
+                                  prints it: downhill, hill_climb, hills,
+                                  other or sprint.
+      --surface="paved"           Surface as segments surface-types prints it:
+                                  dirt, gravel, mixed or paved.
+
+gccli: error: --name: must not be empty
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli segments create --from-activity=ID --start-km=KM --end-km=KM --name=NAME --activity-type=TYPE [flags]
+
+Create a segment from a part of an activity track.
+
+Flags:
+  -h, --help                      Show context-sensitive help.
+  -j, --json                      Output as JSON ($GCCLI_JSON).
+      --plain                     Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                    Print the column names as the first line of
+                                  --plain output ($GCCLI_HEADER).
+      --color="auto"              Color mode: auto, always, never
+                                  ($GCCLI_COLOR).
+      --account=STRING            Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"              Unit system for distances, speeds, paces,
+                                  elevations and weights in table and plain
+                                  output: auto (Garmin profile), metric,
+                                  statute_us, statute_uk ($GCCLI_UNITS).
+      --version                   Print version information.
+
+      --from-activity=ID          ID of the activity whose track the segment
+                                  follows.
+      --start-km=KM               Start of the segment, in kilometers from the
+                                  start of the activity.
+      --end-km=KM                 End of the segment, in kilometers from the
+                                  start of the activity.
+      --name=NAME                 Segment name.
+      --activity-type=TYPE        Activity type: cycling or running.
+      --classification="other"    Classification as segments classifications
+                                  prints it: downhill, hill_climb, hills,
+                                  other or sprint.
+      --surface="paved"           Surface as segments surface-types prints it:
+                                  dirt, gravel, mixed or paved.
+
+gccli: error: --name: must not be empty
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli segments create --from-activity=ID --start-km=KM --end-km=KM --name=NAME --activity-type=TYPE [flags]
+
+Create a segment from a part of an activity track.
+
+Flags:
+  -h, --help                      Show context-sensitive help.
+  -j, --json                      Output as JSON ($GCCLI_JSON).
+      --plain                     Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                    Print the column names as the first line of
+                                  --plain output ($GCCLI_HEADER).
+      --color="auto"              Color mode: auto, always, never
+                                  ($GCCLI_COLOR).
+      --account=STRING            Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"              Unit system for distances, speeds, paces,
+                                  elevations and weights in table and plain
+                                  output: auto (Garmin profile), metric,
+                                  statute_us, statute_uk ($GCCLI_UNITS).
+      --version                   Print version information.
+
+      --from-activity=ID          ID of the activity whose track the segment
+                                  follows.
+      --start-km=KM               Start of the segment, in kilometers from the
+                                  start of the activity.
+      --end-km=KM                 End of the segment, in kilometers from the
+                                  start of the activity.
+      --name=NAME                 Segment name.
+      --activity-type=TYPE        Activity type: cycling or running.
+      --classification="other"    Classification as segments classifications
+                                  prints it: downhill, hill_climb, hills,
+                                  other or sprint.
+      --surface="paved"           Surface as segments surface-types prints it:
+                                  dirt, gravel, mixed or paved.
+
+gccli: error: --name: must not be empty
+-- json exit --
+2
+-- json requests --
