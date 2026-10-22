@@ -124,10 +124,28 @@ func TestCheckTableRejects(t *testing.T) {
 			"In names a field the runner cannot send", "goals list",
 			func(l *Leaf) {
 				l.Spec = argsOf(&struct {
-					Status []string `help:"Goal status." default:"active"`
+					Status []int `help:"Goal status." default:"1"`
 				}{})
 			},
-			`goals list: Params["status"] binds In("Status") of type []string: the runner sends only string, int, Date and ID`,
+			`goals list: Params["status"] binds In("Status") of type []int: the runner sends only string, int, Date, ID and []string`,
+		},
+		{
+			"a []string bound to a placeholder that is not a List", "goals list",
+			func(l *Leaf) {
+				l.Spec = argsOf(&struct {
+					Status []string `help:"Goal status." default:"active" enum:"active,future,past"`
+				}{})
+			},
+			`goals list: Params["status"] binds In("Status") of type []string, but {status} of goals.list is not a List: its values would go out as one comma-joined value`,
+		},
+		{
+			"an Upper enum is checked as the runner sends it", "goals list",
+			func(l *Leaf) {
+				l.Spec = argsOf(&struct {
+					Status Upper `help:"Goal status." default:"active" enum:"active,future,past"`
+				}{})
+			},
+			`goals list: Params["status"] binds In("Status"), whose enum allows "ACTIVE", which {status} of goals.list does not: active, future, past`,
 		},
 		{
 			"Kong enum allows a value the placeholder does not", "goals list",

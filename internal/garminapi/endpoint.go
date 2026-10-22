@@ -76,7 +76,8 @@ func (s Subscription) String() string {
 // url.PathEscape. A placeholder in the query part fills one whole value and
 // is escaped with url.QueryEscape. Query pairs go out in the order written.
 // A literal pair, such as includeAll=true, is always sent. A name can occur
-// more than once, and the caller passes its value once.
+// more than once, and the caller passes its value once. A List placeholder
+// sends one pair per value.
 //
 // Every placeholder is required unless its Param says otherwise.
 //
@@ -109,6 +110,11 @@ type Param struct {
 	Default string
 	// Enum lists the values Call accepts, after Default is applied.
 	Enum []string
+	// List lets the caller pass several values in one string, separated by
+	// commas. Each value goes out as its own pair (metric=a&metric=b), in
+	// the order given, and Enum applies to each one. Only a query
+	// placeholder can be a list.
+	List bool
 }
 
 // EndpointError is a Call that the table refuses before any request is sent.
@@ -230,26 +236,35 @@ func (r *route) target(args map[string]string) (string, error) {
 			return "", &EndpointError{Endpoint: r.Name, Param: k, Problem: "not a parameter of this endpoint"}
 		}
 	}
-	vals := make(map[string]string, len(r.names))
+	vals := make(map[string][]string, len(r.names))
 	for _, name := range r.names {
 		p := r.params[name]
 		v := args[name]
 		if v == "" {
 			v = p.Default
 		}
-		switch {
-		case v == "" && !p.Optional:
-			return "", &EndpointError{Endpoint: r.Name, Param: name, Problem: "required"}
-		case v != "" && p.Enum != nil && !slices.Contains(p.Enum, v):
-			return "", &EndpointError{Endpoint: r.Name, Param: name, Problem: fmt.Sprintf("%q is not one of %s", v, strings.Join(p.Enum, ", "))}
+		values := []string{v}
+		if p.List {
+			values = slices.DeleteFunc(strings.Split(v, ","), func(s string) bool { return s == "" })
 		}
-		vals[name] = v
+		if v == "" || len(values) == 0 {
+			if !p.Optional {
+				return "", &EndpointError{Endpoint: r.Name, Param: name, Problem: "required"}
+			}
+			continue
+		}
+		for _, v := range values {
+			if p.Enum != nil && !slices.Contains(p.Enum, v) {
+				return "", &EndpointError{Endpoint: r.Name, Param: name, Problem: fmt.Sprintf("%q is not one of %s", v, strings.Join(p.Enum, ", "))}
+			}
+		}
+		vals[name] = values
 	}
 
 	var b strings.Builder
 	for _, pc := range r.path {
 		if pc.param {
-			v := vals[pc.text]
+			v := vals[pc.text][0]
 			if v == "." || v == ".." {
 				return "", &EndpointError{Endpoint: r.Name, Param: pc.text, Problem: fmt.Sprintf("%q is not a path segment", v)}
 			}
@@ -260,15 +275,17 @@ func (r *route) target(args map[string]string) (string, error) {
 	}
 	sep := "?"
 	for _, q := range r.query {
-		v := q.value.text
+		values := []string{q.value.text}
 		if q.value.param {
-			if v = vals[v]; v == "" {
-				continue
-			}
-			v = url.QueryEscape(v)
+			values = vals[q.value.text]
 		}
-		b.WriteString(sep + q.key + "=" + v)
-		sep = "&"
+		for _, v := range values {
+			if q.value.param {
+				v = url.QueryEscape(v)
+			}
+			b.WriteString(sep + q.key + "=" + v)
+			sep = "&"
+		}
 	}
 	return b.String(), nil
 }
@@ -405,6 +422,8 @@ func compile(e Endpoint) (*route, error) {
 			return nil, fmt.Errorf("param %q: a default already makes it optional", p.Name)
 		case p.Optional && inPath[p.Name]:
 			return nil, fmt.Errorf("param %q: a path placeholder cannot be optional", p.Name)
+		case p.List && inPath[p.Name]:
+			return nil, fmt.Errorf("param %q: a path placeholder cannot be a list", p.Name)
 		case p.Default != "" && p.Enum != nil && !slices.Contains(p.Enum, p.Default):
 			return nil, fmt.Errorf("param %q: default %q is not in its enum", p.Name, p.Default)
 		}
