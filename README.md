@@ -13,7 +13,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 
 - **Activities** - list, search, view details, download (FIT/GPX/TCX/KML/CSV), upload, create manual entries (with date), rename, retype, describe, change privacy, mark as favorite, delete, set exercise sets for strength training, list activity types, list pending activities, list comments and likes, like and unlike
 - **Exercise Catalog** — browse Garmin's exercise categories and exercises for strength training
-- **Health Data** - daily summaries, steps, heart rate, resting HR, sleep, stress, HRV, SpO2, respiration, body battery (with daily low and high), floors, training readiness, daily and weekly training status, VO2max, fitness age, race predictions, endurance and hill scores with statistics, intensity minutes, lactate threshold, cycling FTP, critical swim speed, power curve, running economy, running tolerance, cycling ability, activity progress totals per period
+- **Health Data** - daily summaries, steps, heart rate, resting HR, sleep, stress, HRV, SpO2, respiration, body battery (with daily low and high), floors, training readiness, daily and weekly training status, VO2max, fitness age, race predictions, endurance and hill scores with statistics, intensity minutes, lactate threshold, cycling FTP, critical swim speed, power curve, running economy, heat and altitude acclimation, running tolerance, cycling ability, activity progress totals per period
 - **Body Composition** - weight tracking, latest weigh-in, weekly weight summaries, body fat, muscle mass, blood pressure, glucose, FIT file encoding for composition uploads
 - **Workouts** - list, view, download as FIT, upload from JSON, update in place from JSON, create with sport types and targets (pace/HR/power/cadence), schedule (add/list/remove/export), send to a device, list workout types and sport types, view, set and clear strength benchmarks, delete
 - **Courses** — list courses, view favorites, get full course detail, download as FIT/GPX, import GPX files as new courses, send courses directly to a device, delete courses
@@ -22,7 +22,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities, gear types, add, update, retire, unretire and delete gear, list, create, rename and delete gear collections, add gear to a collection
 - **Goals & Badges** — active goals, set daily goals for steps, floors, intensity minutes and hydration, earned/available/in-progress badges, badge details, challenges, personal records
 - **Training** - browse and view training plans, show your active plans, list adaptive coaching workout types
-- **Profile** — user profile and settings, privacy settings, list, add and delete privacy zones, heart rate and power zones
+- **Profile** - user profile and settings, privacy settings, list, add and delete privacy zones, heart rate zones, power zones for all sports or one sport
 - **Hydration** — view and log daily water intake
 - **Nutrition** - view daily food logs, meals, and nutrition settings, search the Garmin food database, list recent and favorite foods, log foods and quick entries in a meal, delete log entries, and add and remove favorite foods (all but the first three need Garmin Connect+)
 - **Events** — list, list upcoming, add, and delete calendar events (races, group rides, etc.) with goals and training priority support
@@ -471,6 +471,7 @@ gccli health cycling-ability --start 2024-01-01 --end 2024-06-30
 gccli health intensity-minutes [date]
 gccli health intensity-minutes weekly --start 2024-01-01 --end 2024-01-31
 gccli health acclimation --start 2024-01-01 --end 2024-01-07
+gccli health acclimation daily [date]  # SpO2 acclimation of one day
 gccli health one-rep-max [date]
 
 # Activity progress (metric names come from health progress metrics)
@@ -742,7 +743,8 @@ gccli profile privacy-zones add --lat 52.52 --lon 13.405 --radius 500
 gccli profile privacy-zones add --lat 40.7 --lon=-74.0 --radius 1000   # A negative value needs the = form
 gccli profile privacy-zones delete <id>          # Delete a privacy zone (with confirmation)
 gccli profile hr-zones
-gccli profile power-zones
+gccli profile power-zones                 # All sports
+gccli profile power-zones sport cycling   # One sport: cycling, running, rowing or cross-country-skiing
 ```
 
 ### Hydration
@@ -1193,9 +1195,11 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Needs --start.
 - `gccli health running-economy [<date>]`: Show latest running economy as of a date.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
-- `gccli health acclimation --start=DATE --end=DATE`: Show acclimation data for a date range.
+- `gccli health acclimation range --start=DATE --end=DATE`: Show acclimation data for a date range. Also runs as `gccli health acclimation --start=DATE --end=DATE`.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli health acclimation daily [<date>]`: Show SpO2 acclimation for a date.
+  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli health one-rep-max [<date>]`: Show current estimated one-rep max values as of a date.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli health events [<date>]`: Show daily wellness events.
@@ -1651,7 +1655,9 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `<id>`: Privacy zone ID.
   - `-f, --force`: Skip confirmation prompt.
 - `gccli profile hr-zones`: Show heart rate zones.
-- `gccli profile power-zones`: Show power zones for all sports.
+- `gccli profile power-zones list`: Show power zones for all sports. Also runs as `gccli profile power-zones`.
+- `gccli profile power-zones sport <sport>`: Show power zones for one sport.
+  - `<sport>`: Sport: cycling, running, rowing or cross-country-skiing.
 - `gccli training plans [flags]`: List training plans. Also runs as `gccli training [flags]`.
   - `--locale="en"`: Locale for training plans (e.g. en, de, fr).
 - `gccli training plan <id>`: Show a specific training plan.

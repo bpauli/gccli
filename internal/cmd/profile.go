@@ -13,7 +13,20 @@ var profileGroup = Group{Name: "profile", Help: "View user profile.", Children: 
 	profilePrivacyGroup,
 	profilePrivacyZonesGroup,
 	Leaf{Name: "hr-zones", Help: "Show heart rate zones.", Endpoint: "profile.hr-zones", Verb: "get heart rate zones", Output: JSON{List: true}},
-	Leaf{Name: "power-zones", Help: "Show power zones for all sports.", Endpoint: "profile.power-zones", Verb: "get power zones", Output: JSON{List: true}},
+	profilePowerZonesGroup,
+}}
+
+var profilePowerZonesGroup = Group{Name: "power-zones", Help: "Show power zones.", Children: []Node{
+	Leaf{Name: "list", Help: "Show power zones for all sports.", Default: true, Endpoint: "profile.power-zones", Verb: "get power zones", Output: JSON{List: true}},
+	Leaf{
+		Name: "sport", Help: "Show power zones for one sport.",
+		Spec: argsOf(&struct {
+			Sport Upper `arg:"" help:"Sport: cycling, running, rowing or cross-country-skiing." enum:"cycling,running,rowing,cross-country-skiing"`
+		}{}),
+		Endpoint: "profile.sport-power-zones",
+		Params:   Params{"sport": In("Sport")},
+		Verb:     "get sport power zones", Output: JSON{},
+	},
 }}
 
 var profilePrivacyGroup = Group{Name: "privacy", Help: "View privacy settings.", Children: []Node{

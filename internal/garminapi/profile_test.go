@@ -22,6 +22,7 @@ func TestProfileEndpoints(t *testing.T) {
 		{"profile.privacy-zone.delete", map[string]string{"privacyZoneID": "123"}, "DELETE /privacyzone-service/privacyZones/123"},
 		{"profile.hr-zones", nil, "GET /biometric-service/heartRateZones/v2"},
 		{"profile.power-zones", nil, "GET /biometric-service/powerZones/sports/all"},
+		{"profile.sport-power-zones", map[string]string{"sport": "CROSS_COUNTRY_SKIING"}, "GET /biometric-service/powerZones/sport/CROSS_COUNTRY_SKIING"},
 	})
 }
 

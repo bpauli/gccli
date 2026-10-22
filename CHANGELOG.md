@@ -35,9 +35,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `health endurance-score stats` and `health hill-score stats` show the statistics for a date range of at most 400 days. `--aggregation` is `weekly` (the default) or `monthly` for the endurance score, and `daily`, `weekly` or `monthly` for the hill score. (#73)
 - `health progress` (also as `health progress summary`) totals activity metrics per period: count, min, max, average and sum. `--metric` names the metrics and `--activity-type` limits the activity types; repeat a flag or separate its values with commas. `--aggregation` is `daily`, `weekly` (the default), `monthly`, `yearly` or `all`. `health progress activities` lists the values of each activity, and `health progress metrics` lists the metric names of each activity type, with `--start` and `--end` only the types with activities in the range. Distances are meters and durations seconds. (#73)
 - `wellness jet-lag add --from <place> --to <place> --depart <time> --arrive <time>` adds a jet lag trip, with an optional return flight (`--return-depart`, `--return-arrive`). Each time is a local time with its UTC offset, such as `2026-11-02T10:00+01:00`. The trip runs from the day of the first departure to the day of the last arrival. `wellness jet-lag update <id>` changes its places or times, and `wellness jet-lag delete <id>` deletes it after a prompt (`--force` skips it). Garmin has no read of one trip, so both find the trip in the trip list, and an unknown ID exits 1 before any write. `update` refuses a trip of more than two flights. (#89)
+- `health acclimation daily [<date>]` shows the SpO2 acclimation of one day (default today). (#73)
+- `profile power-zones sport <sport>` shows the power zones of one sport: `cycling`, `running`, `rowing` or `cross-country-skiing`. (#74)
 
 ### Changed
 
+- `health acclimation` is now a group with `range` and `daily`. Without a child it runs `range` with `--start` and `--end`, with the same output and exit codes as before. (#73)
+- `profile power-zones` is now a group with `list` and `sport`. Without a child it runs `list`, with the same output and exit codes as before. (#74)
 - `health endurance-score` and `health hill-score` are now groups with `view` and `stats`. Without a child they run `view`, with the same output and exit codes as before. (#73)
 - `devices messages` is now a group with `list` and `cancel`. `devices messages` without a child runs `devices messages list`, with the same output and exit codes as before. (#81)
 

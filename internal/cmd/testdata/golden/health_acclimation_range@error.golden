@@ -2,6 +2,7 @@ Error case: Garmin answers 400, so the exit code is 1 (error).
 -- args --
 health
 acclimation
+range
 --start=2026-10-01
 --end=2026-10-01
 -- route GET /wellness-service/stats/daily/acclimation?fromDate=2026-10-01&untilDate=2026-10-01 400 noeol --
