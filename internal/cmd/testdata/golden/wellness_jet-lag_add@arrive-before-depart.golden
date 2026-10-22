@@ -1,0 +1,153 @@
+The arrival must be after the departure as an instant: 10:00-05:00 is 15:00 UTC and 14:00+01:00 is 13:00 UTC, so the arrival is too early although its clock time is later.
+-- args --
+wellness
+jet-lag
+add
+--from
+New York, USA
+--to
+Frankfurt, Germany
+--depart
+2026-11-02T10:00-05:00
+--arrive
+2026-11-02T14:00+01:00
+-- table stdout --
+-- table stderr --
+Usage: gccli wellness jet-lag add --from=PLACE --to=PLACE --depart=TIME --arrive=TIME [flags]
+
+Add a jet lag trip of a flight and an optional return flight.
+
+Flags:
+  -h, --help                  Show context-sensitive help.
+  -j, --json                  Output as JSON ($GCCLI_JSON).
+      --plain                 Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                Print the column names as the first line of
+                              --plain output ($GCCLI_HEADER).
+      --color="auto"          Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING        Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"          Unit system for distances, speeds, paces,
+                              elevations and weights in table and plain output:
+                              auto (Garmin profile), metric, statute_us,
+                              statute_uk ($GCCLI_UNITS).
+      --version               Print version information.
+
+      --from=PLACE            Place of departure, such as "Frankfurt, Germany".
+      --to=PLACE              Place of arrival, such as "New York, USA".
+      --depart=TIME           Local departure time with the UTC offset of
+                              --from, such as 2026-11-02T10:00+01:00.
+      --arrive=TIME           Local arrival time with the UTC offset of --to,
+                              such as 2026-11-02T13:00-05:00.
+      --return-depart=TIME    Local departure time of the return flight from
+                              --to, with its UTC offset.
+      --return-arrive=TIME    Local arrival time of the return flight at --from,
+                              with its UTC offset.
+
+gccli: error: wellness jet-lag add: the arrival 2026-11-02T14:00+01:00 must be after the departure 2026-11-02T10:00-05:00
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli wellness jet-lag add --from=PLACE --to=PLACE --depart=TIME --arrive=TIME [flags]
+
+Add a jet lag trip of a flight and an optional return flight.
+
+Flags:
+  -h, --help                  Show context-sensitive help.
+  -j, --json                  Output as JSON ($GCCLI_JSON).
+      --plain                 Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                Print the column names as the first line of
+                              --plain output ($GCCLI_HEADER).
+      --color="auto"          Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING        Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"          Unit system for distances, speeds, paces,
+                              elevations and weights in table and plain output:
+                              auto (Garmin profile), metric, statute_us,
+                              statute_uk ($GCCLI_UNITS).
+      --version               Print version information.
+
+      --from=PLACE            Place of departure, such as "Frankfurt, Germany".
+      --to=PLACE              Place of arrival, such as "New York, USA".
+      --depart=TIME           Local departure time with the UTC offset of
+                              --from, such as 2026-11-02T10:00+01:00.
+      --arrive=TIME           Local arrival time with the UTC offset of --to,
+                              such as 2026-11-02T13:00-05:00.
+      --return-depart=TIME    Local departure time of the return flight from
+                              --to, with its UTC offset.
+      --return-arrive=TIME    Local arrival time of the return flight at --from,
+                              with its UTC offset.
+
+gccli: error: wellness jet-lag add: the arrival 2026-11-02T14:00+01:00 must be after the departure 2026-11-02T10:00-05:00
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli wellness jet-lag add --from=PLACE --to=PLACE --depart=TIME --arrive=TIME [flags]
+
+Add a jet lag trip of a flight and an optional return flight.
+
+Flags:
+  -h, --help                  Show context-sensitive help.
+  -j, --json                  Output as JSON ($GCCLI_JSON).
+      --plain                 Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                Print the column names as the first line of
+                              --plain output ($GCCLI_HEADER).
+      --color="auto"          Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING        Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"          Unit system for distances, speeds, paces,
+                              elevations and weights in table and plain output:
+                              auto (Garmin profile), metric, statute_us,
+                              statute_uk ($GCCLI_UNITS).
+      --version               Print version information.
+
+      --from=PLACE            Place of departure, such as "Frankfurt, Germany".
+      --to=PLACE              Place of arrival, such as "New York, USA".
+      --depart=TIME           Local departure time with the UTC offset of
+                              --from, such as 2026-11-02T10:00+01:00.
+      --arrive=TIME           Local arrival time with the UTC offset of --to,
+                              such as 2026-11-02T13:00-05:00.
+      --return-depart=TIME    Local departure time of the return flight from
+                              --to, with its UTC offset.
+      --return-arrive=TIME    Local arrival time of the return flight at --from,
+                              with its UTC offset.
+
+gccli: error: wellness jet-lag add: the arrival 2026-11-02T14:00+01:00 must be after the departure 2026-11-02T10:00-05:00
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli wellness jet-lag add --from=PLACE --to=PLACE --depart=TIME --arrive=TIME [flags]
+
+Add a jet lag trip of a flight and an optional return flight.
+
+Flags:
+  -h, --help                  Show context-sensitive help.
+  -j, --json                  Output as JSON ($GCCLI_JSON).
+      --plain                 Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                Print the column names as the first line of
+                              --plain output ($GCCLI_HEADER).
+      --color="auto"          Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING        Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"          Unit system for distances, speeds, paces,
+                              elevations and weights in table and plain output:
+                              auto (Garmin profile), metric, statute_us,
+                              statute_uk ($GCCLI_UNITS).
+      --version               Print version information.
+
+      --from=PLACE            Place of departure, such as "Frankfurt, Germany".
+      --to=PLACE              Place of arrival, such as "New York, USA".
+      --depart=TIME           Local departure time with the UTC offset of
+                              --from, such as 2026-11-02T10:00+01:00.
+      --arrive=TIME           Local arrival time with the UTC offset of --to,
+                              such as 2026-11-02T13:00-05:00.
+      --return-depart=TIME    Local departure time of the return flight from
+                              --to, with its UTC offset.
+      --return-arrive=TIME    Local arrival time of the return flight at --from,
+                              with its UTC offset.
+
+gccli: error: wellness jet-lag add: the arrival 2026-11-02T14:00+01:00 must be after the departure 2026-11-02T10:00-05:00
+-- json exit --
+2
+-- json requests --

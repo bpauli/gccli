@@ -783,6 +783,24 @@ Date shortcuts
   - `-f, --force`: Skip confirmation prompt.
 - `gccli wellness pregnancy-summary`: Show pregnancy summary.
 - `gccli wellness jet-lag list`: List jet lag trips. Also runs as `gccli wellness jet-lag`.
+- `gccli wellness jet-lag add --from=PLACE --to=PLACE --depart=TIME --arrive=TIME [flags]`: Add a jet lag trip of a flight and an optional return flight.
+  - `--from=PLACE`: Place of departure, such as "Frankfurt, Germany".
+  - `--to=PLACE`: Place of arrival, such as "New York, USA".
+  - `--depart=TIME`: Local departure time with the UTC offset of --from, such as 2026-11-02T10:00+01:00.
+  - `--arrive=TIME`: Local arrival time with the UTC offset of --to, such as 2026-11-02T13:00-05:00.
+  - `--return-depart=TIME`: Local departure time of the return flight from --to, with its UTC offset.
+  - `--return-arrive=TIME`: Local arrival time of the return flight at --from, with its UTC offset.
+- `gccli wellness jet-lag update <id> [flags]`: Change the places or times of a jet lag trip.
+  - `<id>`: Trip ID.
+  - `--from=PLACE`: New place of departure. The return flight arrives there.
+  - `--to=PLACE`: New place of arrival. The return flight departs there.
+  - `--depart=TIME`: New local departure time with the UTC offset, such as 2026-11-02T10:00+01:00.
+  - `--arrive=TIME`: New local arrival time with the UTC offset.
+  - `--return-depart=TIME`: New local departure time of the return flight, with the UTC offset.
+  - `--return-arrive=TIME`: New local arrival time of the return flight, with the UTC offset.
+- `gccli wellness jet-lag delete <id> [flags]`: Delete a jet lag trip.
+  - `<id>`: Trip ID.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli wellness jet-lag status [<date>]`: Show jet lag status for a date.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli reload [<date>]`: Request data reload for a date.

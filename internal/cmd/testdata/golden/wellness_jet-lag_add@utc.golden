@@ -1,0 +1,117 @@
+A Z offset is sent as +00:00, and seconds are accepted.
+-- args --
+wellness
+jet-lag
+add
+--from
+London
+--to
+Dubai
+--depart
+2027-01-10T09:00:30Z
+--arrive
+2027-01-10T19:00+04:00
+-- route POST /jetlag-service/jetlag/trip --
+{"userId": 1000, "timeDifference": 0, "startDate": "2026-12-01", "endDate": "2026-12-01", "flights": [{"flightId": 810, "tripId": 4720, "originLocation": "Berlin", "originTimezone": "+01:00", "originTimestamp": "2026-12-01T08:00:00.0", "destinationLocation": "Tokyo", "destinationTimezone": "+09:00", "destinationTimestamp": "2026-12-01T23:30:00.0"}], "tripId": 4720}
+-- table stdout --
+-- table stderr --
+Added jet lag trip from London to Dubai (ID: 4720)
+-- table exit --
+0
+-- table requests --
+POST /jetlag-service/jetlag/trip
+  {
+    "endDate": "2027-01-10",
+    "flights": [
+      {
+        "destinationLocation": "Dubai",
+        "destinationTimestamp": "2027-01-10T19:00:00.0",
+        "destinationTimezone": "+04:00",
+        "originLocation": "London",
+        "originTimestamp": "2027-01-10T09:00:30.0",
+        "originTimezone": "+00:00"
+      }
+    ],
+    "startDate": "2027-01-10"
+  }
+-- plain stdout --
+-- plain stderr --
+Added jet lag trip from London to Dubai (ID: 4720)
+-- plain exit --
+0
+-- plain requests --
+POST /jetlag-service/jetlag/trip
+  {
+    "endDate": "2027-01-10",
+    "flights": [
+      {
+        "destinationLocation": "Dubai",
+        "destinationTimestamp": "2027-01-10T19:00:00.0",
+        "destinationTimezone": "+04:00",
+        "originLocation": "London",
+        "originTimestamp": "2027-01-10T09:00:30.0",
+        "originTimezone": "+00:00"
+      }
+    ],
+    "startDate": "2027-01-10"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Added jet lag trip from London to Dubai (ID: 4720)
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /jetlag-service/jetlag/trip
+  {
+    "endDate": "2027-01-10",
+    "flights": [
+      {
+        "destinationLocation": "Dubai",
+        "destinationTimestamp": "2027-01-10T19:00:00.0",
+        "destinationTimezone": "+04:00",
+        "originLocation": "London",
+        "originTimestamp": "2027-01-10T09:00:30.0",
+        "originTimezone": "+00:00"
+      }
+    ],
+    "startDate": "2027-01-10"
+  }
+-- json stdout --
+{
+  "userId": 1000,
+  "timeDifference": 0,
+  "startDate": "2026-12-01",
+  "endDate": "2026-12-01",
+  "flights": [
+    {
+      "flightId": 810,
+      "tripId": 4720,
+      "originLocation": "Berlin",
+      "originTimezone": "+01:00",
+      "originTimestamp": "2026-12-01T08:00:00.0",
+      "destinationLocation": "Tokyo",
+      "destinationTimezone": "+09:00",
+      "destinationTimestamp": "2026-12-01T23:30:00.0"
+    }
+  ],
+  "tripId": 4720
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /jetlag-service/jetlag/trip
+  {
+    "endDate": "2027-01-10",
+    "flights": [
+      {
+        "destinationLocation": "Dubai",
+        "destinationTimestamp": "2027-01-10T19:00:00.0",
+        "destinationTimezone": "+04:00",
+        "originLocation": "London",
+        "originTimestamp": "2027-01-10T09:00:30.0",
+        "originTimezone": "+00:00"
+      }
+    ],
+    "startDate": "2027-01-10"
+  }
