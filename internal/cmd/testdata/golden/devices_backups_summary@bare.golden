@@ -2,10 +2,10 @@
 devices
 backups
 -- route GET /devicebackup-service/backup/summary --
-{"value":1}
+{"userHasCompleteBackup":true}
 -- table stdout --
 {
-  "value": 1
+  "userHasCompleteBackup": true
 }
 -- table stderr --
 -- table exit --
@@ -14,7 +14,7 @@ backups
 GET /devicebackup-service/backup/summary
 -- plain stdout --
 {
-  "value": 1
+  "userHasCompleteBackup": true
 }
 -- plain stderr --
 -- plain exit --
@@ -23,7 +23,7 @@ GET /devicebackup-service/backup/summary
 GET /devicebackup-service/backup/summary
 -- plain-header stdout --
 {
-  "value": 1
+  "userHasCompleteBackup": true
 }
 -- plain-header stderr --
 -- plain-header exit --
@@ -32,7 +32,7 @@ GET /devicebackup-service/backup/summary
 GET /devicebackup-service/backup/summary
 -- json stdout --
 {
-  "value": 1
+  "userHasCompleteBackup": true
 }
 -- json stderr --
 -- json exit --

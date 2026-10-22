@@ -1,0 +1,34 @@
+-- args --
+devices
+set-primary-tracker
+12345
+-- route PUT /device-service/deviceservice/device-info/12345/primary-activity-tracker 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+set primary activity tracker: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+PUT /device-service/deviceservice/device-info/12345/primary-activity-tracker
+-- plain stdout --
+-- plain stderr --
+set primary activity tracker: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+PUT /device-service/deviceservice/device-info/12345/primary-activity-tracker
+-- plain-header stdout --
+-- plain-header stderr --
+set primary activity tracker: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+PUT /device-service/deviceservice/device-info/12345/primary-activity-tracker
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"set primary activity tracker: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+PUT /device-service/deviceservice/device-info/12345/primary-activity-tracker

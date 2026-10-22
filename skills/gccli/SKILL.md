@@ -495,6 +495,8 @@ Date shortcuts
 - `gccli devices settings <device-id>`: Show settings for a device.
   - `<device-id>`: Device ID.
 - `gccli devices primary`: Show primary training device.
+- `gccli devices set-primary-tracker <device-id>`: Set the primary activity tracker (not the 'devices primary' training device).
+  - `<device-id>`: Device ID (from 'devices list').
 - `gccli devices solar <device-id> [flags]`: Show solar charging data for a device.
   - `<device-id>`: Device ID.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
@@ -502,7 +504,8 @@ Date shortcuts
 - `gccli devices alarms`: Show alarms from all devices.
 - `gccli devices last-used`: Show last used device.
 - `gccli devices sensors`: List paired sensors.
-- `gccli devices backups`: Show device backup summary.
+- `gccli devices backups summary`: Show device backup summary. Also runs as `gccli devices backups`.
+- `gccli devices backups list`: List device backups.
 - `gccli devices historical`: List historical devices.
 - `gccli devices messages list`: List device messages. Also runs as `gccli devices messages`.
 - `gccli devices messages cancel <id>`: Cancel a device message, such as a sent workout, before the device syncs.
@@ -861,6 +864,8 @@ Worked examples
 - Strength benchmark: `gccli workouts benchmarks list` shows each benchmark key. `gccli workouts benchmarks set BARBELL_ROW --weight 50 --reps 5` saves the benchmark with an estimated one-rep max of 56.3 kg (Brzycki, as the Garmin Connect web app). A repeat run updates the same benchmark. `--unit lbs` takes pounds. `gccli workouts benchmarks clear BARBELL_ROW --force` clears it, and fails with exit code 1 when the benchmark is not set.
 - Workout sport types: `gccli workouts sport-types` lists the ID and the key of each sport type a workout can have.
 - Send a workout to a watch: `gccli workouts send <id>` sends to the only device that can receive the workout. With more such devices it fails before any write and lists their IDs; then add `--device <device-id>`. The device gets the workout at its next sync. Until then `gccli devices messages cancel <message-id>` removes it; the send prints the message ID (`messageId` with `--json`). The cancel fails with exit code 1 (`message <id> is not pending (already delivered or unknown)`) when the device has synced.
+- Primary activity tracker: `gccli devices set-primary-tracker <device-id>` makes a device the primary activity tracker. Only one device has this setting at a time, and `devices list` shows it as `primaryActivityTrackerIndicator`. It is not the primary training device that `gccli devices primary` shows.
+- Device backups: `gccli devices backups` shows the backup summary (also `devices backups summary`). `gccli devices backups list` lists the backups, `[]` when there are none.
 - Access token for a script: `gccli auth token`. It refreshes an expired token first. If the refresh fails, stdout is empty and the exit code is 3.
 
 Strength training workflow (LLM-assisted exercise matching)
