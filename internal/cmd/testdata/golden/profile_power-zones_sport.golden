@@ -1,0 +1,75 @@
+-- args --
+profile
+power-zones
+sport
+cross-country-skiing
+-- route GET /biometric-service/powerZones/sport/CROSS_COUNTRY_SKIING --
+{"sport":"CROSS_COUNTRY_SKIING","functionalThresholdPower":250,"zone1Floor":0,"zone2Floor":138,"zone3Floor":188,"zone4Floor":225,"zone5Floor":263,"zone6Floor":300,"zone7Floor":375}
+-- table stdout --
+{
+  "sport": "CROSS_COUNTRY_SKIING",
+  "functionalThresholdPower": 250,
+  "zone1Floor": 0,
+  "zone2Floor": 138,
+  "zone3Floor": 188,
+  "zone4Floor": 225,
+  "zone5Floor": 263,
+  "zone6Floor": 300,
+  "zone7Floor": 375
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /biometric-service/powerZones/sport/CROSS_COUNTRY_SKIING
+-- plain stdout --
+{
+  "sport": "CROSS_COUNTRY_SKIING",
+  "functionalThresholdPower": 250,
+  "zone1Floor": 0,
+  "zone2Floor": 138,
+  "zone3Floor": 188,
+  "zone4Floor": 225,
+  "zone5Floor": 263,
+  "zone6Floor": 300,
+  "zone7Floor": 375
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /biometric-service/powerZones/sport/CROSS_COUNTRY_SKIING
+-- plain-header stdout --
+{
+  "sport": "CROSS_COUNTRY_SKIING",
+  "functionalThresholdPower": 250,
+  "zone1Floor": 0,
+  "zone2Floor": 138,
+  "zone3Floor": 188,
+  "zone4Floor": 225,
+  "zone5Floor": 263,
+  "zone6Floor": 300,
+  "zone7Floor": 375
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /biometric-service/powerZones/sport/CROSS_COUNTRY_SKIING
+-- json stdout --
+{
+  "sport": "CROSS_COUNTRY_SKIING",
+  "functionalThresholdPower": 250,
+  "zone1Floor": 0,
+  "zone2Floor": 138,
+  "zone3Floor": 188,
+  "zone4Floor": 225,
+  "zone5Floor": 263,
+  "zone6Floor": 300,
+  "zone7Floor": 375
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /biometric-service/powerZones/sport/CROSS_COUNTRY_SKIING

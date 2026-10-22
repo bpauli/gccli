@@ -25,6 +25,10 @@ var profileEndpoints = []Endpoint{
 	{Name: "profile.privacy-zone.delete", Method: http.MethodDelete, Host: ConnectAPI, Path: "/privacyzone-service/privacyZones/{privacyZoneID}"},
 	{Name: "profile.hr-zones", Method: http.MethodGet, Host: ConnectAPI, Path: "/biometric-service/heartRateZones/v2"},
 	{Name: "profile.power-zones", Method: http.MethodGet, Host: ConnectAPI, Path: "/biometric-service/powerZones/sports/all"},
+	{
+		Name: "profile.sport-power-zones", Method: http.MethodGet, Host: ConnectAPI, Path: "/biometric-service/powerZones/sport/{sport}",
+		Params: []Param{{Name: "sport", Enum: []string{"CYCLING", "RUNNING", "ROWING", "CROSS_COUNTRY_SKIING"}}},
+	},
 }
 
 // GetDisplayName returns the authenticated user's display name from profile settings.

@@ -1,0 +1,50 @@
+-- args --
+profile
+power-zones
+list
+-- route GET /biometric-service/powerZones/sports/all --
+[{"value":1}]
+-- table stdout --
+[
+  {
+    "value": 1
+  }
+]
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /biometric-service/powerZones/sports/all
+-- plain stdout --
+[
+  {
+    "value": 1
+  }
+]
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /biometric-service/powerZones/sports/all
+-- plain-header stdout --
+[
+  {
+    "value": 1
+  }
+]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /biometric-service/powerZones/sports/all
+-- json stdout --
+[
+  {
+    "value": 1
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /biometric-service/powerZones/sports/all
