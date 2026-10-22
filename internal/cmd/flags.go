@@ -119,6 +119,55 @@ func (m *Month) Decode(ctx *kong.DecodeContext) error {
 	return nil
 }
 
+// BoundingBox is an area of the map, given as MINLAT,MINLON,MAXLAT,MAXLON in
+// degrees. Kong checks it at parse time, so a bad box is a usage error
+// before the login. The zero value is no box, because a valid box has each
+// minimum less than its maximum.
+type BoundingBox struct {
+	MinLat, MinLon, MaxLat, MaxLon float64
+}
+
+func (b *BoundingBox) Decode(ctx *kong.DecodeContext) error {
+	raw, err := popString(ctx, "bounding box")
+	if err != nil {
+		return err
+	}
+	box, err := parseBoundingBox(raw)
+	if err != nil {
+		return fmt.Errorf("invalid bounding box %q: %w", raw, err)
+	}
+	*b = box
+	return nil
+}
+
+func parseBoundingBox(raw string) (BoundingBox, error) {
+	parts := strings.Split(raw, ",")
+	if len(parts) != 4 {
+		return BoundingBox{}, errors.New("expected MINLAT,MINLON,MAXLAT,MAXLON")
+	}
+	var v [4]float64
+	for i, p := range parts {
+		n, err := strconv.ParseFloat(strings.TrimSpace(p), 64)
+		if err != nil {
+			return BoundingBox{}, fmt.Errorf("%q is not a number: expected MINLAT,MINLON,MAXLAT,MAXLON", p)
+		}
+		v[i] = n
+	}
+	b := BoundingBox{MinLat: v[0], MinLon: v[1], MaxLat: v[2], MaxLon: v[3]}
+	// The checks are written so that NaN fails them.
+	switch {
+	case !(b.MinLat >= -90 && b.MaxLat <= 90):
+		return BoundingBox{}, errors.New("a latitude must be in -90 to 90")
+	case !(b.MinLon >= -180 && b.MaxLon <= 180):
+		return BoundingBox{}, errors.New("a longitude must be in -180 to 180")
+	case !(b.MinLat < b.MaxLat):
+		return BoundingBox{}, errors.New("MINLAT must be less than MAXLAT")
+	case !(b.MinLon < b.MaxLon):
+		return BoundingBox{}, errors.New("MINLON must be less than MAXLON")
+	}
+	return b, nil
+}
+
 // popNonEmpty takes the next token of a flag or positional and rejects an
 // empty or blank one. Any other value is kept as given, spaces included.
 func popNonEmpty(ctx *kong.DecodeContext, what string) (string, error) {

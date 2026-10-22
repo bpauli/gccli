@@ -1,0 +1,60 @@
+No segments give no rows.
+-- args --
+segments
+list
+-- route POST /segment-service/segment/filterSegments --
+{"segments":[],"availableCount":0}
+-- table stdout --
+UUID  NAME  DISTANCE  FAVORITE
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+POST /segment-service/segment/filterSegments
+  {
+    "limit": 20,
+    "mineOnly": true,
+    "showFavorites": true,
+    "start": 0
+  }
+-- plain stdout --
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+POST /segment-service/segment/filterSegments
+  {
+    "limit": 20,
+    "mineOnly": true,
+    "showFavorites": true,
+    "start": 0
+  }
+-- plain-header stdout --
+UUID	NAME	DISTANCE	FAVORITE
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /segment-service/segment/filterSegments
+  {
+    "limit": 20,
+    "mineOnly": true,
+    "showFavorites": true,
+    "start": 0
+  }
+-- json stdout --
+{
+  "segments": [],
+  "availableCount": 0
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /segment-service/segment/filterSegments
+  {
+    "limit": 20,
+    "mineOnly": true,
+    "showFavorites": true,
+    "start": 0
+  }

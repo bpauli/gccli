@@ -318,6 +318,7 @@
               <span class="badge">Goals</span>
               <span class="badge">Badges</span>
               <span class="badge">Courses</span>
+              <span class="badge">Segments</span>
               <span class="badge">Events</span>
               <span class="badge">Calendar</span>
               <span class="badge">Training</span>
@@ -485,6 +486,11 @@ gccli activities list --limit 5</pre>
             <div class="feature-icon violet">&#x1f5fa;</div>
             <h3>Courses</h3>
             <p>List courses, view favorites, get full course detail, download as FIT or GPX. Import GPX files as new courses. Send courses directly to your device or delete them.</p>
+          </div>
+          <div class="feature-card fade-in">
+            <div class="feature-icon violet">&#x1f3c1;</div>
+            <h3>Segments</h3>
+            <p>List your segments and favorites. Search segments by name or map area, with filters for activity type, classification, surface, distance and grade. See a leaderboard by scope, group, gender and age group, and your own rank. List the segments that an activity crossed.</p>
           </div>
           <div class="feature-card fade-in">
             <div class="feature-icon violet">&#x231a;</div>
@@ -677,6 +683,7 @@ gccli activities list --limit 5</pre>
               <div class="cmd-row"><div class="cmd">gccli activity weather &lt;id&gt;</div><div class="desc">Show weather conditions.<br><code>&lt;id&gt;</code> Activity ID.</div></div>
               <div class="cmd-row"><div class="cmd">gccli activity <span class="nowrap">hr-zones</span> &lt;id&gt;</div><div class="desc">Show heart rate time in zones.<br><code>&lt;id&gt;</code> Activity ID.</div></div>
               <div class="cmd-row"><div class="cmd">gccli activity <span class="nowrap">power-zones</span> &lt;id&gt;</div><div class="desc">Show power time in zones.<br><code>&lt;id&gt;</code> Activity ID.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli activity segments &lt;id&gt;</div><div class="desc">List the segments that an activity crossed.<br><code>&lt;id&gt;</code> Activity ID.</div></div>
               <div class="cmd-row"><div class="cmd">gccli activity <span class="nowrap">exercise-sets</span> show &lt;id&gt;</div><div class="desc">Show exercise sets. Also runs as <span class="whole"><code>gccli activity <span class="nowrap">exercise-sets</span> &lt;id&gt;</code>.</span><br><code>&lt;id&gt;</code> Activity ID.</div></div>
               <div class="cmd-row"><div class="cmd">gccli activity <span class="nowrap">exercise-sets</span> set <span class="nowrap">--exercise=EXERCISE,...</span> &lt;id&gt;</div><div class="desc">Set exercise sets for a strength training activity.<br><code>&lt;id&gt;</code> Activity ID.<br><code><span class="nowrap">-e,</span> <span class="nowrap">--exercise=</span><wbr>EXERCISE,...</code> Exercise set in format CATEGORY/NAME:reps@weightkg[:dSECS][:rSECS] (e.g. BENCH_PRESS/BARBELL_BENCH_PRESS:12@20:d30:r60).</div></div>
               <div class="cmd-row"><div class="cmd">gccli activity gear &lt;id&gt;</div><div class="desc">Show linked gear.<br><code>&lt;id&gt;</code> Activity ID.</div></div>
@@ -805,7 +812,7 @@ gccli activities list --limit 5</pre>
           </div>
 
           <div class="cmd-group fade-in">
-            <div class="cmd-header"><h3>Courses</h3><span class="cmd-arrow">&#x25B6;</span></div>
+            <div class="cmd-header"><h3>Courses &amp; Segments</h3><span class="cmd-arrow">&#x25B6;</span></div>
             <div class="cmd-body">
               <div class="cmd-row"><div class="cmd">gccli courses list</div><div class="desc">List courses. Also runs as <span class="whole"><code>gccli courses</code>.</span></div></div>
               <div class="cmd-row"><div class="cmd">gccli courses favorites</div><div class="desc">List favorite courses.</div></div>
@@ -814,6 +821,13 @@ gccli activities list --limit 5</pre>
               <div class="cmd-row"><div class="cmd">gccli courses import &lt;file&gt; [flags]</div><div class="desc">Import a GPX file as a new course.<br><code>&lt;file&gt;</code> Path to GPX file.<br><code><span class="nowrap">-n,</span> <span class="nowrap">--name=</span><wbr>STRING</code> Course name (overrides name from GPX).<br><code><span class="nowrap">-t,</span> <span class="nowrap">--type=</span><wbr>&#34;cycling&#34;</code> Activity type key: cycling, e_bike_fitness, e_bike_mountain, gravel_cycling, hiking, mountain_biking, other, road_biking, running, street_running, trail_running, ultra_run or walking.<br><code><span class="nowrap">-p,</span> <span class="nowrap">--privacy=</span><wbr>2</code> Course privacy: 1=public, 2=private, 4=group.</div></div>
               <div class="cmd-row"><div class="cmd">gccli courses send <span class="nowrap">&lt;course-id&gt;</span> <span class="nowrap">&lt;device-id&gt;</span></div><div class="desc">Send a course to a device.<br><code><span class="nowrap">&lt;course-id&gt;</span></code> Course ID.<br><code><span class="nowrap">&lt;device-id&gt;</span></code> Device ID.</div></div>
               <div class="cmd-row"><div class="cmd">gccli courses delete &lt;id&gt; [flags]</div><div class="desc">Delete a course.<br><code>&lt;id&gt;</code> Course ID.<br><code><span class="nowrap">-f,</span> <span class="nowrap">--force</span></code> Skip confirmation prompt.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli segments list [flags]</div><div class="desc">List the segments you created, or your favorites with --favorites. Also runs as <span class="whole"><code>gccli segments [flags]</code>.</span><br><code><span class="nowrap">--favorites</span></code> List your favorite segments instead.<br><code><span class="nowrap">-l,</span> <span class="nowrap">--limit=</span><wbr>20</code> Maximum number of segments to return.<br><code><span class="nowrap">--offset=</span><wbr>0</code> Number of segments to skip.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli segments search [flags]</div><div class="desc">Search segments by name or map area.<br><code><span class="nowrap">--name=</span><wbr>TEXT</code> Text in the segment name.<br><code><span class="nowrap">--bbox=</span><wbr>MINLAT,MINLON,MAXLAT,MAXLON</code> Map area as MINLAT,MINLON,MAXLAT,MAXLON in degrees.<br><code><span class="nowrap">--activity-type=</span><wbr>TYPE</code> Activity type: cycling or running.<br><code><span class="nowrap">--classification=</span><wbr>KEY</code> Classification as segments classifications prints it: downhill, hill_climb, hills, other or sprint.<br><code><span class="nowrap">--surface=</span><wbr>KEY</code> Surface as segments surface-types prints it: dirt, gravel, mixed or paved.<br><code><span class="nowrap">--min-distance=</span><wbr>KM</code> Minimum distance in kilometers.<br><code><span class="nowrap">--max-distance=</span><wbr>KM</code> Maximum distance in kilometers.<br><code><span class="nowrap">--min-grade=</span><wbr>PCT</code> Minimum average grade in percent.<br><code><span class="nowrap">--max-grade=</span><wbr>PCT</code> Maximum average grade in percent.<br><code><span class="nowrap">-l,</span> <span class="nowrap">--limit=</span><wbr>20</code> Maximum number of segments to return.<br><code><span class="nowrap">--offset=</span><wbr>0</code> Number of segments to skip.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli segments show &lt;uuid&gt;</div><div class="desc">Show a segment with its track points.<br><code>&lt;uuid&gt;</code> Segment UUID.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli segments leaderboard &lt;uuid&gt; [flags]</div><div class="desc">Show the leaderboard of a segment.<br><code>&lt;uuid&gt;</code> Segment UUID.<br><code><span class="nowrap">--from-rank=</span><wbr>1</code> Rank to start at. One page has 26 rows.<br><code><span class="nowrap">--scope=</span><wbr>&#34;all&#34;</code> Whose times: all, connections, following or me.<br><code><span class="nowrap">--group=</span><wbr>ID</code> Show only the members of this group. Goes only with --scope all.<br><code><span class="nowrap">--gender=</span><wbr>GENDER</code> Gender: female or male.<br><code><span class="nowrap">--age=</span><wbr>AGES</code> Age group: 0-18, 18-24, 25-34, 35-44, 45-54, 55-64 or 65-120.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli segments rank &lt;uuid&gt;</div><div class="desc">Show your best time and the top three on a segment.<br><code>&lt;uuid&gt;</code> Segment UUID.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli segments classifications</div><div class="desc">List the segment classifications.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli segments <span class="nowrap">surface-types</span></div><div class="desc">List the segment surface types.</div></div>
             </div>
           </div>
 

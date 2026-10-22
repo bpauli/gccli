@@ -48,6 +48,7 @@ var commands = []Node{
 	goalsGroup,
 	badgesGroup,
 	coursesGroup,
+	segmentsGroup,
 	challengesGroup,
 	recordsGroup,
 	profileGroup,

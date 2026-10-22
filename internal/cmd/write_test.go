@@ -987,11 +987,20 @@ func (c *HelperCmd) rename(g *Globals) error {
 func (c *ReadCmd) Run(g *Globals) error {
 	_, err := client.Call(g.Context, "notes.get", map[string]string{"id": c.ID}, nil)
 	return err
+}
+func (c *SearchCmd) Run(g *Globals) error {
+	_, err := client.Call(g.Context, "notes.search", nil, body)
+	return err
 }`)
-	table := map[string]string{"notes.delete": http.MethodDelete, "notes.update": http.MethodPut, "notes.get": http.MethodGet}
+	table := map[string]garminapi.Endpoint{
+		"notes.delete": {Method: http.MethodDelete},
+		"notes.update": {Method: http.MethodPut},
+		"notes.get":    {Method: http.MethodGet},
+		"notes.search": {Method: http.MethodPost, Body: true, Read: true},
+	}
 	lookup := func(name string) (garminapi.Endpoint, bool) {
-		m, ok := table[name]
-		return garminapi.Endpoint{Method: m}, ok
+		e, ok := table[name]
+		return e, ok
 	}
 
 	got := map[string]string{}
@@ -1198,7 +1207,7 @@ func tableWrites(lookup func(string) (garminapi.Endpoint, bool), fnSets ...[]*as
 				if !ok {
 					return true
 				}
-				if e, known := lookup(name); known && e.Method != http.MethodGet {
+				if e, known := lookup(name); known && e.Method != http.MethodGet && !e.Read {
 					writes[callKey(name)] = callKey(name)
 				}
 				return true

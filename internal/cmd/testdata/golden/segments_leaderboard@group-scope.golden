@@ -1,0 +1,149 @@
+Error case: --group with a --scope other than all is a usage error, exit 2, before any request.
+-- args --
+segments
+leaderboard
+a1b2c3d4-0000-4000-8000-000000000001
+--group
+4242
+--scope
+connections
+-- table stdout --
+-- table stderr --
+Usage: gccli segments leaderboard <uuid> [flags]
+
+Show the leaderboard of a segment.
+
+Arguments:
+  <uuid>    Segment UUID.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --from-rank=1       Rank to start at. One page has 26 rows.
+      --scope="all"       Whose times: all, connections, following or me.
+      --group=ID          Show only the members of this group. Goes only with
+                          --scope all.
+      --gender=GENDER     Gender: female or male.
+      --age=AGES          Age group: 0-18, 18-24, 25-34, 35-44, 45-54, 55-64 or
+                          65-120.
+
+gccli: error: segments leaderboard: --group cannot go with --scope connections: a group leaderboard has the times of all its members
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli segments leaderboard <uuid> [flags]
+
+Show the leaderboard of a segment.
+
+Arguments:
+  <uuid>    Segment UUID.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --from-rank=1       Rank to start at. One page has 26 rows.
+      --scope="all"       Whose times: all, connections, following or me.
+      --group=ID          Show only the members of this group. Goes only with
+                          --scope all.
+      --gender=GENDER     Gender: female or male.
+      --age=AGES          Age group: 0-18, 18-24, 25-34, 35-44, 45-54, 55-64 or
+                          65-120.
+
+gccli: error: segments leaderboard: --group cannot go with --scope connections: a group leaderboard has the times of all its members
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli segments leaderboard <uuid> [flags]
+
+Show the leaderboard of a segment.
+
+Arguments:
+  <uuid>    Segment UUID.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --from-rank=1       Rank to start at. One page has 26 rows.
+      --scope="all"       Whose times: all, connections, following or me.
+      --group=ID          Show only the members of this group. Goes only with
+                          --scope all.
+      --gender=GENDER     Gender: female or male.
+      --age=AGES          Age group: 0-18, 18-24, 25-34, 35-44, 45-54, 55-64 or
+                          65-120.
+
+gccli: error: segments leaderboard: --group cannot go with --scope connections: a group leaderboard has the times of all its members
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli segments leaderboard <uuid> [flags]
+
+Show the leaderboard of a segment.
+
+Arguments:
+  <uuid>    Segment UUID.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --from-rank=1       Rank to start at. One page has 26 rows.
+      --scope="all"       Whose times: all, connections, following or me.
+      --group=ID          Show only the members of this group. Goes only with
+                          --scope all.
+      --gender=GENDER     Gender: female or male.
+      --age=AGES          Age group: 0-18, 18-24, 25-34, 35-44, 45-54, 55-64 or
+                          65-120.
+
+gccli: error: segments leaderboard: --group cannot go with --scope connections: a group leaderboard has the times of all its members
+-- json exit --
+2
+-- json requests --

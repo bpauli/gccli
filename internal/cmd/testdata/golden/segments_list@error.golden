@@ -1,0 +1,58 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+segments
+list
+-- route POST /segment-service/segment/filterSegments 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+list segments: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+POST /segment-service/segment/filterSegments
+  {
+    "limit": 20,
+    "mineOnly": true,
+    "showFavorites": true,
+    "start": 0
+  }
+-- plain stdout --
+-- plain stderr --
+list segments: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+POST /segment-service/segment/filterSegments
+  {
+    "limit": 20,
+    "mineOnly": true,
+    "showFavorites": true,
+    "start": 0
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+list segments: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+POST /segment-service/segment/filterSegments
+  {
+    "limit": 20,
+    "mineOnly": true,
+    "showFavorites": true,
+    "start": 0
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"list segments: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+POST /segment-service/segment/filterSegments
+  {
+    "limit": 20,
+    "mineOnly": true,
+    "showFavorites": true,
+    "start": 0
+  }

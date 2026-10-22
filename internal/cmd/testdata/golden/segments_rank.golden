@@ -1,0 +1,117 @@
+The display name comes from the profile, then the rank request names it.
+-- args --
+segments
+rank
+a1b2c3d4-0000-4000-8000-000000000001
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- route GET /segment-service/leaderboard/segment/a1b2c3d4-0000-4000-8000-000000000001/rank/tester --
+{"bestElapsedTime":245300,"bestUserRank":null,"leaderElapsedTime":201000,"leaderFullName":"Fast Leader","secondPlaceElapsedTime":210000,"secondPlaceFullName":"Second Place","thirdPlaceElapsedTime":220000,"thirdPlaceFullName":"Third Place","leaderboardRowDTOList":[{"rank":27,"fullName":"Runner One","displayName":"runner-one","elapsedMilliseconds":245300,"timeEntered":"2026-08-15 07:12:03.338","activityID":5000001}]}
+-- table stdout --
+{
+  "bestElapsedTime": 245300,
+  "bestUserRank": null,
+  "leaderElapsedTime": 201000,
+  "leaderFullName": "Fast Leader",
+  "secondPlaceElapsedTime": 210000,
+  "secondPlaceFullName": "Second Place",
+  "thirdPlaceElapsedTime": 220000,
+  "thirdPlaceFullName": "Third Place",
+  "leaderboardRowDTOList": [
+    {
+      "rank": 27,
+      "fullName": "Runner One",
+      "displayName": "runner-one",
+      "elapsedMilliseconds": 245300,
+      "timeEntered": "2026-08-15 07:12:03.338",
+      "activityID": 5000001
+    }
+  ]
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /userprofile-service/userprofile/settings
+GET /segment-service/leaderboard/segment/a1b2c3d4-0000-4000-8000-000000000001/rank/tester
+-- plain stdout --
+{
+  "bestElapsedTime": 245300,
+  "bestUserRank": null,
+  "leaderElapsedTime": 201000,
+  "leaderFullName": "Fast Leader",
+  "secondPlaceElapsedTime": 210000,
+  "secondPlaceFullName": "Second Place",
+  "thirdPlaceElapsedTime": 220000,
+  "thirdPlaceFullName": "Third Place",
+  "leaderboardRowDTOList": [
+    {
+      "rank": 27,
+      "fullName": "Runner One",
+      "displayName": "runner-one",
+      "elapsedMilliseconds": 245300,
+      "timeEntered": "2026-08-15 07:12:03.338",
+      "activityID": 5000001
+    }
+  ]
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+GET /segment-service/leaderboard/segment/a1b2c3d4-0000-4000-8000-000000000001/rank/tester
+-- plain-header stdout --
+{
+  "bestElapsedTime": 245300,
+  "bestUserRank": null,
+  "leaderElapsedTime": 201000,
+  "leaderFullName": "Fast Leader",
+  "secondPlaceElapsedTime": 210000,
+  "secondPlaceFullName": "Second Place",
+  "thirdPlaceElapsedTime": 220000,
+  "thirdPlaceFullName": "Third Place",
+  "leaderboardRowDTOList": [
+    {
+      "rank": 27,
+      "fullName": "Runner One",
+      "displayName": "runner-one",
+      "elapsedMilliseconds": 245300,
+      "timeEntered": "2026-08-15 07:12:03.338",
+      "activityID": 5000001
+    }
+  ]
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /segment-service/leaderboard/segment/a1b2c3d4-0000-4000-8000-000000000001/rank/tester
+-- json stdout --
+{
+  "bestElapsedTime": 245300,
+  "bestUserRank": null,
+  "leaderElapsedTime": 201000,
+  "leaderFullName": "Fast Leader",
+  "secondPlaceElapsedTime": 210000,
+  "secondPlaceFullName": "Second Place",
+  "thirdPlaceElapsedTime": 220000,
+  "thirdPlaceFullName": "Third Place",
+  "leaderboardRowDTOList": [
+    {
+      "rank": 27,
+      "fullName": "Runner One",
+      "displayName": "runner-one",
+      "elapsedMilliseconds": 245300,
+      "timeEntered": "2026-08-15 07:12:03.338",
+      "activityID": 5000001
+    }
+  ]
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /userprofile-service/userprofile/settings
+GET /segment-service/leaderboard/segment/a1b2c3d4-0000-4000-8000-000000000001/rank/tester

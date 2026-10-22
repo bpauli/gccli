@@ -27,9 +27,14 @@ const (
 	Count
 	// Weight prints grams in the unit system, or "-" for 0.
 	Weight
+	// Kilometers prints kilometers as a distance in the unit system, or "-"
+	// for 0.
+	Kilometers
+	// Milliseconds prints milliseconds as H:MM:SS or M:SS, or "-" for 0.
+	Milliseconds
 )
 
-var formatNames = [...]string{Text: "Text", DateOnly: "DateOnly", Distance: "Distance", Duration: "Duration", Count: "Count", Weight: "Weight"}
+var formatNames = [...]string{Text: "Text", DateOnly: "DateOnly", Distance: "Distance", Duration: "Duration", Count: "Count", Weight: "Weight", Kilometers: "Kilometers", Milliseconds: "Milliseconds"}
 
 func (f Format) String() string {
 	if int(f) < len(formatNames) {
@@ -50,12 +55,16 @@ func (f Format) cell(v any, sys units.System) string {
 		return formatCount(numberOf(v))
 	case Weight:
 		return sys.Weight(numberOf(v))
+	case Kilometers:
+		return sys.Distance(numberOf(v) * 1000)
+	case Milliseconds:
+		return formatDuration(numberOf(v) / 1000)
 	}
 	return textOf(v)
 }
 
 func usesUnits(columns []Column) bool {
-	return slices.ContainsFunc(columns, func(c Column) bool { return c.Format == Distance || c.Format == Weight })
+	return slices.ContainsFunc(columns, func(c Column) bool { return slices.Contains([]Format{Distance, Kilometers, Weight}, c.Format) })
 }
 
 func (r Rows) print(g *Globals, client *garminapi.Client, data json.RawMessage) error {
