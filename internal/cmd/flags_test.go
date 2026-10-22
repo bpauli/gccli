@@ -663,6 +663,20 @@ func TestBoundingBoxDecode(t *testing.T) {
 	}
 }
 
+// TestUpperRequestValue pins what the runner sends for an Upper value:
+// upper case, with each dash as an underscore.
+func TestUpperRequestValue(t *testing.T) {
+	for raw, want := range map[Upper]string{
+		"weekly":               "WEEKLY",
+		"cross-country-skiing": "CROSS_COUNTRY_SKIING",
+	} {
+		got, ok := requestValue(reflect.ValueOf(raw))
+		if !ok || got != want {
+			t.Errorf("requestValue(%q) = %q, %v, want %q", raw, got, ok, want)
+		}
+	}
+}
+
 func TestNonEmptyDecode(t *testing.T) {
 	tests := []struct {
 		args    []string
