@@ -17,6 +17,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Body Composition** - weight tracking, latest weigh-in, weekly weight summaries, body fat, muscle mass, blood pressure, glucose, FIT file encoding for composition uploads
 - **Workouts** - list, view, download as FIT, upload from JSON, update in place from JSON, create with sport types and targets (pace/HR/power/cadence), schedule (add/list/remove/export), send to a device, list workout types and sport types, view, set and clear strength benchmarks, delete
 - **Courses** — list courses, view favorites, get full course detail, download as FIT/GPX, import GPX files as new courses, send courses directly to a device, delete courses
+- **Segments** - list your segments and favorites, search segments by name or map area, view a segment, its leaderboard and your rank, list the segments that an activity crossed
 - **Devices** - list registered devices, view settings, solar data, alarms, primary/last-used device, paired sensors, backup summary, historical devices, device messages, cancel a pending device message
 - **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities, gear types, add, update, retire, unretire and delete gear, list, create, rename and delete gear collections, add gear to a collection
 - **Goals & Badges** — active goals, set daily goals for steps, floors, intensity minutes and hydration, earned/available/in-progress badges, badge details, challenges, personal records
@@ -1732,6 +1733,16 @@ gccli insights compare --activity RUNNING --field VO2_MAX_VALUE --age 40-44 --ge
 types=$(gccli golf club-types)
 gccli golf clubs | jq --argjson types "$types" \
   'map(select(.retired | not) | . as $club | {id, type: ($types[] | select(.value == $club.clubTypeId) | .name)})'
+```
+
+### Find the segments near you and see who is fastest
+
+`segments search` needs `--name` or `--bbox`. The box is `MINLAT,MINLON,MAXLAT,MAXLON` in degrees.
+
+```bash
+gccli segments search --bbox 52.45,13.30,52.55,13.45 --activity-type running --classification hill_climb
+gccli segments leaderboard <uuid> --scope connections
+gccli --json segments rank <uuid> | jq '{best: .bestElapsedTime, leader: .leaderFullName}'
 ```
 
 ## Global Flags
