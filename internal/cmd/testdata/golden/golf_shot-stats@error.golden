@@ -1,0 +1,35 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+golf
+shot-stats
+putt
+-- route GET /gcs-golfcommunity/api/v2/shot/stats/putt 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+get golf shot stats: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /gcs-golfcommunity/api/v2/shot/stats/putt
+-- plain stdout --
+-- plain stderr --
+get golf shot stats: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /gcs-golfcommunity/api/v2/shot/stats/putt
+-- plain-header stdout --
+-- plain-header stderr --
+get golf shot stats: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /gcs-golfcommunity/api/v2/shot/stats/putt
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"get golf shot stats: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /gcs-golfcommunity/api/v2/shot/stats/putt

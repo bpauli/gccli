@@ -99,6 +99,14 @@ func TestCheckTableRejects(t *testing.T) {
 			`goals list: Params["status"] binds In("status"), which is not a field of the args struct`,
 		},
 		{
+			"Page without AlignedPagination", "activities list",
+			func(l *Leaf) {
+				l.Endpoint = "golf.scorecards"
+				l.Params = Params{"perPage": In("Limit"), "page": Page}
+			},
+			`activities list: Params["page"] binds Page, which needs an embedded AlignedPagination: only an --offset that is a multiple of --limit starts a page`,
+		},
+		{
 			"In names no field at all", "goals list",
 			func(l *Leaf) { l.Params = Params{"status": In("")} },
 			`goals list: Params["status"] binds In(""), which names no field`,

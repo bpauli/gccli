@@ -1,0 +1,73 @@
+-- args --
+golf
+club-types
+-- route GET /gcs-golfcommunity/api/v2/club/types --
+[{"value":1,"name":"Driver","shaftLength":45.5,"loftAngle":10.5,"lieAngle":58.5,"displayRange":"8-12","valid":true}]
+-- table stdout --
+[
+  {
+    "value": 1,
+    "name": "Driver",
+    "shaftLength": 45.5,
+    "loftAngle": 10.5,
+    "lieAngle": 58.5,
+    "displayRange": "8-12",
+    "valid": true
+  }
+]
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /gcs-golfcommunity/api/v2/club/types
+-- plain stdout --
+[
+  {
+    "value": 1,
+    "name": "Driver",
+    "shaftLength": 45.5,
+    "loftAngle": 10.5,
+    "lieAngle": 58.5,
+    "displayRange": "8-12",
+    "valid": true
+  }
+]
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /gcs-golfcommunity/api/v2/club/types
+-- plain-header stdout --
+[
+  {
+    "value": 1,
+    "name": "Driver",
+    "shaftLength": 45.5,
+    "loftAngle": 10.5,
+    "lieAngle": 58.5,
+    "displayRange": "8-12",
+    "valid": true
+  }
+]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /gcs-golfcommunity/api/v2/club/types
+-- json stdout --
+[
+  {
+    "value": 1,
+    "name": "Driver",
+    "shaftLength": 45.5,
+    "loftAngle": 10.5,
+    "lieAngle": 58.5,
+    "displayRange": "8-12",
+    "valid": true
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /gcs-golfcommunity/api/v2/club/types

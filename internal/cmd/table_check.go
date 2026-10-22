@@ -110,6 +110,11 @@ func checkLeaf(path string, l Leaf) []error {
 	}
 	for _, key := range slices.Sorted(maps.Keys(l.Params)) {
 		for _, a := range l.Params[key].alts {
+			if a.lookup == lookupPage {
+				if f, ok := fields.FieldByName("AlignedPagination"); !ok || !f.Anonymous {
+					fail("Params[%q] binds Page, which needs an embedded AlignedPagination: only an --offset that is a multiple of --limit starts a page", key)
+				}
+			}
 			if a.lookup != noLookup {
 				continue
 			}

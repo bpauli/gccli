@@ -29,6 +29,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Wellness** - menstrual cycle data and calendar, menstrual daily log (view, set, delete), pregnancy summary, jet lag trips and status
 - **Social** - notifications, view and change notification preferences, connections, connection requests, followers, following, newsfeed, groups
 - **Insights** - compare your steps, sleep, floors, VO2 max, speed, power and more with people of your age group and gender (needs Insights turned on in Garmin Connect)
+- **Golf** - scorecards, the courses you played, golf and shot stats (drive, approach, chip, putt), the clubs in your bag, club types and leaderboards
 - **Agent-ready** - ships a bundled agent skill (`skills/gccli/`) that plugs into AI assistants like Claude Code, Codex, Hermes, and OpenClaw so you can drive Garmin Connect in plain language
 - **Multiple accounts** — manage multiple Garmin accounts via `--account` flag
 - **Credential storage** in the OS keyring (macOS Keychain, Linux Secret Service), with a file fallback (see [Credential Storage](#credential-storage))
@@ -1438,6 +1439,23 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `--locale-unit="METRIC"`: Units of the answer: METRIC or STATUTE.
 - `gccli insights preferences`: Show your saved Insights comparisons.
 
+### Golf
+
+- `gccli golf scorecards [flags]`: List your golf scorecards. Also runs as `gccli golf [flags]`.
+  - `-l, --limit=20`: Maximum number of scorecards to return.
+  - `--offset=0`: Number of scorecards to skip.
+- `gccli golf courses [flags]`: List the golf courses you played.
+  - `-l, --limit=20`: Maximum number of courses to return.
+  - `--offset=0`: Number of courses to skip.
+- `gccli golf stats`: Show your golf statistics.
+- `gccli golf shot-stats <kind>`: Show your golf shot statistics of one shot type.
+  - `<kind>`: Shot type: drive, approach, chip or putt.
+- `gccli golf clubs`: List the golf clubs in your bag.
+- `gccli golf club-types`: List the golf club types with their loft and lie angles.
+- `gccli golf leaderboards [flags]`: List the golf leaderboards you played in.
+  - `-l, --limit=20`: Maximum number of leaderboards to return.
+  - `--offset=0`: Number of leaderboards to skip.
+
 ### Hydration, Nutrition, Profile, Training, Wellness & Utilities
 
 - `gccli hydration view [<date>]`: Show hydration data for a date. Also runs as `gccli hydration [<date>]`.
@@ -1649,6 +1667,16 @@ gccli activity download "$latest" --format fit
 gccli insights options | jq '{ages, activities: [.activityMapping[].activity]}'
 gccli insights compare --activity RUNNING --field VO2_MAX_VALUE --age 40-44 --gender M --year 2025 | \
   jq '.chart.options.percentile'
+```
+
+### Name the clubs in your golf bag
+
+`golf clubs` gives each club a `clubTypeId`. `golf club-types` gives the name of each type ID as `value`.
+
+```bash
+types=$(gccli golf club-types)
+gccli golf clubs | jq --argjson types "$types" \
+  'map(select(.retired | not) | . as $club | {id, type: ($types[] | select(.value == $club.clubTypeId) | .name)})'
 ```
 
 ## Global Flags

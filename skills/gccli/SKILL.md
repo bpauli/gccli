@@ -586,6 +586,23 @@ Date shortcuts
   - `--locale-unit="METRIC"`: Units of the answer: METRIC or STATUTE.
 - `gccli insights preferences`: Show your saved Insights comparisons.
 
+### Golf
+
+- `gccli golf scorecards [flags]`: List your golf scorecards. Also runs as `gccli golf [flags]`.
+  - `-l, --limit=20`: Maximum number of scorecards to return.
+  - `--offset=0`: Number of scorecards to skip.
+- `gccli golf courses [flags]`: List the golf courses you played.
+  - `-l, --limit=20`: Maximum number of courses to return.
+  - `--offset=0`: Number of courses to skip.
+- `gccli golf stats`: Show your golf statistics.
+- `gccli golf shot-stats <kind>`: Show your golf shot statistics of one shot type.
+  - `<kind>`: Shot type: drive, approach, chip or putt.
+- `gccli golf clubs`: List the golf clubs in your bag.
+- `gccli golf club-types`: List the golf club types with their loft and lie angles.
+- `gccli golf leaderboards [flags]`: List the golf leaderboards you played in.
+  - `-l, --limit=20`: Maximum number of leaderboards to return.
+  - `--offset=0`: Number of leaderboards to skip.
+
 ### Hydration, Nutrition, Profile, Training, Wellness & Utilities
 
 - `gccli hydration view [<date>]`: Show hydration data for a date. Also runs as `gccli hydration [<date>]`.
@@ -769,6 +786,7 @@ Notes
 - Exit codes: 1 other error, 2 usage error, 3 login needed (ask the user to run `gccli auth login`), 4 not found, 5 rate limited (wait, then retry). With `--json`, errors are a JSON object on stderr: `{"error":{"code":"...","status":429,"message":"..."}}`.
 - Every `nutrition` command except `food-log`, `meals` and `settings` needs a Garmin Connect+ subscription. Without it they exit 1 with `this needs a Garmin Connect+ subscription (403 Forbidden)`, so tell the user. `nutrition add` and `nutrition quick-add` also need nutrition set up in Garmin Connect: without it the day has no meals, and they exit 1 with `no meals on <date>: set up nutrition in Garmin Connect first`. gccli does not set up nutrition.
 - `insights compare` needs Insights turned on in Garmin Connect. Without it, Garmin answers 403 `User is not opted into Insights` and the command exits 1, so tell the user. Take every flag value (`--activity`, `--field`, `--age`, `--year`, `--month`) from `gccli insights options` as it prints them, such as `--age 75+`. Some dates, such as the current year without `--month`, give `{}`.
+- The `golf` commands print the Garmin answer as JSON. `golf scorecards`, `golf courses` and `golf leaderboards` page by `--limit`, so `--offset` must be a multiple of `--limit`. For an account without golf rounds, the answer has `totalRows: 0` and no list. `golf clubs` gives each club a `clubTypeId`, and `golf club-types` gives the name of each type ID as `value`.
 - Delete commands fail without a terminal unless `--force` is set. Confirm with the user first, then pass `--force`.
 - Download formats: FIT (default), GPX, TCX, KML, CSV.
 - Workout step format: `type:duration[@target:low-high]`. Types: warmup, run, recovery, cooldown; targets: pace (min:sec), hr (bpm), power (watts), cadence.
