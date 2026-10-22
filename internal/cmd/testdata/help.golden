@@ -168,7 +168,8 @@ Commands:
                                    range.
   health progress metrics          List the metrics of each activity type.
   health running-economy           Show latest running economy as of a date.
-  health acclimation               Show acclimation data for a date range.
+  health acclimation range         Show acclimation data for a date range.
+  health acclimation daily         Show SpO2 acclimation for a date.
   health one-rep-max               Show current estimated one-rep max values as
                                    of a date.
   health events                    Show daily wellness events.
@@ -272,7 +273,8 @@ Commands:
   profile privacy-zones add        Add a privacy zone around a point.
   profile privacy-zones delete     Delete a privacy zone.
   profile hr-zones                 Show heart rate zones.
-  profile power-zones              Show power zones for all sports.
+  profile power-zones list         Show power zones for all sports.
+  profile power-zones sport        Show power zones for one sport.
   hydration view                   Show hydration data for a date.
   hydration daily                  Show daily hydration statistics for a date
                                    range.
@@ -754,7 +756,8 @@ Commands:
                                    range.
   health progress metrics          List the metrics of each activity type.
   health running-economy           Show latest running economy as of a date.
-  health acclimation               Show acclimation data for a date range.
+  health acclimation range         Show acclimation data for a date range.
+  health acclimation daily         Show SpO2 acclimation for a date.
   health one-rep-max               Show current estimated one-rep max values as
                                    of a date.
   health events                    Show daily wellness events.
@@ -1208,6 +1211,29 @@ Commands:
                                 range.
   health progress metrics       List the metrics of each activity type.
 
+$ gccli health acclimation --help
+Usage: gccli health acclimation <command>
+
+Show heat and altitude acclimation data.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  health acclimation range    Show acclimation data for a date range.
+  health acclimation daily    Show SpO2 acclimation for a date.
+
 $ gccli body --help
 Usage: gccli body <command> [flags]
 
@@ -1610,7 +1636,8 @@ Commands:
   profile privacy-zones add       Add a privacy zone around a point.
   profile privacy-zones delete    Delete a privacy zone.
   profile hr-zones                Show heart rate zones.
-  profile power-zones             Show power zones for all sports.
+  profile power-zones list        Show power zones for all sports.
+  profile power-zones sport       Show power zones for one sport.
 
 $ gccli profile privacy --help
 Usage: gccli profile privacy <command>
@@ -1657,6 +1684,29 @@ Commands:
   profile privacy-zones list      List privacy zones.
   profile privacy-zones add       Add a privacy zone around a point.
   profile privacy-zones delete    Delete a privacy zone.
+
+$ gccli profile power-zones --help
+Usage: gccli profile power-zones <command>
+
+Show power zones.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  profile power-zones list     Show power zones for all sports.
+  profile power-zones sport    Show power zones for one sport.
 
 $ gccli hydration --help
 Usage: gccli hydration <command> [flags]

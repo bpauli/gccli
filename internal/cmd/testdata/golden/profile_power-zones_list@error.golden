@@ -1,6 +1,7 @@
 -- args --
 profile
 power-zones
+list
 -- route GET /biometric-service/powerZones/sports/all 400 noeol --
 {"message":"Bad Request"}
 -- table stdout --

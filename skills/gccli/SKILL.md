@@ -308,9 +308,11 @@ Date shortcuts
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Needs --start.
 - `gccli health running-economy [<date>]`: Show latest running economy as of a date.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
-- `gccli health acclimation --start=DATE --end=DATE`: Show acclimation data for a date range.
+- `gccli health acclimation range --start=DATE --end=DATE`: Show acclimation data for a date range. Also runs as `gccli health acclimation --start=DATE --end=DATE`.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli health acclimation daily [<date>]`: Show SpO2 acclimation for a date.
+  - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli health one-rep-max [<date>]`: Show current estimated one-rep max values as of a date.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli health events [<date>]`: Show daily wellness events.
@@ -766,7 +768,9 @@ Date shortcuts
   - `<id>`: Privacy zone ID.
   - `-f, --force`: Skip confirmation prompt.
 - `gccli profile hr-zones`: Show heart rate zones.
-- `gccli profile power-zones`: Show power zones for all sports.
+- `gccli profile power-zones list`: Show power zones for all sports. Also runs as `gccli profile power-zones`.
+- `gccli profile power-zones sport <sport>`: Show power zones for one sport.
+  - `<sport>`: Sport: cycling, running, rowing or cross-country-skiing.
 - `gccli training plans [flags]`: List training plans. Also runs as `gccli training [flags]`.
   - `--locale="en"`: Locale for training plans (e.g. en, de, fr).
 - `gccli training plan <id>`: Show a specific training plan.
