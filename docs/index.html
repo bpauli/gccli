@@ -537,6 +537,11 @@ gccli activities list --limit 5</pre>
             <p>Read your notifications, your notification preferences and your newsfeed. List your connections, pending connection requests, the followers of a user, the users that a user follows, and your groups.</p>
           </div>
           <div class="feature-card fade-in">
+            <div class="feature-icon blue">&#x1f4ca;</div>
+            <h3>Insights</h3>
+            <p>Compare your steps, sleep, floors, VO2 max, speed, power and more with people of your age group and gender, for a year or a month. Needs Insights turned on in Garmin Connect.</p>
+          </div>
+          <div class="feature-card fade-in">
             <div class="feature-icon violet">&#x1f464;</div>
             <h3>Profile</h3>
             <p>View user profile information and account settings. View privacy settings and privacy zones. Show heart rate and power zones.</p>
@@ -906,6 +911,15 @@ gccli activities list --limit 5</pre>
               <div class="cmd-row"><div class="cmd">gccli notifications list</div><div class="desc">List notifications. Also runs as <span class="whole"><code>gccli notifications</code>.</span></div></div>
               <div class="cmd-row"><div class="cmd">gccli notifications preferences view</div><div class="desc">Show notification preferences. Also runs as <span class="whole"><code>gccli notifications preferences</code>.</span></div></div>
               <div class="cmd-row"><div class="cmd">gccli notifications preferences set &lt;key&gt; &lt;value&gt;</div><div class="desc">Turn a notification preference on or off.<br><code>&lt;key&gt;</code> Preference key, such as allowEmailWeeklySummary. Run gccli notifications preferences to see the keys.<br><code>&lt;value&gt;</code> true turns the preference on, false turns it off.</div></div>
+            </div>
+          </div>
+
+          <div class="cmd-group fade-in">
+            <div class="cmd-header"><h3>Insights</h3><span class="cmd-arrow">&#x25B6;</span></div>
+            <div class="cmd-body">
+              <div class="cmd-row"><div class="cmd">gccli insights options [flags]</div><div class="desc">List the genders, ages, dates, activities and fields for insights compare. Also runs as <span class="whole"><code>gccli insights [flags]</code>.</span><br><code><span class="nowrap">--locale-unit=</span><wbr>&#34;METRIC&#34;</code> Units of the field names: METRIC or STATUTE.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli insights compare <span class="nowrap">--activity=STRING</span> <span class="nowrap">--field=STRING</span> <span class="nowrap">--age=FREE-TEXT</span> <span class="nowrap">--year=INT</span> [flags]</div><div class="desc">Compare a metric with your age group. Needs Insights on in Garmin Connect.<br><code><span class="nowrap">--activity=</span><wbr>STRING</code> Activity as insights options prints it: STEPS, SLEEP, FLOORS, RUNNING, CYCLING, LAP_SWIMMING or OPEN_WATER_SWIMMING.<br><code><span class="nowrap">--field=</span><wbr>STRING</code> Field of the activity as insights options prints it: AVG_SPEED, VO2_MAX_VALUE, AVG_POWER, WEEKLY_AVG_DISTANCE, WEEKLY_AVG_DURATION, STEPS, SLEEP, FLOORS or COUNT.<br><code><span class="nowrap">--age=</span><wbr><span class="nowrap">FREE-TEXT</span></code> Age group as insights options prints it (e.g. 40-44, 75+).<br><code><span class="nowrap">--gender=</span><wbr>&#34;ALL&#34;</code> Gender: ALL, M or F.<br><code><span class="nowrap">--year=</span><wbr>INT</code> Year (e.g. 2025).<br><code><span class="nowrap">--month=</span><wbr>MONTH</code> Month (1-12). Omit it for the whole year.<br><code><span class="nowrap">--locale-unit=</span><wbr>&#34;METRIC&#34;</code> Units of the answer: METRIC or STATUTE.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli insights preferences</div><div class="desc">Show your saved Insights comparisons.</div></div>
             </div>
           </div>
 

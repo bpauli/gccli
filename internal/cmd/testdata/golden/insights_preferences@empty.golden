@@ -1,0 +1,32 @@
+-- args --
+insights
+preferences
+-- route GET /userpreference-service/demographicComparisonPreferences 200 --
+-- table stdout --
+[]
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /userpreference-service/demographicComparisonPreferences
+-- plain stdout --
+[]
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /userpreference-service/demographicComparisonPreferences
+-- plain-header stdout --
+[]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /userpreference-service/demographicComparisonPreferences
+-- json stdout --
+[]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /userpreference-service/demographicComparisonPreferences

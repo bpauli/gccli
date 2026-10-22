@@ -1,0 +1,48 @@
+-- args --
+insights
+-- route GET /gcs-insights/api/demographics/selections?lang=en&localeUnit=METRIC --
+{"ages":["40-44"]}
+-- table stdout --
+{
+  "ages": [
+    "40-44"
+  ]
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /gcs-insights/api/demographics/selections?lang=en&localeUnit=METRIC
+-- plain stdout --
+{
+  "ages": [
+    "40-44"
+  ]
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /gcs-insights/api/demographics/selections?lang=en&localeUnit=METRIC
+-- plain-header stdout --
+{
+  "ages": [
+    "40-44"
+  ]
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /gcs-insights/api/demographics/selections?lang=en&localeUnit=METRIC
+-- json stdout --
+{
+  "ages": [
+    "40-44"
+  ]
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /gcs-insights/api/demographics/selections?lang=en&localeUnit=METRIC

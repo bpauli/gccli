@@ -1,0 +1,165 @@
+-- args --
+insights
+compare
+--activity
+STEPS
+--field
+STEPS
+--age
+40-44
+--year
+2025
+--month
+13
+-- table stdout --
+-- table stderr --
+Usage: gccli insights compare --activity=STRING --field=STRING --age=FREE-TEXT --year=INT [flags]
+
+Compare a metric with your age group. Needs Insights on in Garmin Connect.
+
+Flags:
+  -h, --help                    Show context-sensitive help.
+  -j, --json                    Output as JSON ($GCCLI_JSON).
+      --plain                   Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                  Print the column names as the first line of
+                                --plain output ($GCCLI_HEADER).
+      --color="auto"            Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING          Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"            Unit system for distances, speeds, paces,
+                                elevations and weights in table and plain
+                                output: auto (Garmin profile), metric,
+                                statute_us, statute_uk ($GCCLI_UNITS).
+      --version                 Print version information.
+
+      --activity=STRING         Activity as insights options prints it: STEPS,
+                                SLEEP, FLOORS, RUNNING, CYCLING, LAP_SWIMMING or
+                                OPEN_WATER_SWIMMING.
+      --field=STRING            Field of the activity as insights options
+                                prints it: AVG_SPEED, VO2_MAX_VALUE, AVG_POWER,
+                                WEEKLY_AVG_DISTANCE, WEEKLY_AVG_DURATION, STEPS,
+                                SLEEP, FLOORS or COUNT.
+      --age=FREE-TEXT           Age group as insights options prints it (e.g.
+                                40-44, 75+).
+      --gender="ALL"            Gender: ALL, M or F.
+      --year=INT                Year (e.g. 2025).
+      --month=MONTH             Month (1-12). Omit it for the whole year.
+      --locale-unit="METRIC"    Units of the answer: METRIC or STATUTE.
+
+gccli: error: --month: invalid month "13": expected 1 to 12
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli insights compare --activity=STRING --field=STRING --age=FREE-TEXT --year=INT [flags]
+
+Compare a metric with your age group. Needs Insights on in Garmin Connect.
+
+Flags:
+  -h, --help                    Show context-sensitive help.
+  -j, --json                    Output as JSON ($GCCLI_JSON).
+      --plain                   Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                  Print the column names as the first line of
+                                --plain output ($GCCLI_HEADER).
+      --color="auto"            Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING          Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"            Unit system for distances, speeds, paces,
+                                elevations and weights in table and plain
+                                output: auto (Garmin profile), metric,
+                                statute_us, statute_uk ($GCCLI_UNITS).
+      --version                 Print version information.
+
+      --activity=STRING         Activity as insights options prints it: STEPS,
+                                SLEEP, FLOORS, RUNNING, CYCLING, LAP_SWIMMING or
+                                OPEN_WATER_SWIMMING.
+      --field=STRING            Field of the activity as insights options
+                                prints it: AVG_SPEED, VO2_MAX_VALUE, AVG_POWER,
+                                WEEKLY_AVG_DISTANCE, WEEKLY_AVG_DURATION, STEPS,
+                                SLEEP, FLOORS or COUNT.
+      --age=FREE-TEXT           Age group as insights options prints it (e.g.
+                                40-44, 75+).
+      --gender="ALL"            Gender: ALL, M or F.
+      --year=INT                Year (e.g. 2025).
+      --month=MONTH             Month (1-12). Omit it for the whole year.
+      --locale-unit="METRIC"    Units of the answer: METRIC or STATUTE.
+
+gccli: error: --month: invalid month "13": expected 1 to 12
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli insights compare --activity=STRING --field=STRING --age=FREE-TEXT --year=INT [flags]
+
+Compare a metric with your age group. Needs Insights on in Garmin Connect.
+
+Flags:
+  -h, --help                    Show context-sensitive help.
+  -j, --json                    Output as JSON ($GCCLI_JSON).
+      --plain                   Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                  Print the column names as the first line of
+                                --plain output ($GCCLI_HEADER).
+      --color="auto"            Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING          Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"            Unit system for distances, speeds, paces,
+                                elevations and weights in table and plain
+                                output: auto (Garmin profile), metric,
+                                statute_us, statute_uk ($GCCLI_UNITS).
+      --version                 Print version information.
+
+      --activity=STRING         Activity as insights options prints it: STEPS,
+                                SLEEP, FLOORS, RUNNING, CYCLING, LAP_SWIMMING or
+                                OPEN_WATER_SWIMMING.
+      --field=STRING            Field of the activity as insights options
+                                prints it: AVG_SPEED, VO2_MAX_VALUE, AVG_POWER,
+                                WEEKLY_AVG_DISTANCE, WEEKLY_AVG_DURATION, STEPS,
+                                SLEEP, FLOORS or COUNT.
+      --age=FREE-TEXT           Age group as insights options prints it (e.g.
+                                40-44, 75+).
+      --gender="ALL"            Gender: ALL, M or F.
+      --year=INT                Year (e.g. 2025).
+      --month=MONTH             Month (1-12). Omit it for the whole year.
+      --locale-unit="METRIC"    Units of the answer: METRIC or STATUTE.
+
+gccli: error: --month: invalid month "13": expected 1 to 12
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli insights compare --activity=STRING --field=STRING --age=FREE-TEXT --year=INT [flags]
+
+Compare a metric with your age group. Needs Insights on in Garmin Connect.
+
+Flags:
+  -h, --help                    Show context-sensitive help.
+  -j, --json                    Output as JSON ($GCCLI_JSON).
+      --plain                   Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                  Print the column names as the first line of
+                                --plain output ($GCCLI_HEADER).
+      --color="auto"            Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING          Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"            Unit system for distances, speeds, paces,
+                                elevations and weights in table and plain
+                                output: auto (Garmin profile), metric,
+                                statute_us, statute_uk ($GCCLI_UNITS).
+      --version                 Print version information.
+
+      --activity=STRING         Activity as insights options prints it: STEPS,
+                                SLEEP, FLOORS, RUNNING, CYCLING, LAP_SWIMMING or
+                                OPEN_WATER_SWIMMING.
+      --field=STRING            Field of the activity as insights options
+                                prints it: AVG_SPEED, VO2_MAX_VALUE, AVG_POWER,
+                                WEEKLY_AVG_DISTANCE, WEEKLY_AVG_DURATION, STEPS,
+                                SLEEP, FLOORS or COUNT.
+      --age=FREE-TEXT           Age group as insights options prints it (e.g.
+                                40-44, 75+).
+      --gender="ALL"            Gender: ALL, M or F.
+      --year=INT                Year (e.g. 2025).
+      --month=MONTH             Month (1-12). Omit it for the whole year.
+      --locale-unit="METRIC"    Units of the answer: METRIC or STATUTE.
+
+gccli: error: --month: invalid month "13": expected 1 to 12
+-- json exit --
+2
+-- json requests --

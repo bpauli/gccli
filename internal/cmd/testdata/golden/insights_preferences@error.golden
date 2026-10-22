@@ -1,0 +1,34 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+insights
+preferences
+-- route GET /userpreference-service/demographicComparisonPreferences 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+get insights preferences: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /userpreference-service/demographicComparisonPreferences
+-- plain stdout --
+-- plain stderr --
+get insights preferences: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /userpreference-service/demographicComparisonPreferences
+-- plain-header stdout --
+-- plain-header stderr --
+get insights preferences: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /userpreference-service/demographicComparisonPreferences
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"get insights preferences: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /userpreference-service/demographicComparisonPreferences

@@ -572,6 +572,20 @@ Date shortcuts
   - `<key>`: Preference key, such as allowEmailWeeklySummary. Run gccli notifications preferences to see the keys.
   - `<value>`: true turns the preference on, false turns it off.
 
+### Insights
+
+- `gccli insights options [flags]`: List the genders, ages, dates, activities and fields for insights compare. Also runs as `gccli insights [flags]`.
+  - `--locale-unit="METRIC"`: Units of the field names: METRIC or STATUTE.
+- `gccli insights compare --activity=STRING --field=STRING --age=FREE-TEXT --year=INT [flags]`: Compare a metric with your age group. Needs Insights on in Garmin Connect.
+  - `--activity=STRING`: Activity as insights options prints it: STEPS, SLEEP, FLOORS, RUNNING, CYCLING, LAP_SWIMMING or OPEN_WATER_SWIMMING.
+  - `--field=STRING`: Field of the activity as insights options prints it: AVG_SPEED, VO2_MAX_VALUE, AVG_POWER, WEEKLY_AVG_DISTANCE, WEEKLY_AVG_DURATION, STEPS, SLEEP, FLOORS or COUNT.
+  - `--age=FREE-TEXT`: Age group as insights options prints it (e.g. 40-44, 75+).
+  - `--gender="ALL"`: Gender: ALL, M or F.
+  - `--year=INT`: Year (e.g. 2025).
+  - `--month=MONTH`: Month (1-12). Omit it for the whole year.
+  - `--locale-unit="METRIC"`: Units of the answer: METRIC or STATUTE.
+- `gccli insights preferences`: Show your saved Insights comparisons.
+
 ### Hydration, Nutrition, Profile, Training, Wellness & Utilities
 
 - `gccli hydration view [<date>]`: Show hydration data for a date. Also runs as `gccli hydration [<date>]`.
@@ -754,6 +768,7 @@ Notes
 - For Garmin China accounts: `export GCCLI_DOMAIN=garmin.cn`.
 - Exit codes: 1 other error, 2 usage error, 3 login needed (ask the user to run `gccli auth login`), 4 not found, 5 rate limited (wait, then retry). With `--json`, errors are a JSON object on stderr: `{"error":{"code":"...","status":429,"message":"..."}}`.
 - Every `nutrition` command except `food-log`, `meals` and `settings` needs a Garmin Connect+ subscription. Without it they exit 1 with `this needs a Garmin Connect+ subscription (403 Forbidden)`, so tell the user. `nutrition add` and `nutrition quick-add` also need nutrition set up in Garmin Connect: without it the day has no meals, and they exit 1 with `no meals on <date>: set up nutrition in Garmin Connect first`. gccli does not set up nutrition.
+- `insights compare` needs Insights turned on in Garmin Connect. Without it, Garmin answers 403 `User is not opted into Insights` and the command exits 1, so tell the user. Take every flag value (`--activity`, `--field`, `--age`, `--year`, `--month`) from `gccli insights options` as it prints them, such as `--age 75+`. Some dates, such as the current year without `--month`, give `{}`.
 - Delete commands fail without a terminal unless `--force` is set. Confirm with the user first, then pass `--force`.
 - Download formats: FIT (default), GPX, TCX, KML, CSV.
 - Workout step format: `type:duration[@target:low-high]`. Types: warmup, run, recovery, cooldown; targets: pace (min:sec), hr (bpm), power (watts), cadence.
