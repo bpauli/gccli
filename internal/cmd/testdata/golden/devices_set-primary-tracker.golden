@@ -1,0 +1,35 @@
+-- args --
+devices
+set-primary-tracker
+12345
+-- route PUT /device-service/deviceservice/device-info/12345/primary-activity-tracker 204 --
+-- table stdout --
+-- table stderr --
+Set device 12345 as the primary activity tracker
+-- table exit --
+0
+-- table requests --
+PUT /device-service/deviceservice/device-info/12345/primary-activity-tracker
+-- plain stdout --
+-- plain stderr --
+Set device 12345 as the primary activity tracker
+-- plain exit --
+0
+-- plain requests --
+PUT /device-service/deviceservice/device-info/12345/primary-activity-tracker
+-- plain-header stdout --
+-- plain-header stderr --
+Set device 12345 as the primary activity tracker
+-- plain-header exit --
+0
+-- plain-header requests --
+PUT /device-service/deviceservice/device-info/12345/primary-activity-tracker
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+PUT /device-service/deviceservice/device-info/12345/primary-activity-tracker

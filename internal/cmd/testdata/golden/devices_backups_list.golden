@@ -1,0 +1,94 @@
+-- args --
+devices
+backups
+list
+-- route GET /devicebackup-service/backup --
+[{"date":"2026-10-01T08:15:00.0","deviceBackupId":777,"deviceId":12345,"deviceImageUrl":"https://example.com/watch.png","deviceName":"Test Watch"},{"date":"2026-09-20T19:40:00.0","deviceBackupId":778,"deviceId":12346,"deviceImageUrl":"https://example.com/bike.png","deviceName":"Test Bike Computer"}]
+-- table stdout --
+[
+  {
+    "date": "2026-10-01T08:15:00.0",
+    "deviceBackupId": 777,
+    "deviceId": 12345,
+    "deviceImageUrl": "https://example.com/watch.png",
+    "deviceName": "Test Watch"
+  },
+  {
+    "date": "2026-09-20T19:40:00.0",
+    "deviceBackupId": 778,
+    "deviceId": 12346,
+    "deviceImageUrl": "https://example.com/bike.png",
+    "deviceName": "Test Bike Computer"
+  }
+]
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /devicebackup-service/backup
+-- plain stdout --
+[
+  {
+    "date": "2026-10-01T08:15:00.0",
+    "deviceBackupId": 777,
+    "deviceId": 12345,
+    "deviceImageUrl": "https://example.com/watch.png",
+    "deviceName": "Test Watch"
+  },
+  {
+    "date": "2026-09-20T19:40:00.0",
+    "deviceBackupId": 778,
+    "deviceId": 12346,
+    "deviceImageUrl": "https://example.com/bike.png",
+    "deviceName": "Test Bike Computer"
+  }
+]
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /devicebackup-service/backup
+-- plain-header stdout --
+[
+  {
+    "date": "2026-10-01T08:15:00.0",
+    "deviceBackupId": 777,
+    "deviceId": 12345,
+    "deviceImageUrl": "https://example.com/watch.png",
+    "deviceName": "Test Watch"
+  },
+  {
+    "date": "2026-09-20T19:40:00.0",
+    "deviceBackupId": 778,
+    "deviceId": 12346,
+    "deviceImageUrl": "https://example.com/bike.png",
+    "deviceName": "Test Bike Computer"
+  }
+]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /devicebackup-service/backup
+-- json stdout --
+[
+  {
+    "date": "2026-10-01T08:15:00.0",
+    "deviceBackupId": 777,
+    "deviceId": 12345,
+    "deviceImageUrl": "https://example.com/watch.png",
+    "deviceName": "Test Watch"
+  },
+  {
+    "date": "2026-09-20T19:40:00.0",
+    "deviceBackupId": 778,
+    "deviceId": 12346,
+    "deviceImageUrl": "https://example.com/bike.png",
+    "deviceName": "Test Bike Computer"
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /devicebackup-service/backup

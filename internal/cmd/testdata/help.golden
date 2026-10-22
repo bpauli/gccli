@@ -191,11 +191,14 @@ Commands:
   devices list                     List registered devices.
   devices settings                 Show settings for a device.
   devices primary                  Show primary training device.
+  devices set-primary-tracker      Set the primary activity tracker (not the
+                                   'devices primary' training device).
   devices solar                    Show solar charging data for a device.
   devices alarms                   Show alarms from all devices.
   devices last-used                Show last used device.
   devices sensors                  List paired sensors.
-  devices backups                  Show device backup summary.
+  devices backups summary          Show device backup summary.
+  devices backups list             List device backups.
   devices historical               List historical devices.
   devices messages list            List device messages.
   devices messages cancel          Cancel a device message, such as a sent
@@ -1293,18 +1296,44 @@ Flags:
       --version           Print version information.
 
 Commands:
-  devices list               List registered devices.
-  devices settings           Show settings for a device.
-  devices primary            Show primary training device.
-  devices solar              Show solar charging data for a device.
-  devices alarms             Show alarms from all devices.
-  devices last-used          Show last used device.
-  devices sensors            List paired sensors.
-  devices backups            Show device backup summary.
-  devices historical         List historical devices.
-  devices messages list      List device messages.
-  devices messages cancel    Cancel a device message, such as a sent workout,
-                             before the device syncs.
+  devices list                   List registered devices.
+  devices settings               Show settings for a device.
+  devices primary                Show primary training device.
+  devices set-primary-tracker    Set the primary activity tracker (not the
+                                 'devices primary' training device).
+  devices solar                  Show solar charging data for a device.
+  devices alarms                 Show alarms from all devices.
+  devices last-used              Show last used device.
+  devices sensors                List paired sensors.
+  devices backups summary        Show device backup summary.
+  devices backups list           List device backups.
+  devices historical             List historical devices.
+  devices messages list          List device messages.
+  devices messages cancel        Cancel a device message, such as a sent
+                                 workout, before the device syncs.
+
+$ gccli devices backups --help
+Usage: gccli devices backups <command>
+
+Show the device backup summary and list device backups.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  devices backups summary    Show device backup summary.
+  devices backups list       List device backups.
 
 $ gccli devices messages --help
 Usage: gccli devices messages <command>

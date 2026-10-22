@@ -19,6 +19,8 @@ func TestDevicesEndpoints(t *testing.T) {
 		{"devices.last-used", nil, "GET /device-service/deviceservice/mylastused"},
 		{"devices.sensors", nil, "GET /device-service/sensors"},
 		{"devices.backup-summary", nil, "GET /devicebackup-service/backup/summary"},
+		{"devices.backups", nil, "GET /devicebackup-service/backup"},
+		{"devices.set-primary-tracker", map[string]string{"deviceID": "12345"}, "PUT /device-service/deviceservice/device-info/12345/primary-activity-tracker"},
 		{"devices.historical", nil, "GET /device-service/deviceregistration/devices/historical"},
 		{"devices.messages", nil, "GET /device-service/devicemessage/messages"},
 		{"devices.send-message", nil, "POST /device-service/devicemessage/messages"},

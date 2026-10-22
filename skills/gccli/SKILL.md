@@ -495,6 +495,8 @@ Date shortcuts
 - `gccli devices settings <device-id>`: Show settings for a device.
   - `<device-id>`: Device ID.
 - `gccli devices primary`: Show primary training device.
+- `gccli devices set-primary-tracker <device-id>`: Set the primary activity tracker (not the 'devices primary' training device).
+  - `<device-id>`: Device ID (from 'devices list').
 - `gccli devices solar <device-id> [flags]`: Show solar charging data for a device.
   - `<device-id>`: Device ID.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
@@ -502,7 +504,8 @@ Date shortcuts
 - `gccli devices alarms`: Show alarms from all devices.
 - `gccli devices last-used`: Show last used device.
 - `gccli devices sensors`: List paired sensors.
-- `gccli devices backups`: Show device backup summary.
+- `gccli devices backups summary`: Show device backup summary. Also runs as `gccli devices backups`.
+- `gccli devices backups list`: List device backups.
 - `gccli devices historical`: List historical devices.
 - `gccli devices messages list`: List device messages. Also runs as `gccli devices messages`.
 - `gccli devices messages cancel <id>`: Cancel a device message, such as a sent workout, before the device syncs.
