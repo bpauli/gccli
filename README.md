@@ -28,7 +28,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Events** — list, list upcoming, add, and delete calendar events (races, group rides, etc.) with goals and training priority support
 - **Calendar** - month view of activities, workouts, events and notes, add, update, move and delete calendar notes, turn the iCalendar feed on and off, and change the web calendar preferences
 - **Wellness** - menstrual cycle data and calendar, menstrual daily log (view, set, delete), pregnancy summary, jet lag trips (list, add, update, delete) and status
-- **Social** - notifications, view and change notification preferences, connections, connection requests, followers, following, newsfeed, groups
+- **Social** - notifications (page with a cursor, dismiss and undismiss, unread state), view and change notification preferences, connections, connection requests, followers, following, newsfeed, groups
 - **Insights** - compare your steps, sleep, floors, VO2 max, speed, power and more with people of your age group and gender (needs Insights turned on in Garmin Connect)
 - **Golf** - scorecards, the courses you played, golf and shot stats (drive, approach, chip, putt), the clubs in your bag, club types and leaderboards
 - **Agent-ready** - ships a bundled agent skill (`skills/gccli/`) that plugs into AI assistants like Claude Code, Codex, Hermes, and OpenClaw so you can drive Garmin Connect in plain language
@@ -865,7 +865,11 @@ Each flight time is the local time at its place, with the UTC offset there. The 
 ### Social
 
 ```bash
-gccli notifications list               # List your notifications
+gccli notifications list               # List your notifications (50 per page)
+gccli notifications list --cursor <next-cursor>   # The next page: pagination.nextCursor of the last page
+gccli notifications unread             # Show whether there are unread notifications
+gccli notifications dismiss <id>       # Dismiss a notification
+gccli notifications undismiss <id>     # Bring it back
 gccli notifications preferences        # Show your notification preferences
 gccli notifications preferences set allowEmailWeeklySummary false   # Turn one preference off
 gccli social connections               # List your connections
