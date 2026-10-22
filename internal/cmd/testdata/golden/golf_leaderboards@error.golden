@@ -1,0 +1,36 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+golf
+leaderboards
+-l
+10
+-- route GET /gcs-golfcommunity/api/v2/leaderboard/player/played?page=1&per-page=10&user-locale=en 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+list golf leaderboards: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /gcs-golfcommunity/api/v2/leaderboard/player/played?page=1&per-page=10&user-locale=en
+-- plain stdout --
+-- plain stderr --
+list golf leaderboards: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /gcs-golfcommunity/api/v2/leaderboard/player/played?page=1&per-page=10&user-locale=en
+-- plain-header stdout --
+-- plain-header stderr --
+list golf leaderboards: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /gcs-golfcommunity/api/v2/leaderboard/player/played?page=1&per-page=10&user-locale=en
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"list golf leaderboards: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /gcs-golfcommunity/api/v2/leaderboard/player/played?page=1&per-page=10&user-locale=en

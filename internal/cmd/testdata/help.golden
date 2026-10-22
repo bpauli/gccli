@@ -308,6 +308,15 @@ Commands:
   insights compare                 Compare a metric with your age group.
                                    Needs Insights on in Garmin Connect.
   insights preferences             Show your saved Insights comparisons.
+  golf scorecards                  List your golf scorecards.
+  golf courses                     List the golf courses you played.
+  golf stats                       Show your golf statistics.
+  golf shot-stats                  Show your golf shot statistics of one shot
+                                   type.
+  golf clubs                       List the golf clubs in your bag.
+  golf club-types                  List the golf club types with their loft and
+                                   lie angles.
+  golf leaderboards                List the golf leaderboards you played in.
   reload                           Request data reload for a date.
   completion                       Generate shell completion script.
 
@@ -1896,4 +1905,32 @@ Commands:
   insights compare        Compare a metric with your age group. Needs Insights
                           on in Garmin Connect.
   insights preferences    Show your saved Insights comparisons.
+
+$ gccli golf --help
+Usage: gccli golf <command> [flags]
+
+Show golf scorecards, courses, stats, clubs and leaderboards.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  golf scorecards      List your golf scorecards.
+  golf courses         List the golf courses you played.
+  golf stats           Show your golf statistics.
+  golf shot-stats      Show your golf shot statistics of one shot type.
+  golf clubs           List the golf clubs in your bag.
+  golf club-types      List the golf club types with their loft and lie angles.
+  golf leaderboards    List the golf leaderboards you played in.
 
