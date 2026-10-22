@@ -123,6 +123,23 @@ func TestCallSendsTheTableRequest(t *testing.T) {
 			data: `{}`,
 		},
 		{
+			name: "a list placeholder sends one pair per value in the given order",
+			e: Endpoint{
+				Name: "x.get", Path: "/x?start={start}&metric={metric}&type={type}&units=true",
+				Params: []Param{{Name: "metric", List: true}, {Name: "type", List: true, Optional: true}},
+			},
+			args: map[string]string{"start": "1", "metric": "duration,distance,a&b", "type": ""},
+			want: sent{line: "GET /x?start=1&metric=duration&metric=distance&metric=a%26b&units=true", accept: "application/json"},
+			data: `[]`,
+		},
+		{
+			name: "a comma in a placeholder that is not a list stays in its one value",
+			e:    Endpoint{Name: "x.get", Path: "/x?q={q}"},
+			args: map[string]string{"q": "a,b"},
+			want: sent{line: "GET /x?q=a%2Cb", accept: "application/json"},
+			data: `{}`,
+		},
+		{
 			name: "a body is sent as JSON",
 			e:    Endpoint{Name: "workouts.schedule.add", Method: http.MethodPost, Path: "/workout-service/schedule/{id}", Body: true},
 			args: map[string]string{"id": "9"},
@@ -166,6 +183,7 @@ func TestCallSendsTheTableRequest(t *testing.T) {
 func TestCallRefusesBeforeSending(t *testing.T) {
 	status := Endpoint{Name: "goals.list", Path: "/goal-service/goal/goals?status={status}", Params: []Param{{Name: "status", Enum: []string{"active", "future", "past"}}}}
 	post := Endpoint{Name: "workouts.schedule.add", Method: http.MethodPost, Path: "/workout-service/schedule/{id}", Body: true}
+	metrics := Endpoint{Name: "x.get", Path: "/x?metric={metric}", Params: []Param{{Name: "metric", List: true, Enum: []string{"distance", "duration"}}}}
 	tests := []struct {
 		name string
 		e    Endpoint
@@ -174,6 +192,8 @@ func TestCallRefusesBeforeSending(t *testing.T) {
 		want string
 	}{
 		{"missing required", status, nil, nil, "endpoint goals.list: status: required"},
+		{"list value not in enum", metrics, map[string]string{"metric": "distance,bogus"}, nil, `endpoint x.get: metric: "bogus" is not one of distance, duration`},
+		{"list of empty values", metrics, map[string]string{"metric": ",,"}, nil, "endpoint x.get: metric: required"},
 		{"value not in enum", status, map[string]string{"status": "bogus"}, nil, `endpoint goals.list: status: "bogus" is not one of active, future, past`},
 		{"unknown argument", status, map[string]string{"status": "active", "stauts": "past"}, nil, "endpoint goals.list: stauts: not a parameter of this endpoint"},
 		{"empty path value", post, map[string]string{"id": ""}, []byte(`{}`), "endpoint workouts.schedule.add: id: required"},
@@ -320,6 +340,7 @@ func TestIndexRejectsMalformedRows(t *testing.T) {
 		{"param without placeholder", func(e *Endpoint) { e.Params = []Param{{Name: "nope"}} }, `"nope" has no placeholder`},
 		{"param twice", func(e *Endpoint) { e.Params = []Param{{Name: "q"}, {Name: "q"}} }, "listed twice"},
 		{"optional path", func(e *Endpoint) { e.Params = []Param{{Name: "id", Optional: true}} }, "cannot be optional"},
+		{"list path", func(e *Endpoint) { e.Params = []Param{{Name: "id", List: true}} }, "cannot be a list"},
 		{"optional with default", func(e *Endpoint) { e.Params = []Param{{Name: "q", Optional: true, Default: "a"}} }, "already makes it optional"},
 		{"default outside enum", func(e *Endpoint) { e.Params = []Param{{Name: "q", Default: "a", Enum: []string{"b"}}} }, "not in its enum"},
 	}

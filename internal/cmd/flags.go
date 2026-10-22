@@ -168,6 +168,13 @@ func parseBoundingBox(raw string) (BoundingBox, error) {
 	return b, nil
 }
 
+// Upper is a lowercase kebab-case flag value that Garmin takes in upper
+// snake case: the runner sends cross-country-skiing as CROSS_COUNTRY_SKIING.
+// Its Kong enum tag lists the lowercase values.
+type Upper string
+
+func (u Upper) wire() string { return strings.ToUpper(strings.ReplaceAll(string(u), "-", "_")) }
+
 // popNonEmpty takes the next token of a flag or positional and rejects an
 // empty or blank one. Any other value is kept as given, spaces included.
 func popNonEmpty(ctx *kong.DecodeContext, what string) (string, error) {
