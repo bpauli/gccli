@@ -250,6 +250,39 @@ var writeCases = map[string]writeCase{
 		human:    "Added event \"Race\" on 2024-06-01 (ID: 11)\n",
 		fallback: "Added event\n",
 	},
+	"segments favorite": {
+		args: []string{"a1b2c3d4-0000-4000-8000-000000000001"},
+		routes: map[string]string{
+			"GET /segment-service/segment/a1b2c3d4-0000-4000-8000-000000000001": `{"segmentPk":900001,"uuid":"a1b2c3d4-0000-4000-8000-000000000001"}`,
+			"PUT /segment-service/segment/user/900001":                          `{"segmentPk":900001,"favorite":true}`,
+		},
+		result:   "PUT /segment-service/segment/user/900001",
+		json:     "{\n  \"segmentPk\": 900001,\n  \"favorite\": true\n}\n",
+		human:    "Added segment a1b2c3d4-0000-4000-8000-000000000001 to favorites\n",
+		fallback: "Added segment a1b2c3d4-0000-4000-8000-000000000001 to favorites\n",
+	},
+	"segments unfavorite": {
+		args: []string{"a1b2c3d4-0000-4000-8000-000000000001"},
+		routes: map[string]string{
+			"GET /segment-service/segment/a1b2c3d4-0000-4000-8000-000000000001": `{"segmentPk":900001,"uuid":"a1b2c3d4-0000-4000-8000-000000000001"}`,
+			"DELETE /segment-service/segment/user/900001":                       `{"segmentPk":900001,"favorite":false}`,
+		},
+		result:   "DELETE /segment-service/segment/user/900001",
+		json:     "{\n  \"segmentPk\": 900001,\n  \"favorite\": false\n}\n",
+		human:    "Removed segment a1b2c3d4-0000-4000-8000-000000000001 from favorites\n",
+		fallback: "Removed segment a1b2c3d4-0000-4000-8000-000000000001 from favorites\n",
+	},
+	"segments create": {
+		args: []string{"--from-activity", "5000001", "--start-km", "0", "--end-km", "0.1", "--name", "Park Hill", "--activity-type", "cycling"},
+		routes: map[string]string{
+			"GET /segment-service/segment/activity/5000001": `{"polyline":[{"distance":0,"elevation":10},{"distance":100,"elevation":12}]}`,
+			"POST /segment-service/segment/":                `{"uuid":"a1b2c3d4-0000-4000-8000-000000000009"}`,
+		},
+		result:   "POST /segment-service/segment/",
+		json:     "{\n  \"uuid\": \"a1b2c3d4-0000-4000-8000-000000000009\"\n}\n",
+		human:    "Created segment \"Park Hill\" (UUID: a1b2c3d4-0000-4000-8000-000000000009)\n",
+		fallback: "Created segment \"Park Hill\"\n",
+	},
 	"calendar notes add": {
 		args:     []string{"2026-10-20", "Long run", "--content", "Easy pace"},
 		routes:   map[string]string{"POST /calendar-service/note": `{"id":118934,"noteName":"Long run","date":"2026-10-20"}`},

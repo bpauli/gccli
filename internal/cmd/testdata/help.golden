@@ -248,6 +248,11 @@ Commands:
                                    segment.
   segments classifications         List the segment classifications.
   segments surface-types           List the segment surface types.
+  segments create                  Create a segment from a part of an activity
+                                   track.
+  segments favorite                Add a segment to your favorites.
+  segments unfavorite              Remove a segment from your favorites.
+  segments delete                  Delete a segment that you created.
   challenges list                  Show current challenges.
   challenges badge                 Show joined badge challenges that are not
                                    completed.
@@ -1468,7 +1473,7 @@ Commands:
 $ gccli segments --help
 Usage: gccli segments <command> [flags]
 
-Find segments and see their leaderboards.
+Find and create segments, and see their leaderboards.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -1494,6 +1499,10 @@ Commands:
                               segment.
   segments classifications    List the segment classifications.
   segments surface-types      List the segment surface types.
+  segments create             Create a segment from a part of an activity track.
+  segments favorite           Add a segment to your favorites.
+  segments unfavorite         Remove a segment from your favorites.
+  segments delete             Delete a segment that you created.
 
 $ gccli challenges --help
 Usage: gccli challenges <command> [flags]

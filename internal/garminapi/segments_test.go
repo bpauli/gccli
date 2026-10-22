@@ -16,5 +16,10 @@ func TestSegmentsEndpoints(t *testing.T) {
 		{"segments.classifications", nil, "GET /segment-service/segment/classifications"},
 		{"segments.surface-types", nil, "GET /segment-service/segment/surfaceTypes"},
 		{"segments.activity", map[string]string{"activityID": "123456"}, "GET /segment-service/segment/list/123456"},
+		{"segments.track", map[string]string{"activityID": "123456"}, "GET /segment-service/segment/activity/123456"},
+		{"segments.create", nil, "POST /segment-service/segment/"},
+		{"segments.delete", uuid, "DELETE /segment-service/segment/a1b2c3d4-0000-4000-8000-000000000001"},
+		{"segments.favorite", map[string]string{"segmentPK": "900001"}, "PUT /segment-service/segment/user/900001"},
+		{"segments.unfavorite", map[string]string{"segmentPK": "900001"}, "DELETE /segment-service/segment/user/900001"},
 	})
 }

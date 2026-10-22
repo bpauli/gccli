@@ -471,6 +471,21 @@ Date shortcuts
   - `<uuid>`: Segment UUID.
 - `gccli segments classifications`: List the segment classifications.
 - `gccli segments surface-types`: List the segment surface types.
+- `gccli segments create --from-activity=ID --start-km=KM --end-km=KM --name=NAME --activity-type=TYPE [flags]`: Create a segment from a part of an activity track.
+  - `--from-activity=ID`: ID of the activity whose track the segment follows.
+  - `--start-km=KM`: Start of the segment, in kilometers from the start of the activity.
+  - `--end-km=KM`: End of the segment, in kilometers from the start of the activity.
+  - `--name=NAME`: Segment name.
+  - `--activity-type=TYPE`: Activity type: cycling or running.
+  - `--classification="other"`: Classification as segments classifications prints it: downhill, hill_climb, hills, other or sprint.
+  - `--surface="paved"`: Surface as segments surface-types prints it: dirt, gravel, mixed or paved.
+- `gccli segments favorite <uuid>`: Add a segment to your favorites.
+  - `<uuid>`: Segment UUID.
+- `gccli segments unfavorite <uuid>`: Remove a segment from your favorites.
+  - `<uuid>`: Segment UUID.
+- `gccli segments delete <uuid> [flags]`: Delete a segment that you created.
+  - `<uuid>`: Segment UUID.
+  - `-f, --force`: Skip confirmation prompt.
 
 ### Devices
 
@@ -887,7 +902,7 @@ Notes
 - Every `nutrition` command except `food-log`, `meals` and `settings` needs a Garmin Connect+ subscription. Without it they exit 1 with `this needs a Garmin Connect+ subscription (403 Forbidden)`, so tell the user. `nutrition add` and `nutrition quick-add` also need nutrition set up in Garmin Connect: without it the day has no meals, and they exit 1 with `no meals on <date>: set up nutrition in Garmin Connect first`. gccli does not set up nutrition.
 - `calendar month [<year> <month>]` takes the month as 1-12 (Garmin's own path is 0-based) and shows this month without arguments. The answer also holds the items of the days before and after the month that fill the weeks of its grid, so filter on `date` when you need one month only. `--json` prints the Garmin answer with all item fields.
 - `calendar export show` prints the iCalendar feed URL that calendar apps subscribe to, or a note on stderr when the feed is off. `calendar export enable` keeps a feed that is on, because a second create gets 403 from Garmin. `calendar export disable` asks first (`--force` skips it); the URL then gives an empty answer. With `--json` the commands print Garmin's object. Its `id` is the feed ID (`NOT_PUBLISHED` when the feed is off), and its `baseUrl` names localhost, so take the URL from `--plain` output.
-- `segments search` needs `--name` or `--bbox MINLAT,MINLON,MAXLAT,MAXLON`. Without one Garmin finds nothing, so the command exits 2. Take the `--classification` and `--surface` values from `gccli segments classifications` and `gccli segments surface-types`. Garmin's `all` means no filter: leave the flag out. In `--json` output, segment distances are kilometers and leaderboard times are milliseconds. One leaderboard page has 26 rows: `--from-rank 27` gives the next page. `--group` goes only with `--scope all`.
+- `segments search` needs `--name` or `--bbox MINLAT,MINLON,MAXLAT,MAXLON`. Without one Garmin finds nothing, so the command exits 2. Take the `--classification` and `--surface` values from `gccli segments classifications` and `gccli segments surface-types`. Garmin's `all` means no filter: leave the flag out. In `--json` output, segment distances are kilometers and leaderboard times are milliseconds. One leaderboard page has 26 rows: `--from-rank 27` gives the next page. `--group` goes only with `--scope all`. `segments create` takes the track points of `--from-activity` from `--start-km` to `--end-km`. Garmin refuses a segment shorter than 0.08 km with 400, and the command exits 1. `segments favorite` and `segments unfavorite` take the UUID, as the other segment commands do.
 - `insights compare` needs Insights turned on in Garmin Connect. Without it, Garmin answers 403 `User is not opted into Insights` and the command exits 1, so tell the user. Take every flag value (`--activity`, `--field`, `--age`, `--year`, `--month`) from `gccli insights options` as it prints them, such as `--age 75+`. Some dates, such as the current year without `--month`, give `{}`.
 - The `golf` commands print the Garmin answer as JSON. `golf scorecards`, `golf courses` and `golf leaderboards` page by `--limit`, so `--offset` must be a multiple of `--limit`. For an account without golf rounds, the answer has `totalRows: 0` and no list. `golf clubs` gives each club a `clubTypeId`, and `golf club-types` gives the name of each type ID as `value`.
 - `health progress` (also as `health progress summary`) totals metrics per period, and `health progress activities` lists the values of each activity. Take the `--metric` and `--activity-type` values from `gccli health progress metrics`, which lists the metrics of each activity type (`running`, `cycling`, ...). Repeat a flag or separate its values with commas. Distances are meters and durations seconds. The totals of each summary period are under `.stats.all`, also with `--activity-type`.
