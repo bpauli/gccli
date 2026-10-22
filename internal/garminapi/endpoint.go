@@ -88,9 +88,14 @@ type Endpoint struct {
 	Host   Host
 	Path   string
 	Params []Param
-	// Body is true when the request carries a JSON body. Call rejects a body
-	// on an endpoint without one, and a missing body on one with it.
+	// Body is true when the request carries a body, JSON unless Form is set.
+	// Call rejects a body on an endpoint without one, and a missing body on
+	// one with it.
 	Body bool
+	// Form sends the body as a form (application/x-www-form-urlencoded)
+	// instead of JSON. It needs Body. Some Garmin services answer 415 to a
+	// JSON body.
+	Form bool
 	// Read marks a POST that only reads, such as a search whose filter is
 	// the body. Its command prints the answer like a GET read, and the write
 	// census of internal/cmd does not count it as a write.
@@ -177,7 +182,10 @@ func (c *Client) call(ctx context.Context, r *route, args map[string]string, bod
 		return nil, err
 	}
 	req := request{kind: kindJSON, method: r.Method, path: target, body: body}
-	if body != nil {
+	switch {
+	case body != nil && r.Form:
+		req.contentType = "application/x-www-form-urlencoded"
+	case body != nil:
 		req.contentType = "application/json"
 	}
 	resp, err := c.do(ctx, req)
@@ -344,6 +352,8 @@ func compile(e Endpoint) (*route, error) {
 		return nil, fmt.Errorf("unknown subscription %d", e.Requires)
 	case e.Body && e.Method == http.MethodGet:
 		return nil, errors.New("a GET has no body")
+	case e.Form && !e.Body:
+		return nil, errors.New("a form is a body: set Body too")
 	case e.Read && e.Method != http.MethodPost:
 		return nil, errors.New("only a POST can be marked Read: a GET is a read already")
 	case !strings.HasPrefix(e.Path, "/"):

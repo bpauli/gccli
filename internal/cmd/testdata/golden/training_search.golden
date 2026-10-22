@@ -2,7 +2,7 @@ The search is a POST with the filter in the query and an empty form body.
 -- args --
 training
 search
--- route POST /trainingplan-service/trainingplan/search?limit=1000&locale=en&start=1 --
+-- route POST /trainingplan-service/trainingplan/search?start=1&limit=1000&locale=en --
 {"searchFilter":{"start":1,"limit":1000},"trainingPlanList":[{"trainingPlanId":101,"name":"5K","trainingType":{"typeKey":"Running"},"trainingSubType":{"subTypeKey":"5k"},"trainingLevel":{"levelKey":"Beginner"},"trainingVersion":{"versionName":"HeartRate"},"durationInWeeks":12},{"trainingPlanId":102,"name":"Half Marathon","trainingType":{"typeKey":"Running"},"trainingSubType":{"subTypeKey":"HalfMarathon"},"trainingLevel":{"levelKey":"Advanced"},"trainingVersion":{"versionName":"Time"},"durationInWeeks":16}]}
 -- table stdout --
 ID   NAME           SPORT    GOAL          LEVEL     TARGET     WEEKS
@@ -12,7 +12,7 @@ ID   NAME           SPORT    GOAL          LEVEL     TARGET     WEEKS
 -- table exit --
 0
 -- table requests --
-POST /trainingplan-service/trainingplan/search?limit=1000&locale=en&start=1
+POST /trainingplan-service/trainingplan/search?start=1&limit=1000&locale=en
 -- plain stdout --
 101	5K	Running	5k	Beginner	HeartRate	12
 102	Half Marathon	Running	HalfMarathon	Advanced	Time	16
@@ -20,7 +20,7 @@ POST /trainingplan-service/trainingplan/search?limit=1000&locale=en&start=1
 -- plain exit --
 0
 -- plain requests --
-POST /trainingplan-service/trainingplan/search?limit=1000&locale=en&start=1
+POST /trainingplan-service/trainingplan/search?start=1&limit=1000&locale=en
 -- plain-header stdout --
 ID	NAME	SPORT	GOAL	LEVEL	TARGET	WEEKS
 101	5K	Running	5k	Beginner	HeartRate	12
@@ -29,7 +29,7 @@ ID	NAME	SPORT	GOAL	LEVEL	TARGET	WEEKS
 -- plain-header exit --
 0
 -- plain-header requests --
-POST /trainingplan-service/trainingplan/search?limit=1000&locale=en&start=1
+POST /trainingplan-service/trainingplan/search?start=1&limit=1000&locale=en
 -- json stdout --
 {
   "searchFilter": {
@@ -77,4 +77,4 @@ POST /trainingplan-service/trainingplan/search?limit=1000&locale=en&start=1
 -- json exit --
 0
 -- json requests --
-POST /trainingplan-service/trainingplan/search?limit=1000&locale=en&start=1
+POST /trainingplan-service/trainingplan/search?start=1&limit=1000&locale=en
