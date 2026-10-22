@@ -1,0 +1,41 @@
+A failed list read names the update verb.
+-- args --
+wellness
+jet-lag
+update
+4711
+--to
+Boston, USA
+-- route GET /jetlag-service/jetlag/trip/all 400 --
+{"message":"Bad Request","error":"BadRequestException"}
+-- table stdout --
+-- table stderr --
+update jet lag trip: garmin api: 400 Bad Request: {"message":"Bad Request","error":"BadRequestException"}
+
+-- table exit --
+1
+-- table requests --
+GET /jetlag-service/jetlag/trip/all
+-- plain stdout --
+-- plain stderr --
+update jet lag trip: garmin api: 400 Bad Request: {"message":"Bad Request","error":"BadRequestException"}
+
+-- plain exit --
+1
+-- plain requests --
+GET /jetlag-service/jetlag/trip/all
+-- plain-header stdout --
+-- plain-header stderr --
+update jet lag trip: garmin api: 400 Bad Request: {"message":"Bad Request","error":"BadRequestException"}
+
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /jetlag-service/jetlag/trip/all
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"update jet lag trip: garmin api: 400 Bad Request: {\"message\":\"Bad Request\",\"error\":\"BadRequestException\"}\n"}}
+-- json exit --
+1
+-- json requests --
+GET /jetlag-service/jetlag/trip/all

@@ -1,0 +1,102 @@
+Garmin rejects the trip, and the add verb names the failed write.
+-- args --
+wellness
+jet-lag
+add
+--from
+Berlin
+--to
+Tokyo
+--depart
+2026-12-01T08:00+01:00
+--arrive
+2026-12-01T23:30+09:00
+-- route POST /jetlag-service/jetlag/trip 400 --
+{"message":"Flight timestamps must be within trip start and end dates","error":"BadRequestException"}
+-- table stdout --
+-- table stderr --
+add jet lag trip: garmin api: 400 Bad Request: {"message":"Flight timestamps must be within trip start and end dates","error":"BadRequestException"}
+
+-- table exit --
+1
+-- table requests --
+POST /jetlag-service/jetlag/trip
+  {
+    "endDate": "2026-12-01",
+    "flights": [
+      {
+        "destinationLocation": "Tokyo",
+        "destinationTimestamp": "2026-12-01T23:30:00.0",
+        "destinationTimezone": "+09:00",
+        "originLocation": "Berlin",
+        "originTimestamp": "2026-12-01T08:00:00.0",
+        "originTimezone": "+01:00"
+      }
+    ],
+    "startDate": "2026-12-01"
+  }
+-- plain stdout --
+-- plain stderr --
+add jet lag trip: garmin api: 400 Bad Request: {"message":"Flight timestamps must be within trip start and end dates","error":"BadRequestException"}
+
+-- plain exit --
+1
+-- plain requests --
+POST /jetlag-service/jetlag/trip
+  {
+    "endDate": "2026-12-01",
+    "flights": [
+      {
+        "destinationLocation": "Tokyo",
+        "destinationTimestamp": "2026-12-01T23:30:00.0",
+        "destinationTimezone": "+09:00",
+        "originLocation": "Berlin",
+        "originTimestamp": "2026-12-01T08:00:00.0",
+        "originTimezone": "+01:00"
+      }
+    ],
+    "startDate": "2026-12-01"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+add jet lag trip: garmin api: 400 Bad Request: {"message":"Flight timestamps must be within trip start and end dates","error":"BadRequestException"}
+
+-- plain-header exit --
+1
+-- plain-header requests --
+POST /jetlag-service/jetlag/trip
+  {
+    "endDate": "2026-12-01",
+    "flights": [
+      {
+        "destinationLocation": "Tokyo",
+        "destinationTimestamp": "2026-12-01T23:30:00.0",
+        "destinationTimezone": "+09:00",
+        "originLocation": "Berlin",
+        "originTimestamp": "2026-12-01T08:00:00.0",
+        "originTimezone": "+01:00"
+      }
+    ],
+    "startDate": "2026-12-01"
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"add jet lag trip: garmin api: 400 Bad Request: {\"message\":\"Flight timestamps must be within trip start and end dates\",\"error\":\"BadRequestException\"}\n"}}
+-- json exit --
+1
+-- json requests --
+POST /jetlag-service/jetlag/trip
+  {
+    "endDate": "2026-12-01",
+    "flights": [
+      {
+        "destinationLocation": "Tokyo",
+        "destinationTimestamp": "2026-12-01T23:30:00.0",
+        "destinationTimezone": "+09:00",
+        "originLocation": "Berlin",
+        "originTimestamp": "2026-12-01T08:00:00.0",
+        "originTimezone": "+01:00"
+      }
+    ],
+    "startDate": "2026-12-01"
+  }

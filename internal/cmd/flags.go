@@ -81,6 +81,26 @@ func (d DateTime) orNow() time.Time {
 	return d.Time
 }
 
+// FlightTime is a local date and time with the UTC offset of that place,
+// such as 2026-11-02T10:00+01:00. Kong checks it at parse time, so a time
+// without an offset is a usage error before the login. The zero value means
+// that the flag was left out.
+type FlightTime struct{ time.Time }
+
+func (f *FlightTime) Decode(ctx *kong.DecodeContext) error {
+	raw, err := popString(ctx, "date and time")
+	if err != nil {
+		return err
+	}
+	for _, layout := range []string{"2006-01-02T15:04Z07:00", time.RFC3339} {
+		if t, err := time.Parse(layout, raw); err == nil {
+			f.Time = t
+			return nil
+		}
+	}
+	return fmt.Errorf("invalid date and time %q: expected YYYY-MM-DDTHH:MM with the UTC offset, such as 2026-11-02T10:00+01:00", raw)
+}
+
 // NumericID is an ID that a request body carries as a number, such as an
 // activity ID. Kong checks it at parse time, so a non-numeric ID is a usage
 // error before the login. String gives the decimal form for a request path.

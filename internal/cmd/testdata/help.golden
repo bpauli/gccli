@@ -322,6 +322,10 @@ Commands:
   wellness menstrual-log delete    Delete the menstrual daily log of a date.
   wellness pregnancy-summary       Show pregnancy summary.
   wellness jet-lag list            List jet lag trips.
+  wellness jet-lag add             Add a jet lag trip of a flight and an
+                                   optional return flight.
+  wellness jet-lag update          Change the places or times of a jet lag trip.
+  wellness jet-lag delete          Delete a jet lag trip.
   wellness jet-lag status          Show jet lag status for a date.
   exercises list                   List available exercise categories and
                                    exercises.
@@ -1921,6 +1925,10 @@ Commands:
   wellness menstrual-log delete    Delete the menstrual daily log of a date.
   wellness pregnancy-summary       Show pregnancy summary.
   wellness jet-lag list            List jet lag trips.
+  wellness jet-lag add             Add a jet lag trip of a flight and an
+                                   optional return flight.
+  wellness jet-lag update          Change the places or times of a jet lag trip.
+  wellness jet-lag delete          Delete a jet lag trip.
   wellness jet-lag status          Show jet lag status for a date.
 
 $ gccli wellness menstrual-log --help
@@ -1951,7 +1959,7 @@ Commands:
 $ gccli wellness jet-lag --help
 Usage: gccli wellness jet-lag <command>
 
-View jet lag trips and status.
+Plan jet lag trips and show jet lag status.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -1969,6 +1977,10 @@ Flags:
 
 Commands:
   wellness jet-lag list      List jet lag trips.
+  wellness jet-lag add       Add a jet lag trip of a flight and an optional
+                             return flight.
+  wellness jet-lag update    Change the places or times of a jet lag trip.
+  wellness jet-lag delete    Delete a jet lag trip.
   wellness jet-lag status    Show jet lag status for a date.
 
 $ gccli exercises --help
