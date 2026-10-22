@@ -454,6 +454,18 @@ var writeCases = map[string]writeCase{
 		human:    "Deleted nap on 2026-10-15 at 09:00\n",
 		fallback: "Deleted nap on 2026-10-15 at 09:00\n",
 	},
+	"notifications dismiss": {
+		args:   []string{"777"},
+		routes: map[string]string{"PUT /notification-service/notification/777/dismiss/true": noContent},
+		json:   okOut,
+		human:  "Dismissed notification 777\n",
+	},
+	"notifications undismiss": {
+		args:   []string{"777"},
+		routes: map[string]string{"PUT /notification-service/notification/777/dismiss/false": noContent},
+		json:   okOut,
+		human:  "Restored notification 777\n",
+	},
 	"notifications preferences set": {
 		args: []string{"allowEmailWeeklySummary", "false"},
 		routes: map[string]string{

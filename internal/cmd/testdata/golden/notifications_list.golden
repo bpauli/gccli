@@ -1,61 +1,85 @@
 -- args --
 notifications
 list
--- route GET /notification-service/notification/notification/cursor --
-{"notifications":[{"notificationId":1,"type":"BADGE_EARNED"}]}
+-- route GET /notification-service/notification/notification/cursor?limit=50 --
+{"notificationList":[{"notificationId":777,"type":"BADGE_EARNED"}],"pagination":{"cursor":null,"limit":50,"nextCursor":"c2","start":0}}
 -- table stdout --
 {
-  "notifications": [
+  "notificationList": [
     {
-      "notificationId": 1,
+      "notificationId": 777,
       "type": "BADGE_EARNED"
     }
-  ]
+  ],
+  "pagination": {
+    "cursor": null,
+    "limit": 50,
+    "nextCursor": "c2",
+    "start": 0
+  }
 }
 -- table stderr --
 -- table exit --
 0
 -- table requests --
-GET /notification-service/notification/notification/cursor
+GET /notification-service/notification/notification/cursor?limit=50
 -- plain stdout --
 {
-  "notifications": [
+  "notificationList": [
     {
-      "notificationId": 1,
+      "notificationId": 777,
       "type": "BADGE_EARNED"
     }
-  ]
+  ],
+  "pagination": {
+    "cursor": null,
+    "limit": 50,
+    "nextCursor": "c2",
+    "start": 0
+  }
 }
 -- plain stderr --
 -- plain exit --
 0
 -- plain requests --
-GET /notification-service/notification/notification/cursor
+GET /notification-service/notification/notification/cursor?limit=50
 -- plain-header stdout --
 {
-  "notifications": [
+  "notificationList": [
     {
-      "notificationId": 1,
+      "notificationId": 777,
       "type": "BADGE_EARNED"
     }
-  ]
+  ],
+  "pagination": {
+    "cursor": null,
+    "limit": 50,
+    "nextCursor": "c2",
+    "start": 0
+  }
 }
 -- plain-header stderr --
 -- plain-header exit --
 0
 -- plain-header requests --
-GET /notification-service/notification/notification/cursor
+GET /notification-service/notification/notification/cursor?limit=50
 -- json stdout --
 {
-  "notifications": [
+  "notificationList": [
     {
-      "notificationId": 1,
+      "notificationId": 777,
       "type": "BADGE_EARNED"
     }
-  ]
+  ],
+  "pagination": {
+    "cursor": null,
+    "limit": 50,
+    "nextCursor": "c2",
+    "start": 0
+  }
 }
 -- json stderr --
 -- json exit --
 0
 -- json requests --
-GET /notification-service/notification/notification/cursor
+GET /notification-service/notification/notification/cursor?limit=50

@@ -10,7 +10,17 @@ import (
 )
 
 var notificationsEndpoints = []Endpoint{
-	{Name: "notifications.list", Method: http.MethodGet, Host: ConnectAPI, Path: "/notification-service/notification/notification/cursor"},
+	{
+		Name: "notifications.list", Method: http.MethodGet, Host: ConnectAPI,
+		Path:   "/notification-service/notification/notification/cursor?limit={limit}&cursor={cursor}",
+		Params: []Param{{Name: "cursor", Optional: true}},
+	},
+	{
+		Name: "notifications.dismiss", Method: http.MethodPut, Host: ConnectAPI,
+		Path:   "/notification-service/notification/{notificationID}/dismiss/{dismiss}",
+		Params: []Param{{Name: "dismiss", Enum: []string{"true", "false"}}},
+	},
+	{Name: "notifications.unread", Method: http.MethodGet, Host: ConnectAPI, Path: "/web-gateway/inbox/unreadBubble"},
 	{Name: "notifications.preferences", Method: http.MethodGet, Host: ConnectAPI, Path: "/notification-service/preference/userPreference"},
 	{Name: "notifications.set-preferences", Method: http.MethodPut, Host: ConnectAPI, Path: "/notification-service/preference/userPreference", Body: true},
 }
