@@ -1,0 +1,39 @@
+A feed that is off is not deleted, because Garmin answers 404 to a delete of NOT_PUBLISHED.
+-- args --
+calendar
+export
+disable
+--force
+-- route GET /calendar-service/export --
+{"baseUrl":"http://localhost/proxy/calendar-service/export","id":"NOT_PUBLISHED"}
+-- table stdout --
+-- table stderr --
+The calendar feed is already off
+-- table exit --
+0
+-- table requests --
+GET /calendar-service/export
+-- plain stdout --
+-- plain stderr --
+The calendar feed is already off
+-- plain exit --
+0
+-- plain requests --
+GET /calendar-service/export
+-- plain-header stdout --
+-- plain-header stderr --
+The calendar feed is already off
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /calendar-service/export
+-- json stdout --
+{
+  "baseUrl": "http://localhost/proxy/calendar-service/export",
+  "id": "NOT_PUBLISHED"
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /calendar-service/export

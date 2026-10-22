@@ -1,0 +1,39 @@
+Error case: the month view answers 400, so the exit code is 1 (error).
+-- args --
+calendar
+month
+2026
+10
+-- route GET /calendar-service/year/2026/month/9 400 --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+get calendar month: garmin api: 400 Bad Request: {"message":"Bad Request"}
+
+-- table exit --
+1
+-- table requests --
+GET /calendar-service/year/2026/month/9
+-- plain stdout --
+-- plain stderr --
+get calendar month: garmin api: 400 Bad Request: {"message":"Bad Request"}
+
+-- plain exit --
+1
+-- plain requests --
+GET /calendar-service/year/2026/month/9
+-- plain-header stdout --
+-- plain-header stderr --
+get calendar month: garmin api: 400 Bad Request: {"message":"Bad Request"}
+
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /calendar-service/year/2026/month/9
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"get calendar month: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}\n"}}
+-- json exit --
+1
+-- json requests --
+GET /calendar-service/year/2026/month/9

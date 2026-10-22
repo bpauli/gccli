@@ -1,0 +1,38 @@
+Garmin answers the ID NOT_PUBLISHED while the feed is off, so no URL is printed.
+-- args --
+calendar
+export
+show
+-- route GET /calendar-service/export --
+{"baseUrl":"http://localhost/proxy/calendar-service/export","id":"NOT_PUBLISHED"}
+-- table stdout --
+-- table stderr --
+The calendar feed is off. Run gccli calendar export enable to turn it on.
+-- table exit --
+0
+-- table requests --
+GET /calendar-service/export
+-- plain stdout --
+-- plain stderr --
+The calendar feed is off. Run gccli calendar export enable to turn it on.
+-- plain exit --
+0
+-- plain requests --
+GET /calendar-service/export
+-- plain-header stdout --
+-- plain-header stderr --
+The calendar feed is off. Run gccli calendar export enable to turn it on.
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /calendar-service/export
+-- json stdout --
+{
+  "baseUrl": "http://localhost/proxy/calendar-service/export",
+  "id": "NOT_PUBLISHED"
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /calendar-service/export

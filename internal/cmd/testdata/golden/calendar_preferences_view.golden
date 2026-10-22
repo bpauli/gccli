@@ -1,0 +1,94 @@
+-- args --
+calendar
+preferences
+view
+-- route GET /calendar-service/preferences --
+{"view":1,"showEvent":true,"showGoal":true,"showWeeklyTotal":true,"eventColor":0,"groups":null,"activityTypes":[{"key":"running","color":0,"show":false}],"hideJetLag":false}
+-- table stdout --
+{
+  "view": 1,
+  "showEvent": true,
+  "showGoal": true,
+  "showWeeklyTotal": true,
+  "eventColor": 0,
+  "groups": null,
+  "activityTypes": [
+    {
+      "key": "running",
+      "color": 0,
+      "show": false
+    }
+  ],
+  "hideJetLag": false
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /calendar-service/preferences
+-- plain stdout --
+{
+  "view": 1,
+  "showEvent": true,
+  "showGoal": true,
+  "showWeeklyTotal": true,
+  "eventColor": 0,
+  "groups": null,
+  "activityTypes": [
+    {
+      "key": "running",
+      "color": 0,
+      "show": false
+    }
+  ],
+  "hideJetLag": false
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /calendar-service/preferences
+-- plain-header stdout --
+{
+  "view": 1,
+  "showEvent": true,
+  "showGoal": true,
+  "showWeeklyTotal": true,
+  "eventColor": 0,
+  "groups": null,
+  "activityTypes": [
+    {
+      "key": "running",
+      "color": 0,
+      "show": false
+    }
+  ],
+  "hideJetLag": false
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /calendar-service/preferences
+-- json stdout --
+{
+  "view": 1,
+  "showEvent": true,
+  "showGoal": true,
+  "showWeeklyTotal": true,
+  "eventColor": 0,
+  "groups": null,
+  "activityTypes": [
+    {
+      "key": "running",
+      "color": 0,
+      "show": false
+    }
+  ],
+  "hideJetLag": false
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /calendar-service/preferences

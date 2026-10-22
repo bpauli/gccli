@@ -1,0 +1,47 @@
+A create answer without an ID prints no URL and fails with a hint.
+-- args --
+calendar
+export
+enable
+-- route GET /calendar-service/export --
+{"baseUrl":"http://localhost/proxy/calendar-service/export","id":"NOT_PUBLISHED"}
+-- route POST /calendar-service/export --
+{"baseUrl":null}
+-- table stdout --
+-- table stderr --
+garmin turned on the calendar feed, but its answer has no feed ID: run gccli calendar export show
+-- table exit --
+1
+-- table requests --
+GET /calendar-service/export
+POST /calendar-service/export
+  {}
+-- plain stdout --
+-- plain stderr --
+garmin turned on the calendar feed, but its answer has no feed ID: run gccli calendar export show
+-- plain exit --
+1
+-- plain requests --
+GET /calendar-service/export
+POST /calendar-service/export
+  {}
+-- plain-header stdout --
+-- plain-header stderr --
+garmin turned on the calendar feed, but its answer has no feed ID: run gccli calendar export show
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /calendar-service/export
+POST /calendar-service/export
+  {}
+-- json stdout --
+{
+  "baseUrl": null
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /calendar-service/export
+POST /calendar-service/export
+  {}

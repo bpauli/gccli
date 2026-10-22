@@ -1,0 +1,110 @@
+Error case: the PUT answers 400, so the exit code is 1 (error).
+-- args --
+calendar
+preferences
+set
+showWeeklyTotal
+false
+-- route GET /calendar-service/preferences --
+{"view":1,"showEvent":true,"showGoal":true,"showWeeklyTotal":true,"eventColor":0,"groups":null,"activityTypes":[{"key":"running","color":0,"show":false}],"hideJetLag":false}
+-- route PUT /calendar-service/preferences 400 --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+set calendar preference: garmin api: 400 Bad Request: {"message":"Bad Request"}
+
+-- table exit --
+1
+-- table requests --
+GET /calendar-service/preferences
+PUT /calendar-service/preferences
+  {
+    "activityTypes": [
+      {
+        "key": "running",
+        "color": 0,
+        "show": false
+      }
+    ],
+    "eventColor": 0,
+    "groups": null,
+    "hideJetLag": false,
+    "showEvent": true,
+    "showGoal": true,
+    "showWeeklyTotal": false,
+    "view": 1
+  }
+-- plain stdout --
+-- plain stderr --
+set calendar preference: garmin api: 400 Bad Request: {"message":"Bad Request"}
+
+-- plain exit --
+1
+-- plain requests --
+GET /calendar-service/preferences
+PUT /calendar-service/preferences
+  {
+    "activityTypes": [
+      {
+        "key": "running",
+        "color": 0,
+        "show": false
+      }
+    ],
+    "eventColor": 0,
+    "groups": null,
+    "hideJetLag": false,
+    "showEvent": true,
+    "showGoal": true,
+    "showWeeklyTotal": false,
+    "view": 1
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+set calendar preference: garmin api: 400 Bad Request: {"message":"Bad Request"}
+
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /calendar-service/preferences
+PUT /calendar-service/preferences
+  {
+    "activityTypes": [
+      {
+        "key": "running",
+        "color": 0,
+        "show": false
+      }
+    ],
+    "eventColor": 0,
+    "groups": null,
+    "hideJetLag": false,
+    "showEvent": true,
+    "showGoal": true,
+    "showWeeklyTotal": false,
+    "view": 1
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"set calendar preference: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}\n"}}
+-- json exit --
+1
+-- json requests --
+GET /calendar-service/preferences
+PUT /calendar-service/preferences
+  {
+    "activityTypes": [
+      {
+        "key": "running",
+        "color": 0,
+        "show": false
+      }
+    ],
+    "eventColor": 0,
+    "groups": null,
+    "hideJetLag": false,
+    "showEvent": true,
+    "showGoal": true,
+    "showWeeklyTotal": false,
+    "view": 1
+  }
