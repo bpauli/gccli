@@ -145,6 +145,7 @@ insights options	object	live GET 2026-10-22 connectapi
 insights preferences	array	live GET 2026-10-22 connectapi
 notifications list	object	live 2026-10-20
 notifications preferences view	object	live 2026-10-20
+notifications unread	object	live 2026-10-22
 nutrition food-log	object	live 2026-10-20
 nutrition meals	object	live 2026-10-20
 nutrition settings	unknown	empty body live 2026-10-20

@@ -1,0 +1,35 @@
+-- args --
+notifications
+dismiss
+777
+-- route PUT /notification-service/notification/777/dismiss/true 204 --
+-- table stdout --
+-- table stderr --
+Dismissed notification 777
+-- table exit --
+0
+-- table requests --
+PUT /notification-service/notification/777/dismiss/true
+-- plain stdout --
+-- plain stderr --
+Dismissed notification 777
+-- plain exit --
+0
+-- plain requests --
+PUT /notification-service/notification/777/dismiss/true
+-- plain-header stdout --
+-- plain-header stderr --
+Dismissed notification 777
+-- plain-header exit --
+0
+-- plain-header requests --
+PUT /notification-service/notification/777/dismiss/true
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+PUT /notification-service/notification/777/dismiss/true

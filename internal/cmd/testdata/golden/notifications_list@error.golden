@@ -2,7 +2,7 @@ Error case: Garmin answers 400, so the exit code is 1 (error).
 -- args --
 notifications
 list
--- route GET /notification-service/notification/notification/cursor 400 noeol --
+-- route GET /notification-service/notification/notification/cursor?limit=50 400 noeol --
 {"message":"Bad Request"}
 -- table stdout --
 -- table stderr --
@@ -10,25 +10,25 @@ get notifications: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- table exit --
 1
 -- table requests --
-GET /notification-service/notification/notification/cursor
+GET /notification-service/notification/notification/cursor?limit=50
 -- plain stdout --
 -- plain stderr --
 get notifications: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- plain exit --
 1
 -- plain requests --
-GET /notification-service/notification/notification/cursor
+GET /notification-service/notification/notification/cursor?limit=50
 -- plain-header stdout --
 -- plain-header stderr --
 get notifications: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- plain-header exit --
 1
 -- plain-header requests --
-GET /notification-service/notification/notification/cursor
+GET /notification-service/notification/notification/cursor?limit=50
 -- json stdout --
 -- json stderr --
 {"error":{"code":"error","status":400,"message":"get notifications: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
 -- json exit --
 1
 -- json requests --
-GET /notification-service/notification/notification/cursor
+GET /notification-service/notification/notification/cursor?limit=50

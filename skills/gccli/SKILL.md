@@ -661,7 +661,14 @@ Date shortcuts
 - `gccli social requests`: List pending connection requests.
 - `gccli social feed`: Show your newsfeed.
 - `gccli groups list`: List your groups. Also runs as `gccli groups`.
-- `gccli notifications list`: List notifications. Also runs as `gccli notifications`.
+- `gccli notifications list [flags]`: List notifications. Also runs as `gccli notifications [flags]`.
+  - `--limit=50`: Maximum number of notifications to return.
+  - `--cursor=STRING`: Start after this cursor. Use pagination.nextCursor from the JSON output of the last page.
+- `gccli notifications unread`: Show whether there are unread notifications.
+- `gccli notifications dismiss <id>`: Dismiss a notification. Use 'notifications undismiss' to bring it back.
+  - `<id>`: Notification ID (from 'notifications list').
+- `gccli notifications undismiss <id>`: Bring back a dismissed notification.
+  - `<id>`: Notification ID (from 'notifications list').
 - `gccli notifications preferences view`: Show notification preferences. Also runs as `gccli notifications preferences`.
 - `gccli notifications preferences set <key> <value>`: Turn a notification preference on or off.
   - `<key>`: Preference key, such as allowEmailWeeklySummary. Run gccli notifications preferences to see the keys.
@@ -843,6 +850,7 @@ Worked examples
 - Calendar feed: `gccli calendar export enable` turns on the feed and prints its URL, and `gccli calendar export show --plain` prints the URL alone. `gccli calendar export disable --force` turns it off.
 - Calendar preference: `gccli calendar preferences` shows the keys. `gccli calendar preferences set showWeeklyTotal false` turns one off.
 - Notification preference: `gccli notifications preferences` shows the keys. `gccli notifications preferences set allowEmailWeeklySummary false` turns one off. A key that is not in the preferences fails before any write, and the error lists the keys.
+- Notifications: `gccli notifications list` gives 50 notifications per page (`--limit` changes it). For the next page, pass `pagination.nextCursor` of the JSON output: `gccli notifications list --cursor <nextCursor>`. `gccli notifications dismiss <id>` removes a notification from the list, and `gccli notifications undismiss <id>` brings it back. `gccli notifications unread` prints `{"unreadBubble": true}` when there are unread notifications.
 - Privacy zone: `gccli profile privacy-zones add --lat 51.5 --lon=-0.12 --radius 500` prints the zone ID. A negative value needs the `=` form. The radius is 500 to 1500 meters. `gccli profile privacy-zones delete <id> --force` deletes it.
 - Race event with a goal time and training priority: `gccli events add --name "Spring 10K" --date 2026-05-10 --type running --race --distance 10km --goal 40m --training`
 - Food search: `gccli nutrition search "greek yogurt" --limit 5 --json` lists foods with their servings under `results[].nutritionContents`. `gccli nutrition recent` and `gccli nutrition favorites` list the foods logged recently and the favorite foods.
