@@ -1,0 +1,37 @@
+--force skips the prompt.
+-- args --
+goals
+delete
+12345678
+--force
+-- route DELETE /goal-service/goal/goal/12345678 204 --
+-- table stdout --
+-- table stderr --
+Deleted goal 12345678
+-- table exit --
+0
+-- table requests --
+DELETE /goal-service/goal/goal/12345678
+-- plain stdout --
+-- plain stderr --
+Deleted goal 12345678
+-- plain exit --
+0
+-- plain requests --
+DELETE /goal-service/goal/goal/12345678
+-- plain-header stdout --
+-- plain-header stderr --
+Deleted goal 12345678
+-- plain-header exit --
+0
+-- plain-header requests --
+DELETE /goal-service/goal/goal/12345678
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+DELETE /goal-service/goal/goal/12345678

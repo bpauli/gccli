@@ -1,0 +1,206 @@
+Garmin refuses the PUT.
+-- args --
+goals
+update
+12345678
+--name
+Run 60 km
+-- route GET /goal-service/goal/goal/12345678 --
+{"id":12345678,"name":"Run 50 km","type":"distance_accumulation","distanceInMeters":50000.0,"durationInSeconds":null,"caloriesInKiloCalories":null,"numberOfActivities":null,"startDate":"2026-10-12","activityType":"running","period":"seven_days","privacy":"public","progress":{"percent":20.0,"days":3,"distanceInMeters":10000.0,"durationInSeconds":null,"caloriesInKiloCalories":null,"numberOfActivities":null},"remaining":{"percent":80.0,"days":4,"distanceInMeters":40000.0,"durationInSeconds":null,"caloriesInKiloCalories":null,"numberOfActivities":null},"overage":{"percent":0.0,"days":0,"distanceInMeters":0.0,"durationInSeconds":null,"caloriesInKiloCalories":null,"numberOfActivities":null},"endDate":"2026-10-18","active":true,"completed":false}
+-- route PUT /goal-service/goal/goal/12345678 400 --
+{"message":"Bad request","error":"BadRequestException"}
+-- table stdout --
+-- table stderr --
+update goal: garmin api: 400 Bad Request: {"message":"Bad request","error":"BadRequestException"}
+
+-- table exit --
+1
+-- table requests --
+GET /goal-service/goal/goal/12345678
+PUT /goal-service/goal/goal/12345678
+  {
+    "active": true,
+    "activityType": "running",
+    "caloriesInKiloCalories": null,
+    "completed": false,
+    "distanceInMeters": 50000.0,
+    "durationInSeconds": null,
+    "endDate": "2026-10-18",
+    "id": 12345678,
+    "name": "Run 60 km",
+    "numberOfActivities": null,
+    "overage": {
+      "percent": 0.0,
+      "days": 0,
+      "distanceInMeters": 0.0,
+      "durationInSeconds": null,
+      "caloriesInKiloCalories": null,
+      "numberOfActivities": null
+    },
+    "period": "seven_days",
+    "privacy": "public",
+    "progress": {
+      "percent": 20.0,
+      "days": 3,
+      "distanceInMeters": 10000.0,
+      "durationInSeconds": null,
+      "caloriesInKiloCalories": null,
+      "numberOfActivities": null
+    },
+    "remaining": {
+      "percent": 80.0,
+      "days": 4,
+      "distanceInMeters": 40000.0,
+      "durationInSeconds": null,
+      "caloriesInKiloCalories": null,
+      "numberOfActivities": null
+    },
+    "startDate": "2026-10-12",
+    "type": "distance_accumulation"
+  }
+-- plain stdout --
+-- plain stderr --
+update goal: garmin api: 400 Bad Request: {"message":"Bad request","error":"BadRequestException"}
+
+-- plain exit --
+1
+-- plain requests --
+GET /goal-service/goal/goal/12345678
+PUT /goal-service/goal/goal/12345678
+  {
+    "active": true,
+    "activityType": "running",
+    "caloriesInKiloCalories": null,
+    "completed": false,
+    "distanceInMeters": 50000.0,
+    "durationInSeconds": null,
+    "endDate": "2026-10-18",
+    "id": 12345678,
+    "name": "Run 60 km",
+    "numberOfActivities": null,
+    "overage": {
+      "percent": 0.0,
+      "days": 0,
+      "distanceInMeters": 0.0,
+      "durationInSeconds": null,
+      "caloriesInKiloCalories": null,
+      "numberOfActivities": null
+    },
+    "period": "seven_days",
+    "privacy": "public",
+    "progress": {
+      "percent": 20.0,
+      "days": 3,
+      "distanceInMeters": 10000.0,
+      "durationInSeconds": null,
+      "caloriesInKiloCalories": null,
+      "numberOfActivities": null
+    },
+    "remaining": {
+      "percent": 80.0,
+      "days": 4,
+      "distanceInMeters": 40000.0,
+      "durationInSeconds": null,
+      "caloriesInKiloCalories": null,
+      "numberOfActivities": null
+    },
+    "startDate": "2026-10-12",
+    "type": "distance_accumulation"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+update goal: garmin api: 400 Bad Request: {"message":"Bad request","error":"BadRequestException"}
+
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /goal-service/goal/goal/12345678
+PUT /goal-service/goal/goal/12345678
+  {
+    "active": true,
+    "activityType": "running",
+    "caloriesInKiloCalories": null,
+    "completed": false,
+    "distanceInMeters": 50000.0,
+    "durationInSeconds": null,
+    "endDate": "2026-10-18",
+    "id": 12345678,
+    "name": "Run 60 km",
+    "numberOfActivities": null,
+    "overage": {
+      "percent": 0.0,
+      "days": 0,
+      "distanceInMeters": 0.0,
+      "durationInSeconds": null,
+      "caloriesInKiloCalories": null,
+      "numberOfActivities": null
+    },
+    "period": "seven_days",
+    "privacy": "public",
+    "progress": {
+      "percent": 20.0,
+      "days": 3,
+      "distanceInMeters": 10000.0,
+      "durationInSeconds": null,
+      "caloriesInKiloCalories": null,
+      "numberOfActivities": null
+    },
+    "remaining": {
+      "percent": 80.0,
+      "days": 4,
+      "distanceInMeters": 40000.0,
+      "durationInSeconds": null,
+      "caloriesInKiloCalories": null,
+      "numberOfActivities": null
+    },
+    "startDate": "2026-10-12",
+    "type": "distance_accumulation"
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"update goal: garmin api: 400 Bad Request: {\"message\":\"Bad request\",\"error\":\"BadRequestException\"}\n"}}
+-- json exit --
+1
+-- json requests --
+GET /goal-service/goal/goal/12345678
+PUT /goal-service/goal/goal/12345678
+  {
+    "active": true,
+    "activityType": "running",
+    "caloriesInKiloCalories": null,
+    "completed": false,
+    "distanceInMeters": 50000.0,
+    "durationInSeconds": null,
+    "endDate": "2026-10-18",
+    "id": 12345678,
+    "name": "Run 60 km",
+    "numberOfActivities": null,
+    "overage": {
+      "percent": 0.0,
+      "days": 0,
+      "distanceInMeters": 0.0,
+      "durationInSeconds": null,
+      "caloriesInKiloCalories": null,
+      "numberOfActivities": null
+    },
+    "period": "seven_days",
+    "privacy": "public",
+    "progress": {
+      "percent": 20.0,
+      "days": 3,
+      "distanceInMeters": 10000.0,
+      "durationInSeconds": null,
+      "caloriesInKiloCalories": null,
+      "numberOfActivities": null
+    },
+    "remaining": {
+      "percent": 80.0,
+      "days": 4,
+      "distanceInMeters": 40000.0,
+      "durationInSeconds": null,
+      "caloriesInKiloCalories": null,
+      "numberOfActivities": null
+    },
+    "startDate": "2026-10-12",
+    "type": "distance_accumulation"
+  }

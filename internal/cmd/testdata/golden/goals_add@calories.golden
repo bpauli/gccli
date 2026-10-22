@@ -1,0 +1,99 @@
+A calories goal for a year. The start defaults to today.
+-- args --
+goals
+add
+Burn
+--period
+annual
+--calories
+50000
+-- route POST /goal-service/goal/goal --
+{"id":12345678,"name":"Run 50 km","type":"distance_accumulation","distanceInMeters":50000.0,"startDate":"2026-10-12","endDate":"2026-10-18","activityType":"running","period":"seven_days","privacy":"public","active":true,"completed":false}
+-- table stdout --
+-- table stderr --
+Added goal "Burn" (ID: 12345678)
+-- table exit --
+0
+-- table requests --
+POST /goal-service/goal/goal
+  {
+    "activityType": "all",
+    "caloriesInKiloCalories": 50000,
+    "distanceInMeters": null,
+    "durationInSeconds": null,
+    "name": "Burn",
+    "numberOfActivities": null,
+    "period": "annual",
+    "privacy": "public",
+    "startDate": "2026-10-15",
+    "type": "energy_accumulation"
+  }
+-- plain stdout --
+-- plain stderr --
+Added goal "Burn" (ID: 12345678)
+-- plain exit --
+0
+-- plain requests --
+POST /goal-service/goal/goal
+  {
+    "activityType": "all",
+    "caloriesInKiloCalories": 50000,
+    "distanceInMeters": null,
+    "durationInSeconds": null,
+    "name": "Burn",
+    "numberOfActivities": null,
+    "period": "annual",
+    "privacy": "public",
+    "startDate": "2026-10-15",
+    "type": "energy_accumulation"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Added goal "Burn" (ID: 12345678)
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /goal-service/goal/goal
+  {
+    "activityType": "all",
+    "caloriesInKiloCalories": 50000,
+    "distanceInMeters": null,
+    "durationInSeconds": null,
+    "name": "Burn",
+    "numberOfActivities": null,
+    "period": "annual",
+    "privacy": "public",
+    "startDate": "2026-10-15",
+    "type": "energy_accumulation"
+  }
+-- json stdout --
+{
+  "id": 12345678,
+  "name": "Run 50 km",
+  "type": "distance_accumulation",
+  "distanceInMeters": 50000.0,
+  "startDate": "2026-10-12",
+  "endDate": "2026-10-18",
+  "activityType": "running",
+  "period": "seven_days",
+  "privacy": "public",
+  "active": true,
+  "completed": false
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /goal-service/goal/goal
+  {
+    "activityType": "all",
+    "caloriesInKiloCalories": 50000,
+    "distanceInMeters": null,
+    "durationInSeconds": null,
+    "name": "Burn",
+    "numberOfActivities": null,
+    "period": "annual",
+    "privacy": "public",
+    "startDate": "2026-10-15",
+    "type": "energy_accumulation"
+  }

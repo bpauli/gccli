@@ -392,6 +392,42 @@ var writeCases = map[string]writeCase{
 		human:    "Set floors-climbed goal to 10 from 2026-10-15\n",
 		fallback: "Set floors-climbed goal to 10 from 2026-10-15\n",
 	},
+	"goals add": {
+		args:     []string{"Run 50 km", "--period", "seven-days", "--distance", "50km"},
+		routes:   map[string]string{"POST /goal-service/goal/goal": `{"id":4711,"name":"Run 50 km"}`},
+		json:     "{\n  \"id\": 4711,\n  \"name\": \"Run 50 km\"\n}\n",
+		human:    "Added goal \"Run 50 km\" (ID: 4711)\n",
+		fallback: "Added goal \"Run 50 km\"\n",
+	},
+	"goals update": {
+		args: []string{"4711", "--name", "Run 60 km"},
+		routes: map[string]string{
+			"GET /goal-service/goal/goal/4711": `{"id":4711,"name":"Run 50 km"}`,
+			"PUT /goal-service/goal/goal/4711": noContent,
+		},
+		result:   "PUT /goal-service/goal/goal/4711",
+		json:     okOut,
+		human:    "Updated goal 4711\n",
+		fallback: "Updated goal 4711\n",
+	},
+	"goals weight set": {
+		args:     []string{"72.5"},
+		routes:   map[string]string{"PUT /goal-service/goal/user/effective/weight-grams/2026-10-15": `{"goalType":"WEIGHT_GRAMS","goalValue":72500.0}`},
+		json:     "{\n  \"goalType\": \"WEIGHT_GRAMS\",\n  \"goalValue\": 72500.0\n}\n",
+		human:    "Set weight goal to 72.5 kg from 2026-10-15\n",
+		fallback: "Set weight goal to 72.5 kg from 2026-10-15\n",
+	},
+	"goals weight delete": {
+		routes: map[string]string{
+			"GET /goal-service/goal/user/WEIGHT_GRAMS/DAILY": `{"userGoalPk":42,"userGoalType":"WEIGHT_GRAMS","startDate":"2026-10-01","goalValue":72500.0}`,
+			"DELETE /goal-service/goal/user/42":              noContent,
+		},
+		result:   "DELETE /goal-service/goal/user/42",
+		prompt:   "Delete weight goal of 72.5 kg from 2026-10-01?",
+		json:     okOut,
+		human:    "Deleted weight goal from 2026-10-01\n",
+		fallback: "Deleted weight goal from 2026-10-01\n",
+	},
 	"goals steps set": {
 		args: []string{"9000"},
 		routes: map[string]string{

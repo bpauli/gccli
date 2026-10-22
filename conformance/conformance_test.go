@@ -231,6 +231,8 @@ var (
 
 const clockSkip = "a route asks for a date that the binary takes from its clock"
 
+const goalStartClockSkip = "the request body holds the start date, today or the first day of this month, which the binary takes from its clock"
+
 const napClockSkip = "the nap is for today and must end by now, which the binary takes from its clock"
 
 const menstrualLogClockSkip = "the request body holds the time of the write, which the binary takes from its clock"
@@ -248,7 +250,10 @@ var skipped = map[string]string{
 	"body weekly":                     clockSkip,
 	"devices solar":                   clockSkip,
 	"events list":                     clockSkip,
-	"goals weight":                    clockSkip,
+	"goals add":                       goalStartClockSkip,
+	"goals effective":                 clockSkip,
+	"goals weight set":                clockSkip,
+	"goals weight view":               clockSkip,
 	"health acclimation daily":        clockSkip,
 	"health calories weekly":          clockSkip,
 	"health critical-swim-speed view": clockSkip,

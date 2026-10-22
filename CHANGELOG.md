@@ -44,9 +44,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `training schedule <id>` lists the workouts and notes of a training plan by week and day, with the date and the task ID of each workout of a joined plan. (#83)
 - `training join <id> [--start DATE]` joins a catalog plan from a day (default today) and puts its workouts in the calendar. Garmin copies the plan under a new ID, which the command prints. `training leave <id>` leaves a joined plan after a prompt (`--force` skips it) and removes its workouts from the calendar. (#83)
 - `training task move <plan-id> <task-id> <date>` moves a workout of a joined plan to another day and prints its new task ID, because Garmin gives the moved workout a new one. `training task delete <plan-id> <task-id>` deletes a workout after a prompt (`--force` skips it); Garmin puts a rest day in its place. (#83)
+- `goals add <name> --period <period>` adds an activity goal with one target: `--distance` (such as `50km` or `30mi`), `--duration` (such as `10h`), `--calories` or `--activities`, for an `--activity-type` (default `all`). A `one-month` goal starts on the first day of a month, by default this month. `goals update <id>` changes the flags you give, and `goals delete <id>` deletes a goal after a prompt (`--force` skips it). (#68)
+- `goals weight set <weight> [--unit kg|lbs] [--date]` sets the weight goal, and `goals weight delete` deletes the current one after a prompt. An earlier weight goal then applies again. (#68)
+- `goals effective <type> [--date]` shows the daily goal that applies on a date: `floors-climbed`, `intensity-minutes`, `hydration`, `steps` or `weight-grams`. (#68)
 
 ### Changed
 
+- `goals weight` is now a group with `view`, `set` and `delete`. Without a child it runs `view` with `--start` and `--end`, with the same output and exit codes as before. (#68)
 - `health acclimation` is now a group with `range` and `daily`. Without a child it runs `range` with `--start` and `--end`, with the same output and exit codes as before. (#73)
 - `profile power-zones` is now a group with `list` and `sport`. Without a child it runs `list`, with the same output and exit codes as before. (#74)
 - `health endurance-score` and `health hill-score` are now groups with `view` and `stats`. Without a child they run `view`, with the same output and exit codes as before. (#73)

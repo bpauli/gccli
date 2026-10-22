@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"maps"
 	"net/http"
 )
 
@@ -15,10 +16,21 @@ var goalsEndpoints = []Endpoint{
 	},
 	{Name: "goals.effective-weight-goal", Method: http.MethodGet, Host: ConnectAPI, Path: "/goal-service/goal/user/effective/weightgoal/{startDate}/{endDate}"},
 	{
+		Name: "goals.effective", Method: http.MethodGet, Host: ConnectAPI,
+		Path:   "/goal-service/goal/user/effective/{goalType}/{date}",
+		Params: []Param{{Name: "goalType", Enum: []string{"floors-climbed", "intensity-minutes", "hydration", "steps", "weight-grams"}}},
+	},
+	{
 		Name: "goals.set-effective", Method: http.MethodPut, Host: ConnectAPI,
 		Path: "/goal-service/goal/user/effective/{goalType}/{date}", Body: true,
-		Params: []Param{{Name: "goalType", Enum: []string{"floors-climbed", "intensity-minutes", "hydration"}}},
+		Params: []Param{{Name: "goalType", Enum: []string{"floors-climbed", "intensity-minutes", "hydration", "weight-grams"}}},
 	},
+	{Name: "goals.weight-goal", Method: http.MethodGet, Host: ConnectAPI, Path: "/goal-service/goal/user/WEIGHT_GRAMS/DAILY"},
+	{Name: "goals.delete-user-goal", Method: http.MethodDelete, Host: ConnectAPI, Path: "/goal-service/goal/user/{userGoalPK}"},
+	{Name: "goals.get", Method: http.MethodGet, Host: ConnectAPI, Path: "/goal-service/goal/goal/{goalID}"},
+	{Name: "goals.create", Method: http.MethodPost, Host: ConnectAPI, Path: "/goal-service/goal/goal", Body: true},
+	{Name: "goals.update", Method: http.MethodPut, Host: ConnectAPI, Path: "/goal-service/goal/goal/{goalID}", Body: true},
+	{Name: "goals.delete", Method: http.MethodDelete, Host: ConnectAPI, Path: "/goal-service/goal/goal/{goalID}"},
 	{Name: "goals.steps", Method: http.MethodGet, Host: ConnectAPI, Path: "/wellness-service/wellness/wellness-goals/consolidated/steps/{date}"},
 	{Name: "goals.set-steps", Method: http.MethodPut, Host: ConnectAPI, Path: "/wellness-service/wellness/wellness-goals/consolidated/steps/{date}", Body: true},
 	{Name: "badges.earned", Method: http.MethodGet, Host: ConnectAPI, Path: "/badge-service/badge/earned"},
@@ -44,6 +56,101 @@ var goalsEndpoints = []Endpoint{
 	{Name: "records.list", Method: http.MethodGet, Host: ConnectAPI, Path: "/personalrecord-service/personalrecord/prs/{displayName}"},
 	{Name: "records.types", Method: http.MethodGet, Host: ConnectAPI, Path: "/personalrecord-service/personalrecordtype/prtypes/{displayName}"},
 	{Name: "records.activity", Method: http.MethodGet, Host: ConnectAPI, Path: "/personalrecord-service/personalrecord/prByActivityId/{activityID}"},
+}
+
+// GoalTarget is what an activity goal counts: a distance, a duration,
+// calories or a number of activities. Garmin keeps the kind in type and the
+// value in the target field of that kind, with the other three fields null.
+type GoalTarget struct {
+	kind  string
+	field string
+	value float64
+}
+
+func DistanceGoal(meters float64) GoalTarget {
+	return GoalTarget{"distance_accumulation", "distanceInMeters", meters}
+}
+
+func DurationGoal(seconds int) GoalTarget {
+	return GoalTarget{"duration_accumulation", "durationInSeconds", float64(seconds)}
+}
+
+func CalorieGoal(kilocalories int) GoalTarget {
+	return GoalTarget{"energy_accumulation", "caloriesInKiloCalories", float64(kilocalories)}
+}
+
+func ActivityCountGoal(activities int) GoalTarget {
+	return GoalTarget{"count_accumulation", "numberOfActivities", float64(activities)}
+}
+
+func (t GoalTarget) fields() map[string]any {
+	fields := map[string]any{"type": t.kind}
+	for _, f := range []string{"distanceInMeters", "durationInSeconds", "caloriesInKiloCalories", "numberOfActivities"} {
+		fields[f] = nil
+	}
+	fields[t.field] = t.value
+	return fields
+}
+
+// Goal is a new activity goal. ActivityType is an activity type key or
+// "all", Period is seven_days, thirty_days, one_month or annual, and
+// StartDate is YYYY-MM-DD.
+type Goal struct {
+	Name         string
+	ActivityType string
+	Period       string
+	StartDate    string
+	Target       GoalTarget
+}
+
+// CreateGoal adds an activity goal. Garmin rejects a goal without privacy,
+// and the web app sends every goal as public.
+func (c *Client) CreateGoal(ctx context.Context, g Goal) (json.RawMessage, error) {
+	fields := g.Target.fields()
+	fields["name"] = g.Name
+	fields["activityType"] = g.ActivityType
+	fields["period"] = g.Period
+	fields["startDate"] = g.StartDate
+	fields["privacy"] = "public"
+	body, err := json.Marshal(fields)
+	if err != nil {
+		return nil, fmt.Errorf("marshal goal: %w", err)
+	}
+	return c.Call(ctx, "goals.create", nil, body)
+}
+
+// GoalEdit holds the new values of a goal update. An empty field and a nil
+// Target keep the saved value.
+type GoalEdit struct {
+	Name         string
+	ActivityType string
+	Period       string
+	StartDate    string
+	Target       *GoalTarget
+}
+
+// UpdateGoal reads the goal, sets the fields of e and sends the full object
+// back, because Garmin answers a partial body with 500.
+func (c *Client) UpdateGoal(ctx context.Context, id string, e GoalEdit) (json.RawMessage, error) {
+	params := map[string]string{"goalID": id}
+	data, err := c.Call(ctx, "goals.get", params, nil)
+	if err != nil {
+		return nil, err
+	}
+	set := map[string]any{}
+	for key, value := range map[string]string{"name": e.Name, "activityType": e.ActivityType, "period": e.Period, "startDate": e.StartDate} {
+		if value != "" {
+			set[key] = value
+		}
+	}
+	if e.Target != nil {
+		maps.Copy(set, e.Target.fields())
+	}
+	body, err := setFields(data, "goal "+id, set)
+	if err != nil {
+		return nil, err
+	}
+	return c.Call(ctx, "goals.update", params, body)
 }
 
 // StepGoal is a daily steps goal: ManualStepGoal or AutoStepGoal.
