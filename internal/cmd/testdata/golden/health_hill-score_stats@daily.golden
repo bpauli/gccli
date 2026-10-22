@@ -1,0 +1,45 @@
+-- args --
+health
+hill-score
+stats
+--start=2026-09-01
+--end=2026-10-15
+--aggregation=daily
+-- route GET /metrics-service/metrics/hillscore/stats?startDate=2026-09-01&endDate=2026-10-15&aggregation=daily --
+{"hillScoreDTOList":[]}
+-- table stdout --
+{
+  "hillScoreDTOList": []
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /metrics-service/metrics/hillscore/stats?startDate=2026-09-01&endDate=2026-10-15&aggregation=daily
+-- plain stdout --
+{
+  "hillScoreDTOList": []
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /metrics-service/metrics/hillscore/stats?startDate=2026-09-01&endDate=2026-10-15&aggregation=daily
+-- plain-header stdout --
+{
+  "hillScoreDTOList": []
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /metrics-service/metrics/hillscore/stats?startDate=2026-09-01&endDate=2026-10-15&aggregation=daily
+-- json stdout --
+{
+  "hillScoreDTOList": []
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /metrics-service/metrics/hillscore/stats?startDate=2026-09-01&endDate=2026-10-15&aggregation=daily

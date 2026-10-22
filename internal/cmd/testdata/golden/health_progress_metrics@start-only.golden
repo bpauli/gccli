@@ -1,15 +1,13 @@
 -- args --
 health
-hill-score
-2026-02-30
+progress
+metrics
+--start=2026-09-01
 -- table stdout --
 -- table stderr --
-Usage: gccli health hill-score [<date>]
+Usage: gccli health progress metrics [flags]
 
-Show hill score data.
-
-Arguments:
-  [<date>]    Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
+List the metrics of each activity type.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -25,18 +23,20 @@ Flags:
                           ($GCCLI_UNITS).
       --version           Print version information.
 
-gccli: error: [<date>]: invalid date "2026-02-30": expected YYYY-MM-DD, today, yesterday, Nd (e.g. 3d), or +Nd (e.g. +30d)
+      --start=DATE        Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+                          With --end, only types with activities in the range.
+      --end=DATE          End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+                          Needs --start.
+
+gccli: error: --start and --end must be used together
 -- table exit --
 2
 -- table requests --
 -- plain stdout --
 -- plain stderr --
-Usage: gccli health hill-score [<date>]
+Usage: gccli health progress metrics [flags]
 
-Show hill score data.
-
-Arguments:
-  [<date>]    Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
+List the metrics of each activity type.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -52,18 +52,20 @@ Flags:
                           ($GCCLI_UNITS).
       --version           Print version information.
 
-gccli: error: [<date>]: invalid date "2026-02-30": expected YYYY-MM-DD, today, yesterday, Nd (e.g. 3d), or +Nd (e.g. +30d)
+      --start=DATE        Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+                          With --end, only types with activities in the range.
+      --end=DATE          End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+                          Needs --start.
+
+gccli: error: --start and --end must be used together
 -- plain exit --
 2
 -- plain requests --
 -- plain-header stdout --
 -- plain-header stderr --
-Usage: gccli health hill-score [<date>]
+Usage: gccli health progress metrics [flags]
 
-Show hill score data.
-
-Arguments:
-  [<date>]    Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
+List the metrics of each activity type.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -79,18 +81,20 @@ Flags:
                           ($GCCLI_UNITS).
       --version           Print version information.
 
-gccli: error: [<date>]: invalid date "2026-02-30": expected YYYY-MM-DD, today, yesterday, Nd (e.g. 3d), or +Nd (e.g. +30d)
+      --start=DATE        Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+                          With --end, only types with activities in the range.
+      --end=DATE          End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+                          Needs --start.
+
+gccli: error: --start and --end must be used together
 -- plain-header exit --
 2
 -- plain-header requests --
 -- json stdout --
 -- json stderr --
-Usage: gccli health hill-score [<date>]
+Usage: gccli health progress metrics [flags]
 
-Show hill score data.
-
-Arguments:
-  [<date>]    Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
+List the metrics of each activity type.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -106,7 +110,12 @@ Flags:
                           ($GCCLI_UNITS).
       --version           Print version information.
 
-gccli: error: [<date>]: invalid date "2026-02-30": expected YYYY-MM-DD, today, yesterday, Nd (e.g. 3d), or +Nd (e.g. +30d)
+      --start=DATE        Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+                          With --end, only types with activities in the range.
+      --end=DATE          End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+                          Needs --start.
+
+gccli: error: --start and --end must be used together
 -- json exit --
 2
 -- json requests --

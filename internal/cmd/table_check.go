@@ -128,7 +128,7 @@ func checkLeaf(path string, l Leaf) []error {
 				fail("Params[%q] binds %s, which Kong skips (kong:\"-\")", key, a)
 			default:
 				if _, sendable := requestValue(reflect.Zero(f.Type)); !sendable {
-					fail("Params[%q] binds %s of type %s: the runner sends only string, int, Date and ID", key, a, f.Type)
+					fail("Params[%q] binds %s of type %s: the runner sends only string, int, Date, ID and []string", key, a, f.Type)
 				}
 			}
 		}
@@ -157,10 +157,13 @@ func checkLeaf(path string, l Leaf) []error {
 			if (p.Optional || p.Default != "") && f.Type == reflect.TypeFor[int]() {
 				fail("Params[%q] binds %s of type int, but {%s} of %s may be left out: the runner sends an int even when it is 0, so use a string field", p.Name, a, p.Name, l.Endpoint)
 			}
+			if f.Type == reflect.TypeFor[[]string]() && !p.List {
+				fail("Params[%q] binds %s of type []string, but {%s} of %s is not a List: its values would go out as one comma-joined value", p.Name, a, p.Name, l.Endpoint)
+			}
 			if p.Enum == nil {
 				continue
 			}
-			for _, v := range kongEnum(f) {
+			for _, v := range wireEnum(f) {
 				if !slices.Contains(p.Enum, v) {
 					fail("Params[%q] binds %s, whose enum allows %q, which {%s} of %s does not: %s", p.Name, a, v, p.Name, l.Endpoint, strings.Join(p.Enum, ", "))
 				}
@@ -261,10 +264,27 @@ func requestValue(v reflect.Value) (value string, ok bool) {
 		return string(x), true
 	case Month:
 		return string(x), true
+	case Upper:
+		return x.wire(), true
 	case int:
 		return strconv.Itoa(x), true
+	case []string:
+		return strings.Join(x, ","), true
 	}
 	return "", false
+}
+
+// wireEnum returns the enum values of a field as the runner sends them.
+func wireEnum(f reflect.StructField) []string {
+	values := kongEnum(f)
+	t := f.Type
+	if t.Kind() == reflect.Slice {
+		t = t.Elem()
+	}
+	for i, v := range values {
+		values[i], _ = requestValue(reflect.ValueOf(v).Convert(t))
+	}
+	return values
 }
 
 func kongEnum(f reflect.StructField) []string {

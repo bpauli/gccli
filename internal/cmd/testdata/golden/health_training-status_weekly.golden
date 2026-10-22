@@ -1,0 +1,70 @@
+-- args --
+health
+training-status
+weekly
+--start=2026-09-01
+--end=2026-10-15
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","profileId":3141592}
+-- route GET /metrics-service/metrics/trainingstatus/weekly/tester?fromCalendarDate=2026-09-01&toCalendarDate=2026-10-15 --
+{"userId":1,"fromCalendarDate":"2026-09-01","toCalendarDate":"2026-10-15","showSelector":false,"recordedDevices":[],"reportData":{}}
+-- table stdout --
+{
+  "userId": 1,
+  "fromCalendarDate": "2026-09-01",
+  "toCalendarDate": "2026-10-15",
+  "showSelector": false,
+  "recordedDevices": [],
+  "reportData": {}
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /userprofile-service/userprofile/settings
+GET /metrics-service/metrics/trainingstatus/weekly/tester?fromCalendarDate=2026-09-01&toCalendarDate=2026-10-15
+-- plain stdout --
+{
+  "userId": 1,
+  "fromCalendarDate": "2026-09-01",
+  "toCalendarDate": "2026-10-15",
+  "showSelector": false,
+  "recordedDevices": [],
+  "reportData": {}
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+GET /metrics-service/metrics/trainingstatus/weekly/tester?fromCalendarDate=2026-09-01&toCalendarDate=2026-10-15
+-- plain-header stdout --
+{
+  "userId": 1,
+  "fromCalendarDate": "2026-09-01",
+  "toCalendarDate": "2026-10-15",
+  "showSelector": false,
+  "recordedDevices": [],
+  "reportData": {}
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /metrics-service/metrics/trainingstatus/weekly/tester?fromCalendarDate=2026-09-01&toCalendarDate=2026-10-15
+-- json stdout --
+{
+  "userId": 1,
+  "fromCalendarDate": "2026-09-01",
+  "toCalendarDate": "2026-10-15",
+  "showSelector": false,
+  "recordedDevices": [],
+  "reportData": {}
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /userprofile-service/userprofile/settings
+GET /metrics-service/metrics/trainingstatus/weekly/tester?fromCalendarDate=2026-09-01&toCalendarDate=2026-10-15

@@ -223,6 +223,9 @@ Date shortcuts
 - `gccli health body-battery range --start=DATE --end=DATE`: Show body battery data for a date range.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli health body-battery daily --start=DATE --end=DATE`: Show the daily low and high body battery for a date range (at most 28 days).
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
 - `gccli health intensity-minutes view [<date>]`: Show intensity minutes for a date. Also runs as `gccli health intensity-minutes [<date>]`.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli health intensity-minutes weekly --start=DATE --end=DATE`: Show weekly intensity minutes for a date range.
@@ -234,6 +237,9 @@ Date shortcuts
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli health training-status daily [<date>]`: Show daily training status for a date.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli health training-status weekly --start=DATE --end=DATE`: Show weekly training status for a date range.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
 - `gccli health fitness-age [<date>]`: Show fitness age data.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli health max-metrics [<date>]`: Show VO2max and max metrics data.
@@ -263,13 +269,43 @@ Date shortcuts
 - `gccli health race-predictions range --start=DATE --end=DATE`: Show race predictions for a date range.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
-- `gccli health endurance-score [<date>]`: Show endurance score data.
+- `gccli health endurance-score view [<date>]`: Show endurance score data for a date. Also runs as `gccli health endurance-score [<date>]`.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
-- `gccli health hill-score [<date>]`: Show hill score data.
+- `gccli health endurance-score stats --start=DATE --end=DATE [flags]`: Show endurance score statistics for a date range (at most 400 days).
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--aggregation="weekly"`: Period of each group: weekly or monthly.
+- `gccli health hill-score view [<date>]`: Show hill score data for a date. Also runs as `gccli health hill-score [<date>]`.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
+- `gccli health hill-score stats --start=DATE --end=DATE [flags]`: Show hill score statistics for a date range (at most 400 days).
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--aggregation="weekly"`: Period of each value: daily, weekly or monthly.
 - `gccli health power-curve --start=DATE --end=DATE`: Show power curve for a date range.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli health running-tolerance --start=DATE --end=DATE [flags]`: Show running tolerance for a date range.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--aggregation="weekly"`: Period of each value: daily, weekly or monthly.
+- `gccli health cycling-ability --start=DATE --end=DATE [flags]`: Show cycling ability for a date range.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--aggregation="weekly"`: Period of each value: daily (at most 30 days), weekly or monthly (at most 400 days).
+- `gccli health progress summary --start=DATE --end=DATE --metric=METRIC,... [flags]`: Show activity totals per period for a date range. Also runs as `gccli health progress --start=DATE --end=DATE --metric=METRIC,... [flags]`.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--aggregation="weekly"`: Period of each total: daily, weekly, monthly, yearly or all.
+  - `--metric=METRIC,...`: Metric to total, as health progress metrics prints it (e.g. distance, duration). Repeat the flag or separate with commas.
+  - `--activity-type=ACTIVITY-TYPE,...`: Activity type, as health progress metrics prints it (e.g. running, cycling). Repeat the flag or separate with commas. Defaults to all types.
+- `gccli health progress activities --start=DATE --end=DATE --metric=METRIC,... [flags]`: Show metric values of each activity in a date range.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--metric=METRIC,...`: Metric to show, as health progress metrics prints it (e.g. distance, avgHr). Repeat the flag or separate with commas.
+  - `--activity-type=ACTIVITY-TYPE,...`: Activity type, as health progress metrics prints it (e.g. running, cycling). Repeat the flag or separate with commas. Defaults to all types.
+- `gccli health progress metrics [flags]`: List the metrics of each activity type.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). With --end, only types with activities in the range.
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Needs --start.
 - `gccli health running-economy [<date>]`: Show latest running economy as of a date.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli health acclimation --start=DATE --end=DATE`: Show acclimation data for a date range.
@@ -835,6 +871,8 @@ Notes
 - `segments search` needs `--name` or `--bbox MINLAT,MINLON,MAXLAT,MAXLON`. Without one Garmin finds nothing, so the command exits 2. Take the `--classification` and `--surface` values from `gccli segments classifications` and `gccli segments surface-types`. Garmin's `all` means no filter: leave the flag out. In `--json` output, segment distances are kilometers and leaderboard times are milliseconds. One leaderboard page has 26 rows: `--from-rank 27` gives the next page. `--group` goes only with `--scope all`.
 - `insights compare` needs Insights turned on in Garmin Connect. Without it, Garmin answers 403 `User is not opted into Insights` and the command exits 1, so tell the user. Take every flag value (`--activity`, `--field`, `--age`, `--year`, `--month`) from `gccli insights options` as it prints them, such as `--age 75+`. Some dates, such as the current year without `--month`, give `{}`.
 - The `golf` commands print the Garmin answer as JSON. `golf scorecards`, `golf courses` and `golf leaderboards` page by `--limit`, so `--offset` must be a multiple of `--limit`. For an account without golf rounds, the answer has `totalRows: 0` and no list. `golf clubs` gives each club a `clubTypeId`, and `golf club-types` gives the name of each type ID as `value`.
+- `health progress` (also as `health progress summary`) totals metrics per period, and `health progress activities` lists the values of each activity. Take the `--metric` and `--activity-type` values from `gccli health progress metrics`, which lists the metrics of each activity type (`running`, `cycling`, ...). Repeat a flag or separate its values with commas. Distances are meters and durations seconds. The totals of each summary period are under `.stats.all`, also with `--activity-type`.
+- Range limits that Garmin sets: `health body-battery daily` at most 28 days, `health endurance-score stats`, `health hill-score stats` and `health cycling-ability` at most 400 days, `health cycling-ability --aggregation daily` at most 30 days. A longer range fails with exit 1 and the Garmin message.
 - Delete commands fail without a terminal unless `--force` is set. Confirm with the user first, then pass `--force`.
 - Download formats: FIT (default), GPX, TCX, KML, CSV.
 - Workout step format: `type:duration[@target:low-high]`. Types: warmup, run, recovery, cooldown; targets: pace (min:sec), hr (bpm), power (watts), cadence.
