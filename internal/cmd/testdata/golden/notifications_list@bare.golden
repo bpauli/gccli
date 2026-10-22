@@ -1,0 +1,67 @@
+notifications without a child runs list, and list takes its flags.
+-- args --
+notifications
+--limit
+5
+-- route GET /notification-service/notification/notification/cursor?limit=5 --
+{"notificationList":[],"pagination":{"cursor":null,"limit":5,"nextCursor":null,"start":0}}
+-- table stdout --
+{
+  "notificationList": [],
+  "pagination": {
+    "cursor": null,
+    "limit": 5,
+    "nextCursor": null,
+    "start": 0
+  }
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /notification-service/notification/notification/cursor?limit=5
+-- plain stdout --
+{
+  "notificationList": [],
+  "pagination": {
+    "cursor": null,
+    "limit": 5,
+    "nextCursor": null,
+    "start": 0
+  }
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /notification-service/notification/notification/cursor?limit=5
+-- plain-header stdout --
+{
+  "notificationList": [],
+  "pagination": {
+    "cursor": null,
+    "limit": 5,
+    "nextCursor": null,
+    "start": 0
+  }
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /notification-service/notification/notification/cursor?limit=5
+-- json stdout --
+{
+  "notificationList": [],
+  "pagination": {
+    "cursor": null,
+    "limit": 5,
+    "nextCursor": null,
+    "start": 0
+  }
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /notification-service/notification/notification/cursor?limit=5

@@ -1,0 +1,90 @@
+--limit and --cursor go into the query, so the request asks for the next page.
+-- args --
+notifications
+list
+--limit
+3
+--cursor
+abc
+-- route GET /notification-service/notification/notification/cursor?limit=3&cursor=abc --
+{"notificationList":[{"notificationId":12345,"type":"CONNECTION_REQUEST"}],"pagination":{"cursor":"abc","limit":3,"nextCursor":"abd","start":3}}
+-- table stdout --
+{
+  "notificationList": [
+    {
+      "notificationId": 12345,
+      "type": "CONNECTION_REQUEST"
+    }
+  ],
+  "pagination": {
+    "cursor": "abc",
+    "limit": 3,
+    "nextCursor": "abd",
+    "start": 3
+  }
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /notification-service/notification/notification/cursor?limit=3&cursor=abc
+-- plain stdout --
+{
+  "notificationList": [
+    {
+      "notificationId": 12345,
+      "type": "CONNECTION_REQUEST"
+    }
+  ],
+  "pagination": {
+    "cursor": "abc",
+    "limit": 3,
+    "nextCursor": "abd",
+    "start": 3
+  }
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /notification-service/notification/notification/cursor?limit=3&cursor=abc
+-- plain-header stdout --
+{
+  "notificationList": [
+    {
+      "notificationId": 12345,
+      "type": "CONNECTION_REQUEST"
+    }
+  ],
+  "pagination": {
+    "cursor": "abc",
+    "limit": 3,
+    "nextCursor": "abd",
+    "start": 3
+  }
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /notification-service/notification/notification/cursor?limit=3&cursor=abc
+-- json stdout --
+{
+  "notificationList": [
+    {
+      "notificationId": 12345,
+      "type": "CONNECTION_REQUEST"
+    }
+  ],
+  "pagination": {
+    "cursor": "abc",
+    "limit": 3,
+    "nextCursor": "abd",
+    "start": 3
+  }
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /notification-service/notification/notification/cursor?limit=3&cursor=abc

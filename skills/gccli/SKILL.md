@@ -661,7 +661,14 @@ Date shortcuts
 - `gccli social requests`: List pending connection requests.
 - `gccli social feed`: Show your newsfeed.
 - `gccli groups list`: List your groups. Also runs as `gccli groups`.
-- `gccli notifications list`: List notifications. Also runs as `gccli notifications`.
+- `gccli notifications list [flags]`: List notifications. Also runs as `gccli notifications [flags]`.
+  - `--limit=50`: Maximum number of notifications to return.
+  - `--cursor=STRING`: Start after this cursor. Use pagination.nextCursor from the JSON output of the last page.
+- `gccli notifications unread`: Show whether there are unread notifications.
+- `gccli notifications dismiss <id>`: Dismiss a notification. Use 'notifications undismiss' to bring it back.
+  - `<id>`: Notification ID (from 'notifications list').
+- `gccli notifications undismiss <id>`: Bring back a dismissed notification.
+  - `<id>`: Notification ID (from 'notifications list').
 - `gccli notifications preferences view`: Show notification preferences. Also runs as `gccli notifications preferences`.
 - `gccli notifications preferences set <key> <value>`: Turn a notification preference on or off.
   - `<key>`: Preference key, such as allowEmailWeeklySummary. Run gccli notifications preferences to see the keys.
