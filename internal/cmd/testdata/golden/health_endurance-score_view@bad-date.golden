@@ -1,12 +1,13 @@
 -- args --
 health
 endurance-score
+view
 2026-02-30
 -- table stdout --
 -- table stderr --
-Usage: gccli health endurance-score [<date>]
+Usage: gccli health endurance-score view [<date>]
 
-Show endurance score data.
+Show endurance score data for a date.
 
 Arguments:
   [<date>]    Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
@@ -31,9 +32,9 @@ gccli: error: [<date>]: invalid date "2026-02-30": expected YYYY-MM-DD, today, y
 -- table requests --
 -- plain stdout --
 -- plain stderr --
-Usage: gccli health endurance-score [<date>]
+Usage: gccli health endurance-score view [<date>]
 
-Show endurance score data.
+Show endurance score data for a date.
 
 Arguments:
   [<date>]    Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
@@ -58,9 +59,9 @@ gccli: error: [<date>]: invalid date "2026-02-30": expected YYYY-MM-DD, today, y
 -- plain requests --
 -- plain-header stdout --
 -- plain-header stderr --
-Usage: gccli health endurance-score [<date>]
+Usage: gccli health endurance-score view [<date>]
 
-Show endurance score data.
+Show endurance score data for a date.
 
 Arguments:
   [<date>]    Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
@@ -85,9 +86,9 @@ gccli: error: [<date>]: invalid date "2026-02-30": expected YYYY-MM-DD, today, y
 -- plain-header requests --
 -- json stdout --
 -- json stderr --
-Usage: gccli health endurance-score [<date>]
+Usage: gccli health endurance-score view [<date>]
 
-Show endurance score data.
+Show endurance score data for a date.
 
 Arguments:
   [<date>]    Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.

@@ -1,6 +1,7 @@
 -- args --
 health
 hill-score
+view
 2026-10-15
 -- route GET /metrics-service/metrics/hillscore?calendarDate=2026-10-15 --
 {"value":1}

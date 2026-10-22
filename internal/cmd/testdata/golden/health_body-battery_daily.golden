@@ -1,0 +1,63 @@
+-- args --
+health
+body-battery
+daily
+--start=2026-10-01
+--end=2026-10-03
+-- route GET /usersummary-service/stats/bodybattery/daily/2026-10-01/2026-10-03 --
+[{"calendarDate":"2026-10-01","values":{"lowBodyBattery":12,"highBodyBattery":81}},{"calendarDate":"2026-10-02","values":{"lowBodyBattery":20,"highBodyBattery":67}},{"calendarDate":"2026-10-03","values":{}}]
+-- table stdout --
+DATE        LOW  HIGH
+2026-10-01  12   81
+2026-10-02  20   67
+2026-10-03       
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /usersummary-service/stats/bodybattery/daily/2026-10-01/2026-10-03
+-- plain stdout --
+2026-10-01	12	81
+2026-10-02	20	67
+2026-10-03		
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /usersummary-service/stats/bodybattery/daily/2026-10-01/2026-10-03
+-- plain-header stdout --
+DATE	LOW	HIGH
+2026-10-01	12	81
+2026-10-02	20	67
+2026-10-03		
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /usersummary-service/stats/bodybattery/daily/2026-10-01/2026-10-03
+-- json stdout --
+[
+  {
+    "calendarDate": "2026-10-01",
+    "values": {
+      "lowBodyBattery": 12,
+      "highBodyBattery": 81
+    }
+  },
+  {
+    "calendarDate": "2026-10-02",
+    "values": {
+      "lowBodyBattery": 20,
+      "highBodyBattery": 67
+    }
+  },
+  {
+    "calendarDate": "2026-10-03",
+    "values": {}
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /usersummary-service/stats/bodybattery/daily/2026-10-01/2026-10-03

@@ -1,0 +1,52 @@
+-- args --
+health
+progress
+metrics
+--start=2026-09-01
+--end=2026-10-15
+-- route GET /fitnessstats-service/activity/availableMetrics?startDate=2026-09-01&endDate=2026-10-15 --
+{"running":["distance"]}
+-- table stdout --
+{
+  "running": [
+    "distance"
+  ]
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /fitnessstats-service/activity/availableMetrics?startDate=2026-09-01&endDate=2026-10-15
+-- plain stdout --
+{
+  "running": [
+    "distance"
+  ]
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /fitnessstats-service/activity/availableMetrics?startDate=2026-09-01&endDate=2026-10-15
+-- plain-header stdout --
+{
+  "running": [
+    "distance"
+  ]
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /fitnessstats-service/activity/availableMetrics?startDate=2026-09-01&endDate=2026-10-15
+-- json stdout --
+{
+  "running": [
+    "distance"
+  ]
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /fitnessstats-service/activity/availableMetrics?startDate=2026-09-01&endDate=2026-10-15

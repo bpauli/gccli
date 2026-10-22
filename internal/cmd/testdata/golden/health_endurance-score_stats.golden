@@ -1,0 +1,60 @@
+-- args --
+health
+endurance-score
+stats
+--start=2026-09-01
+--end=2026-10-15
+-- route GET /metrics-service/metrics/endurancescore/stats?startDate=2026-09-01&endDate=2026-10-15&aggregation=weekly --
+{"startDate":"2026-09-01","endDate":"2026-10-15","avg":1,"max":2,"groupMap":{}}
+-- table stdout --
+{
+  "startDate": "2026-09-01",
+  "endDate": "2026-10-15",
+  "avg": 1,
+  "max": 2,
+  "groupMap": {}
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /metrics-service/metrics/endurancescore/stats?startDate=2026-09-01&endDate=2026-10-15&aggregation=weekly
+-- plain stdout --
+{
+  "startDate": "2026-09-01",
+  "endDate": "2026-10-15",
+  "avg": 1,
+  "max": 2,
+  "groupMap": {}
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /metrics-service/metrics/endurancescore/stats?startDate=2026-09-01&endDate=2026-10-15&aggregation=weekly
+-- plain-header stdout --
+{
+  "startDate": "2026-09-01",
+  "endDate": "2026-10-15",
+  "avg": 1,
+  "max": 2,
+  "groupMap": {}
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /metrics-service/metrics/endurancescore/stats?startDate=2026-09-01&endDate=2026-10-15&aggregation=weekly
+-- json stdout --
+{
+  "startDate": "2026-09-01",
+  "endDate": "2026-10-15",
+  "avg": 1,
+  "max": 2,
+  "groupMap": {}
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /metrics-service/metrics/endurancescore/stats?startDate=2026-09-01&endDate=2026-10-15&aggregation=weekly

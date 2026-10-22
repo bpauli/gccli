@@ -78,14 +78,17 @@ health body-battery view	array	live 2026-10-20
 health calories weekly	array	live 2026-10-20
 health critical-swim-speed range	object	live 2026-10-20
 health critical-swim-speed view	unknown	empty body live 2026-10-20
+health cycling-ability	object	live GET 2026-10-22 connectapi
 health cycling-ftp	object	live 2026-10-20
-health endurance-score	unknown	empty body live 2026-10-20
+health endurance-score stats	object	live GET 2026-10-22 connectapi
+health endurance-score view	unknown	empty body live 2026-10-20
 health events	array	live 2026-10-20
 health fitness-age	object	live 2026-10-20
 health floors daily	array	live 2026-10-20
 health floors view	object	live 2026-10-20
 health floors weekly	array	live 2026-10-20
-health hill-score	unknown	empty body live 2026-10-20
+health hill-score stats	object	live GET 2026-10-22 connectapi
+health hill-score view	unknown	empty body live 2026-10-20
 health hr daily	array	live 2026-10-20
 health hr view	object	live 2026-10-20
 health hr weekly	array	live 2026-10-20
@@ -99,6 +102,9 @@ health max-metrics	array	live 2026-10-20
 health one-rep-max	array	live 2026-10-20
 health power-curve	object	live 2026-10-20
 health power-to-weight	array	live 2026-10-20
+health progress activities	array	live GET 2026-10-22 connectapi
+health progress metrics	object	live GET 2026-10-22 connectapi
+health progress summary	array	live GET 2026-10-22 connectapi
 health pushes monthly	array	live 2026-10-20
 health pushes weekly	array	live 2026-10-20
 health race-predictions range	array	live 2026-10-20
@@ -107,6 +113,7 @@ health respiration daily	array	live 2026-10-20
 health respiration view	object	live 2026-10-20
 health rhr	object	live 2026-10-20
 health running-economy	unknown	empty body live 2026-10-20
+health running-tolerance	array	live GET 2026-10-22 connectapi (empty list on both accounts)
 health sleep daily	object	live 2026-10-20
 health sleep naps view	array	live 2026-10-20
 health sleep overall	object	live 2026-10-20
@@ -128,6 +135,7 @@ health thresholds power-to-weight	array	live 2026-10-20
 health training-readiness	array	live 2026-10-20
 health training-status daily	object	live 2026-10-20
 health training-status view	object	live 2026-10-20
+health training-status weekly	object	live GET 2026-10-22 connectapi
 hydration daily	array	live 2026-10-20
 hydration view	object	live 2026-10-20
 hydration weekly	array	live 2026-10-20

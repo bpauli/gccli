@@ -1090,6 +1090,9 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli health body-battery range --start=DATE --end=DATE`: Show body battery data for a date range.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli health body-battery daily --start=DATE --end=DATE`: Show the daily low and high body battery for a date range (at most 28 days).
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
 - `gccli health intensity-minutes view [<date>]`: Show intensity minutes for a date. Also runs as `gccli health intensity-minutes [<date>]`.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli health intensity-minutes weekly --start=DATE --end=DATE`: Show weekly intensity minutes for a date range.
@@ -1101,6 +1104,9 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli health training-status daily [<date>]`: Show daily training status for a date.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli health training-status weekly --start=DATE --end=DATE`: Show weekly training status for a date range.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
 - `gccli health fitness-age [<date>]`: Show fitness age data.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli health max-metrics [<date>]`: Show VO2max and max metrics data.
@@ -1130,13 +1136,43 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli health race-predictions range --start=DATE --end=DATE`: Show race predictions for a date range.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
-- `gccli health endurance-score [<date>]`: Show endurance score data.
+- `gccli health endurance-score view [<date>]`: Show endurance score data for a date. Also runs as `gccli health endurance-score [<date>]`.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
-- `gccli health hill-score [<date>]`: Show hill score data.
+- `gccli health endurance-score stats --start=DATE --end=DATE [flags]`: Show endurance score statistics for a date range (at most 400 days).
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--aggregation="weekly"`: Period of each group: weekly or monthly.
+- `gccli health hill-score view [<date>]`: Show hill score data for a date. Also runs as `gccli health hill-score [<date>]`.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
+- `gccli health hill-score stats --start=DATE --end=DATE [flags]`: Show hill score statistics for a date range (at most 400 days).
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--aggregation="weekly"`: Period of each value: daily, weekly or monthly.
 - `gccli health power-curve --start=DATE --end=DATE`: Show power curve for a date range.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli health running-tolerance --start=DATE --end=DATE [flags]`: Show running tolerance for a date range.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--aggregation="weekly"`: Period of each value: daily, weekly or monthly.
+- `gccli health cycling-ability --start=DATE --end=DATE [flags]`: Show cycling ability for a date range.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--aggregation="weekly"`: Period of each value: daily (at most 30 days), weekly or monthly (at most 400 days).
+- `gccli health progress summary --start=DATE --end=DATE --metric=METRIC,... [flags]`: Show activity totals per period for a date range. Also runs as `gccli health progress --start=DATE --end=DATE --metric=METRIC,... [flags]`.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--aggregation="weekly"`: Period of each total: daily, weekly, monthly, yearly or all.
+  - `--metric=METRIC,...`: Metric to total, as health progress metrics prints it (e.g. distance, duration). Repeat the flag or separate with commas.
+  - `--activity-type=ACTIVITY-TYPE,...`: Activity type, as health progress metrics prints it (e.g. running, cycling). Repeat the flag or separate with commas. Defaults to all types.
+- `gccli health progress activities --start=DATE --end=DATE --metric=METRIC,... [flags]`: Show metric values of each activity in a date range.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--metric=METRIC,...`: Metric to show, as health progress metrics prints it (e.g. distance, avgHr). Repeat the flag or separate with commas.
+  - `--activity-type=ACTIVITY-TYPE,...`: Activity type, as health progress metrics prints it (e.g. running, cycling). Repeat the flag or separate with commas. Defaults to all types.
+- `gccli health progress metrics [flags]`: List the metrics of each activity type.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). With --end, only types with activities in the range.
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Needs --start.
 - `gccli health running-economy [<date>]`: Show latest running economy as of a date.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli health acclimation --start=DATE --end=DATE`: Show acclimation data for a date range.

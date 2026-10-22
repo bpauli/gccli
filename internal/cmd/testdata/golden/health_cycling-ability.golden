@@ -1,0 +1,51 @@
+-- args --
+health
+cycling-ability
+--start=2026-09-01
+--end=2026-10-15
+-- route GET /metrics-service/metrics/cycling-ability?startDate=2026-09-01&endDate=2026-10-15&aggregation=WEEKLY --
+{"startDate":"2026-09-01","endDate":"2026-10-15","cyclingAbilitiesMap":{}}
+-- table stdout --
+{
+  "startDate": "2026-09-01",
+  "endDate": "2026-10-15",
+  "cyclingAbilitiesMap": {}
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /metrics-service/metrics/cycling-ability?startDate=2026-09-01&endDate=2026-10-15&aggregation=WEEKLY
+-- plain stdout --
+{
+  "startDate": "2026-09-01",
+  "endDate": "2026-10-15",
+  "cyclingAbilitiesMap": {}
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /metrics-service/metrics/cycling-ability?startDate=2026-09-01&endDate=2026-10-15&aggregation=WEEKLY
+-- plain-header stdout --
+{
+  "startDate": "2026-09-01",
+  "endDate": "2026-10-15",
+  "cyclingAbilitiesMap": {}
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /metrics-service/metrics/cycling-ability?startDate=2026-09-01&endDate=2026-10-15&aggregation=WEEKLY
+-- json stdout --
+{
+  "startDate": "2026-09-01",
+  "endDate": "2026-10-15",
+  "cyclingAbilitiesMap": {}
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /metrics-service/metrics/cycling-ability?startDate=2026-09-01&endDate=2026-10-15&aggregation=WEEKLY

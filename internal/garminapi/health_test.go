@@ -1,11 +1,19 @@
 package garminapi
 
-import "testing"
+import (
+	"maps"
+	"testing"
+)
 
 func TestHealthEndpoints(t *testing.T) {
 	day := map[string]string{"date": "2024-01-15"}
 	user := map[string]string{"displayName": "jo", "date": "2024-01-15"}
 	span := map[string]string{"startDate": "2024-01-01", "endDate": "2024-01-31"}
+	withAggregation := func(args map[string]string, aggregation string) map[string]string {
+		out := map[string]string{"aggregation": aggregation}
+		maps.Copy(out, args)
+		return out
+	}
 	testEndpoints(t, healthEndpoints, []endpointCase{
 		{"health.daily-summary", user, "GET /usersummary-service/usersummary/daily/jo?calendarDate=2024-01-15"},
 		{"health.steps", user, "GET /wellness-service/wellness/dailySummaryChart/jo?date=2024-01-15"},
@@ -38,11 +46,13 @@ func TestHealthEndpoints(t *testing.T) {
 		{"health.spo2", day, "GET /wellness-service/wellness/daily/spo2/2024-01-15"},
 		{"health.hrv", day, "GET /hrv-service/hrv/2024-01-15"},
 		{"health.body-battery", span, "GET /wellness-service/wellness/bodyBattery/reports/daily?startDate=2024-01-01&endDate=2024-01-31"},
+		{"health.daily-body-battery", span, "GET /usersummary-service/stats/bodybattery/daily/2024-01-01/2024-01-31"},
 		{"health.intensity-minutes", day, "GET /wellness-service/wellness/daily/im/2024-01-15"},
 		{"health.weekly-intensity-minutes", span, "GET /usersummary-service/stats/im/weekly/2024-01-01/2024-01-31"},
 		{"health.training-readiness", day, "GET /metrics-service/metrics/trainingreadiness/2024-01-15"},
 		{"health.training-status", day, "GET /metrics-service/metrics/trainingstatus/aggregated/2024-01-15"},
 		{"health.daily-training-status", day, "GET /metrics-service/metrics/trainingstatus/daily/2024-01-15"},
+		{"health.weekly-training-status", map[string]string{"displayName": "jo", "startDate": "2024-01-01", "endDate": "2024-01-31"}, "GET /metrics-service/metrics/trainingstatus/weekly/jo?fromCalendarDate=2024-01-01&toCalendarDate=2024-01-31"},
 		{"health.fitness-age", day, "GET /fitnessage-service/fitnessage/2024-01-15"},
 		{"health.max-metrics", day, "GET /metrics-service/metrics/maxmet/daily/2024-01-15/2024-01-15"},
 		{"health.lactate-threshold", nil, "GET /biometric-service/biometric/latestLactateThreshold"},
@@ -55,11 +65,26 @@ func TestHealthEndpoints(t *testing.T) {
 		{"health.lactate-speed-range", span, "GET /biometric-service/stats/lactateThresholdSpeed/range/2024-01-01/2024-01-31"},
 		{"health.power-to-weight-range", span, "GET /biometric-service/stats/powerToWeight/range/2024-01-01/2024-01-31"},
 		{"health.endurance-score", day, "GET /metrics-service/metrics/endurancescore?calendarDate=2024-01-15"},
+		{"health.endurance-score-stats", withAggregation(span, "monthly"), "GET /metrics-service/metrics/endurancescore/stats?startDate=2024-01-01&endDate=2024-01-31&aggregation=monthly"},
 		{"health.hill-score", day, "GET /metrics-service/metrics/hillscore?calendarDate=2024-01-15"},
+		{"health.hill-score-stats", withAggregation(span, "daily"), "GET /metrics-service/metrics/hillscore/stats?startDate=2024-01-01&endDate=2024-01-31&aggregation=daily"},
 		{"health.all-day-events", day, "GET /wellness-service/wellness/dailyEvents?calendarDate=2024-01-15"},
 		{"health.lifestyle-logging", day, "GET /lifestylelogging-service/dailyLog/2024-01-15"},
 		{"health.power-curve", span, "GET /fitnessstats-service/powerCurve?startDate=2024-01-01&endDate=2024-01-31"},
+		{
+			"health.progress",
+			map[string]string{"aggregation": "weekly", "activityType": "running,cycling", "startDate": "2024-01-01", "endDate": "2024-01-31", "metric": "distance,duration"},
+			"GET /fitnessstats-service/activity?aggregation=weekly&activityType=running&activityType=cycling&startDate=2024-01-01&endDate=2024-01-31&metric=distance&metric=duration&standardizedUnits=true",
+		},
+		{
+			"health.progress-activities",
+			map[string]string{"startDate": "2024-01-01", "endDate": "2024-01-31", "metric": "distance,avgHr"},
+			"GET /fitnessstats-service/activity/all?startDate=2024-01-01&endDate=2024-01-31&metric=distance&metric=avgHr&standardizedUnits=true",
+		},
+		{"health.progress-metrics", nil, "GET /fitnessstats-service/activity/availableMetrics"},
 		{"health.running-economy", day, "GET /metrics-service/metrics/runningeconomy/latest/2024-01-15"},
+		{"health.running-tolerance", withAggregation(span, "weekly"), "GET /metrics-service/metrics/runningtolerance/stats?startDate=2024-01-01&endDate=2024-01-31&aggregation=weekly"},
+		{"health.cycling-ability", withAggregation(span, "WEEKLY"), "GET /metrics-service/metrics/cycling-ability?startDate=2024-01-01&endDate=2024-01-31&aggregation=WEEKLY"},
 		{"health.acclimation", span, "GET /wellness-service/stats/daily/acclimation?fromDate=2024-01-01&untilDate=2024-01-31"},
 		{"health.race-predictions", map[string]string{"displayName": "jo"}, "GET /metrics-service/metrics/racepredictions/latest/jo"},
 		{"health.race-predictions-range", map[string]string{"displayName": "jo", "startDate": "2024-01-01", "endDate": "2024-01-31"}, "GET /metrics-service/metrics/racepredictions/daily/jo?fromCalendarDate=2024-01-01&toCalendarDate=2024-01-31"},

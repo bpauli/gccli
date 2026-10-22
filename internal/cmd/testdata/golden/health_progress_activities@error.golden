@@ -1,0 +1,39 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+health
+progress
+activities
+--start=2026-09-01
+--end=2026-10-15
+--metric=distance
+--metric=avgHr
+-- route GET /fitnessstats-service/activity/all?startDate=2026-09-01&endDate=2026-10-15&metric=distance&metric=avgHr&standardizedUnits=true 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+get progress activities: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /fitnessstats-service/activity/all?startDate=2026-09-01&endDate=2026-10-15&metric=distance&metric=avgHr&standardizedUnits=true
+-- plain stdout --
+-- plain stderr --
+get progress activities: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /fitnessstats-service/activity/all?startDate=2026-09-01&endDate=2026-10-15&metric=distance&metric=avgHr&standardizedUnits=true
+-- plain-header stdout --
+-- plain-header stderr --
+get progress activities: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /fitnessstats-service/activity/all?startDate=2026-09-01&endDate=2026-10-15&metric=distance&metric=avgHr&standardizedUnits=true
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"get progress activities: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /fitnessstats-service/activity/all?startDate=2026-09-01&endDate=2026-10-15&metric=distance&metric=avgHr&standardizedUnits=true
