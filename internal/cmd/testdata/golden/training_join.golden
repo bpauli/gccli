@@ -1,0 +1,44 @@
+The GET enrolls the account. Garmin answers the copy of the plan with its new ID.
+-- args --
+training
+join
+101
+--start
+2026-10-26
+-- route GET /trainingplan-service/trainingplan/schedule/101?startDate=2026-10-26 --
+{"trainingPlanId":456,"parentPlanId":101,"startDate":"2026-10-26T00:00:00.0","trainingStatus":{"statusKey":"Scheduled"}}
+-- table stdout --
+-- table stderr --
+Joined training plan 101 from 2026-10-26 as plan 456
+-- table exit --
+0
+-- table requests --
+GET /trainingplan-service/trainingplan/schedule/101?startDate=2026-10-26
+-- plain stdout --
+-- plain stderr --
+Joined training plan 101 from 2026-10-26 as plan 456
+-- plain exit --
+0
+-- plain requests --
+GET /trainingplan-service/trainingplan/schedule/101?startDate=2026-10-26
+-- plain-header stdout --
+-- plain-header stderr --
+Joined training plan 101 from 2026-10-26 as plan 456
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /trainingplan-service/trainingplan/schedule/101?startDate=2026-10-26
+-- json stdout --
+{
+  "trainingPlanId": 456,
+  "parentPlanId": 101,
+  "startDate": "2026-10-26T00:00:00.0",
+  "trainingStatus": {
+    "statusKey": "Scheduled"
+  }
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /trainingplan-service/trainingplan/schedule/101?startDate=2026-10-26

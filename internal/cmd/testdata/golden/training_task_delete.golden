@@ -1,0 +1,49 @@
+Garmin answers the rest day that takes the place of the workout.
+-- args --
+training
+task
+delete
+456
+789
+-- stdin --
+y
+-- route DELETE /trainingplan-service/trainingplan/workoutTask/456/789 --
+{"trainingPlanId":456,"weekId":1,"dayOfWeekId":2,"calendarDate":"2026-10-27","taskNote":{"note":"Rest"},"taskWorkout":null}
+-- table stdout --
+-- table stderr --
+Delete task 789 of training plan 456? [y/N]: Deleted task 789 of training plan 456
+-- table exit --
+0
+-- table requests --
+DELETE /trainingplan-service/trainingplan/workoutTask/456/789
+-- plain stdout --
+-- plain stderr --
+Delete task 789 of training plan 456? [y/N]: Deleted task 789 of training plan 456
+-- plain exit --
+0
+-- plain requests --
+DELETE /trainingplan-service/trainingplan/workoutTask/456/789
+-- plain-header stdout --
+-- plain-header stderr --
+Delete task 789 of training plan 456? [y/N]: Deleted task 789 of training plan 456
+-- plain-header exit --
+0
+-- plain-header requests --
+DELETE /trainingplan-service/trainingplan/workoutTask/456/789
+-- json stdout --
+{
+  "trainingPlanId": 456,
+  "weekId": 1,
+  "dayOfWeekId": 2,
+  "calendarDate": "2026-10-27",
+  "taskNote": {
+    "note": "Rest"
+  },
+  "taskWorkout": null
+}
+-- json stderr noeol --
+Delete task 789 of training plan 456? [y/N]: 
+-- json exit --
+0
+-- json requests --
+DELETE /trainingplan-service/trainingplan/workoutTask/456/789

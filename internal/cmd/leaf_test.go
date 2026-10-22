@@ -19,9 +19,7 @@ var noAccountLeaves = map[string]string{
 
 // accountArgs replaces the golden args of a leaf whose golden file is a
 // usage error, because Kong stops that error before Run asks for an account.
-var accountArgs = map[string][]string{
-	"training plan": {"training", "plan", "123"},
-}
+var accountArgs = map[string][]string{}
 
 func TestEveryCommandHelps(t *testing.T) {
 	cmds := append([]commandInfo{{Help: "Garmin Connect CLI"}}, collectCommands(newTestParser(t).Model.Node, nil)...)

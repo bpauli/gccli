@@ -289,6 +289,13 @@ var writeCases = map[string]writeCase{
 		human:    "Created segment \"Park Hill\" (UUID: a1b2c3d4-0000-4000-8000-000000000009)\n",
 		fallback: "Created segment \"Park Hill\"\n",
 	},
+	"training task move": {
+		args:     []string{"456", "789", "2026-10-28"},
+		routes:   map[string]string{"POST /trainingplan-service/trainingplan/moveWorkoutTask/456": `{"taskWorkout":{"workoutScheduleId":790}}`},
+		json:     "{\n  \"taskWorkout\": {\n    \"workoutScheduleId\": 790\n  }\n}\n",
+		human:    "Moved task 789 to 2026-10-28 (new task ID: 790)\n",
+		fallback: "Moved task 789 to 2026-10-28\n",
+	},
 	"calendar notes add": {
 		args:     []string{"2026-10-20", "Long run", "--content", "Easy pace"},
 		routes:   map[string]string{"POST /calendar-service/note": `{"id":118934,"noteName":"Long run","date":"2026-10-20"}`},
