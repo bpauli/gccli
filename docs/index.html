@@ -540,7 +540,7 @@ gccli activities list --limit 5</pre>
           <div class="feature-card fade-in">
             <div class="feature-icon violet">&#x1f465;</div>
             <h3>Social</h3>
-            <p>Read your notifications, your notification preferences and your newsfeed. List your connections, pending connection requests, the followers of a user, the users that a user follows, and your groups.</p>
+            <p>Read your notifications page by page, dismiss them and bring them back, and see if there are unread ones. Read your notification preferences and your newsfeed. List your connections, pending connection requests, the followers of a user, the users that a user follows, and your groups.</p>
           </div>
           <div class="feature-card fade-in">
             <div class="feature-icon blue">&#x1f4ca;</div>
@@ -947,7 +947,10 @@ gccli activities list --limit 5</pre>
               <div class="cmd-row"><div class="cmd">gccli social requests</div><div class="desc">List pending connection requests.</div></div>
               <div class="cmd-row"><div class="cmd">gccli social feed</div><div class="desc">Show your newsfeed.</div></div>
               <div class="cmd-row"><div class="cmd">gccli groups list</div><div class="desc">List your groups. Also runs as <span class="whole"><code>gccli groups</code>.</span></div></div>
-              <div class="cmd-row"><div class="cmd">gccli notifications list</div><div class="desc">List notifications. Also runs as <span class="whole"><code>gccli notifications</code>.</span></div></div>
+              <div class="cmd-row"><div class="cmd">gccli notifications list [flags]</div><div class="desc">List notifications. Also runs as <span class="whole"><code>gccli notifications [flags]</code>.</span><br><code><span class="nowrap">--limit=</span><wbr>50</code> Maximum number of notifications to return.<br><code><span class="nowrap">--cursor=</span><wbr>STRING</code> Start after this cursor. Use pagination.nextCursor from the JSON output of the last page.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli notifications unread</div><div class="desc">Show whether there are unread notifications.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli notifications dismiss &lt;id&gt;</div><div class="desc">Dismiss a notification. Use &#39;notifications undismiss&#39; to bring it back.<br><code>&lt;id&gt;</code> Notification ID (from &#39;notifications list&#39;).</div></div>
+              <div class="cmd-row"><div class="cmd">gccli notifications undismiss &lt;id&gt;</div><div class="desc">Bring back a dismissed notification.<br><code>&lt;id&gt;</code> Notification ID (from &#39;notifications list&#39;).</div></div>
               <div class="cmd-row"><div class="cmd">gccli notifications preferences view</div><div class="desc">Show notification preferences. Also runs as <span class="whole"><code>gccli notifications preferences</code>.</span></div></div>
               <div class="cmd-row"><div class="cmd">gccli notifications preferences set &lt;key&gt; &lt;value&gt;</div><div class="desc">Turn a notification preference on or off.<br><code>&lt;key&gt;</code> Preference key, such as allowEmailWeeklySummary. Run gccli notifications preferences to see the keys.<br><code>&lt;value&gt;</code> true turns the preference on, false turns it off.</div></div>
             </div>

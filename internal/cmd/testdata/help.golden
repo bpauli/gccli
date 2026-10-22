@@ -337,6 +337,10 @@ Commands:
   exercises list                   List available exercise categories and
                                    exercises.
   notifications list               List notifications.
+  notifications unread             Show whether there are unread notifications.
+  notifications dismiss            Dismiss a notification. Use 'notifications
+                                   undismiss' to bring it back.
+  notifications undismiss          Bring back a dismissed notification.
   notifications preferences view
                                    Show notification preferences.
   notifications preferences set    Turn a notification preference on or off.
@@ -2067,7 +2071,7 @@ Commands:
 $ gccli notifications --help
 Usage: gccli notifications <command> [flags]
 
-View notifications and change notification preferences.
+View and dismiss notifications, and change notification preferences.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -2085,6 +2089,10 @@ Flags:
 
 Commands:
   notifications list               List notifications.
+  notifications unread             Show whether there are unread notifications.
+  notifications dismiss            Dismiss a notification. Use 'notifications
+                                   undismiss' to bring it back.
+  notifications undismiss          Bring back a dismissed notification.
   notifications preferences view
                                    Show notification preferences.
   notifications preferences set    Turn a notification preference on or off.
