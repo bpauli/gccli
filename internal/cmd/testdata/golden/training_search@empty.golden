@@ -1,0 +1,38 @@
+No plan matches: Garmin answers an empty list.
+-- args --
+training
+search
+--sport
+Cycling
+-- route POST /trainingplan-service/trainingplan/search?limit=1000&locale=en&start=1&types=Cycling --
+{"searchFilter":{},"trainingPlanList":[]}
+-- table stdout --
+ID  NAME  SPORT  GOAL  LEVEL  TARGET  WEEKS
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+POST /trainingplan-service/trainingplan/search?limit=1000&locale=en&start=1&types=Cycling
+-- plain stdout --
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+POST /trainingplan-service/trainingplan/search?limit=1000&locale=en&start=1&types=Cycling
+-- plain-header stdout --
+ID	NAME	SPORT	GOAL	LEVEL	TARGET	WEEKS
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /trainingplan-service/trainingplan/search?limit=1000&locale=en&start=1&types=Cycling
+-- json stdout --
+{
+  "searchFilter": {},
+  "trainingPlanList": []
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /trainingplan-service/trainingplan/search?limit=1000&locale=en&start=1&types=Cycling
