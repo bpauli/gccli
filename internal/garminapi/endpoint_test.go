@@ -308,6 +308,8 @@ func TestIndexRejectsMalformedRows(t *testing.T) {
 		{"host unset", func(e *Endpoint) { e.Host = 0 }, "unknown host"},
 		{"unknown subscription", func(e *Endpoint) { e.Requires = ConnectPlus + 1 }, "unknown subscription 2"},
 		{"GET body", func(e *Endpoint) { e.Body = true }, "a GET has no body"},
+		{"GET marked Read", func(e *Endpoint) { e.Read = true }, "only a POST can be marked Read"},
+		{"DELETE marked Read", func(e *Endpoint) { e.Method, e.Read = http.MethodDelete, true }, "only a POST can be marked Read"},
 		{"relative path", func(e *Endpoint) { e.Path = "x" }, "must start with /"},
 		{"open brace", func(e *Endpoint) { e.Path = "/x/{id" }, "unmatched {"},
 		{"close brace", func(e *Endpoint) { e.Path = "/x/id}" }, "unmatched }"},

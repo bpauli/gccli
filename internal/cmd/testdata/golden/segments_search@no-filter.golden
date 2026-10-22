@@ -1,0 +1,166 @@
+Error case: without --name or --bbox Garmin finds nothing, so the exit code is 2 (usage) before any request.
+-- args --
+segments
+search
+--surface
+paved
+-- table stdout --
+-- table stderr --
+Usage: gccli segments search [flags]
+
+Search segments by name or map area.
+
+Flags:
+  -h, --help                  Show context-sensitive help.
+  -j, --json                  Output as JSON ($GCCLI_JSON).
+      --plain                 Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                Print the column names as the first line of
+                              --plain output ($GCCLI_HEADER).
+      --color="auto"          Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING        Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"          Unit system for distances, speeds, paces,
+                              elevations and weights in table and plain output:
+                              auto (Garmin profile), metric, statute_us,
+                              statute_uk ($GCCLI_UNITS).
+      --version               Print version information.
+
+      --name=TEXT             Text in the segment name.
+      --bbox=MINLAT,MINLON,MAXLAT,MAXLON
+                              Map area as MINLAT,MINLON,MAXLAT,MAXLON in
+                              degrees.
+      --activity-type=TYPE    Activity type: cycling or running.
+      --classification=KEY    Classification as segments classifications prints
+                              it: downhill, hill_climb, hills, other or sprint.
+      --surface=KEY           Surface as segments surface-types prints it: dirt,
+                              gravel, mixed or paved.
+      --min-distance=KM       Minimum distance in kilometers.
+      --max-distance=KM       Maximum distance in kilometers.
+      --min-grade=PCT         Minimum average grade in percent.
+      --max-grade=PCT         Maximum average grade in percent.
+  -l, --limit=20              Maximum number of segments to return.
+      --offset=0              Number of segments to skip.
+
+gccli: error: segments search: give --name or --bbox: Garmin finds no segments without one
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli segments search [flags]
+
+Search segments by name or map area.
+
+Flags:
+  -h, --help                  Show context-sensitive help.
+  -j, --json                  Output as JSON ($GCCLI_JSON).
+      --plain                 Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                Print the column names as the first line of
+                              --plain output ($GCCLI_HEADER).
+      --color="auto"          Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING        Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"          Unit system for distances, speeds, paces,
+                              elevations and weights in table and plain output:
+                              auto (Garmin profile), metric, statute_us,
+                              statute_uk ($GCCLI_UNITS).
+      --version               Print version information.
+
+      --name=TEXT             Text in the segment name.
+      --bbox=MINLAT,MINLON,MAXLAT,MAXLON
+                              Map area as MINLAT,MINLON,MAXLAT,MAXLON in
+                              degrees.
+      --activity-type=TYPE    Activity type: cycling or running.
+      --classification=KEY    Classification as segments classifications prints
+                              it: downhill, hill_climb, hills, other or sprint.
+      --surface=KEY           Surface as segments surface-types prints it: dirt,
+                              gravel, mixed or paved.
+      --min-distance=KM       Minimum distance in kilometers.
+      --max-distance=KM       Maximum distance in kilometers.
+      --min-grade=PCT         Minimum average grade in percent.
+      --max-grade=PCT         Maximum average grade in percent.
+  -l, --limit=20              Maximum number of segments to return.
+      --offset=0              Number of segments to skip.
+
+gccli: error: segments search: give --name or --bbox: Garmin finds no segments without one
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli segments search [flags]
+
+Search segments by name or map area.
+
+Flags:
+  -h, --help                  Show context-sensitive help.
+  -j, --json                  Output as JSON ($GCCLI_JSON).
+      --plain                 Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                Print the column names as the first line of
+                              --plain output ($GCCLI_HEADER).
+      --color="auto"          Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING        Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"          Unit system for distances, speeds, paces,
+                              elevations and weights in table and plain output:
+                              auto (Garmin profile), metric, statute_us,
+                              statute_uk ($GCCLI_UNITS).
+      --version               Print version information.
+
+      --name=TEXT             Text in the segment name.
+      --bbox=MINLAT,MINLON,MAXLAT,MAXLON
+                              Map area as MINLAT,MINLON,MAXLAT,MAXLON in
+                              degrees.
+      --activity-type=TYPE    Activity type: cycling or running.
+      --classification=KEY    Classification as segments classifications prints
+                              it: downhill, hill_climb, hills, other or sprint.
+      --surface=KEY           Surface as segments surface-types prints it: dirt,
+                              gravel, mixed or paved.
+      --min-distance=KM       Minimum distance in kilometers.
+      --max-distance=KM       Maximum distance in kilometers.
+      --min-grade=PCT         Minimum average grade in percent.
+      --max-grade=PCT         Maximum average grade in percent.
+  -l, --limit=20              Maximum number of segments to return.
+      --offset=0              Number of segments to skip.
+
+gccli: error: segments search: give --name or --bbox: Garmin finds no segments without one
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli segments search [flags]
+
+Search segments by name or map area.
+
+Flags:
+  -h, --help                  Show context-sensitive help.
+  -j, --json                  Output as JSON ($GCCLI_JSON).
+      --plain                 Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                Print the column names as the first line of
+                              --plain output ($GCCLI_HEADER).
+      --color="auto"          Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING        Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"          Unit system for distances, speeds, paces,
+                              elevations and weights in table and plain output:
+                              auto (Garmin profile), metric, statute_us,
+                              statute_uk ($GCCLI_UNITS).
+      --version               Print version information.
+
+      --name=TEXT             Text in the segment name.
+      --bbox=MINLAT,MINLON,MAXLAT,MAXLON
+                              Map area as MINLAT,MINLON,MAXLAT,MAXLON in
+                              degrees.
+      --activity-type=TYPE    Activity type: cycling or running.
+      --classification=KEY    Classification as segments classifications prints
+                              it: downhill, hill_climb, hills, other or sprint.
+      --surface=KEY           Surface as segments surface-types prints it: dirt,
+                              gravel, mixed or paved.
+      --min-distance=KM       Minimum distance in kilometers.
+      --max-distance=KM       Maximum distance in kilometers.
+      --min-grade=PCT         Minimum average grade in percent.
+      --max-grade=PCT         Maximum average grade in percent.
+  -l, --limit=20              Maximum number of segments to return.
+      --offset=0              Number of segments to skip.
+
+gccli: error: segments search: give --name or --bbox: Garmin finds no segments without one
+-- json exit --
+2
+-- json requests --

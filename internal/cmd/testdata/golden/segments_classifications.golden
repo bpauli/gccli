@@ -1,0 +1,181 @@
+-- args --
+segments
+classifications
+-- route GET /segment-service/segment/classifications --
+[{"typeId":1,"typeKey":"all","sortOrder":1,"parentTypeId":0},{"typeId":2,"typeKey":"sprint","sortOrder":2,"parentTypeId":1},{"typeId":8,"typeKey":"hill_climb","sortOrder":8,"parentTypeId":1},{"typeId":11,"typeKey":"hills","sortOrder":11,"parentTypeId":1},{"typeId":12,"typeKey":"downhill","sortOrder":12,"parentTypeId":1},{"typeId":13,"typeKey":"other","sortOrder":13,"parentTypeId":1}]
+-- table stdout --
+[
+  {
+    "typeId": 1,
+    "typeKey": "all",
+    "sortOrder": 1,
+    "parentTypeId": 0
+  },
+  {
+    "typeId": 2,
+    "typeKey": "sprint",
+    "sortOrder": 2,
+    "parentTypeId": 1
+  },
+  {
+    "typeId": 8,
+    "typeKey": "hill_climb",
+    "sortOrder": 8,
+    "parentTypeId": 1
+  },
+  {
+    "typeId": 11,
+    "typeKey": "hills",
+    "sortOrder": 11,
+    "parentTypeId": 1
+  },
+  {
+    "typeId": 12,
+    "typeKey": "downhill",
+    "sortOrder": 12,
+    "parentTypeId": 1
+  },
+  {
+    "typeId": 13,
+    "typeKey": "other",
+    "sortOrder": 13,
+    "parentTypeId": 1
+  }
+]
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /segment-service/segment/classifications
+-- plain stdout --
+[
+  {
+    "typeId": 1,
+    "typeKey": "all",
+    "sortOrder": 1,
+    "parentTypeId": 0
+  },
+  {
+    "typeId": 2,
+    "typeKey": "sprint",
+    "sortOrder": 2,
+    "parentTypeId": 1
+  },
+  {
+    "typeId": 8,
+    "typeKey": "hill_climb",
+    "sortOrder": 8,
+    "parentTypeId": 1
+  },
+  {
+    "typeId": 11,
+    "typeKey": "hills",
+    "sortOrder": 11,
+    "parentTypeId": 1
+  },
+  {
+    "typeId": 12,
+    "typeKey": "downhill",
+    "sortOrder": 12,
+    "parentTypeId": 1
+  },
+  {
+    "typeId": 13,
+    "typeKey": "other",
+    "sortOrder": 13,
+    "parentTypeId": 1
+  }
+]
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /segment-service/segment/classifications
+-- plain-header stdout --
+[
+  {
+    "typeId": 1,
+    "typeKey": "all",
+    "sortOrder": 1,
+    "parentTypeId": 0
+  },
+  {
+    "typeId": 2,
+    "typeKey": "sprint",
+    "sortOrder": 2,
+    "parentTypeId": 1
+  },
+  {
+    "typeId": 8,
+    "typeKey": "hill_climb",
+    "sortOrder": 8,
+    "parentTypeId": 1
+  },
+  {
+    "typeId": 11,
+    "typeKey": "hills",
+    "sortOrder": 11,
+    "parentTypeId": 1
+  },
+  {
+    "typeId": 12,
+    "typeKey": "downhill",
+    "sortOrder": 12,
+    "parentTypeId": 1
+  },
+  {
+    "typeId": 13,
+    "typeKey": "other",
+    "sortOrder": 13,
+    "parentTypeId": 1
+  }
+]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /segment-service/segment/classifications
+-- json stdout --
+[
+  {
+    "typeId": 1,
+    "typeKey": "all",
+    "sortOrder": 1,
+    "parentTypeId": 0
+  },
+  {
+    "typeId": 2,
+    "typeKey": "sprint",
+    "sortOrder": 2,
+    "parentTypeId": 1
+  },
+  {
+    "typeId": 8,
+    "typeKey": "hill_climb",
+    "sortOrder": 8,
+    "parentTypeId": 1
+  },
+  {
+    "typeId": 11,
+    "typeKey": "hills",
+    "sortOrder": 11,
+    "parentTypeId": 1
+  },
+  {
+    "typeId": 12,
+    "typeKey": "downhill",
+    "sortOrder": 12,
+    "parentTypeId": 1
+  },
+  {
+    "typeId": 13,
+    "typeKey": "other",
+    "sortOrder": 13,
+    "parentTypeId": 1
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /segment-service/segment/classifications

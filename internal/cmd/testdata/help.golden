@@ -42,6 +42,7 @@ Commands:
   activity weather                 Show weather conditions.
   activity hr-zones                Show heart rate time in zones.
   activity power-zones             Show power time in zones.
+  activity segments                List the segments that an activity crossed.
   activity exercise-sets show      Show exercise sets.
   activity exercise-sets set       Set exercise sets for a strength training
                                    activity.
@@ -224,6 +225,15 @@ Commands:
   courses import                   Import a GPX file as a new course.
   courses send                     Send a course to a device.
   courses delete                   Delete a course.
+  segments list                    List the segments you created, or your
+                                   favorites with --favorites.
+  segments search                  Search segments by name or map area.
+  segments show                    Show a segment with its track points.
+  segments leaderboard             Show the leaderboard of a segment.
+  segments rank                    Show your best time and the top three on a
+                                   segment.
+  segments classifications         List the segment classifications.
+  segments surface-types           List the segment surface types.
   challenges list                  Show current challenges.
   challenges badge                 Show joined badge challenges that are not
                                    completed.
@@ -436,6 +446,7 @@ Commands:
   activity weather               Show weather conditions.
   activity hr-zones              Show heart rate time in zones.
   activity power-zones           Show power time in zones.
+  activity segments              List the segments that an activity crossed.
   activity exercise-sets show    Show exercise sets.
   activity exercise-sets set     Set exercise sets for a strength training
                                  activity.
@@ -1344,6 +1355,36 @@ Commands:
   courses import       Import a GPX file as a new course.
   courses send         Send a course to a device.
   courses delete       Delete a course.
+
+$ gccli segments --help
+Usage: gccli segments <command> [flags]
+
+Find segments and see their leaderboards.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  segments list               List the segments you created, or your favorites
+                              with --favorites.
+  segments search             Search segments by name or map area.
+  segments show               Show a segment with its track points.
+  segments leaderboard        Show the leaderboard of a segment.
+  segments rank               Show your best time and the top three on a
+                              segment.
+  segments classifications    List the segment classifications.
+  segments surface-types      List the segment surface types.
 
 $ gccli challenges --help
 Usage: gccli challenges <command> [flags]
