@@ -72,7 +72,8 @@ golf scorecards	object	live GET 2026-10-22 connectapi
 golf shot-stats	object	live GET 2026-10-22 connectapi
 golf stats	object	live GET 2026-10-22 connectapi
 groups list	array	live 2026-10-20
-health acclimation	object	live 2026-10-20
+health acclimation daily	object	live GET 2026-10-22 connectapi
+health acclimation range	object	live 2026-10-20
 health body-battery range	array	live 2026-10-20
 health body-battery view	array	live 2026-10-20
 health calories weekly	array	live 2026-10-20
