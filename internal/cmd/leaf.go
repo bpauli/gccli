@@ -5,6 +5,7 @@ import (
 	"maps"
 	"reflect"
 	"slices"
+	"strconv"
 	"strings"
 
 	"github.com/bpauli/gccli/internal/garminapi"
@@ -59,6 +60,10 @@ func (l Leaf) inputs(args reflect.Value) map[string]string {
 	}
 	for _, s := range l.Params {
 		for _, a := range s.alts {
+			if a.lookup == lookupPage {
+				read("Offset")
+				read("Limit")
+			}
 			read(a.field)
 		}
 	}
@@ -95,6 +100,10 @@ func (a alt) value(g *Globals, client *garminapi.Client, in map[string]string) (
 		return client.GetProfilePK(g.Context)
 	case lookupToday:
 		return nowFn().Format("2006-01-02"), nil
+	case lookupPage:
+		offset, _ := strconv.Atoi(in["Offset"])
+		limit, _ := strconv.Atoi(in["Limit"])
+		return strconv.Itoa(offset/limit + 1), nil
 	}
 	return in[a.field], nil
 }

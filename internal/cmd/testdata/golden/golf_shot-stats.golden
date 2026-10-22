@@ -1,0 +1,42 @@
+-- args --
+golf
+shot-stats
+putt
+-- route GET /gcs-golfcommunity/api/v2/shot/stats/putt --
+{"usingClubtrack":false}
+-- table stdout --
+{
+  "usingClubtrack": false
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /gcs-golfcommunity/api/v2/shot/stats/putt
+-- plain stdout --
+{
+  "usingClubtrack": false
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /gcs-golfcommunity/api/v2/shot/stats/putt
+-- plain-header stdout --
+{
+  "usingClubtrack": false
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /gcs-golfcommunity/api/v2/shot/stats/putt
+-- json stdout --
+{
+  "usingClubtrack": false
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /gcs-golfcommunity/api/v2/shot/stats/putt

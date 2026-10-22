@@ -62,6 +62,13 @@ gear stats	unknown	500 live 2026-10-20 with a fake UUID
 gear types	array	live 2026-10-20
 goals list	array	live 2026-10-20
 goals weight	object	live 2026-10-20
+golf club-types	array	live GET 2026-10-22 connectapi
+golf clubs	array	live GET 2026-10-22 connectapi
+golf courses	object	live GET 2026-10-22 connectapi
+golf leaderboards	object	live GET 2026-10-22 connectapi
+golf scorecards	object	live GET 2026-10-22 connectapi
+golf shot-stats	object	live GET 2026-10-22 connectapi
+golf stats	object	live GET 2026-10-22 connectapi
 groups list	array	live 2026-10-20
 health acclimation	object	live 2026-10-20
 health body-battery range	array	live 2026-10-20

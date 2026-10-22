@@ -1438,6 +1438,23 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `--locale-unit="METRIC"`: Units of the answer: METRIC or STATUTE.
 - `gccli insights preferences`: Show your saved Insights comparisons.
 
+### Golf
+
+- `gccli golf scorecards [flags]`: List your golf scorecards. Also runs as `gccli golf [flags]`.
+  - `-l, --limit=20`: Maximum number of scorecards to return.
+  - `--offset=0`: Number of scorecards to skip.
+- `gccli golf courses [flags]`: List the golf courses you played.
+  - `-l, --limit=20`: Maximum number of courses to return.
+  - `--offset=0`: Number of courses to skip.
+- `gccli golf stats`: Show your golf statistics.
+- `gccli golf shot-stats <kind>`: Show your golf shot statistics of one shot type.
+  - `<kind>`: Shot type: drive, approach, chip or putt.
+- `gccli golf clubs`: List the golf clubs in your bag.
+- `gccli golf club-types`: List the golf club types with their loft and lie angles.
+- `gccli golf leaderboards [flags]`: List the golf leaderboards you played in.
+  - `-l, --limit=20`: Maximum number of leaderboards to return.
+  - `--offset=0`: Number of leaderboards to skip.
+
 ### Hydration, Nutrition, Profile, Training, Wellness & Utilities
 
 - `gccli hydration view [<date>]`: Show hydration data for a date. Also runs as `gccli hydration [<date>]`.
