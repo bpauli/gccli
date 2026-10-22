@@ -1,0 +1,178 @@
+Error case: Garmin refuses the segment with 400, so the exit code is 1 (error).
+-- args --
+segments
+create
+--from-activity
+5000001
+--start-km
+0.1
+--end-km
+0.35
+--name
+Park Hill
+--activity-type
+running
+-- route GET /segment-service/segment/activity/5000001 --
+{"activityId":null,"name":"Morning Run","elevation":{"x":0,"y":0},"polyline":[{"latitude":52.5,"longitude":13.4,"distance":0,"timestamp":1786000000000,"elevation":40.0},{"latitude":52.501,"longitude":13.4,"distance":80,"timestamp":1786000030000,"elevation":42.0},{"latitude":52.502,"longitude":13.4,"distance":160,"timestamp":1786000060000,"elevation":45.0},{"latitude":52.503,"longitude":13.4,"distance":250,"timestamp":1786000090000,"elevation":47.5},{"latitude":52.504,"longitude":13.4,"distance":340,"timestamp":1786000120000,"elevation":50.6},{"latitude":52.505,"longitude":13.4,"distance":420,"timestamp":1786000150000,"elevation":52.0},{"latitude":52.506,"longitude":13.4,"distance":500,"timestamp":1786000180000,"elevation":53.0}]}
+-- route POST /segment-service/segment/ 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+create segment: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /segment-service/segment/activity/5000001
+POST /segment-service/segment/
+  {
+    "name": "Park Hill",
+    "activityId": 5000001,
+    "activityTypePk": 1,
+    "classificationPk": 13,
+    "surfaceTypePk": 2,
+    "distance": 0.18,
+    "grade": 3.11,
+    "geoPoints": [
+      {
+        "latitude": 52.502,
+        "longitude": 13.4,
+        "distance": 160,
+        "timestamp": 1786000060000,
+        "elevation": 45.0
+      },
+      {
+        "latitude": 52.503,
+        "longitude": 13.4,
+        "distance": 250,
+        "timestamp": 1786000090000,
+        "elevation": 47.5
+      },
+      {
+        "latitude": 52.504,
+        "longitude": 13.4,
+        "distance": 340,
+        "timestamp": 1786000120000,
+        "elevation": 50.6
+      }
+    ]
+  }
+-- plain stdout --
+-- plain stderr --
+create segment: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /segment-service/segment/activity/5000001
+POST /segment-service/segment/
+  {
+    "name": "Park Hill",
+    "activityId": 5000001,
+    "activityTypePk": 1,
+    "classificationPk": 13,
+    "surfaceTypePk": 2,
+    "distance": 0.18,
+    "grade": 3.11,
+    "geoPoints": [
+      {
+        "latitude": 52.502,
+        "longitude": 13.4,
+        "distance": 160,
+        "timestamp": 1786000060000,
+        "elevation": 45.0
+      },
+      {
+        "latitude": 52.503,
+        "longitude": 13.4,
+        "distance": 250,
+        "timestamp": 1786000090000,
+        "elevation": 47.5
+      },
+      {
+        "latitude": 52.504,
+        "longitude": 13.4,
+        "distance": 340,
+        "timestamp": 1786000120000,
+        "elevation": 50.6
+      }
+    ]
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+create segment: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /segment-service/segment/activity/5000001
+POST /segment-service/segment/
+  {
+    "name": "Park Hill",
+    "activityId": 5000001,
+    "activityTypePk": 1,
+    "classificationPk": 13,
+    "surfaceTypePk": 2,
+    "distance": 0.18,
+    "grade": 3.11,
+    "geoPoints": [
+      {
+        "latitude": 52.502,
+        "longitude": 13.4,
+        "distance": 160,
+        "timestamp": 1786000060000,
+        "elevation": 45.0
+      },
+      {
+        "latitude": 52.503,
+        "longitude": 13.4,
+        "distance": 250,
+        "timestamp": 1786000090000,
+        "elevation": 47.5
+      },
+      {
+        "latitude": 52.504,
+        "longitude": 13.4,
+        "distance": 340,
+        "timestamp": 1786000120000,
+        "elevation": 50.6
+      }
+    ]
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"create segment: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /segment-service/segment/activity/5000001
+POST /segment-service/segment/
+  {
+    "name": "Park Hill",
+    "activityId": 5000001,
+    "activityTypePk": 1,
+    "classificationPk": 13,
+    "surfaceTypePk": 2,
+    "distance": 0.18,
+    "grade": 3.11,
+    "geoPoints": [
+      {
+        "latitude": 52.502,
+        "longitude": 13.4,
+        "distance": 160,
+        "timestamp": 1786000060000,
+        "elevation": 45.0
+      },
+      {
+        "latitude": 52.503,
+        "longitude": 13.4,
+        "distance": 250,
+        "timestamp": 1786000090000,
+        "elevation": 47.5
+      },
+      {
+        "latitude": 52.504,
+        "longitude": 13.4,
+        "distance": 340,
+        "timestamp": 1786000120000,
+        "elevation": 50.6
+      }
+    ]
+  }

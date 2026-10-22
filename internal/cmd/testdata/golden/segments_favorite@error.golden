@@ -1,0 +1,41 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+segments
+favorite
+a1b2c3d4-0000-4000-8000-000000000001
+-- route GET /segment-service/segment/a1b2c3d4-0000-4000-8000-000000000001 --
+{"segmentPk":900001,"uuid":"a1b2c3d4-0000-4000-8000-000000000001","name":"Park Hill","distance":1.234,"favorite":false}
+-- route PUT /segment-service/segment/user/900001 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+favorite segment: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /segment-service/segment/a1b2c3d4-0000-4000-8000-000000000001
+PUT /segment-service/segment/user/900001
+-- plain stdout --
+-- plain stderr --
+favorite segment: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /segment-service/segment/a1b2c3d4-0000-4000-8000-000000000001
+PUT /segment-service/segment/user/900001
+-- plain-header stdout --
+-- plain-header stderr --
+favorite segment: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /segment-service/segment/a1b2c3d4-0000-4000-8000-000000000001
+PUT /segment-service/segment/user/900001
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"favorite segment: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /segment-service/segment/a1b2c3d4-0000-4000-8000-000000000001
+PUT /segment-service/segment/user/900001

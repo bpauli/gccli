@@ -1,0 +1,37 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+segments
+delete
+a1b2c3d4-0000-4000-8000-000000000001
+-- stdin --
+y
+-- route DELETE /segment-service/segment/a1b2c3d4-0000-4000-8000-000000000001 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+Delete segment a1b2c3d4-0000-4000-8000-000000000001? [y/N]: delete segment: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+DELETE /segment-service/segment/a1b2c3d4-0000-4000-8000-000000000001
+-- plain stdout --
+-- plain stderr --
+Delete segment a1b2c3d4-0000-4000-8000-000000000001? [y/N]: delete segment: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+DELETE /segment-service/segment/a1b2c3d4-0000-4000-8000-000000000001
+-- plain-header stdout --
+-- plain-header stderr --
+Delete segment a1b2c3d4-0000-4000-8000-000000000001? [y/N]: delete segment: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+DELETE /segment-service/segment/a1b2c3d4-0000-4000-8000-000000000001
+-- json stdout --
+-- json stderr --
+Delete segment a1b2c3d4-0000-4000-8000-000000000001? [y/N]: {"error":{"code":"error","status":400,"message":"delete segment: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+DELETE /segment-service/segment/a1b2c3d4-0000-4000-8000-000000000001

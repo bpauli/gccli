@@ -17,7 +17,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Body Composition** - weight tracking, latest weigh-in, weekly weight summaries, body fat, muscle mass, blood pressure, glucose, FIT file encoding for composition uploads
 - **Workouts** - list, view, download as FIT, upload from JSON, update in place from JSON, create with sport types and targets (pace/HR/power/cadence), schedule (add/list/remove/export), send to a device, list workout types and sport types, view, set and clear strength benchmarks, delete
 - **Courses** — list courses, view favorites, get full course detail, download as FIT/GPX, import GPX files as new courses, send courses directly to a device, delete courses
-- **Segments** - list your segments and favorites, search segments by name or map area, view a segment, its leaderboard and your rank, list the segments that an activity crossed
+- **Segments** - list your segments and favorites, search segments by name or map area, view a segment, its leaderboard and your rank, list the segments that an activity crossed, create a segment from a part of an activity, add and remove favorites, delete segments
 - **Devices** - list registered devices, view settings, solar data, alarms, primary/last-used device, paired sensors, backup summary, historical devices, device messages, cancel a pending device message
 - **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities, gear types, add, update, retire, unretire and delete gear, list, create, rename and delete gear collections, add gear to a collection
 - **Goals & Badges** — active goals, set daily goals for steps, floors, intensity minutes and hydration, earned/available/in-progress badges, badge details, challenges, personal records
@@ -1356,6 +1356,21 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `<uuid>`: Segment UUID.
 - `gccli segments classifications`: List the segment classifications.
 - `gccli segments surface-types`: List the segment surface types.
+- `gccli segments create --from-activity=ID --start-km=KM --end-km=KM --name=NAME --activity-type=TYPE [flags]`: Create a segment from a part of an activity track.
+  - `--from-activity=ID`: ID of the activity whose track the segment follows.
+  - `--start-km=KM`: Start of the segment, in kilometers from the start of the activity.
+  - `--end-km=KM`: End of the segment, in kilometers from the start of the activity.
+  - `--name=NAME`: Segment name.
+  - `--activity-type=TYPE`: Activity type: cycling or running.
+  - `--classification="other"`: Classification as segments classifications prints it: downhill, hill_climb, hills, other or sprint.
+  - `--surface="paved"`: Surface as segments surface-types prints it: dirt, gravel, mixed or paved.
+- `gccli segments favorite <uuid>`: Add a segment to your favorites.
+  - `<uuid>`: Segment UUID.
+- `gccli segments unfavorite <uuid>`: Remove a segment from your favorites.
+  - `<uuid>`: Segment UUID.
+- `gccli segments delete <uuid> [flags]`: Delete a segment that you created.
+  - `<uuid>`: Segment UUID.
+  - `-f, --force`: Skip confirmation prompt.
 
 ### Devices
 
@@ -1815,6 +1830,14 @@ gccli golf clubs | jq --argjson types "$types" \
 gccli segments search --bbox 52.45,13.30,52.55,13.45 --activity-type running --classification hill_climb
 gccli segments leaderboard <uuid> --scope connections
 gccli --json segments rank <uuid> | jq '{best: .bestElapsedTime, leader: .leaderFullName}'
+```
+
+`segments create` takes the part of an activity track from `--start-km` to `--end-km`. Garmin refuses a segment shorter than 0.08 km.
+
+```bash
+gccli segments create --from-activity <activity-id> --start-km 1.2 --end-km 2.0 \
+  --name "Park Hill" --activity-type running --classification hill_climb
+gccli segments favorite <uuid>
 ```
 
 ### Monthly running distance

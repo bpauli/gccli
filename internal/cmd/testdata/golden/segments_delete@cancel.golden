@@ -1,0 +1,31 @@
+No at the prompt sends no request.
+-- args --
+segments
+delete
+a1b2c3d4-0000-4000-8000-000000000001
+-- stdin --
+n
+-- table stdout --
+-- table stderr --
+Delete segment a1b2c3d4-0000-4000-8000-000000000001? [y/N]: Cancelled
+-- table exit --
+0
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Delete segment a1b2c3d4-0000-4000-8000-000000000001? [y/N]: Cancelled
+-- plain exit --
+0
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Delete segment a1b2c3d4-0000-4000-8000-000000000001? [y/N]: Cancelled
+-- plain-header exit --
+0
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Delete segment a1b2c3d4-0000-4000-8000-000000000001? [y/N]: Cancelled
+-- json exit --
+0
+-- json requests --

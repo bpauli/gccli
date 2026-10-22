@@ -1,0 +1,44 @@
+Error case: the track read fails with 400, so there is no write and the exit code is 1 (error).
+-- args --
+segments
+create
+--from-activity
+5000001
+--start-km
+0.1
+--end-km
+0.35
+--name
+Park Hill
+--activity-type
+running
+-- route GET /segment-service/segment/activity/5000001 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+get activity track: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /segment-service/segment/activity/5000001
+-- plain stdout --
+-- plain stderr --
+get activity track: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /segment-service/segment/activity/5000001
+-- plain-header stdout --
+-- plain-header stderr --
+get activity track: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /segment-service/segment/activity/5000001
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"get activity track: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /segment-service/segment/activity/5000001
