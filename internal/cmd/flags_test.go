@@ -551,6 +551,55 @@ func TestNumericIDDecode(t *testing.T) {
 	}
 }
 
+// TestMonthDecode pins the months that Month accepts: 1 to 12 in base 10,
+// sent without leading zeros.
+func TestMonthDecode(t *testing.T) {
+	accepted := []struct {
+		raw  string
+		want Month
+	}{
+		{"1", "1"},
+		{"9", "9"},
+		{"09", "9"},
+		{"12", "12"},
+	}
+	rejected := []string{"", " ", "0", "13", "-1", "1.5", "sep", " 9"}
+	decode := func(t *testing.T, raw string) (Month, error) {
+		t.Helper()
+		var cli struct {
+			Month Month
+		}
+		parser, err := kong.New(&cli)
+		if err != nil {
+			t.Fatal(err)
+		}
+		_, err = parser.Parse([]string{"--month=" + raw})
+		return cli.Month, err
+	}
+	for _, tt := range accepted {
+		t.Run(tt.raw, func(t *testing.T) {
+			got, err := decode(t, tt.raw)
+			if err != nil {
+				t.Fatalf("%q: err = %v, want %q", tt.raw, err, tt.want)
+			}
+			if got != tt.want {
+				t.Errorf("%q = %q, want %q", tt.raw, got, tt.want)
+			}
+		})
+	}
+	for _, raw := range rejected {
+		t.Run("rejected/"+raw, func(t *testing.T) {
+			got, err := decode(t, raw)
+			if err == nil {
+				t.Fatalf("%q = %q, want a usage error", raw, got)
+			}
+			if want := "--month: invalid month " + strconv.Quote(raw) + ": expected 1 to 12"; !strings.Contains(err.Error(), want) {
+				t.Errorf("%q: err = %v, want %q", raw, err, want)
+			}
+		})
+	}
+}
+
 func TestNonEmptyDecode(t *testing.T) {
 	tests := []struct {
 		args    []string

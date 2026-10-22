@@ -101,6 +101,24 @@ func (id *NumericID) Decode(ctx *kong.DecodeContext) error {
 
 func (id NumericID) String() string { return strconv.FormatInt(int64(id), 10) }
 
+// Month is a month of the year, 1 to 12, in a request query. Kong checks it
+// at parse time, so a bad month is a usage error before the login. The zero
+// value is no month.
+type Month string
+
+func (m *Month) Decode(ctx *kong.DecodeContext) error {
+	raw, err := popString(ctx, "month")
+	if err != nil {
+		return err
+	}
+	n, err := strconv.Atoi(raw)
+	if err != nil || n < 1 || n > 12 {
+		return fmt.Errorf("invalid month %q: expected 1 to 12", raw)
+	}
+	*m = Month(strconv.Itoa(n))
+	return nil
+}
+
 // popNonEmpty takes the next token of a flag or positional and rejects an
 // empty or blank one. Any other value is kept as given, spaces included.
 func popNonEmpty(ctx *kong.DecodeContext, what string) (string, error) {

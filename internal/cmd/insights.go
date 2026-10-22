@@ -18,7 +18,7 @@ var insightsGroup = Group{Name: "insights", Help: "Compare your metrics with peo
 			Age        FreeText `help:"Age group as insights options prints it (e.g. 40-44, 75+)." required:""`
 			Gender     string   `help:"Gender: ALL, M or F." default:"ALL" enum:"ALL,M,F"`
 			Year       int      `help:"Year (e.g. 2025)." required:""`
-			Month      string   `help:"Month (1-12). Omit it for the whole year."`
+			Month      Month    `help:"Month (1-12). Omit it for the whole year."`
 			LocaleUnit string   `help:"Units of the answer: METRIC or STATUTE." default:"METRIC" enum:"METRIC,STATUTE"`
 		}{}),
 		Endpoint: "insights.compare",
