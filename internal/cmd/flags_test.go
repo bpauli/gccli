@@ -718,3 +718,52 @@ func TestNonEmptyDecode(t *testing.T) {
 		})
 	}
 }
+
+// TestFlightTimeDecode pins the times that FlightTime accepts: a local date
+// and time with a UTC offset, with or without seconds. The offset stays, so
+// a flight keeps the clock time of its place.
+func TestFlightTimeDecode(t *testing.T) {
+	accepted := []struct {
+		raw, local, zone string
+	}{
+		{"2026-11-02T10:00+01:00", "2026-11-02T10:00:00", "+01:00"},
+		{"2026-11-02T13:00-05:00", "2026-11-02T13:00:00", "-05:00"},
+		{"2026-11-02T10:00:30+05:30", "2026-11-02T10:00:30", "+05:30"},
+		{"2027-01-10T09:00Z", "2027-01-10T09:00:00", "+00:00"},
+	}
+	rejected := []string{"", "2026-11-02T10:00", "2026-11-02 10:00+01:00", "2026-11-02", "10:00+01:00", "2026-13-02T10:00+01:00"}
+	decode := func(t *testing.T, raw string) (FlightTime, error) {
+		t.Helper()
+		var cli struct {
+			Depart FlightTime
+		}
+		parser, err := kong.New(&cli)
+		if err != nil {
+			t.Fatal(err)
+		}
+		_, err = parser.Parse([]string{"--depart=" + raw})
+		return cli.Depart, err
+	}
+	for _, tt := range accepted {
+		t.Run(tt.raw, func(t *testing.T) {
+			got, err := decode(t, tt.raw)
+			if err != nil {
+				t.Fatalf("%q: err = %v", tt.raw, err)
+			}
+			if local, zone := got.Format("2006-01-02T15:04:05"), got.Format("-07:00"); local != tt.local || zone != tt.zone {
+				t.Errorf("%q = %s %s, want %s %s", tt.raw, local, zone, tt.local, tt.zone)
+			}
+		})
+	}
+	for _, raw := range rejected {
+		t.Run("rejected/"+raw, func(t *testing.T) {
+			got, err := decode(t, raw)
+			if err == nil {
+				t.Fatalf("%q = %v, want a usage error", raw, got)
+			}
+			if want := "--depart: invalid date and time " + strconv.Quote(raw) + ": expected YYYY-MM-DDTHH:MM with the UTC offset"; !strings.Contains(err.Error(), want) {
+				t.Errorf("%q: err = %v, want %q", raw, err, want)
+			}
+		})
+	}
+}

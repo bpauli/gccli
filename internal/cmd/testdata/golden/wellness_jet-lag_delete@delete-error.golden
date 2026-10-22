@@ -1,0 +1,46 @@
+A failed DELETE names the delete verb.
+-- args --
+wellness
+jet-lag
+delete
+4711
+--force
+-- route GET /jetlag-service/jetlag/trip/all --
+[{"userId":1000,"timeDifference":0,"startDate":"2026-11-02","endDate":"2026-11-10","flights":[{"flightId":801,"tripId":4711,"originLocation":"Frankfurt, Germany","originTimezone":"+01:00","originTimestamp":"2026-11-02T10:00:00.0","destinationLocation":"New York, USA","destinationTimezone":"-05:00","destinationTimestamp":"2026-11-02T13:00:00.0"},{"flightId":802,"tripId":4711,"originLocation":"New York, USA","originTimezone":"-05:00","originTimestamp":"2026-11-09T18:00:00.0","destinationLocation":"Frankfurt, Germany","destinationTimezone":"+01:00","destinationTimestamp":"2026-11-10T08:00:00.0"}],"tripId":4711},{"userId":1000,"timeDifference":0,"startDate":"2026-12-01","endDate":"2026-12-01","flights":[{"flightId":803,"tripId":4712,"originLocation":"Berlin","originTimezone":"+01:00","originTimestamp":"2026-12-01T08:00:00.0","destinationLocation":"Tokyo","destinationTimezone":"+09:00","destinationTimestamp":"2026-12-01T23:30:00.0"}],"tripId":4712},{"userId":1000,"timeDifference":0,"startDate":"2027-01-10","endDate":"2027-01-20","flights":[{"flightId":804,"tripId":4713,"originLocation":"London","originTimezone":"+00:00","originTimestamp":"2027-01-10T09:00:00.0","destinationLocation":"Dubai","destinationTimezone":"+04:00","destinationTimestamp":"2027-01-10T19:00:00.0"},{"flightId":805,"tripId":4713,"originLocation":"Dubai","originTimezone":"+04:00","originTimestamp":"2027-01-14T09:00:00.0","destinationLocation":"Singapore","destinationTimezone":"+08:00","destinationTimestamp":"2027-01-14T20:00:00.0"},{"flightId":806,"tripId":4713,"originLocation":"Singapore","originTimezone":"+08:00","originTimestamp":"2027-01-20T08:00:00.0","destinationLocation":"London","destinationTimezone":"+00:00","destinationTimestamp":"2027-01-20T15:00:00.0"}],"tripId":4713}]
+-- route DELETE /jetlag-service/jetlag/trip/4711 500 --
+{"message":"Internal Server Error","error":"InternalServerError"}
+-- table stdout --
+-- table stderr --
+delete jet lag trip: garmin api: 500 Internal Server Error: {"message":"Internal Server Error","error":"InternalServerError"}
+
+-- table exit --
+1
+-- table requests --
+GET /jetlag-service/jetlag/trip/all
+DELETE /jetlag-service/jetlag/trip/4711
+-- plain stdout --
+-- plain stderr --
+delete jet lag trip: garmin api: 500 Internal Server Error: {"message":"Internal Server Error","error":"InternalServerError"}
+
+-- plain exit --
+1
+-- plain requests --
+GET /jetlag-service/jetlag/trip/all
+DELETE /jetlag-service/jetlag/trip/4711
+-- plain-header stdout --
+-- plain-header stderr --
+delete jet lag trip: garmin api: 500 Internal Server Error: {"message":"Internal Server Error","error":"InternalServerError"}
+
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /jetlag-service/jetlag/trip/all
+DELETE /jetlag-service/jetlag/trip/4711
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":500,"message":"delete jet lag trip: garmin api: 500 Internal Server Error: {\"message\":\"Internal Server Error\",\"error\":\"InternalServerError\"}\n"}}
+-- json exit --
+1
+-- json requests --
+GET /jetlag-service/jetlag/trip/all
+DELETE /jetlag-service/jetlag/trip/4711

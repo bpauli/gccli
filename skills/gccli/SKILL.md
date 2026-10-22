@@ -783,6 +783,24 @@ Date shortcuts
   - `-f, --force`: Skip confirmation prompt.
 - `gccli wellness pregnancy-summary`: Show pregnancy summary.
 - `gccli wellness jet-lag list`: List jet lag trips. Also runs as `gccli wellness jet-lag`.
+- `gccli wellness jet-lag add --from=PLACE --to=PLACE --depart=TIME --arrive=TIME [flags]`: Add a jet lag trip of a flight and an optional return flight.
+  - `--from=PLACE`: Place of departure, such as "Frankfurt, Germany".
+  - `--to=PLACE`: Place of arrival, such as "New York, USA".
+  - `--depart=TIME`: Local departure time with the UTC offset of --from, such as 2026-11-02T10:00+01:00.
+  - `--arrive=TIME`: Local arrival time with the UTC offset of --to, such as 2026-11-02T13:00-05:00.
+  - `--return-depart=TIME`: Local departure time of the return flight from --to, with its UTC offset.
+  - `--return-arrive=TIME`: Local arrival time of the return flight at --from, with its UTC offset.
+- `gccli wellness jet-lag update <id> [flags]`: Change the places or times of a jet lag trip.
+  - `<id>`: Trip ID.
+  - `--from=PLACE`: New place of departure. The return flight arrives there.
+  - `--to=PLACE`: New place of arrival. The return flight departs there.
+  - `--depart=TIME`: New local departure time with the UTC offset, such as 2026-11-02T10:00+01:00.
+  - `--arrive=TIME`: New local arrival time with the UTC offset.
+  - `--return-depart=TIME`: New local departure time of the return flight, with the UTC offset.
+  - `--return-arrive=TIME`: New local arrival time of the return flight, with the UTC offset.
+- `gccli wellness jet-lag delete <id> [flags]`: Delete a jet lag trip.
+  - `<id>`: Trip ID.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli wellness jet-lag status [<date>]`: Show jet lag status for a date.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli reload [<date>]`: Request data reload for a date.
@@ -799,6 +817,7 @@ Worked examples
 - Race event: `gccli events add --name "Berlin Marathon" --date 2026-09-27 --type running --race --location "Berlin, Germany" --distance 42.195km --time 09:15 --timezone Europe/Berlin`
 - Calendar note: `gccli calendar notes add 2026-10-20 "Long run" --content "Easy pace"` prints the note ID. Then `gccli calendar notes move <id> 2026-10-21`, `gccli calendar notes update <id> --content ""` (clears the text) and `gccli calendar notes delete <id> --force`.
 - Menstrual daily log: `gccli wellness menstrual-log set 2026-10-01 --flow light --symptoms cramps,tender-breasts --ovulation` sets fields of the log of a day. `gccli wellness menstrual-log set 2026-10-01 --symptoms ""` clears the symptoms and keeps the other fields. `gccli wellness menstrual-log 2026-10-01` shows the log, and `gccli wellness menstrual-log delete 2026-10-01 --force` deletes it.
+- Jet lag trip: `gccli wellness jet-lag add --from "Frankfurt, Germany" --to "New York, USA" --depart 2026-11-02T10:00+01:00 --arrive 2026-11-02T13:00-05:00` prints the trip ID. Then `gccli wellness jet-lag update <id> --arrive 2026-11-02T14:00-05:00` moves the arrival, and `gccli wellness jet-lag delete <id> --force` deletes the trip.
 - Nap: `gccli health sleep naps add 13:30 13:50` adds a nap for today. Garmin takes only naps that end today, and the times are in the time zone of the Garmin profile, not of the machine. `gccli health sleep naps delete today 13:30 --force` deletes the nap that starts at 13:30.
 - Activity like: `gccli activity likes add <id>` likes an activity, and a second add changes nothing. `gccli activity likes <id>` lists the likes. `gccli activity likes remove <id>` removes your like with no prompt. It fails with exit code 1 (`activity <id> is not liked`) when there is no like to remove.
 - Calendar month: `gccli calendar month 2026 10` lists the activities, workouts, events, notes and other items of October 2026. `gccli calendar month --json | jq '[.calendarItems[] | select(.itemType == "activity")]'` keeps the activities of this month's grid.
@@ -878,4 +897,5 @@ Notes
 - Workout step format: `type:duration[@target:low-high]`. Types: warmup, run, recovery, cooldown; targets: pace (min:sec), hr (bpm), power (watts), cadence.
 - `goals set` and `goals steps` change the goal from `--date` (default today) onward; the days before keep their goal. `gccli health summary <date> --json` shows the steps, floors and intensity minutes goals (`dailyStepGoal`, `userFloorsAscendedGoal`, `intensityMinutesGoal`).
 - `wellness menstrual-log set` changes only the fields you give. Garmin replaces the whole day on a write, so gccli reads the log first and sends the other fields again. The values are lower-case kebab (`light`, `tender-breasts`, `no-discharge`), the lists are comma-separated, and an empty value (`""`) clears a field. `--no-ovulation` removes the ovulation mark. The writes need cycle tracking set up in Garmin Connect; without it, Garmin answers 400 "MCT settings were not found". `wellness menstrual-log` prints `{}` for a day without a log, and `delete` of such a day fails with exit code 1. `wellness menstrual-cycle` and `wellness menstrual-summary` take one date (default today) and print `{}` for a day outside a tracked cycle. `wellness pregnancy-summary` prints `{}` when there is no pregnancy.
+- `wellness jet-lag add --from <place> --to <place> --depart <time> --arrive <time>` adds a jet lag trip. `--return-depart` and `--return-arrive` add the return flight. Each time is the local time at its place with the UTC offset there, such as `2026-11-02T10:00+01:00`; a time without an offset is a usage error. For a flight with a stop, give the first departure and the last arrival. `add` prints the trip ID. `update` and `delete` find the trip in the trip list, because Garmin has no read of one trip; an unknown ID exits 1. `update` changes only the flags you give, and `--from`/`--to` also change the return flight. It refuses a trip of more than two flights (made in the web app).
 - `workouts update` replaces the whole workout, so build the file from `gccli workouts detail <id>` and edit it. `workoutId` is set from the ID argument, so an `upload` payload works unchanged. The workout keeps its ID and its calendar entries.

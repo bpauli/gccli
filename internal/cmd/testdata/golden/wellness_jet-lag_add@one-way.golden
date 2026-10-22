@@ -1,0 +1,117 @@
+A trip of one flight ends on the day of its arrival.
+-- args --
+wellness
+jet-lag
+add
+--from
+Berlin
+--to
+Tokyo
+--depart
+2026-12-01T08:00+01:00
+--arrive
+2026-12-01T23:30+09:00
+-- route POST /jetlag-service/jetlag/trip --
+{"userId": 1000, "timeDifference": 0, "startDate": "2026-12-01", "endDate": "2026-12-01", "flights": [{"flightId": 810, "tripId": 4720, "originLocation": "Berlin", "originTimezone": "+01:00", "originTimestamp": "2026-12-01T08:00:00.0", "destinationLocation": "Tokyo", "destinationTimezone": "+09:00", "destinationTimestamp": "2026-12-01T23:30:00.0"}], "tripId": 4720}
+-- table stdout --
+-- table stderr --
+Added jet lag trip from Berlin to Tokyo (ID: 4720)
+-- table exit --
+0
+-- table requests --
+POST /jetlag-service/jetlag/trip
+  {
+    "endDate": "2026-12-01",
+    "flights": [
+      {
+        "destinationLocation": "Tokyo",
+        "destinationTimestamp": "2026-12-01T23:30:00.0",
+        "destinationTimezone": "+09:00",
+        "originLocation": "Berlin",
+        "originTimestamp": "2026-12-01T08:00:00.0",
+        "originTimezone": "+01:00"
+      }
+    ],
+    "startDate": "2026-12-01"
+  }
+-- plain stdout --
+-- plain stderr --
+Added jet lag trip from Berlin to Tokyo (ID: 4720)
+-- plain exit --
+0
+-- plain requests --
+POST /jetlag-service/jetlag/trip
+  {
+    "endDate": "2026-12-01",
+    "flights": [
+      {
+        "destinationLocation": "Tokyo",
+        "destinationTimestamp": "2026-12-01T23:30:00.0",
+        "destinationTimezone": "+09:00",
+        "originLocation": "Berlin",
+        "originTimestamp": "2026-12-01T08:00:00.0",
+        "originTimezone": "+01:00"
+      }
+    ],
+    "startDate": "2026-12-01"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Added jet lag trip from Berlin to Tokyo (ID: 4720)
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /jetlag-service/jetlag/trip
+  {
+    "endDate": "2026-12-01",
+    "flights": [
+      {
+        "destinationLocation": "Tokyo",
+        "destinationTimestamp": "2026-12-01T23:30:00.0",
+        "destinationTimezone": "+09:00",
+        "originLocation": "Berlin",
+        "originTimestamp": "2026-12-01T08:00:00.0",
+        "originTimezone": "+01:00"
+      }
+    ],
+    "startDate": "2026-12-01"
+  }
+-- json stdout --
+{
+  "userId": 1000,
+  "timeDifference": 0,
+  "startDate": "2026-12-01",
+  "endDate": "2026-12-01",
+  "flights": [
+    {
+      "flightId": 810,
+      "tripId": 4720,
+      "originLocation": "Berlin",
+      "originTimezone": "+01:00",
+      "originTimestamp": "2026-12-01T08:00:00.0",
+      "destinationLocation": "Tokyo",
+      "destinationTimezone": "+09:00",
+      "destinationTimestamp": "2026-12-01T23:30:00.0"
+    }
+  ],
+  "tripId": 4720
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /jetlag-service/jetlag/trip
+  {
+    "endDate": "2026-12-01",
+    "flights": [
+      {
+        "destinationLocation": "Tokyo",
+        "destinationTimestamp": "2026-12-01T23:30:00.0",
+        "destinationTimezone": "+09:00",
+        "originLocation": "Berlin",
+        "originTimestamp": "2026-12-01T08:00:00.0",
+        "originTimezone": "+01:00"
+      }
+    ],
+    "startDate": "2026-12-01"
+  }
