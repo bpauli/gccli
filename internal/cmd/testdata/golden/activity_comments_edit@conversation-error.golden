@@ -6,32 +6,32 @@ edit
 111
 7E1D2C3B4A594F6E8D7C6B5A49382716
 Great run
--- route GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3 500 noeol --
-{"message":"Internal Server Error"}
+-- route GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3 400 noeol --
+{"message":"Bad Request"}
 -- table stdout --
 -- table stderr --
-get conversation: garmin api: 500 Internal Server Error: {"message":"Internal Server Error"}
+get conversation: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- table exit --
 1
 -- table requests --
 GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
 -- plain stdout --
 -- plain stderr --
-get conversation: garmin api: 500 Internal Server Error: {"message":"Internal Server Error"}
+get conversation: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- plain exit --
 1
 -- plain requests --
 GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
 -- plain-header stdout --
 -- plain-header stderr --
-get conversation: garmin api: 500 Internal Server Error: {"message":"Internal Server Error"}
+get conversation: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- plain-header exit --
 1
 -- plain-header requests --
 GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
 -- json stdout --
 -- json stderr --
-{"error":{"code":"error","status":500,"message":"get conversation: garmin api: 500 Internal Server Error: {\"message\":\"Internal Server Error\"}"}}
+{"error":{"code":"error","status":400,"message":"get conversation: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
 -- json exit --
 1
 -- json requests --
