@@ -86,6 +86,8 @@ Date shortcuts
   - `<id>`: Activity ID.
 - `gccli activity power-zones <id>`: Show power time in zones.
   - `<id>`: Activity ID.
+- `gccli activity segments <id>`: List the segments that an activity crossed.
+  - `<id>`: Activity ID.
 - `gccli activity exercise-sets show <id>`: Show exercise sets. Also runs as `gccli activity exercise-sets <id>`.
   - `<id>`: Activity ID.
 - `gccli activity exercise-sets set --exercise=EXERCISE,... <id>`: Set exercise sets for a strength training activity.
@@ -383,7 +385,7 @@ Date shortcuts
   - `<id>`: Workout ID.
   - `-f, --force`: Skip confirmation prompt.
 
-### Courses
+### Courses & Segments
 
 - `gccli courses list`: List courses. Also runs as `gccli courses`.
 - `gccli courses favorites`: List favorite courses.
@@ -404,6 +406,35 @@ Date shortcuts
 - `gccli courses delete <id> [flags]`: Delete a course.
   - `<id>`: Course ID.
   - `-f, --force`: Skip confirmation prompt.
+- `gccli segments list [flags]`: List the segments you created, or your favorites with --favorites. Also runs as `gccli segments [flags]`.
+  - `--favorites`: List your favorite segments instead.
+  - `-l, --limit=20`: Maximum number of segments to return.
+  - `--offset=0`: Number of segments to skip.
+- `gccli segments search [flags]`: Search segments by name or map area.
+  - `--name=TEXT`: Text in the segment name.
+  - `--bbox=MINLAT,MINLON,MAXLAT,MAXLON`: Map area as MINLAT,MINLON,MAXLAT,MAXLON in degrees.
+  - `--activity-type=TYPE`: Activity type: cycling or running.
+  - `--classification=KEY`: Classification as segments classifications prints it: downhill, hill_climb, hills, other or sprint.
+  - `--surface=KEY`: Surface as segments surface-types prints it: dirt, gravel, mixed or paved.
+  - `--min-distance=KM`: Minimum distance in kilometers.
+  - `--max-distance=KM`: Maximum distance in kilometers.
+  - `--min-grade=PCT`: Minimum average grade in percent.
+  - `--max-grade=PCT`: Maximum average grade in percent.
+  - `-l, --limit=20`: Maximum number of segments to return.
+  - `--offset=0`: Number of segments to skip.
+- `gccli segments show <uuid>`: Show a segment with its track points.
+  - `<uuid>`: Segment UUID.
+- `gccli segments leaderboard <uuid> [flags]`: Show the leaderboard of a segment.
+  - `<uuid>`: Segment UUID.
+  - `--from-rank=1`: Rank to start at. One page has 26 rows.
+  - `--scope="all"`: Whose times: all, connections, following or me.
+  - `--group=ID`: Show only the members of this group. Goes only with --scope all.
+  - `--gender=GENDER`: Gender: female or male.
+  - `--age=AGES`: Age group: 0-18, 18-24, 25-34, 35-44, 45-54, 55-64 or 65-120.
+- `gccli segments rank <uuid>`: Show your best time and the top three on a segment.
+  - `<uuid>`: Segment UUID.
+- `gccli segments classifications`: List the segment classifications.
+- `gccli segments surface-types`: List the segment surface types.
 
 ### Devices
 
@@ -801,6 +832,7 @@ Notes
 - Every `nutrition` command except `food-log`, `meals` and `settings` needs a Garmin Connect+ subscription. Without it they exit 1 with `this needs a Garmin Connect+ subscription (403 Forbidden)`, so tell the user. `nutrition add` and `nutrition quick-add` also need nutrition set up in Garmin Connect: without it the day has no meals, and they exit 1 with `no meals on <date>: set up nutrition in Garmin Connect first`. gccli does not set up nutrition.
 - `calendar month [<year> <month>]` takes the month as 1-12 (Garmin's own path is 0-based) and shows this month without arguments. The answer also holds the items of the days before and after the month that fill the weeks of its grid, so filter on `date` when you need one month only. `--json` prints the Garmin answer with all item fields.
 - `calendar export show` prints the iCalendar feed URL that calendar apps subscribe to, or a note on stderr when the feed is off. `calendar export enable` keeps a feed that is on, because a second create gets 403 from Garmin. `calendar export disable` asks first (`--force` skips it); the URL then gives an empty answer. With `--json` the commands print Garmin's object. Its `id` is the feed ID (`NOT_PUBLISHED` when the feed is off), and its `baseUrl` names localhost, so take the URL from `--plain` output.
+- `segments search` needs `--name` or `--bbox MINLAT,MINLON,MAXLAT,MAXLON`. Without one Garmin finds nothing, so the command exits 2. Take the `--classification` and `--surface` values from `gccli segments classifications` and `gccli segments surface-types`. Garmin's `all` means no filter: leave the flag out. In `--json` output, segment distances are kilometers and leaderboard times are milliseconds. One leaderboard page has 26 rows: `--from-rank 27` gives the next page. `--group` goes only with `--scope all`.
 - `insights compare` needs Insights turned on in Garmin Connect. Without it, Garmin answers 403 `User is not opted into Insights` and the command exits 1, so tell the user. Take every flag value (`--activity`, `--field`, `--age`, `--year`, `--month`) from `gccli insights options` as it prints them, such as `--age 75+`. Some dates, such as the current year without `--month`, give `{}`.
 - The `golf` commands print the Garmin answer as JSON. `golf scorecards`, `golf courses` and `golf leaderboards` page by `--limit`, so `--offset` must be a multiple of `--limit`. For an account without golf rounds, the answer has `totalRows: 0` and no list. `golf clubs` gives each club a `clubTypeId`, and `golf club-types` gives the name of each type ID as `value`.
 - Delete commands fail without a terminal unless `--force` is set. Confirm with the user first, then pass `--force`.

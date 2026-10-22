@@ -21,7 +21,7 @@ var referenceGroups = []groupSpec{
 	{"Health Data", []string{"health"}},
 	{"Body Composition", []string{"body"}},
 	{"Workouts", []string{"workouts"}},
-	{"Courses", []string{"courses"}},
+	{"Courses & Segments", []string{"courses", "segments"}},
 	{"Devices", []string{"devices"}},
 	{"Gear", []string{"gear"}},
 	{"Goals, Badges & Challenges", []string{"goals", "badges", "challenges", "records"}},

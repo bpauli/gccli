@@ -1,0 +1,101 @@
+--from-rank, --scope me, --gender and --age go into the body. The age group is two strings.
+-- args --
+segments
+leaderboard
+a1b2c3d4-0000-4000-8000-000000000001
+--from-rank
+27
+--scope
+me
+--gender
+female
+--age
+35-44
+-- route POST /segment-service/leaderboard/search/ --
+{"leaderElapsedTime":201000,"leaderFullName":"Fast Leader","leaderboardRowDTOList":[{"rank":27,"fullName":"Runner One","displayName":"runner-one","elapsedMilliseconds":245300,"timeEntered":"2026-08-15 07:12:03.338","activityID":5000001},{"rank":28,"fullName":"Runner Two","displayName":"runner-two","elapsedMilliseconds":3723400,"timeEntered":"2026-08-16 18:40:00.0","activityID":5000002}]}
+-- table stdout --
+RANK  NAME        TIME     DATE        ACTIVITY
+27    Runner One  4:05     2026-08-15  5000001
+28    Runner Two  1:02:03  2026-08-16  5000002
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+POST /segment-service/leaderboard/search/
+  {
+    "ageMax": "44",
+    "ageMin": "35",
+    "gender": "female",
+    "meOnly": "true",
+    "segmentUuid": "a1b2c3d4-0000-4000-8000-000000000001",
+    "startingRowNumber": 27
+  }
+-- plain stdout --
+27	Runner One	4:05	2026-08-15	5000001
+28	Runner Two	1:02:03	2026-08-16	5000002
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+POST /segment-service/leaderboard/search/
+  {
+    "ageMax": "44",
+    "ageMin": "35",
+    "gender": "female",
+    "meOnly": "true",
+    "segmentUuid": "a1b2c3d4-0000-4000-8000-000000000001",
+    "startingRowNumber": 27
+  }
+-- plain-header stdout --
+RANK	NAME	TIME	DATE	ACTIVITY
+27	Runner One	4:05	2026-08-15	5000001
+28	Runner Two	1:02:03	2026-08-16	5000002
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /segment-service/leaderboard/search/
+  {
+    "ageMax": "44",
+    "ageMin": "35",
+    "gender": "female",
+    "meOnly": "true",
+    "segmentUuid": "a1b2c3d4-0000-4000-8000-000000000001",
+    "startingRowNumber": 27
+  }
+-- json stdout --
+{
+  "leaderElapsedTime": 201000,
+  "leaderFullName": "Fast Leader",
+  "leaderboardRowDTOList": [
+    {
+      "rank": 27,
+      "fullName": "Runner One",
+      "displayName": "runner-one",
+      "elapsedMilliseconds": 245300,
+      "timeEntered": "2026-08-15 07:12:03.338",
+      "activityID": 5000001
+    },
+    {
+      "rank": 28,
+      "fullName": "Runner Two",
+      "displayName": "runner-two",
+      "elapsedMilliseconds": 3723400,
+      "timeEntered": "2026-08-16 18:40:00.0",
+      "activityID": 5000002
+    }
+  ]
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /segment-service/leaderboard/search/
+  {
+    "ageMax": "44",
+    "ageMin": "35",
+    "gender": "female",
+    "meOnly": "true",
+    "segmentUuid": "a1b2c3d4-0000-4000-8000-000000000001",
+    "startingRowNumber": 27
+  }

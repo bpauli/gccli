@@ -1,0 +1,100 @@
+--favorites asks for the favorites, and --limit and --offset page the list.
+-- args --
+segments
+list
+--favorites
+--limit
+5
+--offset
+10
+-- route POST /segment-service/segment/filterSegments --
+{"segments":[{"segmentPk":900001,"uuid":"a1b2c3d4-0000-4000-8000-000000000001","name":"Park Hill","ownerPk":7001,"activityId":5000001,"activityTypePk":1,"surfaceTypePk":2,"classificationPk":8,"distance":1.234,"grade":4.25,"favorite":true,"createDate":"2026-09-01 10:00:00.0"},{"segmentPk":900002,"uuid":"a1b2c3d4-0000-4000-8000-000000000002","name":"River Sprint","ownerPk":7001,"activityId":5000001,"activityTypePk":1,"surfaceTypePk":2,"classificationPk":8,"distance":0.4,"grade":4.25,"favorite":false,"createDate":"2026-09-01 10:00:00.0"}],"availableCount":2}
+-- table stdout --
+UUID                                  NAME          DISTANCE  FAVORITE
+a1b2c3d4-0000-4000-8000-000000000001  Park Hill     1.23 km   true
+a1b2c3d4-0000-4000-8000-000000000002  River Sprint  0.40 km   false
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+POST /segment-service/segment/filterSegments
+  {
+    "limit": 5,
+    "myFavorites": true,
+    "showFavorites": true,
+    "start": 10
+  }
+-- plain stdout --
+a1b2c3d4-0000-4000-8000-000000000001	Park Hill	1.23 km	true
+a1b2c3d4-0000-4000-8000-000000000002	River Sprint	0.40 km	false
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+POST /segment-service/segment/filterSegments
+  {
+    "limit": 5,
+    "myFavorites": true,
+    "showFavorites": true,
+    "start": 10
+  }
+-- plain-header stdout --
+UUID	NAME	DISTANCE	FAVORITE
+a1b2c3d4-0000-4000-8000-000000000001	Park Hill	1.23 km	true
+a1b2c3d4-0000-4000-8000-000000000002	River Sprint	0.40 km	false
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /segment-service/segment/filterSegments
+  {
+    "limit": 5,
+    "myFavorites": true,
+    "showFavorites": true,
+    "start": 10
+  }
+-- json stdout --
+{
+  "segments": [
+    {
+      "segmentPk": 900001,
+      "uuid": "a1b2c3d4-0000-4000-8000-000000000001",
+      "name": "Park Hill",
+      "ownerPk": 7001,
+      "activityId": 5000001,
+      "activityTypePk": 1,
+      "surfaceTypePk": 2,
+      "classificationPk": 8,
+      "distance": 1.234,
+      "grade": 4.25,
+      "favorite": true,
+      "createDate": "2026-09-01 10:00:00.0"
+    },
+    {
+      "segmentPk": 900002,
+      "uuid": "a1b2c3d4-0000-4000-8000-000000000002",
+      "name": "River Sprint",
+      "ownerPk": 7001,
+      "activityId": 5000001,
+      "activityTypePk": 1,
+      "surfaceTypePk": 2,
+      "classificationPk": 8,
+      "distance": 0.4,
+      "grade": 4.25,
+      "favorite": false,
+      "createDate": "2026-09-01 10:00:00.0"
+    }
+  ],
+  "availableCount": 2
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /segment-service/segment/filterSegments
+  {
+    "limit": 5,
+    "myFavorites": true,
+    "showFavorites": true,
+    "start": 10
+  }

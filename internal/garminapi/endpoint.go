@@ -34,6 +34,7 @@ var endpoints = mustIndex(
 	calendarEndpoints,
 	insightsEndpoints,
 	golfEndpoints,
+	segmentsEndpoints,
 )
 
 // Host is the Garmin server an endpoint lives on.
@@ -89,6 +90,10 @@ type Endpoint struct {
 	// Body is true when the request carries a JSON body. Call rejects a body
 	// on an endpoint without one, and a missing body on one with it.
 	Body bool
+	// Read marks a POST that only reads, such as a search whose filter is
+	// the body. Its command prints the answer like a GET read, and the write
+	// census of internal/cmd does not count it as a write.
+	Read bool
 	// Requires is the plan the account needs. Call turns Garmin's refusal
 	// of an account without it into a SubscriptionRequiredError.
 	Requires Subscription
@@ -322,6 +327,8 @@ func compile(e Endpoint) (*route, error) {
 		return nil, fmt.Errorf("unknown subscription %d", e.Requires)
 	case e.Body && e.Method == http.MethodGet:
 		return nil, errors.New("a GET has no body")
+	case e.Read && e.Method != http.MethodPost:
+		return nil, errors.New("only a POST can be marked Read: a GET is a read already")
 	case !strings.HasPrefix(e.Path, "/"):
 		return nil, errors.New("path must start with /")
 	}
