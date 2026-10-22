@@ -276,10 +276,18 @@ Commands:
   events upcoming                  List upcoming events.
   events add                       Add a calendar event.
   events delete                    Delete a calendar event.
+  calendar month                   List the items of a calendar month, such as
+                                   activities and notes.
   calendar notes add               Add a note to a calendar day.
   calendar notes update            Change the name or text of a calendar note.
   calendar notes move              Move a calendar note to another day.
   calendar notes delete            Delete a calendar note.
+  calendar export show             Show the calendar feed URL.
+  calendar export enable           Turn on the calendar feed and show its URL.
+  calendar export disable          Turn off the calendar feed. Its URL then
+                                   gives an empty answer.
+  calendar preferences view        Show the calendar preferences.
+  calendar preferences set         Turn a calendar preference on or off.
   wellness menstrual-cycle         Show the menstrual cycle day view of a date.
   wellness menstrual-summary       Show the menstrual cycle summary of a date.
   wellness menstrual-calendar      Show the menstrual cycle calendar for a date
@@ -1651,10 +1659,18 @@ Flags:
       --version           Print version information.
 
 Commands:
-  calendar notes add       Add a note to a calendar day.
-  calendar notes update    Change the name or text of a calendar note.
-  calendar notes move      Move a calendar note to another day.
-  calendar notes delete    Delete a calendar note.
+  calendar month               List the items of a calendar month, such as
+                               activities and notes.
+  calendar notes add           Add a note to a calendar day.
+  calendar notes update        Change the name or text of a calendar note.
+  calendar notes move          Move a calendar note to another day.
+  calendar notes delete        Delete a calendar note.
+  calendar export show         Show the calendar feed URL.
+  calendar export enable       Turn on the calendar feed and show its URL.
+  calendar export disable      Turn off the calendar feed. Its URL then gives an
+                               empty answer.
+  calendar preferences view    Show the calendar preferences.
+  calendar preferences set     Turn a calendar preference on or off.
 
 $ gccli calendar notes --help
 Usage: gccli calendar notes <command>
@@ -1680,6 +1696,54 @@ Commands:
   calendar notes update    Change the name or text of a calendar note.
   calendar notes move      Move a calendar note to another day.
   calendar notes delete    Delete a calendar note.
+
+$ gccli calendar export --help
+Usage: gccli calendar export <command>
+
+Show, turn on and turn off the iCalendar feed for calendar apps.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  calendar export show       Show the calendar feed URL.
+  calendar export enable     Turn on the calendar feed and show its URL.
+  calendar export disable    Turn off the calendar feed. Its URL then gives an
+                             empty answer.
+
+$ gccli calendar preferences --help
+Usage: gccli calendar preferences <command>
+
+Show and change what the Garmin Connect web calendar shows.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  calendar preferences view    Show the calendar preferences.
+  calendar preferences set     Turn a calendar preference on or off.
 
 $ gccli wellness --help
 Usage: gccli wellness <command> [flags]

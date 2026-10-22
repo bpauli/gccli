@@ -1,0 +1,40 @@
+The feed URL is built from the web app host, because Garmin's baseUrl names localhost.
+-- args --
+calendar
+export
+show
+-- route GET /calendar-service/export --
+{"baseUrl":"http://localhost/proxy/calendar-service/export","id":"0123456789abcdef0123456789abcdef"}
+-- table stdout --
+URL
+https://connect.garmin.com/modern/calendar/export/0123456789abcdef0123456789abcdef
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /calendar-service/export
+-- plain stdout --
+https://connect.garmin.com/modern/calendar/export/0123456789abcdef0123456789abcdef
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /calendar-service/export
+-- plain-header stdout --
+URL
+https://connect.garmin.com/modern/calendar/export/0123456789abcdef0123456789abcdef
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /calendar-service/export
+-- json stdout --
+{
+  "baseUrl": "http://localhost/proxy/calendar-service/export",
+  "id": "0123456789abcdef0123456789abcdef"
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /calendar-service/export

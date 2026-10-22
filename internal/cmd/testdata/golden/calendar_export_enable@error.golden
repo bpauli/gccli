@@ -1,0 +1,38 @@
+Error case: the export read answers 400, so nothing is created.
+-- args --
+calendar
+export
+enable
+-- route GET /calendar-service/export 400 --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+get calendar export: garmin api: 400 Bad Request: {"message":"Bad Request"}
+
+-- table exit --
+1
+-- table requests --
+GET /calendar-service/export
+-- plain stdout --
+-- plain stderr --
+get calendar export: garmin api: 400 Bad Request: {"message":"Bad Request"}
+
+-- plain exit --
+1
+-- plain requests --
+GET /calendar-service/export
+-- plain-header stdout --
+-- plain-header stderr --
+get calendar export: garmin api: 400 Bad Request: {"message":"Bad Request"}
+
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /calendar-service/export
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"get calendar export: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}\n"}}
+-- json exit --
+1
+-- json requests --
+GET /calendar-service/export

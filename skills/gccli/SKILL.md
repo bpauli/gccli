@@ -539,6 +539,9 @@ Date shortcuts
 
 ### Calendar
 
+- `gccli calendar month [<year>] [<month>]`: List the items of a calendar month, such as activities and notes.
+  - `[<year>]`: Year (e.g. 2026). Give it with MONTH. Without both, the command shows this month.
+  - `[<month>]`: Month (1-12).
 - `gccli calendar notes add <date> <name> [flags]`: Add a note to a calendar day.
   - `<date>`: Date of the note (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `<name>`: Note name.
@@ -553,6 +556,14 @@ Date shortcuts
 - `gccli calendar notes delete <id> [flags]`: Delete a calendar note.
   - `<id>`: Note ID.
   - `-f, --force`: Skip confirmation prompt.
+- `gccli calendar export show`: Show the calendar feed URL.
+- `gccli calendar export enable`: Turn on the calendar feed and show its URL.
+- `gccli calendar export disable [flags]`: Turn off the calendar feed. Its URL then gives an empty answer.
+  - `-f, --force`: Skip confirmation prompt.
+- `gccli calendar preferences view`: Show the calendar preferences. Also runs as `gccli calendar preferences`.
+- `gccli calendar preferences set <key> <value>`: Turn a calendar preference on or off.
+  - `<key>`: Preference key, such as showWeeklyTotal. Run gccli calendar preferences to see the keys.
+  - `<value>`: true turns the preference on, false turns it off.
 
 ### Social
 
@@ -723,6 +734,9 @@ Worked examples
 - Menstrual daily log: `gccli wellness menstrual-log set 2026-10-01 --flow light --symptoms cramps,tender-breasts --ovulation` sets fields of the log of a day. `gccli wellness menstrual-log set 2026-10-01 --symptoms ""` clears the symptoms and keeps the other fields. `gccli wellness menstrual-log 2026-10-01` shows the log, and `gccli wellness menstrual-log delete 2026-10-01 --force` deletes it.
 - Nap: `gccli health sleep naps add 13:30 13:50` adds a nap for today. Garmin takes only naps that end today, and the times are in the time zone of the Garmin profile, not of the machine. `gccli health sleep naps delete today 13:30 --force` deletes the nap that starts at 13:30.
 - Activity like: `gccli activity likes add <id>` likes an activity, and a second add changes nothing. `gccli activity likes <id>` lists the likes. `gccli activity likes remove <id>` removes your like with no prompt. It fails with exit code 1 (`activity <id> is not liked`) when there is no like to remove.
+- Calendar month: `gccli calendar month 2026 10` lists the activities, workouts, events, notes and other items of October 2026. `gccli calendar month --json | jq '[.calendarItems[] | select(.itemType == "activity")]'` keeps the activities of this month's grid.
+- Calendar feed: `gccli calendar export enable` turns on the feed and prints its URL, and `gccli calendar export show --plain` prints the URL alone. `gccli calendar export disable --force` turns it off.
+- Calendar preference: `gccli calendar preferences` shows the keys. `gccli calendar preferences set showWeeklyTotal false` turns one off.
 - Notification preference: `gccli notifications preferences` shows the keys. `gccli notifications preferences set allowEmailWeeklySummary false` turns one off. A key that is not in the preferences fails before any write, and the error lists the keys.
 - Privacy zone: `gccli profile privacy-zones add --lat 51.5 --lon=-0.12 --radius 500` prints the zone ID. A negative value needs the `=` form. The radius is 500 to 1500 meters. `gccli profile privacy-zones delete <id> --force` deletes it.
 - Race event with a goal time and training priority: `gccli events add --name "Spring 10K" --date 2026-05-10 --type running --race --distance 10km --goal 40m --training`
@@ -785,6 +799,8 @@ Notes
 - For Garmin China accounts: `export GCCLI_DOMAIN=garmin.cn`.
 - Exit codes: 1 other error, 2 usage error, 3 login needed (ask the user to run `gccli auth login`), 4 not found, 5 rate limited (wait, then retry). With `--json`, errors are a JSON object on stderr: `{"error":{"code":"...","status":429,"message":"..."}}`.
 - Every `nutrition` command except `food-log`, `meals` and `settings` needs a Garmin Connect+ subscription. Without it they exit 1 with `this needs a Garmin Connect+ subscription (403 Forbidden)`, so tell the user. `nutrition add` and `nutrition quick-add` also need nutrition set up in Garmin Connect: without it the day has no meals, and they exit 1 with `no meals on <date>: set up nutrition in Garmin Connect first`. gccli does not set up nutrition.
+- `calendar month [<year> <month>]` takes the month as 1-12 (Garmin's own path is 0-based) and shows this month without arguments. The answer also holds the items of the days before and after the month that fill the weeks of its grid, so filter on `date` when you need one month only. `--json` prints the Garmin answer with all item fields.
+- `calendar export show` prints the iCalendar feed URL that calendar apps subscribe to, or a note on stderr when the feed is off. `calendar export enable` keeps a feed that is on, because a second create gets 403 from Garmin. `calendar export disable` asks first (`--force` skips it); the URL then gives an empty answer. With `--json` the commands print Garmin's object. Its `id` is the feed ID (`NOT_PUBLISHED` when the feed is off), and its `baseUrl` names localhost, so take the URL from `--plain` output.
 - `insights compare` needs Insights turned on in Garmin Connect. Without it, Garmin answers 403 `User is not opted into Insights` and the command exits 1, so tell the user. Take every flag value (`--activity`, `--field`, `--age`, `--year`, `--month`) from `gccli insights options` as it prints them, such as `--age 75+`. Some dates, such as the current year without `--month`, give `{}`.
 - The `golf` commands print the Garmin answer as JSON. `golf scorecards`, `golf courses` and `golf leaderboards` page by `--limit`, so `--offset` must be a multiple of `--limit`. For an account without golf rounds, the answer has `totalRows: 0` and no list. `golf clubs` gives each club a `clubTypeId`, and `golf club-types` gives the name of each type ID as `value`.
 - Delete commands fail without a terminal unless `--force` is set. Confirm with the user first, then pass `--force`.

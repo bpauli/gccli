@@ -257,6 +257,39 @@ var writeCases = map[string]writeCase{
 		human:    "Added note \"Long run\" on 2026-10-20 (ID: 118934)\n",
 		fallback: "Added note \"Long run\" on 2026-10-20\n",
 	},
+	"calendar export enable": {
+		routes: map[string]string{
+			"GET /calendar-service/export":  `{"baseUrl":"http://localhost/proxy/calendar-service/export","id":"NOT_PUBLISHED"}`,
+			"POST /calendar-service/export": `{"baseUrl":null,"id":"fedcba9876543210fedcba9876543210"}`,
+		},
+		result:   "POST /calendar-service/export",
+		json:     "{\n  \"baseUrl\": null,\n  \"id\": \"fedcba9876543210fedcba9876543210\"\n}\n",
+		fallback: "Turned on the calendar feed. Run gccli calendar export show to see its URL.\n",
+		table:    "URL\nhttps://connect.garmin.com/modern/calendar/export/fedcba9876543210fedcba9876543210\n",
+		plain:    "https://connect.garmin.com/modern/calendar/export/fedcba9876543210fedcba9876543210\n",
+	},
+	"calendar export disable": {
+		routes: map[string]string{
+			"GET /calendar-service/export":                                     `{"baseUrl":"http://localhost/proxy/calendar-service/export","id":"0123456789abcdef0123456789abcdef"}`,
+			"DELETE /calendar-service/export/0123456789abcdef0123456789abcdef": noContent,
+		},
+		result:   "DELETE /calendar-service/export/0123456789abcdef0123456789abcdef",
+		prompt:   "Turn off the calendar feed? Calendar apps that subscribe to it then get an empty answer.",
+		json:     okOut,
+		human:    "Turned off the calendar feed\n",
+		fallback: "Turned off the calendar feed\n",
+	},
+	"calendar preferences set": {
+		args: []string{"showWeeklyTotal", "false"},
+		routes: map[string]string{
+			"GET /calendar-service/preferences": `{"showWeeklyTotal":true,"view":1}`,
+			"PUT /calendar-service/preferences": noContent,
+		},
+		result:   "PUT /calendar-service/preferences",
+		json:     okOut,
+		human:    "Set calendar preference showWeeklyTotal to false\n",
+		fallback: "Set calendar preference showWeeklyTotal to false\n",
+	},
 	"calendar notes update": {
 		args: []string{"118934", "--name", "Tempo run"},
 		routes: map[string]string{

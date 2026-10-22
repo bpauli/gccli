@@ -1,0 +1,94 @@
+The month view path is 0-based, so October (10) goes out as month 9.
+-- args --
+calendar
+month
+2026
+10
+-- route GET /calendar-service/year/2026/month/9 --
+{"startDayOfMonth":4,"numOfDaysInMonth":31,"numOfDaysInPrevMonth":30,"month":9,"year":2026,"calendarItems":[{"id":9000001,"itemType":"activity","activityTypeId":1,"title":"Morning Run","date":"2026-09-28","duration":1800.5,"distance":5012.3},{"id":9000002,"itemType":"event","title":"City 10K","date":"2026-10-11","isRace":true},{"id":null,"itemType":"nap","title":null,"date":"2026-10-14","duration":1200},{"id":9000003,"itemType":"note","title":"Rest day","date":"2026-10-15"},{"id":9000004,"itemType":"workout","title":"Intervals","date":"2026-10-20","workoutId":7000001}]}
+-- table stdout --
+DATE        TYPE      ID       TITLE
+2026-09-28  activity  9000001  Morning Run
+2026-10-11  event     9000002  City 10K
+2026-10-14  nap                
+2026-10-15  note      9000003  Rest day
+2026-10-20  workout   9000004  Intervals
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /calendar-service/year/2026/month/9
+-- plain stdout --
+2026-09-28	activity	9000001	Morning Run
+2026-10-11	event	9000002	City 10K
+2026-10-14	nap		
+2026-10-15	note	9000003	Rest day
+2026-10-20	workout	9000004	Intervals
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /calendar-service/year/2026/month/9
+-- plain-header stdout --
+DATE	TYPE	ID	TITLE
+2026-09-28	activity	9000001	Morning Run
+2026-10-11	event	9000002	City 10K
+2026-10-14	nap		
+2026-10-15	note	9000003	Rest day
+2026-10-20	workout	9000004	Intervals
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /calendar-service/year/2026/month/9
+-- json stdout --
+{
+  "startDayOfMonth": 4,
+  "numOfDaysInMonth": 31,
+  "numOfDaysInPrevMonth": 30,
+  "month": 9,
+  "year": 2026,
+  "calendarItems": [
+    {
+      "id": 9000001,
+      "itemType": "activity",
+      "activityTypeId": 1,
+      "title": "Morning Run",
+      "date": "2026-09-28",
+      "duration": 1800.5,
+      "distance": 5012.3
+    },
+    {
+      "id": 9000002,
+      "itemType": "event",
+      "title": "City 10K",
+      "date": "2026-10-11",
+      "isRace": true
+    },
+    {
+      "id": null,
+      "itemType": "nap",
+      "title": null,
+      "date": "2026-10-14",
+      "duration": 1200
+    },
+    {
+      "id": 9000003,
+      "itemType": "note",
+      "title": "Rest day",
+      "date": "2026-10-15"
+    },
+    {
+      "id": 9000004,
+      "itemType": "workout",
+      "title": "Intervals",
+      "date": "2026-10-20",
+      "workoutId": 7000001
+    }
+  ]
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /calendar-service/year/2026/month/9

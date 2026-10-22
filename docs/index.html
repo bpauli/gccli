@@ -508,8 +508,8 @@ gccli activities list --limit 5</pre>
           </div>
           <div class="feature-card fade-in">
             <div class="feature-icon green">&#x1f4dd;</div>
-            <h3>Calendar Notes</h3>
-            <p>Add a note to a calendar day. Change its name or text, move it to another day, or delete it.</p>
+            <h3>Calendar</h3>
+            <p>List the activities, workouts, events and notes of a month. Add, change, move and delete notes. Turn the iCalendar feed for calendar apps on and off, and change the web calendar preferences.</p>
           </div>
           <div class="feature-card fade-in">
             <div class="feature-icon blue">&#x1f4c5;</div>
@@ -897,10 +897,16 @@ gccli activities list --limit 5</pre>
           <div class="cmd-group fade-in">
             <div class="cmd-header"><h3>Calendar</h3><span class="cmd-arrow">&#x25B6;</span></div>
             <div class="cmd-body">
+              <div class="cmd-row"><div class="cmd">gccli calendar month [&lt;year&gt;] [&lt;month&gt;]</div><div class="desc">List the items of a calendar month, such as activities and notes.<br><code>[&lt;year&gt;]</code> Year (e.g. 2026). Give it with MONTH. Without both, the command shows this month.<br><code>[&lt;month&gt;]</code> Month (1-12).</div></div>
               <div class="cmd-row"><div class="cmd">gccli calendar notes add &lt;date&gt; &lt;name&gt; [flags]</div><div class="desc">Add a note to a calendar day.<br><code>&lt;date&gt;</code> Date of the note (YYYY-MM-DD, today, yesterday, 3d, +30d).<br><code>&lt;name&gt;</code> Note name.<br><code><span class="nowrap">--content=</span><wbr>STRING</code> Note text.</div></div>
               <div class="cmd-row"><div class="cmd">gccli calendar notes update &lt;id&gt; [flags]</div><div class="desc">Change the name or text of a calendar note.<br><code>&lt;id&gt;</code> Note ID.<br><code><span class="nowrap">--name=</span><wbr>STRING</code> New name.<br><code><span class="nowrap">--content=</span><wbr>STRING</code> New text. An empty text clears it.</div></div>
               <div class="cmd-row"><div class="cmd">gccli calendar notes move &lt;id&gt; &lt;date&gt;</div><div class="desc">Move a calendar note to another day.<br><code>&lt;id&gt;</code> Note ID.<br><code>&lt;date&gt;</code> New date (YYYY-MM-DD, today, yesterday, 3d, +30d).</div></div>
               <div class="cmd-row"><div class="cmd">gccli calendar notes delete &lt;id&gt; [flags]</div><div class="desc">Delete a calendar note.<br><code>&lt;id&gt;</code> Note ID.<br><code><span class="nowrap">-f,</span> <span class="nowrap">--force</span></code> Skip confirmation prompt.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli calendar export show</div><div class="desc">Show the calendar feed URL.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli calendar export enable</div><div class="desc">Turn on the calendar feed and show its URL.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli calendar export disable [flags]</div><div class="desc">Turn off the calendar feed. Its URL then gives an empty answer.<br><code><span class="nowrap">-f,</span> <span class="nowrap">--force</span></code> Skip confirmation prompt.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli calendar preferences view</div><div class="desc">Show the calendar preferences. Also runs as <span class="whole"><code>gccli calendar preferences</code>.</span></div></div>
+              <div class="cmd-row"><div class="cmd">gccli calendar preferences set &lt;key&gt; &lt;value&gt;</div><div class="desc">Turn a calendar preference on or off.<br><code>&lt;key&gt;</code> Preference key, such as showWeeklyTotal. Run gccli calendar preferences to see the keys.<br><code>&lt;value&gt;</code> true turns the preference on, false turns it off.</div></div>
             </div>
           </div>
 

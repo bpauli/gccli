@@ -25,7 +25,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Hydration** — view and log daily water intake
 - **Nutrition** - view daily food logs, meals, and nutrition settings, search the Garmin food database, list recent and favorite foods, log foods and quick entries in a meal, delete log entries, and add and remove favorite foods (all but the first three need Garmin Connect+)
 - **Events** — list, list upcoming, add, and delete calendar events (races, group rides, etc.) with goals and training priority support
-- **Calendar** - add, update, move and delete calendar notes
+- **Calendar** - month view of activities, workouts, events and notes, add, update, move and delete calendar notes, turn the iCalendar feed on and off, and change the web calendar preferences
 - **Wellness** - menstrual cycle data and calendar, menstrual daily log (view, set, delete), pregnancy summary, jet lag trips and status
 - **Social** - notifications, view and change notification preferences, connections, connection requests, followers, following, newsfeed, groups
 - **Insights** - compare your steps, sleep, floors, VO2 max, speed, power and more with people of your age group and gender (needs Insights turned on in Garmin Connect)
@@ -813,6 +813,19 @@ gccli calendar notes delete <id>               # Delete a note (with confirmatio
 
 `calendar notes add` prints the note ID. `calendar notes update` reads the note first and sends it back with your changes, so the fields you do not give stay as they are.
 
+### Calendar month and feed
+
+```bash
+gccli calendar month                  # Items of this month
+gccli calendar month 2026 10          # Items of October 2026
+gccli calendar export enable          # Turn on the iCalendar feed and print its URL
+gccli calendar export show --plain    # Print the feed URL alone
+gccli calendar export disable         # Turn off the feed (with confirmation)
+gccli calendar preferences set showWeeklyTotal false
+```
+
+`calendar month` lists the date, type, ID and title of each item. Like the web calendar, it also shows the days before and after the month that fill its weeks. Add the feed URL to a calendar app as a subscription. After `calendar export disable` the URL gives an empty answer. `calendar export enable` keeps a feed that is already on, so the URL stays the same.
+
 ### Wellness
 
 ```bash
@@ -1392,6 +1405,9 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 
 ### Calendar
 
+- `gccli calendar month [<year>] [<month>]`: List the items of a calendar month, such as activities and notes.
+  - `[<year>]`: Year (e.g. 2026). Give it with MONTH. Without both, the command shows this month.
+  - `[<month>]`: Month (1-12).
 - `gccli calendar notes add <date> <name> [flags]`: Add a note to a calendar day.
   - `<date>`: Date of the note (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `<name>`: Note name.
@@ -1406,6 +1422,14 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli calendar notes delete <id> [flags]`: Delete a calendar note.
   - `<id>`: Note ID.
   - `-f, --force`: Skip confirmation prompt.
+- `gccli calendar export show`: Show the calendar feed URL.
+- `gccli calendar export enable`: Turn on the calendar feed and show its URL.
+- `gccli calendar export disable [flags]`: Turn off the calendar feed. Its URL then gives an empty answer.
+  - `-f, --force`: Skip confirmation prompt.
+- `gccli calendar preferences view`: Show the calendar preferences. Also runs as `gccli calendar preferences`.
+- `gccli calendar preferences set <key> <value>`: Turn a calendar preference on or off.
+  - `<key>`: Preference key, such as showWeeklyTotal. Run gccli calendar preferences to see the keys.
+  - `<value>`: true turns the preference on, false turns it off.
 
 ### Social
 

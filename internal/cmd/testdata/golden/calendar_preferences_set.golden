@@ -1,0 +1,108 @@
+The command reads the preferences, sets one key and sends the full object back, because Garmin answers 500 to a partial object.
+-- args --
+calendar
+preferences
+set
+showWeeklyTotal
+false
+-- route GET /calendar-service/preferences --
+{"view":1,"showEvent":true,"showGoal":true,"showWeeklyTotal":true,"eventColor":0,"groups":null,"activityTypes":[{"key":"running","color":0,"show":false}],"hideJetLag":false}
+-- route PUT /calendar-service/preferences 204 --
+-- table stdout --
+-- table stderr --
+Set calendar preference showWeeklyTotal to false
+-- table exit --
+0
+-- table requests --
+GET /calendar-service/preferences
+PUT /calendar-service/preferences
+  {
+    "activityTypes": [
+      {
+        "key": "running",
+        "color": 0,
+        "show": false
+      }
+    ],
+    "eventColor": 0,
+    "groups": null,
+    "hideJetLag": false,
+    "showEvent": true,
+    "showGoal": true,
+    "showWeeklyTotal": false,
+    "view": 1
+  }
+-- plain stdout --
+-- plain stderr --
+Set calendar preference showWeeklyTotal to false
+-- plain exit --
+0
+-- plain requests --
+GET /calendar-service/preferences
+PUT /calendar-service/preferences
+  {
+    "activityTypes": [
+      {
+        "key": "running",
+        "color": 0,
+        "show": false
+      }
+    ],
+    "eventColor": 0,
+    "groups": null,
+    "hideJetLag": false,
+    "showEvent": true,
+    "showGoal": true,
+    "showWeeklyTotal": false,
+    "view": 1
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Set calendar preference showWeeklyTotal to false
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /calendar-service/preferences
+PUT /calendar-service/preferences
+  {
+    "activityTypes": [
+      {
+        "key": "running",
+        "color": 0,
+        "show": false
+      }
+    ],
+    "eventColor": 0,
+    "groups": null,
+    "hideJetLag": false,
+    "showEvent": true,
+    "showGoal": true,
+    "showWeeklyTotal": false,
+    "view": 1
+  }
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /calendar-service/preferences
+PUT /calendar-service/preferences
+  {
+    "activityTypes": [
+      {
+        "key": "running",
+        "color": 0,
+        "show": false
+      }
+    ],
+    "eventColor": 0,
+    "groups": null,
+    "hideJetLag": false,
+    "showEvent": true,
+    "showGoal": true,
+    "showWeeklyTotal": false,
+    "view": 1
+  }

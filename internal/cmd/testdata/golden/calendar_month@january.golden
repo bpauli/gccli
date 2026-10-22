@@ -1,0 +1,42 @@
+January (1) goes out as month 0. An empty item list prints no rows.
+-- args --
+calendar
+month
+2027
+1
+-- route GET /calendar-service/year/2027/month/0 --
+{"startDayOfMonth":4,"numOfDaysInMonth":31,"numOfDaysInPrevMonth":30,"month":0,"year":2027,"calendarItems":[]}
+-- table stdout --
+DATE  TYPE  ID  TITLE
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /calendar-service/year/2027/month/0
+-- plain stdout --
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /calendar-service/year/2027/month/0
+-- plain-header stdout --
+DATE	TYPE	ID	TITLE
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /calendar-service/year/2027/month/0
+-- json stdout --
+{
+  "startDayOfMonth": 4,
+  "numOfDaysInMonth": 31,
+  "numOfDaysInPrevMonth": 30,
+  "month": 0,
+  "year": 2027,
+  "calendarItems": []
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /calendar-service/year/2027/month/0
