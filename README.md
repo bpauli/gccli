@@ -1434,7 +1434,7 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `--age=FREE-TEXT`: Age group as insights options prints it (e.g. 40-44, 75+).
   - `--gender="ALL"`: Gender: ALL, M or F.
   - `--year=INT`: Year (e.g. 2025).
-  - `--month=STRING`: Month (1-12). Omit it for the whole year.
+  - `--month=MONTH`: Month (1-12). Omit it for the whole year.
   - `--locale-unit="METRIC"`: Units of the answer: METRIC or STATUTE.
 - `gccli insights preferences`: Show your saved Insights comparisons.
 
