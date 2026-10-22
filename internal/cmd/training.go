@@ -3,8 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-
-	"github.com/bpauli/gccli/internal/garminapi"
+	"net/url"
 )
 
 var trainingGroup = Group{Name: "training", Help: "Find, join and change training plans, and view adaptive coaching workouts.", Children: []Node{
@@ -109,9 +108,8 @@ func (c *TrainingSearchCmd) Run(g *Globals) error {
 	if err != nil {
 		return err
 	}
-	data, err := client.SearchTrainingPlans(g.Context, garminapi.TrainingPlanFilter{
-		Sport: c.Sport, Goal: c.Goal, Level: c.Level, Target: c.Target, Locale: c.Locale,
-	})
+	params := map[string]string{"locale": c.Locale, "sport": c.Sport, "goal": c.Goal, "level": c.Level, "target": c.Target}
+	data, err := client.Call(g.Context, "training.search", params, []byte{})
 	if err != nil {
 		return fmt.Errorf("search training plans: %w", err)
 	}
@@ -156,7 +154,8 @@ func (c *TrainingTaskMoveCmd) Run(g *Globals) error {
 	if err != nil {
 		return err
 	}
-	data, err := client.MoveTrainingPlanTask(g.Context, string(c.PlanID), string(c.TaskID), string(c.Date))
+	form := url.Values{"workoutSchedulePk": {string(c.TaskID)}, "scheduleDate": {string(c.Date)}}
+	data, err := client.Call(g.Context, "training.move-task", map[string]string{"planID": string(c.PlanID)}, []byte(form.Encode()))
 	if err != nil {
 		return fmt.Errorf("move training plan task: %w", err)
 	}

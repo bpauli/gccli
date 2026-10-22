@@ -12,7 +12,7 @@ Beginner
 HeartRate
 --locale
 de
--- route POST /trainingplan-service/trainingplan/search?levels=Beginner&limit=1000&locale=de&start=1&subTypes=5k&types=Running&version=HeartRate --
+-- route POST /trainingplan-service/trainingplan/search?start=1&limit=1000&locale=de&types=Running&subTypes=5k&levels=Beginner&version=HeartRate --
 {"searchFilter":{"start":1,"limit":1000},"trainingPlanList":[{"trainingPlanId":101,"name":"5K","trainingType":{"typeKey":"Running"},"trainingSubType":{"subTypeKey":"5k"},"trainingLevel":{"levelKey":"Beginner"},"trainingVersion":{"versionName":"HeartRate"},"durationInWeeks":12},{"trainingPlanId":102,"name":"Half Marathon","trainingType":{"typeKey":"Running"},"trainingSubType":{"subTypeKey":"HalfMarathon"},"trainingLevel":{"levelKey":"Advanced"},"trainingVersion":{"versionName":"Time"},"durationInWeeks":16}]}
 -- table stdout --
 ID   NAME           SPORT    GOAL          LEVEL     TARGET     WEEKS
@@ -22,7 +22,7 @@ ID   NAME           SPORT    GOAL          LEVEL     TARGET     WEEKS
 -- table exit --
 0
 -- table requests --
-POST /trainingplan-service/trainingplan/search?levels=Beginner&limit=1000&locale=de&start=1&subTypes=5k&types=Running&version=HeartRate
+POST /trainingplan-service/trainingplan/search?start=1&limit=1000&locale=de&types=Running&subTypes=5k&levels=Beginner&version=HeartRate
 -- plain stdout --
 101	5K	Running	5k	Beginner	HeartRate	12
 102	Half Marathon	Running	HalfMarathon	Advanced	Time	16
@@ -30,7 +30,7 @@ POST /trainingplan-service/trainingplan/search?levels=Beginner&limit=1000&locale
 -- plain exit --
 0
 -- plain requests --
-POST /trainingplan-service/trainingplan/search?levels=Beginner&limit=1000&locale=de&start=1&subTypes=5k&types=Running&version=HeartRate
+POST /trainingplan-service/trainingplan/search?start=1&limit=1000&locale=de&types=Running&subTypes=5k&levels=Beginner&version=HeartRate
 -- plain-header stdout --
 ID	NAME	SPORT	GOAL	LEVEL	TARGET	WEEKS
 101	5K	Running	5k	Beginner	HeartRate	12
@@ -39,7 +39,7 @@ ID	NAME	SPORT	GOAL	LEVEL	TARGET	WEEKS
 -- plain-header exit --
 0
 -- plain-header requests --
-POST /trainingplan-service/trainingplan/search?levels=Beginner&limit=1000&locale=de&start=1&subTypes=5k&types=Running&version=HeartRate
+POST /trainingplan-service/trainingplan/search?start=1&limit=1000&locale=de&types=Running&subTypes=5k&levels=Beginner&version=HeartRate
 -- json stdout --
 {
   "searchFilter": {
@@ -87,4 +87,4 @@ POST /trainingplan-service/trainingplan/search?levels=Beginner&limit=1000&locale
 -- json exit --
 0
 -- json requests --
-POST /trainingplan-service/trainingplan/search?levels=Beginner&limit=1000&locale=de&start=1&subTypes=5k&types=Running&version=HeartRate
+POST /trainingplan-service/trainingplan/search?start=1&limit=1000&locale=de&types=Running&subTypes=5k&levels=Beginner&version=HeartRate
