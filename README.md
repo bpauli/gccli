@@ -18,7 +18,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Workouts** - list, view, download as FIT, upload from JSON, update in place from JSON, create with sport types and targets (pace/HR/power/cadence), schedule (add/list/remove/export), send to a device, list workout types and sport types, view, set and clear strength benchmarks, delete
 - **Courses** — list courses, view favorites, get full course detail, download as FIT/GPX, import GPX files as new courses, send courses directly to a device, delete courses
 - **Segments** - list your segments and favorites, search segments by name or map area, view a segment, its leaderboard and your rank, list the segments that an activity crossed, create a segment from a part of an activity, add and remove favorites, delete segments
-- **Devices** - list registered devices, view settings, solar data, alarms, primary/last-used device, paired sensors, backup summary, historical devices, device messages, cancel a pending device message
+- **Devices** - list registered devices, view settings, solar data, alarms, primary/last-used device, set the primary activity tracker, paired sensors, backup summary and device backups, historical devices, device messages, cancel a pending device message
 - **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities, gear types, add, update, retire, unretire and delete gear, list, create, rename and delete gear collections, add gear to a collection
 - **Goals & Badges** — active goals, set daily goals for steps, floors, intensity minutes and hydration, earned/available/in-progress badges, badge details, challenges, personal records
 - **Training** - browse and view training plans, show your active plans, list adaptive coaching workout types
@@ -679,7 +679,9 @@ gccli devices last-used
 gccli devices alarms
 gccli devices solar <device-id> --start 2024-06-01 --end 2024-06-30
 gccli devices sensors
-gccli devices backups
+gccli devices backups                         # Backup summary (same as devices backups summary)
+gccli devices backups list
+gccli devices set-primary-tracker <device-id> # Not the training device of devices primary
 gccli devices historical
 gccli devices messages
 gccli devices messages cancel <message-id>
