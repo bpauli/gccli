@@ -17,6 +17,7 @@ var devicesGroup = Group{Name: "devices", Help: "Manage devices.", Children: []N
 		Verb:     "get device settings", Output: JSON{},
 	},
 	Leaf{Name: "primary", Help: "Show primary training device.", Endpoint: "devices.primary-training", Verb: "get primary training device", Output: JSON{}},
+	Custom{Name: "set-primary-tracker", Help: "Set the primary activity tracker (not the 'devices primary' training device).", Cmd: &DevicesSetPrimaryTrackerCmd{}},
 	Leaf{
 		Name: "solar", Help: "Show solar charging data for a device.",
 		Spec: argsOf(&struct {
@@ -35,15 +36,37 @@ var devicesGroup = Group{Name: "devices", Help: "Manage devices.", Children: []N
 	Custom{Name: "alarms", Help: "Show alarms from all devices.", Cmd: &DeviceAlarmsCmd{}},
 	Leaf{Name: "last-used", Help: "Show last used device.", Endpoint: "devices.last-used", Verb: "get last used device", Output: JSON{}},
 	Leaf{Name: "sensors", Help: "List paired sensors.", Endpoint: "devices.sensors", Verb: "get sensors", Output: JSON{List: true}},
-	Leaf{Name: "backups", Help: "Show device backup summary.", Endpoint: "devices.backup-summary", Verb: "get device backup summary", Output: JSON{}},
+	devicesBackupsGroup,
 	Leaf{Name: "historical", Help: "List historical devices.", Endpoint: "devices.historical", Verb: "get historical devices", Output: JSON{List: true}},
 	devicesMessagesGroup,
+}}
+
+var devicesBackupsGroup = Group{Name: "backups", Help: "Show the device backup summary and list device backups.", Children: []Node{
+	Leaf{Name: "summary", Help: "Show device backup summary.", Default: true, Endpoint: "devices.backup-summary", Verb: "get device backup summary", Output: JSON{}},
+	Leaf{Name: "list", Help: "List device backups.", Endpoint: "devices.backups", Verb: "get device backups", Output: JSON{List: true}},
 }}
 
 var devicesMessagesGroup = Group{Name: "messages", Help: "List and cancel device messages.", Children: []Node{
 	Leaf{Name: "list", Help: "List device messages.", Default: true, Endpoint: "devices.messages", Verb: "get device messages", Output: JSON{}},
 	Custom{Name: "cancel", Help: "Cancel a device message, such as a sent workout, before the device syncs.", Cmd: &DeviceMessageCancelCmd{}},
 }}
+
+// DevicesSetPrimaryTrackerCmd makes a device the primary activity tracker.
+type DevicesSetPrimaryTrackerCmd struct {
+	DeviceID ID `arg:"" help:"Device ID (from 'devices list')."`
+}
+
+func (c *DevicesSetPrimaryTrackerCmd) Run(g *Globals) error {
+	client, err := resolveClient(g)
+	if err != nil {
+		return err
+	}
+	data, err := client.Call(g.Context, "devices.set-primary-tracker", map[string]string{"deviceID": string(c.DeviceID)}, nil)
+	if err != nil {
+		return fmt.Errorf("set primary activity tracker: %w", err)
+	}
+	return reportWrite(g, data, "Set device %s as the primary activity tracker", c.DeviceID)
+}
 
 // DeviceMessageCancelCmd cancels a pending device message.
 type DeviceMessageCancelCmd struct {
