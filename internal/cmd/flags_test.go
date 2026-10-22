@@ -600,6 +600,69 @@ func TestMonthDecode(t *testing.T) {
 	}
 }
 
+// TestBoundingBoxDecode pins the boxes that BoundingBox accepts: four
+// numbers, latitudes in -90 to 90, longitudes in -180 to 180, and each
+// minimum less than its maximum.
+func TestBoundingBoxDecode(t *testing.T) {
+	accepted := []struct {
+		raw  string
+		want BoundingBox
+	}{
+		{"52.4,13.2,52.6,13.5", BoundingBox{52.4, 13.2, 52.6, 13.5}},
+		{"-90,-180,90,180", BoundingBox{-90, -180, 90, 180}},
+		{"52.4, 13.2, 52.6, 13.5", BoundingBox{52.4, 13.2, 52.6, 13.5}},
+	}
+	rejected := []struct{ raw, want string }{
+		{"", "expected MINLAT,MINLON,MAXLAT,MAXLON"},
+		{"52.4,13.2,52.6", "expected MINLAT,MINLON,MAXLAT,MAXLON"},
+		{"52.4,13.2,52.6,13.5,1", "expected MINLAT,MINLON,MAXLAT,MAXLON"},
+		{"52.4,east,52.6,13.5", `"east" is not a number`},
+		{"-91,13.2,52.6,13.5", "a latitude must be in -90 to 90"},
+		{"52.4,13.2,90.5,13.5", "a latitude must be in -90 to 90"},
+		{"NaN,13.2,52.6,13.5", "a latitude must be in -90 to 90"},
+		{"52.4,-180.5,52.6,13.5", "a longitude must be in -180 to 180"},
+		{"52.4,13.2,52.6,181", "a longitude must be in -180 to 180"},
+		{"52.4,NaN,52.6,13.5", "a longitude must be in -180 to 180"},
+		{"52.6,13.2,52.4,13.5", "MINLAT must be less than MAXLAT"},
+		{"52.4,13.2,52.4,13.5", "MINLAT must be less than MAXLAT"},
+		{"52.4,13.5,52.6,13.2", "MINLON must be less than MAXLON"},
+	}
+	decode := func(t *testing.T, raw string) (BoundingBox, error) {
+		t.Helper()
+		var cli struct {
+			Bbox BoundingBox
+		}
+		parser, err := kong.New(&cli)
+		if err != nil {
+			t.Fatal(err)
+		}
+		_, err = parser.Parse([]string{"--bbox=" + raw})
+		return cli.Bbox, err
+	}
+	for _, tt := range accepted {
+		t.Run(tt.raw, func(t *testing.T) {
+			got, err := decode(t, tt.raw)
+			if err != nil {
+				t.Fatalf("%q: err = %v, want %v", tt.raw, err, tt.want)
+			}
+			if got != tt.want {
+				t.Errorf("%q = %v, want %v", tt.raw, got, tt.want)
+			}
+		})
+	}
+	for _, tt := range rejected {
+		t.Run("rejected/"+tt.raw, func(t *testing.T) {
+			got, err := decode(t, tt.raw)
+			if err == nil {
+				t.Fatalf("%q = %v, want a usage error", tt.raw, got)
+			}
+			if want := "--bbox: invalid bounding box " + strconv.Quote(tt.raw) + ": " + tt.want; !strings.Contains(err.Error(), want) {
+				t.Errorf("%q: err = %v, want %q", tt.raw, err, want)
+			}
+		})
+	}
+}
+
 func TestNonEmptyDecode(t *testing.T) {
 	tests := []struct {
 		args    []string

@@ -1,0 +1,157 @@
+-- args --
+segments
+surface-types
+-- route GET /segment-service/segment/surfaceTypes --
+[{"typeId":1,"typeKey":"all","parentTypeId":0,"sortOrder":1},{"typeId":2,"typeKey":"paved","parentTypeId":1,"sortOrder":2},{"typeId":6,"typeKey":"gravel","parentTypeId":1,"sortOrder":6},{"typeId":7,"typeKey":"dirt","parentTypeId":1,"sortOrder":7},{"typeId":10,"typeKey":"mixed","parentTypeId":1,"sortOrder":10}]
+-- table stdout --
+[
+  {
+    "typeId": 1,
+    "typeKey": "all",
+    "parentTypeId": 0,
+    "sortOrder": 1
+  },
+  {
+    "typeId": 2,
+    "typeKey": "paved",
+    "parentTypeId": 1,
+    "sortOrder": 2
+  },
+  {
+    "typeId": 6,
+    "typeKey": "gravel",
+    "parentTypeId": 1,
+    "sortOrder": 6
+  },
+  {
+    "typeId": 7,
+    "typeKey": "dirt",
+    "parentTypeId": 1,
+    "sortOrder": 7
+  },
+  {
+    "typeId": 10,
+    "typeKey": "mixed",
+    "parentTypeId": 1,
+    "sortOrder": 10
+  }
+]
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /segment-service/segment/surfaceTypes
+-- plain stdout --
+[
+  {
+    "typeId": 1,
+    "typeKey": "all",
+    "parentTypeId": 0,
+    "sortOrder": 1
+  },
+  {
+    "typeId": 2,
+    "typeKey": "paved",
+    "parentTypeId": 1,
+    "sortOrder": 2
+  },
+  {
+    "typeId": 6,
+    "typeKey": "gravel",
+    "parentTypeId": 1,
+    "sortOrder": 6
+  },
+  {
+    "typeId": 7,
+    "typeKey": "dirt",
+    "parentTypeId": 1,
+    "sortOrder": 7
+  },
+  {
+    "typeId": 10,
+    "typeKey": "mixed",
+    "parentTypeId": 1,
+    "sortOrder": 10
+  }
+]
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /segment-service/segment/surfaceTypes
+-- plain-header stdout --
+[
+  {
+    "typeId": 1,
+    "typeKey": "all",
+    "parentTypeId": 0,
+    "sortOrder": 1
+  },
+  {
+    "typeId": 2,
+    "typeKey": "paved",
+    "parentTypeId": 1,
+    "sortOrder": 2
+  },
+  {
+    "typeId": 6,
+    "typeKey": "gravel",
+    "parentTypeId": 1,
+    "sortOrder": 6
+  },
+  {
+    "typeId": 7,
+    "typeKey": "dirt",
+    "parentTypeId": 1,
+    "sortOrder": 7
+  },
+  {
+    "typeId": 10,
+    "typeKey": "mixed",
+    "parentTypeId": 1,
+    "sortOrder": 10
+  }
+]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /segment-service/segment/surfaceTypes
+-- json stdout --
+[
+  {
+    "typeId": 1,
+    "typeKey": "all",
+    "parentTypeId": 0,
+    "sortOrder": 1
+  },
+  {
+    "typeId": 2,
+    "typeKey": "paved",
+    "parentTypeId": 1,
+    "sortOrder": 2
+  },
+  {
+    "typeId": 6,
+    "typeKey": "gravel",
+    "parentTypeId": 1,
+    "sortOrder": 6
+  },
+  {
+    "typeId": 7,
+    "typeKey": "dirt",
+    "parentTypeId": 1,
+    "sortOrder": 7
+  },
+  {
+    "typeId": 10,
+    "typeKey": "mixed",
+    "parentTypeId": 1,
+    "sortOrder": 10
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /segment-service/segment/surfaceTypes

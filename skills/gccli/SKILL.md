@@ -86,6 +86,8 @@ Date shortcuts
   - `<id>`: Activity ID.
 - `gccli activity power-zones <id>`: Show power time in zones.
   - `<id>`: Activity ID.
+- `gccli activity segments <id>`: List the segments that an activity crossed.
+  - `<id>`: Activity ID.
 - `gccli activity exercise-sets show <id>`: Show exercise sets. Also runs as `gccli activity exercise-sets <id>`.
   - `<id>`: Activity ID.
 - `gccli activity exercise-sets set --exercise=EXERCISE,... <id>`: Set exercise sets for a strength training activity.
@@ -383,7 +385,7 @@ Date shortcuts
   - `<id>`: Workout ID.
   - `-f, --force`: Skip confirmation prompt.
 
-### Courses
+### Courses & Segments
 
 - `gccli courses list`: List courses. Also runs as `gccli courses`.
 - `gccli courses favorites`: List favorite courses.
@@ -404,6 +406,35 @@ Date shortcuts
 - `gccli courses delete <id> [flags]`: Delete a course.
   - `<id>`: Course ID.
   - `-f, --force`: Skip confirmation prompt.
+- `gccli segments list [flags]`: List the segments you created, or your favorites with --favorites. Also runs as `gccli segments [flags]`.
+  - `--favorites`: List your favorite segments instead.
+  - `-l, --limit=20`: Maximum number of segments to return.
+  - `--offset=0`: Number of segments to skip.
+- `gccli segments search [flags]`: Search segments by name or map area.
+  - `--name=TEXT`: Text in the segment name.
+  - `--bbox=MINLAT,MINLON,MAXLAT,MAXLON`: Map area as MINLAT,MINLON,MAXLAT,MAXLON in degrees.
+  - `--activity-type=TYPE`: Activity type: cycling or running.
+  - `--classification=KEY`: Classification as segments classifications prints it: downhill, hill_climb, hills, other or sprint.
+  - `--surface=KEY`: Surface as segments surface-types prints it: dirt, gravel, mixed or paved.
+  - `--min-distance=KM`: Minimum distance in kilometers.
+  - `--max-distance=KM`: Maximum distance in kilometers.
+  - `--min-grade=PCT`: Minimum average grade in percent.
+  - `--max-grade=PCT`: Maximum average grade in percent.
+  - `-l, --limit=20`: Maximum number of segments to return.
+  - `--offset=0`: Number of segments to skip.
+- `gccli segments show <uuid>`: Show a segment with its track points.
+  - `<uuid>`: Segment UUID.
+- `gccli segments leaderboard <uuid> [flags]`: Show the leaderboard of a segment.
+  - `<uuid>`: Segment UUID.
+  - `--from-rank=1`: Rank to start at. One page has 26 rows.
+  - `--scope="all"`: Whose times: all, connections, following or me.
+  - `--group=ID`: Show only the members of this group. Goes only with --scope all.
+  - `--gender=GENDER`: Gender: female or male.
+  - `--age=AGES`: Age group: 0-18, 18-24, 25-34, 35-44, 45-54, 55-64 or 65-120.
+- `gccli segments rank <uuid>`: Show your best time and the top three on a segment.
+  - `<uuid>`: Segment UUID.
+- `gccli segments classifications`: List the segment classifications.
+- `gccli segments surface-types`: List the segment surface types.
 
 ### Devices
 

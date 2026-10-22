@@ -1,0 +1,102 @@
+The body asks for the segments of the user, and the distance is in the profile units.
+-- args --
+segments
+list
+--units
+auto
+-- route POST /segment-service/segment/filterSegments --
+{"segments":[{"segmentPk":900001,"uuid":"a1b2c3d4-0000-4000-8000-000000000001","name":"Park Hill","ownerPk":7001,"activityId":5000001,"activityTypePk":1,"surfaceTypePk":2,"classificationPk":8,"distance":1.234,"grade":4.25,"favorite":true,"createDate":"2026-09-01 10:00:00.0"},{"segmentPk":900002,"uuid":"a1b2c3d4-0000-4000-8000-000000000002","name":"River Sprint","ownerPk":7001,"activityId":5000001,"activityTypePk":1,"surfaceTypePk":2,"classificationPk":8,"distance":0.4,"grade":4.25,"favorite":false,"createDate":"2026-09-01 10:00:00.0"}],"availableCount":2}
+-- route GET /userprofile-service/userprofile/user-settings --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"statute_us"}}
+-- table stdout --
+UUID                                  NAME          DISTANCE  FAVORITE
+a1b2c3d4-0000-4000-8000-000000000001  Park Hill     0.77 mi   true
+a1b2c3d4-0000-4000-8000-000000000002  River Sprint  0.25 mi   false
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+POST /segment-service/segment/filterSegments
+  {
+    "limit": 20,
+    "mineOnly": true,
+    "showFavorites": true,
+    "start": 0
+  }
+GET /userprofile-service/userprofile/user-settings
+-- plain stdout --
+a1b2c3d4-0000-4000-8000-000000000001	Park Hill	0.77 mi	true
+a1b2c3d4-0000-4000-8000-000000000002	River Sprint	0.25 mi	false
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+POST /segment-service/segment/filterSegments
+  {
+    "limit": 20,
+    "mineOnly": true,
+    "showFavorites": true,
+    "start": 0
+  }
+GET /userprofile-service/userprofile/user-settings
+-- plain-header stdout --
+UUID	NAME	DISTANCE	FAVORITE
+a1b2c3d4-0000-4000-8000-000000000001	Park Hill	0.77 mi	true
+a1b2c3d4-0000-4000-8000-000000000002	River Sprint	0.25 mi	false
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /segment-service/segment/filterSegments
+  {
+    "limit": 20,
+    "mineOnly": true,
+    "showFavorites": true,
+    "start": 0
+  }
+GET /userprofile-service/userprofile/user-settings
+-- json stdout --
+{
+  "segments": [
+    {
+      "segmentPk": 900001,
+      "uuid": "a1b2c3d4-0000-4000-8000-000000000001",
+      "name": "Park Hill",
+      "ownerPk": 7001,
+      "activityId": 5000001,
+      "activityTypePk": 1,
+      "surfaceTypePk": 2,
+      "classificationPk": 8,
+      "distance": 1.234,
+      "grade": 4.25,
+      "favorite": true,
+      "createDate": "2026-09-01 10:00:00.0"
+    },
+    {
+      "segmentPk": 900002,
+      "uuid": "a1b2c3d4-0000-4000-8000-000000000002",
+      "name": "River Sprint",
+      "ownerPk": 7001,
+      "activityId": 5000001,
+      "activityTypePk": 1,
+      "surfaceTypePk": 2,
+      "classificationPk": 8,
+      "distance": 0.4,
+      "grade": 4.25,
+      "favorite": false,
+      "createDate": "2026-09-01 10:00:00.0"
+    }
+  ],
+  "availableCount": 2
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /segment-service/segment/filterSegments
+  {
+    "limit": 20,
+    "mineOnly": true,
+    "showFavorites": true,
+    "start": 0
+  }

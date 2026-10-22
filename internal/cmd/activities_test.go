@@ -326,6 +326,11 @@ func TestFormatCell(t *testing.T) {
 		{"distance of a numeric string", Distance, "10012", "-"},
 		{"weight of grams", Weight, 81500.0, "81.5 kg"},
 		{"weight of a missing value", Weight, nil, "-"},
+		{"kilometers", Kilometers, 1.234, "1.23 km"},
+		{"kilometers of zero", Kilometers, 0.0, "-"},
+		{"milliseconds", Milliseconds, 3_723_400.0, "1:02:03"},
+		{"milliseconds under a minute", Milliseconds, 59_999.0, "0:59"},
+		{"milliseconds of a numeric string", Milliseconds, "3005", "-"},
 		{"text of a numeric string", Text, "712", "712"},
 		{"text of a number", Text, 712.5, "712.5"},
 	}

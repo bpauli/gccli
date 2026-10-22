@@ -34,6 +34,20 @@ var activityGroup = Group{Name: "activity", Help: "View activity details.", Chil
 		Params:   Params{"activityID": In("ID")},
 		Verb:     "get activity power zones", Output: JSON{List: true},
 	},
+	Leaf{
+		Name: "segments", Help: "List the segments that an activity crossed.",
+		Spec: argsOf(&struct {
+			ID ID `arg:"" help:"Activity ID."`
+		}{}),
+		Endpoint: "segments.activity",
+		Params:   Params{"activityID": In("ID")},
+		Verb:     "get activity segments",
+		Output: Rows{Noun: "segments", Columns: []Column{
+			{Label: "UUID", Path: "segmentUuid"},
+			{Label: "NAME", Path: "segmentName"},
+			{Label: "DISTANCE", Path: "segmentDistance", Format: Kilometers},
+		}},
+	},
 	activityExerciseSetsGroup,
 	Custom{Name: "gear", Help: "Show linked gear.", Cmd: &ActivityGearCmd{}},
 	activityCommentsGroup,
