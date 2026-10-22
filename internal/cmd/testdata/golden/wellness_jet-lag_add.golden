@@ -1,0 +1,163 @@
+A flight and its return flight. The trip runs from the day of the first departure to the day of the last arrival, and each time keeps its own UTC offset.
+-- args --
+wellness
+jet-lag
+add
+--from
+Frankfurt, Germany
+--to
+New York, USA
+--depart
+2026-11-02T10:00+01:00
+--arrive
+2026-11-02T13:00-05:00
+--return-depart
+2026-11-09T18:00-05:00
+--return-arrive
+2026-11-10T08:00+01:00
+-- route POST /jetlag-service/jetlag/trip --
+{"userId": 1000, "timeDifference": 0, "startDate": "2026-11-02", "endDate": "2026-11-10", "flights": [{"flightId": 810, "tripId": 4720, "originLocation": "Frankfurt, Germany", "originTimezone": "+01:00", "originTimestamp": "2026-11-02T10:00:00.0", "destinationLocation": "New York, USA", "destinationTimezone": "-05:00", "destinationTimestamp": "2026-11-02T13:00:00.0"}, {"flightId": 811, "tripId": 4720, "originLocation": "New York, USA", "originTimezone": "-05:00", "originTimestamp": "2026-11-09T18:00:00.0", "destinationLocation": "Frankfurt, Germany", "destinationTimezone": "+01:00", "destinationTimestamp": "2026-11-10T08:00:00.0"}], "tripId": 4720}
+-- table stdout --
+-- table stderr --
+Added jet lag trip from Frankfurt, Germany to New York, USA (ID: 4720)
+-- table exit --
+0
+-- table requests --
+POST /jetlag-service/jetlag/trip
+  {
+    "endDate": "2026-11-10",
+    "flights": [
+      {
+        "destinationLocation": "New York, USA",
+        "destinationTimestamp": "2026-11-02T13:00:00.0",
+        "destinationTimezone": "-05:00",
+        "originLocation": "Frankfurt, Germany",
+        "originTimestamp": "2026-11-02T10:00:00.0",
+        "originTimezone": "+01:00"
+      },
+      {
+        "destinationLocation": "Frankfurt, Germany",
+        "destinationTimestamp": "2026-11-10T08:00:00.0",
+        "destinationTimezone": "+01:00",
+        "originLocation": "New York, USA",
+        "originTimestamp": "2026-11-09T18:00:00.0",
+        "originTimezone": "-05:00"
+      }
+    ],
+    "startDate": "2026-11-02"
+  }
+-- plain stdout --
+-- plain stderr --
+Added jet lag trip from Frankfurt, Germany to New York, USA (ID: 4720)
+-- plain exit --
+0
+-- plain requests --
+POST /jetlag-service/jetlag/trip
+  {
+    "endDate": "2026-11-10",
+    "flights": [
+      {
+        "destinationLocation": "New York, USA",
+        "destinationTimestamp": "2026-11-02T13:00:00.0",
+        "destinationTimezone": "-05:00",
+        "originLocation": "Frankfurt, Germany",
+        "originTimestamp": "2026-11-02T10:00:00.0",
+        "originTimezone": "+01:00"
+      },
+      {
+        "destinationLocation": "Frankfurt, Germany",
+        "destinationTimestamp": "2026-11-10T08:00:00.0",
+        "destinationTimezone": "+01:00",
+        "originLocation": "New York, USA",
+        "originTimestamp": "2026-11-09T18:00:00.0",
+        "originTimezone": "-05:00"
+      }
+    ],
+    "startDate": "2026-11-02"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Added jet lag trip from Frankfurt, Germany to New York, USA (ID: 4720)
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /jetlag-service/jetlag/trip
+  {
+    "endDate": "2026-11-10",
+    "flights": [
+      {
+        "destinationLocation": "New York, USA",
+        "destinationTimestamp": "2026-11-02T13:00:00.0",
+        "destinationTimezone": "-05:00",
+        "originLocation": "Frankfurt, Germany",
+        "originTimestamp": "2026-11-02T10:00:00.0",
+        "originTimezone": "+01:00"
+      },
+      {
+        "destinationLocation": "Frankfurt, Germany",
+        "destinationTimestamp": "2026-11-10T08:00:00.0",
+        "destinationTimezone": "+01:00",
+        "originLocation": "New York, USA",
+        "originTimestamp": "2026-11-09T18:00:00.0",
+        "originTimezone": "-05:00"
+      }
+    ],
+    "startDate": "2026-11-02"
+  }
+-- json stdout --
+{
+  "userId": 1000,
+  "timeDifference": 0,
+  "startDate": "2026-11-02",
+  "endDate": "2026-11-10",
+  "flights": [
+    {
+      "flightId": 810,
+      "tripId": 4720,
+      "originLocation": "Frankfurt, Germany",
+      "originTimezone": "+01:00",
+      "originTimestamp": "2026-11-02T10:00:00.0",
+      "destinationLocation": "New York, USA",
+      "destinationTimezone": "-05:00",
+      "destinationTimestamp": "2026-11-02T13:00:00.0"
+    },
+    {
+      "flightId": 811,
+      "tripId": 4720,
+      "originLocation": "New York, USA",
+      "originTimezone": "-05:00",
+      "originTimestamp": "2026-11-09T18:00:00.0",
+      "destinationLocation": "Frankfurt, Germany",
+      "destinationTimezone": "+01:00",
+      "destinationTimestamp": "2026-11-10T08:00:00.0"
+    }
+  ],
+  "tripId": 4720
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /jetlag-service/jetlag/trip
+  {
+    "endDate": "2026-11-10",
+    "flights": [
+      {
+        "destinationLocation": "New York, USA",
+        "destinationTimestamp": "2026-11-02T13:00:00.0",
+        "destinationTimezone": "-05:00",
+        "originLocation": "Frankfurt, Germany",
+        "originTimestamp": "2026-11-02T10:00:00.0",
+        "originTimezone": "+01:00"
+      },
+      {
+        "destinationLocation": "Frankfurt, Germany",
+        "destinationTimestamp": "2026-11-10T08:00:00.0",
+        "destinationTimezone": "+01:00",
+        "originLocation": "New York, USA",
+        "originTimestamp": "2026-11-09T18:00:00.0",
+        "originTimezone": "-05:00"
+      }
+    ],
+    "startDate": "2026-11-02"
+  }

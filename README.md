@@ -27,7 +27,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Nutrition** - view daily food logs, meals, and nutrition settings, search the Garmin food database, list recent and favorite foods, log foods and quick entries in a meal, delete log entries, and add and remove favorite foods (all but the first three need Garmin Connect+)
 - **Events** — list, list upcoming, add, and delete calendar events (races, group rides, etc.) with goals and training priority support
 - **Calendar** - month view of activities, workouts, events and notes, add, update, move and delete calendar notes, turn the iCalendar feed on and off, and change the web calendar preferences
-- **Wellness** - menstrual cycle data and calendar, menstrual daily log (view, set, delete), pregnancy summary, jet lag trips and status
+- **Wellness** - menstrual cycle data and calendar, menstrual daily log (view, set, delete), pregnancy summary, jet lag trips (list, add, update, delete) and status
 - **Social** - notifications, view and change notification preferences, connections, connection requests, followers, following, newsfeed, groups
 - **Insights** - compare your steps, sleep, floors, VO2 max, speed, power and more with people of your age group and gender (needs Insights turned on in Garmin Connect)
 - **Golf** - scorecards, the courses you played, golf and shot stats (drive, approach, chip, putt), the clubs in your bag, club types and leaderboards
@@ -850,8 +850,15 @@ gccli wellness menstrual-log set 2026-10-01 --notes ""   # Clear the notes, keep
 gccli wellness menstrual-log delete 2026-10-01    # Delete the daily log (with confirmation)
 gccli wellness pregnancy-summary                  # Pregnancy snapshot ({} when there is none)
 gccli wellness jet-lag list
+gccli wellness jet-lag add --from "Frankfurt, Germany" --to "New York, USA" \
+  --depart 2026-11-02T10:00+01:00 --arrive 2026-11-02T13:00-05:00 \
+  --return-depart 2026-11-09T18:00-05:00 --return-arrive 2026-11-10T08:00+01:00
+gccli wellness jet-lag update <id> --return-depart 2026-11-10T18:00-05:00 --return-arrive 2026-11-11T08:00+01:00
+gccli wellness jet-lag delete <id>                # Delete a trip (with confirmation)
 gccli wellness jet-lag status 2024-03-15
 ```
+
+Each flight time is the local time at its place, with the UTC offset there. The trip runs from the day of the first departure to the day of the last arrival. For a flight with a stop, give the first departure and the last arrival. `jet-lag update` changes only the fields you give: `--from` and `--to` also change the return flight, so it goes back the same way.
 
 ### Social
 
@@ -1661,6 +1668,24 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `-f, --force`: Skip confirmation prompt.
 - `gccli wellness pregnancy-summary`: Show pregnancy summary.
 - `gccli wellness jet-lag list`: List jet lag trips. Also runs as `gccli wellness jet-lag`.
+- `gccli wellness jet-lag add --from=PLACE --to=PLACE --depart=TIME --arrive=TIME [flags]`: Add a jet lag trip of a flight and an optional return flight.
+  - `--from=PLACE`: Place of departure, such as "Frankfurt, Germany".
+  - `--to=PLACE`: Place of arrival, such as "New York, USA".
+  - `--depart=TIME`: Local departure time with the UTC offset of --from, such as 2026-11-02T10:00+01:00.
+  - `--arrive=TIME`: Local arrival time with the UTC offset of --to, such as 2026-11-02T13:00-05:00.
+  - `--return-depart=TIME`: Local departure time of the return flight from --to, with its UTC offset.
+  - `--return-arrive=TIME`: Local arrival time of the return flight at --from, with its UTC offset.
+- `gccli wellness jet-lag update <id> [flags]`: Change the places or times of a jet lag trip.
+  - `<id>`: Trip ID.
+  - `--from=PLACE`: New place of departure. The return flight arrives there.
+  - `--to=PLACE`: New place of arrival. The return flight departs there.
+  - `--depart=TIME`: New local departure time with the UTC offset, such as 2026-11-02T10:00+01:00.
+  - `--arrive=TIME`: New local arrival time with the UTC offset.
+  - `--return-depart=TIME`: New local departure time of the return flight, with the UTC offset.
+  - `--return-arrive=TIME`: New local arrival time of the return flight, with the UTC offset.
+- `gccli wellness jet-lag delete <id> [flags]`: Delete a jet lag trip.
+  - `<id>`: Trip ID.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli wellness jet-lag status [<date>]`: Show jet lag status for a date.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli reload [<date>]`: Request data reload for a date.

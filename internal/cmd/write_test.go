@@ -367,6 +367,36 @@ var writeCases = map[string]writeCase{
 		human:    "Set automatic steps goal from 2026-10-15\n",
 		fallback: "Set automatic steps goal from 2026-10-15\n",
 	},
+	"wellness jet-lag add": {
+		args:     []string{"--from", "Berlin", "--to", "Tokyo", "--depart", "2026-11-02T08:00+01:00", "--arrive", "2026-11-02T23:30+09:00"},
+		routes:   map[string]string{"POST /jetlag-service/jetlag/trip": `{"tripId":4711}`},
+		json:     "{\n  \"tripId\": 4711\n}\n",
+		human:    "Added jet lag trip from Berlin to Tokyo (ID: 4711)\n",
+		fallback: "Added jet lag trip from Berlin to Tokyo\n",
+	},
+	"wellness jet-lag update": {
+		args: []string{"4711", "--to", "Osaka"},
+		routes: map[string]string{
+			"GET /jetlag-service/jetlag/trip/all": `[{"tripId":4711,"startDate":"2026-11-02","endDate":"2026-11-02","flights":[{"flightId":801,"originLocation":"Berlin","originTimestamp":"2026-11-02T08:00:00.0","originTimezone":"+01:00","destinationLocation":"Tokyo","destinationTimestamp":"2026-11-02T23:30:00.0","destinationTimezone":"+09:00"}]}]`,
+			"PUT /jetlag-service/jetlag/trip":     noContent,
+		},
+		result:   "PUT /jetlag-service/jetlag/trip",
+		json:     okOut,
+		human:    "Updated jet lag trip 4711\n",
+		fallback: "Updated jet lag trip 4711\n",
+	},
+	"wellness jet-lag delete": {
+		args: []string{"4711"},
+		routes: map[string]string{
+			"GET /jetlag-service/jetlag/trip/all":     `[{"tripId":4711,"startDate":"2026-11-02","endDate":"2026-11-02","flights":[{"flightId":801,"originLocation":"Berlin","originTimestamp":"2026-11-02T08:00:00.0","originTimezone":"+01:00","destinationLocation":"Tokyo","destinationTimestamp":"2026-11-02T23:30:00.0","destinationTimezone":"+09:00"}]}]`,
+			"DELETE /jetlag-service/jetlag/trip/4711": noContent,
+		},
+		result:   "DELETE /jetlag-service/jetlag/trip/4711",
+		prompt:   "Delete jet lag trip 4711 (Berlin to Tokyo, 2026-11-02 to 2026-11-02)?",
+		json:     okOut,
+		human:    "Deleted jet lag trip 4711\n",
+		fallback: "Deleted jet lag trip 4711\n",
+	},
 	"health sleep naps add": {
 		args: []string{"09:00", "09:20"},
 		routes: map[string]string{

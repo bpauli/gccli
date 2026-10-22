@@ -1,0 +1,38 @@
+A trip without flights has no flight to change.
+-- args --
+wellness
+jet-lag
+update
+4714
+--to
+Boston, USA
+-- route GET /jetlag-service/jetlag/trip/all --
+[{"tripId":4714,"startDate":"2027-02-01","endDate":"2027-02-01","flights":[]}]
+-- table stdout --
+-- table stderr --
+update jet lag trip: the trip has no flights
+-- table exit --
+1
+-- table requests --
+GET /jetlag-service/jetlag/trip/all
+-- plain stdout --
+-- plain stderr --
+update jet lag trip: the trip has no flights
+-- plain exit --
+1
+-- plain requests --
+GET /jetlag-service/jetlag/trip/all
+-- plain-header stdout --
+-- plain-header stderr --
+update jet lag trip: the trip has no flights
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /jetlag-service/jetlag/trip/all
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"update jet lag trip: the trip has no flights"}}
+-- json exit --
+1
+-- json requests --
+GET /jetlag-service/jetlag/trip/all
