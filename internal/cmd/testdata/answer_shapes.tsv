@@ -159,6 +159,7 @@ profile privacy-zones list	array	live 2026-10-20
 profile settings	object	live 2026-10-20
 profile view	object	live 2026-10-20
 records activity	array	live 2026-10-20
+records candidates	array	live 2026-10-22
 records list	array	live 2026-10-20
 records types	array	live 2026-10-20
 segments classifications	array	live GET 2026-10-22 connectapi

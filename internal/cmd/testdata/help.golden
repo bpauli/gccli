@@ -277,6 +277,14 @@ Commands:
   records list                     View personal records.
   records types                    List personal record types.
   records activity                 List the personal records set in an activity.
+  records candidates               List the personal record candidates that wait
+                                   for your review.
+  records hide                     Hide a personal record type on the records
+                                   page.
+  records unhide                   Show a hidden personal record type on the
+                                   records page again.
+  records delete                   Delete a personal record. This cannot be
+                                   undone.
   profile view                     Show user profile.
   profile settings                 Show user settings.
   profile privacy view             Show privacy settings.
@@ -1681,7 +1689,7 @@ Commands:
 $ gccli records --help
 Usage: gccli records <command> [flags]
 
-View personal records.
+View, hide and delete personal records.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -1698,9 +1706,15 @@ Flags:
       --version           Print version information.
 
 Commands:
-  records list        View personal records.
-  records types       List personal record types.
-  records activity    List the personal records set in an activity.
+  records list          View personal records.
+  records types         List personal record types.
+  records activity      List the personal records set in an activity.
+  records candidates    List the personal record candidates that wait for your
+                        review.
+  records hide          Hide a personal record type on the records page.
+  records unhide        Show a hidden personal record type on the records page
+                        again.
+  records delete        Delete a personal record. This cannot be undone.
 
 $ gccli profile --help
 Usage: gccli profile <command> [flags]

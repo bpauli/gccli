@@ -1521,6 +1521,14 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli records types`: List personal record types.
 - `gccli records activity <id>`: List the personal records set in an activity.
   - `<id>`: Activity ID.
+- `gccli records candidates`: List the personal record candidates that wait for your review.
+- `gccli records hide <type-id>`: Hide a personal record type on the records page.
+  - `<type-id>`: Record type ID, as records types prints it.
+- `gccli records unhide <type-id>`: Show a hidden personal record type on the records page again.
+  - `<type-id>`: Record type ID, as records types prints it.
+- `gccli records delete <id> [flags]`: Delete a personal record. This cannot be undone.
+  - `<id>`: Personal record ID, as records list prints it.
+  - `-f, --force`: Skip confirmation prompt.
 
 ### Events
 

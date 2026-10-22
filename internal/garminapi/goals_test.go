@@ -38,6 +38,9 @@ func TestGoalsEndpoints(t *testing.T) {
 		{"records.list", map[string]string{"displayName": "jo/b"}, "GET /personalrecord-service/personalrecord/prs/jo%2Fb"},
 		{"records.types", map[string]string{"displayName": "jo/b"}, "GET /personalrecord-service/personalrecordtype/prtypes/jo%2Fb"},
 		{"records.activity", map[string]string{"activityID": "42"}, "GET /personalrecord-service/personalrecord/prByActivityId/42"},
+		{"records.candidates", map[string]string{"displayName": "jo/b"}, "GET /personalrecord-service/personalrecordcandidate/jo%2Fb"},
+		{"records.type.update", map[string]string{"typeID": "3"}, "PUT /personalrecord-service/personalrecordtype/3"},
+		{"records.delete", map[string]string{"recordID": "4100001"}, "DELETE /personalrecord-service/personalrecord/v2/4100001"},
 	})
 }
 
