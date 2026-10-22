@@ -122,6 +122,9 @@ health training-status view	object	live 2026-10-20
 hydration daily	array	live 2026-10-20
 hydration view	object	live 2026-10-20
 hydration weekly	array	live 2026-10-20
+insights compare	object	live GET 2026-10-22 connectapi
+insights options	object	live GET 2026-10-22 connectapi
+insights preferences	array	live GET 2026-10-22 connectapi
 notifications list	object	live 2026-10-20
 notifications preferences view	object	live 2026-10-20
 nutrition food-log	object	live 2026-10-20

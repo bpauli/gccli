@@ -32,6 +32,7 @@ var endpoints = mustIndex(
 	socialEndpoints,
 	groupsEndpoints,
 	calendarEndpoints,
+	insightsEndpoints,
 )
 
 // Host is the Garmin server an endpoint lives on.

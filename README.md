@@ -28,6 +28,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Calendar** - add, update, move and delete calendar notes
 - **Wellness** - menstrual cycle data and calendar, menstrual daily log (view, set, delete), pregnancy summary, jet lag trips and status
 - **Social** - notifications, view and change notification preferences, connections, connection requests, followers, following, newsfeed, groups
+- **Insights** - compare your steps, sleep, floors, VO2 max, speed, power and more with people of your age group and gender (needs Insights turned on in Garmin Connect)
 - **Agent-ready** - ships a bundled agent skill (`skills/gccli/`) that plugs into AI assistants like Claude Code, Codex, Hermes, and OpenClaw so you can drive Garmin Connect in plain language
 - **Multiple accounts** — manage multiple Garmin accounts via `--account` flag
 - **Credential storage** in the OS keyring (macOS Keychain, Linux Secret Service), with a file fallback (see [Credential Storage](#credential-storage))
@@ -1423,6 +1424,20 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `<key>`: Preference key, such as allowEmailWeeklySummary. Run gccli notifications preferences to see the keys.
   - `<value>`: true turns the preference on, false turns it off.
 
+### Insights
+
+- `gccli insights options [flags]`: List the genders, ages, dates, activities and fields for insights compare. Also runs as `gccli insights [flags]`.
+  - `--locale-unit="METRIC"`: Units of the field names: METRIC or STATUTE.
+- `gccli insights compare --activity=STRING --field=STRING --age=FREE-TEXT --year=INT [flags]`: Compare a metric with your age group. Needs Insights on in Garmin Connect.
+  - `--activity=STRING`: Activity as insights options prints it: STEPS, SLEEP, FLOORS, RUNNING, CYCLING, LAP_SWIMMING or OPEN_WATER_SWIMMING.
+  - `--field=STRING`: Field of the activity as insights options prints it: AVG_SPEED, VO2_MAX_VALUE, AVG_POWER, WEEKLY_AVG_DISTANCE, WEEKLY_AVG_DURATION, STEPS, SLEEP, FLOORS or COUNT.
+  - `--age=FREE-TEXT`: Age group as insights options prints it (e.g. 40-44, 75+).
+  - `--gender="ALL"`: Gender: ALL, M or F.
+  - `--year=INT`: Year (e.g. 2025).
+  - `--month=MONTH`: Month (1-12). Omit it for the whole year.
+  - `--locale-unit="METRIC"`: Units of the answer: METRIC or STATUTE.
+- `gccli insights preferences`: Show your saved Insights comparisons.
+
 ### Hydration, Nutrition, Profile, Training, Wellness & Utilities
 
 - `gccli hydration view [<date>]`: Show hydration data for a date. Also runs as `gccli hydration [<date>]`.
@@ -1624,6 +1639,16 @@ gccli --json body weigh-ins --start 2024-01-01 --end 2024-06-30 | \
 ```bash
 latest=$(gccli --json activities list --limit 1 | jq -r '.[0].activityId')
 gccli activity download "$latest" --format fit
+```
+
+### Compare your VO2 max with your age group
+
+`insights options` lists the age groups, dates, activities and fields. Copy the values from it as they are.
+
+```bash
+gccli insights options | jq '{ages, activities: [.activityMapping[].activity]}'
+gccli insights compare --activity RUNNING --field VO2_MAX_VALUE --age 40-44 --gender M --year 2025 | \
+  jq '.chart.options.percentile'
 ```
 
 ## Global Flags

@@ -1,0 +1,42 @@
+Error case: Garmin answers 403 for an account without Insights consent, so the exit code is 1 (error).
+-- args --
+insights
+compare
+--activity
+RUNNING
+--field
+VO2_MAX_VALUE
+--age
+40-44
+--year
+2025
+-- route GET /gcs-insights/api/demographics/compare?gender=ALL&age=40-44&type=RUNNING&field=VO2_MAX_VALUE&lang=en&localeUnit=METRIC&year=2025 403 noeol --
+{"errors":[{"type":"FORBIDDEN","name":"INSIGHTS consent","value":"User is not opted into Insights"}]}
+-- table stdout --
+-- table stderr --
+compare insights: garmin api: 403 Forbidden: {"errors":[{"type":"FORBIDDEN","name":"INSIGHTS consent","value":"User is not opted into Insights"}]}
+-- table exit --
+1
+-- table requests --
+GET /gcs-insights/api/demographics/compare?gender=ALL&age=40-44&type=RUNNING&field=VO2_MAX_VALUE&lang=en&localeUnit=METRIC&year=2025
+-- plain stdout --
+-- plain stderr --
+compare insights: garmin api: 403 Forbidden: {"errors":[{"type":"FORBIDDEN","name":"INSIGHTS consent","value":"User is not opted into Insights"}]}
+-- plain exit --
+1
+-- plain requests --
+GET /gcs-insights/api/demographics/compare?gender=ALL&age=40-44&type=RUNNING&field=VO2_MAX_VALUE&lang=en&localeUnit=METRIC&year=2025
+-- plain-header stdout --
+-- plain-header stderr --
+compare insights: garmin api: 403 Forbidden: {"errors":[{"type":"FORBIDDEN","name":"INSIGHTS consent","value":"User is not opted into Insights"}]}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /gcs-insights/api/demographics/compare?gender=ALL&age=40-44&type=RUNNING&field=VO2_MAX_VALUE&lang=en&localeUnit=METRIC&year=2025
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":403,"message":"compare insights: garmin api: 403 Forbidden: {\"errors\":[{\"type\":\"FORBIDDEN\",\"name\":\"INSIGHTS consent\",\"value\":\"User is not opted into Insights\"}]}"}}
+-- json exit --
+1
+-- json requests --
+GET /gcs-insights/api/demographics/compare?gender=ALL&age=40-44&type=RUNNING&field=VO2_MAX_VALUE&lang=en&localeUnit=METRIC&year=2025

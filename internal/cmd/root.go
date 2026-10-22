@@ -61,6 +61,7 @@ var commands = []Node{
 	notificationsGroup,
 	socialGroup,
 	groupsGroup,
+	insightsGroup,
 	Leaf{
 		Name: "reload", Help: "Request data reload for a date.",
 		Spec: argsOf(&struct {
