@@ -1651,7 +1651,9 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `<id>`: Privacy zone ID.
   - `-f, --force`: Skip confirmation prompt.
 - `gccli profile hr-zones`: Show heart rate zones.
-- `gccli profile power-zones`: Show power zones for all sports.
+- `gccli profile power-zones list`: Show power zones for all sports. Also runs as `gccli profile power-zones`.
+- `gccli profile power-zones sport <sport>`: Show power zones for one sport.
+  - `<sport>`: Sport: cycling, running, rowing or cross-country-skiing.
 - `gccli training plans [flags]`: List training plans. Also runs as `gccli training [flags]`.
   - `--locale="en"`: Locale for training plans (e.g. en, de, fr).
 - `gccli training plan <id>`: Show a specific training plan.

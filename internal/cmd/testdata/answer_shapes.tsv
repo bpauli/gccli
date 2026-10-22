@@ -148,7 +148,8 @@ nutrition food-log	object	live 2026-10-20
 nutrition meals	object	live 2026-10-20
 nutrition settings	unknown	empty body live 2026-10-20
 profile hr-zones	array	live 2026-10-20
-profile power-zones	array	live 2026-10-20
+profile power-zones list	array	live 2026-10-20
+profile power-zones sport	object	live GET 2026-10-22 connectapi
 profile privacy view	object	live 2026-10-20
 profile privacy-zones list	array	live 2026-10-20
 profile settings	object	live 2026-10-20

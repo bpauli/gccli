@@ -1,0 +1,34 @@
+-- args --
+profile
+power-zones
+sport
+cycling
+-- route GET /biometric-service/powerZones/sport/CYCLING 204 --
+-- table stdout --
+{}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /biometric-service/powerZones/sport/CYCLING
+-- plain stdout --
+{}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /biometric-service/powerZones/sport/CYCLING
+-- plain-header stdout --
+{}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /biometric-service/powerZones/sport/CYCLING
+-- json stdout --
+{}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /biometric-service/powerZones/sport/CYCLING
