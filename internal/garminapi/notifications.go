@@ -3,7 +3,6 @@ package garminapi
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 	"slices"
@@ -24,9 +23,20 @@ func (c *Client) SetNotificationPreference(ctx context.Context, key string, on b
 	if err != nil {
 		return nil, err
 	}
+	body, err := setBoolPreference(data, "notification preference", key, on)
+	if err != nil {
+		return nil, err
+	}
+	return c.Call(ctx, "notifications.set-preferences", nil, body)
+}
+
+// setBoolPreference returns the preferences object data with key set to on.
+// It fails when key is not a true or false value in data, and the error then
+// lists the keys that are. what names one preference in the errors.
+func setBoolPreference(data json.RawMessage, what, key string, on bool) ([]byte, error) {
 	var prefs map[string]json.RawMessage
 	if err := json.Unmarshal(data, &prefs); err != nil || prefs == nil {
-		return nil, errors.New("parse notification preferences: not a JSON object")
+		return nil, fmt.Errorf("parse %ss: not a JSON object", what)
 	}
 	var keys []string
 	for k, v := range prefs {
@@ -37,15 +47,11 @@ func (c *Client) SetNotificationPreference(ctx context.Context, key string, on b
 	slices.Sort(keys)
 	switch v, ok := prefs[key]; {
 	case !ok:
-		return nil, fmt.Errorf("no notification preference %q; the keys are: %s", key, strings.Join(keys, ", "))
+		return nil, fmt.Errorf("no %s %q; the keys are: %s", what, key, strings.Join(keys, ", "))
 	case !isJSONBool(v):
-		return nil, fmt.Errorf("notification preference %q is not true or false; the keys are: %s", key, strings.Join(keys, ", "))
+		return nil, fmt.Errorf("%s %q is not true or false; the keys are: %s", what, key, strings.Join(keys, ", "))
 	}
-	body, err := setFields(data, "notification preferences", map[string]any{key: on})
-	if err != nil {
-		return nil, err
-	}
-	return c.Call(ctx, "notifications.set-preferences", nil, body)
+	return setFields(data, what+"s", map[string]any{key: on})
 }
 
 func isJSONBool(v json.RawMessage) bool {
