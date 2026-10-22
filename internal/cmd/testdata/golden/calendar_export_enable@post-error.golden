@@ -1,0 +1,48 @@
+Error case: the create answers 403, so the exit code is 1 (error).
+-- args --
+calendar
+export
+enable
+-- route GET /calendar-service/export --
+{"baseUrl":"http://localhost/proxy/calendar-service/export","id":"NOT_PUBLISHED"}
+-- route POST /calendar-service/export 403 --
+{"message":null,"error":"ForbiddenException"}
+-- table stdout --
+-- table stderr --
+enable calendar export: garmin api: 403 Forbidden: {"message":null,"error":"ForbiddenException"}
+
+-- table exit --
+1
+-- table requests --
+GET /calendar-service/export
+POST /calendar-service/export
+  {}
+-- plain stdout --
+-- plain stderr --
+enable calendar export: garmin api: 403 Forbidden: {"message":null,"error":"ForbiddenException"}
+
+-- plain exit --
+1
+-- plain requests --
+GET /calendar-service/export
+POST /calendar-service/export
+  {}
+-- plain-header stdout --
+-- plain-header stderr --
+enable calendar export: garmin api: 403 Forbidden: {"message":null,"error":"ForbiddenException"}
+
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /calendar-service/export
+POST /calendar-service/export
+  {}
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":403,"message":"enable calendar export: garmin api: 403 Forbidden: {\"message\":null,\"error\":\"ForbiddenException\"}\n"}}
+-- json exit --
+1
+-- json requests --
+GET /calendar-service/export
+POST /calendar-service/export
+  {}

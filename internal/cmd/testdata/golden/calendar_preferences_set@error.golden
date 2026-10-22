@@ -1,0 +1,40 @@
+Error case: the read answers 400, so nothing is sent.
+-- args --
+calendar
+preferences
+set
+showWeeklyTotal
+false
+-- route GET /calendar-service/preferences 400 --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+set calendar preference: garmin api: 400 Bad Request: {"message":"Bad Request"}
+
+-- table exit --
+1
+-- table requests --
+GET /calendar-service/preferences
+-- plain stdout --
+-- plain stderr --
+set calendar preference: garmin api: 400 Bad Request: {"message":"Bad Request"}
+
+-- plain exit --
+1
+-- plain requests --
+GET /calendar-service/preferences
+-- plain-header stdout --
+-- plain-header stderr --
+set calendar preference: garmin api: 400 Bad Request: {"message":"Bad Request"}
+
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /calendar-service/preferences
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"set calendar preference: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}\n"}}
+-- json exit --
+1
+-- json requests --
+GET /calendar-service/preferences

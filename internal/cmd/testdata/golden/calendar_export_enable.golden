@@ -1,0 +1,50 @@
+A feed that is off is turned on with an empty object, and the new URL is printed.
+-- args --
+calendar
+export
+enable
+-- route GET /calendar-service/export --
+{"baseUrl":"http://localhost/proxy/calendar-service/export","id":"NOT_PUBLISHED"}
+-- route POST /calendar-service/export --
+{"baseUrl":null,"id":"fedcba9876543210fedcba9876543210"}
+-- table stdout --
+URL
+https://connect.garmin.com/modern/calendar/export/fedcba9876543210fedcba9876543210
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /calendar-service/export
+POST /calendar-service/export
+  {}
+-- plain stdout --
+https://connect.garmin.com/modern/calendar/export/fedcba9876543210fedcba9876543210
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /calendar-service/export
+POST /calendar-service/export
+  {}
+-- plain-header stdout --
+URL
+https://connect.garmin.com/modern/calendar/export/fedcba9876543210fedcba9876543210
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /calendar-service/export
+POST /calendar-service/export
+  {}
+-- json stdout --
+{
+  "baseUrl": null,
+  "id": "fedcba9876543210fedcba9876543210"
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /calendar-service/export
+POST /calendar-service/export
+  {}

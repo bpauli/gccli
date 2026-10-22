@@ -29,6 +29,9 @@ func TestNewEndpoints_Global(t *testing.T) {
 	if ep.ConnectAPI != "https://connectapi.garmin.com" {
 		t.Errorf("ConnectAPI = %q, want %q", ep.ConnectAPI, "https://connectapi.garmin.com")
 	}
+	if ep.Connect != "https://connect.garmin.com" {
+		t.Errorf("Connect = %q, want %q", ep.Connect, "https://connect.garmin.com")
+	}
 	if ep.DIToken != "https://diauth.garmin.com/di-oauth2-service/oauth/token" {
 		t.Errorf("DIToken = %q, want %q", ep.DIToken, "https://diauth.garmin.com/di-oauth2-service/oauth/token")
 	}
@@ -50,6 +53,9 @@ func TestNewEndpoints_China(t *testing.T) {
 	}
 	if ep.ConnectAPI != "https://connectapi.garmin.cn" {
 		t.Errorf("ConnectAPI = %q, want %q", ep.ConnectAPI, "https://connectapi.garmin.cn")
+	}
+	if ep.Connect != "https://connect.garmin.cn" {
+		t.Errorf("Connect = %q, want %q", ep.Connect, "https://connect.garmin.cn")
 	}
 	if ep.DIToken != "https://diauth.garmin.cn/di-oauth2-service/oauth/token" {
 		t.Errorf("DIToken = %q, want %q", ep.DIToken, "https://diauth.garmin.cn/di-oauth2-service/oauth/token")

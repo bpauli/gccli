@@ -1,0 +1,108 @@
+true sets the key to true.
+-- args --
+calendar
+preferences
+set
+hideJetLag
+true
+-- route GET /calendar-service/preferences --
+{"view":1,"showEvent":true,"showGoal":true,"showWeeklyTotal":true,"eventColor":0,"groups":null,"activityTypes":[{"key":"running","color":0,"show":false}],"hideJetLag":false}
+-- route PUT /calendar-service/preferences 204 --
+-- table stdout --
+-- table stderr --
+Set calendar preference hideJetLag to true
+-- table exit --
+0
+-- table requests --
+GET /calendar-service/preferences
+PUT /calendar-service/preferences
+  {
+    "activityTypes": [
+      {
+        "key": "running",
+        "color": 0,
+        "show": false
+      }
+    ],
+    "eventColor": 0,
+    "groups": null,
+    "hideJetLag": true,
+    "showEvent": true,
+    "showGoal": true,
+    "showWeeklyTotal": true,
+    "view": 1
+  }
+-- plain stdout --
+-- plain stderr --
+Set calendar preference hideJetLag to true
+-- plain exit --
+0
+-- plain requests --
+GET /calendar-service/preferences
+PUT /calendar-service/preferences
+  {
+    "activityTypes": [
+      {
+        "key": "running",
+        "color": 0,
+        "show": false
+      }
+    ],
+    "eventColor": 0,
+    "groups": null,
+    "hideJetLag": true,
+    "showEvent": true,
+    "showGoal": true,
+    "showWeeklyTotal": true,
+    "view": 1
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Set calendar preference hideJetLag to true
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /calendar-service/preferences
+PUT /calendar-service/preferences
+  {
+    "activityTypes": [
+      {
+        "key": "running",
+        "color": 0,
+        "show": false
+      }
+    ],
+    "eventColor": 0,
+    "groups": null,
+    "hideJetLag": true,
+    "showEvent": true,
+    "showGoal": true,
+    "showWeeklyTotal": true,
+    "view": 1
+  }
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /calendar-service/preferences
+PUT /calendar-service/preferences
+  {
+    "activityTypes": [
+      {
+        "key": "running",
+        "color": 0,
+        "show": false
+      }
+    ],
+    "eventColor": 0,
+    "groups": null,
+    "hideJetLag": true,
+    "showEvent": true,
+    "showGoal": true,
+    "showWeeklyTotal": true,
+    "view": 1
+  }

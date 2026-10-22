@@ -1,0 +1,37 @@
+Any answer other than y or yes cancels, so no delete is sent.
+-- args --
+calendar
+export
+disable
+-- stdin --
+n
+-- route GET /calendar-service/export --
+{"baseUrl":"http://localhost/proxy/calendar-service/export","id":"0123456789abcdef0123456789abcdef"}
+-- table stdout --
+-- table stderr --
+Turn off the calendar feed? Calendar apps that subscribe to it then get an empty answer. [y/N]: Cancelled
+-- table exit --
+0
+-- table requests --
+GET /calendar-service/export
+-- plain stdout --
+-- plain stderr --
+Turn off the calendar feed? Calendar apps that subscribe to it then get an empty answer. [y/N]: Cancelled
+-- plain exit --
+0
+-- plain requests --
+GET /calendar-service/export
+-- plain-header stdout --
+-- plain-header stderr --
+Turn off the calendar feed? Calendar apps that subscribe to it then get an empty answer. [y/N]: Cancelled
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /calendar-service/export
+-- json stdout --
+-- json stderr --
+Turn off the calendar feed? Calendar apps that subscribe to it then get an empty answer. [y/N]: Cancelled
+-- json exit --
+0
+-- json requests --
+GET /calendar-service/export

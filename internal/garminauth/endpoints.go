@@ -46,7 +46,9 @@ type Endpoints struct {
 	OAuthBase string
 	// ConnectAPI is the base URL for the Connect API (e.g. "https://connectapi.garmin.com").
 	ConnectAPI string
-	DIToken    string
+	// Connect is the base URL of the Connect web app (e.g. "https://connect.garmin.com").
+	Connect string
+	DIToken string
 }
 
 // NewEndpoints builds the full endpoint URLs for the given domain.
@@ -63,6 +65,7 @@ func NewEndpoints(domain string) Endpoints {
 		SSOVerifyMFA: ssoBase + ssoVerifyMFAPath,
 		OAuthBase:    oauthBase,
 		ConnectAPI:   oauthBase,
+		Connect:      fmt.Sprintf("https://connect.%s", domain),
 		DIToken:      fmt.Sprintf("https://diauth.%s%s", domain, diTokenPath),
 	}
 }
