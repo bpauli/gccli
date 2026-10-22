@@ -1,0 +1,66 @@
+-- args --
+health
+progress
+activities
+--start=2026-09-01
+--end=2026-10-15
+--metric=distance
+--metric=avgHr
+-- route GET /fitnessstats-service/activity/all?startDate=2026-09-01&endDate=2026-10-15&metric=distance&metric=avgHr&standardizedUnits=true --
+[{"activityId":111,"startLocal":"2026-09-02T07:30:00.0","distance":10012.5,"avgHr":148}]
+-- table stdout --
+[
+  {
+    "activityId": 111,
+    "startLocal": "2026-09-02T07:30:00.0",
+    "distance": 10012.5,
+    "avgHr": 148
+  }
+]
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /fitnessstats-service/activity/all?startDate=2026-09-01&endDate=2026-10-15&metric=distance&metric=avgHr&standardizedUnits=true
+-- plain stdout --
+[
+  {
+    "activityId": 111,
+    "startLocal": "2026-09-02T07:30:00.0",
+    "distance": 10012.5,
+    "avgHr": 148
+  }
+]
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /fitnessstats-service/activity/all?startDate=2026-09-01&endDate=2026-10-15&metric=distance&metric=avgHr&standardizedUnits=true
+-- plain-header stdout --
+[
+  {
+    "activityId": 111,
+    "startLocal": "2026-09-02T07:30:00.0",
+    "distance": 10012.5,
+    "avgHr": 148
+  }
+]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /fitnessstats-service/activity/all?startDate=2026-09-01&endDate=2026-10-15&metric=distance&metric=avgHr&standardizedUnits=true
+-- json stdout --
+[
+  {
+    "activityId": 111,
+    "startLocal": "2026-09-02T07:30:00.0",
+    "distance": 10012.5,
+    "avgHr": 148
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /fitnessstats-service/activity/all?startDate=2026-09-01&endDate=2026-10-15&metric=distance&metric=avgHr&standardizedUnits=true

@@ -1,0 +1,130 @@
+-- args --
+health
+cycling-ability
+--start=2026-09-01
+--end=2026-10-15
+--aggregation=WEEKLY
+-- table stdout --
+-- table stderr --
+Usage: gccli health cycling-ability --start=DATE --end=DATE [flags]
+
+Show cycling ability for a date range.
+
+Flags:
+  -h, --help                    Show context-sensitive help.
+  -j, --json                    Output as JSON ($GCCLI_JSON).
+      --plain                   Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                  Print the column names as the first line of
+                                --plain output ($GCCLI_HEADER).
+      --color="auto"            Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING          Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"            Unit system for distances, speeds, paces,
+                                elevations and weights in table and plain
+                                output: auto (Garmin profile), metric,
+                                statute_us, statute_uk ($GCCLI_UNITS).
+      --version                 Print version information.
+
+      --start=DATE              Start date (YYYY-MM-DD, today, yesterday, 3d,
+                                +30d).
+      --end=DATE                End date (YYYY-MM-DD, today, yesterday, 3d,
+                                +30d).
+      --aggregation="weekly"    Period of each value: daily (at most 30 days),
+                                weekly or monthly (at most 400 days).
+
+gccli: error: --aggregation must be one of "daily","weekly","monthly" but got "WEEKLY"
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli health cycling-ability --start=DATE --end=DATE [flags]
+
+Show cycling ability for a date range.
+
+Flags:
+  -h, --help                    Show context-sensitive help.
+  -j, --json                    Output as JSON ($GCCLI_JSON).
+      --plain                   Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                  Print the column names as the first line of
+                                --plain output ($GCCLI_HEADER).
+      --color="auto"            Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING          Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"            Unit system for distances, speeds, paces,
+                                elevations and weights in table and plain
+                                output: auto (Garmin profile), metric,
+                                statute_us, statute_uk ($GCCLI_UNITS).
+      --version                 Print version information.
+
+      --start=DATE              Start date (YYYY-MM-DD, today, yesterday, 3d,
+                                +30d).
+      --end=DATE                End date (YYYY-MM-DD, today, yesterday, 3d,
+                                +30d).
+      --aggregation="weekly"    Period of each value: daily (at most 30 days),
+                                weekly or monthly (at most 400 days).
+
+gccli: error: --aggregation must be one of "daily","weekly","monthly" but got "WEEKLY"
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli health cycling-ability --start=DATE --end=DATE [flags]
+
+Show cycling ability for a date range.
+
+Flags:
+  -h, --help                    Show context-sensitive help.
+  -j, --json                    Output as JSON ($GCCLI_JSON).
+      --plain                   Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                  Print the column names as the first line of
+                                --plain output ($GCCLI_HEADER).
+      --color="auto"            Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING          Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"            Unit system for distances, speeds, paces,
+                                elevations and weights in table and plain
+                                output: auto (Garmin profile), metric,
+                                statute_us, statute_uk ($GCCLI_UNITS).
+      --version                 Print version information.
+
+      --start=DATE              Start date (YYYY-MM-DD, today, yesterday, 3d,
+                                +30d).
+      --end=DATE                End date (YYYY-MM-DD, today, yesterday, 3d,
+                                +30d).
+      --aggregation="weekly"    Period of each value: daily (at most 30 days),
+                                weekly or monthly (at most 400 days).
+
+gccli: error: --aggregation must be one of "daily","weekly","monthly" but got "WEEKLY"
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli health cycling-ability --start=DATE --end=DATE [flags]
+
+Show cycling ability for a date range.
+
+Flags:
+  -h, --help                    Show context-sensitive help.
+  -j, --json                    Output as JSON ($GCCLI_JSON).
+      --plain                   Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                  Print the column names as the first line of
+                                --plain output ($GCCLI_HEADER).
+      --color="auto"            Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING          Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"            Unit system for distances, speeds, paces,
+                                elevations and weights in table and plain
+                                output: auto (Garmin profile), metric,
+                                statute_us, statute_uk ($GCCLI_UNITS).
+      --version                 Print version information.
+
+      --start=DATE              Start date (YYYY-MM-DD, today, yesterday, 3d,
+                                +30d).
+      --end=DATE                End date (YYYY-MM-DD, today, yesterday, 3d,
+                                +30d).
+      --aggregation="weekly"    Period of each value: daily (at most 30 days),
+                                weekly or monthly (at most 400 days).
+
+gccli: error: --aggregation must be one of "daily","weekly","monthly" but got "WEEKLY"
+-- json exit --
+2
+-- json requests --

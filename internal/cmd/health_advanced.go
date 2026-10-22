@@ -20,6 +20,21 @@ var healthBodyBatteryGroup = Group{Name: "body-battery", Help: "Show body batter
 		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
 		Verb:     "get body battery range", Output: JSON{List: true},
 	},
+	Leaf{
+		Name: "daily", Help: "Show the daily low and high body battery for a date range (at most 28 days).",
+		Spec: argsOf(&struct {
+			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+			EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
+		}{}),
+		Endpoint: "health.daily-body-battery",
+		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
+		Verb:     "get daily body battery",
+		Output: Rows{Noun: "daily body battery", Columns: []Column{
+			{Label: "DATE", Path: "calendarDate"},
+			{Label: "LOW", Path: "values.lowBodyBattery"},
+			{Label: "HIGH", Path: "values.highBodyBattery"},
+		}},
+	},
 }}
 
 var healthIntensityMinutesGroup = Group{Name: "intensity-minutes", Help: "Show intensity minutes data.", Children: []Node{

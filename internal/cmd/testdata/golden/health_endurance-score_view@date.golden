@@ -1,8 +1,9 @@
 -- args --
 health
-hill-score
-2026-10-15
--- route GET /metrics-service/metrics/hillscore?calendarDate=2026-10-15 --
+endurance-score
+view
+2026-10-01
+-- route GET /metrics-service/metrics/endurancescore?calendarDate=2026-10-01 --
 {"value":1}
 -- table stdout --
 {
@@ -12,7 +13,7 @@ hill-score
 -- table exit --
 0
 -- table requests --
-GET /metrics-service/metrics/hillscore?calendarDate=2026-10-15
+GET /metrics-service/metrics/endurancescore?calendarDate=2026-10-01
 -- plain stdout --
 {
   "value": 1
@@ -21,7 +22,7 @@ GET /metrics-service/metrics/hillscore?calendarDate=2026-10-15
 -- plain exit --
 0
 -- plain requests --
-GET /metrics-service/metrics/hillscore?calendarDate=2026-10-15
+GET /metrics-service/metrics/endurancescore?calendarDate=2026-10-01
 -- plain-header stdout --
 {
   "value": 1
@@ -30,7 +31,7 @@ GET /metrics-service/metrics/hillscore?calendarDate=2026-10-15
 -- plain-header exit --
 0
 -- plain-header requests --
-GET /metrics-service/metrics/hillscore?calendarDate=2026-10-15
+GET /metrics-service/metrics/endurancescore?calendarDate=2026-10-01
 -- json stdout --
 {
   "value": 1
@@ -39,4 +40,4 @@ GET /metrics-service/metrics/hillscore?calendarDate=2026-10-15
 -- json exit --
 0
 -- json requests --
-GET /metrics-service/metrics/hillscore?calendarDate=2026-10-15
+GET /metrics-service/metrics/endurancescore?calendarDate=2026-10-01

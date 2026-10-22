@@ -1,0 +1,127 @@
+-- args --
+health
+endurance-score
+stats
+--start=2026-09-01
+--end=2026-10-15
+--aggregation=daily
+-- table stdout --
+-- table stderr --
+Usage: gccli health endurance-score stats --start=DATE --end=DATE [flags]
+
+Show endurance score statistics for a date range (at most 400 days).
+
+Flags:
+  -h, --help                    Show context-sensitive help.
+  -j, --json                    Output as JSON ($GCCLI_JSON).
+      --plain                   Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                  Print the column names as the first line of
+                                --plain output ($GCCLI_HEADER).
+      --color="auto"            Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING          Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"            Unit system for distances, speeds, paces,
+                                elevations and weights in table and plain
+                                output: auto (Garmin profile), metric,
+                                statute_us, statute_uk ($GCCLI_UNITS).
+      --version                 Print version information.
+
+      --start=DATE              Start date (YYYY-MM-DD, today, yesterday, 3d,
+                                +30d).
+      --end=DATE                End date (YYYY-MM-DD, today, yesterday, 3d,
+                                +30d).
+      --aggregation="weekly"    Period of each group: weekly or monthly.
+
+gccli: error: --aggregation must be one of "weekly","monthly" but got "daily"
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli health endurance-score stats --start=DATE --end=DATE [flags]
+
+Show endurance score statistics for a date range (at most 400 days).
+
+Flags:
+  -h, --help                    Show context-sensitive help.
+  -j, --json                    Output as JSON ($GCCLI_JSON).
+      --plain                   Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                  Print the column names as the first line of
+                                --plain output ($GCCLI_HEADER).
+      --color="auto"            Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING          Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"            Unit system for distances, speeds, paces,
+                                elevations and weights in table and plain
+                                output: auto (Garmin profile), metric,
+                                statute_us, statute_uk ($GCCLI_UNITS).
+      --version                 Print version information.
+
+      --start=DATE              Start date (YYYY-MM-DD, today, yesterday, 3d,
+                                +30d).
+      --end=DATE                End date (YYYY-MM-DD, today, yesterday, 3d,
+                                +30d).
+      --aggregation="weekly"    Period of each group: weekly or monthly.
+
+gccli: error: --aggregation must be one of "weekly","monthly" but got "daily"
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli health endurance-score stats --start=DATE --end=DATE [flags]
+
+Show endurance score statistics for a date range (at most 400 days).
+
+Flags:
+  -h, --help                    Show context-sensitive help.
+  -j, --json                    Output as JSON ($GCCLI_JSON).
+      --plain                   Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                  Print the column names as the first line of
+                                --plain output ($GCCLI_HEADER).
+      --color="auto"            Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING          Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"            Unit system for distances, speeds, paces,
+                                elevations and weights in table and plain
+                                output: auto (Garmin profile), metric,
+                                statute_us, statute_uk ($GCCLI_UNITS).
+      --version                 Print version information.
+
+      --start=DATE              Start date (YYYY-MM-DD, today, yesterday, 3d,
+                                +30d).
+      --end=DATE                End date (YYYY-MM-DD, today, yesterday, 3d,
+                                +30d).
+      --aggregation="weekly"    Period of each group: weekly or monthly.
+
+gccli: error: --aggregation must be one of "weekly","monthly" but got "daily"
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli health endurance-score stats --start=DATE --end=DATE [flags]
+
+Show endurance score statistics for a date range (at most 400 days).
+
+Flags:
+  -h, --help                    Show context-sensitive help.
+  -j, --json                    Output as JSON ($GCCLI_JSON).
+      --plain                   Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                  Print the column names as the first line of
+                                --plain output ($GCCLI_HEADER).
+      --color="auto"            Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING          Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"            Unit system for distances, speeds, paces,
+                                elevations and weights in table and plain
+                                output: auto (Garmin profile), metric,
+                                statute_us, statute_uk ($GCCLI_UNITS).
+      --version                 Print version information.
+
+      --start=DATE              Start date (YYYY-MM-DD, today, yesterday, 3d,
+                                +30d).
+      --end=DATE                End date (YYYY-MM-DD, today, yesterday, 3d,
+                                +30d).
+      --aggregation="weekly"    Period of each group: weekly or monthly.
+
+gccli: error: --aggregation must be one of "weekly","monthly" but got "daily"
+-- json exit --
+2
+-- json requests --

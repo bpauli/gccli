@@ -1,0 +1,74 @@
+-- args --
+health
+progress
+metrics
+-- route GET /fitnessstats-service/activity/availableMetrics --
+{"running":["distance","duration","avgHr"],"cycling":["distance","avgPower"]}
+-- table stdout --
+{
+  "running": [
+    "distance",
+    "duration",
+    "avgHr"
+  ],
+  "cycling": [
+    "distance",
+    "avgPower"
+  ]
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /fitnessstats-service/activity/availableMetrics
+-- plain stdout --
+{
+  "running": [
+    "distance",
+    "duration",
+    "avgHr"
+  ],
+  "cycling": [
+    "distance",
+    "avgPower"
+  ]
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /fitnessstats-service/activity/availableMetrics
+-- plain-header stdout --
+{
+  "running": [
+    "distance",
+    "duration",
+    "avgHr"
+  ],
+  "cycling": [
+    "distance",
+    "avgPower"
+  ]
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /fitnessstats-service/activity/availableMetrics
+-- json stdout --
+{
+  "running": [
+    "distance",
+    "duration",
+    "avgHr"
+  ],
+  "cycling": [
+    "distance",
+    "avgPower"
+  ]
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /fitnessstats-service/activity/availableMetrics

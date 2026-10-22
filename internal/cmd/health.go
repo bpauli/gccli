@@ -106,24 +106,8 @@ var healthGroup = Group{Name: "health", Help: "View health data.", Children: []N
 	},
 	healthThresholdsGroup,
 	healthRacePredictionsGroup,
-	Leaf{
-		Name: "endurance-score", Help: "Show endurance score data.",
-		Spec: argsOf(&struct {
-			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
-		}{}),
-		Endpoint: "health.endurance-score",
-		Params:   Params{"date": In("Date")},
-		Verb:     "get endurance score", Output: JSON{},
-	},
-	Leaf{
-		Name: "hill-score", Help: "Show hill score data.",
-		Spec: argsOf(&struct {
-			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
-		}{}),
-		Endpoint: "health.hill-score",
-		Params:   Params{"date": In("Date")},
-		Verb:     "get hill score", Output: JSON{},
-	},
+	healthEnduranceScoreGroup,
+	healthHillScoreGroup,
 	Leaf{
 		Name: "power-curve", Help: "Show power curve for a date range.",
 		Spec: argsOf(&struct {
@@ -134,6 +118,29 @@ var healthGroup = Group{Name: "health", Help: "View health data.", Children: []N
 		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
 		Verb:     "get power curve", Output: JSON{},
 	},
+	Leaf{
+		Name: "running-tolerance", Help: "Show running tolerance for a date range.",
+		Spec: argsOf(&struct {
+			StartDate   Date   `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+			EndDate     Date   `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
+			Aggregation string `help:"Period of each value: daily, weekly or monthly." default:"weekly" enum:"daily,weekly,monthly"`
+		}{}),
+		Endpoint: "health.running-tolerance",
+		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate"), "aggregation": In("Aggregation")},
+		Verb:     "get running tolerance", Output: JSON{List: true},
+	},
+	Leaf{
+		Name: "cycling-ability", Help: "Show cycling ability for a date range.",
+		Spec: argsOf(&struct {
+			StartDate   Date  `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+			EndDate     Date  `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
+			Aggregation Upper `help:"Period of each value: daily (at most 30 days), weekly or monthly (at most 400 days)." default:"weekly" enum:"daily,weekly,monthly"`
+		}{}),
+		Endpoint: "health.cycling-ability",
+		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate"), "aggregation": In("Aggregation")},
+		Verb:     "get cycling ability", Output: JSON{},
+	},
+	healthProgressGroup,
 	Leaf{
 		Name: "running-economy", Help: "Show latest running economy as of a date.",
 		Spec: argsOf(&struct {
@@ -370,6 +377,106 @@ var healthTrainingStatusGroup = Group{Name: "training-status", Help: "Show train
 		Endpoint: "health.daily-training-status",
 		Params:   Params{"date": In("Date")},
 		Verb:     "get daily training status", Output: JSON{},
+	},
+	Leaf{
+		Name: "weekly", Help: "Show weekly training status for a date range.",
+		Spec: argsOf(&struct {
+			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+			EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
+		}{}),
+		Endpoint: "health.weekly-training-status",
+		Params:   Params{"displayName": DisplayName, "startDate": In("StartDate"), "endDate": In("EndDate")},
+		Verb:     "get weekly training status", Output: JSON{},
+	},
+}}
+
+var healthEnduranceScoreGroup = Group{Name: "endurance-score", Help: "Show endurance score data.", Children: []Node{
+	Leaf{
+		Name: "view", Help: "Show endurance score data for a date.", Default: true,
+		Spec: argsOf(&struct {
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+		}{}),
+		Endpoint: "health.endurance-score",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get endurance score", Output: JSON{},
+	},
+	Leaf{
+		Name: "stats", Help: "Show endurance score statistics for a date range (at most 400 days).",
+		Spec: argsOf(&struct {
+			StartDate   Date   `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+			EndDate     Date   `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
+			Aggregation string `help:"Period of each group: weekly or monthly." default:"weekly" enum:"weekly,monthly"`
+		}{}),
+		Endpoint: "health.endurance-score-stats",
+		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate"), "aggregation": In("Aggregation")},
+		Verb:     "get endurance score stats", Output: JSON{},
+	},
+}}
+
+var healthHillScoreGroup = Group{Name: "hill-score", Help: "Show hill score data.", Children: []Node{
+	Leaf{
+		Name: "view", Help: "Show hill score data for a date.", Default: true,
+		Spec: argsOf(&struct {
+			Date Date `arg:"" optional:"" default:"today" help:"Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today."`
+		}{}),
+		Endpoint: "health.hill-score",
+		Params:   Params{"date": In("Date")},
+		Verb:     "get hill score", Output: JSON{},
+	},
+	Leaf{
+		Name: "stats", Help: "Show hill score statistics for a date range (at most 400 days).",
+		Spec: argsOf(&struct {
+			StartDate   Date   `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+			EndDate     Date   `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
+			Aggregation string `help:"Period of each value: daily, weekly or monthly." default:"weekly" enum:"daily,weekly,monthly"`
+		}{}),
+		Endpoint: "health.hill-score-stats",
+		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate"), "aggregation": In("Aggregation")},
+		Verb:     "get hill score stats", Output: JSON{},
+	},
+}}
+
+var healthProgressGroup = Group{Name: "progress", Help: "Show activity totals and values over time.", Children: []Node{
+	Leaf{
+		Name: "summary", Help: "Show activity totals per period for a date range.", Default: true,
+		Spec: argsOf(&struct {
+			StartDate    Date     `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+			EndDate      Date     `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
+			Aggregation  string   `help:"Period of each total: daily, weekly, monthly, yearly or all." default:"weekly" enum:"daily,weekly,monthly,yearly,all"`
+			Metric       []string `help:"Metric to total, as health progress metrics prints it (e.g. distance, duration). Repeat the flag or separate with commas." required:""`
+			ActivityType []string `help:"Activity type, as health progress metrics prints it (e.g. running, cycling). Repeat the flag or separate with commas. Defaults to all types." name:"activity-type"`
+		}{}),
+		Endpoint: "health.progress",
+		Params: Params{
+			"aggregation": In("Aggregation"), "activityType": In("ActivityType"),
+			"startDate": In("StartDate"), "endDate": In("EndDate"), "metric": In("Metric"),
+		},
+		Verb: "get progress summary", Output: JSON{List: true},
+	},
+	Leaf{
+		Name: "activities", Help: "Show metric values of each activity in a date range.",
+		Spec: argsOf(&struct {
+			StartDate    Date     `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
+			EndDate      Date     `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
+			Metric       []string `help:"Metric to show, as health progress metrics prints it (e.g. distance, avgHr). Repeat the flag or separate with commas." required:""`
+			ActivityType []string `help:"Activity type, as health progress metrics prints it (e.g. running, cycling). Repeat the flag or separate with commas. Defaults to all types." name:"activity-type"`
+		}{}),
+		Endpoint: "health.progress-activities",
+		Params: Params{
+			"startDate": In("StartDate"), "endDate": In("EndDate"),
+			"activityType": In("ActivityType"), "metric": In("Metric"),
+		},
+		Verb: "get progress activities", Output: JSON{List: true},
+	},
+	Leaf{
+		Name: "metrics", Help: "List the metrics of each activity type.",
+		Spec: argsOf(&struct {
+			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). With --end, only types with activities in the range." name:"start" and:"range"`
+			EndDate   Date `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Needs --start." name:"end" and:"range"`
+		}{}),
+		Endpoint: "health.progress-metrics",
+		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
+		Verb:     "get progress metrics", Output: JSON{},
 	},
 }}
 
