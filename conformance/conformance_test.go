@@ -249,6 +249,7 @@ var skipped = map[string]string{
 	"devices solar":                   clockSkip,
 	"events list":                     clockSkip,
 	"goals weight":                    clockSkip,
+	"health acclimation daily":        clockSkip,
 	"health calories weekly":          clockSkip,
 	"health critical-swim-speed view": clockSkip,
 	"health floors weekly":            clockSkip,
