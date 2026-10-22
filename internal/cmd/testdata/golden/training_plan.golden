@@ -1,112 +1,46 @@
-Error case: the plan ID is missing, so the exit code is 2 (usage).
 -- args --
 training
 plan
+123
+-- route GET /trainingplan-service/trainingplan/123 --
+{"trainingPlanId":123,"name":"5K"}
 -- table stdout --
+{
+  "trainingPlanId": 123,
+  "name": "5K"
+}
 -- table stderr --
-Usage: gccli training plan <id>
-
-Show a specific training plan.
-
-Arguments:
-  <id>    Training plan ID.
-
-Flags:
-  -h, --help              Show context-sensitive help.
-  -j, --json              Output as JSON ($GCCLI_JSON).
-      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
-      --header            Print the column names as the first line of --plain
-                          output ($GCCLI_HEADER).
-      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
-      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
-      --units="auto"      Unit system for distances, speeds, paces,
-                          elevations and weights in table and plain output:
-                          auto (Garmin profile), metric, statute_us, statute_uk
-                          ($GCCLI_UNITS).
-      --version           Print version information.
-
-gccli: error: expected "<id>"
 -- table exit --
-2
+0
 -- table requests --
+GET /trainingplan-service/trainingplan/123
 -- plain stdout --
+{
+  "trainingPlanId": 123,
+  "name": "5K"
+}
 -- plain stderr --
-Usage: gccli training plan <id>
-
-Show a specific training plan.
-
-Arguments:
-  <id>    Training plan ID.
-
-Flags:
-  -h, --help              Show context-sensitive help.
-  -j, --json              Output as JSON ($GCCLI_JSON).
-      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
-      --header            Print the column names as the first line of --plain
-                          output ($GCCLI_HEADER).
-      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
-      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
-      --units="auto"      Unit system for distances, speeds, paces,
-                          elevations and weights in table and plain output:
-                          auto (Garmin profile), metric, statute_us, statute_uk
-                          ($GCCLI_UNITS).
-      --version           Print version information.
-
-gccli: error: expected "<id>"
 -- plain exit --
-2
+0
 -- plain requests --
+GET /trainingplan-service/trainingplan/123
 -- plain-header stdout --
+{
+  "trainingPlanId": 123,
+  "name": "5K"
+}
 -- plain-header stderr --
-Usage: gccli training plan <id>
-
-Show a specific training plan.
-
-Arguments:
-  <id>    Training plan ID.
-
-Flags:
-  -h, --help              Show context-sensitive help.
-  -j, --json              Output as JSON ($GCCLI_JSON).
-      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
-      --header            Print the column names as the first line of --plain
-                          output ($GCCLI_HEADER).
-      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
-      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
-      --units="auto"      Unit system for distances, speeds, paces,
-                          elevations and weights in table and plain output:
-                          auto (Garmin profile), metric, statute_us, statute_uk
-                          ($GCCLI_UNITS).
-      --version           Print version information.
-
-gccli: error: expected "<id>"
 -- plain-header exit --
-2
+0
 -- plain-header requests --
+GET /trainingplan-service/trainingplan/123
 -- json stdout --
+{
+  "trainingPlanId": 123,
+  "name": "5K"
+}
 -- json stderr --
-Usage: gccli training plan <id>
-
-Show a specific training plan.
-
-Arguments:
-  <id>    Training plan ID.
-
-Flags:
-  -h, --help              Show context-sensitive help.
-  -j, --json              Output as JSON ($GCCLI_JSON).
-      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
-      --header            Print the column names as the first line of --plain
-                          output ($GCCLI_HEADER).
-      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
-      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
-      --units="auto"      Unit system for distances, speeds, paces,
-                          elevations and weights in table and plain output:
-                          auto (Garmin profile), metric, statute_us, statute_uk
-                          ($GCCLI_UNITS).
-      --version           Print version information.
-
-gccli: error: expected "<id>"
 -- json exit --
-2
+0
 -- json requests --
+GET /trainingplan-service/trainingplan/123
