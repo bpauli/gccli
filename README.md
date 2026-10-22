@@ -22,7 +22,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities, gear types, add, update, retire, unretire and delete gear, list, create, rename and delete gear collections, add gear to a collection
 - **Goals & Badges** — active goals, set daily goals for steps, floors, intensity minutes and hydration, earned/available/in-progress badges, badge details, challenges, personal records
 - **Training** - browse and view training plans, show your active plans, list adaptive coaching workout types
-- **Profile** — user profile and settings, privacy settings, list, add and delete privacy zones, heart rate and power zones
+- **Profile** - user profile and settings, privacy settings, list, add and delete privacy zones, heart rate zones, power zones for all sports or one sport
 - **Hydration** — view and log daily water intake
 - **Nutrition** - view daily food logs, meals, and nutrition settings, search the Garmin food database, list recent and favorite foods, log foods and quick entries in a meal, delete log entries, and add and remove favorite foods (all but the first three need Garmin Connect+)
 - **Events** — list, list upcoming, add, and delete calendar events (races, group rides, etc.) with goals and training priority support
@@ -742,7 +742,8 @@ gccli profile privacy-zones add --lat 52.52 --lon 13.405 --radius 500
 gccli profile privacy-zones add --lat 40.7 --lon=-74.0 --radius 1000   # A negative value needs the = form
 gccli profile privacy-zones delete <id>          # Delete a privacy zone (with confirmation)
 gccli profile hr-zones
-gccli profile power-zones
+gccli profile power-zones                 # All sports
+gccli profile power-zones sport cycling   # One sport: cycling, running, rowing or cross-country-skiing
 ```
 
 ### Hydration
