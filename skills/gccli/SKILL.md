@@ -787,6 +787,29 @@ Date shortcuts
   - `<id>`: Training plan ID.
 - `gccli training active [flags]`: Show active training plans.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli training search [flags]`: Search the Garmin catalog of training plans.
+  - `--sport=STRING`: Sport as Garmin prints it in the SPORT column, such as Running.
+  - `--goal=STRING`: Goal as Garmin prints it in the GOAL column, such as 5k, 10k, HalfMarathon or Marathon.
+  - `--level=STRING`: Level as Garmin prints it in the LEVEL column, such as Beginner, Intermediate or Advanced.
+  - `--target=STRING`: Workout target as Garmin prints it in the TARGET column, such as HeartRate or Time.
+  - `--locale="en"`: Locale for plan names (e.g. en, de, fr).
+- `gccli training schedule <id> [flags]`: List the workouts and notes of a training plan by week and day.
+  - `<id>`: Training plan ID.
+  - `--locale="en"`: Locale for workout and note names (e.g. en, de, fr).
+- `gccli training join <id> [flags]`: Join a catalog training plan and schedule its workouts in the calendar.
+  - `<id>`: Catalog training plan ID, as training search prints it.
+  - `--start=DATE`: Day of the first workout (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli training leave <id> [flags]`: Leave a joined training plan and remove its workouts from the calendar.
+  - `<id>`: ID of the joined training plan, as training join or training active prints it.
+  - `-f, --force`: Skip confirmation prompt.
+- `gccli training task move <plan-id> <task-id> <date>`: Move a workout of a joined training plan to another day.
+  - `<plan-id>`: ID of the joined training plan.
+  - `<task-id>`: Task ID of the workout, as training schedule prints it.
+  - `<date>`: New date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli training task delete <plan-id> <task-id> [flags]`: Delete a workout of a joined training plan. Garmin puts a rest day in its place.
+  - `<plan-id>`: ID of the joined training plan.
+  - `<task-id>`: Task ID of the workout, as training schedule prints it.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli training coach-workouts`: List adaptive coaching workout types.
 - `gccli wellness menstrual-cycle [<date>]`: Show the menstrual cycle day view of a date.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
@@ -852,6 +875,7 @@ Worked examples
 - Calendar month: `gccli calendar month 2026 10` lists the activities, workouts, events, notes and other items of October 2026. `gccli calendar month --json | jq '[.calendarItems[] | select(.itemType == "activity")]'` keeps the activities of this month's grid.
 - Calendar feed: `gccli calendar export enable` turns on the feed and prints its URL, and `gccli calendar export show --plain` prints the URL alone. `gccli calendar export disable --force` turns it off.
 - Calendar preference: `gccli calendar preferences` shows the keys. `gccli calendar preferences set showWeeklyTotal false` turns one off.
+- Training plan: `gccli training search --sport Running --goal 5k --level Beginner` lists catalog plans with their ID. `gccli training join <id> --start 2026-11-02` joins one and prints the ID of your copy, which the other plan commands take. `gccli training schedule <plan-id>` lists the workouts with their task IDs. `gccli training task move <plan-id> <task-id> 2026-11-04` moves a workout and prints its new task ID, and `gccli training task delete <plan-id> <task-id> --force` puts a rest day in its place. `gccli training leave <plan-id> --force` leaves the plan and removes its workouts from the calendar.
 - Notification preference: `gccli notifications preferences` shows the keys. `gccli notifications preferences set allowEmailWeeklySummary false` turns one off. A key that is not in the preferences fails before any write, and the error lists the keys.
 - Notifications: `gccli notifications list` gives 50 notifications per page (`--limit` changes it). For the next page, pass `pagination.nextCursor` of the JSON output: `gccli notifications list --cursor <nextCursor>`. `gccli notifications dismiss <id>` removes a notification from the list, and `gccli notifications undismiss <id>` brings it back. `gccli notifications unread` prints `{"unreadBubble": true}` when there are unread notifications.
 - Privacy zone: `gccli profile privacy-zones add --lat 51.5 --lon=-0.12 --radius 500` prints the zone ID. A negative value needs the `=` form. The radius is 500 to 1500 meters. `gccli profile privacy-zones delete <id> --force` deletes it.

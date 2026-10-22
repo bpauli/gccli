@@ -1,0 +1,52 @@
+The form body carries the task ID and the new date. Garmin answers the moved task with a new task ID.
+-- args --
+training
+task
+move
+456
+789
+2026-10-28
+-- route POST /trainingplan-service/trainingplan/moveWorkoutTask/456 --
+{"trainingPlanId":456,"weekId":1,"dayOfWeekId":3,"calendarDate":"2026-10-28","taskWorkout":{"workoutId":5001,"workoutName":"W01D2-Easy Run","workoutScheduleId":790}}
+-- table stdout --
+-- table stderr --
+Moved task 789 to 2026-10-28 (new task ID: 790)
+-- table exit --
+0
+-- table requests --
+POST /trainingplan-service/trainingplan/moveWorkoutTask/456
+  "scheduleDate=2026-10-28&workoutSchedulePk=789"
+-- plain stdout --
+-- plain stderr --
+Moved task 789 to 2026-10-28 (new task ID: 790)
+-- plain exit --
+0
+-- plain requests --
+POST /trainingplan-service/trainingplan/moveWorkoutTask/456
+  "scheduleDate=2026-10-28&workoutSchedulePk=789"
+-- plain-header stdout --
+-- plain-header stderr --
+Moved task 789 to 2026-10-28 (new task ID: 790)
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /trainingplan-service/trainingplan/moveWorkoutTask/456
+  "scheduleDate=2026-10-28&workoutSchedulePk=789"
+-- json stdout --
+{
+  "trainingPlanId": 456,
+  "weekId": 1,
+  "dayOfWeekId": 3,
+  "calendarDate": "2026-10-28",
+  "taskWorkout": {
+    "workoutId": 5001,
+    "workoutName": "W01D2-Easy Run",
+    "workoutScheduleId": 790
+  }
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /trainingplan-service/trainingplan/moveWorkoutTask/456
+  "scheduleDate=2026-10-28&workoutSchedulePk=789"

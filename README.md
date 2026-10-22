@@ -21,7 +21,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Devices** - list registered devices, view settings, solar data, alarms, primary/last-used device, set the primary activity tracker, paired sensors, backup summary and device backups, historical devices, device messages, cancel a pending device message
 - **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities, gear types, add, update, retire, unretire and delete gear, list, create, rename and delete gear collections, add gear to a collection
 - **Goals & Badges** — active goals, set daily goals for steps, floors, intensity minutes and hydration, earned/available/in-progress badges, badge details, challenges, personal records
-- **Training** - browse and view training plans, show your active plans, list adaptive coaching workout types
+- **Training** - browse, search and view training plans, show a plan's schedule, join and leave a plan, move and delete its workouts, show your active plans, list adaptive coaching workout types
 - **Profile** - user profile and settings, privacy settings, list, add and delete privacy zones, heart rate zones, power zones for all sports or one sport
 - **Hydration** — view and log daily water intake
 - **Nutrition** - view daily food logs, meals, and nutrition settings, search the Garmin food database, list recent and favorite foods, log foods and quick entries in a meal, delete log entries, and add and remove favorite foods (all but the first three need Garmin Connect+)
@@ -787,8 +787,16 @@ gccli training plans --locale en
 gccli training plan <id>
 gccli training active
 gccli training active --start 2026-01-01
+gccli training search --sport Running --goal 5k --level Beginner   # Find a catalog plan
+gccli training schedule <id>                                       # Weeks, days, workouts and task IDs
+gccli training join <id> --start 2026-11-02                        # Prints the ID of your copy of the plan
+gccli training task move <plan-id> <task-id> 2026-11-04
+gccli training task delete <plan-id> <task-id> --force
+gccli training leave <plan-id> --force
 gccli training coach-workouts
 ```
+
+`training join` copies a catalog plan into your account under a new ID and puts its workouts in your calendar. The other plan commands take that new ID. `training schedule` prints a task ID for each workout of a joined plan, and `training task move` and `training task delete` take it. Garmin gives a moved workout a new task ID, which the command prints. A deleted workout becomes a rest day.
 
 ### Events
 
@@ -1680,6 +1688,29 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `<id>`: Training plan ID.
 - `gccli training active [flags]`: Show active training plans.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli training search [flags]`: Search the Garmin catalog of training plans.
+  - `--sport=STRING`: Sport as Garmin prints it in the SPORT column, such as Running.
+  - `--goal=STRING`: Goal as Garmin prints it in the GOAL column, such as 5k, 10k, HalfMarathon or Marathon.
+  - `--level=STRING`: Level as Garmin prints it in the LEVEL column, such as Beginner, Intermediate or Advanced.
+  - `--target=STRING`: Workout target as Garmin prints it in the TARGET column, such as HeartRate or Time.
+  - `--locale="en"`: Locale for plan names (e.g. en, de, fr).
+- `gccli training schedule <id> [flags]`: List the workouts and notes of a training plan by week and day.
+  - `<id>`: Training plan ID.
+  - `--locale="en"`: Locale for workout and note names (e.g. en, de, fr).
+- `gccli training join <id> [flags]`: Join a catalog training plan and schedule its workouts in the calendar.
+  - `<id>`: Catalog training plan ID, as training search prints it.
+  - `--start=DATE`: Day of the first workout (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli training leave <id> [flags]`: Leave a joined training plan and remove its workouts from the calendar.
+  - `<id>`: ID of the joined training plan, as training join or training active prints it.
+  - `-f, --force`: Skip confirmation prompt.
+- `gccli training task move <plan-id> <task-id> <date>`: Move a workout of a joined training plan to another day.
+  - `<plan-id>`: ID of the joined training plan.
+  - `<task-id>`: Task ID of the workout, as training schedule prints it.
+  - `<date>`: New date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli training task delete <plan-id> <task-id> [flags]`: Delete a workout of a joined training plan. Garmin puts a rest day in its place.
+  - `<plan-id>`: ID of the joined training plan.
+  - `<task-id>`: Task ID of the workout, as training schedule prints it.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli training coach-workouts`: List adaptive coaching workout types.
 - `gccli wellness menstrual-cycle [<date>]`: Show the menstrual cycle day view of a date.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.

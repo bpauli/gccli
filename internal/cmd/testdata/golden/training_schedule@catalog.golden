@@ -1,0 +1,52 @@
+A catalog plan has no dates and no task IDs.
+-- args --
+training
+schedule
+101
+--locale
+de
+-- route GET /trainingplan-service/trainingplan/tasks/101?localeKey=de --
+[{"trainingPlanId":101,"weekId":1,"dayOfWeekId":2,"calendarDate":null,"taskNote":null,"taskWorkout":{"workoutId":5001,"workoutName":"W01D2-Easy Run","workoutScheduleId":null}}]
+-- table stdout --
+WEEK  DAY  DATE  TASK ID  WORKOUT         NOTE
+1     2                   W01D2-Easy Run  
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /trainingplan-service/trainingplan/tasks/101?localeKey=de
+-- plain stdout --
+1	2			W01D2-Easy Run	
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /trainingplan-service/trainingplan/tasks/101?localeKey=de
+-- plain-header stdout --
+WEEK	DAY	DATE	TASK ID	WORKOUT	NOTE
+1	2			W01D2-Easy Run	
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /trainingplan-service/trainingplan/tasks/101?localeKey=de
+-- json stdout --
+[
+  {
+    "trainingPlanId": 101,
+    "weekId": 1,
+    "dayOfWeekId": 2,
+    "calendarDate": null,
+    "taskNote": null,
+    "taskWorkout": {
+      "workoutId": 5001,
+      "workoutName": "W01D2-Easy Run",
+      "workoutScheduleId": null
+    }
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /trainingplan-service/trainingplan/tasks/101?localeKey=de
