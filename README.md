@@ -13,7 +13,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 
 - **Activities** - list, search, view details, download (FIT/GPX/TCX/KML/CSV), upload, create manual entries (with date), rename, retype, describe, change privacy, mark as favorite, delete, set exercise sets for strength training, list activity types, list pending activities, list comments and likes, like and unlike
 - **Exercise Catalog** — browse Garmin's exercise categories and exercises for strength training
-- **Health Data** — daily summaries, steps, heart rate, resting HR, sleep, stress, HRV, SpO2, respiration, body battery, floors, training readiness/status, VO2max, fitness age, race predictions, endurance/hill scores, intensity minutes, lactate threshold, cycling FTP, critical swim speed, power curve, running economy
+- **Health Data** - daily summaries, steps, heart rate, resting HR, sleep, stress, HRV, SpO2, respiration, body battery (with daily low and high), floors, training readiness, daily and weekly training status, VO2max, fitness age, race predictions, endurance and hill scores with statistics, intensity minutes, lactate threshold, cycling FTP, critical swim speed, power curve, running economy, running tolerance, cycling ability, activity progress totals per period
 - **Body Composition** - weight tracking, latest weigh-in, weekly weight summaries, body fat, muscle mass, blood pressure, glucose, FIT file encoding for composition uploads
 - **Workouts** - list, view, download as FIT, upload from JSON, update in place from JSON, create with sport types and targets (pace/HR/power/cadence), schedule (add/list/remove/export), send to a device, list workout types and sport types, view, set and clear strength benchmarks, delete
 - **Courses** — list courses, view favorites, get full course detail, download as FIT/GPX, import GPX files as new courses, send courses directly to a device, delete courses
@@ -442,9 +442,11 @@ gccli health stress daily --start 2024-01-01 --end 2024-01-31
 gccli health stress weekly --weeks 4
 gccli health body-battery [date]
 gccli health body-battery range --start 2024-01-01 --end 2024-01-07
+gccli health body-battery daily --start 2024-01-01 --end 2024-01-28   # Daily low and high
 gccli health training-readiness [date]
 gccli health training-status [date]
 gccli health training-status daily [date]
+gccli health training-status weekly --start 2024-01-01 --end 2024-06-30
 
 # Fitness metrics
 gccli health fitness-age [date]
@@ -461,11 +463,20 @@ gccli health thresholds power-to-weight --start 2024-01-01 --end 2024-06-30
 gccli health race-predictions
 gccli health race-predictions range --start 2024-01-01 --end 2024-06-30
 gccli health endurance-score [date]
+gccli health endurance-score stats --start 2024-01-01 --end 2024-06-30 --aggregation monthly
 gccli health hill-score [date]
+gccli health hill-score stats --start 2024-01-01 --end 2024-06-30
+gccli health running-tolerance --start 2024-01-01 --end 2024-06-30 --aggregation weekly
+gccli health cycling-ability --start 2024-01-01 --end 2024-06-30
 gccli health intensity-minutes [date]
 gccli health intensity-minutes weekly --start 2024-01-01 --end 2024-01-31
 gccli health acclimation --start 2024-01-01 --end 2024-01-07
 gccli health one-rep-max [date]
+
+# Activity progress (metric names come from health progress metrics)
+gccli health progress metrics
+gccli health progress --start 2024-01-01 --end 2024-06-30 --aggregation monthly --metric distance,duration --activity-type running
+gccli health progress activities --start 2024-06-01 --end 2024-06-30 --metric distance --metric avgHr
 
 # Wellness events
 gccli health events [date]
@@ -1779,6 +1790,16 @@ gccli golf clubs | jq --argjson types "$types" \
 gccli segments search --bbox 52.45,13.30,52.55,13.45 --activity-type running --classification hill_climb
 gccli segments leaderboard <uuid> --scope connections
 gccli --json segments rank <uuid> | jq '{best: .bestElapsedTime, leader: .leaderFullName}'
+```
+
+### Monthly running distance
+
+`health progress metrics` lists the metric names of each activity type. Distances are in meters and durations in seconds.
+
+```bash
+gccli health progress --start 2026-01-01 --end 2026-06-30 --aggregation monthly \
+  --metric distance --activity-type running | \
+  jq -r '.[] | [.date, .countOfActivities, (.stats.all.distance.sum // 0) / 1000] | @tsv'
 ```
 
 ## Global Flags
