@@ -384,6 +384,32 @@ var writeCases = map[string]writeCase{
 		human:    "Updated note 118934\n",
 		fallback: "Updated note 118934\n",
 	},
+	"challenges adhoc create": {
+		args: []string{"Step up", "--type", "steps", "--start", "2026-10-19", "--invite", "ann"},
+		routes: map[string]string{
+			"GET /follower-service/follow/mutuals":          `[{"displayName":"ann","userId":2001}]`,
+			"GET /userprofile-service/userprofile/settings": `{"displayName":"tester","profileId":3141592}`,
+			"GET /userprofile-service/socialProfile/tester": `{"displayName":"tester","profileId":3141592}`,
+			"POST /adhocchallenge-service/adHocChallenge":   `{"uuid":"FEDCBA9876543210FEDCBA9876543210"}`,
+		},
+		result:   "POST /adhocchallenge-service/adHocChallenge",
+		json:     "{\n  \"uuid\": \"FEDCBA9876543210FEDCBA9876543210\"\n}\n",
+		human:    "Created ad-hoc challenge \"Step up\" (UUID: FEDCBA9876543210FEDCBA9876543210)\n",
+		fallback: "Created ad-hoc challenge \"Step up\"\n",
+	},
+	"challenges adhoc invite": {
+		args: []string{"FEDCBA9876543210FEDCBA9876543210", "ann"},
+		routes: map[string]string{
+			"GET /follower-service/follow/mutuals":               `[{"displayName":"ann","userId":2001}]`,
+			"GET /userprofile-service/userprofile/settings":      `{"displayName":"tester","profileId":3141592}`,
+			"GET /userprofile-service/socialProfile/tester":      `{"displayName":"tester","profileId":3141592}`,
+			"POST /adhocchallenge-service/adHocChallenge/invite": noContent,
+		},
+		result:   "POST /adhocchallenge-service/adHocChallenge/invite",
+		json:     okOut,
+		human:    "Invited 1 person to ad-hoc challenge FEDCBA9876543210FEDCBA9876543210\n",
+		fallback: "Invited 1 person to ad-hoc challenge FEDCBA9876543210FEDCBA9876543210\n",
+	},
 	"gear add": {
 		args:     []string{"Pegasus", "--brand", "Nike", "--model", "Pegasus", "--first-use", "2024-06-01"},
 		routes:   map[string]string{"POST /gear-service/gear/v2": `{"uuid":"0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e","name":"Pegasus"}`},

@@ -177,7 +177,7 @@ var challengesGroup = Group{Name: "challenges", Help: "View, join and leave chal
 	adhocChallengesGroup,
 }}
 
-var adhocChallengesGroup = Group{Name: "adhoc", Help: "View and answer ad-hoc challenges with people you follow.", Children: []Node{
+var adhocChallengesGroup = Group{Name: "adhoc", Help: "Create, view and answer ad-hoc challenges with people you follow.", Children: []Node{
 	Leaf{Name: "list", Help: "Show your ad-hoc challenges that are not finished.", Default: true, Endpoint: "challenges.adhoc-non-completed", Verb: "get ad-hoc challenges", Output: JSON{List: true}},
 	Leaf{Name: "history", Help: "Show your finished ad-hoc challenges.", Endpoint: "challenges.adhoc-historical", Verb: "get ad-hoc challenge history", Output: JSON{List: true}},
 	Leaf{
@@ -187,6 +187,7 @@ var adhocChallengesGroup = Group{Name: "adhoc", Help: "View and answer ad-hoc ch
 		Params:   Params{"uuid": In("UUID"), "todayDate": Today},
 		Verb:     "get ad-hoc challenge", Output: JSON{},
 	},
+	Custom{Name: "create", Help: "Create an ad-hoc challenge and invite people who follow you and whom you follow.", Cmd: &ChallengesAdhocCreateCmd{}},
 	Leaf{
 		Name: "invites", Help: "List the open invites of an ad-hoc challenge with their adHocChallengeInviteId.",
 		Spec:     challengeUUIDArgs,
@@ -194,6 +195,7 @@ var adhocChallengesGroup = Group{Name: "adhoc", Help: "View and answer ad-hoc ch
 		Params:   Params{"uuid": In("UUID")},
 		Verb:     "get ad-hoc challenge invites", Output: JSON{List: true},
 	},
+	Custom{Name: "invite", Help: "Invite people who follow you and whom you follow to an ad-hoc challenge.", Cmd: &ChallengesAdhocInviteCmd{}},
 	Leaf{
 		Name: "accept", Help: "Accept an invite to an ad-hoc challenge.",
 		Spec:     challengeInviteArgs,

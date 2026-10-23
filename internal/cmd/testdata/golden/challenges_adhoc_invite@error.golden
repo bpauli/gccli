@@ -1,0 +1,83 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+challenges
+adhoc
+invite
+0123456789ABCDEF0123456789ABCDEF
+ann
+-- route GET /follower-service/follow/mutuals --
+[{"displayName":"ann","followStatus":1,"fullName":"Ann Example","location":null,"profileImageUrls":[],"userId":2001,"userLevel":3,"userPoint":120}]
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- route GET /userprofile-service/socialProfile/tester --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- route POST /adhocchallenge-service/adHocChallenge/invite 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+invite to ad-hoc challenge: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /follower-service/follow/mutuals
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+POST /adhocchallenge-service/adHocChallenge/invite
+  {
+    "adHocChallengeUuid": "0123456789ABCDEF0123456789ABCDEF",
+    "invitorId": 3141592,
+    "inviteeIds": [
+      2001
+    ]
+  }
+-- plain stdout --
+-- plain stderr --
+invite to ad-hoc challenge: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /follower-service/follow/mutuals
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+POST /adhocchallenge-service/adHocChallenge/invite
+  {
+    "adHocChallengeUuid": "0123456789ABCDEF0123456789ABCDEF",
+    "invitorId": 3141592,
+    "inviteeIds": [
+      2001
+    ]
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+invite to ad-hoc challenge: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /follower-service/follow/mutuals
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+POST /adhocchallenge-service/adHocChallenge/invite
+  {
+    "adHocChallengeUuid": "0123456789ABCDEF0123456789ABCDEF",
+    "invitorId": 3141592,
+    "inviteeIds": [
+      2001
+    ]
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"invite to ad-hoc challenge: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /follower-service/follow/mutuals
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+POST /adhocchallenge-service/adHocChallenge/invite
+  {
+    "adHocChallengeUuid": "0123456789ABCDEF0123456789ABCDEF",
+    "invitorId": 3141592,
+    "inviteeIds": [
+      2001
+    ]
+  }
