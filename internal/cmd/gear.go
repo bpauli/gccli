@@ -66,7 +66,22 @@ var gearGroup = Group{Name: "gear", Help: "Manage gear.", Children: []Node{
 		Verb:     "unlink gear",
 		Output:   Write{Done: "Unlinked gear {UUID} from activity {ActivityID}"},
 	},
+	Custom{Name: "set-default", Help: "Make a gear item a default gear for an activity type.", Cmd: &GearSetDefaultCmd{}},
+	Custom{Name: "unset-default", Help: "Stop a gear item being a default gear for an activity type.", Cmd: &GearUnsetDefaultCmd{}},
 	Leaf{Name: "types", Help: "List gear types.", Endpoint: "gear.types", Verb: "get gear types", Output: JSON{List: true}},
+	Leaf{
+		Name: "models", Help: "Search the Garmin list of gear brands and models.",
+		Spec: argsOf(&struct {
+			Search FreeText `arg:"" help:"Brand or model words, such as \"brooks ghost\"."`
+		}{}),
+		Endpoint: "gear.models",
+		Params:   Params{"keywords": In("Search")},
+		Verb:     "search gear models",
+		Output: Rows{Noun: "gear models", Columns: []Column{
+			{Label: "BRAND", Path: "gearMakeDTO.gearMakeName"},
+			{Label: "MODEL", Path: "gearModelDTO.gearModelName"},
+		}},
+	},
 	Custom{Name: "add", Help: "Add a gear item.", Cmd: &GearAddCmd{}},
 	Custom{Name: "update", Help: "Change the name, brand, model or notes of a gear item.", Cmd: &GearUpdateCmd{}},
 	Leaf{
@@ -110,6 +125,17 @@ var gearCollectionsGroup = Group{Name: "collections", Help: "Manage gear collect
 		Params:   Params{"collectionUUID": In("UUID"), "gearUUID": In("Gear")},
 		Verb:     "add gear to collection",
 		Output:   Write{Done: "Added gear {Gear} to collection {UUID}"},
+	},
+	Leaf{
+		Name: "remove", Help: "Remove a gear item from a gear collection. The gear item stays.",
+		Spec: argsOf(&struct {
+			UUID ID       `arg:"" help:"Collection UUID."`
+			Gear GearUUID `arg:"" help:"Gear UUID, with or without dashes." name:"gear-uuid"`
+		}{}),
+		Endpoint: "gear.collection.remove-gear",
+		Params:   Params{"collectionUUID": In("UUID"), "gearUUID": In("Gear")},
+		Verb:     "remove gear from collection",
+		Output:   Write{Done: "Removed gear {Gear} from collection {UUID}", Confirm: "Remove gear {Gear} from collection {UUID}?"},
 	},
 	Leaf{
 		Name: "delete", Help: "Delete a gear collection. The gear items stay.",
@@ -214,6 +240,46 @@ func (c *GearUpdateCmd) Run(g *Globals) error {
 		return fmt.Errorf("update gear: %w", err)
 	}
 	return reportWrite(g, data, "Updated gear %s", c.UUID)
+}
+
+// gearDefaultArgs are the inputs of gear set-default and unset-default.
+type gearDefaultArgs struct {
+	UUID         GearUUID `arg:"" help:"Gear UUID, with or without dashes."`
+	ActivityType FreeText `arg:"" help:"Activity type key, as activities types prints it (e.g. running, trail_running)." name:"activity-type"`
+}
+
+// GearSetDefaultCmd makes a gear item a default gear for an activity type.
+type GearSetDefaultCmd struct{ gearDefaultArgs }
+
+func (c *GearSetDefaultCmd) Run(g *Globals) error {
+	client, err := resolveClient(g)
+	if err != nil {
+		return err
+	}
+	data, err := client.SetGearDefault(g.Context, string(c.UUID), string(c.ActivityType), true)
+	if err != nil {
+		return fmt.Errorf("set default gear: %w", err)
+	}
+	return reportWrite(g, data, "Gear %s is a default gear for %s", c.UUID, c.ActivityType)
+}
+
+// GearUnsetDefaultCmd stops a gear item being a default gear for an
+// activity type.
+type GearUnsetDefaultCmd struct{ gearDefaultArgs }
+
+func (c *GearUnsetDefaultCmd) Run(g *Globals) error {
+	client, err := resolveClient(g)
+	if err != nil {
+		return err
+	}
+	data, err := client.SetGearDefault(g.Context, string(c.UUID), string(c.ActivityType), false)
+	if errors.Is(err, garminapi.ErrNotDefaultGear) {
+		return fmt.Errorf("gear %s is not a default gear for %s", c.UUID, c.ActivityType)
+	}
+	if err != nil {
+		return fmt.Errorf("unset default gear: %w", err)
+	}
+	return reportWrite(g, data, "Gear %s is no longer a default gear for %s", c.UUID, c.ActivityType)
 }
 
 // GearCollectionCreateCmd creates a gear collection.

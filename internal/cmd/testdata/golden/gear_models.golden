@@ -1,0 +1,83 @@
+The search words go into the keywords query, with + for a space.
+-- args --
+gear
+models
+brooks ghost
+-- route GET /gear-service/gear/makemodels?keywords=brooks+ghost --
+[{"gearMakeDTO":{"gearMakePk":103,"gearMakeName":"Brooks","createDate":"2014-12-18T09:36:50.0","updateDate":"2014-12-18T09:36:50.0"},"gearModelDTO":{"gearModelPk":121,"gearTypePk":1,"gearMakePk":103,"gearModelName":"Ghost","description":null,"imageNameLarge":null,"imageNameMedium":null,"imageNameSmall":null,"createDate":"2014-12-18T09:36:50.0","updateDate":"2014-12-18T09:36:50.0"},"makeModelName":"Brooks Ghost"},{"gearMakeDTO":{"gearMakePk":103,"gearMakeName":"Brooks","createDate":"2014-12-18T09:36:50.0","updateDate":"2014-12-18T09:36:50.0"},"gearModelDTO":{"gearModelPk":122,"gearTypePk":1,"gearMakePk":103,"gearModelName":"Glycerin","description":null,"imageNameLarge":null,"imageNameMedium":null,"imageNameSmall":null,"createDate":"2014-12-18T09:36:50.0","updateDate":"2014-12-18T09:36:50.0"},"makeModelName":"Brooks Glycerin"}]
+-- table stdout --
+BRAND   MODEL
+Brooks  Ghost
+Brooks  Glycerin
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /gear-service/gear/makemodels?keywords=brooks+ghost
+-- plain stdout --
+Brooks	Ghost
+Brooks	Glycerin
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /gear-service/gear/makemodels?keywords=brooks+ghost
+-- plain-header stdout --
+BRAND	MODEL
+Brooks	Ghost
+Brooks	Glycerin
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /gear-service/gear/makemodels?keywords=brooks+ghost
+-- json stdout --
+[
+  {
+    "gearMakeDTO": {
+      "gearMakePk": 103,
+      "gearMakeName": "Brooks",
+      "createDate": "2014-12-18T09:36:50.0",
+      "updateDate": "2014-12-18T09:36:50.0"
+    },
+    "gearModelDTO": {
+      "gearModelPk": 121,
+      "gearTypePk": 1,
+      "gearMakePk": 103,
+      "gearModelName": "Ghost",
+      "description": null,
+      "imageNameLarge": null,
+      "imageNameMedium": null,
+      "imageNameSmall": null,
+      "createDate": "2014-12-18T09:36:50.0",
+      "updateDate": "2014-12-18T09:36:50.0"
+    },
+    "makeModelName": "Brooks Ghost"
+  },
+  {
+    "gearMakeDTO": {
+      "gearMakePk": 103,
+      "gearMakeName": "Brooks",
+      "createDate": "2014-12-18T09:36:50.0",
+      "updateDate": "2014-12-18T09:36:50.0"
+    },
+    "gearModelDTO": {
+      "gearModelPk": 122,
+      "gearTypePk": 1,
+      "gearMakePk": 103,
+      "gearModelName": "Glycerin",
+      "description": null,
+      "imageNameLarge": null,
+      "imageNameMedium": null,
+      "imageNameSmall": null,
+      "createDate": "2014-12-18T09:36:50.0",
+      "updateDate": "2014-12-18T09:36:50.0"
+    },
+    "makeModelName": "Brooks Glycerin"
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /gear-service/gear/makemodels?keywords=brooks+ghost

@@ -44,6 +44,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `training schedule <id>` lists the workouts and notes of a training plan by week and day, with the date and the task ID of each workout of a joined plan. (#83)
 - `training join <id> [--start DATE]` joins a catalog plan from a day (default today) and puts its workouts in the calendar. Garmin copies the plan under a new ID, which the command prints. `training leave <id>` leaves a joined plan after a prompt (`--force` skips it) and removes its workouts from the calendar. (#83)
 - `training task move <plan-id> <task-id> <date>` moves a workout of a joined plan to another day and prints its new task ID, because Garmin gives the moved workout a new one. `training task delete <plan-id> <task-id>` deletes a workout after a prompt (`--force` skips it); Garmin puts a rest day in its place. (#83)
+- `gear set-default <uuid> <activity-type>` makes a gear item a default gear for an activity type, and `gear unset-default` removes it. More than one gear item can be a default for one type, so `set-default` keeps the other defaults. `unset-default` of a type that the gear does not have exits 1. (#69)
+- `gear models <words>` searches the Garmin list of gear brands and models, as help for `gear add --brand --model`. (#69)
+- `gear collections remove <collection-uuid> <gear-uuid>` removes a gear item from a collection. (#69)
 
 ### Changed
 
