@@ -20,7 +20,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Segments** - list your segments and favorites, search segments by name or map area, view a segment, its leaderboard and your rank, list the segments that an activity crossed, create a segment from a part of an activity, add and remove favorites, delete segments
 - **Devices** - list registered devices, view settings, solar data, alarms, primary/last-used device, set the primary activity tracker, paired sensors, backup summary and device backups, historical devices, device messages, cancel a pending device message
 - **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities, gear types, add, update, retire, unretire and delete gear, list, create, rename and delete gear collections, add gear to a collection
-- **Goals & Badges** — active goals, set daily goals for steps, floors, intensity minutes and hydration, earned/available/in-progress badges, badge details, challenges, personal records
+- **Goals & Badges** - active goals, set daily goals for steps, floors, intensity minutes and hydration, earned/available/in-progress badges, badge details, challenges (show, join and leave badge and virtual challenges; view, answer, leave and delete ad-hoc challenges), personal records
 - **Training** - browse, search and view training plans, show a plan's schedule, join and leave a plan, move and delete its workouts, show your active plans, list adaptive coaching workout types
 - **Profile** - user profile and settings, privacy settings, list, add and delete privacy zones, heart rate zones, power zones for all sports or one sport
 - **Hydration** — view and log daily water intake
@@ -736,6 +736,17 @@ gccli challenges completed
 gccli challenges virtual available
 gccli challenges virtual completed
 gccli challenges virtual in-progress
+gccli challenges show <uuid>      # a badge or virtual challenge
+gccli challenges join <uuid>
+gccli challenges leave <uuid>     # no prompt: join undoes it
+gccli challenges adhoc            # ad-hoc challenges that are not finished (same as adhoc list)
+gccli challenges adhoc history
+gccli challenges adhoc show <uuid>
+gccli challenges adhoc invites <uuid>       # each invite has its adHocChallengeInviteId
+gccli challenges adhoc accept <invite-id>
+gccli challenges adhoc decline <invite-id>
+gccli challenges adhoc leave <uuid>         # no undo: only a new invite gets you back in
+gccli challenges adhoc delete <uuid>        # only a challenge that you created
 gccli records                     # personal records (same as records list)
 gccli records types
 gccli records activity <activityId>
@@ -1517,6 +1528,28 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli challenges virtual available`: Show available virtual challenges.
 - `gccli challenges virtual completed`: Show completed virtual challenges.
 - `gccli challenges virtual in-progress`: Show virtual challenges in progress.
+- `gccli challenges show <uuid>`: Show a badge or virtual challenge.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+- `gccli challenges join <uuid>`: Join a badge or virtual challenge.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+- `gccli challenges leave <uuid>`: Leave a badge or virtual challenge.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+- `gccli challenges adhoc list`: Show your ad-hoc challenges that are not finished. Also runs as `gccli challenges adhoc`.
+- `gccli challenges adhoc history`: Show your finished ad-hoc challenges.
+- `gccli challenges adhoc show <uuid>`: Show an ad-hoc challenge.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+- `gccli challenges adhoc invites <uuid>`: List the open invites of an ad-hoc challenge with their adHocChallengeInviteId.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+- `gccli challenges adhoc accept <invite-id>`: Accept an invite to an ad-hoc challenge.
+  - `<invite-id>`: Invite ID (adHocChallengeInviteId).
+- `gccli challenges adhoc decline <invite-id>`: Decline an invite to an ad-hoc challenge.
+  - `<invite-id>`: Invite ID (adHocChallengeInviteId).
+- `gccli challenges adhoc leave <uuid> [flags]`: Leave an ad-hoc challenge. Only a new invite gets you back in.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+  - `-f, --force`: Skip confirmation prompt.
+- `gccli challenges adhoc delete <uuid> [flags]`: Delete an ad-hoc challenge that you created.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli records list`: View personal records. Also runs as `gccli records`.
 - `gccli records types`: List personal record types.
 - `gccli records activity <id>`: List the personal records set in an activity.

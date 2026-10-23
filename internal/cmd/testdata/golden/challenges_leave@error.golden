@@ -1,0 +1,35 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+challenges
+leave
+0123456789ABCDEF0123456789ABCDEF
+-- route POST /badgechallenge-service/badgeChallenge/0123456789ABCDEF0123456789ABCDEF/optOut 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+leave challenge: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+POST /badgechallenge-service/badgeChallenge/0123456789ABCDEF0123456789ABCDEF/optOut
+-- plain stdout --
+-- plain stderr --
+leave challenge: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+POST /badgechallenge-service/badgeChallenge/0123456789ABCDEF0123456789ABCDEF/optOut
+-- plain-header stdout --
+-- plain-header stderr --
+leave challenge: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+POST /badgechallenge-service/badgeChallenge/0123456789ABCDEF0123456789ABCDEF/optOut
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"leave challenge: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+POST /badgechallenge-service/badgeChallenge/0123456789ABCDEF0123456789ABCDEF/optOut

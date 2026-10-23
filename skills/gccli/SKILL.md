@@ -609,6 +609,28 @@ Date shortcuts
 - `gccli challenges virtual available`: Show available virtual challenges.
 - `gccli challenges virtual completed`: Show completed virtual challenges.
 - `gccli challenges virtual in-progress`: Show virtual challenges in progress.
+- `gccli challenges show <uuid>`: Show a badge or virtual challenge.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+- `gccli challenges join <uuid>`: Join a badge or virtual challenge.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+- `gccli challenges leave <uuid>`: Leave a badge or virtual challenge.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+- `gccli challenges adhoc list`: Show your ad-hoc challenges that are not finished. Also runs as `gccli challenges adhoc`.
+- `gccli challenges adhoc history`: Show your finished ad-hoc challenges.
+- `gccli challenges adhoc show <uuid>`: Show an ad-hoc challenge.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+- `gccli challenges adhoc invites <uuid>`: List the open invites of an ad-hoc challenge with their adHocChallengeInviteId.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+- `gccli challenges adhoc accept <invite-id>`: Accept an invite to an ad-hoc challenge.
+  - `<invite-id>`: Invite ID (adHocChallengeInviteId).
+- `gccli challenges adhoc decline <invite-id>`: Decline an invite to an ad-hoc challenge.
+  - `<invite-id>`: Invite ID (adHocChallengeInviteId).
+- `gccli challenges adhoc leave <uuid> [flags]`: Leave an ad-hoc challenge. Only a new invite gets you back in.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+  - `-f, --force`: Skip confirmation prompt.
+- `gccli challenges adhoc delete <uuid> [flags]`: Delete an ad-hoc challenge that you created.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli records list`: View personal records. Also runs as `gccli records`.
 - `gccli records types`: List personal record types.
 - `gccli records activity <id>`: List the personal records set in an activity.
@@ -966,6 +988,7 @@ Notes
 - The `golf` commands print the Garmin answer as JSON. `golf scorecards`, `golf courses` and `golf leaderboards` page by `--limit`, so `--offset` must be a multiple of `--limit`. For an account without golf rounds, the answer has `totalRows: 0` and no list. `golf clubs` gives each club a `clubTypeId`, and `golf club-types` gives the name of each type ID as `value`.
 - `health progress` (also as `health progress summary`) totals metrics per period, and `health progress activities` lists the values of each activity. Take the `--metric` and `--activity-type` values from `gccli health progress metrics`, which lists the metrics of each activity type (`running`, `cycling`, ...). Repeat a flag or separate its values with commas. Distances are meters and durations seconds. The totals of each summary period are under `.stats.all`, also with `--activity-type`.
 - Range limits that Garmin sets: `health body-battery daily` at most 28 days, `health endurance-score stats`, `health hill-score stats` and `health cycling-ability` at most 400 days, `health cycling-ability --aggregation daily` at most 30 days. A longer range fails with exit 1 and the Garmin message.
+- `challenges join <uuid>` and `challenges leave <uuid>` take the `uuid` of a badge or virtual challenge, as the list commands print it. `leave` has no prompt, because `join` undoes it. `challenges adhoc` covers ad-hoc challenges with other people. Garmin invites only mutual followers: people the user follows and who follow the user. `challenges adhoc invites <uuid>` lists the open invites with their `adHocChallengeInviteId`, which `adhoc accept` and `adhoc decline` take. `challenges adhoc leave` has no undo, because only a new invite gets the user back in, so confirm with the user first. `challenges adhoc delete` works only for a challenge that the user created.
 - Delete commands fail without a terminal unless `--force` is set. Confirm with the user first, then pass `--force`.
 - Download formats: FIT (default), GPX, TCX, KML, CSV.
 - Workout step format: `type:duration[@target:low-high]`. Types: warmup, run, recovery, cooldown; targets: pace (min:sec), hr (bpm), power (watts), cadence.

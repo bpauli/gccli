@@ -1,0 +1,35 @@
+-- args --
+challenges
+join
+0123456789ABCDEF0123456789ABCDEF
+-- route POST /badgechallenge-service/badgeChallenge/0123456789ABCDEF0123456789ABCDEF/optIn/2026-10-15 204 --
+-- table stdout --
+-- table stderr --
+Joined challenge 0123456789ABCDEF0123456789ABCDEF
+-- table exit --
+0
+-- table requests --
+POST /badgechallenge-service/badgeChallenge/0123456789ABCDEF0123456789ABCDEF/optIn/2026-10-15
+-- plain stdout --
+-- plain stderr --
+Joined challenge 0123456789ABCDEF0123456789ABCDEF
+-- plain exit --
+0
+-- plain requests --
+POST /badgechallenge-service/badgeChallenge/0123456789ABCDEF0123456789ABCDEF/optIn/2026-10-15
+-- plain-header stdout --
+-- plain-header stderr --
+Joined challenge 0123456789ABCDEF0123456789ABCDEF
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /badgechallenge-service/badgeChallenge/0123456789ABCDEF0123456789ABCDEF/optIn/2026-10-15
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /badgechallenge-service/badgeChallenge/0123456789ABCDEF0123456789ABCDEF/optIn/2026-10-15
