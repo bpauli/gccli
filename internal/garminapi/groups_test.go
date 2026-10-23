@@ -13,5 +13,6 @@ func TestGroupsEndpoints(t *testing.T) {
 		{"groups.activities", map[string]string{"groupID": "1001"}, "GET /web-gateway/group/v2/1001/activityFeed"},
 		{"groups.challenges", map[string]string{"groupID": "1001"}, "GET /groupchallenge-service/group/1001/groupchallenge/nonCompleted"},
 		{"groups.join", map[string]string{"groupID": "1001", "profileID": "3141592"}, "POST /group-service/group/1001/member/3141592"},
-		{"groups.leave", map[string]string{"groupID": "1001", "profileID": "3141592"}, "DELETE /group-service/group/1001/member/3141592"},	})
+		{"groups.leave", map[string]string{"groupID": "1001", "profileID": "3141592"}, "DELETE /group-service/group/1001/member/3141592"},
+	})
 }
