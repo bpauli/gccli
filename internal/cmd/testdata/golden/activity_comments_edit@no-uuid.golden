@@ -1,0 +1,38 @@
+A conversation without conversationUuid stops the edit before the PUT, because the PUT path needs the UUID.
+-- args --
+activity
+comments
+edit
+111
+7E1D2C3B4A594F6E8D7C6B5A49382716
+Great run
+-- route GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3 --
+{"numberOfLikes":0,"numberOfComments":1,"likedByUser":false}
+-- table stdout --
+-- table stderr --
+parse conversation: no conversationUuid
+-- table exit --
+1
+-- table requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+-- plain stdout --
+-- plain stderr --
+parse conversation: no conversationUuid
+-- plain exit --
+1
+-- plain requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+-- plain-header stdout --
+-- plain-header stderr --
+parse conversation: no conversationUuid
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"parse conversation: no conversationUuid"}}
+-- json exit --
+1
+-- json requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3

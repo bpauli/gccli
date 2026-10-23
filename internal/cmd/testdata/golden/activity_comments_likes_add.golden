@@ -1,0 +1,44 @@
+Garmin answers the like with the like record, in the shape of the live answer of 2026-10-22.
+-- args --
+activity
+comments
+likes
+add
+7E1D2C3B4A594F6E8D7C6B5A49382716
+-- route POST /conversation-service/conversation/comment/like/7E1D2C3B4A594F6E8D7C6B5A49382716 --
+{"userProfilePk":3141592,"conversationCommentLikePk":7,"conversationCommentUuid":"7E1D2C3B4A594F6E8D7C6B5A49382716","displayName":"tester","fullName":"Test User","createdDate":1792656000000}
+-- table stdout --
+-- table stderr --
+Liked comment 7E1D2C3B4A594F6E8D7C6B5A49382716
+-- table exit --
+0
+-- table requests --
+POST /conversation-service/conversation/comment/like/7E1D2C3B4A594F6E8D7C6B5A49382716
+-- plain stdout --
+-- plain stderr --
+Liked comment 7E1D2C3B4A594F6E8D7C6B5A49382716
+-- plain exit --
+0
+-- plain requests --
+POST /conversation-service/conversation/comment/like/7E1D2C3B4A594F6E8D7C6B5A49382716
+-- plain-header stdout --
+-- plain-header stderr --
+Liked comment 7E1D2C3B4A594F6E8D7C6B5A49382716
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /conversation-service/conversation/comment/like/7E1D2C3B4A594F6E8D7C6B5A49382716
+-- json stdout --
+{
+  "userProfilePk": 3141592,
+  "conversationCommentLikePk": 7,
+  "conversationCommentUuid": "7E1D2C3B4A594F6E8D7C6B5A49382716",
+  "displayName": "tester",
+  "fullName": "Test User",
+  "createdDate": 1792656000000
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /conversation-service/conversation/comment/like/7E1D2C3B4A594F6E8D7C6B5A49382716

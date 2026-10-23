@@ -1,0 +1,51 @@
+An answer without conversationCommentUuid still reports the comment, without its ID.
+-- args --
+activity
+comments
+add
+111
+Nice run
+-- route POST /conversation-service/conversation/comment/ACTIVITY/111/null --
+{"body":"Nice run"}
+-- table stdout --
+-- table stderr --
+Added comment to activity 111
+-- table exit --
+0
+-- table requests --
+POST /conversation-service/conversation/comment/ACTIVITY/111/null
+  {
+    "body": "Nice run"
+  }
+-- plain stdout --
+-- plain stderr --
+Added comment to activity 111
+-- plain exit --
+0
+-- plain requests --
+POST /conversation-service/conversation/comment/ACTIVITY/111/null
+  {
+    "body": "Nice run"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Added comment to activity 111
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /conversation-service/conversation/comment/ACTIVITY/111/null
+  {
+    "body": "Nice run"
+  }
+-- json stdout --
+{
+  "body": "Nice run"
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /conversation-service/conversation/comment/ACTIVITY/111/null
+  {
+    "body": "Nice run"
+  }

@@ -117,6 +117,43 @@ var writeCases = map[string]writeCase{
 		human:    "Removed like from activity 1\n",
 		fallback: "Removed like from activity 1\n",
 	},
+	"activity comments add": {
+		args:     []string{"1", "Nice run"},
+		routes:   map[string]string{"POST /conversation-service/conversation/comment/ACTIVITY/1/null": `{"conversationCommentUuid":"k-1"}`},
+		json:     "{\n  \"conversationCommentUuid\": \"k-1\"\n}\n",
+		human:    "Added comment k-1 to activity 1\n",
+		fallback: "Added comment to activity 1\n",
+	},
+	"activity comments edit": {
+		args: []string{"1", "k-1", "Great run"},
+		routes: map[string]string{
+			"GET /conversation-service/conversation/ACTIVITY/1?likerLimit=3": `{"conversationUuid":"c-1"}`,
+			"PUT /conversation-service/conversation/comment/c-1/k-1":         noContent,
+		},
+		result:   "PUT /conversation-service/conversation/comment/c-1/k-1",
+		json:     okOut,
+		human:    "Changed comment k-1 on activity 1\n",
+		fallback: "Changed comment k-1 on activity 1\n",
+	},
+	"activity comments delete": {
+		args: []string{"1", "k-1"},
+		routes: map[string]string{
+			"GET /conversation-service/conversation/ACTIVITY/1?likerLimit=3": `{"conversationUuid":"c-1"}`,
+			"DELETE /conversation-service/conversation/comment/c-1/k-1/0":    noContent,
+		},
+		result:   "DELETE /conversation-service/conversation/comment/c-1/k-1/0",
+		prompt:   "Delete comment k-1 on activity 1?",
+		json:     okOut,
+		human:    "Deleted comment k-1 on activity 1\n",
+		fallback: "Deleted comment k-1 on activity 1\n",
+	},
+	"activity comments likes remove": {
+		args:     []string{"k-1"},
+		routes:   map[string]string{"DELETE /conversation-service/conversation/comment/like/k-1/0": noContent},
+		json:     okOut,
+		human:    "Removed like from comment k-1\n",
+		fallback: "Removed like from comment k-1\n",
+	},
 	"activity exercise-sets set": {
 		args:   []string{"1", "-e", "BENCH_PRESS/BARBELL_BENCH_PRESS:12@20"},
 		routes: map[string]string{"PUT /activity-service/activity/1/exerciseSets": noContent},

@@ -11,7 +11,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 
 ## Features
 
-- **Activities** - list, search, view details, download (FIT/GPX/TCX/KML/CSV), upload, create manual entries (with date), rename, retype, describe, change privacy, mark as favorite, delete, set exercise sets for strength training, list activity types, list pending activities, list comments and likes, like and unlike
+- **Activities** - list, search, view details, download (FIT/GPX/TCX/KML/CSV), upload, create manual entries (with date), rename, retype, describe, change privacy, mark as favorite, delete, set exercise sets for strength training, list activity types, list pending activities, list, add, edit and delete comments, like and unlike activities and comments
 - **Exercise Catalog** — browse Garmin's exercise categories and exercises for strength training
 - **Health Data** - daily summaries, steps, heart rate, resting HR, sleep, stress, HRV, SpO2, respiration, body battery (with daily low and high), floors, training readiness, daily and weekly training status, VO2max, fitness age, race predictions, endurance and hill scores with statistics, intensity minutes, lactate threshold, cycling FTP, critical swim speed, power curve, running economy, heat and altitude acclimation, running tolerance, cycling ability, activity progress totals per period
 - **Body Composition** - weight tracking, latest weigh-in, weekly weight summaries, body fat, muscle mass, blood pressure, glucose, FIT file encoding for composition uploads
@@ -381,6 +381,13 @@ gccli activity likes <id>
 # Like an activity, and remove the like
 gccli activity likes add <id>
 gccli activity likes remove <id>
+
+# Comment on an activity, change the comment, like it, and delete it
+gccli activity comments add <id> "Nice run"
+gccli activity comments edit <id> <comment-id> "Great run"
+gccli activity comments likes add <comment-id>
+gccli activity comments likes remove <comment-id>
+gccli activity comments delete <id> <comment-id> --force
 
 # Download and upload
 gccli activity download <id> --format fit
@@ -998,6 +1005,23 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `<id>`: Activity ID.
 - `gccli activity comments list <id>`: List the comments on an activity. Also runs as `gccli activity comments <id>`.
   - `<id>`: Activity ID.
+- `gccli activity comments add <id> <text>`: Add a comment to an activity.
+  - `<id>`: Activity ID.
+  - `<text>`: Comment text.
+- `gccli activity comments edit <id> <comment-id> <text>`: Change the text of your comment on an activity.
+  - `<id>`: Activity ID.
+  - `<comment-id>`: Comment ID (conversationCommentUuid in activity comments list).
+  - `<text>`: New comment text.
+- `gccli activity comments delete <id> <comment-id> [flags]`: Delete a comment on an activity.
+  - `<id>`: Activity ID.
+  - `<comment-id>`: Comment ID (conversationCommentUuid in activity comments list).
+  - `-f, --force`: Skip confirmation prompt.
+- `gccli activity comments likes list <comment-id>`: List the likes of a comment. Also runs as `gccli activity comments likes <comment-id>`.
+  - `<comment-id>`: Comment ID (conversationCommentUuid in activity comments list).
+- `gccli activity comments likes add <comment-id>`: Like a comment.
+  - `<comment-id>`: Comment ID (conversationCommentUuid in activity comments list).
+- `gccli activity comments likes remove <comment-id>`: Remove your like from a comment.
+  - `<comment-id>`: Comment ID (conversationCommentUuid in activity comments list).
 - `gccli activity likes list <id>`: List the likes of an activity. Also runs as `gccli activity likes <id>`.
   - `<id>`: Activity ID.
 - `gccli activity likes add <id>`: Like an activity.

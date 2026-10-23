@@ -97,6 +97,23 @@ Date shortcuts
   - `<id>`: Activity ID.
 - `gccli activity comments list <id>`: List the comments on an activity. Also runs as `gccli activity comments <id>`.
   - `<id>`: Activity ID.
+- `gccli activity comments add <id> <text>`: Add a comment to an activity.
+  - `<id>`: Activity ID.
+  - `<text>`: Comment text.
+- `gccli activity comments edit <id> <comment-id> <text>`: Change the text of your comment on an activity.
+  - `<id>`: Activity ID.
+  - `<comment-id>`: Comment ID (conversationCommentUuid in activity comments list).
+  - `<text>`: New comment text.
+- `gccli activity comments delete <id> <comment-id> [flags]`: Delete a comment on an activity.
+  - `<id>`: Activity ID.
+  - `<comment-id>`: Comment ID (conversationCommentUuid in activity comments list).
+  - `-f, --force`: Skip confirmation prompt.
+- `gccli activity comments likes list <comment-id>`: List the likes of a comment. Also runs as `gccli activity comments likes <comment-id>`.
+  - `<comment-id>`: Comment ID (conversationCommentUuid in activity comments list).
+- `gccli activity comments likes add <comment-id>`: Like a comment.
+  - `<comment-id>`: Comment ID (conversationCommentUuid in activity comments list).
+- `gccli activity comments likes remove <comment-id>`: Remove your like from a comment.
+  - `<comment-id>`: Comment ID (conversationCommentUuid in activity comments list).
 - `gccli activity likes list <id>`: List the likes of an activity. Also runs as `gccli activity likes <id>`.
   - `<id>`: Activity ID.
 - `gccli activity likes add <id>`: Like an activity.
@@ -872,6 +889,7 @@ Worked examples
 - Jet lag trip: `gccli wellness jet-lag add --from "Frankfurt, Germany" --to "New York, USA" --depart 2026-11-02T10:00+01:00 --arrive 2026-11-02T13:00-05:00` prints the trip ID. Then `gccli wellness jet-lag update <id> --arrive 2026-11-02T14:00-05:00` moves the arrival, and `gccli wellness jet-lag delete <id> --force` deletes the trip.
 - Nap: `gccli health sleep naps add 13:30 13:50` adds a nap for today. Garmin takes only naps that end today, and the times are in the time zone of the Garmin profile, not of the machine. `gccli health sleep naps delete today 13:30 --force` deletes the nap that starts at 13:30.
 - Activity like: `gccli activity likes add <id>` likes an activity, and a second add changes nothing. `gccli activity likes <id>` lists the likes. `gccli activity likes remove <id>` removes your like with no prompt. It fails with exit code 1 (`activity <id> is not liked`) when there is no like to remove.
+- Activity comment: `gccli activity comments add <id> "Nice run"` prints the comment ID (`conversationCommentUuid` in `gccli activity comments <id>`). `gccli activity comments edit <id> <comment-id> "Great run"` changes your own comment, and `gccli activity comments delete <id> <comment-id> --force` deletes your comment or a comment on your activity. `gccli activity comments likes add <comment-id>` likes a comment, `gccli activity comments likes <comment-id>` lists its likes, and `gccli activity comments likes remove <comment-id>` removes your like. Garmin answers 403 (exit code 1) when there is no like. Garmin can refuse a comment from an account with 403 and no message, even when likes work.
 - Calendar month: `gccli calendar month 2026 10` lists the activities, workouts, events, notes and other items of October 2026. `gccli calendar month --json | jq '[.calendarItems[] | select(.itemType == "activity")]'` keeps the activities of this month's grid.
 - Calendar feed: `gccli calendar export enable` turns on the feed and prints its URL, and `gccli calendar export show --plain` prints the URL alone. `gccli calendar export disable --force` turns it off.
 - Calendar preference: `gccli calendar preferences` shows the keys. `gccli calendar preferences set showWeeklyTotal false` turns one off.

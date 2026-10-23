@@ -1,0 +1,49 @@
+Garmin refuses the comment with 403 and no message, as it did live for the test account on 2026-10-22: exit 1.
+-- args --
+activity
+comments
+add
+111
+Nice run
+-- route POST /conversation-service/conversation/comment/ACTIVITY/111/null 403 noeol --
+{"message":null,"error":"ForbiddenException"}
+-- table stdout --
+-- table stderr --
+add comment: garmin api: 403 Forbidden: {"message":null,"error":"ForbiddenException"}
+-- table exit --
+1
+-- table requests --
+POST /conversation-service/conversation/comment/ACTIVITY/111/null
+  {
+    "body": "Nice run"
+  }
+-- plain stdout --
+-- plain stderr --
+add comment: garmin api: 403 Forbidden: {"message":null,"error":"ForbiddenException"}
+-- plain exit --
+1
+-- plain requests --
+POST /conversation-service/conversation/comment/ACTIVITY/111/null
+  {
+    "body": "Nice run"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+add comment: garmin api: 403 Forbidden: {"message":null,"error":"ForbiddenException"}
+-- plain-header exit --
+1
+-- plain-header requests --
+POST /conversation-service/conversation/comment/ACTIVITY/111/null
+  {
+    "body": "Nice run"
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":403,"message":"add comment: garmin api: 403 Forbidden: {\"message\":null,\"error\":\"ForbiddenException\"}"}}
+-- json exit --
+1
+-- json requests --
+POST /conversation-service/conversation/comment/ACTIVITY/111/null
+  {
+    "body": "Nice run"
+  }

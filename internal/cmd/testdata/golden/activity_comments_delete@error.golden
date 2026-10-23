@@ -1,0 +1,44 @@
+Garmin answers 404 for a comment that is not there, live 2026-10-22: exit 4 (not found).
+-- args --
+activity
+comments
+delete
+111
+7E1D2C3B4A594F6E8D7C6B5A49382716
+--force
+-- route GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3 --
+{"conversationUuid":"3C0B5D2E7A414F9EB6D81E2F3A4B5C6D","numberOfLikes":0,"numberOfComments":1,"likedByUser":false}
+-- route DELETE /conversation-service/conversation/comment/3C0B5D2E7A414F9EB6D81E2F3A4B5C6D/7E1D2C3B4A594F6E8D7C6B5A49382716/0 404 noeol --
+{"message":"Conversation not found","error":"NotFoundException"}
+-- table stdout --
+-- table stderr --
+delete comment: garmin api: 404 Not Found: {"message":"Conversation not found","error":"NotFoundException"}
+-- table exit --
+4
+-- table requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+DELETE /conversation-service/conversation/comment/3C0B5D2E7A414F9EB6D81E2F3A4B5C6D/7E1D2C3B4A594F6E8D7C6B5A49382716/0
+-- plain stdout --
+-- plain stderr --
+delete comment: garmin api: 404 Not Found: {"message":"Conversation not found","error":"NotFoundException"}
+-- plain exit --
+4
+-- plain requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+DELETE /conversation-service/conversation/comment/3C0B5D2E7A414F9EB6D81E2F3A4B5C6D/7E1D2C3B4A594F6E8D7C6B5A49382716/0
+-- plain-header stdout --
+-- plain-header stderr --
+delete comment: garmin api: 404 Not Found: {"message":"Conversation not found","error":"NotFoundException"}
+-- plain-header exit --
+4
+-- plain-header requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+DELETE /conversation-service/conversation/comment/3C0B5D2E7A414F9EB6D81E2F3A4B5C6D/7E1D2C3B4A594F6E8D7C6B5A49382716/0
+-- json stdout --
+-- json stderr --
+{"error":{"code":"not_found","status":404,"message":"delete comment: garmin api: 404 Not Found: {\"message\":\"Conversation not found\",\"error\":\"NotFoundException\"}"}}
+-- json exit --
+4
+-- json requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+DELETE /conversation-service/conversation/comment/3C0B5D2E7A414F9EB6D81E2F3A4B5C6D/7E1D2C3B4A594F6E8D7C6B5A49382716/0
