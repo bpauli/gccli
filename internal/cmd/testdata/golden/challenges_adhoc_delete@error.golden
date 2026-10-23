@@ -1,0 +1,37 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+challenges
+adhoc
+delete
+0123456789ABCDEF0123456789ABCDEF
+--force
+-- route DELETE /adhocchallenge-service/adHocChallenge/0123456789ABCDEF0123456789ABCDEF 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+delete ad-hoc challenge: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+DELETE /adhocchallenge-service/adHocChallenge/0123456789ABCDEF0123456789ABCDEF
+-- plain stdout --
+-- plain stderr --
+delete ad-hoc challenge: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+DELETE /adhocchallenge-service/adHocChallenge/0123456789ABCDEF0123456789ABCDEF
+-- plain-header stdout --
+-- plain-header stderr --
+delete ad-hoc challenge: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+DELETE /adhocchallenge-service/adHocChallenge/0123456789ABCDEF0123456789ABCDEF
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"delete ad-hoc challenge: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+DELETE /adhocchallenge-service/adHocChallenge/0123456789ABCDEF0123456789ABCDEF

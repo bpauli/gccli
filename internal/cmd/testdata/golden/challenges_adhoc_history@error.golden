@@ -1,0 +1,35 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+challenges
+adhoc
+history
+-- route GET /adhocchallenge-service/adHocChallenge/historical 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+get ad-hoc challenge history: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /adhocchallenge-service/adHocChallenge/historical
+-- plain stdout --
+-- plain stderr --
+get ad-hoc challenge history: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /adhocchallenge-service/adHocChallenge/historical
+-- plain-header stdout --
+-- plain-header stderr --
+get ad-hoc challenge history: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /adhocchallenge-service/adHocChallenge/historical
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"get ad-hoc challenge history: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /adhocchallenge-service/adHocChallenge/historical

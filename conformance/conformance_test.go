@@ -246,6 +246,8 @@ var skipped = map[string]string{
 	"body glucose":                    clockSkip,
 	"body latest":                     clockSkip,
 	"body weekly":                     clockSkip,
+	"challenges adhoc show":           clockSkip,
+	"challenges join":                 clockSkip,
 	"devices solar":                   clockSkip,
 	"events list":                     clockSkip,
 	"goals weight":                    clockSkip,
