@@ -1,0 +1,35 @@
+FOLLOWED means that only the user follows you: exit 1, no question and no DELETE.
+-- args --
+social
+unfollow
+runner-anna
+-- route GET /follower-service/follow/runner-anna/profileStatus --
+{"userFollowProfile":{"userId":2718281,"displayName":"runner-anna","fullName":"Anna Runner","location":"Hamburg","userLevel":3,"userPoint":120,"profileImageUrls":{},"followStatus":{"relationshipStatus":"FOLLOWED","sentRequest":null,"receivedRequest":null,"blocking":null,"blocked":false,"muting":null,"favorite":null}},"followingCount":1,"followerCount":1}
+-- table stdout --
+-- table stderr --
+you do not follow runner-anna
+-- table exit --
+1
+-- table requests --
+GET /follower-service/follow/runner-anna/profileStatus
+-- plain stdout --
+-- plain stderr --
+you do not follow runner-anna
+-- plain exit --
+1
+-- plain requests --
+GET /follower-service/follow/runner-anna/profileStatus
+-- plain-header stdout --
+-- plain-header stderr --
+you do not follow runner-anna
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /follower-service/follow/runner-anna/profileStatus
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"you do not follow runner-anna"}}
+-- json exit --
+1
+-- json requests --
+GET /follower-service/follow/runner-anna/profileStatus

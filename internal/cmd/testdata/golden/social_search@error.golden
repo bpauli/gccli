@@ -1,0 +1,39 @@
+Garmin answers a one-letter search with 400, live 2026-10-22: exit 1.
+-- args --
+social
+search
+a
+-- route POST /usersearch-service/search/v3?displayMutedStatus=true 400 noeol --
+{"message":"Use at least 2 characters in your search.","error":"BadRequestException"}
+-- table stdout --
+-- table stderr --
+search users: garmin api: 400 Bad Request: {"message":"Use at least 2 characters in your search.","error":"BadRequestException"}
+-- table exit --
+1
+-- table requests --
+POST /usersearch-service/search/v3?displayMutedStatus=true
+  "keyword=a&limit=20&start=1"
+-- plain stdout --
+-- plain stderr --
+search users: garmin api: 400 Bad Request: {"message":"Use at least 2 characters in your search.","error":"BadRequestException"}
+-- plain exit --
+1
+-- plain requests --
+POST /usersearch-service/search/v3?displayMutedStatus=true
+  "keyword=a&limit=20&start=1"
+-- plain-header stdout --
+-- plain-header stderr --
+search users: garmin api: 400 Bad Request: {"message":"Use at least 2 characters in your search.","error":"BadRequestException"}
+-- plain-header exit --
+1
+-- plain-header requests --
+POST /usersearch-service/search/v3?displayMutedStatus=true
+  "keyword=a&limit=20&start=1"
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"search users: garmin api: 400 Bad Request: {\"message\":\"Use at least 2 characters in your search.\",\"error\":\"BadRequestException\"}"}}
+-- json exit --
+1
+-- json requests --
+POST /usersearch-service/search/v3?displayMutedStatus=true
+  "keyword=a&limit=20&start=1"

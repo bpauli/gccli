@@ -1,0 +1,43 @@
+MUTUAL means that you follow each other, so the unfollow goes out.
+-- args --
+social
+unfollow
+runner-anna
+--force
+-- route GET /follower-service/follow/runner-anna/profileStatus --
+{"userFollowProfile":{"userId":2718281,"displayName":"runner-anna","fullName":"Anna Runner","location":"Hamburg","userLevel":3,"userPoint":120,"profileImageUrls":{},"followStatus":{"relationshipStatus":"MUTUAL","sentRequest":null,"receivedRequest":null,"blocking":null,"blocked":false,"muting":null,"favorite":null}},"followingCount":1,"followerCount":1}
+-- route DELETE /follower-service/follow/followings/runner-anna 204 --
+-- table stdout --
+-- table stderr --
+Unfollowed runner-anna
+-- table exit --
+0
+-- table requests --
+GET /follower-service/follow/runner-anna/profileStatus
+DELETE /follower-service/follow/followings/runner-anna
+-- plain stdout --
+-- plain stderr --
+Unfollowed runner-anna
+-- plain exit --
+0
+-- plain requests --
+GET /follower-service/follow/runner-anna/profileStatus
+DELETE /follower-service/follow/followings/runner-anna
+-- plain-header stdout --
+-- plain-header stderr --
+Unfollowed runner-anna
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /follower-service/follow/runner-anna/profileStatus
+DELETE /follower-service/follow/followings/runner-anna
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /follower-service/follow/runner-anna/profileStatus
+DELETE /follower-service/follow/followings/runner-anna

@@ -1,0 +1,35 @@
+Garmin refuses to mute a user that you do not follow with 403, live 2026-10-22: exit 1.
+-- args --
+social
+mute
+runner-anna
+-- route POST /follower-service/muteuser/runner-anna 403 noeol --
+{"message":null,"error":"ForbiddenException"}
+-- table stdout --
+-- table stderr --
+mute user: garmin api: 403 Forbidden: {"message":null,"error":"ForbiddenException"}
+-- table exit --
+1
+-- table requests --
+POST /follower-service/muteuser/runner-anna
+-- plain stdout --
+-- plain stderr --
+mute user: garmin api: 403 Forbidden: {"message":null,"error":"ForbiddenException"}
+-- plain exit --
+1
+-- plain requests --
+POST /follower-service/muteuser/runner-anna
+-- plain-header stdout --
+-- plain-header stderr --
+mute user: garmin api: 403 Forbidden: {"message":null,"error":"ForbiddenException"}
+-- plain-header exit --
+1
+-- plain-header requests --
+POST /follower-service/muteuser/runner-anna
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":403,"message":"mute user: garmin api: 403 Forbidden: {\"message\":null,\"error\":\"ForbiddenException\"}"}}
+-- json exit --
+1
+-- json requests --
+POST /follower-service/muteuser/runner-anna

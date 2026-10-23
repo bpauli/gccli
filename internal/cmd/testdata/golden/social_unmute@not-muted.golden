@@ -1,0 +1,35 @@
+A user that is not in the muted list: exit 1 and no DELETE.
+-- args --
+social
+unmute
+runner-anna
+-- route GET /follower-service/muteuser --
+{"mutedUserList":[],"mutedUserCount":0}
+-- table stdout --
+-- table stderr --
+runner-anna is not muted
+-- table exit --
+1
+-- table requests --
+GET /follower-service/muteuser
+-- plain stdout --
+-- plain stderr --
+runner-anna is not muted
+-- plain exit --
+1
+-- plain requests --
+GET /follower-service/muteuser
+-- plain-header stdout --
+-- plain-header stderr --
+runner-anna is not muted
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /follower-service/muteuser
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"runner-anna is not muted"}}
+-- json exit --
+1
+-- json requests --
+GET /follower-service/muteuser
