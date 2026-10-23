@@ -1,0 +1,37 @@
+An activity without a conversation has no comments: exit 1, no question and no DELETE.
+-- args --
+activity
+comments
+delete
+111
+7E1D2C3B4A594F6E8D7C6B5A49382716
+-- route GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3 404 noeol --
+{"message":"Conversation not found"}
+-- table stdout --
+-- table stderr --
+activity 111 has no comment 7E1D2C3B4A594F6E8D7C6B5A49382716
+-- table exit --
+1
+-- table requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+-- plain stdout --
+-- plain stderr --
+activity 111 has no comment 7E1D2C3B4A594F6E8D7C6B5A49382716
+-- plain exit --
+1
+-- plain requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+-- plain-header stdout --
+-- plain-header stderr --
+activity 111 has no comment 7E1D2C3B4A594F6E8D7C6B5A49382716
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"activity 111 has no comment 7E1D2C3B4A594F6E8D7C6B5A49382716"}}
+-- json exit --
+1
+-- json requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3

@@ -1,0 +1,37 @@
+Error case: Garmin answers 404 for a comment that is not there, so the exit code is 4 (not found).
+-- args --
+activity
+comments
+likes
+add
+7E1D2C3B4A594F6E8D7C6B5A49382716
+-- route POST /conversation-service/conversation/comment/like/7E1D2C3B4A594F6E8D7C6B5A49382716 404 noeol --
+{"message":"Conversation not found","error":"NotFoundException"}
+-- table stdout --
+-- table stderr --
+like comment: garmin api: 404 Not Found: {"message":"Conversation not found","error":"NotFoundException"}
+-- table exit --
+4
+-- table requests --
+POST /conversation-service/conversation/comment/like/7E1D2C3B4A594F6E8D7C6B5A49382716
+-- plain stdout --
+-- plain stderr --
+like comment: garmin api: 404 Not Found: {"message":"Conversation not found","error":"NotFoundException"}
+-- plain exit --
+4
+-- plain requests --
+POST /conversation-service/conversation/comment/like/7E1D2C3B4A594F6E8D7C6B5A49382716
+-- plain-header stdout --
+-- plain-header stderr --
+like comment: garmin api: 404 Not Found: {"message":"Conversation not found","error":"NotFoundException"}
+-- plain-header exit --
+4
+-- plain-header requests --
+POST /conversation-service/conversation/comment/like/7E1D2C3B4A594F6E8D7C6B5A49382716
+-- json stdout --
+-- json stderr --
+{"error":{"code":"not_found","status":404,"message":"like comment: garmin api: 404 Not Found: {\"message\":\"Conversation not found\",\"error\":\"NotFoundException\"}"}}
+-- json exit --
+4
+-- json requests --
+POST /conversation-service/conversation/comment/like/7E1D2C3B4A594F6E8D7C6B5A49382716

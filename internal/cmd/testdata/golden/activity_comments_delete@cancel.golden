@@ -1,0 +1,39 @@
+No answer to the question cancels: exit 0 and no DELETE.
+-- args --
+activity
+comments
+delete
+111
+7E1D2C3B4A594F6E8D7C6B5A49382716
+-- stdin --
+n
+-- route GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3 --
+{"conversationUuid":"3C0B5D2E7A414F9EB6D81E2F3A4B5C6D","numberOfLikes":0,"numberOfComments":1,"likedByUser":false}
+-- table stdout --
+-- table stderr --
+Delete comment 7E1D2C3B4A594F6E8D7C6B5A49382716 on activity 111? [y/N]: Cancelled
+-- table exit --
+0
+-- table requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+-- plain stdout --
+-- plain stderr --
+Delete comment 7E1D2C3B4A594F6E8D7C6B5A49382716 on activity 111? [y/N]: Cancelled
+-- plain exit --
+0
+-- plain requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+-- plain-header stdout --
+-- plain-header stderr --
+Delete comment 7E1D2C3B4A594F6E8D7C6B5A49382716 on activity 111? [y/N]: Cancelled
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+-- json stdout --
+-- json stderr --
+Delete comment 7E1D2C3B4A594F6E8D7C6B5A49382716 on activity 111? [y/N]: Cancelled
+-- json exit --
+0
+-- json requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3

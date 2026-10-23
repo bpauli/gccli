@@ -1,0 +1,77 @@
+The edit reads the conversation UUID first. Garmin needs both UUIDs in the body, live 2026-10-22: a body with only the text answers 400.
+-- args --
+activity
+comments
+edit
+111
+7E1D2C3B4A594F6E8D7C6B5A49382716
+Great run
+-- route GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3 --
+{"conversationUuid":"3C0B5D2E7A414F9EB6D81E2F3A4B5C6D","numberOfLikes":0,"numberOfComments":1,"likedByUser":false}
+-- route PUT /conversation-service/conversation/comment/3C0B5D2E7A414F9EB6D81E2F3A4B5C6D/7E1D2C3B4A594F6E8D7C6B5A49382716 --
+{"conversationCommentUuid":"7E1D2C3B4A594F6E8D7C6B5A49382716","conversationCommentPk":42,"conversationUuid":"3C0B5D2E7A414F9EB6D81E2F3A4B5C6D","userProfilePk":3141592,"authorDisplayName":"tester","authorFullName":"Test User","body":"Great run","numberOfLikes":0,"likedByUser":false,"updated":true,"createDate":"2026-10-22T10:00:00.0","commentBlockList":[]}
+-- table stdout --
+-- table stderr --
+Changed comment 7E1D2C3B4A594F6E8D7C6B5A49382716 on activity 111
+-- table exit --
+0
+-- table requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+PUT /conversation-service/conversation/comment/3C0B5D2E7A414F9EB6D81E2F3A4B5C6D/7E1D2C3B4A594F6E8D7C6B5A49382716
+  {
+    "body": "Great run",
+    "conversationCommentUuid": "7E1D2C3B4A594F6E8D7C6B5A49382716",
+    "conversationUuid": "3C0B5D2E7A414F9EB6D81E2F3A4B5C6D"
+  }
+-- plain stdout --
+-- plain stderr --
+Changed comment 7E1D2C3B4A594F6E8D7C6B5A49382716 on activity 111
+-- plain exit --
+0
+-- plain requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+PUT /conversation-service/conversation/comment/3C0B5D2E7A414F9EB6D81E2F3A4B5C6D/7E1D2C3B4A594F6E8D7C6B5A49382716
+  {
+    "body": "Great run",
+    "conversationCommentUuid": "7E1D2C3B4A594F6E8D7C6B5A49382716",
+    "conversationUuid": "3C0B5D2E7A414F9EB6D81E2F3A4B5C6D"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Changed comment 7E1D2C3B4A594F6E8D7C6B5A49382716 on activity 111
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+PUT /conversation-service/conversation/comment/3C0B5D2E7A414F9EB6D81E2F3A4B5C6D/7E1D2C3B4A594F6E8D7C6B5A49382716
+  {
+    "body": "Great run",
+    "conversationCommentUuid": "7E1D2C3B4A594F6E8D7C6B5A49382716",
+    "conversationUuid": "3C0B5D2E7A414F9EB6D81E2F3A4B5C6D"
+  }
+-- json stdout --
+{
+  "conversationCommentUuid": "7E1D2C3B4A594F6E8D7C6B5A49382716",
+  "conversationCommentPk": 42,
+  "conversationUuid": "3C0B5D2E7A414F9EB6D81E2F3A4B5C6D",
+  "userProfilePk": 3141592,
+  "authorDisplayName": "tester",
+  "authorFullName": "Test User",
+  "body": "Great run",
+  "numberOfLikes": 0,
+  "likedByUser": false,
+  "updated": true,
+  "createDate": "2026-10-22T10:00:00.0",
+  "commentBlockList": []
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+PUT /conversation-service/conversation/comment/3C0B5D2E7A414F9EB6D81E2F3A4B5C6D/7E1D2C3B4A594F6E8D7C6B5A49382716
+  {
+    "body": "Great run",
+    "conversationCommentUuid": "7E1D2C3B4A594F6E8D7C6B5A49382716",
+    "conversationUuid": "3C0B5D2E7A414F9EB6D81E2F3A4B5C6D"
+  }

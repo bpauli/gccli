@@ -1,0 +1,45 @@
+--force skips the question.
+-- args --
+activity
+comments
+delete
+111
+7E1D2C3B4A594F6E8D7C6B5A49382716
+--force
+-- route GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3 --
+{"conversationUuid":"3C0B5D2E7A414F9EB6D81E2F3A4B5C6D","numberOfLikes":0,"numberOfComments":1,"likedByUser":false}
+-- route DELETE /conversation-service/conversation/comment/3C0B5D2E7A414F9EB6D81E2F3A4B5C6D/7E1D2C3B4A594F6E8D7C6B5A49382716/0 204 --
+-- table stdout --
+-- table stderr --
+Deleted comment 7E1D2C3B4A594F6E8D7C6B5A49382716 on activity 111
+-- table exit --
+0
+-- table requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+DELETE /conversation-service/conversation/comment/3C0B5D2E7A414F9EB6D81E2F3A4B5C6D/7E1D2C3B4A594F6E8D7C6B5A49382716/0
+-- plain stdout --
+-- plain stderr --
+Deleted comment 7E1D2C3B4A594F6E8D7C6B5A49382716 on activity 111
+-- plain exit --
+0
+-- plain requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+DELETE /conversation-service/conversation/comment/3C0B5D2E7A414F9EB6D81E2F3A4B5C6D/7E1D2C3B4A594F6E8D7C6B5A49382716/0
+-- plain-header stdout --
+-- plain-header stderr --
+Deleted comment 7E1D2C3B4A594F6E8D7C6B5A49382716 on activity 111
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+DELETE /conversation-service/conversation/comment/3C0B5D2E7A414F9EB6D81E2F3A4B5C6D/7E1D2C3B4A594F6E8D7C6B5A49382716/0
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+DELETE /conversation-service/conversation/comment/3C0B5D2E7A414F9EB6D81E2F3A4B5C6D/7E1D2C3B4A594F6E8D7C6B5A49382716/0
