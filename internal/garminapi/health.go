@@ -23,6 +23,7 @@ var healthEndpoints = []Endpoint{
 	{Name: "health.sleep-naps", Method: http.MethodGet, Host: ConnectAPI, Path: "/sleep-service/sleep/naps/{date}"},
 	{Name: "health.add-nap", Method: http.MethodPost, Host: ConnectAPI, Path: "/sleep-service/sleep/nap", Body: true},
 	{Name: "health.delete-nap", Method: http.MethodDelete, Host: ConnectAPI, Path: "/sleep-service/sleep/nap/{date}/{startMillis}"},
+	{Name: "health.sleep-note", Method: http.MethodPut, Host: ConnectAPI, Path: "/sleep-service/sleep/dailySleep/{date}/note", Body: true},
 	{Name: "health.daily-sleep", Method: http.MethodGet, Host: ConnectAPI, Path: "/sleep-service/stats/sleep/daily/{startDate}/{endDate}"},
 	{Name: "health.weekly-sleep", Method: http.MethodGet, Host: ConnectAPI, Path: "/sleep-service/stats/sleep/weekly/{endDate}/52"},
 	{Name: "health.overall-sleep", Method: http.MethodGet, Host: ConnectAPI, Path: "/sleep-service/stats/sleep/overall/{startDate}/{endDate}"},

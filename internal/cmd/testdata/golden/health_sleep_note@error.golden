@@ -1,0 +1,49 @@
+Error case: Garmin refuses a note for a day with no sleep, so the exit code is 1 (error).
+-- args --
+health
+sleep
+note
+2026-10-15
+Slept badly
+-- route PUT /sleep-service/sleep/dailySleep/2026-10-15/note 400 noeol --
+{"message":"Can not add a userNote for a day with no valid sleep","error":"BadRequestException"}
+-- table stdout --
+-- table stderr --
+set sleep note: garmin api: 400 Bad Request: {"message":"Can not add a userNote for a day with no valid sleep","error":"BadRequestException"}
+-- table exit --
+1
+-- table requests --
+PUT /sleep-service/sleep/dailySleep/2026-10-15/note
+  {
+    "userNote": "Slept badly"
+  }
+-- plain stdout --
+-- plain stderr --
+set sleep note: garmin api: 400 Bad Request: {"message":"Can not add a userNote for a day with no valid sleep","error":"BadRequestException"}
+-- plain exit --
+1
+-- plain requests --
+PUT /sleep-service/sleep/dailySleep/2026-10-15/note
+  {
+    "userNote": "Slept badly"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+set sleep note: garmin api: 400 Bad Request: {"message":"Can not add a userNote for a day with no valid sleep","error":"BadRequestException"}
+-- plain-header exit --
+1
+-- plain-header requests --
+PUT /sleep-service/sleep/dailySleep/2026-10-15/note
+  {
+    "userNote": "Slept badly"
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"set sleep note: garmin api: 400 Bad Request: {\"message\":\"Can not add a userNote for a day with no valid sleep\",\"error\":\"BadRequestException\"}"}}
+-- json exit --
+1
+-- json requests --
+PUT /sleep-service/sleep/dailySleep/2026-10-15/note
+  {
+    "userNote": "Slept badly"
+  }

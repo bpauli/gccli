@@ -1,0 +1,132 @@
+Error case: a text and --clear together. It fails before any request, and the exit code is 2 (usage).
+-- args --
+health
+sleep
+note
+2026-10-15
+Slept badly
+--clear
+-- table stdout --
+-- table stderr --
+Usage: gccli health sleep note <date> [<text>] [flags]
+
+Set or remove the note of a night of sleep.
+
+Arguments:
+  <date>      Date of the sleep (YYYY-MM-DD, today, yesterday, 3d), as 'health
+              sleep' takes it.
+  [<text>]    Note text. It replaces the note of that night.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --clear             Remove the note instead of setting a text.
+
+gccli: error: health sleep note: give a note text or --clear, not both
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli health sleep note <date> [<text>] [flags]
+
+Set or remove the note of a night of sleep.
+
+Arguments:
+  <date>      Date of the sleep (YYYY-MM-DD, today, yesterday, 3d), as 'health
+              sleep' takes it.
+  [<text>]    Note text. It replaces the note of that night.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --clear             Remove the note instead of setting a text.
+
+gccli: error: health sleep note: give a note text or --clear, not both
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli health sleep note <date> [<text>] [flags]
+
+Set or remove the note of a night of sleep.
+
+Arguments:
+  <date>      Date of the sleep (YYYY-MM-DD, today, yesterday, 3d), as 'health
+              sleep' takes it.
+  [<text>]    Note text. It replaces the note of that night.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --clear             Remove the note instead of setting a text.
+
+gccli: error: health sleep note: give a note text or --clear, not both
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli health sleep note <date> [<text>] [flags]
+
+Set or remove the note of a night of sleep.
+
+Arguments:
+  <date>      Date of the sleep (YYYY-MM-DD, today, yesterday, 3d), as 'health
+              sleep' takes it.
+  [<text>]    Note text. It replaces the note of that night.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --clear             Remove the note instead of setting a text.
+
+gccli: error: health sleep note: give a note text or --clear, not both
+-- json exit --
+2
+-- json requests --

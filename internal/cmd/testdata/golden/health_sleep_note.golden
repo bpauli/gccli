@@ -1,0 +1,50 @@
+-- args --
+health
+sleep
+note
+2026-10-15
+Slept badly after a late run
+-- route PUT /sleep-service/sleep/dailySleep/2026-10-15/note --
+{"userNote":"Slept badly after a late run"}
+-- table stdout --
+-- table stderr --
+Set the sleep note of 2026-10-15
+-- table exit --
+0
+-- table requests --
+PUT /sleep-service/sleep/dailySleep/2026-10-15/note
+  {
+    "userNote": "Slept badly after a late run"
+  }
+-- plain stdout --
+-- plain stderr --
+Set the sleep note of 2026-10-15
+-- plain exit --
+0
+-- plain requests --
+PUT /sleep-service/sleep/dailySleep/2026-10-15/note
+  {
+    "userNote": "Slept badly after a late run"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Set the sleep note of 2026-10-15
+-- plain-header exit --
+0
+-- plain-header requests --
+PUT /sleep-service/sleep/dailySleep/2026-10-15/note
+  {
+    "userNote": "Slept badly after a late run"
+  }
+-- json stdout --
+{
+  "userNote": "Slept badly after a late run"
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+PUT /sleep-service/sleep/dailySleep/2026-10-15/note
+  {
+    "userNote": "Slept badly after a late run"
+  }
