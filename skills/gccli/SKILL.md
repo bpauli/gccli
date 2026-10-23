@@ -619,8 +619,19 @@ Date shortcuts
 - `gccli challenges adhoc history`: Show your finished ad-hoc challenges.
 - `gccli challenges adhoc show <uuid>`: Show an ad-hoc challenge.
   - `<uuid>`: Challenge UUID, as the list commands print it.
+- `gccli challenges adhoc create --type=STRING <name> [flags]`: Create an ad-hoc challenge and invite people who follow you and whom you follow.
+  - `<name>`: Challenge name.
+  - `--type=STRING`: Activity: walking, running, cycling, swimming, steps, pushes or pushing-distance.
+  - `--duration="week"`: Length: day, weekend (Saturday and Sunday), week (7 days), month (to the end of the month) or custom (to --end).
+  - `--start=DATE`: First day (YYYY-MM-DD, today, +3d). Default: today, the Saturday of this week for weekend, the first day of this month for month.
+  - `--end=DATE`: Last day. Only with --duration custom, at most 60 days after the first day.
+  - `--description=FREE-TEXT`: Description. Defaults to the name, because Garmin requires one.
+  - `--invite=DISPLAY-NAME`: Display name of a person who follows you and whom you follow. Repeat it to invite more people.
 - `gccli challenges adhoc invites <uuid>`: List the open invites of an ad-hoc challenge with their adHocChallengeInviteId.
   - `<uuid>`: Challenge UUID, as the list commands print it.
+- `gccli challenges adhoc invite <uuid> <display-name> ...`: Invite people who follow you and whom you follow to an ad-hoc challenge.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+  - `<display-name> ...`: Display name of a person who follows you and whom you follow.
 - `gccli challenges adhoc accept <invite-id>`: Accept an invite to an ad-hoc challenge.
   - `<invite-id>`: Invite ID (adHocChallengeInviteId).
 - `gccli challenges adhoc decline <invite-id>`: Decline an invite to an ad-hoc challenge.
@@ -930,6 +941,7 @@ Worked examples
 - Send a workout to a watch: `gccli workouts send <id>` sends to the only device that can receive the workout. With more such devices it fails before any write and lists their IDs; then add `--device <device-id>`. The device gets the workout at its next sync. Until then `gccli devices messages cancel <message-id>` removes it; the send prints the message ID (`messageId` with `--json`). The cancel fails with exit code 1 (`message <id> is not pending (already delivered or unknown)`) when the device has synced.
 - Primary activity tracker: `gccli devices set-primary-tracker <device-id>` makes a device the primary activity tracker. Only one device has this setting at a time, and `devices list` shows it as `primaryActivityTrackerIndicator`. It is not the primary training device that `gccli devices primary` shows.
 - Device backups: `gccli devices backups` shows the backup summary (also `devices backups summary`). `gccli devices backups list` lists the backups, `[]` when there are none.
+- Ad-hoc challenge: `gccli challenges adhoc create "Step up" --type steps --invite ann --invite bob` creates a steps challenge of a week from today and invites two people. It prints the UUID (`uuid` with `--json`). `--duration` is `day`, `weekend` (`--start` must be a Saturday; default the Saturday of this week), `week` (default), `month` (default from the first day of this month to its last day) or `custom` (needs `--end`, at most 60 days after the first day). Later, `gccli challenges adhoc invite <uuid> carol` invites one more person. Garmin invites only people who follow the user and whom the user follows: take the display names from `gccli social followers` and `gccli social following`. A display name that is not such a person fails with exit 1 before any write, and the error names the person.
 - Access token for a script: `gccli auth token`. It refreshes an expired token first. If the refresh fails, stdout is empty and the exit code is 3.
 
 Strength training workflow (LLM-assisted exercise matching)

@@ -20,7 +20,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Segments** - list your segments and favorites, search segments by name or map area, view a segment, its leaderboard and your rank, list the segments that an activity crossed, create a segment from a part of an activity, add and remove favorites, delete segments
 - **Devices** - list registered devices, view settings, solar data, alarms, primary/last-used device, set the primary activity tracker, paired sensors, backup summary and device backups, historical devices, device messages, cancel a pending device message
 - **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities, gear types, add, update, retire, unretire and delete gear, list, create, rename and delete gear collections, add gear to a collection
-- **Goals & Badges** - active goals, set daily goals for steps, floors, intensity minutes and hydration, earned/available/in-progress badges, badge details, challenges (show, join and leave badge and virtual challenges; view, answer, leave and delete ad-hoc challenges), personal records
+- **Goals & Badges** - active goals, set daily goals for steps, floors, intensity minutes and hydration, earned/available/in-progress badges, badge details, challenges (show, join and leave badge and virtual challenges; create, view, answer, leave and delete ad-hoc challenges and invite people to them), personal records
 - **Training** - browse, search and view training plans, show a plan's schedule, join and leave a plan, move and delete its workouts, show your active plans, list adaptive coaching workout types
 - **Profile** - user profile and settings, privacy settings, list, add and delete privacy zones, heart rate zones, power zones for all sports or one sport
 - **Hydration** — view and log daily water intake
@@ -747,6 +747,9 @@ gccli challenges adhoc accept <invite-id>
 gccli challenges adhoc decline <invite-id>
 gccli challenges adhoc leave <uuid>         # no undo: only a new invite gets you back in
 gccli challenges adhoc delete <uuid>        # only a challenge that you created
+gccli challenges adhoc create "Step up" --type steps --invite ann   # a week from today
+gccli challenges adhoc create "Ride" --type cycling --duration custom --start +1d --end +14d
+gccli challenges adhoc invite <uuid> ann bob   # only people who follow you and whom you follow
 gccli records                     # personal records (same as records list)
 gccli records types
 gccli records activity <activityId>
@@ -1538,8 +1541,19 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli challenges adhoc history`: Show your finished ad-hoc challenges.
 - `gccli challenges adhoc show <uuid>`: Show an ad-hoc challenge.
   - `<uuid>`: Challenge UUID, as the list commands print it.
+- `gccli challenges adhoc create --type=STRING <name> [flags]`: Create an ad-hoc challenge and invite people who follow you and whom you follow.
+  - `<name>`: Challenge name.
+  - `--type=STRING`: Activity: walking, running, cycling, swimming, steps, pushes or pushing-distance.
+  - `--duration="week"`: Length: day, weekend (Saturday and Sunday), week (7 days), month (to the end of the month) or custom (to --end).
+  - `--start=DATE`: First day (YYYY-MM-DD, today, +3d). Default: today, the Saturday of this week for weekend, the first day of this month for month.
+  - `--end=DATE`: Last day. Only with --duration custom, at most 60 days after the first day.
+  - `--description=FREE-TEXT`: Description. Defaults to the name, because Garmin requires one.
+  - `--invite=DISPLAY-NAME`: Display name of a person who follows you and whom you follow. Repeat it to invite more people.
 - `gccli challenges adhoc invites <uuid>`: List the open invites of an ad-hoc challenge with their adHocChallengeInviteId.
   - `<uuid>`: Challenge UUID, as the list commands print it.
+- `gccli challenges adhoc invite <uuid> <display-name> ...`: Invite people who follow you and whom you follow to an ad-hoc challenge.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+  - `<display-name> ...`: Display name of a person who follows you and whom you follow.
 - `gccli challenges adhoc accept <invite-id>`: Accept an invite to an ad-hoc challenge.
   - `<invite-id>`: Invite ID (adHocChallengeInviteId).
 - `gccli challenges adhoc decline <invite-id>`: Decline an invite to an ad-hoc challenge.

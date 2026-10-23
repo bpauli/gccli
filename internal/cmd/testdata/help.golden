@@ -281,8 +281,12 @@ Commands:
                                    finished.
   challenges adhoc history         Show your finished ad-hoc challenges.
   challenges adhoc show            Show an ad-hoc challenge.
+  challenges adhoc create          Create an ad-hoc challenge and invite people
+                                   who follow you and whom you follow.
   challenges adhoc invites         List the open invites of an ad-hoc challenge
                                    with their adHocChallengeInviteId.
+  challenges adhoc invite          Invite people who follow you and whom you
+                                   follow to an ad-hoc challenge.
   challenges adhoc accept          Accept an invite to an ad-hoc challenge.
   challenges adhoc decline         Decline an invite to an ad-hoc challenge.
   challenges adhoc leave           Leave an ad-hoc challenge. Only a new invite
@@ -1673,8 +1677,12 @@ Commands:
                                   finished.
   challenges adhoc history        Show your finished ad-hoc challenges.
   challenges adhoc show           Show an ad-hoc challenge.
+  challenges adhoc create         Create an ad-hoc challenge and invite people
+                                  who follow you and whom you follow.
   challenges adhoc invites        List the open invites of an ad-hoc challenge
                                   with their adHocChallengeInviteId.
+  challenges adhoc invite         Invite people who follow you and whom you
+                                  follow to an ad-hoc challenge.
   challenges adhoc accept         Accept an invite to an ad-hoc challenge.
   challenges adhoc decline        Decline an invite to an ad-hoc challenge.
   challenges adhoc leave          Leave an ad-hoc challenge. Only a new invite
@@ -1709,7 +1717,7 @@ Commands:
 $ gccli challenges adhoc --help
 Usage: gccli challenges adhoc <command>
 
-View and answer ad-hoc challenges with people you follow.
+Create, view and answer ad-hoc challenges with people you follow.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -1729,8 +1737,12 @@ Commands:
   challenges adhoc list       Show your ad-hoc challenges that are not finished.
   challenges adhoc history    Show your finished ad-hoc challenges.
   challenges adhoc show       Show an ad-hoc challenge.
+  challenges adhoc create     Create an ad-hoc challenge and invite people who
+                              follow you and whom you follow.
   challenges adhoc invites    List the open invites of an ad-hoc challenge with
                               their adHocChallengeInviteId.
+  challenges adhoc invite     Invite people who follow you and whom you follow
+                              to an ad-hoc challenge.
   challenges adhoc accept     Accept an invite to an ad-hoc challenge.
   challenges adhoc decline    Decline an invite to an ad-hoc challenge.
   challenges adhoc leave      Leave an ad-hoc challenge. Only a new invite gets
