@@ -274,6 +274,20 @@ Commands:
   challenges virtual completed     Show completed virtual challenges.
   challenges virtual in-progress
                                    Show virtual challenges in progress.
+  challenges show                  Show a badge or virtual challenge.
+  challenges join                  Join a badge or virtual challenge.
+  challenges leave                 Leave a badge or virtual challenge.
+  challenges adhoc list            Show your ad-hoc challenges that are not
+                                   finished.
+  challenges adhoc history         Show your finished ad-hoc challenges.
+  challenges adhoc show            Show an ad-hoc challenge.
+  challenges adhoc invites         List the open invites of an ad-hoc challenge
+                                   with their adHocChallengeInviteId.
+  challenges adhoc accept          Accept an invite to an ad-hoc challenge.
+  challenges adhoc decline         Decline an invite to an ad-hoc challenge.
+  challenges adhoc leave           Leave an ad-hoc challenge. Only a new invite
+                                   gets you back in.
+  challenges adhoc delete          Delete an ad-hoc challenge that you created.
   records list                     View personal records.
   records types                    List personal record types.
   records activity                 List the personal records set in an activity.
@@ -1626,7 +1640,7 @@ Commands:
 $ gccli challenges --help
 Usage: gccli challenges <command> [flags]
 
-View challenges.
+View, join and leave challenges.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -1652,6 +1666,20 @@ Commands:
   challenges virtual completed    Show completed virtual challenges.
   challenges virtual in-progress
                                   Show virtual challenges in progress.
+  challenges show                 Show a badge or virtual challenge.
+  challenges join                 Join a badge or virtual challenge.
+  challenges leave                Leave a badge or virtual challenge.
+  challenges adhoc list           Show your ad-hoc challenges that are not
+                                  finished.
+  challenges adhoc history        Show your finished ad-hoc challenges.
+  challenges adhoc show           Show an ad-hoc challenge.
+  challenges adhoc invites        List the open invites of an ad-hoc challenge
+                                  with their adHocChallengeInviteId.
+  challenges adhoc accept         Accept an invite to an ad-hoc challenge.
+  challenges adhoc decline        Decline an invite to an ad-hoc challenge.
+  challenges adhoc leave          Leave an ad-hoc challenge. Only a new invite
+                                  gets you back in.
+  challenges adhoc delete         Delete an ad-hoc challenge that you created.
 
 $ gccli challenges virtual --help
 Usage: gccli challenges virtual <command>
@@ -1677,6 +1705,37 @@ Commands:
   challenges virtual completed    Show completed virtual challenges.
   challenges virtual in-progress
                                   Show virtual challenges in progress.
+
+$ gccli challenges adhoc --help
+Usage: gccli challenges adhoc <command>
+
+View and answer ad-hoc challenges with people you follow.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  challenges adhoc list       Show your ad-hoc challenges that are not finished.
+  challenges adhoc history    Show your finished ad-hoc challenges.
+  challenges adhoc show       Show an ad-hoc challenge.
+  challenges adhoc invites    List the open invites of an ad-hoc challenge with
+                              their adHocChallengeInviteId.
+  challenges adhoc accept     Accept an invite to an ad-hoc challenge.
+  challenges adhoc decline    Decline an invite to an ad-hoc challenge.
+  challenges adhoc leave      Leave an ad-hoc challenge. Only a new invite gets
+                              you back in.
+  challenges adhoc delete     Delete an ad-hoc challenge that you created.
 
 $ gccli records --help
 Usage: gccli records <command> [flags]

@@ -141,7 +141,7 @@ var badgesGroup = Group{Name: "badges", Help: "View badges.", Children: []Node{
 	Leaf{Name: "leaderboard", Help: "Show the badge points leaderboard of your connections.", Endpoint: "badges.leaderboard", Verb: "get badge leaderboard", Output: JSON{}},
 }}
 
-var challengesGroup = Group{Name: "challenges", Help: "View challenges.", Children: []Node{
+var challengesGroup = Group{Name: "challenges", Help: "View, join and leave challenges.", Children: []Node{
 	Custom{Name: "list", Help: "Show current challenges.", Default: true, Cmd: &ChallengesListCmd{}},
 	Leaf{Name: "badge", Help: "Show joined badge challenges that are not completed.", Endpoint: "challenges.non-completed", Verb: "get badge challenges", Output: JSON{List: true}},
 	Leaf{Name: "available", Help: "Show available badge challenges.", Endpoint: "challenges.available", Verb: "get available challenges", Output: JSON{List: true}},
@@ -151,7 +151,90 @@ var challengesGroup = Group{Name: "challenges", Help: "View challenges.", Childr
 		Leaf{Name: "completed", Help: "Show completed virtual challenges.", Endpoint: "challenges.virtual-completed", Verb: "get completed virtual challenges", Output: JSON{List: true}},
 		Leaf{Name: "in-progress", Help: "Show virtual challenges in progress.", Endpoint: "challenges.virtual-in-progress", Verb: "get in-progress virtual challenges", Output: JSON{List: true}},
 	}},
+	Leaf{
+		Name: "show", Help: "Show a badge or virtual challenge.",
+		Spec:     challengeUUIDArgs,
+		Endpoint: "challenges.show",
+		Params:   Params{"uuid": In("UUID")},
+		Verb:     "get challenge", Output: JSON{},
+	},
+	Leaf{
+		Name: "join", Help: "Join a badge or virtual challenge.",
+		Spec:     challengeUUIDArgs,
+		Endpoint: "challenges.join",
+		Params:   Params{"uuid": In("UUID"), "date": Today},
+		Verb:     "join challenge",
+		Output:   Write{Done: "Joined challenge {UUID}"},
+	},
+	Leaf{
+		Name: "leave", Help: "Leave a badge or virtual challenge.",
+		Spec:     challengeUUIDArgs,
+		Endpoint: "challenges.leave",
+		Params:   Params{"uuid": In("UUID")},
+		Verb:     "leave challenge",
+		Output:   Write{Done: "Left challenge {UUID}"},
+	},
+	adhocChallengesGroup,
 }}
+
+var adhocChallengesGroup = Group{Name: "adhoc", Help: "View and answer ad-hoc challenges with people you follow.", Children: []Node{
+	Leaf{Name: "list", Help: "Show your ad-hoc challenges that are not finished.", Default: true, Endpoint: "challenges.adhoc-non-completed", Verb: "get ad-hoc challenges", Output: JSON{List: true}},
+	Leaf{Name: "history", Help: "Show your finished ad-hoc challenges.", Endpoint: "challenges.adhoc-historical", Verb: "get ad-hoc challenge history", Output: JSON{List: true}},
+	Leaf{
+		Name: "show", Help: "Show an ad-hoc challenge.",
+		Spec:     challengeUUIDArgs,
+		Endpoint: "challenges.adhoc-show",
+		Params:   Params{"uuid": In("UUID"), "todayDate": Today},
+		Verb:     "get ad-hoc challenge", Output: JSON{},
+	},
+	Leaf{
+		Name: "invites", Help: "List the open invites of an ad-hoc challenge with their adHocChallengeInviteId.",
+		Spec:     challengeUUIDArgs,
+		Endpoint: "challenges.adhoc-invites",
+		Params:   Params{"uuid": In("UUID")},
+		Verb:     "get ad-hoc challenge invites", Output: JSON{List: true},
+	},
+	Leaf{
+		Name: "accept", Help: "Accept an invite to an ad-hoc challenge.",
+		Spec:     challengeInviteArgs,
+		Endpoint: "challenges.adhoc-accept",
+		Params:   Params{"inviteID": In("ID")},
+		Verb:     "accept challenge invite",
+		Output:   Write{Done: "Accepted invite {ID}"},
+	},
+	Leaf{
+		Name: "decline", Help: "Decline an invite to an ad-hoc challenge.",
+		Spec:     challengeInviteArgs,
+		Endpoint: "challenges.adhoc-decline",
+		Params:   Params{"inviteID": In("ID")},
+		Verb:     "decline challenge invite",
+		Output:   Write{Done: "Declined invite {ID}"},
+	},
+	Leaf{
+		Name: "leave", Help: "Leave an ad-hoc challenge. Only a new invite gets you back in.",
+		Spec:     challengeUUIDArgs,
+		Endpoint: "challenges.adhoc-leave",
+		Params:   Params{"uuid": In("UUID"), "profileID": ProfilePK},
+		Verb:     "leave ad-hoc challenge",
+		Output:   Write{Done: "Left ad-hoc challenge {UUID}", Confirm: "Leave ad-hoc challenge {UUID}?"},
+	},
+	Leaf{
+		Name: "delete", Help: "Delete an ad-hoc challenge that you created.",
+		Spec:     challengeUUIDArgs,
+		Endpoint: "challenges.adhoc-delete",
+		Params:   Params{"uuid": In("UUID")},
+		Verb:     "delete ad-hoc challenge",
+		Output:   Write{Done: "Deleted ad-hoc challenge {UUID}", Confirm: "Delete ad-hoc challenge {UUID}?"},
+	},
+}}
+
+var challengeUUIDArgs = argsOf(&struct {
+	UUID ID `arg:"" help:"Challenge UUID, as the list commands print it."`
+}{})
+
+var challengeInviteArgs = argsOf(&struct {
+	ID ID `arg:"" help:"Invite ID (adHocChallengeInviteId)." name:"invite-id"`
+}{})
 
 // BadgesInProgressCmd shows the badges in progress.
 type BadgesInProgressCmd struct{}

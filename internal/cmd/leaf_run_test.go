@@ -270,6 +270,9 @@ func TestLeafRowSadPaths(t *testing.T) {
 			t.Errorf("%s: %v", path, err)
 			return
 		}
+		if w, ok := l.Output.(Write); ok && w.Confirm != "" && !slices.Contains(args, "--force") {
+			args = append(args, "--force")
+		}
 		var lookups []lookup
 		lookupRequests := 0
 		for _, s := range l.Params {
