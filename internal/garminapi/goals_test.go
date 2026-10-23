@@ -8,7 +8,9 @@ import (
 	"maps"
 	"net/http"
 	"slices"
+	"strings"
 	"testing"
+	"time"
 )
 
 func TestGoalsEndpoints(t *testing.T) {
@@ -45,6 +47,8 @@ func TestGoalsEndpoints(t *testing.T) {
 		{"challenges.adhoc-decline", map[string]string{"inviteID": "1001"}, "PUT /adhocchallenge-service/adHocChallenge/invite/1001/decline"},
 		{"challenges.adhoc-leave", map[string]string{"uuid": "0123456789ABCDEF0123456789ABCDEF", "profileID": "1002"}, "DELETE /adhocchallenge-service/adHocChallenge/0123456789ABCDEF0123456789ABCDEF/player/1002"},
 		{"challenges.adhoc-delete", map[string]string{"uuid": "0123456789ABCDEF0123456789ABCDEF"}, "DELETE /adhocchallenge-service/adHocChallenge/0123456789ABCDEF0123456789ABCDEF"},
+		{"challenges.adhoc-create", nil, "POST /adhocchallenge-service/adHocChallenge"},
+		{"challenges.adhoc-invite", nil, "POST /adhocchallenge-service/adHocChallenge/invite"},
 		{"records.list", map[string]string{"displayName": "jo/b"}, "GET /personalrecord-service/personalrecord/prs/jo%2Fb"},
 		{"records.types", map[string]string{"displayName": "jo/b"}, "GET /personalrecord-service/personalrecordtype/prtypes/jo%2Fb"},
 		{"records.activity", map[string]string{"activityID": "42"}, "GET /personalrecord-service/personalrecord/prByActivityId/42"},
@@ -188,6 +192,112 @@ func TestInProgressBadges(t *testing.T) {
 			}
 			if !slices.Equal(gotS, tc.want) {
 				t.Errorf("kept %q, want %q", gotS, tc.want)
+			}
+		})
+	}
+}
+
+// adHocServer answers the reads that the ad-hoc challenge writes send, and
+// records each request with its body.
+func adHocServer(t *testing.T, writeAnswer string) (*[]string, *Client) {
+	t.Helper()
+	var requests []string
+	_, client := testServer(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		b, _ := io.ReadAll(r.Body)
+		requests = append(requests, strings.TrimSpace(r.Method+" "+r.URL.Path+" "+string(b)))
+		switch r.URL.Path {
+		case "/follower-service/follow/mutuals":
+			_, _ = w.Write([]byte(`[{"displayName":"ann","userId":2001,"fullName":"Ann"},{"displayName":"bob","userId":2002}]`))
+		case "/userprofile-service/userprofile/settings", "/userprofile-service/socialProfile/tester":
+			_, _ = w.Write([]byte(`{"displayName":"tester","profileId":3141592}`))
+		default:
+			if writeAnswer == "" {
+				w.WriteHeader(http.StatusNoContent)
+				return
+			}
+			_, _ = w.Write([]byte(writeAnswer))
+		}
+	}))
+	return &requests, client
+}
+
+var profileReads = []string{"GET /userprofile-service/userprofile/settings", "GET /userprofile-service/socialProfile/tester"}
+
+func TestCreateAdHocChallenge(t *testing.T) {
+	day := func(d int) time.Time { return time.Date(2026, time.October, d, 0, 0, 0, 0, time.Local) }
+	tests := []struct {
+		name string
+		ch   AdHocChallenge
+		want []string
+	}{
+		{
+			"invites and description",
+			AdHocChallenge{Name: "Step up", Description: "Who walks most", Type: ChallengeSteps, Duration: ChallengeWeek, Start: day(15), End: day(21), Invite: []string{"bob", "ann"}},
+			slices.Concat([]string{"GET /follower-service/follow/mutuals"}, profileReads, []string{
+				`POST /adhocchallenge-service/adHocChallenge {"adHocChallengeName":"Step up","adHocChallengeDesc":"Who walks most","socialChallengeActivityTypeId":4,"durationTypeId":0,"startDate":"2026-10-15T00:00:00.00","endDate":"2026-10-21T23:59:59.999","userRanking":0,"socialChallengeStatusId":0,"ownerUserProfileId":3141592,"players":[{"userProfileId":2002,"displayName":"bob"},{"userProfileId":2001,"displayName":"ann"}]}`,
+			}),
+		},
+		{
+			"no invite skips the mutuals and the name is the description",
+			AdHocChallenge{Name: "Ride", Type: ChallengePushingDistance, Duration: ChallengeDay, Start: day(15), End: day(15)},
+			slices.Concat(profileReads, []string{
+				`POST /adhocchallenge-service/adHocChallenge {"adHocChallengeName":"Ride","adHocChallengeDesc":"Ride","socialChallengeActivityTypeId":11,"durationTypeId":4,"startDate":"2026-10-15T00:00:00.00","endDate":"2026-10-15T23:59:59.999","userRanking":0,"socialChallengeStatusId":0,"ownerUserProfileId":3141592,"players":[]}`,
+			}),
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			requests, client := adHocServer(t, `{"uuid":"ABC"}`)
+			data, err := client.CreateAdHocChallenge(context.Background(), tc.ch)
+			if err != nil {
+				t.Fatalf("CreateAdHocChallenge: %v", err)
+			}
+			if string(data) != `{"uuid":"ABC"}` {
+				t.Errorf("data = %s, want the POST answer", data)
+			}
+			if !slices.Equal(*requests, tc.want) {
+				t.Errorf("requests:\n%s\nwant:\n%s", strings.Join(*requests, "\n"), strings.Join(tc.want, "\n"))
+			}
+		})
+	}
+}
+
+func TestInviteToAdHocChallenge(t *testing.T) {
+	requests, client := adHocServer(t, "")
+	if _, err := client.InviteToAdHocChallenge(context.Background(), "ABC", []string{"ann", "bob"}); err != nil {
+		t.Fatalf("InviteToAdHocChallenge: %v", err)
+	}
+	want := slices.Concat([]string{"GET /follower-service/follow/mutuals"}, profileReads, []string{
+		`POST /adhocchallenge-service/adHocChallenge/invite {"adHocChallengeUuid":"ABC","invitorId":3141592,"inviteeIds":[2001,2002]}`,
+	})
+	if !slices.Equal(*requests, want) {
+		t.Errorf("requests:\n%s\nwant:\n%s", strings.Join(*requests, "\n"), strings.Join(want, "\n"))
+	}
+}
+
+// TestAdHocInviteNeedsMutualFollowers pins that a display name that is not
+// a mutual follower fails after the mutuals read and before any other
+// request, and that the error names each such person. Names match exactly.
+func TestAdHocInviteNeedsMutualFollowers(t *testing.T) {
+	const want = `cannot invite "carol", "Ann": Garmin invites only people you follow who also follow you`
+	writes := map[string]func(*Client) error{
+		"create": func(c *Client) error {
+			_, err := c.CreateAdHocChallenge(context.Background(), AdHocChallenge{Name: "x", Invite: []string{"ann", "carol", "Ann"}})
+			return err
+		},
+		"invite": func(c *Client) error {
+			_, err := c.InviteToAdHocChallenge(context.Background(), "ABC", []string{"ann", "carol", "Ann"})
+			return err
+		},
+	}
+	for name, write := range writes {
+		t.Run(name, func(t *testing.T) {
+			requests, client := adHocServer(t, `{}`)
+			if err := write(client); err == nil || err.Error() != want {
+				t.Errorf("err = %v, want %q", err, want)
+			}
+			if want := []string{"GET /follower-service/follow/mutuals"}; !slices.Equal(*requests, want) {
+				t.Errorf("requests = %q, want %q", *requests, want)
 			}
 		})
 	}

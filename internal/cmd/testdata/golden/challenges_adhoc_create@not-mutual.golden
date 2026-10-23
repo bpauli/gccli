@@ -1,0 +1,44 @@
+A display name that is not a mutual follower fails with exit 1 after the mutuals read and before the create.
+-- args --
+challenges
+adhoc
+create
+Step up
+--type
+steps
+--start
+2026-10-19
+--invite
+ann
+--invite
+carol
+-- route GET /follower-service/follow/mutuals --
+[{"displayName":"ann","followStatus":1,"fullName":"Ann Example","location":null,"profileImageUrls":[],"userId":2001,"userLevel":3,"userPoint":120}]
+-- table stdout --
+-- table stderr --
+create ad-hoc challenge: cannot invite "carol": Garmin invites only people you follow who also follow you
+-- table exit --
+1
+-- table requests --
+GET /follower-service/follow/mutuals
+-- plain stdout --
+-- plain stderr --
+create ad-hoc challenge: cannot invite "carol": Garmin invites only people you follow who also follow you
+-- plain exit --
+1
+-- plain requests --
+GET /follower-service/follow/mutuals
+-- plain-header stdout --
+-- plain-header stderr --
+create ad-hoc challenge: cannot invite "carol": Garmin invites only people you follow who also follow you
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /follower-service/follow/mutuals
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"create ad-hoc challenge: cannot invite \"carol\": Garmin invites only people you follow who also follow you"}}
+-- json exit --
+1
+-- json requests --
+GET /follower-service/follow/mutuals
