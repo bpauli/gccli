@@ -18,14 +18,18 @@ var groupsGroup = Group{Name: "groups", Help: "List, search, join and leave grou
 	Custom{Name: "search", Help: "Search groups by keyword.", Cmd: &GroupsSearchCmd{}},
 	Leaf{
 		Name: "show", Help: "Show a group.",
-		Spec:     argsOf(&struct{ ID ID `arg:"" help:"Group ID."` }{}),
+		Spec: argsOf(&struct {
+			ID ID `arg:"" help:"Group ID."`
+		}{}),
 		Endpoint: "groups.get",
 		Params:   Params{"groupID": In("ID")},
 		Verb:     "get group", Output: JSON{},
 	},
 	Leaf{
 		Name: "members", Help: "List the members of a group.",
-		Spec:     argsOf(&struct{ ID ID `arg:"" help:"Group ID."` }{}),
+		Spec: argsOf(&struct {
+			ID ID `arg:"" help:"Group ID."`
+		}{}),
 		Endpoint: "groups.members",
 		Params:   Params{"groupID": In("ID")},
 		Verb:     "get group members",
@@ -38,14 +42,18 @@ var groupsGroup = Group{Name: "groups", Help: "List, search, join and leave grou
 	},
 	Leaf{
 		Name: "feed", Help: "Show the latest posts and activities of the group feed.",
-		Spec:     argsOf(&struct{ ID ID `arg:"" help:"Group ID."` }{}),
+		Spec: argsOf(&struct {
+			ID ID `arg:"" help:"Group ID."`
+		}{}),
 		Endpoint: "groups.feed",
 		Params:   Params{"groupID": In("ID")},
 		Verb:     "get group feed", Output: JSON{},
 	},
 	Leaf{
 		Name: "activities", Help: "List the latest activities of the group members.",
-		Spec:     argsOf(&struct{ ID ID `arg:"" help:"Group ID."` }{}),
+		Spec: argsOf(&struct {
+			ID ID `arg:"" help:"Group ID."`
+		}{}),
 		Endpoint: "groups.activities",
 		Params:   Params{"groupID": In("ID")},
 		Verb:     "get group activities",
@@ -53,7 +61,9 @@ var groupsGroup = Group{Name: "groups", Help: "List, search, join and leave grou
 	},
 	Leaf{
 		Name: "challenges", Help: "List the open challenges of a group. Garmin answers 403 to a non-member.",
-		Spec:     argsOf(&struct{ ID ID `arg:"" help:"Group ID."` }{}),
+		Spec: argsOf(&struct {
+			ID ID `arg:"" help:"Group ID."`
+		}{}),
 		Endpoint: "groups.challenges",
 		Params:   Params{"groupID": In("ID")},
 		Verb:     "get group challenges", Output: JSON{List: true},
@@ -61,7 +71,9 @@ var groupsGroup = Group{Name: "groups", Help: "List, search, join and leave grou
 	Custom{Name: "join", Help: "Join a public group. gccli does not send the request that a private group needs.", Cmd: &GroupsJoinCmd{}},
 	Leaf{
 		Name: "leave", Help: "Leave a group.",
-		Spec:     argsOf(&struct{ ID ID `arg:"" help:"Group ID."` }{}),
+		Spec: argsOf(&struct {
+			ID ID `arg:"" help:"Group ID."`
+		}{}),
 		Endpoint: "groups.leave",
 		Params:   Params{"groupID": In("ID"), "profileID": ProfilePK},
 		Verb:     "leave group",
