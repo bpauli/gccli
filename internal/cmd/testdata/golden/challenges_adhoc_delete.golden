@@ -1,0 +1,39 @@
+-- args --
+challenges
+adhoc
+delete
+0123456789ABCDEF0123456789ABCDEF
+-- stdin --
+y
+-- route DELETE /adhocchallenge-service/adHocChallenge/0123456789ABCDEF0123456789ABCDEF 204 --
+-- table stdout --
+-- table stderr --
+Delete ad-hoc challenge 0123456789ABCDEF0123456789ABCDEF? [y/N]: Deleted ad-hoc challenge 0123456789ABCDEF0123456789ABCDEF
+-- table exit --
+0
+-- table requests --
+DELETE /adhocchallenge-service/adHocChallenge/0123456789ABCDEF0123456789ABCDEF
+-- plain stdout --
+-- plain stderr --
+Delete ad-hoc challenge 0123456789ABCDEF0123456789ABCDEF? [y/N]: Deleted ad-hoc challenge 0123456789ABCDEF0123456789ABCDEF
+-- plain exit --
+0
+-- plain requests --
+DELETE /adhocchallenge-service/adHocChallenge/0123456789ABCDEF0123456789ABCDEF
+-- plain-header stdout --
+-- plain-header stderr --
+Delete ad-hoc challenge 0123456789ABCDEF0123456789ABCDEF? [y/N]: Deleted ad-hoc challenge 0123456789ABCDEF0123456789ABCDEF
+-- plain-header exit --
+0
+-- plain-header requests --
+DELETE /adhocchallenge-service/adHocChallenge/0123456789ABCDEF0123456789ABCDEF
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr noeol --
+Delete ad-hoc challenge 0123456789ABCDEF0123456789ABCDEF? [y/N]: 
+-- json exit --
+0
+-- json requests --
+DELETE /adhocchallenge-service/adHocChallenge/0123456789ABCDEF0123456789ABCDEF

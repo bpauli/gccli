@@ -1,0 +1,36 @@
+-- args --
+challenges
+adhoc
+decline
+1001
+-- route PUT /adhocchallenge-service/adHocChallenge/invite/1001/decline 204 --
+-- table stdout --
+-- table stderr --
+Declined invite 1001
+-- table exit --
+0
+-- table requests --
+PUT /adhocchallenge-service/adHocChallenge/invite/1001/decline
+-- plain stdout --
+-- plain stderr --
+Declined invite 1001
+-- plain exit --
+0
+-- plain requests --
+PUT /adhocchallenge-service/adHocChallenge/invite/1001/decline
+-- plain-header stdout --
+-- plain-header stderr --
+Declined invite 1001
+-- plain-header exit --
+0
+-- plain-header requests --
+PUT /adhocchallenge-service/adHocChallenge/invite/1001/decline
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+PUT /adhocchallenge-service/adHocChallenge/invite/1001/decline

@@ -1,0 +1,51 @@
+-- args --
+challenges
+adhoc
+leave
+0123456789ABCDEF0123456789ABCDEF
+-- stdin --
+y
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- route GET /userprofile-service/socialProfile/tester --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- route DELETE /adhocchallenge-service/adHocChallenge/0123456789ABCDEF0123456789ABCDEF/player/3141592 204 --
+-- table stdout --
+-- table stderr --
+Leave ad-hoc challenge 0123456789ABCDEF0123456789ABCDEF? [y/N]: Left ad-hoc challenge 0123456789ABCDEF0123456789ABCDEF
+-- table exit --
+0
+-- table requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+DELETE /adhocchallenge-service/adHocChallenge/0123456789ABCDEF0123456789ABCDEF/player/3141592
+-- plain stdout --
+-- plain stderr --
+Leave ad-hoc challenge 0123456789ABCDEF0123456789ABCDEF? [y/N]: Left ad-hoc challenge 0123456789ABCDEF0123456789ABCDEF
+-- plain exit --
+0
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+DELETE /adhocchallenge-service/adHocChallenge/0123456789ABCDEF0123456789ABCDEF/player/3141592
+-- plain-header stdout --
+-- plain-header stderr --
+Leave ad-hoc challenge 0123456789ABCDEF0123456789ABCDEF? [y/N]: Left ad-hoc challenge 0123456789ABCDEF0123456789ABCDEF
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+DELETE /adhocchallenge-service/adHocChallenge/0123456789ABCDEF0123456789ABCDEF/player/3141592
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr noeol --
+Leave ad-hoc challenge 0123456789ABCDEF0123456789ABCDEF? [y/N]: 
+-- json exit --
+0
+-- json requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+DELETE /adhocchallenge-service/adHocChallenge/0123456789ABCDEF0123456789ABCDEF/player/3141592
