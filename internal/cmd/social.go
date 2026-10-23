@@ -3,6 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"net/url"
 	"slices"
 	"strconv"
 
@@ -322,7 +323,9 @@ func (c *SocialSearchCmd) Run(g *Globals) error {
 	if err != nil {
 		return err
 	}
-	data, err := client.SearchUsers(g.Context, string(c.Query), c.Offset, c.Limit)
+	// Garmin counts start from 1.
+	form := url.Values{"keyword": {string(c.Query)}, "start": {strconv.Itoa(c.Offset + 1)}, "limit": {strconv.Itoa(c.Limit)}}
+	data, err := client.Call(g.Context, "users.search", nil, []byte(form.Encode()))
 	if err != nil {
 		return fmt.Errorf("search users: %w", err)
 	}

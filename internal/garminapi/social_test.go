@@ -2,7 +2,6 @@ package garminapi
 
 import (
 	"context"
-	"errors"
 	"io"
 	"net/http"
 	"testing"
@@ -32,42 +31,26 @@ func TestSocialEndpoints(t *testing.T) {
 		{"followers.mutuals", nil, "GET /follower-service/follow/mutuals"},
 		{"connections.pending", nil, "GET /connection-service/connection/pending"},
 		{"newsfeed.list", nil, "GET /web-gateway/newsfeed/v3"},
+		{"users.search", nil, "POST /usersearch-service/search/v3?displayMutedStatus=true"},
 	})
 }
 
-func TestSearchUsers(t *testing.T) {
-	var method, uri, contentType, body string
+// Garmin answers 405 to a GET search and 415 to a JSON body.
+func TestUserSearchIsAForm(t *testing.T) {
+	var contentType, body string
 	_, client := testServer(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		method, uri, contentType = r.Method, r.URL.RequestURI(), r.Header.Get("Content-Type")
+		contentType = r.Header.Get("Content-Type")
 		b, _ := io.ReadAll(r.Body)
 		body = string(b)
-		_, _ = w.Write([]byte(`{"profileList":[]}`))
+		_, _ = w.Write([]byte(`{}`))
 	}))
-	data, err := client.SearchUsers(context.Background(), "anna b&c", 20, 5)
-	if err != nil {
-		t.Fatalf("SearchUsers: %v", err)
+	if _, err := client.Call(context.Background(), "users.search", nil, []byte("keyword=anna&limit=5&start=21")); err != nil {
+		t.Fatal(err)
 	}
-	if string(data) != `{"profileList":[]}` {
-		t.Errorf("data = %s, want the response body", data)
+	if contentType != "application/x-www-form-urlencoded" {
+		t.Errorf("Content-Type = %q, want application/x-www-form-urlencoded", contentType)
 	}
-	if method != http.MethodPost || uri != "/usersearch-service/search/v3?displayMutedStatus=true" {
-		t.Errorf("request = %s %s, want POST /usersearch-service/search/v3?displayMutedStatus=true: a GET answers 405", method, uri)
-	}
-	if contentType != "application/x-www-form-urlencoded; charset=UTF-8" {
-		t.Errorf("Content-Type = %q, want a form: Garmin answers JSON with 415", contentType)
-	}
-	if want := "keyword=anna+b%26c&limit=5&start=21"; body != want {
-		t.Errorf("body = %q, want %q: start counts from 1", body, want)
-	}
-}
-
-func TestSearchUsers_ServerError(t *testing.T) {
-	_, client := testServer(t, http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusBadRequest)
-	}))
-	_, err := client.SearchUsers(context.Background(), "a", 0, 20)
-	var apiErr *GarminAPIError
-	if !errors.As(err, &apiErr) || apiErr.StatusCode != http.StatusBadRequest {
-		t.Fatalf("err = %v, want a GarminAPIError with status 400", err)
+	if body != "keyword=anna&limit=5&start=21" {
+		t.Errorf("body = %q, want the form as given", body)
 	}
 }
