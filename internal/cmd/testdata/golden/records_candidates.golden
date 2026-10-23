@@ -1,0 +1,123 @@
+-- args --
+records
+candidates
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- route GET /personalrecord-service/personalrecordcandidate/tester --
+[{"id":4200001,"typeId":3,"status":"CANDIDATE","activityId":5100001,"activityName":"Morning Run","activityType":"running","value":1498.2,"prStartTimeGmt":1760000000000},{"id":4200002,"typeId":7,"status":"CANDIDATE","activityId":5100002,"activityName":"Long Ride","activityType":"cycling","value":42195.0,"prStartTimeGmt":1760100000000}]
+-- table stdout --
+[
+  {
+    "id": 4200001,
+    "typeId": 3,
+    "status": "CANDIDATE",
+    "activityId": 5100001,
+    "activityName": "Morning Run",
+    "activityType": "running",
+    "value": 1498.2,
+    "prStartTimeGmt": 1760000000000
+  },
+  {
+    "id": 4200002,
+    "typeId": 7,
+    "status": "CANDIDATE",
+    "activityId": 5100002,
+    "activityName": "Long Ride",
+    "activityType": "cycling",
+    "value": 42195.0,
+    "prStartTimeGmt": 1760100000000
+  }
+]
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /userprofile-service/userprofile/settings
+GET /personalrecord-service/personalrecordcandidate/tester
+-- plain stdout --
+[
+  {
+    "id": 4200001,
+    "typeId": 3,
+    "status": "CANDIDATE",
+    "activityId": 5100001,
+    "activityName": "Morning Run",
+    "activityType": "running",
+    "value": 1498.2,
+    "prStartTimeGmt": 1760000000000
+  },
+  {
+    "id": 4200002,
+    "typeId": 7,
+    "status": "CANDIDATE",
+    "activityId": 5100002,
+    "activityName": "Long Ride",
+    "activityType": "cycling",
+    "value": 42195.0,
+    "prStartTimeGmt": 1760100000000
+  }
+]
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+GET /personalrecord-service/personalrecordcandidate/tester
+-- plain-header stdout --
+[
+  {
+    "id": 4200001,
+    "typeId": 3,
+    "status": "CANDIDATE",
+    "activityId": 5100001,
+    "activityName": "Morning Run",
+    "activityType": "running",
+    "value": 1498.2,
+    "prStartTimeGmt": 1760000000000
+  },
+  {
+    "id": 4200002,
+    "typeId": 7,
+    "status": "CANDIDATE",
+    "activityId": 5100002,
+    "activityName": "Long Ride",
+    "activityType": "cycling",
+    "value": 42195.0,
+    "prStartTimeGmt": 1760100000000
+  }
+]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /personalrecord-service/personalrecordcandidate/tester
+-- json stdout --
+[
+  {
+    "id": 4200001,
+    "typeId": 3,
+    "status": "CANDIDATE",
+    "activityId": 5100001,
+    "activityName": "Morning Run",
+    "activityType": "running",
+    "value": 1498.2,
+    "prStartTimeGmt": 1760000000000
+  },
+  {
+    "id": 4200002,
+    "typeId": 7,
+    "status": "CANDIDATE",
+    "activityId": 5100002,
+    "activityName": "Long Ride",
+    "activityType": "cycling",
+    "value": 42195.0,
+    "prStartTimeGmt": 1760100000000
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /userprofile-service/userprofile/settings
+GET /personalrecord-service/personalrecordcandidate/tester

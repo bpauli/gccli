@@ -613,6 +613,14 @@ Date shortcuts
 - `gccli records types`: List personal record types.
 - `gccli records activity <id>`: List the personal records set in an activity.
   - `<id>`: Activity ID.
+- `gccli records candidates`: List the personal record candidates that wait for your review.
+- `gccli records hide <type-id>`: Hide a personal record type on the records page.
+  - `<type-id>`: Record type ID, as records types prints it.
+- `gccli records unhide <type-id>`: Show a hidden personal record type on the records page again.
+  - `<type-id>`: Record type ID, as records types prints it.
+- `gccli records delete <id> [flags]`: Delete a personal record. This cannot be undone.
+  - `<id>`: Personal record ID, as records list prints it.
+  - `-f, --force`: Skip confirmation prompt.
 
 ### Events
 
@@ -970,6 +978,7 @@ Notes
 - Download formats: FIT (default), GPX, TCX, KML, CSV.
 - Workout step format: `type:duration[@target:low-high]`. Types: warmup, run, recovery, cooldown; targets: pace (min:sec), hr (bpm), power (watts), cadence.
 - `goals set` and `goals steps` change the goal from `--date` (default today) onward; the days before keep their goal. `gccli health summary <date> --json` shows the steps, floors and intensity minutes goals (`dailyStepGoal`, `userFloorsAscendedGoal`, `intensityMinutesGoal`).
+- `records candidates` lists the records that Garmin did not accept yet. `records hide <type-id>` and `records unhide <type-id>` take the `id` of `records types`. They change only the records page, not the records. `records delete <id>` takes the `id` of `records list`, and Garmin has no undo for it. A record that does not exist gives exit 4.
 - `wellness menstrual-log set` changes only the fields you give. Garmin replaces the whole day on a write, so gccli reads the log first and sends the other fields again. The values are lower-case kebab (`light`, `tender-breasts`, `no-discharge`), the lists are comma-separated, and an empty value (`""`) clears a field. `--no-ovulation` removes the ovulation mark. The writes need cycle tracking set up in Garmin Connect; without it, Garmin answers 400 "MCT settings were not found". `wellness menstrual-log` prints `{}` for a day without a log, and `delete` of such a day fails with exit code 1. `wellness menstrual-cycle` and `wellness menstrual-summary` take one date (default today) and print `{}` for a day outside a tracked cycle. `wellness pregnancy-summary` prints `{}` when there is no pregnancy.
 - `wellness jet-lag add --from <place> --to <place> --depart <time> --arrive <time>` adds a jet lag trip. `--return-depart` and `--return-arrive` add the return flight. Each time is the local time at its place with the UTC offset there, such as `2026-11-02T10:00+01:00`; a time without an offset is a usage error. For a flight with a stop, give the first departure and the last arrival. `add` prints the trip ID. `update` and `delete` find the trip in the trip list, because Garmin has no read of one trip; an unknown ID exits 1. `update` changes only the flags you give, and `--from`/`--to` also change the return flight. It refuses a trip of more than two flights (made in the web app).
 - `workouts update` replaces the whole workout, so build the file from `gccli workouts detail <id>` and edit it. `workoutId` is set from the ID argument, so an `upload` payload works unchanged. The workout keeps its ID and its calendar entries.

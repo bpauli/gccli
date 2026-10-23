@@ -333,6 +333,20 @@ var writeCases = map[string]writeCase{
 		human:    "Moved task 789 to 2026-10-28 (new task ID: 790)\n",
 		fallback: "Moved task 789 to 2026-10-28\n",
 	},
+	"records hide": {
+		args:     []string{"3"},
+		routes:   map[string]string{"PUT /personalrecord-service/personalrecordtype/3": `{"id":3,"key":"pr.label.5k.run","visible":false}`},
+		json:     "{\n  \"id\": 3,\n  \"key\": \"pr.label.5k.run\",\n  \"visible\": false\n}\n",
+		human:    "Hid personal record type 3\n",
+		fallback: "Hid personal record type 3\n",
+	},
+	"records unhide": {
+		args:     []string{"3"},
+		routes:   map[string]string{"PUT /personalrecord-service/personalrecordtype/3": `{"id":3,"key":"pr.label.5k.run","visible":true}`},
+		json:     "{\n  \"id\": 3,\n  \"key\": \"pr.label.5k.run\",\n  \"visible\": true\n}\n",
+		human:    "Unhid personal record type 3\n",
+		fallback: "Unhid personal record type 3\n",
+	},
 	"calendar notes add": {
 		args:     []string{"2026-10-20", "Long run", "--content", "Easy pace"},
 		routes:   map[string]string{"POST /calendar-service/note": `{"id":118934,"noteName":"Long run","date":"2026-10-20"}`},

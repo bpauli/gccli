@@ -20,7 +20,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Segments** - list your segments and favorites, search segments by name or map area, view a segment, its leaderboard and your rank, list the segments that an activity crossed, create a segment from a part of an activity, add and remove favorites, delete segments
 - **Devices** - list registered devices, view settings, solar data, alarms, primary/last-used device, set the primary activity tracker, paired sensors, backup summary and device backups, historical devices, device messages, cancel a pending device message
 - **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities, gear types, add, update, retire, unretire and delete gear, list, create, rename and delete gear collections, add gear to a collection
-- **Goals & Badges** — active goals, set daily goals for steps, floors, intensity minutes and hydration, earned/available/in-progress badges, badge details, challenges, personal records
+- **Goals & Badges** — active goals, set daily goals for steps, floors, intensity minutes and hydration, earned/available/in-progress badges, badge details, challenges, personal records and record candidates, hide or show a record type, delete a personal record
 - **Training** - browse, search and view training plans, show a plan's schedule, join and leave a plan, move and delete its workouts, show your active plans, list adaptive coaching workout types
 - **Profile** - user profile and settings, privacy settings, list, add and delete privacy zones, heart rate zones, power zones for all sports or one sport
 - **Hydration** — view and log daily water intake
@@ -739,6 +739,10 @@ gccli challenges virtual in-progress
 gccli records                     # personal records (same as records list)
 gccli records types
 gccli records activity <activityId>
+gccli records candidates          # records that Garmin did not accept yet
+gccli records hide <typeId>       # hide a record type on the records page
+gccli records unhide <typeId>
+gccli records delete <recordId>   # asks first; --force skips the prompt
 ```
 
 ### Profile
@@ -1521,6 +1525,14 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli records types`: List personal record types.
 - `gccli records activity <id>`: List the personal records set in an activity.
   - `<id>`: Activity ID.
+- `gccli records candidates`: List the personal record candidates that wait for your review.
+- `gccli records hide <type-id>`: Hide a personal record type on the records page.
+  - `<type-id>`: Record type ID, as records types prints it.
+- `gccli records unhide <type-id>`: Show a hidden personal record type on the records page again.
+  - `<type-id>`: Record type ID, as records types prints it.
+- `gccli records delete <id> [flags]`: Delete a personal record. This cannot be undone.
+  - `<id>`: Personal record ID, as records list prints it.
+  - `-f, --force`: Skip confirmation prompt.
 
 ### Events
 
