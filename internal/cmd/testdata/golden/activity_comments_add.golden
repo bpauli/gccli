@@ -1,0 +1,62 @@
+The body carries only the text, as the live POST of 2026-10-22 did. The message names the new comment ID.
+-- args --
+activity
+comments
+add
+111
+Nice run
+-- route POST /conversation-service/conversation/comment/ACTIVITY/111/null --
+{"conversationCommentUuid":"7E1D2C3B4A594F6E8D7C6B5A49382716","conversationCommentPk":42,"conversationUuid":"3C0B5D2E7A414F9EB6D81E2F3A4B5C6D","userProfilePk":3141592,"authorDisplayName":"tester","authorFullName":"Test User","body":"Nice run","numberOfLikes":0,"likedByUser":false,"updated":false,"createDate":"2026-10-22T10:00:00.0","commentBlockList":[]}
+-- table stdout --
+-- table stderr --
+Added comment 7E1D2C3B4A594F6E8D7C6B5A49382716 to activity 111
+-- table exit --
+0
+-- table requests --
+POST /conversation-service/conversation/comment/ACTIVITY/111/null
+  {
+    "body": "Nice run"
+  }
+-- plain stdout --
+-- plain stderr --
+Added comment 7E1D2C3B4A594F6E8D7C6B5A49382716 to activity 111
+-- plain exit --
+0
+-- plain requests --
+POST /conversation-service/conversation/comment/ACTIVITY/111/null
+  {
+    "body": "Nice run"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Added comment 7E1D2C3B4A594F6E8D7C6B5A49382716 to activity 111
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /conversation-service/conversation/comment/ACTIVITY/111/null
+  {
+    "body": "Nice run"
+  }
+-- json stdout --
+{
+  "conversationCommentUuid": "7E1D2C3B4A594F6E8D7C6B5A49382716",
+  "conversationCommentPk": 42,
+  "conversationUuid": "3C0B5D2E7A414F9EB6D81E2F3A4B5C6D",
+  "userProfilePk": 3141592,
+  "authorDisplayName": "tester",
+  "authorFullName": "Test User",
+  "body": "Nice run",
+  "numberOfLikes": 0,
+  "likedByUser": false,
+  "updated": false,
+  "createDate": "2026-10-22T10:00:00.0",
+  "commentBlockList": []
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /conversation-service/conversation/comment/ACTIVITY/111/null
+  {
+    "body": "Nice run"
+  }

@@ -1,0 +1,38 @@
+Garmin answers 204 to the unlike.
+-- args --
+activity
+comments
+likes
+remove
+7E1D2C3B4A594F6E8D7C6B5A49382716
+-- route DELETE /conversation-service/conversation/comment/like/7E1D2C3B4A594F6E8D7C6B5A49382716/0 204 --
+-- table stdout --
+-- table stderr --
+Removed like from comment 7E1D2C3B4A594F6E8D7C6B5A49382716
+-- table exit --
+0
+-- table requests --
+DELETE /conversation-service/conversation/comment/like/7E1D2C3B4A594F6E8D7C6B5A49382716/0
+-- plain stdout --
+-- plain stderr --
+Removed like from comment 7E1D2C3B4A594F6E8D7C6B5A49382716
+-- plain exit --
+0
+-- plain requests --
+DELETE /conversation-service/conversation/comment/like/7E1D2C3B4A594F6E8D7C6B5A49382716/0
+-- plain-header stdout --
+-- plain-header stderr --
+Removed like from comment 7E1D2C3B4A594F6E8D7C6B5A49382716
+-- plain-header exit --
+0
+-- plain-header requests --
+DELETE /conversation-service/conversation/comment/like/7E1D2C3B4A594F6E8D7C6B5A49382716/0
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+DELETE /conversation-service/conversation/comment/like/7E1D2C3B4A594F6E8D7C6B5A49382716/0

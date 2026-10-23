@@ -1,0 +1,64 @@
+Garmin lets only the author edit a comment, live 2026-10-22: exit 1.
+-- args --
+activity
+comments
+edit
+111
+7E1D2C3B4A594F6E8D7C6B5A49382716
+Great run
+-- route GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3 --
+{"conversationUuid":"3C0B5D2E7A414F9EB6D81E2F3A4B5C6D","numberOfLikes":0,"numberOfComments":1,"likedByUser":false}
+-- route PUT /conversation-service/conversation/comment/3C0B5D2E7A414F9EB6D81E2F3A4B5C6D/7E1D2C3B4A594F6E8D7C6B5A49382716 403 noeol --
+{"message":"The requester user is not the comment owner","error":"ForbiddenException"}
+-- table stdout --
+-- table stderr --
+edit comment: garmin api: 403 Forbidden: {"message":"The requester user is not the comment owner","error":"ForbiddenException"}
+-- table exit --
+1
+-- table requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+PUT /conversation-service/conversation/comment/3C0B5D2E7A414F9EB6D81E2F3A4B5C6D/7E1D2C3B4A594F6E8D7C6B5A49382716
+  {
+    "body": "Great run",
+    "conversationCommentUuid": "7E1D2C3B4A594F6E8D7C6B5A49382716",
+    "conversationUuid": "3C0B5D2E7A414F9EB6D81E2F3A4B5C6D"
+  }
+-- plain stdout --
+-- plain stderr --
+edit comment: garmin api: 403 Forbidden: {"message":"The requester user is not the comment owner","error":"ForbiddenException"}
+-- plain exit --
+1
+-- plain requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+PUT /conversation-service/conversation/comment/3C0B5D2E7A414F9EB6D81E2F3A4B5C6D/7E1D2C3B4A594F6E8D7C6B5A49382716
+  {
+    "body": "Great run",
+    "conversationCommentUuid": "7E1D2C3B4A594F6E8D7C6B5A49382716",
+    "conversationUuid": "3C0B5D2E7A414F9EB6D81E2F3A4B5C6D"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+edit comment: garmin api: 403 Forbidden: {"message":"The requester user is not the comment owner","error":"ForbiddenException"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+PUT /conversation-service/conversation/comment/3C0B5D2E7A414F9EB6D81E2F3A4B5C6D/7E1D2C3B4A594F6E8D7C6B5A49382716
+  {
+    "body": "Great run",
+    "conversationCommentUuid": "7E1D2C3B4A594F6E8D7C6B5A49382716",
+    "conversationUuid": "3C0B5D2E7A414F9EB6D81E2F3A4B5C6D"
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":403,"message":"edit comment: garmin api: 403 Forbidden: {\"message\":\"The requester user is not the comment owner\",\"error\":\"ForbiddenException\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /conversation-service/conversation/ACTIVITY/111?likerLimit=3
+PUT /conversation-service/conversation/comment/3C0B5D2E7A414F9EB6D81E2F3A4B5C6D/7E1D2C3B4A594F6E8D7C6B5A49382716
+  {
+    "body": "Great run",
+    "conversationCommentUuid": "7E1D2C3B4A594F6E8D7C6B5A49382716",
+    "conversationUuid": "3C0B5D2E7A414F9EB6D81E2F3A4B5C6D"
+  }
