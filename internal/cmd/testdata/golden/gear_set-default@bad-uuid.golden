@@ -1,0 +1,122 @@
+A UUID of the wrong length is a usage error.
+-- args --
+gear
+set-default
+1234
+running
+-- table stdout --
+-- table stderr --
+Usage: gccli gear set-default <uuid> <activity-type>
+
+Make a gear item a default gear for an activity type.
+
+Arguments:
+  <uuid>             Gear UUID, with or without dashes.
+  <activity-type>    Activity type key, as activities types prints it (e.g.
+                     running, trail_running).
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+gccli: error: <uuid>: invalid gear UUID "1234": expected 32 hex digits, with or without dashes
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli gear set-default <uuid> <activity-type>
+
+Make a gear item a default gear for an activity type.
+
+Arguments:
+  <uuid>             Gear UUID, with or without dashes.
+  <activity-type>    Activity type key, as activities types prints it (e.g.
+                     running, trail_running).
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+gccli: error: <uuid>: invalid gear UUID "1234": expected 32 hex digits, with or without dashes
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli gear set-default <uuid> <activity-type>
+
+Make a gear item a default gear for an activity type.
+
+Arguments:
+  <uuid>             Gear UUID, with or without dashes.
+  <activity-type>    Activity type key, as activities types prints it (e.g.
+                     running, trail_running).
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+gccli: error: <uuid>: invalid gear UUID "1234": expected 32 hex digits, with or without dashes
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli gear set-default <uuid> <activity-type>
+
+Make a gear item a default gear for an activity type.
+
+Arguments:
+  <uuid>             Gear UUID, with or without dashes.
+  <activity-type>    Activity type key, as activities types prints it (e.g.
+                     running, trail_running).
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+gccli: error: <uuid>: invalid gear UUID "1234": expected 32 hex digits, with or without dashes
+-- json exit --
+2
+-- json requests --
