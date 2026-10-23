@@ -381,6 +381,9 @@ Commands:
                                    members.
   groups challenges                List the open challenges of a group. Garmin
                                    answers 403 to a non-member.
+  groups join                      Join a public group. gccli does not send the
+                                   request that a private group needs.
+  groups leave                     Leave a group.
   insights options                 List the genders, ages, dates, activities and
                                    fields for insights compare.
   insights compare                 Compare a metric with your age group.
@@ -2284,7 +2287,7 @@ Commands:
 $ gccli groups --help
 Usage: gccli groups <command> [flags]
 
-List, search and view groups.
+List, search, join and leave groups.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -2309,6 +2312,9 @@ Commands:
   groups activities    List the latest activities of the group members.
   groups challenges    List the open challenges of a group. Garmin answers 403
                        to a non-member.
+  groups join          Join a public group. gccli does not send the request that
+                       a private group needs.
+  groups leave         Leave a group.
 
 $ gccli insights --help
 Usage: gccli insights <command> [flags]

@@ -1,0 +1,31 @@
+Any answer other than y or yes cancels before the profile lookup, so no request is sent.
+-- args --
+groups
+leave
+1001
+-- stdin --
+n
+-- table stdout --
+-- table stderr --
+Leave group 1001? [y/N]: Cancelled
+-- table exit --
+0
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Leave group 1001? [y/N]: Cancelled
+-- plain exit --
+0
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Leave group 1001? [y/N]: Cancelled
+-- plain-header exit --
+0
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Leave group 1001? [y/N]: Cancelled
+-- json exit --
+0
+-- json requests --

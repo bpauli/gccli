@@ -1,0 +1,49 @@
+--force skips the prompt.
+-- args --
+groups
+leave
+1001
+--force
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- route GET /userprofile-service/socialProfile/tester --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- route DELETE /group-service/group/1001/member/3141592 204 --
+-- table stdout --
+-- table stderr --
+Left group 1001
+-- table exit --
+0
+-- table requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+DELETE /group-service/group/1001/member/3141592
+-- plain stdout --
+-- plain stderr --
+Left group 1001
+-- plain exit --
+0
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+DELETE /group-service/group/1001/member/3141592
+-- plain-header stdout --
+-- plain-header stderr --
+Left group 1001
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+DELETE /group-service/group/1001/member/3141592
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+DELETE /group-service/group/1001/member/3141592

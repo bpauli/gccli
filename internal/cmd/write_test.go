@@ -333,6 +333,17 @@ var writeCases = map[string]writeCase{
 		human:    "Moved task 789 to 2026-10-28 (new task ID: 790)\n",
 		fallback: "Moved task 789 to 2026-10-28\n",
 	},
+	"groups join": {
+		args: []string{"1001"},
+		routes: map[string]string{
+			profileRoute: `{"displayName":"tester"}`,
+			socialRoute:  `{"profileId":3141592}`,
+			"POST /group-service/group/1001/member/3141592": `{"groupId":1001,"userProfileId":3141592,"groupRole":"MEMBER"}`,
+		},
+		json:     "{\n  \"groupId\": 1001,\n  \"userProfileId\": 3141592,\n  \"groupRole\": \"MEMBER\"\n}\n",
+		human:    "Joined group 1001\n",
+		fallback: "Joined group 1001\n",
+	},
 	"calendar notes add": {
 		args:     []string{"2026-10-20", "Long run", "--content", "Easy pace"},
 		routes:   map[string]string{"POST /calendar-service/note": `{"id":118934,"noteName":"Long run","date":"2026-10-20"}`},
