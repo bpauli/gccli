@@ -56,6 +56,12 @@ func TestActivitiesEndpoints(t *testing.T) {
 		{"activities.like", id, "POST /conversation-service/conversation/like/ACTIVITY/123"},
 		{"activities.unlike", map[string]string{"conversationUUID": "9f0c-4e"}, "DELETE /conversation-service/conversation/like/9f0c-4e/0"},
 		{"activities.unlike", map[string]string{"conversationUUID": "a/b"}, "DELETE /conversation-service/conversation/like/a%2Fb/0"},
+		{"activities.add-comment", id, "POST /conversation-service/conversation/comment/ACTIVITY/123/null"},
+		{"activities.edit-comment", map[string]string{"conversationUUID": "c1", "commentUUID": "k1"}, "PUT /conversation-service/conversation/comment/c1/k1"},
+		{"activities.delete-comment", map[string]string{"conversationUUID": "c1", "commentUUID": "k1"}, "DELETE /conversation-service/conversation/comment/c1/k1/0"},
+		{"activities.comment-likes", map[string]string{"commentUUID": "k1"}, "GET /conversation-service/conversation/comment/likes/k1"},
+		{"activities.like-comment", map[string]string{"commentUUID": "k1"}, "POST /conversation-service/conversation/comment/like/k1"},
+		{"activities.unlike-comment", map[string]string{"commentUUID": "k1"}, "DELETE /conversation-service/conversation/comment/like/k1/0"},
 	})
 }
 

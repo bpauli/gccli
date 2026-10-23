@@ -1,0 +1,37 @@
+Garmin answers 403 when the comment is not liked, live 2026-10-22: exit 1.
+-- args --
+activity
+comments
+likes
+remove
+7E1D2C3B4A594F6E8D7C6B5A49382716
+-- route DELETE /conversation-service/conversation/comment/like/7E1D2C3B4A594F6E8D7C6B5A49382716/0 403 noeol --
+{"message":"invalid request","error":"ForbiddenException"}
+-- table stdout --
+-- table stderr --
+remove comment like: garmin api: 403 Forbidden: {"message":"invalid request","error":"ForbiddenException"}
+-- table exit --
+1
+-- table requests --
+DELETE /conversation-service/conversation/comment/like/7E1D2C3B4A594F6E8D7C6B5A49382716/0
+-- plain stdout --
+-- plain stderr --
+remove comment like: garmin api: 403 Forbidden: {"message":"invalid request","error":"ForbiddenException"}
+-- plain exit --
+1
+-- plain requests --
+DELETE /conversation-service/conversation/comment/like/7E1D2C3B4A594F6E8D7C6B5A49382716/0
+-- plain-header stdout --
+-- plain-header stderr --
+remove comment like: garmin api: 403 Forbidden: {"message":"invalid request","error":"ForbiddenException"}
+-- plain-header exit --
+1
+-- plain-header requests --
+DELETE /conversation-service/conversation/comment/like/7E1D2C3B4A594F6E8D7C6B5A49382716/0
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":403,"message":"remove comment like: garmin api: 403 Forbidden: {\"message\":\"invalid request\",\"error\":\"ForbiddenException\"}"}}
+-- json exit --
+1
+-- json requests --
+DELETE /conversation-service/conversation/comment/like/7E1D2C3B4A594F6E8D7C6B5A49382716/0

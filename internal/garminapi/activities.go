@@ -49,6 +49,13 @@ var activitiesEndpoints = []Endpoint{
 	{Name: "activities.conversation", Method: http.MethodGet, Host: ConnectAPI, Path: "/conversation-service/conversation/ACTIVITY/{activityID}?likerLimit=3"},
 	{Name: "activities.like", Method: http.MethodPost, Host: ConnectAPI, Path: "/conversation-service/conversation/like/ACTIVITY/{activityID}"},
 	{Name: "activities.unlike", Method: http.MethodDelete, Host: ConnectAPI, Path: "/conversation-service/conversation/like/{conversationUUID}/0"},
+	{Name: "activities.add-comment", Method: http.MethodPost, Host: ConnectAPI, Path: "/conversation-service/conversation/comment/ACTIVITY/{activityID}/null", Body: true},
+	{Name: "activities.edit-comment", Method: http.MethodPut, Host: ConnectAPI, Path: "/conversation-service/conversation/comment/{conversationUUID}/{commentUUID}", Body: true},
+	// Garmin ignores the comment PK at the end of the path, so it is 0.
+	{Name: "activities.delete-comment", Method: http.MethodDelete, Host: ConnectAPI, Path: "/conversation-service/conversation/comment/{conversationUUID}/{commentUUID}/0"},
+	{Name: "activities.comment-likes", Method: http.MethodGet, Host: ConnectAPI, Path: "/conversation-service/conversation/comment/likes/{commentUUID}"},
+	{Name: "activities.like-comment", Method: http.MethodPost, Host: ConnectAPI, Path: "/conversation-service/conversation/comment/like/{commentUUID}"},
+	{Name: "activities.unlike-comment", Method: http.MethodDelete, Host: ConnectAPI, Path: "/conversation-service/conversation/comment/like/{commentUUID}/0"},
 }
 
 // CountActivities returns the total number of activities for the authenticated user.
