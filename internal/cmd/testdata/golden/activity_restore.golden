@@ -1,0 +1,51 @@
+The body {} restores the original activity.
+-- args --
+activity
+restore
+12345678
+-- route PUT /activity-service/activity/12345678/reconstruct 202 --
+{"detailedImportResult":{"uploadId":987654,"uploadUuid":{"uuid":"0b5c4c2e-1111-2222-3333-444455556666"},"owner":3141592,"processingTime":42,"creationDate":"2026-01-11 10:00:00.0 GMT","successes":[],"failures":[]}}
+-- table stdout --
+-- table stderr --
+Restored the original of activity 12345678
+-- table exit --
+0
+-- table requests --
+PUT /activity-service/activity/12345678/reconstruct
+  {}
+-- plain stdout --
+-- plain stderr --
+Restored the original of activity 12345678
+-- plain exit --
+0
+-- plain requests --
+PUT /activity-service/activity/12345678/reconstruct
+  {}
+-- plain-header stdout --
+-- plain-header stderr --
+Restored the original of activity 12345678
+-- plain-header exit --
+0
+-- plain-header requests --
+PUT /activity-service/activity/12345678/reconstruct
+  {}
+-- json stdout --
+{
+  "detailedImportResult": {
+    "uploadId": 987654,
+    "uploadUuid": {
+      "uuid": "0b5c4c2e-1111-2222-3333-444455556666"
+    },
+    "owner": 3141592,
+    "processingTime": 42,
+    "creationDate": "2026-01-11 10:00:00.0 GMT",
+    "successes": [],
+    "failures": []
+  }
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+PUT /activity-service/activity/12345678/reconstruct
+  {}
