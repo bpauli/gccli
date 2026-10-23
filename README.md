@@ -22,7 +22,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities, gear types, add, update, retire, unretire and delete gear, list, create, rename and delete gear collections, add gear to a collection
 - **Goals & Badges** — active goals, set daily goals for steps, floors, intensity minutes and hydration, earned/available/in-progress badges, badge details, challenges, personal records
 - **Training** - browse, search and view training plans, show a plan's schedule, join and leave a plan, move and delete its workouts, show your active plans, list adaptive coaching workout types
-- **Profile** - user profile and settings, privacy settings, list, add and delete privacy zones, heart rate zones, power zones for all sports or one sport
+- **Profile** - user profile and settings, view and change privacy settings, list, add and delete privacy zones, heart rate zones, power zones for all sports or one sport
 - **Hydration** — view and log daily water intake
 - **Nutrition** - view daily food logs, meals, and nutrition settings, search the Garmin food database, list recent and favorite foods, log foods and quick entries in a meal, delete log entries, and add and remove favorite foods (all but the first three need Garmin Connect+)
 - **Events** — list, list upcoming, add, and delete calendar events (races, group rides, etc.) with goals and training priority support
@@ -747,6 +747,8 @@ gccli records activity <activityId>
 gccli profile
 gccli profile settings
 gccli profile privacy
+gccli profile privacy set --activities connections --badges private
+gccli profile privacy set --profile public --wellness groups
 gccli profile privacy-zones
 gccli profile privacy-zones add --lat 52.52 --lon 13.405 --radius 500
 gccli profile privacy-zones add --lat 40.7 --lon=-74.0 --radius 1000   # A negative value needs the = form
@@ -1694,6 +1696,11 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli profile view`: Show user profile. Also runs as `gccli profile`.
 - `gccli profile settings`: Show user settings.
 - `gccli profile privacy view`: Show privacy settings. Also runs as `gccli profile privacy`.
+- `gccli profile privacy set [flags]`: Change who can see your profile, activities, wellness data and badges.
+  - `--profile=LEVEL`: Who can see your profile. One of: public, private, connections, groups.
+  - `--activities=LEVEL`: Who can see your activities by default. Past activities keep their privacy; change one with activity privacy. One of: public, private, connections, groups.
+  - `--wellness=LEVEL`: Who can see your wellness data, such as steps. One of: public, private, connections, groups.
+  - `--badges=LEVEL`: Who can see your badges. One of: public, private, connections, groups.
 - `gccli profile privacy-zones list`: List privacy zones. Also runs as `gccli profile privacy-zones`.
 - `gccli profile privacy-zones add --lat=DEGREES --lon=DEGREES --radius=METERS`: Add a privacy zone around a point.
   - `--lat=DEGREES`: Latitude of the center, -90 to 90. Give a negative value as --lat=-33.9.

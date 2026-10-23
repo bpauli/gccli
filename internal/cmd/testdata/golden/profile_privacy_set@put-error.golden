@@ -1,0 +1,329 @@
+The settings PUT answers 400, so no badge request follows.
+-- args --
+profile
+privacy
+set
+--profile
+private
+--badges
+public
+-- route GET /privacysettings-service/privacy-settings --
+{"activityPrivacySettings":{"categoryDetails":{"categoryAccessRule":"private","inheritedFromDefault":false,"updatedTimestampGMT":"2026-01-02T03:04:05.000+00:00"},"subcategoryPrivacySettings":[{"privacySubcategoryType":"running","subcategoryDetails":{"accessRule":"private","updatedTimestampGMT":"2026-01-02T03:04:05.000+00:00","inheritedFromCategory":true,"inheritedFromDefault":false},"associatedParentActivityTypeIds":[1]},{"privacySubcategoryType":"cycling","subcategoryDetails":{"accessRule":"public","updatedTimestampGMT":"2026-01-02T03:04:05.000+00:00","inheritedFromCategory":false,"inheritedFromDefault":false},"associatedParentActivityTypeIds":[2,10]}]},"profilePrivacySettings":{"categoryDetails":{"categoryAccessRule":"private","inheritedFromDefault":true,"updatedTimestampGMT":null},"subcategoryPrivacySettings":[{"privacySubcategoryType":"user_profile","subcategoryDetails":{"accessRule":"private","inheritedFromCategory":true,"inheritedFromDefault":true}}]},"wellnessPrivacySettings":{"subcategoryPrivacySettings":[{"privacySubcategoryType":"steps","subcategoryDetails":{"accessRule":"private","inheritedFromCategory":true,"inheritedFromDefault":false}}],"categoryDetails":{"categoryAccessRule":"private","inheritedFromDefault":false,"updatedTimestampGMT":"2026-01-02T03:04:05.000+00:00"}},"settingsVersion":12345678901234567890}
+-- route PUT /privacysettings-service/privacy-settings 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+change privacy settings: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /privacysettings-service/privacy-settings
+PUT /privacysettings-service/privacy-settings
+  {
+    "activityPrivacySettings": {
+      "categoryDetails": {
+        "categoryAccessRule": "private",
+        "inheritedFromDefault": false,
+        "updatedTimestampGMT": "2026-01-02T03:04:05.000+00:00"
+      },
+      "subcategoryPrivacySettings": [
+        {
+          "associatedParentActivityTypeIds": [
+            1
+          ],
+          "privacySubcategoryType": "running",
+          "subcategoryDetails": {
+            "accessRule": "private",
+            "inheritedFromCategory": true,
+            "inheritedFromDefault": false,
+            "updatedTimestampGMT": "2026-01-02T03:04:05.000+00:00"
+          }
+        },
+        {
+          "associatedParentActivityTypeIds": [
+            2,
+            10
+          ],
+          "privacySubcategoryType": "cycling",
+          "subcategoryDetails": {
+            "accessRule": "public",
+            "inheritedFromCategory": false,
+            "inheritedFromDefault": false,
+            "updatedTimestampGMT": "2026-01-02T03:04:05.000+00:00"
+          }
+        }
+      ]
+    },
+    "profilePrivacySettings": {
+      "categoryDetails": {
+        "categoryAccessRule": "private",
+        "inheritedFromDefault": true,
+        "updatedTimestampGMT": null
+      },
+      "subcategoryPrivacySettings": [
+        {
+          "privacySubcategoryType": "user_profile",
+          "subcategoryDetails": {
+            "accessRule": "private",
+            "inheritedFromCategory": true,
+            "inheritedFromDefault": true
+          }
+        }
+      ]
+    },
+    "settingsVersion": 12345678901234567890,
+    "wellnessPrivacySettings": {
+      "categoryDetails": {
+        "categoryAccessRule": "private",
+        "inheritedFromDefault": false,
+        "updatedTimestampGMT": "2026-01-02T03:04:05.000+00:00"
+      },
+      "subcategoryPrivacySettings": [
+        {
+          "privacySubcategoryType": "steps",
+          "subcategoryDetails": {
+            "accessRule": "private",
+            "inheritedFromCategory": true,
+            "inheritedFromDefault": false
+          }
+        }
+      ]
+    }
+  }
+-- plain stdout --
+-- plain stderr --
+change privacy settings: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /privacysettings-service/privacy-settings
+PUT /privacysettings-service/privacy-settings
+  {
+    "activityPrivacySettings": {
+      "categoryDetails": {
+        "categoryAccessRule": "private",
+        "inheritedFromDefault": false,
+        "updatedTimestampGMT": "2026-01-02T03:04:05.000+00:00"
+      },
+      "subcategoryPrivacySettings": [
+        {
+          "associatedParentActivityTypeIds": [
+            1
+          ],
+          "privacySubcategoryType": "running",
+          "subcategoryDetails": {
+            "accessRule": "private",
+            "inheritedFromCategory": true,
+            "inheritedFromDefault": false,
+            "updatedTimestampGMT": "2026-01-02T03:04:05.000+00:00"
+          }
+        },
+        {
+          "associatedParentActivityTypeIds": [
+            2,
+            10
+          ],
+          "privacySubcategoryType": "cycling",
+          "subcategoryDetails": {
+            "accessRule": "public",
+            "inheritedFromCategory": false,
+            "inheritedFromDefault": false,
+            "updatedTimestampGMT": "2026-01-02T03:04:05.000+00:00"
+          }
+        }
+      ]
+    },
+    "profilePrivacySettings": {
+      "categoryDetails": {
+        "categoryAccessRule": "private",
+        "inheritedFromDefault": true,
+        "updatedTimestampGMT": null
+      },
+      "subcategoryPrivacySettings": [
+        {
+          "privacySubcategoryType": "user_profile",
+          "subcategoryDetails": {
+            "accessRule": "private",
+            "inheritedFromCategory": true,
+            "inheritedFromDefault": true
+          }
+        }
+      ]
+    },
+    "settingsVersion": 12345678901234567890,
+    "wellnessPrivacySettings": {
+      "categoryDetails": {
+        "categoryAccessRule": "private",
+        "inheritedFromDefault": false,
+        "updatedTimestampGMT": "2026-01-02T03:04:05.000+00:00"
+      },
+      "subcategoryPrivacySettings": [
+        {
+          "privacySubcategoryType": "steps",
+          "subcategoryDetails": {
+            "accessRule": "private",
+            "inheritedFromCategory": true,
+            "inheritedFromDefault": false
+          }
+        }
+      ]
+    }
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+change privacy settings: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /privacysettings-service/privacy-settings
+PUT /privacysettings-service/privacy-settings
+  {
+    "activityPrivacySettings": {
+      "categoryDetails": {
+        "categoryAccessRule": "private",
+        "inheritedFromDefault": false,
+        "updatedTimestampGMT": "2026-01-02T03:04:05.000+00:00"
+      },
+      "subcategoryPrivacySettings": [
+        {
+          "associatedParentActivityTypeIds": [
+            1
+          ],
+          "privacySubcategoryType": "running",
+          "subcategoryDetails": {
+            "accessRule": "private",
+            "inheritedFromCategory": true,
+            "inheritedFromDefault": false,
+            "updatedTimestampGMT": "2026-01-02T03:04:05.000+00:00"
+          }
+        },
+        {
+          "associatedParentActivityTypeIds": [
+            2,
+            10
+          ],
+          "privacySubcategoryType": "cycling",
+          "subcategoryDetails": {
+            "accessRule": "public",
+            "inheritedFromCategory": false,
+            "inheritedFromDefault": false,
+            "updatedTimestampGMT": "2026-01-02T03:04:05.000+00:00"
+          }
+        }
+      ]
+    },
+    "profilePrivacySettings": {
+      "categoryDetails": {
+        "categoryAccessRule": "private",
+        "inheritedFromDefault": true,
+        "updatedTimestampGMT": null
+      },
+      "subcategoryPrivacySettings": [
+        {
+          "privacySubcategoryType": "user_profile",
+          "subcategoryDetails": {
+            "accessRule": "private",
+            "inheritedFromCategory": true,
+            "inheritedFromDefault": true
+          }
+        }
+      ]
+    },
+    "settingsVersion": 12345678901234567890,
+    "wellnessPrivacySettings": {
+      "categoryDetails": {
+        "categoryAccessRule": "private",
+        "inheritedFromDefault": false,
+        "updatedTimestampGMT": "2026-01-02T03:04:05.000+00:00"
+      },
+      "subcategoryPrivacySettings": [
+        {
+          "privacySubcategoryType": "steps",
+          "subcategoryDetails": {
+            "accessRule": "private",
+            "inheritedFromCategory": true,
+            "inheritedFromDefault": false
+          }
+        }
+      ]
+    }
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"change privacy settings: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /privacysettings-service/privacy-settings
+PUT /privacysettings-service/privacy-settings
+  {
+    "activityPrivacySettings": {
+      "categoryDetails": {
+        "categoryAccessRule": "private",
+        "inheritedFromDefault": false,
+        "updatedTimestampGMT": "2026-01-02T03:04:05.000+00:00"
+      },
+      "subcategoryPrivacySettings": [
+        {
+          "associatedParentActivityTypeIds": [
+            1
+          ],
+          "privacySubcategoryType": "running",
+          "subcategoryDetails": {
+            "accessRule": "private",
+            "inheritedFromCategory": true,
+            "inheritedFromDefault": false,
+            "updatedTimestampGMT": "2026-01-02T03:04:05.000+00:00"
+          }
+        },
+        {
+          "associatedParentActivityTypeIds": [
+            2,
+            10
+          ],
+          "privacySubcategoryType": "cycling",
+          "subcategoryDetails": {
+            "accessRule": "public",
+            "inheritedFromCategory": false,
+            "inheritedFromDefault": false,
+            "updatedTimestampGMT": "2026-01-02T03:04:05.000+00:00"
+          }
+        }
+      ]
+    },
+    "profilePrivacySettings": {
+      "categoryDetails": {
+        "categoryAccessRule": "private",
+        "inheritedFromDefault": true,
+        "updatedTimestampGMT": null
+      },
+      "subcategoryPrivacySettings": [
+        {
+          "privacySubcategoryType": "user_profile",
+          "subcategoryDetails": {
+            "accessRule": "private",
+            "inheritedFromCategory": true,
+            "inheritedFromDefault": true
+          }
+        }
+      ]
+    },
+    "settingsVersion": 12345678901234567890,
+    "wellnessPrivacySettings": {
+      "categoryDetails": {
+        "categoryAccessRule": "private",
+        "inheritedFromDefault": false,
+        "updatedTimestampGMT": "2026-01-02T03:04:05.000+00:00"
+      },
+      "subcategoryPrivacySettings": [
+        {
+          "privacySubcategoryType": "steps",
+          "subcategoryDetails": {
+            "accessRule": "private",
+            "inheritedFromCategory": true,
+            "inheritedFromDefault": false
+          }
+        }
+      ]
+    }
+  }
