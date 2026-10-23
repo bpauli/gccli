@@ -372,6 +372,15 @@ Commands:
   social requests                  List pending connection requests.
   social feed                      Show your newsfeed.
   groups list                      List your groups.
+  groups search                    Search groups by keyword.
+  groups show                      Show a group.
+  groups members                   List the members of a group.
+  groups feed                      Show the latest posts and activities of the
+                                   group feed.
+  groups activities                List the latest activities of the group
+                                   members.
+  groups challenges                List the open challenges of a group. Garmin
+                                   answers 403 to a non-member.
   insights options                 List the genders, ages, dates, activities and
                                    fields for insights compare.
   insights compare                 Compare a metric with your age group.
@@ -2275,7 +2284,7 @@ Commands:
 $ gccli groups --help
 Usage: gccli groups <command> [flags]
 
-View groups.
+List, search and view groups.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -2292,7 +2301,14 @@ Flags:
       --version           Print version information.
 
 Commands:
-  groups list    List your groups.
+  groups list          List your groups.
+  groups search        Search groups by keyword.
+  groups show          Show a group.
+  groups members       List the members of a group.
+  groups feed          Show the latest posts and activities of the group feed.
+  groups activities    List the latest activities of the group members.
+  groups challenges    List the open challenges of a group. Garmin answers 403
+                       to a non-member.
 
 $ gccli insights --help
 Usage: gccli insights <command> [flags]
