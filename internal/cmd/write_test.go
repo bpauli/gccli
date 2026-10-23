@@ -1245,7 +1245,7 @@ func apiWriteMethods(methods map[string]*ast.FuncDecl, table map[string]clientMe
 	writes := map[string]clientMethod{}
 	maps.Copy(writes, table)
 	for name, fn := range methods {
-		if namesWriteVerb(fn.Body) && postReads[name] == "" {
+		if namesWriteVerb(fn.Body) {
 			writes[name] = name
 		}
 	}
@@ -1297,12 +1297,6 @@ func firstCallIn(body ast.Node, writes map[string]clientMethod) (string, bool) {
 		}
 	}
 	return "", false
-}
-
-// postReads are the Client methods that send a POST only to read, with the
-// reason. An endpoint row marks such a POST with Read instead.
-var postReads = map[string]string{
-	"SearchUsers": "Garmin takes the user search only as a POST form",
 }
 
 var writeVerbs = map[string]bool{

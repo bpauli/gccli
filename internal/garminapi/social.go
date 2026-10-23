@@ -1,12 +1,6 @@
 package garminapi
 
-import (
-	"context"
-	"encoding/json"
-	"net/http"
-	"net/url"
-	"strconv"
-)
+import "net/http"
 
 var socialEndpoints = []Endpoint{
 	{Name: "connections.list", Method: http.MethodGet, Host: ConnectAPI, Path: "/connection-service/connection/v2/connections/pagination?start={start}&limit={limit}"},
@@ -28,18 +22,7 @@ var socialEndpoints = []Endpoint{
 	{Name: "muted.remove", Method: http.MethodDelete, Host: ConnectAPI, Path: "/follower-service/muteuser/{displayName}"},
 	{Name: "connections.pending", Method: http.MethodGet, Host: ConnectAPI, Path: "/connection-service/connection/pending"},
 	{Name: "newsfeed.list", Method: http.MethodGet, Host: ConnectAPI, Path: "/web-gateway/newsfeed/v3"},
-}
-
-// SearchUsers finds Garmin Connect users by name. Garmin takes the search
-// as a form, not JSON, and counts start from 1.
-func (c *Client) SearchUsers(ctx context.Context, keyword string, offset, limit int) (json.RawMessage, error) {
-	form := url.Values{"keyword": {keyword}, "start": {strconv.Itoa(offset + 1)}, "limit": {strconv.Itoa(limit)}}
-	resp, err := c.do(ctx, request{
-		kind: kindJSON, method: http.MethodPost, path: "/usersearch-service/search/v3?displayMutedStatus=true",
-		body: []byte(form.Encode()), contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-	})
-	if err != nil {
-		return nil, err
-	}
-	return jsonResult(resp), nil
+	// Garmin takes the search only as a POST form. A GET answers 405 and a
+	// JSON body 415.
+	{Name: "users.search", Method: http.MethodPost, Host: ConnectAPI, Path: "/usersearch-service/search/v3?displayMutedStatus=true", Body: true, Form: true, Read: true},
 }
