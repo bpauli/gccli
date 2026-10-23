@@ -1,0 +1,55 @@
+A request on a later inbox page is found by its cursor.
+-- args --
+social
+accept
+runner-anna
+-- route GET /web-gateway/inbox/v2/requests?req=8 --
+{"requests":[{"requestKey":8,"data":{"displayName":"other-user","followRequestId":4241}}],"nextCursor":"c2","profileInfos":{}}
+-- route GET /web-gateway/inbox/v2/requests?req=8&cursor=c2 --
+{"requests":[{"requestKey":8,"data":{"userId":2718281,"displayName":"runner-anna","fullName":"Anna Runner","location":"Hamburg","userLevel":3,"profileImageUrls":{},"followRequestId":4242,"requestStartTime":"2026-10-22T10:00:00.0","requestViewed":false}}],"nextCursor":null,"profileInfos":{}}
+-- route PUT /follower-service/follow/requests/4242/accept --
+{"id":4242,"requesteeId":2718281,"requestorId":3141592,"requestStatus":"ACCEPTED","requestStartTime":"2026-10-22T10:00:00.0","requestEndTime":"2026-10-22T11:00:00.0","requestViewed":true}
+-- table stdout --
+-- table stderr --
+Accepted the follow request of runner-anna
+-- table exit --
+0
+-- table requests --
+GET /web-gateway/inbox/v2/requests?req=8
+GET /web-gateway/inbox/v2/requests?req=8&cursor=c2
+PUT /follower-service/follow/requests/4242/accept
+-- plain stdout --
+-- plain stderr --
+Accepted the follow request of runner-anna
+-- plain exit --
+0
+-- plain requests --
+GET /web-gateway/inbox/v2/requests?req=8
+GET /web-gateway/inbox/v2/requests?req=8&cursor=c2
+PUT /follower-service/follow/requests/4242/accept
+-- plain-header stdout --
+-- plain-header stderr --
+Accepted the follow request of runner-anna
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /web-gateway/inbox/v2/requests?req=8
+GET /web-gateway/inbox/v2/requests?req=8&cursor=c2
+PUT /follower-service/follow/requests/4242/accept
+-- json stdout --
+{
+  "id": 4242,
+  "requesteeId": 2718281,
+  "requestorId": 3141592,
+  "requestStatus": "ACCEPTED",
+  "requestStartTime": "2026-10-22T10:00:00.0",
+  "requestEndTime": "2026-10-22T11:00:00.0",
+  "requestViewed": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /web-gateway/inbox/v2/requests?req=8
+GET /web-gateway/inbox/v2/requests?req=8&cursor=c2
+PUT /follower-service/follow/requests/4242/accept

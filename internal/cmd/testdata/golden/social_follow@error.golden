@@ -1,0 +1,35 @@
+Garmin refused the follow from the test account with 412 on 2026-10-22: exit 1.
+-- args --
+social
+follow
+runner-anna
+-- route POST /follower-service/follow/followings/runner-anna 412 noeol --
+{"message":"Unknown Precondition Failed","reasonCode":5,"error":"PreconditionFailedException"}
+-- table stdout --
+-- table stderr --
+follow user: garmin api: 412 Precondition Failed: {"message":"Unknown Precondition Failed","reasonCode":5,"error":"PreconditionFailedException"}
+-- table exit --
+1
+-- table requests --
+POST /follower-service/follow/followings/runner-anna
+-- plain stdout --
+-- plain stderr --
+follow user: garmin api: 412 Precondition Failed: {"message":"Unknown Precondition Failed","reasonCode":5,"error":"PreconditionFailedException"}
+-- plain exit --
+1
+-- plain requests --
+POST /follower-service/follow/followings/runner-anna
+-- plain-header stdout --
+-- plain-header stderr --
+follow user: garmin api: 412 Precondition Failed: {"message":"Unknown Precondition Failed","reasonCode":5,"error":"PreconditionFailedException"}
+-- plain-header exit --
+1
+-- plain-header requests --
+POST /follower-service/follow/followings/runner-anna
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":412,"message":"follow user: garmin api: 412 Precondition Failed: {\"message\":\"Unknown Precondition Failed\",\"reasonCode\":5,\"error\":\"PreconditionFailedException\"}"}}
+-- json exit --
+1
+-- json requests --
+POST /follower-service/follow/followings/runner-anna

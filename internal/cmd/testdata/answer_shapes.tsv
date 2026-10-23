@@ -172,8 +172,10 @@ segments show	object	live GET 2026-10-22 connectapi
 segments surface-types	array	live GET 2026-10-22 connectapi
 social connections	object	live 2026-10-20
 social feed	object	live 2026-10-20
+social follow-requests	object	live 2026-10-22
 social followers	array	live 2026-10-20
 social following	array	live 2026-10-20
+social muted	object	live 2026-10-22
 social requests	array	live 2026-10-20
 training active	object	live 2026-10-20
 training coach-workouts	array	live 2026-10-20

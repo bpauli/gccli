@@ -28,7 +28,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Events** — list, list upcoming, add, and delete calendar events (races, group rides, etc.) with goals and training priority support
 - **Calendar** - month view of activities, workouts, events and notes, add, update, move and delete calendar notes, turn the iCalendar feed on and off, and change the web calendar preferences
 - **Wellness** - menstrual cycle data and calendar, menstrual daily log (view, set, delete), pregnancy summary, jet lag trips (list, add, update, delete) and status
-- **Social** - notifications (page with a cursor, dismiss and undismiss, unread state), view and change notification preferences, connections, connection requests, followers, following, newsfeed, groups
+- **Social** - notifications (page with a cursor, dismiss and undismiss, unread state), view and change notification preferences, connections, connection requests, followers, following, follow and unfollow, follow requests, mute, user search, newsfeed, groups
 - **Insights** - compare your steps, sleep, floors, VO2 max, speed, power and more with people of your age group and gender (needs Insights turned on in Garmin Connect)
 - **Golf** - scorecards, the courses you played, golf and shot stats (drive, approach, chip, putt), the clubs in your bag, club types and leaderboards
 - **Agent-ready** - ships a bundled agent skill (`skills/gccli/`) that plugs into AI assistants like Claude Code, Codex, Hermes, and OpenClaw so you can drive Garmin Connect in plain language
@@ -911,8 +911,20 @@ gccli social following                 # List the users you follow
 gccli social following <display-name>  # List the users that another user follows
 gccli social requests                  # List pending connection requests
 gccli social feed                      # Show your newsfeed
+gccli social search anna               # Search users by name
+gccli social follow <display-name>     # Follow a user (a private profile gets a follow request)
+gccli social unfollow <display-name>   # Stop following a user
+gccli social follow-requests           # List the users who asked to follow you
+gccli social accept <display-name>     # Accept a follow request
+gccli social decline <display-name>    # Decline a follow request
+gccli social remove-follower <display-name>
+gccli social mute <display-name>       # Mute a user that you follow
+gccli social unmute <display-name>
+gccli social muted                     # List the users that you muted
 gccli groups list                      # List your groups
 ```
+
+`unfollow`, `remove-follower` and `unmute` read the follow status or the muted list first, because Garmin answers 204 whether there is something to remove or not. They exit 1 when there is nothing to remove. `unfollow` and `remove-follower` ask first (`--force` skips the question). Garmin no longer takes new connection requests (410 `API_DEPRECATED`), so gccli has no command to send one.
 
 ### Data Reload
 
@@ -1635,6 +1647,28 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `[<display-name>]`: Display name of the user. Defaults to your display name.
 - `gccli social requests`: List pending connection requests.
 - `gccli social feed`: Show your newsfeed.
+- `gccli social follow <display-name>`: Follow a user. A user with a private profile gets a follow request.
+  - `<display-name>`: Display name of the user.
+- `gccli social unfollow <display-name> [flags]`: Stop following a user.
+  - `<display-name>`: Display name of the user.
+  - `-f, --force`: Skip confirmation prompt.
+- `gccli social follow-requests`: List the users who asked to follow you.
+- `gccli social accept <display-name>`: Accept the follow request of a user.
+  - `<display-name>`: Display name of the user, as social follow-requests lists it.
+- `gccli social decline <display-name>`: Decline the follow request of a user.
+  - `<display-name>`: Display name of the user, as social follow-requests lists it.
+- `gccli social remove-follower <display-name> [flags]`: Remove a user from your followers.
+  - `<display-name>`: Display name of the user.
+  - `-f, --force`: Skip confirmation prompt.
+- `gccli social mute <display-name>`: Mute a user that you follow.
+  - `<display-name>`: Display name of the user.
+- `gccli social unmute <display-name>`: Unmute a user.
+  - `<display-name>`: Display name of the user.
+- `gccli social muted`: List the users that you muted.
+- `gccli social search <query> [flags]`: Search Garmin Connect users by name.
+  - `<query>`: Name to search for, at least 2 characters.
+  - `-l, --limit=20`: Maximum number of users to return.
+  - `--offset=0`: Number of users to skip.
 - `gccli groups list`: List your groups. Also runs as `gccli groups`.
 - `gccli notifications list [flags]`: List notifications. Also runs as `gccli notifications [flags]`.
   - `--limit=50`: Maximum number of notifications to return.
