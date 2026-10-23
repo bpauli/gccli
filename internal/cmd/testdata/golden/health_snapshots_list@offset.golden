@@ -1,0 +1,41 @@
+--offset 20 skips 20 sessions, so start is 21.
+-- args --
+health
+snapshots
+list
+--limit
+10
+--offset
+20
+--until
+2026-10-01
+-- route GET /wellnessactivity-service/activity/summary/list?limit=10&start=21&until=2026-10-01 --
+[]
+-- table stdout --
+[]
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /wellnessactivity-service/activity/summary/list?limit=10&start=21&until=2026-10-01
+-- plain stdout --
+[]
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /wellnessactivity-service/activity/summary/list?limit=10&start=21&until=2026-10-01
+-- plain-header stdout --
+[]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /wellnessactivity-service/activity/summary/list?limit=10&start=21&until=2026-10-01
+-- json stdout --
+[]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /wellnessactivity-service/activity/summary/list?limit=10&start=21&until=2026-10-01

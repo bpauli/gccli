@@ -1,0 +1,127 @@
+-- args --
+health
+snapshots
+epochs
+1b4e28ba-2fa1-11d2-883f-0016d3cca427
+-- route GET /wellnessactivity-service/activity/epoch/1b4e28ba-2fa1-11d2-883f-0016d3cca427 --
+{"userProfilePK":3141592,"activityUuid":"1b4e28ba-2fa1-11d2-883f-0016d3cca427","epochDescriptorDTOList":[{"key":"timestamp","index":0},{"key":"heartRate","index":1}],"epochArray":[[1792051200000,61],[1792051205000,62]]}
+-- table stdout --
+{
+  "userProfilePK": 3141592,
+  "activityUuid": "1b4e28ba-2fa1-11d2-883f-0016d3cca427",
+  "epochDescriptorDTOList": [
+    {
+      "key": "timestamp",
+      "index": 0
+    },
+    {
+      "key": "heartRate",
+      "index": 1
+    }
+  ],
+  "epochArray": [
+    [
+      1792051200000,
+      61
+    ],
+    [
+      1792051205000,
+      62
+    ]
+  ]
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /wellnessactivity-service/activity/epoch/1b4e28ba-2fa1-11d2-883f-0016d3cca427
+-- plain stdout --
+{
+  "userProfilePK": 3141592,
+  "activityUuid": "1b4e28ba-2fa1-11d2-883f-0016d3cca427",
+  "epochDescriptorDTOList": [
+    {
+      "key": "timestamp",
+      "index": 0
+    },
+    {
+      "key": "heartRate",
+      "index": 1
+    }
+  ],
+  "epochArray": [
+    [
+      1792051200000,
+      61
+    ],
+    [
+      1792051205000,
+      62
+    ]
+  ]
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /wellnessactivity-service/activity/epoch/1b4e28ba-2fa1-11d2-883f-0016d3cca427
+-- plain-header stdout --
+{
+  "userProfilePK": 3141592,
+  "activityUuid": "1b4e28ba-2fa1-11d2-883f-0016d3cca427",
+  "epochDescriptorDTOList": [
+    {
+      "key": "timestamp",
+      "index": 0
+    },
+    {
+      "key": "heartRate",
+      "index": 1
+    }
+  ],
+  "epochArray": [
+    [
+      1792051200000,
+      61
+    ],
+    [
+      1792051205000,
+      62
+    ]
+  ]
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /wellnessactivity-service/activity/epoch/1b4e28ba-2fa1-11d2-883f-0016d3cca427
+-- json stdout --
+{
+  "userProfilePK": 3141592,
+  "activityUuid": "1b4e28ba-2fa1-11d2-883f-0016d3cca427",
+  "epochDescriptorDTOList": [
+    {
+      "key": "timestamp",
+      "index": 0
+    },
+    {
+      "key": "heartRate",
+      "index": 1
+    }
+  ],
+  "epochArray": [
+    [
+      1792051200000,
+      61
+    ],
+    [
+      1792051205000,
+      62
+    ]
+  ]
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /wellnessactivity-service/activity/epoch/1b4e28ba-2fa1-11d2-883f-0016d3cca427

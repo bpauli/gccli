@@ -60,9 +60,12 @@ func (l Leaf) inputs(args reflect.Value) map[string]string {
 	}
 	for _, s := range l.Params {
 		for _, a := range s.alts {
-			if a.lookup == lookupPage {
+			switch a.lookup {
+			case lookupPage:
 				read("Offset")
 				read("Limit")
+			case lookupStartIndex:
+				read("Offset")
 			}
 			read(a.field)
 		}
@@ -104,6 +107,9 @@ func (a alt) value(g *Globals, client *garminapi.Client, in map[string]string) (
 		offset, _ := strconv.Atoi(in["Offset"])
 		limit, _ := strconv.Atoi(in["Limit"])
 		return strconv.Itoa(offset/limit + 1), nil
+	case lookupStartIndex:
+		offset, _ := strconv.Atoi(in["Offset"])
+		return strconv.Itoa(offset + 1), nil
 	}
 	return in[a.field], nil
 }

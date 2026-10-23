@@ -122,6 +122,9 @@ health sleep naps view	array	live 2026-10-20
 health sleep overall	object	live 2026-10-20
 health sleep view	object	live 2026-10-20
 health sleep weekly	unknown	empty body live 2026-10-20
+health snapshots epochs	object	live 2026-10-22 with a zero UUID (no account has a session)
+health snapshots list	array	live 2026-10-22 (empty on both accounts)
+health snapshots show	unknown	empty body live 2026-10-22 with a zero UUID (no account has a session)
 health spo2	object	live 2026-10-20
 health steps daily	array	live 2026-10-20
 health steps monthly	array	live 2026-10-20
