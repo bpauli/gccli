@@ -9,6 +9,7 @@ func TestSocialEndpoints(t *testing.T) {
 		{"followers.list", map[string]string{"displayName": "a b/c"}, "GET /follower-service/follow/followers/a%20b%2Fc"},
 		{"following.list", map[string]string{"displayName": "tester"}, "GET /follower-service/follow/followings/tester"},
 		{"following.list", map[string]string{"displayName": "a b/c"}, "GET /follower-service/follow/followings/a%20b%2Fc"},
+		{"followers.mutuals", nil, "GET /follower-service/follow/mutuals"},
 		{"connections.pending", nil, "GET /connection-service/connection/pending"},
 		{"newsfeed.list", nil, "GET /web-gateway/newsfeed/v3"},
 	})

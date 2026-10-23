@@ -1,0 +1,171 @@
+A week challenge with a description and two invites. The mutuals read maps each display name to its userId for the players.
+-- args --
+challenges
+adhoc
+create
+Step up
+--type
+steps
+--start
+2026-10-19
+--description
+Who walks most
+--invite
+bob
+--invite
+ann
+-- route GET /follower-service/follow/mutuals --
+[{"displayName":"ann","followStatus":1,"fullName":"Ann Example","location":null,"profileImageUrls":[],"userId":2001,"userLevel":3,"userPoint":120},{"displayName":"bob","followStatus":1,"fullName":"Bob Example","location":null,"profileImageUrls":[],"userId":2002,"userLevel":2,"userPoint":40}]
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- route GET /userprofile-service/socialProfile/tester --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- route POST /adhocchallenge-service/adHocChallenge --
+{"adHocChallengeDesc":"Who walks most","adHocChallengeName":"Step up","alternateChallengeAwards":null,"durationTypeId":0,"endDate":"2026-10-25T23:59:59.0","inviteeCount":2,"isChallengeCommentDisabled":false,"ownerUserProfileId":3141592,"playerCount":1,"players":[{"userProfileId":3141592,"displayName":"tester"}],"socialChallengeActivityTypeId":4,"socialChallengeStatusId":0,"socialChallengeType":"ADHOC","startDate":"2026-10-19T00:00:00.0","user":null,"userRanking":0,"uuid":"FEDCBA9876543210FEDCBA9876543210"}
+-- table stdout --
+-- table stderr --
+Created ad-hoc challenge "Step up" (UUID: FEDCBA9876543210FEDCBA9876543210)
+-- table exit --
+0
+-- table requests --
+GET /follower-service/follow/mutuals
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+POST /adhocchallenge-service/adHocChallenge
+  {
+    "adHocChallengeName": "Step up",
+    "adHocChallengeDesc": "Who walks most",
+    "socialChallengeActivityTypeId": 4,
+    "durationTypeId": 0,
+    "startDate": "2026-10-19T00:00:00.00",
+    "endDate": "2026-10-25T23:59:59.999",
+    "userRanking": 0,
+    "socialChallengeStatusId": 0,
+    "ownerUserProfileId": 3141592,
+    "players": [
+      {
+        "userProfileId": 2002,
+        "displayName": "bob"
+      },
+      {
+        "userProfileId": 2001,
+        "displayName": "ann"
+      }
+    ]
+  }
+-- plain stdout --
+-- plain stderr --
+Created ad-hoc challenge "Step up" (UUID: FEDCBA9876543210FEDCBA9876543210)
+-- plain exit --
+0
+-- plain requests --
+GET /follower-service/follow/mutuals
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+POST /adhocchallenge-service/adHocChallenge
+  {
+    "adHocChallengeName": "Step up",
+    "adHocChallengeDesc": "Who walks most",
+    "socialChallengeActivityTypeId": 4,
+    "durationTypeId": 0,
+    "startDate": "2026-10-19T00:00:00.00",
+    "endDate": "2026-10-25T23:59:59.999",
+    "userRanking": 0,
+    "socialChallengeStatusId": 0,
+    "ownerUserProfileId": 3141592,
+    "players": [
+      {
+        "userProfileId": 2002,
+        "displayName": "bob"
+      },
+      {
+        "userProfileId": 2001,
+        "displayName": "ann"
+      }
+    ]
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Created ad-hoc challenge "Step up" (UUID: FEDCBA9876543210FEDCBA9876543210)
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /follower-service/follow/mutuals
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+POST /adhocchallenge-service/adHocChallenge
+  {
+    "adHocChallengeName": "Step up",
+    "adHocChallengeDesc": "Who walks most",
+    "socialChallengeActivityTypeId": 4,
+    "durationTypeId": 0,
+    "startDate": "2026-10-19T00:00:00.00",
+    "endDate": "2026-10-25T23:59:59.999",
+    "userRanking": 0,
+    "socialChallengeStatusId": 0,
+    "ownerUserProfileId": 3141592,
+    "players": [
+      {
+        "userProfileId": 2002,
+        "displayName": "bob"
+      },
+      {
+        "userProfileId": 2001,
+        "displayName": "ann"
+      }
+    ]
+  }
+-- json stdout --
+{
+  "adHocChallengeDesc": "Who walks most",
+  "adHocChallengeName": "Step up",
+  "alternateChallengeAwards": null,
+  "durationTypeId": 0,
+  "endDate": "2026-10-25T23:59:59.0",
+  "inviteeCount": 2,
+  "isChallengeCommentDisabled": false,
+  "ownerUserProfileId": 3141592,
+  "playerCount": 1,
+  "players": [
+    {
+      "userProfileId": 3141592,
+      "displayName": "tester"
+    }
+  ],
+  "socialChallengeActivityTypeId": 4,
+  "socialChallengeStatusId": 0,
+  "socialChallengeType": "ADHOC",
+  "startDate": "2026-10-19T00:00:00.0",
+  "user": null,
+  "userRanking": 0,
+  "uuid": "FEDCBA9876543210FEDCBA9876543210"
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /follower-service/follow/mutuals
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+POST /adhocchallenge-service/adHocChallenge
+  {
+    "adHocChallengeName": "Step up",
+    "adHocChallengeDesc": "Who walks most",
+    "socialChallengeActivityTypeId": 4,
+    "durationTypeId": 0,
+    "startDate": "2026-10-19T00:00:00.00",
+    "endDate": "2026-10-25T23:59:59.999",
+    "userRanking": 0,
+    "socialChallengeStatusId": 0,
+    "ownerUserProfileId": 3141592,
+    "players": [
+      {
+        "userProfileId": 2002,
+        "displayName": "bob"
+      },
+      {
+        "userProfileId": 2001,
+        "displayName": "ann"
+      }
+    ]
+  }

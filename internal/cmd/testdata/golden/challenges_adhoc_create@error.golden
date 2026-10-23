@@ -1,0 +1,102 @@
+Error case: Garmin answers 400, so the exit code is 1 (error). Without --invite there is no mutuals read.
+-- args --
+challenges
+adhoc
+create
+Step up
+--type
+running
+--duration
+day
+--start
+2026-10-19
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- route GET /userprofile-service/socialProfile/tester --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- route POST /adhocchallenge-service/adHocChallenge 400 noeol --
+{"message":"invalid group name and description"}
+-- table stdout --
+-- table stderr --
+create ad-hoc challenge: garmin api: 400 Bad Request: {"message":"invalid group name and description"}
+-- table exit --
+1
+-- table requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+POST /adhocchallenge-service/adHocChallenge
+  {
+    "adHocChallengeName": "Step up",
+    "adHocChallengeDesc": "Step up",
+    "socialChallengeActivityTypeId": 1,
+    "durationTypeId": 4,
+    "startDate": "2026-10-19T00:00:00.00",
+    "endDate": "2026-10-19T23:59:59.999",
+    "userRanking": 0,
+    "socialChallengeStatusId": 0,
+    "ownerUserProfileId": 3141592,
+    "players": []
+  }
+-- plain stdout --
+-- plain stderr --
+create ad-hoc challenge: garmin api: 400 Bad Request: {"message":"invalid group name and description"}
+-- plain exit --
+1
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+POST /adhocchallenge-service/adHocChallenge
+  {
+    "adHocChallengeName": "Step up",
+    "adHocChallengeDesc": "Step up",
+    "socialChallengeActivityTypeId": 1,
+    "durationTypeId": 4,
+    "startDate": "2026-10-19T00:00:00.00",
+    "endDate": "2026-10-19T23:59:59.999",
+    "userRanking": 0,
+    "socialChallengeStatusId": 0,
+    "ownerUserProfileId": 3141592,
+    "players": []
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+create ad-hoc challenge: garmin api: 400 Bad Request: {"message":"invalid group name and description"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+POST /adhocchallenge-service/adHocChallenge
+  {
+    "adHocChallengeName": "Step up",
+    "adHocChallengeDesc": "Step up",
+    "socialChallengeActivityTypeId": 1,
+    "durationTypeId": 4,
+    "startDate": "2026-10-19T00:00:00.00",
+    "endDate": "2026-10-19T23:59:59.999",
+    "userRanking": 0,
+    "socialChallengeStatusId": 0,
+    "ownerUserProfileId": 3141592,
+    "players": []
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"create ad-hoc challenge: garmin api: 400 Bad Request: {\"message\":\"invalid group name and description\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+POST /adhocchallenge-service/adHocChallenge
+  {
+    "adHocChallengeName": "Step up",
+    "adHocChallengeDesc": "Step up",
+    "socialChallengeActivityTypeId": 1,
+    "durationTypeId": 4,
+    "startDate": "2026-10-19T00:00:00.00",
+    "endDate": "2026-10-19T23:59:59.999",
+    "userRanking": 0,
+    "socialChallengeStatusId": 0,
+    "ownerUserProfileId": 3141592,
+    "players": []
+  }
