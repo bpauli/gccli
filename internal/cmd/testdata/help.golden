@@ -29,6 +29,7 @@ Commands:
   activities list                  List recent activities.
   activities count                 Show total activity count.
   activities search                Search activities by date range.
+  activities favorites             List your favorite activities.
   activities types                 List all activity types supported by Garmin.
   activities pending               List pending activities.
   activities stats view            Show activity totals by activity type.
@@ -441,6 +442,7 @@ Commands:
   activities list             List recent activities.
   activities count            Show total activity count.
   activities search           Search activities by date range.
+  activities favorites        List your favorite activities.
   activities types            List all activity types supported by Garmin.
   activities pending          List pending activities.
   activities stats view       Show activity totals by activity type.

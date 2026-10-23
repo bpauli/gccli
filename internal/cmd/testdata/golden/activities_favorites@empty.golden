@@ -1,0 +1,47 @@
+An account with no favorites gives an empty activityList.
+-- args --
+activities
+favorites
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- route GET /activitylist-service/activities/favorite/tester?limit=20 --
+{"activityList":[],"filter":{},"pagination":{"start":1,"limit":20},"requestorRelationship":"SELF"}
+-- table stdout --
+ID  DATE  TYPE  NAME  DISTANCE  DURATION  CALORIES
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /userprofile-service/userprofile/settings
+GET /activitylist-service/activities/favorite/tester?limit=20
+-- plain stdout --
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+GET /activitylist-service/activities/favorite/tester?limit=20
+-- plain-header stdout --
+ID	DATE	TYPE	NAME	DISTANCE	DURATION	CALORIES
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /activitylist-service/activities/favorite/tester?limit=20
+-- json stdout --
+{
+  "activityList": [],
+  "filter": {},
+  "pagination": {
+    "start": 1,
+    "limit": 20
+  },
+  "requestorRelationship": "SELF"
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /userprofile-service/userprofile/settings
+GET /activitylist-service/activities/favorite/tester?limit=20

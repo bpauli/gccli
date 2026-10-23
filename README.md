@@ -972,6 +972,8 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `--offset=0`: Number of activities to skip.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli activities favorites [flags]`: List your favorite activities.
+  - `-l, --limit=20`: Maximum number of activities to return.
 - `gccli activities types`: List all activity types supported by Garmin.
 - `gccli activities pending`: List pending activities.
 - `gccli activities stats view`: Show activity totals by activity type. Also runs as `gccli activities stats`.

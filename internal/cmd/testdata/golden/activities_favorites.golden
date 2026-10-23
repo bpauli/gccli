@@ -1,0 +1,76 @@
+Garmin wraps the list in activityList. The command sends only limit, because Garmin reads it as the last item.
+-- args --
+activities
+favorites
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- route GET /activitylist-service/activities/favorite/tester?limit=20 --
+{"activityList":[{"activityId":12345678,"activityName":"Morning Run","startTimeLocal":"2026-01-10 09:00:00","activityType":{"typeKey":"running"},"distance":10012.5,"duration":3005.2,"calories":712},{"activityId":12345679,"activityName":"Hill Ride","startTimeLocal":"2026-01-04 14:00:00","activityType":{"typeKey":"cycling"},"distance":42000,"duration":5400,"calories":1100}],"filter":{},"pagination":{"start":1,"limit":20},"requestorRelationship":"SELF"}
+-- table stdout --
+ID        DATE        TYPE     NAME         DISTANCE  DURATION  CALORIES
+12345678  2026-01-10  running  Morning Run  10.01 km  50:05     712
+12345679  2026-01-04  cycling  Hill Ride    42.00 km  1:30:00   1100
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /userprofile-service/userprofile/settings
+GET /activitylist-service/activities/favorite/tester?limit=20
+-- plain stdout --
+12345678	2026-01-10	running	Morning Run	10.01 km	50:05	712
+12345679	2026-01-04	cycling	Hill Ride	42.00 km	1:30:00	1100
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+GET /activitylist-service/activities/favorite/tester?limit=20
+-- plain-header stdout --
+ID	DATE	TYPE	NAME	DISTANCE	DURATION	CALORIES
+12345678	2026-01-10	running	Morning Run	10.01 km	50:05	712
+12345679	2026-01-04	cycling	Hill Ride	42.00 km	1:30:00	1100
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /activitylist-service/activities/favorite/tester?limit=20
+-- json stdout --
+{
+  "activityList": [
+    {
+      "activityId": 12345678,
+      "activityName": "Morning Run",
+      "startTimeLocal": "2026-01-10 09:00:00",
+      "activityType": {
+        "typeKey": "running"
+      },
+      "distance": 10012.5,
+      "duration": 3005.2,
+      "calories": 712
+    },
+    {
+      "activityId": 12345679,
+      "activityName": "Hill Ride",
+      "startTimeLocal": "2026-01-04 14:00:00",
+      "activityType": {
+        "typeKey": "cycling"
+      },
+      "distance": 42000,
+      "duration": 5400,
+      "calories": 1100
+    }
+  ],
+  "filter": {},
+  "pagination": {
+    "start": 1,
+    "limit": 20
+  },
+  "requestorRelationship": "SELF"
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /userprofile-service/userprofile/settings
+GET /activitylist-service/activities/favorite/tester?limit=20
