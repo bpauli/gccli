@@ -210,6 +210,10 @@ Date shortcuts
   - `<date>`: Date of the nap (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `<start>`: Start time of the nap (HH:MM) in your Garmin time zone.
   - `-f, --force`: Skip confirmation prompt.
+- `gccli health sleep note <date> [<text>] [flags]`: Set or remove the note of a night of sleep.
+  - `<date>`: Date of the sleep (YYYY-MM-DD, today, yesterday, 3d), as 'health sleep' takes it.
+  - `[<text>]`: Note text. It replaces the note of that night.
+  - `--clear`: Remove the note instead of setting a text.
 - `gccli health sleep daily --start=DATE --end=DATE`: Show daily sleep statistics for a date range (at most 28 days).
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
@@ -888,6 +892,7 @@ Worked examples
 - Menstrual daily log: `gccli wellness menstrual-log set 2026-10-01 --flow light --symptoms cramps,tender-breasts --ovulation` sets fields of the log of a day. `gccli wellness menstrual-log set 2026-10-01 --symptoms ""` clears the symptoms and keeps the other fields. `gccli wellness menstrual-log 2026-10-01` shows the log, and `gccli wellness menstrual-log delete 2026-10-01 --force` deletes it.
 - Jet lag trip: `gccli wellness jet-lag add --from "Frankfurt, Germany" --to "New York, USA" --depart 2026-11-02T10:00+01:00 --arrive 2026-11-02T13:00-05:00` prints the trip ID. Then `gccli wellness jet-lag update <id> --arrive 2026-11-02T14:00-05:00` moves the arrival, and `gccli wellness jet-lag delete <id> --force` deletes the trip.
 - Nap: `gccli health sleep naps add 13:30 13:50` adds a nap for today. Garmin takes only naps that end today, and the times are in the time zone of the Garmin profile, not of the machine. `gccli health sleep naps delete today 13:30 --force` deletes the nap that starts at 13:30.
+- Sleep note: `gccli health sleep note 2026-10-21 "Late coffee"` sets the note of that night, and `gccli health sleep note 2026-10-21 --clear` removes it. `gccli health sleep 2026-10-21 --json | jq .dailySleepDTO.userNote` reads it back. Garmin refuses a note for a day with no sleep (exit 1).
 - Activity like: `gccli activity likes add <id>` likes an activity, and a second add changes nothing. `gccli activity likes <id>` lists the likes. `gccli activity likes remove <id>` removes your like with no prompt. It fails with exit code 1 (`activity <id> is not liked`) when there is no like to remove.
 - Activity comment: `gccli activity comments add <id> "Nice run"` prints the comment ID (`conversationCommentUuid` in `gccli activity comments <id>`). `gccli activity comments edit <id> <comment-id> "Great run"` changes your own comment, and `gccli activity comments delete <id> <comment-id> --force` deletes your comment or a comment on your activity. `gccli activity comments likes add <comment-id>` likes a comment, `gccli activity comments likes <comment-id>` lists its likes, and `gccli activity comments likes remove <comment-id>` removes your like. Garmin answers 403 (exit code 1) when there is no like. Garmin can refuse a comment from an account with 403 and no message, even when likes work.
 - Calendar month: `gccli calendar month 2026 10` lists the activities, workouts, events, notes and other items of October 2026. `gccli calendar month --json | jq '[.calendarItems[] | select(.itemType == "activity")]'` keeps the activities of this month's grid.
