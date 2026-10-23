@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `activities favorites` lists your favorite activities with the columns of `activities list`. `--limit` (default 20) sets the number of activities. The command has no `--offset`, because Garmin does not page this list by an offset. (#76)
+- `activity trim <id> --from <duration> --to <duration>` trims the start or end of an activity. Both times count from the activity start, such as `2m` or `1h5m`. `--from` defaults to the start and `--to` to the end, and at least one must be given. A range that is empty or ends after the activity fails before the write. Garmin applies the trim in a few seconds, and the activity keeps its ID. For single-sport activities. (#76)
+- `activity restore <id>` restores the original of a trimmed activity. For single-sport activities. (#76)
 - `nutrition search <query>` searches the Garmin food database. The table shows the food ID, the name, the source, and the unit and calories of the first serving. `--limit` (default 20) and `--offset` page through the results, and `--json` prints the Garmin answer. (#84)
 - `nutrition recent [<date>]` lists the foods logged recently (default today), and `nutrition favorites` (also as `nutrition favorites list`) lists the favorite foods. The table shows the serving and the quantity that were chosen, and the calories of one serving. Both take `--limit` and `--offset`. (#84)
 - These three commands need a Garmin Connect+ subscription, because Garmin refuses them for other accounts with 403. The error message now says so: `search foods: this needs a Garmin Connect+ subscription (403 Forbidden)`. The exit code stays 1, and the JSON error object keeps `"code":"error"` and `"status":403`. `nutrition food-log`, `nutrition meals` and `nutrition settings` work without Connect+. (#84)
