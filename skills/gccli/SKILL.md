@@ -235,6 +235,15 @@ Date shortcuts
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli health hrv [<date>]`: Show heart rate variability data.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
+- `gccli health snapshots list [flags]`: List Health Snapshot sessions up to a date. Also runs as `gccli health snapshots [flags]`.
+  - `-l, --limit=20`: Maximum number of sessions to return.
+  - `--offset=0`: Number of sessions to skip.
+  - `--until=DATE`: Last date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
+- `gccli health snapshots show <date> <uuid>`: Show the summary of a Health Snapshot session.
+  - `<date>`: Date of the session (YYYY-MM-DD, today, yesterday, 3d).
+  - `<uuid>`: Session UUID (activityUuid.uuid in 'health snapshots list').
+- `gccli health snapshots epochs <uuid>`: Show the measurements of a Health Snapshot session.
+  - `<uuid>`: Session UUID (activityUuid.uuid in 'health snapshots list').
 - `gccli health body-battery view [<date>]`: Show body battery data for a date. Also runs as `gccli health body-battery [<date>]`.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli health body-battery range --start=DATE --end=DATE`: Show body battery data for a date range.
@@ -966,6 +975,7 @@ Notes
 - The `golf` commands print the Garmin answer as JSON. `golf scorecards`, `golf courses` and `golf leaderboards` page by `--limit`, so `--offset` must be a multiple of `--limit`. For an account without golf rounds, the answer has `totalRows: 0` and no list. `golf clubs` gives each club a `clubTypeId`, and `golf club-types` gives the name of each type ID as `value`.
 - `health progress` (also as `health progress summary`) totals metrics per period, and `health progress activities` lists the values of each activity. Take the `--metric` and `--activity-type` values from `gccli health progress metrics`, which lists the metrics of each activity type (`running`, `cycling`, ...). Repeat a flag or separate its values with commas. Distances are meters and durations seconds. The totals of each summary period are under `.stats.all`, also with `--activity-type`.
 - Range limits that Garmin sets: `health body-battery daily` at most 28 days, `health endurance-score stats`, `health hill-score stats` and `health cycling-ability` at most 400 days, `health cycling-ability --aggregation daily` at most 30 days. A longer range fails with exit 1 and the Garmin message.
+- `health snapshots list` (also as `health snapshots`) lists the Health Snapshot sessions up to `--until` (default today). A Health Snapshot is a 2-minute session that newer watches record. `health snapshots show <date> <uuid>` and `health snapshots epochs <uuid>` take the date and `activityUuid.uuid` of a list item. `show` prints `{}` for a UUID that has no session, because Garmin answers 204. ECG recordings are not available: Garmin does not route the ECG service on the API host that gccli uses.
 - Delete commands fail without a terminal unless `--force` is set. Confirm with the user first, then pass `--force`.
 - Download formats: FIT (default), GPX, TCX, KML, CSV.
 - Workout step format: `type:duration[@target:low-high]`. Types: warmup, run, recovery, cooldown; targets: pace (min:sec), hr (bpm), power (watts), cadence.
