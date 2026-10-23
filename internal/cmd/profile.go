@@ -1,10 +1,14 @@
 package cmd
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"strconv"
+	"strings"
+
+	"github.com/bpauli/gccli/internal/garminapi"
 )
 
 var profileGroup = Group{Name: "profile", Help: "View user profile.", Children: []Node{
@@ -29,9 +33,135 @@ var profilePowerZonesGroup = Group{Name: "power-zones", Help: "Show power zones.
 	},
 }}
 
-var profilePrivacyGroup = Group{Name: "privacy", Help: "View privacy settings.", Children: []Node{
+var profilePrivacyGroup = Group{Name: "privacy", Help: "View and change privacy settings.", Children: []Node{
 	Leaf{Name: "view", Help: "Show privacy settings.", Default: true, Endpoint: "profile.privacy-settings", Verb: "get privacy settings", Output: JSON{}},
+	Custom{Name: "set", Help: "Change who can see your profile, activities, wellness data and badges.", Cmd: &ProfilePrivacySetCmd{}},
 }}
+
+// Garmin calls connections "subscribers" in privacy settings and "following" for badges.
+var privacyLevels = map[string]struct{ accessRule, badgeVisibility string }{
+	"public":      {"public", "public"},
+	"private":     {"private", "private"},
+	"connections": {"subscribers", "following"},
+	"groups":      {"groups", "groups"},
+}
+
+// ProfilePrivacySetCmd changes the privacy of the profile, the activities,
+// the wellness data and the badges. A nil flag is not given.
+type ProfilePrivacySetCmd struct {
+	Profile    *string `help:"Who can see your profile." enum:"public,private,connections,groups" placeholder:"LEVEL"`
+	Activities *string `help:"Who can see your activities by default. Past activities keep their privacy; change one with activity privacy." enum:"public,private,connections,groups" placeholder:"LEVEL"`
+	Wellness   *string `help:"Who can see your wellness data, such as steps." enum:"public,private,connections,groups" placeholder:"LEVEL"`
+	Badges     *string `help:"Who can see your badges." enum:"public,private,connections,groups" placeholder:"LEVEL"`
+}
+
+type privacyCategory struct {
+	flag, key string
+	level     *string
+}
+
+func (c *ProfilePrivacySetCmd) categories() []privacyCategory {
+	return []privacyCategory{
+		{"profile", "profilePrivacySettings", c.Profile},
+		{"activities", "activityPrivacySettings", c.Activities},
+		{"wellness", "wellnessPrivacySettings", c.Wellness},
+	}
+}
+
+func (c *ProfilePrivacySetCmd) Validate() error {
+	if c.Profile == nil && c.Activities == nil && c.Wellness == nil && c.Badges == nil {
+		return errors.New("give at least one of --profile, --activities, --wellness or --badges")
+	}
+	return nil
+}
+
+func (c *ProfilePrivacySetCmd) Run(g *Globals) error {
+	var given []privacyCategory
+	var changed []string
+	for _, cat := range c.categories() {
+		if cat.level != nil {
+			given = append(given, cat)
+			changed = append(changed, cat.flag+" "+*cat.level)
+		}
+	}
+	if c.Badges != nil {
+		changed = append(changed, "badges "+*c.Badges)
+	}
+
+	client, err := resolveClient(g)
+	if err != nil {
+		return err
+	}
+	var data json.RawMessage
+	if len(given) > 0 {
+		if data, err = setPrivacySettings(g, client, given); err != nil {
+			return err
+		}
+	}
+	if c.Badges != nil {
+		displayName, err := resolveDisplayName(g, client)
+		if err != nil {
+			return err
+		}
+		body, err := json.Marshal(map[string]string{"badgeVisibility": privacyLevels[*c.Badges].badgeVisibility})
+		if err != nil {
+			return err
+		}
+		data, err = client.Call(g.Context, "profile.privacy.badges", map[string]string{"displayName": displayName}, body)
+		if err != nil {
+			return fmt.Errorf("change badge privacy: %w", err)
+		}
+	}
+	return reportWrite(g, data, "Changed privacy: %s", strings.Join(changed, ", "))
+}
+
+// setPrivacySettings sends back the whole settings answer, as the Garmin web
+// settings page does, with the rule of each given category and of all its
+// subcategories changed.
+func setPrivacySettings(g *Globals, client *garminapi.Client, given []privacyCategory) (json.RawMessage, error) {
+	data, err := client.Call(g.Context, "profile.privacy-settings", nil, nil)
+	if err != nil {
+		return nil, fmt.Errorf("get privacy settings: %w", err)
+	}
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.UseNumber()
+	var settings map[string]any
+	if err := dec.Decode(&settings); err != nil {
+		return nil, fmt.Errorf("parse privacy settings: %w", err)
+	}
+	for _, cat := range given {
+		category, ok := settings[cat.key].(map[string]any)
+		if !ok {
+			return nil, fmt.Errorf("garmin returned no %s in its privacy settings", cat.key)
+		}
+		rule := privacyLevels[*cat.level].accessRule
+		objectAt(category, "categoryDetails")["categoryAccessRule"] = rule
+		subs, _ := category["subcategoryPrivacySettings"].([]any)
+		for _, item := range subs {
+			if sub, ok := item.(map[string]any); ok {
+				objectAt(sub, "subcategoryDetails")["accessRule"] = rule
+			}
+		}
+	}
+	body, err := json.Marshal(settings)
+	if err != nil {
+		return nil, err
+	}
+	data, err = client.Call(g.Context, "profile.privacy-settings.update", nil, body)
+	if err != nil {
+		return nil, fmt.Errorf("change privacy settings: %w", err)
+	}
+	return data, nil
+}
+
+func objectAt(m map[string]any, key string) map[string]any {
+	obj, ok := m[key].(map[string]any)
+	if !ok {
+		obj = map[string]any{}
+		m[key] = obj
+	}
+	return obj
+}
 
 var profilePrivacyZonesGroup = Group{Name: "privacy-zones", Help: "List, add and delete privacy zones.", Children: []Node{
 	Leaf{Name: "list", Help: "List privacy zones.", Default: true, Endpoint: "profile.privacy-zones", Verb: "get privacy zones", Output: JSON{List: true}},
