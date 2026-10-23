@@ -1,0 +1,41 @@
+Error case: the PUT answers 404, so the exit code is 4 (not found).
+-- args --
+social
+decline
+runner-anna
+-- route GET /web-gateway/inbox/v2/requests?req=8 --
+{"requests":[{"requestKey":8,"data":{"userId":2718281,"displayName":"runner-anna","fullName":"Anna Runner","location":"Hamburg","userLevel":3,"profileImageUrls":{},"followRequestId":4242,"requestStartTime":"2026-10-22T10:00:00.0","requestViewed":false}}],"nextCursor":null,"profileInfos":{}}
+-- route PUT /follower-service/follow/requests/4242/decline 404 noeol --
+{"message":"HTTP 404 Not Found","error":"NotFoundException"}
+-- table stdout --
+-- table stderr --
+decline follow request: garmin api: 404 Not Found: {"message":"HTTP 404 Not Found","error":"NotFoundException"}
+-- table exit --
+4
+-- table requests --
+GET /web-gateway/inbox/v2/requests?req=8
+PUT /follower-service/follow/requests/4242/decline
+-- plain stdout --
+-- plain stderr --
+decline follow request: garmin api: 404 Not Found: {"message":"HTTP 404 Not Found","error":"NotFoundException"}
+-- plain exit --
+4
+-- plain requests --
+GET /web-gateway/inbox/v2/requests?req=8
+PUT /follower-service/follow/requests/4242/decline
+-- plain-header stdout --
+-- plain-header stderr --
+decline follow request: garmin api: 404 Not Found: {"message":"HTTP 404 Not Found","error":"NotFoundException"}
+-- plain-header exit --
+4
+-- plain-header requests --
+GET /web-gateway/inbox/v2/requests?req=8
+PUT /follower-service/follow/requests/4242/decline
+-- json stdout --
+-- json stderr --
+{"error":{"code":"not_found","status":404,"message":"decline follow request: garmin api: 404 Not Found: {\"message\":\"HTTP 404 Not Found\",\"error\":\"NotFoundException\"}"}}
+-- json exit --
+4
+-- json requests --
+GET /web-gateway/inbox/v2/requests?req=8
+PUT /follower-service/follow/requests/4242/decline

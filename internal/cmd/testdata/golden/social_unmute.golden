@@ -1,0 +1,42 @@
+The muted list comes first, because Garmin answers 204 to an unmute whether the user is muted or not (live 2026-10-22).
+-- args --
+social
+unmute
+runner-anna
+-- route GET /follower-service/muteuser --
+{"mutedUserList":[{"userProfileId":2718281,"displayName":"runner-anna","fullName":"Anna Runner","userLevel":3,"profileImageUrlLarge":null,"profileImageUrlMedium":null,"profileImageUrlSmall":null,"location":null}],"mutedUserCount":1}
+-- route DELETE /follower-service/muteuser/runner-anna 204 --
+-- table stdout --
+-- table stderr --
+Unmuted runner-anna
+-- table exit --
+0
+-- table requests --
+GET /follower-service/muteuser
+DELETE /follower-service/muteuser/runner-anna
+-- plain stdout --
+-- plain stderr --
+Unmuted runner-anna
+-- plain exit --
+0
+-- plain requests --
+GET /follower-service/muteuser
+DELETE /follower-service/muteuser/runner-anna
+-- plain-header stdout --
+-- plain-header stderr --
+Unmuted runner-anna
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /follower-service/muteuser
+DELETE /follower-service/muteuser/runner-anna
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /follower-service/muteuser
+DELETE /follower-service/muteuser/runner-anna

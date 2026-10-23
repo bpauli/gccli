@@ -1,0 +1,39 @@
+Garmin answers the mute with the mute record, in the shape of the live answer of 2026-10-22.
+-- args --
+social
+mute
+runner-anna
+-- route POST /follower-service/muteuser/runner-anna --
+{"userProfileId":3141592,"mutedUserProfileId":2718281,"createDate":null}
+-- table stdout --
+-- table stderr --
+Muted runner-anna
+-- table exit --
+0
+-- table requests --
+POST /follower-service/muteuser/runner-anna
+-- plain stdout --
+-- plain stderr --
+Muted runner-anna
+-- plain exit --
+0
+-- plain requests --
+POST /follower-service/muteuser/runner-anna
+-- plain-header stdout --
+-- plain-header stderr --
+Muted runner-anna
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /follower-service/muteuser/runner-anna
+-- json stdout --
+{
+  "userProfileId": 3141592,
+  "mutedUserProfileId": 2718281,
+  "createDate": null
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /follower-service/muteuser/runner-anna

@@ -1,0 +1,91 @@
+Garmin takes the search as a form and counts start from 1, live 2026-10-22. A GET answers 405.
+-- args --
+social
+search
+anna
+-- route POST /usersearch-service/search/v3?displayMutedStatus=true --
+{"start":1,"limit":20,"originalKeyword":"anna","effectiveKeyword":"anna","profileList":[{"userId":2718281,"displayName":"runner-anna","fullName":"Anna Runner","location":"Hamburg","userLevel":3,"profileVisibility":3,"profileImageUrls":{},"info":null,"infoStatus":null,"followStatus":{"relationshipStatus":"NONE","sentRequest":null,"receivedRequest":null,"blocking":null,"blocked":false,"muting":null,"favorite":null}},{"userId":1618033,"displayName":"anna-b","fullName":"Anna B","location":null,"userLevel":1,"profileVisibility":1,"profileImageUrls":{},"info":null,"infoStatus":null,"followStatus":{"relationshipStatus":"FOLLOWING","sentRequest":null,"receivedRequest":null,"blocking":null,"blocked":false,"muting":null,"favorite":null}}]}
+-- table stdout --
+DISPLAY NAME  NAME         LOCATION  FOLLOW
+runner-anna   Anna Runner  Hamburg   NONE
+anna-b        Anna B                 FOLLOWING
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+POST /usersearch-service/search/v3?displayMutedStatus=true
+  "keyword=anna&limit=20&start=1"
+-- plain stdout --
+runner-anna	Anna Runner	Hamburg	NONE
+anna-b	Anna B		FOLLOWING
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+POST /usersearch-service/search/v3?displayMutedStatus=true
+  "keyword=anna&limit=20&start=1"
+-- plain-header stdout --
+DISPLAY NAME	NAME	LOCATION	FOLLOW
+runner-anna	Anna Runner	Hamburg	NONE
+anna-b	Anna B		FOLLOWING
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /usersearch-service/search/v3?displayMutedStatus=true
+  "keyword=anna&limit=20&start=1"
+-- json stdout --
+{
+  "start": 1,
+  "limit": 20,
+  "originalKeyword": "anna",
+  "effectiveKeyword": "anna",
+  "profileList": [
+    {
+      "userId": 2718281,
+      "displayName": "runner-anna",
+      "fullName": "Anna Runner",
+      "location": "Hamburg",
+      "userLevel": 3,
+      "profileVisibility": 3,
+      "profileImageUrls": {},
+      "info": null,
+      "infoStatus": null,
+      "followStatus": {
+        "relationshipStatus": "NONE",
+        "sentRequest": null,
+        "receivedRequest": null,
+        "blocking": null,
+        "blocked": false,
+        "muting": null,
+        "favorite": null
+      }
+    },
+    {
+      "userId": 1618033,
+      "displayName": "anna-b",
+      "fullName": "Anna B",
+      "location": null,
+      "userLevel": 1,
+      "profileVisibility": 1,
+      "profileImageUrls": {},
+      "info": null,
+      "infoStatus": null,
+      "followStatus": {
+        "relationshipStatus": "FOLLOWING",
+        "sentRequest": null,
+        "receivedRequest": null,
+        "blocking": null,
+        "blocked": false,
+        "muting": null,
+        "favorite": null
+      }
+    }
+  ]
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /usersearch-service/search/v3?displayMutedStatus=true
+  "keyword=anna&limit=20&start=1"

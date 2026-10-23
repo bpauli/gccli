@@ -1,0 +1,36 @@
+-- args --
+challenges
+adhoc
+accept
+1001
+-- route PUT /adhocchallenge-service/adHocChallenge/invite/1001/accept 204 --
+-- table stdout --
+-- table stderr --
+Accepted invite 1001
+-- table exit --
+0
+-- table requests --
+PUT /adhocchallenge-service/adHocChallenge/invite/1001/accept
+-- plain stdout --
+-- plain stderr --
+Accepted invite 1001
+-- plain exit --
+0
+-- plain requests --
+PUT /adhocchallenge-service/adHocChallenge/invite/1001/accept
+-- plain-header stdout --
+-- plain-header stderr --
+Accepted invite 1001
+-- plain-header exit --
+0
+-- plain-header requests --
+PUT /adhocchallenge-service/adHocChallenge/invite/1001/accept
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+PUT /adhocchallenge-service/adHocChallenge/invite/1001/accept

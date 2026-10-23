@@ -609,6 +609,39 @@ Date shortcuts
 - `gccli challenges virtual available`: Show available virtual challenges.
 - `gccli challenges virtual completed`: Show completed virtual challenges.
 - `gccli challenges virtual in-progress`: Show virtual challenges in progress.
+- `gccli challenges show <uuid>`: Show a badge or virtual challenge.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+- `gccli challenges join <uuid>`: Join a badge or virtual challenge.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+- `gccli challenges leave <uuid>`: Leave a badge or virtual challenge.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+- `gccli challenges adhoc list`: Show your ad-hoc challenges that are not finished. Also runs as `gccli challenges adhoc`.
+- `gccli challenges adhoc history`: Show your finished ad-hoc challenges.
+- `gccli challenges adhoc show <uuid>`: Show an ad-hoc challenge.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+- `gccli challenges adhoc create --type=STRING <name> [flags]`: Create an ad-hoc challenge and invite people who follow you and whom you follow.
+  - `<name>`: Challenge name.
+  - `--type=STRING`: Activity: walking, running, cycling, swimming, steps, pushes or pushing-distance.
+  - `--duration="week"`: Length: day, weekend (Saturday and Sunday), week (7 days), month (to the end of the month) or custom (to --end).
+  - `--start=DATE`: First day (YYYY-MM-DD, today, +3d). Default: today, the Saturday of this week for weekend, the first day of this month for month.
+  - `--end=DATE`: Last day. Only with --duration custom, at most 60 days after the first day.
+  - `--description=FREE-TEXT`: Description. Defaults to the name, because Garmin requires one.
+  - `--invite=DISPLAY-NAME`: Display name of a person who follows you and whom you follow. Repeat it to invite more people.
+- `gccli challenges adhoc invites <uuid>`: List the open invites of an ad-hoc challenge with their adHocChallengeInviteId.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+- `gccli challenges adhoc invite <uuid> <display-name> ...`: Invite people who follow you and whom you follow to an ad-hoc challenge.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+  - `<display-name> ...`: Display name of a person who follows you and whom you follow.
+- `gccli challenges adhoc accept <invite-id>`: Accept an invite to an ad-hoc challenge.
+  - `<invite-id>`: Invite ID (adHocChallengeInviteId).
+- `gccli challenges adhoc decline <invite-id>`: Decline an invite to an ad-hoc challenge.
+  - `<invite-id>`: Invite ID (adHocChallengeInviteId).
+- `gccli challenges adhoc leave <uuid> [flags]`: Leave an ad-hoc challenge. Only a new invite gets you back in.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+  - `-f, --force`: Skip confirmation prompt.
+- `gccli challenges adhoc delete <uuid> [flags]`: Delete an ad-hoc challenge that you created.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli records list`: View personal records. Also runs as `gccli records`.
 - `gccli records types`: List personal record types.
 - `gccli records activity <id>`: List the personal records set in an activity.
@@ -680,6 +713,28 @@ Date shortcuts
   - `[<display-name>]`: Display name of the user. Defaults to your display name.
 - `gccli social requests`: List pending connection requests.
 - `gccli social feed`: Show your newsfeed.
+- `gccli social follow <display-name>`: Follow a user. A user with a private profile gets a follow request.
+  - `<display-name>`: Display name of the user.
+- `gccli social unfollow <display-name> [flags]`: Stop following a user.
+  - `<display-name>`: Display name of the user.
+  - `-f, --force`: Skip confirmation prompt.
+- `gccli social follow-requests`: List the users who asked to follow you.
+- `gccli social accept <display-name>`: Accept the follow request of a user.
+  - `<display-name>`: Display name of the user, as social follow-requests lists it.
+- `gccli social decline <display-name>`: Decline the follow request of a user.
+  - `<display-name>`: Display name of the user, as social follow-requests lists it.
+- `gccli social remove-follower <display-name> [flags]`: Remove a user from your followers.
+  - `<display-name>`: Display name of the user.
+  - `-f, --force`: Skip confirmation prompt.
+- `gccli social mute <display-name>`: Mute a user that you follow.
+  - `<display-name>`: Display name of the user.
+- `gccli social unmute <display-name>`: Unmute a user.
+  - `<display-name>`: Display name of the user.
+- `gccli social muted`: List the users that you muted.
+- `gccli social search <query> [flags]`: Search Garmin Connect users by name.
+  - `<query>`: Name to search for, at least 2 characters.
+  - `-l, --limit=20`: Maximum number of users to return.
+  - `--offset=0`: Number of users to skip.
 - `gccli groups list`: List your groups. Also runs as `gccli groups`.
 - `gccli notifications list [flags]`: List notifications. Also runs as `gccli notifications [flags]`.
   - `--limit=50`: Maximum number of notifications to return.
@@ -888,6 +943,7 @@ Worked examples
 - Menstrual daily log: `gccli wellness menstrual-log set 2026-10-01 --flow light --symptoms cramps,tender-breasts --ovulation` sets fields of the log of a day. `gccli wellness menstrual-log set 2026-10-01 --symptoms ""` clears the symptoms and keeps the other fields. `gccli wellness menstrual-log 2026-10-01` shows the log, and `gccli wellness menstrual-log delete 2026-10-01 --force` deletes it.
 - Jet lag trip: `gccli wellness jet-lag add --from "Frankfurt, Germany" --to "New York, USA" --depart 2026-11-02T10:00+01:00 --arrive 2026-11-02T13:00-05:00` prints the trip ID. Then `gccli wellness jet-lag update <id> --arrive 2026-11-02T14:00-05:00` moves the arrival, and `gccli wellness jet-lag delete <id> --force` deletes the trip.
 - Nap: `gccli health sleep naps add 13:30 13:50` adds a nap for today. Garmin takes only naps that end today, and the times are in the time zone of the Garmin profile, not of the machine. `gccli health sleep naps delete today 13:30 --force` deletes the nap that starts at 13:30.
+- Follow: `gccli social search anna` lists users with their display name. `gccli social follow <display-name>` follows a user. A user with a private profile gets a follow request first, and the message says so. `gccli social unfollow <display-name> --force` stops following. `gccli social follow-requests` lists who asked to follow you, and `gccli social accept <display-name>` or `gccli social decline <display-name>` answers the request. `gccli social remove-follower <display-name> --force` removes a follower. `gccli social mute <display-name>` mutes a user that you follow, `gccli social muted` lists them, and `gccli social unmute <display-name>` unmutes. Garmin no longer takes new connection requests.
 - Activity like: `gccli activity likes add <id>` likes an activity, and a second add changes nothing. `gccli activity likes <id>` lists the likes. `gccli activity likes remove <id>` removes your like with no prompt. It fails with exit code 1 (`activity <id> is not liked`) when there is no like to remove.
 - Activity comment: `gccli activity comments add <id> "Nice run"` prints the comment ID (`conversationCommentUuid` in `gccli activity comments <id>`). `gccli activity comments edit <id> <comment-id> "Great run"` changes your own comment, and `gccli activity comments delete <id> <comment-id> --force` deletes your comment or a comment on your activity. `gccli activity comments likes add <comment-id>` likes a comment, `gccli activity comments likes <comment-id>` lists its likes, and `gccli activity comments likes remove <comment-id>` removes your like. Garmin answers 403 (exit code 1) when there is no like. Garmin can refuse a comment from an account with 403 and no message, even when likes work.
 - Calendar month: `gccli calendar month 2026 10` lists the activities, workouts, events, notes and other items of October 2026. `gccli calendar month --json | jq '[.calendarItems[] | select(.itemType == "activity")]'` keeps the activities of this month's grid.
@@ -908,6 +964,7 @@ Worked examples
 - Send a workout to a watch: `gccli workouts send <id>` sends to the only device that can receive the workout. With more such devices it fails before any write and lists their IDs; then add `--device <device-id>`. The device gets the workout at its next sync. Until then `gccli devices messages cancel <message-id>` removes it; the send prints the message ID (`messageId` with `--json`). The cancel fails with exit code 1 (`message <id> is not pending (already delivered or unknown)`) when the device has synced.
 - Primary activity tracker: `gccli devices set-primary-tracker <device-id>` makes a device the primary activity tracker. Only one device has this setting at a time, and `devices list` shows it as `primaryActivityTrackerIndicator`. It is not the primary training device that `gccli devices primary` shows.
 - Device backups: `gccli devices backups` shows the backup summary (also `devices backups summary`). `gccli devices backups list` lists the backups, `[]` when there are none.
+- Ad-hoc challenge: `gccli challenges adhoc create "Step up" --type steps --invite ann --invite bob` creates a steps challenge of a week from today and invites two people. It prints the UUID (`uuid` with `--json`). `--duration` is `day`, `weekend` (`--start` must be a Saturday; default the Saturday of this week), `week` (default), `month` (default from the first day of this month to its last day) or `custom` (needs `--end`, at most 60 days after the first day). Later, `gccli challenges adhoc invite <uuid> carol` invites one more person. Garmin invites only people who follow the user and whom the user follows: take the display names from `gccli social followers` and `gccli social following`. A display name that is not such a person fails with exit 1 before any write, and the error names the person.
 - Access token for a script: `gccli auth token`. It refreshes an expired token first. If the refresh fails, stdout is empty and the exit code is 3.
 
 Strength training workflow (LLM-assisted exercise matching)
@@ -966,6 +1023,7 @@ Notes
 - The `golf` commands print the Garmin answer as JSON. `golf scorecards`, `golf courses` and `golf leaderboards` page by `--limit`, so `--offset` must be a multiple of `--limit`. For an account without golf rounds, the answer has `totalRows: 0` and no list. `golf clubs` gives each club a `clubTypeId`, and `golf club-types` gives the name of each type ID as `value`.
 - `health progress` (also as `health progress summary`) totals metrics per period, and `health progress activities` lists the values of each activity. Take the `--metric` and `--activity-type` values from `gccli health progress metrics`, which lists the metrics of each activity type (`running`, `cycling`, ...). Repeat a flag or separate its values with commas. Distances are meters and durations seconds. The totals of each summary period are under `.stats.all`, also with `--activity-type`.
 - Range limits that Garmin sets: `health body-battery daily` at most 28 days, `health endurance-score stats`, `health hill-score stats` and `health cycling-ability` at most 400 days, `health cycling-ability --aggregation daily` at most 30 days. A longer range fails with exit 1 and the Garmin message.
+- `challenges join <uuid>` and `challenges leave <uuid>` take the `uuid` of a badge or virtual challenge, as the list commands print it. `leave` has no prompt, because `join` undoes it. `challenges adhoc` covers ad-hoc challenges with other people. Garmin invites only mutual followers: people the user follows and who follow the user. `challenges adhoc invites <uuid>` lists the open invites with their `adHocChallengeInviteId`, which `adhoc accept` and `adhoc decline` take. `challenges adhoc leave` has no undo, because only a new invite gets the user back in, so confirm with the user first. `challenges adhoc delete` works only for a challenge that the user created.
 - Delete commands fail without a terminal unless `--force` is set. Confirm with the user first, then pass `--force`.
 - Download formats: FIT (default), GPX, TCX, KML, CSV.
 - Workout step format: `type:duration[@target:low-high]`. Types: warmup, run, recovery, cooldown; targets: pace (min:sec), hr (bpm), power (watts), cadence.

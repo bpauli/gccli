@@ -20,7 +20,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Segments** - list your segments and favorites, search segments by name or map area, view a segment, its leaderboard and your rank, list the segments that an activity crossed, create a segment from a part of an activity, add and remove favorites, delete segments
 - **Devices** - list registered devices, view settings, solar data, alarms, primary/last-used device, set the primary activity tracker, paired sensors, backup summary and device backups, historical devices, device messages, cancel a pending device message
 - **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities, gear types, add, update, retire, unretire and delete gear, list, create, rename and delete gear collections, add gear to a collection
-- **Goals & Badges** — active goals, set daily goals for steps, floors, intensity minutes and hydration, earned/available/in-progress badges, badge details, challenges, personal records
+- **Goals & Badges** - active goals, set daily goals for steps, floors, intensity minutes and hydration, earned/available/in-progress badges, badge details, challenges (show, join and leave badge and virtual challenges; create, view, answer, leave and delete ad-hoc challenges and invite people to them), personal records
 - **Training** - browse, search and view training plans, show a plan's schedule, join and leave a plan, move and delete its workouts, show your active plans, list adaptive coaching workout types
 - **Profile** - user profile and settings, privacy settings, list, add and delete privacy zones, heart rate zones, power zones for all sports or one sport
 - **Hydration** — view and log daily water intake
@@ -28,7 +28,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Events** — list, list upcoming, add, and delete calendar events (races, group rides, etc.) with goals and training priority support
 - **Calendar** - month view of activities, workouts, events and notes, add, update, move and delete calendar notes, turn the iCalendar feed on and off, and change the web calendar preferences
 - **Wellness** - menstrual cycle data and calendar, menstrual daily log (view, set, delete), pregnancy summary, jet lag trips (list, add, update, delete) and status
-- **Social** - notifications (page with a cursor, dismiss and undismiss, unread state), view and change notification preferences, connections, connection requests, followers, following, newsfeed, groups
+- **Social** - notifications (page with a cursor, dismiss and undismiss, unread state), view and change notification preferences, connections, connection requests, followers, following, follow and unfollow, follow requests, mute, user search, newsfeed, groups
 - **Insights** - compare your steps, sleep, floors, VO2 max, speed, power and more with people of your age group and gender (needs Insights turned on in Garmin Connect)
 - **Golf** - scorecards, the courses you played, golf and shot stats (drive, approach, chip, putt), the clubs in your bag, club types and leaderboards
 - **Agent-ready** - ships a bundled agent skill (`skills/gccli/`) that plugs into AI assistants like Claude Code, Codex, Hermes, and OpenClaw so you can drive Garmin Connect in plain language
@@ -736,6 +736,20 @@ gccli challenges completed
 gccli challenges virtual available
 gccli challenges virtual completed
 gccli challenges virtual in-progress
+gccli challenges show <uuid>      # a badge or virtual challenge
+gccli challenges join <uuid>
+gccli challenges leave <uuid>     # no prompt: join undoes it
+gccli challenges adhoc            # ad-hoc challenges that are not finished (same as adhoc list)
+gccli challenges adhoc history
+gccli challenges adhoc show <uuid>
+gccli challenges adhoc invites <uuid>       # each invite has its adHocChallengeInviteId
+gccli challenges adhoc accept <invite-id>
+gccli challenges adhoc decline <invite-id>
+gccli challenges adhoc leave <uuid>         # no undo: only a new invite gets you back in
+gccli challenges adhoc delete <uuid>        # only a challenge that you created
+gccli challenges adhoc create "Step up" --type steps --invite ann   # a week from today
+gccli challenges adhoc create "Ride" --type cycling --duration custom --start +1d --end +14d
+gccli challenges adhoc invite <uuid> ann bob   # only people who follow you and whom you follow
 gccli records                     # personal records (same as records list)
 gccli records types
 gccli records activity <activityId>
@@ -897,8 +911,20 @@ gccli social following                 # List the users you follow
 gccli social following <display-name>  # List the users that another user follows
 gccli social requests                  # List pending connection requests
 gccli social feed                      # Show your newsfeed
+gccli social search anna               # Search users by name
+gccli social follow <display-name>     # Follow a user (a private profile gets a follow request)
+gccli social unfollow <display-name>   # Stop following a user
+gccli social follow-requests           # List the users who asked to follow you
+gccli social accept <display-name>     # Accept a follow request
+gccli social decline <display-name>    # Decline a follow request
+gccli social remove-follower <display-name>
+gccli social mute <display-name>       # Mute a user that you follow
+gccli social unmute <display-name>
+gccli social muted                     # List the users that you muted
 gccli groups list                      # List your groups
 ```
+
+`unfollow`, `remove-follower` and `unmute` read the follow status or the muted list first, because Garmin answers 204 whether there is something to remove or not. They exit 1 when there is nothing to remove. `unfollow` and `remove-follower` ask first (`--force` skips the question). Garmin no longer takes new connection requests (410 `API_DEPRECATED`), so gccli has no command to send one.
 
 ### Data Reload
 
@@ -1517,6 +1543,39 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli challenges virtual available`: Show available virtual challenges.
 - `gccli challenges virtual completed`: Show completed virtual challenges.
 - `gccli challenges virtual in-progress`: Show virtual challenges in progress.
+- `gccli challenges show <uuid>`: Show a badge or virtual challenge.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+- `gccli challenges join <uuid>`: Join a badge or virtual challenge.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+- `gccli challenges leave <uuid>`: Leave a badge or virtual challenge.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+- `gccli challenges adhoc list`: Show your ad-hoc challenges that are not finished. Also runs as `gccli challenges adhoc`.
+- `gccli challenges adhoc history`: Show your finished ad-hoc challenges.
+- `gccli challenges adhoc show <uuid>`: Show an ad-hoc challenge.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+- `gccli challenges adhoc create --type=STRING <name> [flags]`: Create an ad-hoc challenge and invite people who follow you and whom you follow.
+  - `<name>`: Challenge name.
+  - `--type=STRING`: Activity: walking, running, cycling, swimming, steps, pushes or pushing-distance.
+  - `--duration="week"`: Length: day, weekend (Saturday and Sunday), week (7 days), month (to the end of the month) or custom (to --end).
+  - `--start=DATE`: First day (YYYY-MM-DD, today, +3d). Default: today, the Saturday of this week for weekend, the first day of this month for month.
+  - `--end=DATE`: Last day. Only with --duration custom, at most 60 days after the first day.
+  - `--description=FREE-TEXT`: Description. Defaults to the name, because Garmin requires one.
+  - `--invite=DISPLAY-NAME`: Display name of a person who follows you and whom you follow. Repeat it to invite more people.
+- `gccli challenges adhoc invites <uuid>`: List the open invites of an ad-hoc challenge with their adHocChallengeInviteId.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+- `gccli challenges adhoc invite <uuid> <display-name> ...`: Invite people who follow you and whom you follow to an ad-hoc challenge.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+  - `<display-name> ...`: Display name of a person who follows you and whom you follow.
+- `gccli challenges adhoc accept <invite-id>`: Accept an invite to an ad-hoc challenge.
+  - `<invite-id>`: Invite ID (adHocChallengeInviteId).
+- `gccli challenges adhoc decline <invite-id>`: Decline an invite to an ad-hoc challenge.
+  - `<invite-id>`: Invite ID (adHocChallengeInviteId).
+- `gccli challenges adhoc leave <uuid> [flags]`: Leave an ad-hoc challenge. Only a new invite gets you back in.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+  - `-f, --force`: Skip confirmation prompt.
+- `gccli challenges adhoc delete <uuid> [flags]`: Delete an ad-hoc challenge that you created.
+  - `<uuid>`: Challenge UUID, as the list commands print it.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli records list`: View personal records. Also runs as `gccli records`.
 - `gccli records types`: List personal record types.
 - `gccli records activity <id>`: List the personal records set in an activity.
@@ -1588,6 +1647,28 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `[<display-name>]`: Display name of the user. Defaults to your display name.
 - `gccli social requests`: List pending connection requests.
 - `gccli social feed`: Show your newsfeed.
+- `gccli social follow <display-name>`: Follow a user. A user with a private profile gets a follow request.
+  - `<display-name>`: Display name of the user.
+- `gccli social unfollow <display-name> [flags]`: Stop following a user.
+  - `<display-name>`: Display name of the user.
+  - `-f, --force`: Skip confirmation prompt.
+- `gccli social follow-requests`: List the users who asked to follow you.
+- `gccli social accept <display-name>`: Accept the follow request of a user.
+  - `<display-name>`: Display name of the user, as social follow-requests lists it.
+- `gccli social decline <display-name>`: Decline the follow request of a user.
+  - `<display-name>`: Display name of the user, as social follow-requests lists it.
+- `gccli social remove-follower <display-name> [flags]`: Remove a user from your followers.
+  - `<display-name>`: Display name of the user.
+  - `-f, --force`: Skip confirmation prompt.
+- `gccli social mute <display-name>`: Mute a user that you follow.
+  - `<display-name>`: Display name of the user.
+- `gccli social unmute <display-name>`: Unmute a user.
+  - `<display-name>`: Display name of the user.
+- `gccli social muted`: List the users that you muted.
+- `gccli social search <query> [flags]`: Search Garmin Connect users by name.
+  - `<query>`: Name to search for, at least 2 characters.
+  - `-l, --limit=20`: Maximum number of users to return.
+  - `--offset=0`: Number of users to skip.
 - `gccli groups list`: List your groups. Also runs as `gccli groups`.
 - `gccli notifications list [flags]`: List notifications. Also runs as `gccli notifications [flags]`.
   - `--limit=50`: Maximum number of notifications to return.

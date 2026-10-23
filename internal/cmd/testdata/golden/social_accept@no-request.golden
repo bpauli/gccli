@@ -1,0 +1,35 @@
+A user without a follow request: exit 1 and no PUT.
+-- args --
+social
+accept
+runner-anna
+-- route GET /web-gateway/inbox/v2/requests?req=8 --
+{"requests":[],"nextCursor":null,"profileInfos":{}}
+-- table stdout --
+-- table stderr --
+no follow request from runner-anna
+-- table exit --
+1
+-- table requests --
+GET /web-gateway/inbox/v2/requests?req=8
+-- plain stdout --
+-- plain stderr --
+no follow request from runner-anna
+-- plain exit --
+1
+-- plain requests --
+GET /web-gateway/inbox/v2/requests?req=8
+-- plain-header stdout --
+-- plain-header stderr --
+no follow request from runner-anna
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /web-gateway/inbox/v2/requests?req=8
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"no follow request from runner-anna"}}
+-- json exit --
+1
+-- json requests --
+GET /web-gateway/inbox/v2/requests?req=8

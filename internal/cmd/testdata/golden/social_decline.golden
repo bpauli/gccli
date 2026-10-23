@@ -1,0 +1,42 @@
+Garmin answers the decline with 204, live 2026-10-22.
+-- args --
+social
+decline
+runner-anna
+-- route GET /web-gateway/inbox/v2/requests?req=8 --
+{"requests":[{"requestKey":8,"data":{"userId":2718281,"displayName":"runner-anna","fullName":"Anna Runner","location":"Hamburg","userLevel":3,"profileImageUrls":{},"followRequestId":4242,"requestStartTime":"2026-10-22T10:00:00.0","requestViewed":false}}],"nextCursor":null,"profileInfos":{}}
+-- route PUT /follower-service/follow/requests/4242/decline 204 --
+-- table stdout --
+-- table stderr --
+Declined the follow request of runner-anna
+-- table exit --
+0
+-- table requests --
+GET /web-gateway/inbox/v2/requests?req=8
+PUT /follower-service/follow/requests/4242/decline
+-- plain stdout --
+-- plain stderr --
+Declined the follow request of runner-anna
+-- plain exit --
+0
+-- plain requests --
+GET /web-gateway/inbox/v2/requests?req=8
+PUT /follower-service/follow/requests/4242/decline
+-- plain-header stdout --
+-- plain-header stderr --
+Declined the follow request of runner-anna
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /web-gateway/inbox/v2/requests?req=8
+PUT /follower-service/follow/requests/4242/decline
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /web-gateway/inbox/v2/requests?req=8
+PUT /follower-service/follow/requests/4242/decline

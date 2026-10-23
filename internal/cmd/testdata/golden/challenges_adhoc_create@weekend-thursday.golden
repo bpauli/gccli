@@ -1,0 +1,184 @@
+Usage error: a weekend challenge must start on a Saturday, and 2026-10-15 is a Thursday. It fails before any request.
+-- args --
+challenges
+adhoc
+create
+Step up
+--type
+steps
+--duration
+weekend
+--start
+2026-10-15
+-- table stdout --
+-- table stderr --
+Usage: gccli challenges adhoc create --type=STRING <name> [flags]
+
+Create an ad-hoc challenge and invite people who follow you and whom you follow.
+
+Arguments:
+  <name>    Challenge name.
+
+Flags:
+  -h, --help                     Show context-sensitive help.
+  -j, --json                     Output as JSON ($GCCLI_JSON).
+      --plain                    Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                   Print the column names as the first line of
+                                 --plain output ($GCCLI_HEADER).
+      --color="auto"             Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING           Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"             Unit system for distances, speeds, paces,
+                                 elevations and weights in table and plain
+                                 output: auto (Garmin profile), metric,
+                                 statute_us, statute_uk ($GCCLI_UNITS).
+      --version                  Print version information.
+
+      --type=STRING              Activity: walking, running, cycling, swimming,
+                                 steps, pushes or pushing-distance.
+      --duration="week"          Length: day, weekend (Saturday and Sunday),
+                                 week (7 days), month (to the end of the month)
+                                 or custom (to --end).
+      --start=DATE               First day (YYYY-MM-DD, today, +3d). Default:
+                                 today, the Saturday of this week for weekend,
+                                 the first day of this month for month.
+      --end=DATE                 Last day. Only with --duration custom, at most
+                                 60 days after the first day.
+      --description=FREE-TEXT    Description. Defaults to the name, because
+                                 Garmin requires one.
+      --invite=DISPLAY-NAME      Display name of a person who follows you and
+                                 whom you follow. Repeat it to invite more
+                                 people.
+
+gccli: error: challenges adhoc create: a weekend challenge starts on a Saturday, and 2026-10-15 is a Thursday
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli challenges adhoc create --type=STRING <name> [flags]
+
+Create an ad-hoc challenge and invite people who follow you and whom you follow.
+
+Arguments:
+  <name>    Challenge name.
+
+Flags:
+  -h, --help                     Show context-sensitive help.
+  -j, --json                     Output as JSON ($GCCLI_JSON).
+      --plain                    Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                   Print the column names as the first line of
+                                 --plain output ($GCCLI_HEADER).
+      --color="auto"             Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING           Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"             Unit system for distances, speeds, paces,
+                                 elevations and weights in table and plain
+                                 output: auto (Garmin profile), metric,
+                                 statute_us, statute_uk ($GCCLI_UNITS).
+      --version                  Print version information.
+
+      --type=STRING              Activity: walking, running, cycling, swimming,
+                                 steps, pushes or pushing-distance.
+      --duration="week"          Length: day, weekend (Saturday and Sunday),
+                                 week (7 days), month (to the end of the month)
+                                 or custom (to --end).
+      --start=DATE               First day (YYYY-MM-DD, today, +3d). Default:
+                                 today, the Saturday of this week for weekend,
+                                 the first day of this month for month.
+      --end=DATE                 Last day. Only with --duration custom, at most
+                                 60 days after the first day.
+      --description=FREE-TEXT    Description. Defaults to the name, because
+                                 Garmin requires one.
+      --invite=DISPLAY-NAME      Display name of a person who follows you and
+                                 whom you follow. Repeat it to invite more
+                                 people.
+
+gccli: error: challenges adhoc create: a weekend challenge starts on a Saturday, and 2026-10-15 is a Thursday
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli challenges adhoc create --type=STRING <name> [flags]
+
+Create an ad-hoc challenge and invite people who follow you and whom you follow.
+
+Arguments:
+  <name>    Challenge name.
+
+Flags:
+  -h, --help                     Show context-sensitive help.
+  -j, --json                     Output as JSON ($GCCLI_JSON).
+      --plain                    Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                   Print the column names as the first line of
+                                 --plain output ($GCCLI_HEADER).
+      --color="auto"             Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING           Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"             Unit system for distances, speeds, paces,
+                                 elevations and weights in table and plain
+                                 output: auto (Garmin profile), metric,
+                                 statute_us, statute_uk ($GCCLI_UNITS).
+      --version                  Print version information.
+
+      --type=STRING              Activity: walking, running, cycling, swimming,
+                                 steps, pushes or pushing-distance.
+      --duration="week"          Length: day, weekend (Saturday and Sunday),
+                                 week (7 days), month (to the end of the month)
+                                 or custom (to --end).
+      --start=DATE               First day (YYYY-MM-DD, today, +3d). Default:
+                                 today, the Saturday of this week for weekend,
+                                 the first day of this month for month.
+      --end=DATE                 Last day. Only with --duration custom, at most
+                                 60 days after the first day.
+      --description=FREE-TEXT    Description. Defaults to the name, because
+                                 Garmin requires one.
+      --invite=DISPLAY-NAME      Display name of a person who follows you and
+                                 whom you follow. Repeat it to invite more
+                                 people.
+
+gccli: error: challenges adhoc create: a weekend challenge starts on a Saturday, and 2026-10-15 is a Thursday
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli challenges adhoc create --type=STRING <name> [flags]
+
+Create an ad-hoc challenge and invite people who follow you and whom you follow.
+
+Arguments:
+  <name>    Challenge name.
+
+Flags:
+  -h, --help                     Show context-sensitive help.
+  -j, --json                     Output as JSON ($GCCLI_JSON).
+      --plain                    Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                   Print the column names as the first line of
+                                 --plain output ($GCCLI_HEADER).
+      --color="auto"             Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING           Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"             Unit system for distances, speeds, paces,
+                                 elevations and weights in table and plain
+                                 output: auto (Garmin profile), metric,
+                                 statute_us, statute_uk ($GCCLI_UNITS).
+      --version                  Print version information.
+
+      --type=STRING              Activity: walking, running, cycling, swimming,
+                                 steps, pushes or pushing-distance.
+      --duration="week"          Length: day, weekend (Saturday and Sunday),
+                                 week (7 days), month (to the end of the month)
+                                 or custom (to --end).
+      --start=DATE               First day (YYYY-MM-DD, today, +3d). Default:
+                                 today, the Saturday of this week for weekend,
+                                 the first day of this month for month.
+      --end=DATE                 Last day. Only with --duration custom, at most
+                                 60 days after the first day.
+      --description=FREE-TEXT    Description. Defaults to the name, because
+                                 Garmin requires one.
+      --invite=DISPLAY-NAME      Display name of a person who follows you and
+                                 whom you follow. Repeat it to invite more
+                                 people.
+
+gccli: error: challenges adhoc create: a weekend challenge starts on a Saturday, and 2026-10-15 is a Thursday
+-- json exit --
+2
+-- json requests --

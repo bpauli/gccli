@@ -274,6 +274,24 @@ Commands:
   challenges virtual completed     Show completed virtual challenges.
   challenges virtual in-progress
                                    Show virtual challenges in progress.
+  challenges show                  Show a badge or virtual challenge.
+  challenges join                  Join a badge or virtual challenge.
+  challenges leave                 Leave a badge or virtual challenge.
+  challenges adhoc list            Show your ad-hoc challenges that are not
+                                   finished.
+  challenges adhoc history         Show your finished ad-hoc challenges.
+  challenges adhoc show            Show an ad-hoc challenge.
+  challenges adhoc create          Create an ad-hoc challenge and invite people
+                                   who follow you and whom you follow.
+  challenges adhoc invites         List the open invites of an ad-hoc challenge
+                                   with their adHocChallengeInviteId.
+  challenges adhoc invite          Invite people who follow you and whom you
+                                   follow to an ad-hoc challenge.
+  challenges adhoc accept          Accept an invite to an ad-hoc challenge.
+  challenges adhoc decline         Decline an invite to an ad-hoc challenge.
+  challenges adhoc leave           Leave an ad-hoc challenge. Only a new invite
+                                   gets you back in.
+  challenges adhoc delete          Delete an ad-hoc challenge that you created.
   records list                     View personal records.
   records types                    List personal record types.
   records activity                 List the personal records set in an activity.
@@ -371,6 +389,17 @@ Commands:
   social following                 List the users that a user follows.
   social requests                  List pending connection requests.
   social feed                      Show your newsfeed.
+  social follow                    Follow a user. A user with a private profile
+                                   gets a follow request.
+  social unfollow                  Stop following a user.
+  social follow-requests           List the users who asked to follow you.
+  social accept                    Accept the follow request of a user.
+  social decline                   Decline the follow request of a user.
+  social remove-follower           Remove a user from your followers.
+  social mute                      Mute a user that you follow.
+  social unmute                    Unmute a user.
+  social muted                     List the users that you muted.
+  social search                    Search Garmin Connect users by name.
   groups list                      List your groups.
   insights options                 List the genders, ages, dates, activities and
                                    fields for insights compare.
@@ -1626,7 +1655,7 @@ Commands:
 $ gccli challenges --help
 Usage: gccli challenges <command> [flags]
 
-View challenges.
+View, join and leave challenges.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -1652,6 +1681,24 @@ Commands:
   challenges virtual completed    Show completed virtual challenges.
   challenges virtual in-progress
                                   Show virtual challenges in progress.
+  challenges show                 Show a badge or virtual challenge.
+  challenges join                 Join a badge or virtual challenge.
+  challenges leave                Leave a badge or virtual challenge.
+  challenges adhoc list           Show your ad-hoc challenges that are not
+                                  finished.
+  challenges adhoc history        Show your finished ad-hoc challenges.
+  challenges adhoc show           Show an ad-hoc challenge.
+  challenges adhoc create         Create an ad-hoc challenge and invite people
+                                  who follow you and whom you follow.
+  challenges adhoc invites        List the open invites of an ad-hoc challenge
+                                  with their adHocChallengeInviteId.
+  challenges adhoc invite         Invite people who follow you and whom you
+                                  follow to an ad-hoc challenge.
+  challenges adhoc accept         Accept an invite to an ad-hoc challenge.
+  challenges adhoc decline        Decline an invite to an ad-hoc challenge.
+  challenges adhoc leave          Leave an ad-hoc challenge. Only a new invite
+                                  gets you back in.
+  challenges adhoc delete         Delete an ad-hoc challenge that you created.
 
 $ gccli challenges virtual --help
 Usage: gccli challenges virtual <command>
@@ -1677,6 +1724,41 @@ Commands:
   challenges virtual completed    Show completed virtual challenges.
   challenges virtual in-progress
                                   Show virtual challenges in progress.
+
+$ gccli challenges adhoc --help
+Usage: gccli challenges adhoc <command>
+
+Create, view and answer ad-hoc challenges with people you follow.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  challenges adhoc list       Show your ad-hoc challenges that are not finished.
+  challenges adhoc history    Show your finished ad-hoc challenges.
+  challenges adhoc show       Show an ad-hoc challenge.
+  challenges adhoc create     Create an ad-hoc challenge and invite people who
+                              follow you and whom you follow.
+  challenges adhoc invites    List the open invites of an ad-hoc challenge with
+                              their adHocChallengeInviteId.
+  challenges adhoc invite     Invite people who follow you and whom you follow
+                              to an ad-hoc challenge.
+  challenges adhoc accept     Accept an invite to an ad-hoc challenge.
+  challenges adhoc decline    Decline an invite to an ad-hoc challenge.
+  challenges adhoc leave      Leave an ad-hoc challenge. Only a new invite gets
+                              you back in.
+  challenges adhoc delete     Delete an ad-hoc challenge that you created.
 
 $ gccli records --help
 Usage: gccli records <command> [flags]
@@ -2249,7 +2331,7 @@ Commands:
 $ gccli social --help
 Usage: gccli social <command> [flags]
 
-View connections, followers, following and the newsfeed.
+Follow, mute and search users. View connections and the newsfeed.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -2266,11 +2348,22 @@ Flags:
       --version           Print version information.
 
 Commands:
-  social connections    List your connections.
-  social followers      List the followers of a user.
-  social following      List the users that a user follows.
-  social requests       List pending connection requests.
-  social feed           Show your newsfeed.
+  social connections        List your connections.
+  social followers          List the followers of a user.
+  social following          List the users that a user follows.
+  social requests           List pending connection requests.
+  social feed               Show your newsfeed.
+  social follow             Follow a user. A user with a private profile gets a
+                            follow request.
+  social unfollow           Stop following a user.
+  social follow-requests    List the users who asked to follow you.
+  social accept             Accept the follow request of a user.
+  social decline            Decline the follow request of a user.
+  social remove-follower    Remove a user from your followers.
+  social mute               Mute a user that you follow.
+  social unmute             Unmute a user.
+  social muted              List the users that you muted.
+  social search             Search Garmin Connect users by name.
 
 $ gccli groups --help
 Usage: gccli groups <command> [flags]

@@ -1,10 +1,14 @@
 package garminapi
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
+	"strings"
+	"time"
 )
 
 var goalsEndpoints = []Endpoint{
@@ -41,6 +45,18 @@ var goalsEndpoints = []Endpoint{
 	{Name: "challenges.virtual-available", Method: http.MethodGet, Host: ConnectAPI, Path: "/badgechallenge-service/virtualChallenge/available"},
 	{Name: "challenges.virtual-completed", Method: http.MethodGet, Host: ConnectAPI, Path: "/badgechallenge-service/virtualChallenge/completed"},
 	{Name: "challenges.virtual-in-progress", Method: http.MethodGet, Host: ConnectAPI, Path: "/badgechallenge-service/virtualChallenge/inProgress"},
+	{Name: "challenges.show", Method: http.MethodGet, Host: ConnectAPI, Path: "/badgechallenge-service/badgeChallenge/{uuid}"},
+	{Name: "challenges.join", Method: http.MethodPost, Host: ConnectAPI, Path: "/badgechallenge-service/badgeChallenge/{uuid}/optIn/{date}"},
+	{Name: "challenges.leave", Method: http.MethodPost, Host: ConnectAPI, Path: "/badgechallenge-service/badgeChallenge/{uuid}/optOut"},
+	{Name: "challenges.adhoc-historical", Method: http.MethodGet, Host: ConnectAPI, Path: "/adhocchallenge-service/adHocChallenge/historical"},
+	{Name: "challenges.adhoc-show", Method: http.MethodGet, Host: ConnectAPI, Path: "/adhocchallenge-service/adHocChallenge/{uuid}?todayDate={todayDate}"},
+	{Name: "challenges.adhoc-invites", Method: http.MethodGet, Host: ConnectAPI, Path: "/adhocchallenge-service/adHocChallenge/{uuid}/invite"},
+	{Name: "challenges.adhoc-accept", Method: http.MethodPut, Host: ConnectAPI, Path: "/adhocchallenge-service/adHocChallenge/invite/{inviteID}/accept"},
+	{Name: "challenges.adhoc-decline", Method: http.MethodPut, Host: ConnectAPI, Path: "/adhocchallenge-service/adHocChallenge/invite/{inviteID}/decline"},
+	{Name: "challenges.adhoc-leave", Method: http.MethodDelete, Host: ConnectAPI, Path: "/adhocchallenge-service/adHocChallenge/{uuid}/player/{profileID}"},
+	{Name: "challenges.adhoc-delete", Method: http.MethodDelete, Host: ConnectAPI, Path: "/adhocchallenge-service/adHocChallenge/{uuid}"},
+	{Name: "challenges.adhoc-create", Method: http.MethodPost, Host: ConnectAPI, Path: "/adhocchallenge-service/adHocChallenge", Body: true},
+	{Name: "challenges.adhoc-invite", Method: http.MethodPost, Host: ConnectAPI, Path: "/adhocchallenge-service/adHocChallenge/invite", Body: true},
 	{Name: "records.list", Method: http.MethodGet, Host: ConnectAPI, Path: "/personalrecord-service/personalrecord/prs/{displayName}"},
 	{Name: "records.types", Method: http.MethodGet, Host: ConnectAPI, Path: "/personalrecord-service/personalrecordtype/prtypes/{displayName}"},
 	{Name: "records.activity", Method: http.MethodGet, Host: ConnectAPI, Path: "/personalrecord-service/personalrecord/prByActivityId/{activityID}"},
@@ -186,4 +202,157 @@ func inProgressBadges(earned, available []json.RawMessage) ([]json.RawMessage, e
 		}
 	}
 	return kept, nil
+}
+
+// ChallengeType is the activity that an ad-hoc challenge counts, as
+// Garmin's socialChallengeActivityTypeId.
+type ChallengeType int
+
+// The activities that the web app offers for a new ad-hoc challenge.
+const (
+	ChallengeWalking         ChallengeType = 0
+	ChallengeRunning         ChallengeType = 1
+	ChallengeCycling         ChallengeType = 2
+	ChallengeSwimming        ChallengeType = 3
+	ChallengeSteps           ChallengeType = 4
+	ChallengePushes          ChallengeType = 10
+	ChallengePushingDistance ChallengeType = 11
+)
+
+// ChallengeDuration is the length of an ad-hoc challenge, as Garmin's
+// durationTypeId.
+type ChallengeDuration int
+
+const (
+	ChallengeWeek    ChallengeDuration = 0
+	ChallengeMonth   ChallengeDuration = 1
+	ChallengeCustom  ChallengeDuration = 2
+	ChallengeWeekend ChallengeDuration = 3
+	ChallengeDay     ChallengeDuration = 4
+)
+
+// AdHocChallenge is a new ad-hoc challenge. It runs from the start of the
+// local day Start to the end of the local day End. Invite holds the display
+// names of the people to invite.
+type AdHocChallenge struct {
+	Name        string
+	Description string
+	Type        ChallengeType
+	Duration    ChallengeDuration
+	Start, End  time.Time
+	Invite      []string
+}
+
+type adHocPlayer struct {
+	UserProfileID json.Number `json:"userProfileId"`
+	DisplayName   string      `json:"displayName"`
+}
+
+// CreateAdHocChallenge creates an ad-hoc challenge with the body of the web
+// app. Garmin invites each player of the body. Garmin refuses an empty
+// description, so the name is sent as the description when it is empty.
+func (c *Client) CreateAdHocChallenge(ctx context.Context, ch AdHocChallenge) (json.RawMessage, error) {
+	players := []adHocPlayer{}
+	if len(ch.Invite) > 0 {
+		var err error
+		if players, err = c.mutualFollowers(ctx, ch.Invite); err != nil {
+			return nil, err
+		}
+	}
+	owner, err := c.GetProfilePK(ctx)
+	if err != nil {
+		return nil, err
+	}
+	desc := ch.Description
+	if desc == "" {
+		desc = ch.Name
+	}
+	body, err := json.Marshal(struct {
+		Name     string            `json:"adHocChallengeName"`
+		Desc     string            `json:"adHocChallengeDesc"`
+		Type     ChallengeType     `json:"socialChallengeActivityTypeId"`
+		Duration ChallengeDuration `json:"durationTypeId"`
+		Start    string            `json:"startDate"`
+		End      string            `json:"endDate"`
+		Ranking  int               `json:"userRanking"`
+		Status   int               `json:"socialChallengeStatusId"`
+		Owner    json.Number       `json:"ownerUserProfileId"`
+		Players  []adHocPlayer     `json:"players"`
+	}{
+		Name:     ch.Name,
+		Desc:     desc,
+		Type:     ch.Type,
+		Duration: ch.Duration,
+		Start:    ch.Start.Format("2006-01-02") + "T00:00:00.00",
+		End:      ch.End.Format("2006-01-02") + "T23:59:59.999",
+		Owner:    json.Number(owner),
+		Players:  players,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("marshal ad-hoc challenge: %w", err)
+	}
+	return c.Call(ctx, "challenges.adhoc-create", nil, body)
+}
+
+// InviteToAdHocChallenge invites the people with the display names to the
+// ad-hoc challenge uuid.
+func (c *Client) InviteToAdHocChallenge(ctx context.Context, uuid string, displayNames []string) (json.RawMessage, error) {
+	players, err := c.mutualFollowers(ctx, displayNames)
+	if err != nil {
+		return nil, err
+	}
+	owner, err := c.GetProfilePK(ctx)
+	if err != nil {
+		return nil, err
+	}
+	ids := make([]json.Number, len(players))
+	for i, p := range players {
+		ids[i] = p.UserProfileID
+	}
+	body, err := json.Marshal(struct {
+		UUID     string        `json:"adHocChallengeUuid"`
+		Invitor  json.Number   `json:"invitorId"`
+		Invitees []json.Number `json:"inviteeIds"`
+	}{uuid, json.Number(owner), ids})
+	if err != nil {
+		return nil, fmt.Errorf("marshal ad-hoc challenge invite: %w", err)
+	}
+	return c.Call(ctx, "challenges.adhoc-invite", nil, body)
+}
+
+// mutualFollowers returns the player of each display name, in the order
+// given. Garmin invites only people who follow you and whom you follow, so
+// a name that is not a mutual follower fails before any write.
+func (c *Client) mutualFollowers(ctx context.Context, displayNames []string) ([]adHocPlayer, error) {
+	data, err := c.Call(ctx, "followers.mutuals", nil, nil)
+	if err != nil {
+		return nil, fmt.Errorf("get mutual followers: %w", err)
+	}
+	var mutuals []struct {
+		UserID      json.Number `json:"userId"`
+		DisplayName string      `json:"displayName"`
+	}
+	if len(bytes.TrimSpace(data)) > 0 {
+		if err := json.Unmarshal(data, &mutuals); err != nil {
+			return nil, fmt.Errorf("parse mutual followers: %w", err)
+		}
+	}
+	byName := map[string]json.Number{}
+	for _, m := range mutuals {
+		byName[m.DisplayName] = m.UserID
+	}
+	players := make([]adHocPlayer, 0, len(displayNames))
+	var missing []string
+	for _, name := range displayNames {
+		id, ok := byName[name]
+		if !ok {
+			missing = append(missing, strconv.Quote(name))
+			continue
+		}
+		players = append(players, adHocPlayer{UserProfileID: id, DisplayName: name})
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("cannot invite %s: Garmin invites only people you follow who also follow you", strings.Join(missing, ", "))
+	}
+	return players, nil
 }
