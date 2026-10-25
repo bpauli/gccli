@@ -696,6 +696,19 @@ var writeCases = map[string]writeCase{
 		human:    "Added privacy zone of 800 m around 52.52, -30.5 (ID: 4321)\n",
 		fallback: "Added privacy zone of 800 m around 52.52, -30.5\n",
 	},
+	"profile privacy set": {
+		args: []string{"--activities", "connections", "--badges", "private"},
+		routes: map[string]string{
+			"GET /privacysettings-service/privacy-settings": `{"activityPrivacySettings":{"categoryDetails":{"categoryAccessRule":"private"},"subcategoryPrivacySettings":[]}}`,
+			"PUT /privacysettings-service/privacy-settings": noContent,
+			profileRoute: profileBody,
+			"PUT /userprofile-service/socialProfile/privacy/badge/tester": noContent,
+		},
+		result:   "PUT /userprofile-service/socialProfile/privacy/badge/tester",
+		json:     okOut,
+		human:    "Changed privacy: activities connections, badges private\n",
+		fallback: "Changed privacy: activities connections, badges private\n",
+	},
 	"wellness menstrual-log set": {
 		args: []string{"2026-10-01", "--flow", "light"},
 		routes: map[string]string{

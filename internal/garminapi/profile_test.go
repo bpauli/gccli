@@ -17,6 +17,8 @@ func TestProfileEndpoints(t *testing.T) {
 		{"profile.user-settings", nil, "GET /userprofile-service/userprofile/user-settings"},
 		{"profile.social", map[string]string{"displayName": "testuser"}, "GET /userprofile-service/socialProfile/testuser"},
 		{"profile.privacy-settings", nil, "GET /privacysettings-service/privacy-settings"},
+		{"profile.privacy-settings.update", nil, "PUT /privacysettings-service/privacy-settings"},
+		{"profile.privacy.badges", map[string]string{"displayName": "tester"}, "PUT /userprofile-service/socialProfile/privacy/badge/tester"},
 		{"profile.privacy-zones", nil, "GET /privacyzone-service/privacyZones"},
 		{"profile.privacy-zone.create", nil, "POST /privacyzone-service/privacyZones"},
 		{"profile.privacy-zone.delete", map[string]string{"privacyZoneID": "123"}, "DELETE /privacyzone-service/privacyZones/123"},

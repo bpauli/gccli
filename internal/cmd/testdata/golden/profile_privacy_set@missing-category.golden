@@ -1,0 +1,37 @@
+The answer has no wellnessPrivacySettings, so the command fails before any write.
+-- args --
+profile
+privacy
+set
+--wellness
+public
+-- route GET /privacysettings-service/privacy-settings --
+{"activityPrivacySettings":{"categoryDetails":{"categoryAccessRule":"private"},"subcategoryPrivacySettings":[]},"profilePrivacySettings":{"categoryDetails":{"categoryAccessRule":"private"},"subcategoryPrivacySettings":[]}}
+-- table stdout --
+-- table stderr --
+garmin returned no wellnessPrivacySettings in its privacy settings
+-- table exit --
+1
+-- table requests --
+GET /privacysettings-service/privacy-settings
+-- plain stdout --
+-- plain stderr --
+garmin returned no wellnessPrivacySettings in its privacy settings
+-- plain exit --
+1
+-- plain requests --
+GET /privacysettings-service/privacy-settings
+-- plain-header stdout --
+-- plain-header stderr --
+garmin returned no wellnessPrivacySettings in its privacy settings
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /privacysettings-service/privacy-settings
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"garmin returned no wellnessPrivacySettings in its privacy settings"}}
+-- json exit --
+1
+-- json requests --
+GET /privacysettings-service/privacy-settings
