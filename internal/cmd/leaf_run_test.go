@@ -291,9 +291,15 @@ func TestLeafRowSadPaths(t *testing.T) {
 			}
 			return stdout, stderr, code, requests
 		}
+		// The prompt of a Write row comes before its lookups, so --force keeps
+		// it off stderr.
+		var extra []string
+		if w, ok := l.Output.(Write); ok && w.Confirm != "" {
+			extra = []string{"--force"}
+		}
 		run := func(name string, routes map[string]mockReply, flag string, check func(t *testing.T, stdout, stderr string, code int, requests []string)) {
 			t.Run(path+"/"+name+"/"+strings.TrimPrefix(flag, "--"), func(t *testing.T) {
-				stdout, stderr, code, requests := exec(t, routes, []string{flag}, nil)
+				stdout, stderr, code, requests := exec(t, routes, []string{flag}, extra)
 				check(t, stdout, stderr, code, requests)
 			})
 		}

@@ -15,4 +15,8 @@ var groupsEndpoints = []Endpoint{
 	// groups.challenges answers 403 ForbiddenException to an account that is
 	// not a member of the group.
 	{Name: "groups.challenges", Method: http.MethodGet, Host: ConnectAPI, Path: "/groupchallenge-service/group/{groupID}/groupchallenge/nonCompleted"},
+	// groups.join adds the account to a public group at once. A private
+	// group needs a join request, which is a different request.
+	{Name: "groups.join", Method: http.MethodPost, Host: ConnectAPI, Path: "/group-service/group/{groupID}/member/{profileID}", Body: true},
+	{Name: "groups.leave", Method: http.MethodDelete, Host: ConnectAPI, Path: "/group-service/group/{groupID}/member/{profileID}"},
 }
