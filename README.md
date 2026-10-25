@@ -28,7 +28,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Events** — list, list upcoming, add, and delete calendar events (races, group rides, etc.) with goals and training priority support
 - **Calendar** - month view of activities, workouts, events and notes, add, update, move and delete calendar notes, turn the iCalendar feed on and off, and change the web calendar preferences
 - **Wellness** - menstrual cycle data and calendar, menstrual daily log (view, set, delete), pregnancy summary, jet lag trips (list, add, update, delete) and status
-- **Social** - notifications (page with a cursor, dismiss and undismiss, unread state), view and change notification preferences, connections, connection requests, followers, following, follow and unfollow, follow requests, mute, user search, newsfeed, groups
+- **Social** - notifications (page with a cursor, dismiss and undismiss, unread state), view and change notification preferences, connections, connection requests, followers, following, follow and unfollow, follow requests, mute, user search, newsfeed, groups (search, show a group with its members, feed, member activities and open challenges, join a public group, leave a group)
 - **Insights** - compare your steps, sleep, floors, VO2 max, speed, power and more with people of your age group and gender (needs Insights turned on in Garmin Connect)
 - **Golf** - scorecards, the courses you played, golf and shot stats (drive, approach, chip, putt), the clubs in your bag, club types and leaderboards
 - **Agent-ready** - ships a bundled agent skill (`skills/gccli/`) that plugs into AI assistants like Claude Code, Codex, Hermes, and OpenClaw so you can drive Garmin Connect in plain language
@@ -228,13 +228,13 @@ gccli activities list
 
 - Default: human-friendly tables on stdout.
 - `--json` / `-j`: JSON on stdout (best for scripting).
-- `--plain`: tab-separated values on stdout, with no header row unless you add `--header`. Only these commands print TSV: `activities list`, `activities search`, `activities favorites`, `activities types`, `activity summary`, `body weekly`, `courses list`, `courses favorites`, `courses import`, `events list`, `nutrition search`, `nutrition recent`, `nutrition favorites`, `workouts list`, `workouts schedule list` and `exercises list` (without `--category`). Most other commands that return data print the same JSON in all modes, also without `--json`. `activities count` prints a single number. Use `--json` when a script parses the output.
+- `--plain`: tab-separated values on stdout, with no header row unless you add `--header`. Only these commands print TSV: `activities list`, `activities search`, `activities favorites`, `activities types`, `activity summary`, `body weekly`, `courses list`, `courses favorites`, `courses import`, `events list`, `groups search`, `groups members`, `groups activities`, `nutrition search`, `nutrition recent`, `nutrition favorites`, `workouts list`, `workouts schedule list` and `exercises list` (without `--category`). Most other commands that return data print the same JSON in all modes, also without `--json`. `activities count` prints a single number. Use `--json` when a script parses the output.
 - `--header`: with `--plain`, the first line holds the column names. `activity summary` has no column names, so it prints no header line. `--header` without `--plain`, or with `--json`, is a usage error (exit code 2). `GCCLI_HEADER` is not an error: table and JSON output ignore it.
 - Table and `--plain` output escape the characters that would break a row or a column. A backslash prints as `\\`, a tab as `\t`, a newline as `\n`, a carriage return as `\r`, a vertical tab as `\v` and a form feed as `\f`. So each record is one line, and in `--plain` output only real tabs separate the fields. `--json` output does not change.
-- Write commands (the commands that add, create, upload, import, update, set, rename, retype, describe, change, favorite, unfavorite, schedule, send, link, unlink, remove, reload or delete data in Garmin Connect) all follow one rule:
+- Write commands (the commands that add, create, upload, import, update, set, rename, retype, describe, change, favorite, unfavorite, schedule, send, link, unlink, join, leave, remove, reload or delete data in Garmin Connect) all follow one rule:
   - With `--json`, they print the Garmin response on stdout, indented like all JSON output. When Garmin sends an empty response, they print `{"ok": true}`.
   - Without `--json`, they print one message on stderr and nothing on stdout. `courses import` is the only exception. It prints the saved course as a table on stdout (TSV with `--plain`).
-- An empty answer is not an error. When Garmin sends no body, the exit code is 0 and the output follows the shape of the Garmin answer: a command whose answer is a list prints `[]` with `--json`, and a command whose answer is one object prints `{}` in every mode. A list command that prints columns (`activities list`, `activities search`, `activities favorites`, `activities types`, `body weekly`, `courses list`, `courses favorites`, `events list`, `nutrition search`, `nutrition recent`, `nutrition favorites`, `workouts list` and `workouts schedule list`) prints the header only as a table and nothing with `--plain` (the header line with `--header`); every other list command prints `[]` in every mode. `activity summary` and `exercises list` show one object, so they print `{}` with `--json` and no row otherwise. [`internal/cmd/testdata/answer_shapes.tsv`](internal/cmd/testdata/answer_shapes.tsv) records the shape of the Garmin answer of every command that prints it (`array`, `object` or `unknown`, with the evidence for each; a shape that no Garmin answer confirmed is `unknown` and prints `{}`), and a test keeps the commands in step with it. `activities count` prints `0` (`{"count": 0}` with `--json`). A list answer without its list key gives no rows, and `--json` prints the answer unchanged.
+- An empty answer is not an error. When Garmin sends no body, the exit code is 0 and the output follows the shape of the Garmin answer: a command whose answer is a list prints `[]` with `--json`, and a command whose answer is one object prints `{}` in every mode. A list command that prints columns (`activities list`, `activities search`, `activities favorites`, `activities types`, `body weekly`, `courses list`, `courses favorites`, `events list`, `groups search`, `groups members`, `groups activities`, `nutrition search`, `nutrition recent`, `nutrition favorites`, `workouts list` and `workouts schedule list`) prints the header only as a table and nothing with `--plain` (the header line with `--header`); every other list command prints `[]` in every mode. `activity summary` and `exercises list` show one object, so they print `{}` with `--json` and no row otherwise. [`internal/cmd/testdata/answer_shapes.tsv`](internal/cmd/testdata/answer_shapes.tsv) records the shape of the Garmin answer of every command that prints it (`array`, `object` or `unknown`, with the evidence for each; a shape that no Garmin answer confirmed is `unknown` and prints `{}`), and a test keeps the commands in step with it. `activities count` prints `0` (`{"count": 0}` with `--json`). A list answer without its list key gives no rows, and `--json` prints the answer unchanged.
 - Human-facing messages (errors, warnings, info) go to stderr.
 - Delete commands ask for confirmation in a terminal. Without a terminal (scripts, pipes, agents), they exit with an error unless you pass `--force`. If you answer no, the command prints `Cancelled` on stderr, prints nothing on stdout and exits with 0.
 - Tables, TSV and JSON on stdout have no colors. The messages on stderr use colors. The `--help` text uses bold and faint text when stdout is a terminal, and `--color` does not change this.
@@ -949,6 +949,12 @@ gccli social mute <display-name>       # Mute a user that you follow
 gccli social unmute <display-name>
 gccli social muted                     # List the users that you muted
 gccli groups list                      # List your groups
+gccli groups search running --limit 10 # Search groups by keyword
+gccli groups members <group-id>        # List the members of a group
+gccli groups activities <group-id>     # List the latest activities of the members
+gccli groups challenges <group-id>     # List the open challenges (members only)
+gccli groups join <group-id>           # Join a public group
+gccli groups leave <group-id>          # Leave a group (asks first, --force skips it)
 ```
 
 `unfollow`, `remove-follower` and `unmute` read the follow status or the muted list first, because Garmin answers 204 whether there is something to remove or not. They exit 1 when there is nothing to remove. `unfollow` and `remove-follower` ask first (`--force` skips the question). Garmin no longer takes new connection requests (410 `API_DEPRECATED`), so gccli has no command to send one.
@@ -1761,6 +1767,25 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `-l, --limit=20`: Maximum number of users to return.
   - `--offset=0`: Number of users to skip.
 - `gccli groups list`: List your groups. Also runs as `gccli groups`.
+- `gccli groups search <keyword> [flags]`: Search groups by keyword.
+  - `<keyword>`: Text in the group name or description.
+  - `-l, --limit=20`: Maximum number of groups to return.
+  - `--offset=0`: Number of groups to skip.
+- `gccli groups show <id>`: Show a group.
+  - `<id>`: Group ID.
+- `gccli groups members <id>`: List the members of a group.
+  - `<id>`: Group ID.
+- `gccli groups feed <id>`: Show the latest posts and activities of the group feed.
+  - `<id>`: Group ID.
+- `gccli groups activities <id>`: List the latest activities of the group members.
+  - `<id>`: Group ID.
+- `gccli groups challenges <id>`: List the open challenges of a group. Garmin answers 403 to a non-member.
+  - `<id>`: Group ID.
+- `gccli groups join <id>`: Join a public group. gccli does not send the request that a private group needs.
+  - `<id>`: Group ID.
+- `gccli groups leave <id> [flags]`: Leave a group.
+  - `<id>`: Group ID.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli notifications list [flags]`: List notifications. Also runs as `gccli notifications [flags]`.
   - `--limit=50`: Maximum number of notifications to return.
   - `--cursor=STRING`: Start after this cursor. Use pagination.nextCursor from the JSON output of the last page.

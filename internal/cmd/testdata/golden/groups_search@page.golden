@@ -1,0 +1,58 @@
+--offset 20 skips 20 groups: Garmin takes start=21, the index of the first group to return.
+-- args --
+groups
+search
+running
+--offset
+20
+--limit
+10
+-- route POST /group-service/keyword --
+{"effectiveKeyword":"running","groupDTOs":[{"id":1021,"groupName":"Example Run Club 21","groupPrivacy":"PUBLIC","location":"Example City"}],"limit":10,"originalKeyword":"running","start":21}
+-- table stdout --
+ID    NAME                 PRIVACY  LOCATION
+1021  Example Run Club 21  PUBLIC   Example City
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+POST /group-service/keyword
+  "keyword=running&limit=10&start=21"
+-- plain stdout --
+1021	Example Run Club 21	PUBLIC	Example City
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+POST /group-service/keyword
+  "keyword=running&limit=10&start=21"
+-- plain-header stdout --
+ID	NAME	PRIVACY	LOCATION
+1021	Example Run Club 21	PUBLIC	Example City
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /group-service/keyword
+  "keyword=running&limit=10&start=21"
+-- json stdout --
+{
+  "effectiveKeyword": "running",
+  "groupDTOs": [
+    {
+      "id": 1021,
+      "groupName": "Example Run Club 21",
+      "groupPrivacy": "PUBLIC",
+      "location": "Example City"
+    }
+  ],
+  "limit": 10,
+  "originalKeyword": "running",
+  "start": 21
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /group-service/keyword
+  "keyword=running&limit=10&start=21"

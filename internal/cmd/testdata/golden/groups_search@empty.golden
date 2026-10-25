@@ -1,0 +1,43 @@
+No group matches: the answer has no groupDTOs.
+-- args --
+groups
+search
+zzzz
+-- route POST /group-service/keyword --
+{"effectiveKeyword":"zzzz","limit":20,"originalKeyword":"zzzz","start":1}
+-- table stdout --
+ID  NAME  PRIVACY  LOCATION
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+POST /group-service/keyword
+  "keyword=zzzz&limit=20&start=1"
+-- plain stdout --
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+POST /group-service/keyword
+  "keyword=zzzz&limit=20&start=1"
+-- plain-header stdout --
+ID	NAME	PRIVACY	LOCATION
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /group-service/keyword
+  "keyword=zzzz&limit=20&start=1"
+-- json stdout --
+{
+  "effectiveKeyword": "zzzz",
+  "limit": 20,
+  "originalKeyword": "zzzz",
+  "start": 1
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /group-service/keyword
+  "keyword=zzzz&limit=20&start=1"
