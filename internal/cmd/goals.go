@@ -549,7 +549,7 @@ func (c *ChallengesListCmd) Run(g *Globals) error {
 	return outfmt.WriteJSON(g.Stdout, data)
 }
 
-var recordsGroup = Group{Name: "records", Help: "View personal records.", Children: []Node{
+var recordsGroup = Group{Name: "records", Help: "View, hide and delete personal records.", Children: []Node{
 	Leaf{
 		Name: "list", Help: "View personal records.", Default: true,
 		Endpoint: "records.list",
@@ -571,4 +571,68 @@ var recordsGroup = Group{Name: "records", Help: "View personal records.", Childr
 		Params:   Params{"activityID": In("ID")},
 		Verb:     "get activity records", Output: JSON{List: true},
 	},
+	Leaf{
+		Name: "candidates", Help: "List the personal record candidates that wait for your review.",
+		Endpoint: "records.candidates",
+		Params:   Params{"displayName": DisplayName},
+		Verb:     "get personal record candidates", Output: JSON{List: true},
+	},
+	Custom{Name: "hide", Help: "Hide a personal record type on the records page.", Cmd: &RecordsHideCmd{}},
+	Custom{Name: "unhide", Help: "Show a hidden personal record type on the records page again.", Cmd: &RecordsUnhideCmd{}},
+	Leaf{
+		Name: "delete", Help: "Delete a personal record. This cannot be undone.",
+		Spec: argsOf(&struct {
+			ID NumericID `arg:"" help:"Personal record ID, as records list prints it."`
+		}{}),
+		Endpoint: "records.delete",
+		Params:   Params{"recordID": In("ID")},
+		Verb:     "delete personal record",
+		Output:   Write{Done: "Deleted personal record {ID}", Confirm: "Delete personal record {ID}?"},
+	},
 }}
+
+// RecordsHideCmd hides a personal record type on the records page.
+type RecordsHideCmd struct {
+	TypeID NumericID `arg:"" help:"Record type ID, as records types prints it."`
+}
+
+func (c *RecordsHideCmd) Run(g *Globals) error {
+	data, err := setRecordTypeVisible(g, c.TypeID, false)
+	if err != nil {
+		return err
+	}
+	return reportWrite(g, data, "Hid personal record type %s", c.TypeID)
+}
+
+// RecordsUnhideCmd shows a hidden personal record type again.
+type RecordsUnhideCmd struct {
+	TypeID NumericID `arg:"" help:"Record type ID, as records types prints it."`
+}
+
+func (c *RecordsUnhideCmd) Run(g *Globals) error {
+	data, err := setRecordTypeVisible(g, c.TypeID, true)
+	if err != nil {
+		return err
+	}
+	return reportWrite(g, data, "Unhid personal record type %s", c.TypeID)
+}
+
+func setRecordTypeVisible(g *Globals, id NumericID, visible bool) (json.RawMessage, error) {
+	verb := "hide"
+	if visible {
+		verb = "unhide"
+	}
+	body, err := json.Marshal(map[string]any{"id": id, "visible": visible})
+	if err != nil {
+		return nil, err
+	}
+	client, err := resolveClient(g)
+	if err != nil {
+		return nil, err
+	}
+	data, err := client.Call(g.Context, "records.type.update", map[string]string{"typeID": id.String()}, body)
+	if err != nil {
+		return nil, fmt.Errorf("%s personal record type: %w", verb, err)
+	}
+	return data, nil
+}
