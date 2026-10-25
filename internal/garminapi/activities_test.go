@@ -46,6 +46,7 @@ func TestActivitiesEndpoints(t *testing.T) {
 		{"activities.create", nil, "POST /activity-service/activity"},
 		{"activities.update", id, "PUT /activity-service/activity/123"},
 		{"activities.delete", id, "DELETE /activity-service/activity/123"},
+		{"activities.favorites", map[string]string{"displayName": "jo", "limit": "20"}, "GET /activitylist-service/activities/favorite/jo?limit=20"},
 		{"activities.types", nil, "GET /activity-service/activity/activityTypes"},
 		{"activities.pending", nil, "GET /pendingactivity-service/pending-activities"},
 		{"activities.statistics", map[string]string{"displayName": "jo"}, "GET /userstats-service/statistics/jo"},

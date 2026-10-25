@@ -386,7 +386,7 @@ printf '%s\n' "${COMPREPLY[*]}"
 	}
 
 	const (
-		activitiesSubcommands = "list count search types pending stats"
+		activitiesSubcommands = "list count search favorites types pending stats"
 		authSubcommands       = "login status remove token export import"
 		unitValues            = "auto metric statute_us statute_uk"
 	)
