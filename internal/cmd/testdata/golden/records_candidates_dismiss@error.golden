@@ -1,0 +1,38 @@
+Error case: Garmin answers 404 because the candidate does not exist, so the exit code is 4 (not_found).
+-- args --
+records
+candidates
+dismiss
+4200001
+-- stdin --
+y
+-- route DELETE /personalrecord-service/personalrecordcandidate/v2/4200001 404 noeol --
+{"message":"Personal Record with id 4200001 not found","error":"NotFoundException"}
+-- table stdout --
+-- table stderr --
+Dismiss personal record candidate 4200001? [y/N]: dismiss personal record candidate: garmin api: 404 Not Found: {"message":"Personal Record with id 4200001 not found","error":"NotFoundException"}
+-- table exit --
+4
+-- table requests --
+DELETE /personalrecord-service/personalrecordcandidate/v2/4200001
+-- plain stdout --
+-- plain stderr --
+Dismiss personal record candidate 4200001? [y/N]: dismiss personal record candidate: garmin api: 404 Not Found: {"message":"Personal Record with id 4200001 not found","error":"NotFoundException"}
+-- plain exit --
+4
+-- plain requests --
+DELETE /personalrecord-service/personalrecordcandidate/v2/4200001
+-- plain-header stdout --
+-- plain-header stderr --
+Dismiss personal record candidate 4200001? [y/N]: dismiss personal record candidate: garmin api: 404 Not Found: {"message":"Personal Record with id 4200001 not found","error":"NotFoundException"}
+-- plain-header exit --
+4
+-- plain-header requests --
+DELETE /personalrecord-service/personalrecordcandidate/v2/4200001
+-- json stdout --
+-- json stderr --
+Dismiss personal record candidate 4200001? [y/N]: {"error":{"code":"not_found","status":404,"message":"dismiss personal record candidate: garmin api: 404 Not Found: {\"message\":\"Personal Record with id 4200001 not found\",\"error\":\"NotFoundException\"}"}}
+-- json exit --
+4
+-- json requests --
+DELETE /personalrecord-service/personalrecordcandidate/v2/4200001

@@ -1,0 +1,127 @@
+The command sends the candidate back with its id set to null, as the Garmin Connect web app does. Garmin answers with the new record.
+-- args --
+records
+candidates
+accept
+4200001
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- route GET /personalrecord-service/personalrecordcandidate/tester --
+[{"id":4200001,"typeId":23,"status":"CANDIDATE","activityId":5100001,"activityName":"Pool Swim","activityType":"lap_swimming","value":1210.0,"prStartTimeGmt":1760000000000,"prStartTimeLocal":null,"poolLengthUnit":{"id":1,"key":"meter","factor":100.0}},{"id":4200002,"typeId":7,"status":"CANDIDATE","activityId":5100002,"activityName":"Long Run","activityType":"running","value":42195.0,"prStartTimeGmt":1760100000000,"prStartTimeLocal":null,"poolLengthUnit":null}]
+-- route PUT /personalrecord-service/personalrecord/ --
+{"id":4100009,"typeId":23,"status":"ACCEPTED","activityId":5100001,"activityName":"Pool Swim","activityType":"lap_swimming","value":1210.0,"prStartTimeGmt":1760000000000,"prStartTimeLocal":0,"poolLengthUnit":{"id":1,"key":"meter","factor":100.0}}
+-- table stdout --
+-- table stderr --
+Accepted personal record candidate 4200001
+-- table exit --
+0
+-- table requests --
+GET /userprofile-service/userprofile/settings
+GET /personalrecord-service/personalrecordcandidate/tester
+PUT /personalrecord-service/personalrecord/
+  {
+    "activityId": 5100001,
+    "activityName": "Pool Swim",
+    "activityType": "lap_swimming",
+    "id": null,
+    "poolLengthUnit": {
+      "id": 1,
+      "key": "meter",
+      "factor": 100.0
+    },
+    "prStartTimeGmt": 1760000000000,
+    "prStartTimeLocal": null,
+    "status": "CANDIDATE",
+    "typeId": 23,
+    "value": 1210.0
+  }
+-- plain stdout --
+-- plain stderr --
+Accepted personal record candidate 4200001
+-- plain exit --
+0
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+GET /personalrecord-service/personalrecordcandidate/tester
+PUT /personalrecord-service/personalrecord/
+  {
+    "activityId": 5100001,
+    "activityName": "Pool Swim",
+    "activityType": "lap_swimming",
+    "id": null,
+    "poolLengthUnit": {
+      "id": 1,
+      "key": "meter",
+      "factor": 100.0
+    },
+    "prStartTimeGmt": 1760000000000,
+    "prStartTimeLocal": null,
+    "status": "CANDIDATE",
+    "typeId": 23,
+    "value": 1210.0
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Accepted personal record candidate 4200001
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /personalrecord-service/personalrecordcandidate/tester
+PUT /personalrecord-service/personalrecord/
+  {
+    "activityId": 5100001,
+    "activityName": "Pool Swim",
+    "activityType": "lap_swimming",
+    "id": null,
+    "poolLengthUnit": {
+      "id": 1,
+      "key": "meter",
+      "factor": 100.0
+    },
+    "prStartTimeGmt": 1760000000000,
+    "prStartTimeLocal": null,
+    "status": "CANDIDATE",
+    "typeId": 23,
+    "value": 1210.0
+  }
+-- json stdout --
+{
+  "id": 4100009,
+  "typeId": 23,
+  "status": "ACCEPTED",
+  "activityId": 5100001,
+  "activityName": "Pool Swim",
+  "activityType": "lap_swimming",
+  "value": 1210.0,
+  "prStartTimeGmt": 1760000000000,
+  "prStartTimeLocal": 0,
+  "poolLengthUnit": {
+    "id": 1,
+    "key": "meter",
+    "factor": 100.0
+  }
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /userprofile-service/userprofile/settings
+GET /personalrecord-service/personalrecordcandidate/tester
+PUT /personalrecord-service/personalrecord/
+  {
+    "activityId": 5100001,
+    "activityName": "Pool Swim",
+    "activityType": "lap_swimming",
+    "id": null,
+    "poolLengthUnit": {
+      "id": 1,
+      "key": "meter",
+      "factor": 100.0
+    },
+    "prStartTimeGmt": 1760000000000,
+    "prStartTimeLocal": null,
+    "status": "CANDIDATE",
+    "typeId": 23,
+    "value": 1210.0
+  }

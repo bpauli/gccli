@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"slices"
 	"strings"
 
 	"github.com/bpauli/gccli/internal/garminapi"
@@ -549,7 +550,7 @@ func (c *ChallengesListCmd) Run(g *Globals) error {
 	return outfmt.WriteJSON(g.Stdout, data)
 }
 
-var recordsGroup = Group{Name: "records", Help: "View, hide and delete personal records.", Children: []Node{
+var recordsGroup = Group{Name: "records", Help: "View, hide and delete personal records, and review record candidates.", Children: []Node{
 	Leaf{
 		Name: "list", Help: "View personal records.", Default: true,
 		Endpoint: "records.list",
@@ -571,12 +572,7 @@ var recordsGroup = Group{Name: "records", Help: "View, hide and delete personal 
 		Params:   Params{"activityID": In("ID")},
 		Verb:     "get activity records", Output: JSON{List: true},
 	},
-	Leaf{
-		Name: "candidates", Help: "List the personal record candidates that wait for your review.",
-		Endpoint: "records.candidates",
-		Params:   Params{"displayName": DisplayName},
-		Verb:     "get personal record candidates", Output: JSON{List: true},
-	},
+	recordCandidatesGroup,
 	Custom{Name: "hide", Help: "Hide a personal record type on the records page.", Cmd: &RecordsHideCmd{}},
 	Custom{Name: "unhide", Help: "Show a hidden personal record type on the records page again.", Cmd: &RecordsUnhideCmd{}},
 	Leaf{
@@ -590,6 +586,69 @@ var recordsGroup = Group{Name: "records", Help: "View, hide and delete personal 
 		Output:   Write{Done: "Deleted personal record {ID}", Confirm: "Delete personal record {ID}?"},
 	},
 }}
+
+var recordCandidatesGroup = Group{Name: "candidates", Help: "List, accept and dismiss personal record candidates.", Children: []Node{
+	Leaf{
+		Name: "list", Help: "List the personal record candidates that wait for your review.", Default: true,
+		Endpoint: "records.candidates",
+		Params:   Params{"displayName": DisplayName},
+		Verb:     "get personal record candidates", Output: JSON{List: true},
+	},
+	Custom{Name: "accept", Help: "Accept a personal record candidate as a personal record.", Cmd: &RecordCandidateAcceptCmd{}},
+	Leaf{
+		Name: "dismiss", Help: "Dismiss a personal record candidate. This cannot be undone.",
+		Spec: argsOf(&struct {
+			ID NumericID `arg:"" help:"Candidate ID, as records candidates prints it."`
+		}{}),
+		Endpoint: "records.candidates.dismiss",
+		Params:   Params{"candidateID": In("ID")},
+		Verb:     "dismiss personal record candidate",
+		Output:   Write{Done: "Dismissed personal record candidate {ID}", Confirm: "Dismiss personal record candidate {ID}?"},
+	},
+}}
+
+// RecordCandidateAcceptCmd accepts a personal record candidate. Like the
+// Garmin Connect web app, it sends the candidate back as a new record: the
+// same object with its id set to null.
+type RecordCandidateAcceptCmd struct {
+	ID NumericID `arg:"" help:"Candidate ID, as records candidates prints it."`
+}
+
+func (c *RecordCandidateAcceptCmd) Run(g *Globals) error {
+	client, err := resolveClient(g)
+	if err != nil {
+		return err
+	}
+	name, err := resolveDisplayName(g, client)
+	if err != nil {
+		return err
+	}
+	data, err := client.Call(g.Context, "records.candidates", map[string]string{"displayName": name}, nil)
+	if err != nil {
+		return fmt.Errorf("get personal record candidates: %w", err)
+	}
+	var candidates []map[string]json.RawMessage
+	if err := unmarshalAnswer(data, &candidates); err != nil {
+		return fmt.Errorf("parse personal record candidates: %w", err)
+	}
+	i := slices.IndexFunc(candidates, func(cand map[string]json.RawMessage) bool {
+		return string(cand["id"]) == c.ID.String()
+	})
+	if i < 0 {
+		return fmt.Errorf("no personal record candidate %s; records candidates lists them", c.ID)
+	}
+	record := candidates[i]
+	record["id"] = json.RawMessage("null")
+	body, err := json.Marshal(record)
+	if err != nil {
+		return err
+	}
+	data, err = client.Call(g.Context, "records.add", nil, body)
+	if err != nil {
+		return fmt.Errorf("accept personal record candidate: %w", err)
+	}
+	return reportWrite(g, data, "Accepted personal record candidate %s", c.ID)
+}
 
 // RecordsHideCmd hides a personal record type on the records page.
 type RecordsHideCmd struct {

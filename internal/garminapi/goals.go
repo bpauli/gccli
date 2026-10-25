@@ -73,6 +73,8 @@ var goalsEndpoints = []Endpoint{
 	{Name: "records.types", Method: http.MethodGet, Host: ConnectAPI, Path: "/personalrecord-service/personalrecordtype/prtypes/{displayName}"},
 	{Name: "records.activity", Method: http.MethodGet, Host: ConnectAPI, Path: "/personalrecord-service/personalrecord/prByActivityId/{activityID}"},
 	{Name: "records.candidates", Method: http.MethodGet, Host: ConnectAPI, Path: "/personalrecord-service/personalrecordcandidate/{displayName}"},
+	{Name: "records.candidates.dismiss", Method: http.MethodDelete, Host: ConnectAPI, Path: "/personalrecord-service/personalrecordcandidate/v2/{candidateID}"},
+	{Name: "records.add", Method: http.MethodPut, Host: ConnectAPI, Path: "/personalrecord-service/personalrecord/", Body: true},
 	{Name: "records.type.update", Method: http.MethodPut, Host: ConnectAPI, Path: "/personalrecord-service/personalrecordtype/{typeID}", Body: true},
 	{Name: "records.delete", Method: http.MethodDelete, Host: ConnectAPI, Path: "/personalrecord-service/personalrecord/v2/{recordID}"},
 }

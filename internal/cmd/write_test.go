@@ -373,6 +373,18 @@ var writeCases = map[string]writeCase{
 		human:    "Unhid personal record type 3\n",
 		fallback: "Unhid personal record type 3\n",
 	},
+	"records candidates accept": {
+		args: []string{"4200001"},
+		routes: map[string]string{
+			profileRoute: `{"displayName":"tester"}`,
+			"GET /personalrecord-service/personalrecordcandidate/tester": `[{"id":4200001,"typeId":23,"status":"CANDIDATE"}]`,
+			"PUT /personalrecord-service/personalrecord/":                `{"id":4100009,"typeId":23,"status":"ACCEPTED"}`,
+		},
+		result:   "PUT /personalrecord-service/personalrecord/",
+		json:     "{\n  \"id\": 4100009,\n  \"typeId\": 23,\n  \"status\": \"ACCEPTED\"\n}\n",
+		human:    "Accepted personal record candidate 4200001\n",
+		fallback: "Accepted personal record candidate 4200001\n",
+	},
 	"groups join": {
 		args: []string{"1001"},
 		routes: map[string]string{
