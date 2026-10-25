@@ -16,8 +16,10 @@ var activitiesPrivacyGroup = Group{Name: "privacy", Help: "Show or change the pr
 	Custom{Name: "set", Help: "Change the privacy of all past activities, or of past activities of some types.", Cmd: &ActivitiesPrivacySetCmd{}},
 }}
 
-// ActivitiesPrivacySetCmd changes the privacy of past activities. No Type
-// means all activity types.
+// ActivitiesPrivacySetCmd changes the privacy of past activities. A nil Type
+// means all activity types. Kong leaves Type nil when --type is not given
+// and makes it an empty list for --type "", which Validate rejects, so an
+// empty value never widens the change to all activities.
 type ActivitiesPrivacySetCmd struct {
 	Level string   `arg:"" help:"Who can see the activities: public, private or connections." enum:"public,private,connections"`
 	Type  []string `help:"Top-level activity type key (e.g. running, cycling). Repeat the flag or separate with commas. Default: all activity types." placeholder:"KEY"`
@@ -29,6 +31,9 @@ func (c *ActivitiesPrivacySetCmd) Help() string {
 }
 
 func (c *ActivitiesPrivacySetCmd) Validate() error {
+	if c.Type != nil && len(c.Type) == 0 {
+		return errors.New("--type must not be empty")
+	}
 	for _, t := range c.Type {
 		if strings.TrimSpace(t) == "" {
 			return errors.New("--type must not be empty")
