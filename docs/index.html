@@ -507,6 +507,7 @@ gccli activities list --limit 5</pre>
             <h3>Goals &amp; Badges</h3>
             <p>Active goals. Set the daily goal for steps, floors, intensity minutes and hydration. Earned/available/in-progress badges, badge details, badge comparison with a connection, the badge points leaderboard, badge and virtual challenges to show, join and leave, ad-hoc challenges to create, with invites to send, accept or decline, personal records, record types and the records of an activity.</p>
             <p>Activity goals (list, add, update and delete). Set the daily goal for steps, floors, intensity minutes and hydration. Set and delete the weight goal. Earned/available/in-progress badges, badge details, badge comparison with a connection, the badge points leaderboard, challenges, virtual challenges, personal records, record types and the records of an activity.</p>
+            <p>Active goals. Set the daily goal for steps, floors, intensity minutes and hydration. Earned/available/in-progress badges, badge details, badge comparison with a connection, the badge points leaderboard, challenges, virtual challenges, personal records, record types and the records of an activity. Record candidates, hide or show a record type, and delete a personal record.</p>
           </div>
           <div class="feature-card fade-in">
             <div class="feature-icon yellow">&#x1f4c5;</div>
@@ -941,6 +942,10 @@ gccli activities list --limit 5</pre>
               <div class="cmd-row"><div class="cmd">gccli records list</div><div class="desc">View personal records. Also runs as <span class="whole"><code>gccli records</code>.</span></div></div>
               <div class="cmd-row"><div class="cmd">gccli records types</div><div class="desc">List personal record types.</div></div>
               <div class="cmd-row"><div class="cmd">gccli records activity &lt;id&gt;</div><div class="desc">List the personal records set in an activity.<br><code>&lt;id&gt;</code> Activity ID.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli records candidates</div><div class="desc">List the personal record candidates that wait for your review.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli records hide <span class="nowrap">&lt;type-id&gt;</span></div><div class="desc">Hide a personal record type on the records page.<br><code><span class="nowrap">&lt;type-id&gt;</span></code> Record type ID, as records types prints it.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli records unhide <span class="nowrap">&lt;type-id&gt;</span></div><div class="desc">Show a hidden personal record type on the records page again.<br><code><span class="nowrap">&lt;type-id&gt;</span></code> Record type ID, as records types prints it.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli records delete &lt;id&gt; [flags]</div><div class="desc">Delete a personal record. This cannot be undone.<br><code>&lt;id&gt;</code> Personal record ID, as records list prints it.<br><code><span class="nowrap">-f,</span> <span class="nowrap">--force</span></code> Skip confirmation prompt.</div></div>
             </div>
           </div>
 
