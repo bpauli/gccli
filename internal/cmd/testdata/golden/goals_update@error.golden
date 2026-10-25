@@ -1,0 +1,40 @@
+The goal read fails, so no PUT is sent.
+-- args --
+goals
+update
+12345678
+--name
+Run 60 km
+-- route GET /goal-service/goal/goal/12345678 404 --
+{"message":"no goal found for the given goalId","error":"NotFoundException"}
+-- table stdout --
+-- table stderr --
+update goal: garmin api: 404 Not Found: {"message":"no goal found for the given goalId","error":"NotFoundException"}
+
+-- table exit --
+4
+-- table requests --
+GET /goal-service/goal/goal/12345678
+-- plain stdout --
+-- plain stderr --
+update goal: garmin api: 404 Not Found: {"message":"no goal found for the given goalId","error":"NotFoundException"}
+
+-- plain exit --
+4
+-- plain requests --
+GET /goal-service/goal/goal/12345678
+-- plain-header stdout --
+-- plain-header stderr --
+update goal: garmin api: 404 Not Found: {"message":"no goal found for the given goalId","error":"NotFoundException"}
+
+-- plain-header exit --
+4
+-- plain-header requests --
+GET /goal-service/goal/goal/12345678
+-- json stdout --
+-- json stderr --
+{"error":{"code":"not_found","status":404,"message":"update goal: garmin api: 404 Not Found: {\"message\":\"no goal found for the given goalId\",\"error\":\"NotFoundException\"}\n"}}
+-- json exit --
+4
+-- json requests --
+GET /goal-service/goal/goal/12345678

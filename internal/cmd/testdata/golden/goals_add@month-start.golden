@@ -1,0 +1,167 @@
+A one-month goal that starts on another day than the first of a month is a usage error, because Garmin answers it with 400.
+-- args --
+goals
+add
+Ride
+--period
+one-month
+--start
+2026-10-15
+--duration
+10h
+-- table stdout --
+-- table stderr --
+Usage: gccli goals add --period=STRING <name> [flags]
+
+Add an activity goal.
+
+Arguments:
+  <name>    Goal name, 1 to 49 characters.
+
+Flags:
+  -h, --help                   Show context-sensitive help.
+  -j, --json                   Output as JSON ($GCCLI_JSON).
+      --plain                  Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                 Print the column names as the first line of
+                               --plain output ($GCCLI_HEADER).
+      --color="auto"           Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING         Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"           Unit system for distances, speeds, paces,
+                               elevations and weights in table and plain output:
+                               auto (Garmin profile), metric, statute_us,
+                               statute_uk ($GCCLI_UNITS).
+      --version                Print version information.
+
+      --period=STRING          Goal period: seven-days, thirty-days, one-month
+                               or annual.
+      --activity-type="all"    Activity type key, as activities types prints it
+                               (e.g. running, cycling), or all.
+      --start=DATE             First day of the goal (YYYY-MM-DD, today,
+                               yesterday, 3d, +30d). Defaults to today, and to
+                               the first day of this month for a one-month goal.
+      --distance=DISTANCE      Distance to cover (e.g. 50km, 30mi, 5000m).
+      --duration=DURATION      Time to spend (e.g. 10h, 90m).
+      --calories=KCAL          Kilocalories to burn.
+      --activities=N           Number of activities to do.
+
+gccli: error: goals add: a one-month goal starts on the first day of a month, not 2026-10-15
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli goals add --period=STRING <name> [flags]
+
+Add an activity goal.
+
+Arguments:
+  <name>    Goal name, 1 to 49 characters.
+
+Flags:
+  -h, --help                   Show context-sensitive help.
+  -j, --json                   Output as JSON ($GCCLI_JSON).
+      --plain                  Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                 Print the column names as the first line of
+                               --plain output ($GCCLI_HEADER).
+      --color="auto"           Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING         Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"           Unit system for distances, speeds, paces,
+                               elevations and weights in table and plain output:
+                               auto (Garmin profile), metric, statute_us,
+                               statute_uk ($GCCLI_UNITS).
+      --version                Print version information.
+
+      --period=STRING          Goal period: seven-days, thirty-days, one-month
+                               or annual.
+      --activity-type="all"    Activity type key, as activities types prints it
+                               (e.g. running, cycling), or all.
+      --start=DATE             First day of the goal (YYYY-MM-DD, today,
+                               yesterday, 3d, +30d). Defaults to today, and to
+                               the first day of this month for a one-month goal.
+      --distance=DISTANCE      Distance to cover (e.g. 50km, 30mi, 5000m).
+      --duration=DURATION      Time to spend (e.g. 10h, 90m).
+      --calories=KCAL          Kilocalories to burn.
+      --activities=N           Number of activities to do.
+
+gccli: error: goals add: a one-month goal starts on the first day of a month, not 2026-10-15
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli goals add --period=STRING <name> [flags]
+
+Add an activity goal.
+
+Arguments:
+  <name>    Goal name, 1 to 49 characters.
+
+Flags:
+  -h, --help                   Show context-sensitive help.
+  -j, --json                   Output as JSON ($GCCLI_JSON).
+      --plain                  Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                 Print the column names as the first line of
+                               --plain output ($GCCLI_HEADER).
+      --color="auto"           Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING         Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"           Unit system for distances, speeds, paces,
+                               elevations and weights in table and plain output:
+                               auto (Garmin profile), metric, statute_us,
+                               statute_uk ($GCCLI_UNITS).
+      --version                Print version information.
+
+      --period=STRING          Goal period: seven-days, thirty-days, one-month
+                               or annual.
+      --activity-type="all"    Activity type key, as activities types prints it
+                               (e.g. running, cycling), or all.
+      --start=DATE             First day of the goal (YYYY-MM-DD, today,
+                               yesterday, 3d, +30d). Defaults to today, and to
+                               the first day of this month for a one-month goal.
+      --distance=DISTANCE      Distance to cover (e.g. 50km, 30mi, 5000m).
+      --duration=DURATION      Time to spend (e.g. 10h, 90m).
+      --calories=KCAL          Kilocalories to burn.
+      --activities=N           Number of activities to do.
+
+gccli: error: goals add: a one-month goal starts on the first day of a month, not 2026-10-15
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli goals add --period=STRING <name> [flags]
+
+Add an activity goal.
+
+Arguments:
+  <name>    Goal name, 1 to 49 characters.
+
+Flags:
+  -h, --help                   Show context-sensitive help.
+  -j, --json                   Output as JSON ($GCCLI_JSON).
+      --plain                  Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                 Print the column names as the first line of
+                               --plain output ($GCCLI_HEADER).
+      --color="auto"           Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING         Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"           Unit system for distances, speeds, paces,
+                               elevations and weights in table and plain output:
+                               auto (Garmin profile), metric, statute_us,
+                               statute_uk ($GCCLI_UNITS).
+      --version                Print version information.
+
+      --period=STRING          Goal period: seven-days, thirty-days, one-month
+                               or annual.
+      --activity-type="all"    Activity type key, as activities types prints it
+                               (e.g. running, cycling), or all.
+      --start=DATE             First day of the goal (YYYY-MM-DD, today,
+                               yesterday, 3d, +30d). Defaults to today, and to
+                               the first day of this month for a one-month goal.
+      --distance=DISTANCE      Distance to cover (e.g. 50km, 30mi, 5000m).
+      --duration=DURATION      Time to spend (e.g. 10h, 90m).
+      --calories=KCAL          Kilocalories to burn.
+      --activities=N           Number of activities to do.
+
+gccli: error: goals add: a one-month goal starts on the first day of a month, not 2026-10-15
+-- json exit --
+2
+-- json requests --

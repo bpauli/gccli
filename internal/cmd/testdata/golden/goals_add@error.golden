@@ -1,0 +1,90 @@
+Garmin refuses the goal.
+-- args --
+goals
+add
+Run 50 km
+--period
+seven-days
+--distance
+50km
+-- route POST /goal-service/goal/goal 400 --
+{"message":"Bad request","error":"BadRequestException"}
+-- table stdout --
+-- table stderr --
+add goal: garmin api: 400 Bad Request: {"message":"Bad request","error":"BadRequestException"}
+
+-- table exit --
+1
+-- table requests --
+POST /goal-service/goal/goal
+  {
+    "activityType": "all",
+    "caloriesInKiloCalories": null,
+    "distanceInMeters": 50000,
+    "durationInSeconds": null,
+    "name": "Run 50 km",
+    "numberOfActivities": null,
+    "period": "seven_days",
+    "privacy": "public",
+    "startDate": "2026-10-15",
+    "type": "distance_accumulation"
+  }
+-- plain stdout --
+-- plain stderr --
+add goal: garmin api: 400 Bad Request: {"message":"Bad request","error":"BadRequestException"}
+
+-- plain exit --
+1
+-- plain requests --
+POST /goal-service/goal/goal
+  {
+    "activityType": "all",
+    "caloriesInKiloCalories": null,
+    "distanceInMeters": 50000,
+    "durationInSeconds": null,
+    "name": "Run 50 km",
+    "numberOfActivities": null,
+    "period": "seven_days",
+    "privacy": "public",
+    "startDate": "2026-10-15",
+    "type": "distance_accumulation"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+add goal: garmin api: 400 Bad Request: {"message":"Bad request","error":"BadRequestException"}
+
+-- plain-header exit --
+1
+-- plain-header requests --
+POST /goal-service/goal/goal
+  {
+    "activityType": "all",
+    "caloriesInKiloCalories": null,
+    "distanceInMeters": 50000,
+    "durationInSeconds": null,
+    "name": "Run 50 km",
+    "numberOfActivities": null,
+    "period": "seven_days",
+    "privacy": "public",
+    "startDate": "2026-10-15",
+    "type": "distance_accumulation"
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"add goal: garmin api: 400 Bad Request: {\"message\":\"Bad request\",\"error\":\"BadRequestException\"}\n"}}
+-- json exit --
+1
+-- json requests --
+POST /goal-service/goal/goal
+  {
+    "activityType": "all",
+    "caloriesInKiloCalories": null,
+    "distanceInMeters": 50000,
+    "durationInSeconds": null,
+    "name": "Run 50 km",
+    "numberOfActivities": null,
+    "period": "seven_days",
+    "privacy": "public",
+    "startDate": "2026-10-15",
+    "type": "distance_accumulation"
+  }

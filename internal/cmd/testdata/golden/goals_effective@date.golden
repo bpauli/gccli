@@ -1,0 +1,49 @@
+The weight goal is in grams.
+-- args --
+goals
+effective
+weight-grams
+--date
+2026-10-12
+-- route GET /goal-service/goal/user/effective/weight-grams/2026-10-12 --
+{"goalType":"WEIGHT_GRAMS","goalValue":72500.0}
+-- table stdout --
+{
+  "goalType": "WEIGHT_GRAMS",
+  "goalValue": 72500.0
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /goal-service/goal/user/effective/weight-grams/2026-10-12
+-- plain stdout --
+{
+  "goalType": "WEIGHT_GRAMS",
+  "goalValue": 72500.0
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /goal-service/goal/user/effective/weight-grams/2026-10-12
+-- plain-header stdout --
+{
+  "goalType": "WEIGHT_GRAMS",
+  "goalValue": 72500.0
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /goal-service/goal/user/effective/weight-grams/2026-10-12
+-- json stdout --
+{
+  "goalType": "WEIGHT_GRAMS",
+  "goalValue": 72500.0
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /goal-service/goal/user/effective/weight-grams/2026-10-12

@@ -1,0 +1,45 @@
+Garmin refuses the DELETE.
+-- args --
+goals
+weight
+delete
+--force
+-- route GET /goal-service/goal/user/WEIGHT_GRAMS/DAILY --
+{"userGoalPk":987654321,"userProfilePk":3141592,"userGoalCategory":"MANUAL","userGoalType":"WEIGHT_GRAMS","startDate":"2026-10-01","endDate":null,"goalName":null,"goalValue":72500.0,"updateDate":"2026-10-01T08:00:00.0","createDate":"2026-10-01T08:00:00.0","rulePk":null,"activityTypePk":0,"trackingPeriodType":"DAILY"}
+-- route DELETE /goal-service/goal/user/987654321 400 --
+{"message":"Bad request","error":"BadRequestException"}
+-- table stdout --
+-- table stderr --
+delete weight goal: garmin api: 400 Bad Request: {"message":"Bad request","error":"BadRequestException"}
+
+-- table exit --
+1
+-- table requests --
+GET /goal-service/goal/user/WEIGHT_GRAMS/DAILY
+DELETE /goal-service/goal/user/987654321
+-- plain stdout --
+-- plain stderr --
+delete weight goal: garmin api: 400 Bad Request: {"message":"Bad request","error":"BadRequestException"}
+
+-- plain exit --
+1
+-- plain requests --
+GET /goal-service/goal/user/WEIGHT_GRAMS/DAILY
+DELETE /goal-service/goal/user/987654321
+-- plain-header stdout --
+-- plain-header stderr --
+delete weight goal: garmin api: 400 Bad Request: {"message":"Bad request","error":"BadRequestException"}
+
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /goal-service/goal/user/WEIGHT_GRAMS/DAILY
+DELETE /goal-service/goal/user/987654321
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"delete weight goal: garmin api: 400 Bad Request: {\"message\":\"Bad request\",\"error\":\"BadRequestException\"}\n"}}
+-- json exit --
+1
+-- json requests --
+GET /goal-service/goal/user/WEIGHT_GRAMS/DAILY
+DELETE /goal-service/goal/user/987654321

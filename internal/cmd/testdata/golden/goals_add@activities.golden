@@ -1,0 +1,101 @@
+A goal of a number of activities over thirty days.
+-- args --
+goals
+add
+Twelve runs
+--period
+thirty-days
+--activity-type
+running
+--activities
+12
+-- route POST /goal-service/goal/goal --
+{"id":12345678,"name":"Run 50 km","type":"distance_accumulation","distanceInMeters":50000.0,"startDate":"2026-10-12","endDate":"2026-10-18","activityType":"running","period":"seven_days","privacy":"public","active":true,"completed":false}
+-- table stdout --
+-- table stderr --
+Added goal "Twelve runs" (ID: 12345678)
+-- table exit --
+0
+-- table requests --
+POST /goal-service/goal/goal
+  {
+    "activityType": "running",
+    "caloriesInKiloCalories": null,
+    "distanceInMeters": null,
+    "durationInSeconds": null,
+    "name": "Twelve runs",
+    "numberOfActivities": 12,
+    "period": "thirty_days",
+    "privacy": "public",
+    "startDate": "2026-10-15",
+    "type": "count_accumulation"
+  }
+-- plain stdout --
+-- plain stderr --
+Added goal "Twelve runs" (ID: 12345678)
+-- plain exit --
+0
+-- plain requests --
+POST /goal-service/goal/goal
+  {
+    "activityType": "running",
+    "caloriesInKiloCalories": null,
+    "distanceInMeters": null,
+    "durationInSeconds": null,
+    "name": "Twelve runs",
+    "numberOfActivities": 12,
+    "period": "thirty_days",
+    "privacy": "public",
+    "startDate": "2026-10-15",
+    "type": "count_accumulation"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Added goal "Twelve runs" (ID: 12345678)
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /goal-service/goal/goal
+  {
+    "activityType": "running",
+    "caloriesInKiloCalories": null,
+    "distanceInMeters": null,
+    "durationInSeconds": null,
+    "name": "Twelve runs",
+    "numberOfActivities": 12,
+    "period": "thirty_days",
+    "privacy": "public",
+    "startDate": "2026-10-15",
+    "type": "count_accumulation"
+  }
+-- json stdout --
+{
+  "id": 12345678,
+  "name": "Run 50 km",
+  "type": "distance_accumulation",
+  "distanceInMeters": 50000.0,
+  "startDate": "2026-10-12",
+  "endDate": "2026-10-18",
+  "activityType": "running",
+  "period": "seven_days",
+  "privacy": "public",
+  "active": true,
+  "completed": false
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /goal-service/goal/goal
+  {
+    "activityType": "running",
+    "caloriesInKiloCalories": null,
+    "distanceInMeters": null,
+    "durationInSeconds": null,
+    "name": "Twelve runs",
+    "numberOfActivities": 12,
+    "period": "thirty_days",
+    "privacy": "public",
+    "startDate": "2026-10-15",
+    "type": "count_accumulation"
+  }

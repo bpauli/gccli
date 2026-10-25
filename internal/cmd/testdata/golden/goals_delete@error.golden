@@ -1,0 +1,39 @@
+Garmin answers 404 for a goal that does not exist.
+-- args --
+goals
+delete
+12345678
+--force
+-- route DELETE /goal-service/goal/goal/12345678 404 --
+{"message":"no goal found for the given goalId","error":"NotFoundException"}
+-- table stdout --
+-- table stderr --
+delete goal: garmin api: 404 Not Found: {"message":"no goal found for the given goalId","error":"NotFoundException"}
+
+-- table exit --
+4
+-- table requests --
+DELETE /goal-service/goal/goal/12345678
+-- plain stdout --
+-- plain stderr --
+delete goal: garmin api: 404 Not Found: {"message":"no goal found for the given goalId","error":"NotFoundException"}
+
+-- plain exit --
+4
+-- plain requests --
+DELETE /goal-service/goal/goal/12345678
+-- plain-header stdout --
+-- plain-header stderr --
+delete goal: garmin api: 404 Not Found: {"message":"no goal found for the given goalId","error":"NotFoundException"}
+
+-- plain-header exit --
+4
+-- plain-header requests --
+DELETE /goal-service/goal/goal/12345678
+-- json stdout --
+-- json stderr --
+{"error":{"code":"not_found","status":404,"message":"delete goal: garmin api: 404 Not Found: {\"message\":\"no goal found for the given goalId\",\"error\":\"NotFoundException\"}\n"}}
+-- json exit --
+4
+-- json requests --
+DELETE /goal-service/goal/goal/12345678
