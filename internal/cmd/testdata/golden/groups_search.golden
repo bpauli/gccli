@@ -1,0 +1,73 @@
+The search is a POST with a form body. Garmin counts start from 1, so the first group is start=1.
+-- args --
+groups
+search
+running
+-- route POST /group-service/keyword --
+{"effectiveKeyword":"running","groupDTOs":[{"id":1001,"groupName":"Example Run Club","groupPrivacy":"PUBLIC","groupMemberCount":null,"location":"Example City","membershipStatus":"","primaryActivities":["running"]},{"id":1002,"groupName":"Trail Friends","groupPrivacy":"PRIVATE","groupMemberCount":null,"location":null,"membershipStatus":"","primaryActivities":["trail_running"]}],"limit":20,"originalKeyword":"running","start":1}
+-- table stdout --
+ID    NAME              PRIVACY  LOCATION
+1001  Example Run Club  PUBLIC   Example City
+1002  Trail Friends     PRIVATE  
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+POST /group-service/keyword
+  "keyword=running&limit=20&start=1"
+-- plain stdout --
+1001	Example Run Club	PUBLIC	Example City
+1002	Trail Friends	PRIVATE	
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+POST /group-service/keyword
+  "keyword=running&limit=20&start=1"
+-- plain-header stdout --
+ID	NAME	PRIVACY	LOCATION
+1001	Example Run Club	PUBLIC	Example City
+1002	Trail Friends	PRIVATE	
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /group-service/keyword
+  "keyword=running&limit=20&start=1"
+-- json stdout --
+{
+  "effectiveKeyword": "running",
+  "groupDTOs": [
+    {
+      "id": 1001,
+      "groupName": "Example Run Club",
+      "groupPrivacy": "PUBLIC",
+      "groupMemberCount": null,
+      "location": "Example City",
+      "membershipStatus": "",
+      "primaryActivities": [
+        "running"
+      ]
+    },
+    {
+      "id": 1002,
+      "groupName": "Trail Friends",
+      "groupPrivacy": "PRIVATE",
+      "groupMemberCount": null,
+      "location": null,
+      "membershipStatus": "",
+      "primaryActivities": [
+        "trail_running"
+      ]
+    }
+  ],
+  "limit": 20,
+  "originalKeyword": "running",
+  "start": 1
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /group-service/keyword
+  "keyword=running&limit=20&start=1"

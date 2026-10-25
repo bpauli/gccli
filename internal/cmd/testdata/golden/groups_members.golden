@@ -1,0 +1,58 @@
+-- args --
+groups
+members
+1001
+-- route GET /group-service/group/1001/members?supportOwner=true&orderByRelationship=true --
+[{"id":501,"groupId":1001,"userProfileId":2718281,"displayName":"owner-1","fullName":"Example Owner","groupRole":"OWNER","joinDate":1767225600000},{"id":502,"groupId":1001,"userProfileId":3141592,"displayName":"tester","fullName":"Test User","groupRole":"MEMBER","joinDate":1790000000000}]
+-- table stdout --
+ID       NAME           DISPLAY NAME  ROLE
+2718281  Example Owner  owner-1       OWNER
+3141592  Test User      tester        MEMBER
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /group-service/group/1001/members?supportOwner=true&orderByRelationship=true
+-- plain stdout --
+2718281	Example Owner	owner-1	OWNER
+3141592	Test User	tester	MEMBER
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /group-service/group/1001/members?supportOwner=true&orderByRelationship=true
+-- plain-header stdout --
+ID	NAME	DISPLAY NAME	ROLE
+2718281	Example Owner	owner-1	OWNER
+3141592	Test User	tester	MEMBER
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /group-service/group/1001/members?supportOwner=true&orderByRelationship=true
+-- json stdout --
+[
+  {
+    "id": 501,
+    "groupId": 1001,
+    "userProfileId": 2718281,
+    "displayName": "owner-1",
+    "fullName": "Example Owner",
+    "groupRole": "OWNER",
+    "joinDate": 1767225600000
+  },
+  {
+    "id": 502,
+    "groupId": 1001,
+    "userProfileId": 3141592,
+    "displayName": "tester",
+    "fullName": "Test User",
+    "groupRole": "MEMBER",
+    "joinDate": 1790000000000
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /group-service/group/1001/members?supportOwner=true&orderByRelationship=true

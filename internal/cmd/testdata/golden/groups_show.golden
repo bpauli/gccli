@@ -1,0 +1,86 @@
+-- args --
+groups
+show
+1001
+-- route GET /group-service/group/1001?includeMembership=true --
+{"id":1001,"groupName":"Example Run Club","groupDescription":"Easy runs on Sunday.","groupPrivacy":"PUBLIC","groupVisibility":"PUBLIC","groupMemberCount":42,"location":"Example City","membershipStatus":"MEMBER","primaryActivities":["running"],"ownerId":2718281}
+-- table stdout --
+{
+  "id": 1001,
+  "groupName": "Example Run Club",
+  "groupDescription": "Easy runs on Sunday.",
+  "groupPrivacy": "PUBLIC",
+  "groupVisibility": "PUBLIC",
+  "groupMemberCount": 42,
+  "location": "Example City",
+  "membershipStatus": "MEMBER",
+  "primaryActivities": [
+    "running"
+  ],
+  "ownerId": 2718281
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /group-service/group/1001?includeMembership=true
+-- plain stdout --
+{
+  "id": 1001,
+  "groupName": "Example Run Club",
+  "groupDescription": "Easy runs on Sunday.",
+  "groupPrivacy": "PUBLIC",
+  "groupVisibility": "PUBLIC",
+  "groupMemberCount": 42,
+  "location": "Example City",
+  "membershipStatus": "MEMBER",
+  "primaryActivities": [
+    "running"
+  ],
+  "ownerId": 2718281
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /group-service/group/1001?includeMembership=true
+-- plain-header stdout --
+{
+  "id": 1001,
+  "groupName": "Example Run Club",
+  "groupDescription": "Easy runs on Sunday.",
+  "groupPrivacy": "PUBLIC",
+  "groupVisibility": "PUBLIC",
+  "groupMemberCount": 42,
+  "location": "Example City",
+  "membershipStatus": "MEMBER",
+  "primaryActivities": [
+    "running"
+  ],
+  "ownerId": 2718281
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /group-service/group/1001?includeMembership=true
+-- json stdout --
+{
+  "id": 1001,
+  "groupName": "Example Run Club",
+  "groupDescription": "Easy runs on Sunday.",
+  "groupPrivacy": "PUBLIC",
+  "groupVisibility": "PUBLIC",
+  "groupMemberCount": 42,
+  "location": "Example City",
+  "membershipStatus": "MEMBER",
+  "primaryActivities": [
+    "running"
+  ],
+  "ownerId": 2718281
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /group-service/group/1001?includeMembership=true

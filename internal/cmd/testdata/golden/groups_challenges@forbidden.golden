@@ -1,0 +1,35 @@
+Garmin answers 403 ForbiddenException when the account is not a member of the group.
+-- args --
+groups
+challenges
+1001
+-- route GET /groupchallenge-service/group/1001/groupchallenge/nonCompleted 403 noeol --
+{"message":null,"error":"ForbiddenException"}
+-- table stdout --
+-- table stderr --
+get group challenges: garmin api: 403 Forbidden: {"message":null,"error":"ForbiddenException"}
+-- table exit --
+1
+-- table requests --
+GET /groupchallenge-service/group/1001/groupchallenge/nonCompleted
+-- plain stdout --
+-- plain stderr --
+get group challenges: garmin api: 403 Forbidden: {"message":null,"error":"ForbiddenException"}
+-- plain exit --
+1
+-- plain requests --
+GET /groupchallenge-service/group/1001/groupchallenge/nonCompleted
+-- plain-header stdout --
+-- plain-header stderr --
+get group challenges: garmin api: 403 Forbidden: {"message":null,"error":"ForbiddenException"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /groupchallenge-service/group/1001/groupchallenge/nonCompleted
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":403,"message":"get group challenges: garmin api: 403 Forbidden: {\"message\":null,\"error\":\"ForbiddenException\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /groupchallenge-service/group/1001/groupchallenge/nonCompleted
