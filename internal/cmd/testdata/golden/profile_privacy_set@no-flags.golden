@@ -1,0 +1,129 @@
+No flag: the command fails before any request.
+-- args --
+profile
+privacy
+set
+-- table stdout --
+-- table stderr --
+Usage: gccli profile privacy set [flags]
+
+Change who can see your profile, activities, wellness data and badges.
+
+Flags:
+  -h, --help                Show context-sensitive help.
+  -j, --json                Output as JSON ($GCCLI_JSON).
+      --plain               Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header              Print the column names as the first line of --plain
+                            output ($GCCLI_HEADER).
+      --color="auto"        Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING      Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"        Unit system for distances, speeds, paces,
+                            elevations and weights in table and plain output:
+                            auto (Garmin profile), metric, statute_us,
+                            statute_uk ($GCCLI_UNITS).
+      --version             Print version information.
+
+      --profile=LEVEL       Who can see your profile.
+      --activities=LEVEL    Who can see your activities by default. Past
+                            activities keep their privacy; change one with
+                            activity privacy.
+      --wellness=LEVEL      Who can see your wellness data, such as steps.
+      --badges=LEVEL        Who can see your badges.
+
+gccli: error: profile privacy set: give at least one of --profile, --activities, --wellness or --badges
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli profile privacy set [flags]
+
+Change who can see your profile, activities, wellness data and badges.
+
+Flags:
+  -h, --help                Show context-sensitive help.
+  -j, --json                Output as JSON ($GCCLI_JSON).
+      --plain               Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header              Print the column names as the first line of --plain
+                            output ($GCCLI_HEADER).
+      --color="auto"        Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING      Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"        Unit system for distances, speeds, paces,
+                            elevations and weights in table and plain output:
+                            auto (Garmin profile), metric, statute_us,
+                            statute_uk ($GCCLI_UNITS).
+      --version             Print version information.
+
+      --profile=LEVEL       Who can see your profile.
+      --activities=LEVEL    Who can see your activities by default. Past
+                            activities keep their privacy; change one with
+                            activity privacy.
+      --wellness=LEVEL      Who can see your wellness data, such as steps.
+      --badges=LEVEL        Who can see your badges.
+
+gccli: error: profile privacy set: give at least one of --profile, --activities, --wellness or --badges
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli profile privacy set [flags]
+
+Change who can see your profile, activities, wellness data and badges.
+
+Flags:
+  -h, --help                Show context-sensitive help.
+  -j, --json                Output as JSON ($GCCLI_JSON).
+      --plain               Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header              Print the column names as the first line of --plain
+                            output ($GCCLI_HEADER).
+      --color="auto"        Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING      Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"        Unit system for distances, speeds, paces,
+                            elevations and weights in table and plain output:
+                            auto (Garmin profile), metric, statute_us,
+                            statute_uk ($GCCLI_UNITS).
+      --version             Print version information.
+
+      --profile=LEVEL       Who can see your profile.
+      --activities=LEVEL    Who can see your activities by default. Past
+                            activities keep their privacy; change one with
+                            activity privacy.
+      --wellness=LEVEL      Who can see your wellness data, such as steps.
+      --badges=LEVEL        Who can see your badges.
+
+gccli: error: profile privacy set: give at least one of --profile, --activities, --wellness or --badges
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli profile privacy set [flags]
+
+Change who can see your profile, activities, wellness data and badges.
+
+Flags:
+  -h, --help                Show context-sensitive help.
+  -j, --json                Output as JSON ($GCCLI_JSON).
+      --plain               Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header              Print the column names as the first line of --plain
+                            output ($GCCLI_HEADER).
+      --color="auto"        Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING      Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"        Unit system for distances, speeds, paces,
+                            elevations and weights in table and plain output:
+                            auto (Garmin profile), metric, statute_us,
+                            statute_uk ($GCCLI_UNITS).
+      --version             Print version information.
+
+      --profile=LEVEL       Who can see your profile.
+      --activities=LEVEL    Who can see your activities by default. Past
+                            activities keep their privacy; change one with
+                            activity privacy.
+      --wellness=LEVEL      Who can see your wellness data, such as steps.
+      --badges=LEVEL        Who can see your badges.
+
+gccli: error: profile privacy set: give at least one of --profile, --activities, --wellness or --badges
+-- json exit --
+2
+-- json requests --

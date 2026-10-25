@@ -1,0 +1,357 @@
+All four flags: the settings GET, the settings PUT with every rule of the given categories changed and the other keys kept, then the badge PUT.
+-- args --
+profile
+privacy
+set
+--profile
+public
+--activities
+connections
+--wellness
+private
+--badges
+groups
+-- route GET /privacysettings-service/privacy-settings --
+{"activityPrivacySettings":{"categoryDetails":{"categoryAccessRule":"private","inheritedFromDefault":false,"updatedTimestampGMT":"2026-01-02T03:04:05.000+00:00"},"subcategoryPrivacySettings":[{"privacySubcategoryType":"running","subcategoryDetails":{"accessRule":"private","updatedTimestampGMT":"2026-01-02T03:04:05.000+00:00","inheritedFromCategory":true,"inheritedFromDefault":false},"associatedParentActivityTypeIds":[1]},{"privacySubcategoryType":"cycling","subcategoryDetails":{"accessRule":"public","updatedTimestampGMT":"2026-01-02T03:04:05.000+00:00","inheritedFromCategory":false,"inheritedFromDefault":false},"associatedParentActivityTypeIds":[2,10]}]},"profilePrivacySettings":{"categoryDetails":{"categoryAccessRule":"private","inheritedFromDefault":true,"updatedTimestampGMT":null},"subcategoryPrivacySettings":[{"privacySubcategoryType":"user_profile","subcategoryDetails":{"accessRule":"private","inheritedFromCategory":true,"inheritedFromDefault":true}}]},"wellnessPrivacySettings":{"subcategoryPrivacySettings":[{"privacySubcategoryType":"steps","subcategoryDetails":{"accessRule":"groups","inheritedFromCategory":true,"inheritedFromDefault":false}}],"categoryDetails":{"categoryAccessRule":"groups","inheritedFromDefault":false,"updatedTimestampGMT":"2026-01-02T03:04:05.000+00:00"}},"settingsVersion":12345678901234567890}
+-- route PUT /privacysettings-service/privacy-settings 204 --
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","profileId":3141592}
+-- route PUT /userprofile-service/socialProfile/privacy/badge/tester 204 --
+-- table stdout --
+-- table stderr --
+Changed privacy: profile public, activities connections, wellness private, badges groups
+-- table exit --
+0
+-- table requests --
+GET /privacysettings-service/privacy-settings
+PUT /privacysettings-service/privacy-settings
+  {
+    "activityPrivacySettings": {
+      "categoryDetails": {
+        "categoryAccessRule": "subscribers",
+        "inheritedFromDefault": false,
+        "updatedTimestampGMT": "2026-01-02T03:04:05.000+00:00"
+      },
+      "subcategoryPrivacySettings": [
+        {
+          "associatedParentActivityTypeIds": [
+            1
+          ],
+          "privacySubcategoryType": "running",
+          "subcategoryDetails": {
+            "accessRule": "subscribers",
+            "inheritedFromCategory": true,
+            "inheritedFromDefault": false,
+            "updatedTimestampGMT": "2026-01-02T03:04:05.000+00:00"
+          }
+        },
+        {
+          "associatedParentActivityTypeIds": [
+            2,
+            10
+          ],
+          "privacySubcategoryType": "cycling",
+          "subcategoryDetails": {
+            "accessRule": "subscribers",
+            "inheritedFromCategory": false,
+            "inheritedFromDefault": false,
+            "updatedTimestampGMT": "2026-01-02T03:04:05.000+00:00"
+          }
+        }
+      ]
+    },
+    "profilePrivacySettings": {
+      "categoryDetails": {
+        "categoryAccessRule": "public",
+        "inheritedFromDefault": true,
+        "updatedTimestampGMT": null
+      },
+      "subcategoryPrivacySettings": [
+        {
+          "privacySubcategoryType": "user_profile",
+          "subcategoryDetails": {
+            "accessRule": "public",
+            "inheritedFromCategory": true,
+            "inheritedFromDefault": true
+          }
+        }
+      ]
+    },
+    "settingsVersion": 12345678901234567890,
+    "wellnessPrivacySettings": {
+      "categoryDetails": {
+        "categoryAccessRule": "private",
+        "inheritedFromDefault": false,
+        "updatedTimestampGMT": "2026-01-02T03:04:05.000+00:00"
+      },
+      "subcategoryPrivacySettings": [
+        {
+          "privacySubcategoryType": "steps",
+          "subcategoryDetails": {
+            "accessRule": "private",
+            "inheritedFromCategory": true,
+            "inheritedFromDefault": false
+          }
+        }
+      ]
+    }
+  }
+GET /userprofile-service/userprofile/settings
+PUT /userprofile-service/socialProfile/privacy/badge/tester
+  {
+    "badgeVisibility": "groups"
+  }
+-- plain stdout --
+-- plain stderr --
+Changed privacy: profile public, activities connections, wellness private, badges groups
+-- plain exit --
+0
+-- plain requests --
+GET /privacysettings-service/privacy-settings
+PUT /privacysettings-service/privacy-settings
+  {
+    "activityPrivacySettings": {
+      "categoryDetails": {
+        "categoryAccessRule": "subscribers",
+        "inheritedFromDefault": false,
+        "updatedTimestampGMT": "2026-01-02T03:04:05.000+00:00"
+      },
+      "subcategoryPrivacySettings": [
+        {
+          "associatedParentActivityTypeIds": [
+            1
+          ],
+          "privacySubcategoryType": "running",
+          "subcategoryDetails": {
+            "accessRule": "subscribers",
+            "inheritedFromCategory": true,
+            "inheritedFromDefault": false,
+            "updatedTimestampGMT": "2026-01-02T03:04:05.000+00:00"
+          }
+        },
+        {
+          "associatedParentActivityTypeIds": [
+            2,
+            10
+          ],
+          "privacySubcategoryType": "cycling",
+          "subcategoryDetails": {
+            "accessRule": "subscribers",
+            "inheritedFromCategory": false,
+            "inheritedFromDefault": false,
+            "updatedTimestampGMT": "2026-01-02T03:04:05.000+00:00"
+          }
+        }
+      ]
+    },
+    "profilePrivacySettings": {
+      "categoryDetails": {
+        "categoryAccessRule": "public",
+        "inheritedFromDefault": true,
+        "updatedTimestampGMT": null
+      },
+      "subcategoryPrivacySettings": [
+        {
+          "privacySubcategoryType": "user_profile",
+          "subcategoryDetails": {
+            "accessRule": "public",
+            "inheritedFromCategory": true,
+            "inheritedFromDefault": true
+          }
+        }
+      ]
+    },
+    "settingsVersion": 12345678901234567890,
+    "wellnessPrivacySettings": {
+      "categoryDetails": {
+        "categoryAccessRule": "private",
+        "inheritedFromDefault": false,
+        "updatedTimestampGMT": "2026-01-02T03:04:05.000+00:00"
+      },
+      "subcategoryPrivacySettings": [
+        {
+          "privacySubcategoryType": "steps",
+          "subcategoryDetails": {
+            "accessRule": "private",
+            "inheritedFromCategory": true,
+            "inheritedFromDefault": false
+          }
+        }
+      ]
+    }
+  }
+GET /userprofile-service/userprofile/settings
+PUT /userprofile-service/socialProfile/privacy/badge/tester
+  {
+    "badgeVisibility": "groups"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Changed privacy: profile public, activities connections, wellness private, badges groups
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /privacysettings-service/privacy-settings
+PUT /privacysettings-service/privacy-settings
+  {
+    "activityPrivacySettings": {
+      "categoryDetails": {
+        "categoryAccessRule": "subscribers",
+        "inheritedFromDefault": false,
+        "updatedTimestampGMT": "2026-01-02T03:04:05.000+00:00"
+      },
+      "subcategoryPrivacySettings": [
+        {
+          "associatedParentActivityTypeIds": [
+            1
+          ],
+          "privacySubcategoryType": "running",
+          "subcategoryDetails": {
+            "accessRule": "subscribers",
+            "inheritedFromCategory": true,
+            "inheritedFromDefault": false,
+            "updatedTimestampGMT": "2026-01-02T03:04:05.000+00:00"
+          }
+        },
+        {
+          "associatedParentActivityTypeIds": [
+            2,
+            10
+          ],
+          "privacySubcategoryType": "cycling",
+          "subcategoryDetails": {
+            "accessRule": "subscribers",
+            "inheritedFromCategory": false,
+            "inheritedFromDefault": false,
+            "updatedTimestampGMT": "2026-01-02T03:04:05.000+00:00"
+          }
+        }
+      ]
+    },
+    "profilePrivacySettings": {
+      "categoryDetails": {
+        "categoryAccessRule": "public",
+        "inheritedFromDefault": true,
+        "updatedTimestampGMT": null
+      },
+      "subcategoryPrivacySettings": [
+        {
+          "privacySubcategoryType": "user_profile",
+          "subcategoryDetails": {
+            "accessRule": "public",
+            "inheritedFromCategory": true,
+            "inheritedFromDefault": true
+          }
+        }
+      ]
+    },
+    "settingsVersion": 12345678901234567890,
+    "wellnessPrivacySettings": {
+      "categoryDetails": {
+        "categoryAccessRule": "private",
+        "inheritedFromDefault": false,
+        "updatedTimestampGMT": "2026-01-02T03:04:05.000+00:00"
+      },
+      "subcategoryPrivacySettings": [
+        {
+          "privacySubcategoryType": "steps",
+          "subcategoryDetails": {
+            "accessRule": "private",
+            "inheritedFromCategory": true,
+            "inheritedFromDefault": false
+          }
+        }
+      ]
+    }
+  }
+GET /userprofile-service/userprofile/settings
+PUT /userprofile-service/socialProfile/privacy/badge/tester
+  {
+    "badgeVisibility": "groups"
+  }
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /privacysettings-service/privacy-settings
+PUT /privacysettings-service/privacy-settings
+  {
+    "activityPrivacySettings": {
+      "categoryDetails": {
+        "categoryAccessRule": "subscribers",
+        "inheritedFromDefault": false,
+        "updatedTimestampGMT": "2026-01-02T03:04:05.000+00:00"
+      },
+      "subcategoryPrivacySettings": [
+        {
+          "associatedParentActivityTypeIds": [
+            1
+          ],
+          "privacySubcategoryType": "running",
+          "subcategoryDetails": {
+            "accessRule": "subscribers",
+            "inheritedFromCategory": true,
+            "inheritedFromDefault": false,
+            "updatedTimestampGMT": "2026-01-02T03:04:05.000+00:00"
+          }
+        },
+        {
+          "associatedParentActivityTypeIds": [
+            2,
+            10
+          ],
+          "privacySubcategoryType": "cycling",
+          "subcategoryDetails": {
+            "accessRule": "subscribers",
+            "inheritedFromCategory": false,
+            "inheritedFromDefault": false,
+            "updatedTimestampGMT": "2026-01-02T03:04:05.000+00:00"
+          }
+        }
+      ]
+    },
+    "profilePrivacySettings": {
+      "categoryDetails": {
+        "categoryAccessRule": "public",
+        "inheritedFromDefault": true,
+        "updatedTimestampGMT": null
+      },
+      "subcategoryPrivacySettings": [
+        {
+          "privacySubcategoryType": "user_profile",
+          "subcategoryDetails": {
+            "accessRule": "public",
+            "inheritedFromCategory": true,
+            "inheritedFromDefault": true
+          }
+        }
+      ]
+    },
+    "settingsVersion": 12345678901234567890,
+    "wellnessPrivacySettings": {
+      "categoryDetails": {
+        "categoryAccessRule": "private",
+        "inheritedFromDefault": false,
+        "updatedTimestampGMT": "2026-01-02T03:04:05.000+00:00"
+      },
+      "subcategoryPrivacySettings": [
+        {
+          "privacySubcategoryType": "steps",
+          "subcategoryDetails": {
+            "accessRule": "private",
+            "inheritedFromCategory": true,
+            "inheritedFromDefault": false
+          }
+        }
+      ]
+    }
+  }
+GET /userprofile-service/userprofile/settings
+PUT /userprofile-service/socialProfile/privacy/badge/tester
+  {
+    "badgeVisibility": "groups"
+  }

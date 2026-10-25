@@ -322,6 +322,8 @@ Commands:
   profile view                     Show user profile.
   profile settings                 Show user settings.
   profile privacy view             Show privacy settings.
+  profile privacy set              Change who can see your profile, activities,
+                                   wellness data and badges.
   profile privacy-zones list       List privacy zones.
   profile privacy-zones add        Add a privacy zone around a point.
   profile privacy-zones delete     Delete a privacy zone.
@@ -1878,6 +1880,8 @@ Commands:
   profile view                    Show user profile.
   profile settings                Show user settings.
   profile privacy view            Show privacy settings.
+  profile privacy set             Change who can see your profile, activities,
+                                  wellness data and badges.
   profile privacy-zones list      List privacy zones.
   profile privacy-zones add       Add a privacy zone around a point.
   profile privacy-zones delete    Delete a privacy zone.
@@ -1888,7 +1892,7 @@ Commands:
 $ gccli profile privacy --help
 Usage: gccli profile privacy <command>
 
-View privacy settings.
+View and change privacy settings.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -1906,6 +1910,8 @@ Flags:
 
 Commands:
   profile privacy view    Show privacy settings.
+  profile privacy set     Change who can see your profile, activities, wellness
+                          data and badges.
 
 $ gccli profile privacy-zones --help
 Usage: gccli profile privacy-zones <command>
