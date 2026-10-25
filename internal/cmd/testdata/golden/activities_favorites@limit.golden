@@ -1,0 +1,64 @@
+--limit goes to Garmin as limit, with no start.
+-- args --
+activities
+favorites
+--limit
+1
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- route GET /activitylist-service/activities/favorite/tester?limit=1 --
+{"activityList":[{"activityId":12345678,"activityName":"Morning Run","startTimeLocal":"2026-01-10 09:00:00","activityType":{"typeKey":"running"},"distance":10012.5,"duration":3005.2,"calories":712}],"filter":{},"pagination":{"start":1,"limit":1},"requestorRelationship":"SELF"}
+-- table stdout --
+ID        DATE        TYPE     NAME         DISTANCE  DURATION  CALORIES
+12345678  2026-01-10  running  Morning Run  10.01 km  50:05     712
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /userprofile-service/userprofile/settings
+GET /activitylist-service/activities/favorite/tester?limit=1
+-- plain stdout --
+12345678	2026-01-10	running	Morning Run	10.01 km	50:05	712
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+GET /activitylist-service/activities/favorite/tester?limit=1
+-- plain-header stdout --
+ID	DATE	TYPE	NAME	DISTANCE	DURATION	CALORIES
+12345678	2026-01-10	running	Morning Run	10.01 km	50:05	712
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /activitylist-service/activities/favorite/tester?limit=1
+-- json stdout --
+{
+  "activityList": [
+    {
+      "activityId": 12345678,
+      "activityName": "Morning Run",
+      "startTimeLocal": "2026-01-10 09:00:00",
+      "activityType": {
+        "typeKey": "running"
+      },
+      "distance": 10012.5,
+      "duration": 3005.2,
+      "calories": 712
+    }
+  ],
+  "filter": {},
+  "pagination": {
+    "start": 1,
+    "limit": 1
+  },
+  "requestorRelationship": "SELF"
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /userprofile-service/userprofile/settings
+GET /activitylist-service/activities/favorite/tester?limit=1

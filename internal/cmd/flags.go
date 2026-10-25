@@ -253,6 +253,19 @@ func (p *Pagination) Validate() error {
 	return nil
 }
 
+// MaxItems is a --limit without an --offset, for a Garmin list that the
+// command reads only from its first item.
+type MaxItems struct {
+	Limit int `help:"Maximum number of ${items} to return." default:"20" short:"l"`
+}
+
+func (m *MaxItems) Validate() error {
+	if m.Limit < 1 {
+		return fmt.Errorf("--limit must be at least 1, got %d", m.Limit)
+	}
+	return nil
+}
+
 // AlignedPagination is Pagination for a Garmin list that starts a page only
 // at a multiple of the page size. Garmin answers any other offset with 400.
 type AlignedPagination struct {
