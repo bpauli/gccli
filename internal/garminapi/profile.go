@@ -20,6 +20,8 @@ var profileEndpoints = []Endpoint{
 	{Name: "profile.user-settings", Method: http.MethodGet, Host: ConnectAPI, Path: "/userprofile-service/userprofile/user-settings"},
 	{Name: "profile.social", Method: http.MethodGet, Host: ConnectAPI, Path: "/userprofile-service/socialProfile/{displayName}"},
 	{Name: "profile.privacy-settings", Method: http.MethodGet, Host: ConnectAPI, Path: "/privacysettings-service/privacy-settings"},
+	{Name: "profile.privacy-settings.update", Method: http.MethodPut, Host: ConnectAPI, Path: "/privacysettings-service/privacy-settings", Body: true},
+	{Name: "profile.privacy.badges", Method: http.MethodPut, Host: ConnectAPI, Path: "/userprofile-service/socialProfile/privacy/badge/{displayName}", Body: true},
 	{Name: "profile.privacy-zones", Method: http.MethodGet, Host: ConnectAPI, Path: "/privacyzone-service/privacyZones"},
 	{Name: "profile.privacy-zone.create", Method: http.MethodPost, Host: ConnectAPI, Path: "/privacyzone-service/privacyZones", Body: true},
 	{Name: "profile.privacy-zone.delete", Method: http.MethodDelete, Host: ConnectAPI, Path: "/privacyzone-service/privacyZones/{privacyZoneID}"},

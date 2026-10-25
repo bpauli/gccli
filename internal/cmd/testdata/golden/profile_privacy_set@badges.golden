@@ -1,0 +1,56 @@
+Only --badges: no settings request, and connections is "following" for badges.
+-- args --
+profile
+privacy
+set
+--badges
+connections
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","profileId":3141592}
+-- route PUT /userprofile-service/socialProfile/privacy/badge/tester 204 --
+-- table stdout --
+-- table stderr --
+Changed privacy: badges connections
+-- table exit --
+0
+-- table requests --
+GET /userprofile-service/userprofile/settings
+PUT /userprofile-service/socialProfile/privacy/badge/tester
+  {
+    "badgeVisibility": "following"
+  }
+-- plain stdout --
+-- plain stderr --
+Changed privacy: badges connections
+-- plain exit --
+0
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+PUT /userprofile-service/socialProfile/privacy/badge/tester
+  {
+    "badgeVisibility": "following"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Changed privacy: badges connections
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+PUT /userprofile-service/socialProfile/privacy/badge/tester
+  {
+    "badgeVisibility": "following"
+  }
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /userprofile-service/userprofile/settings
+PUT /userprofile-service/socialProfile/privacy/badge/tester
+  {
+    "badgeVisibility": "following"
+  }
