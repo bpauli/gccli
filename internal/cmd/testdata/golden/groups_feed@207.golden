@@ -1,0 +1,91 @@
+Garmin answers the feed with 207, also for a member, and gccli prints it as a success.
+-- args --
+groups
+feed
+1001
+-- route GET /web-gateway/group/v2/1001/groupFeed 207 --
+{"groupFeed":[{"groupFeedType":"newsPosts","data":{"postId":7001,"title":"Sunday run","body":"We meet at 9."}}],"nextCursor":"c-1","daysLimit":30,"profileInfos":{}}
+-- table stdout --
+{
+  "groupFeed": [
+    {
+      "groupFeedType": "newsPosts",
+      "data": {
+        "postId": 7001,
+        "title": "Sunday run",
+        "body": "We meet at 9."
+      }
+    }
+  ],
+  "nextCursor": "c-1",
+  "daysLimit": 30,
+  "profileInfos": {}
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /web-gateway/group/v2/1001/groupFeed
+-- plain stdout --
+{
+  "groupFeed": [
+    {
+      "groupFeedType": "newsPosts",
+      "data": {
+        "postId": 7001,
+        "title": "Sunday run",
+        "body": "We meet at 9."
+      }
+    }
+  ],
+  "nextCursor": "c-1",
+  "daysLimit": 30,
+  "profileInfos": {}
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /web-gateway/group/v2/1001/groupFeed
+-- plain-header stdout --
+{
+  "groupFeed": [
+    {
+      "groupFeedType": "newsPosts",
+      "data": {
+        "postId": 7001,
+        "title": "Sunday run",
+        "body": "We meet at 9."
+      }
+    }
+  ],
+  "nextCursor": "c-1",
+  "daysLimit": 30,
+  "profileInfos": {}
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /web-gateway/group/v2/1001/groupFeed
+-- json stdout --
+{
+  "groupFeed": [
+    {
+      "groupFeedType": "newsPosts",
+      "data": {
+        "postId": 7001,
+        "title": "Sunday run",
+        "body": "We meet at 9."
+      }
+    }
+  ],
+  "nextCursor": "c-1",
+  "daysLimit": 30,
+  "profileInfos": {}
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /web-gateway/group/v2/1001/groupFeed

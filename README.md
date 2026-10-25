@@ -1761,6 +1761,20 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `-l, --limit=20`: Maximum number of users to return.
   - `--offset=0`: Number of users to skip.
 - `gccli groups list`: List your groups. Also runs as `gccli groups`.
+- `gccli groups search <keyword> [flags]`: Search groups by keyword.
+  - `<keyword>`: Text in the group name or description.
+  - `-l, --limit=20`: Maximum number of groups to return.
+  - `--offset=0`: Number of groups to skip.
+- `gccli groups show <id>`: Show a group.
+  - `<id>`: Group ID.
+- `gccli groups members <id>`: List the members of a group.
+  - `<id>`: Group ID.
+- `gccli groups feed <id>`: Show the latest posts and activities of the group feed.
+  - `<id>`: Group ID.
+- `gccli groups activities <id>`: List the latest activities of the group members.
+  - `<id>`: Group ID.
+- `gccli groups challenges <id>`: List the open challenges of a group. Garmin answers 403 to a non-member.
+  - `<id>`: Group ID.
 - `gccli notifications list [flags]`: List notifications. Also runs as `gccli notifications [flags]`.
   - `--limit=50`: Maximum number of notifications to return.
   - `--cursor=STRING`: Start after this cursor. Use pagination.nextCursor from the JSON output of the last page.
