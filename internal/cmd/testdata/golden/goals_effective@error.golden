@@ -1,0 +1,37 @@
+-- args --
+goals
+effective
+steps
+-- route GET /goal-service/goal/user/effective/steps/2026-10-15 400 --
+{"message":"Bad request","error":"BadRequestException"}
+-- table stdout --
+-- table stderr --
+get goal: garmin api: 400 Bad Request: {"message":"Bad request","error":"BadRequestException"}
+
+-- table exit --
+1
+-- table requests --
+GET /goal-service/goal/user/effective/steps/2026-10-15
+-- plain stdout --
+-- plain stderr --
+get goal: garmin api: 400 Bad Request: {"message":"Bad request","error":"BadRequestException"}
+
+-- plain exit --
+1
+-- plain requests --
+GET /goal-service/goal/user/effective/steps/2026-10-15
+-- plain-header stdout --
+-- plain-header stderr --
+get goal: garmin api: 400 Bad Request: {"message":"Bad request","error":"BadRequestException"}
+
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /goal-service/goal/user/effective/steps/2026-10-15
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"get goal: garmin api: 400 Bad Request: {\"message\":\"Bad request\",\"error\":\"BadRequestException\"}\n"}}
+-- json exit --
+1
+-- json requests --
+GET /goal-service/goal/user/effective/steps/2026-10-15

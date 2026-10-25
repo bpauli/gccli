@@ -1,6 +1,7 @@
 -- args --
 goals
 weight
+view
 -- route GET /goal-service/goal/user/effective/weightgoal/2026-10-15/2026-10-15 --
 {"value":1}
 -- table stdout --

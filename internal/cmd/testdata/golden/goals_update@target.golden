@@ -1,0 +1,210 @@
+A new target sets type and its field, and sets the other target fields to null. The period goes in snake case.
+-- args --
+goals
+update
+12345678
+--duration
+5h
+--period
+thirty-days
+--activity-type
+all
+--start
+2026-10-14
+-- route GET /goal-service/goal/goal/12345678 --
+{"id":12345678,"name":"Run 50 km","type":"distance_accumulation","distanceInMeters":50000.0,"durationInSeconds":null,"caloriesInKiloCalories":null,"numberOfActivities":null,"startDate":"2026-10-12","activityType":"running","period":"seven_days","privacy":"public","progress":{"percent":20.0,"days":3,"distanceInMeters":10000.0,"durationInSeconds":null,"caloriesInKiloCalories":null,"numberOfActivities":null},"remaining":{"percent":80.0,"days":4,"distanceInMeters":40000.0,"durationInSeconds":null,"caloriesInKiloCalories":null,"numberOfActivities":null},"overage":{"percent":0.0,"days":0,"distanceInMeters":0.0,"durationInSeconds":null,"caloriesInKiloCalories":null,"numberOfActivities":null},"endDate":"2026-10-18","active":true,"completed":false}
+-- route PUT /goal-service/goal/goal/12345678 204 --
+-- table stdout --
+-- table stderr --
+Updated goal 12345678
+-- table exit --
+0
+-- table requests --
+GET /goal-service/goal/goal/12345678
+PUT /goal-service/goal/goal/12345678
+  {
+    "active": true,
+    "activityType": "all",
+    "caloriesInKiloCalories": null,
+    "completed": false,
+    "distanceInMeters": null,
+    "durationInSeconds": 18000,
+    "endDate": "2026-10-18",
+    "id": 12345678,
+    "name": "Run 50 km",
+    "numberOfActivities": null,
+    "overage": {
+      "percent": 0.0,
+      "days": 0,
+      "distanceInMeters": 0.0,
+      "durationInSeconds": null,
+      "caloriesInKiloCalories": null,
+      "numberOfActivities": null
+    },
+    "period": "thirty_days",
+    "privacy": "public",
+    "progress": {
+      "percent": 20.0,
+      "days": 3,
+      "distanceInMeters": 10000.0,
+      "durationInSeconds": null,
+      "caloriesInKiloCalories": null,
+      "numberOfActivities": null
+    },
+    "remaining": {
+      "percent": 80.0,
+      "days": 4,
+      "distanceInMeters": 40000.0,
+      "durationInSeconds": null,
+      "caloriesInKiloCalories": null,
+      "numberOfActivities": null
+    },
+    "startDate": "2026-10-14",
+    "type": "duration_accumulation"
+  }
+-- plain stdout --
+-- plain stderr --
+Updated goal 12345678
+-- plain exit --
+0
+-- plain requests --
+GET /goal-service/goal/goal/12345678
+PUT /goal-service/goal/goal/12345678
+  {
+    "active": true,
+    "activityType": "all",
+    "caloriesInKiloCalories": null,
+    "completed": false,
+    "distanceInMeters": null,
+    "durationInSeconds": 18000,
+    "endDate": "2026-10-18",
+    "id": 12345678,
+    "name": "Run 50 km",
+    "numberOfActivities": null,
+    "overage": {
+      "percent": 0.0,
+      "days": 0,
+      "distanceInMeters": 0.0,
+      "durationInSeconds": null,
+      "caloriesInKiloCalories": null,
+      "numberOfActivities": null
+    },
+    "period": "thirty_days",
+    "privacy": "public",
+    "progress": {
+      "percent": 20.0,
+      "days": 3,
+      "distanceInMeters": 10000.0,
+      "durationInSeconds": null,
+      "caloriesInKiloCalories": null,
+      "numberOfActivities": null
+    },
+    "remaining": {
+      "percent": 80.0,
+      "days": 4,
+      "distanceInMeters": 40000.0,
+      "durationInSeconds": null,
+      "caloriesInKiloCalories": null,
+      "numberOfActivities": null
+    },
+    "startDate": "2026-10-14",
+    "type": "duration_accumulation"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Updated goal 12345678
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /goal-service/goal/goal/12345678
+PUT /goal-service/goal/goal/12345678
+  {
+    "active": true,
+    "activityType": "all",
+    "caloriesInKiloCalories": null,
+    "completed": false,
+    "distanceInMeters": null,
+    "durationInSeconds": 18000,
+    "endDate": "2026-10-18",
+    "id": 12345678,
+    "name": "Run 50 km",
+    "numberOfActivities": null,
+    "overage": {
+      "percent": 0.0,
+      "days": 0,
+      "distanceInMeters": 0.0,
+      "durationInSeconds": null,
+      "caloriesInKiloCalories": null,
+      "numberOfActivities": null
+    },
+    "period": "thirty_days",
+    "privacy": "public",
+    "progress": {
+      "percent": 20.0,
+      "days": 3,
+      "distanceInMeters": 10000.0,
+      "durationInSeconds": null,
+      "caloriesInKiloCalories": null,
+      "numberOfActivities": null
+    },
+    "remaining": {
+      "percent": 80.0,
+      "days": 4,
+      "distanceInMeters": 40000.0,
+      "durationInSeconds": null,
+      "caloriesInKiloCalories": null,
+      "numberOfActivities": null
+    },
+    "startDate": "2026-10-14",
+    "type": "duration_accumulation"
+  }
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /goal-service/goal/goal/12345678
+PUT /goal-service/goal/goal/12345678
+  {
+    "active": true,
+    "activityType": "all",
+    "caloriesInKiloCalories": null,
+    "completed": false,
+    "distanceInMeters": null,
+    "durationInSeconds": 18000,
+    "endDate": "2026-10-18",
+    "id": 12345678,
+    "name": "Run 50 km",
+    "numberOfActivities": null,
+    "overage": {
+      "percent": 0.0,
+      "days": 0,
+      "distanceInMeters": 0.0,
+      "durationInSeconds": null,
+      "caloriesInKiloCalories": null,
+      "numberOfActivities": null
+    },
+    "period": "thirty_days",
+    "privacy": "public",
+    "progress": {
+      "percent": 20.0,
+      "days": 3,
+      "distanceInMeters": 10000.0,
+      "durationInSeconds": null,
+      "caloriesInKiloCalories": null,
+      "numberOfActivities": null
+    },
+    "remaining": {
+      "percent": 80.0,
+      "days": 4,
+      "distanceInMeters": 40000.0,
+      "durationInSeconds": null,
+      "caloriesInKiloCalories": null,
+      "numberOfActivities": null
+    },
+    "startDate": "2026-10-14",
+    "type": "duration_accumulation"
+  }
