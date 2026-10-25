@@ -1,0 +1,34 @@
+Garmin answers [] when nothing matches.
+-- args --
+gear
+models
+zzz
+-- route GET /gear-service/gear/makemodels?keywords=zzz --
+[]
+-- table stdout --
+BRAND  MODEL
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /gear-service/gear/makemodels?keywords=zzz
+-- plain stdout --
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /gear-service/gear/makemodels?keywords=zzz
+-- plain-header stdout --
+BRAND	MODEL
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /gear-service/gear/makemodels?keywords=zzz
+-- json stdout --
+[]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /gear-service/gear/makemodels?keywords=zzz
