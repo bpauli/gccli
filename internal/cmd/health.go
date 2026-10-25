@@ -319,6 +319,7 @@ var healthSleepGroup = Group{Name: "sleep", Help: "Show sleep data.", Children: 
 		Verb:     "get sleep", Output: JSON{},
 	},
 	healthSleepNapsGroup,
+	Custom{Name: "note", Help: "Set or remove the note of a night of sleep.", Cmd: &HealthSleepNoteCmd{}},
 	Leaf{
 		Name: "daily", Help: "Show daily sleep statistics for a date range (at most 28 days).",
 		Spec: argsOf(&struct {
