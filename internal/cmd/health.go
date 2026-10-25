@@ -62,6 +62,7 @@ var healthGroup = Group{Name: "health", Help: "View health data.", Children: []N
 		Params:   Params{"date": In("Date")},
 		Verb:     "get hrv", Output: JSON{},
 	},
+	healthSnapshotsGroup,
 	healthBodyBatteryGroup,
 	healthIntensityMinutesGroup,
 	Leaf{

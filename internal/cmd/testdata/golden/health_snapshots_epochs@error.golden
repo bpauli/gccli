@@ -1,0 +1,36 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+health
+snapshots
+epochs
+1b4e28ba-2fa1-11d2-883f-0016d3cca427
+-- route GET /wellnessactivity-service/activity/epoch/1b4e28ba-2fa1-11d2-883f-0016d3cca427 400 noeol --
+{"status":400,"error":"Bad Request"}
+-- table stdout --
+-- table stderr --
+get health snapshot epochs: garmin api: 400 Bad Request: {"status":400,"error":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /wellnessactivity-service/activity/epoch/1b4e28ba-2fa1-11d2-883f-0016d3cca427
+-- plain stdout --
+-- plain stderr --
+get health snapshot epochs: garmin api: 400 Bad Request: {"status":400,"error":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /wellnessactivity-service/activity/epoch/1b4e28ba-2fa1-11d2-883f-0016d3cca427
+-- plain-header stdout --
+-- plain-header stderr --
+get health snapshot epochs: garmin api: 400 Bad Request: {"status":400,"error":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /wellnessactivity-service/activity/epoch/1b4e28ba-2fa1-11d2-883f-0016d3cca427
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"get health snapshot epochs: garmin api: 400 Bad Request: {\"status\":400,\"error\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /wellnessactivity-service/activity/epoch/1b4e28ba-2fa1-11d2-883f-0016d3cca427

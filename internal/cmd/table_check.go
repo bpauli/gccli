@@ -115,6 +115,11 @@ func checkLeaf(path string, l Leaf) []error {
 					fail("Params[%q] binds Page, which needs an embedded AlignedPagination: only an --offset that is a multiple of --limit starts a page", key)
 				}
 			}
+			if a.lookup == lookupStartIndex {
+				if f, ok := fields.FieldByName("Pagination"); !ok || !f.Anonymous {
+					fail("Params[%q] binds StartIndex, which needs an embedded Pagination: it is --offset + 1", key)
+				}
+			}
 			if a.lookup != noLookup {
 				continue
 			}
