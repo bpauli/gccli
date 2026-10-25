@@ -1,9 +1,11 @@
-Without --force and with no answer to the question, the command cancels: exit 0 and no POST.
+Any answer other than y or yes cancels, so no request is sent.
 -- args --
 activities
 privacy
 set
 public
+-- stdin --
+n
 -- table stdout --
 -- table stderr --
 Change the privacy of all past activities to public? [y/N]: Cancelled
