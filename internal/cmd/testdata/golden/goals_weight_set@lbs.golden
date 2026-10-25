@@ -1,0 +1,57 @@
+A weight in lbs is converted to whole grams. The date defaults to today.
+-- args --
+goals
+weight
+set
+160
+--unit
+lbs
+-- route PUT /goal-service/goal/user/effective/weight-grams/2026-10-15 --
+{"goalType":"WEIGHT_GRAMS","goalValue":72575.0}
+-- table stdout --
+-- table stderr --
+Set weight goal to 160 lbs from 2026-10-15
+-- table exit --
+0
+-- table requests --
+PUT /goal-service/goal/user/effective/weight-grams/2026-10-15
+  {
+    "goalType": "WEIGHT_GRAMS",
+    "goalValue": 72575
+  }
+-- plain stdout --
+-- plain stderr --
+Set weight goal to 160 lbs from 2026-10-15
+-- plain exit --
+0
+-- plain requests --
+PUT /goal-service/goal/user/effective/weight-grams/2026-10-15
+  {
+    "goalType": "WEIGHT_GRAMS",
+    "goalValue": 72575
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Set weight goal to 160 lbs from 2026-10-15
+-- plain-header exit --
+0
+-- plain-header requests --
+PUT /goal-service/goal/user/effective/weight-grams/2026-10-15
+  {
+    "goalType": "WEIGHT_GRAMS",
+    "goalValue": 72575
+  }
+-- json stdout --
+{
+  "goalType": "WEIGHT_GRAMS",
+  "goalValue": 72575.0
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+PUT /goal-service/goal/user/effective/weight-grams/2026-10-15
+  {
+    "goalType": "WEIGHT_GRAMS",
+    "goalValue": 72575
+  }

@@ -1,6 +1,7 @@
 -- args --
 goals
 weight
+view
 --start
 2026-01-01
 --end

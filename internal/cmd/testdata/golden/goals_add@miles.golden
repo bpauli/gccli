@@ -1,0 +1,99 @@
+A distance in miles goes to Garmin in meters.
+-- args --
+goals
+add
+Run 50 km
+--period
+seven-days
+--distance
+26.2mi
+-- route POST /goal-service/goal/goal --
+{"id":12345678,"name":"Run 50 km","type":"distance_accumulation","distanceInMeters":50000.0,"startDate":"2026-10-12","endDate":"2026-10-18","activityType":"running","period":"seven_days","privacy":"public","active":true,"completed":false}
+-- table stdout --
+-- table stderr --
+Added goal "Run 50 km" (ID: 12345678)
+-- table exit --
+0
+-- table requests --
+POST /goal-service/goal/goal
+  {
+    "activityType": "all",
+    "caloriesInKiloCalories": null,
+    "distanceInMeters": 42165,
+    "durationInSeconds": null,
+    "name": "Run 50 km",
+    "numberOfActivities": null,
+    "period": "seven_days",
+    "privacy": "public",
+    "startDate": "2026-10-15",
+    "type": "distance_accumulation"
+  }
+-- plain stdout --
+-- plain stderr --
+Added goal "Run 50 km" (ID: 12345678)
+-- plain exit --
+0
+-- plain requests --
+POST /goal-service/goal/goal
+  {
+    "activityType": "all",
+    "caloriesInKiloCalories": null,
+    "distanceInMeters": 42165,
+    "durationInSeconds": null,
+    "name": "Run 50 km",
+    "numberOfActivities": null,
+    "period": "seven_days",
+    "privacy": "public",
+    "startDate": "2026-10-15",
+    "type": "distance_accumulation"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Added goal "Run 50 km" (ID: 12345678)
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /goal-service/goal/goal
+  {
+    "activityType": "all",
+    "caloriesInKiloCalories": null,
+    "distanceInMeters": 42165,
+    "durationInSeconds": null,
+    "name": "Run 50 km",
+    "numberOfActivities": null,
+    "period": "seven_days",
+    "privacy": "public",
+    "startDate": "2026-10-15",
+    "type": "distance_accumulation"
+  }
+-- json stdout --
+{
+  "id": 12345678,
+  "name": "Run 50 km",
+  "type": "distance_accumulation",
+  "distanceInMeters": 50000.0,
+  "startDate": "2026-10-12",
+  "endDate": "2026-10-18",
+  "activityType": "running",
+  "period": "seven_days",
+  "privacy": "public",
+  "active": true,
+  "completed": false
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /goal-service/goal/goal
+  {
+    "activityType": "all",
+    "caloriesInKiloCalories": null,
+    "distanceInMeters": 42165,
+    "durationInSeconds": null,
+    "name": "Run 50 km",
+    "numberOfActivities": null,
+    "period": "seven_days",
+    "privacy": "public",
+    "startDate": "2026-10-15",
+    "type": "distance_accumulation"
+  }

@@ -20,7 +20,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Segments** - list your segments and favorites, search segments by name or map area, view a segment, its leaderboard and your rank, list the segments that an activity crossed, create a segment from a part of an activity, add and remove favorites, delete segments
 - **Devices** - list registered devices, view settings, solar data, alarms, primary/last-used device, set the primary activity tracker, paired sensors, backup summary and device backups, historical devices, device messages, cancel a pending device message
 - **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities, gear types, add, update, retire, unretire and delete gear, list, create, rename and delete gear collections, add gear to a collection
-- **Goals & Badges** - active goals, set daily goals for steps, floors, intensity minutes and hydration, earned/available/in-progress badges, badge details, challenges (show, join and leave badge and virtual challenges; create, view, answer, leave and delete ad-hoc challenges and invite people to them), personal records
+- **Goals & Badges** - list, add, update and delete activity goals, set daily goals for steps, floors, intensity minutes and hydration, set and delete the weight goal, earned/available/in-progress badges, badge details, challenges (show, join and leave badge and virtual challenges; create, view, answer, leave and delete ad-hoc challenges and invite people to them), personal records
 - **Training** - browse, search and view training plans, show a plan's schedule, join and leave a plan, move and delete its workouts, show your active plans, list adaptive coaching workout types
 - **Profile** - user profile and settings, privacy settings, list, add and delete privacy zones, heart rate zones, power zones for all sports or one sport
 - **Hydration** — view and log daily water intake
@@ -718,7 +718,14 @@ gccli gear collections add <collection-uuid> <gear-uuid>
 ```bash
 gccli goals list                  # active goals (default)
 gccli goals list --status past    # active, future or past
+gccli goals add "Run 50 km" --period seven-days --activity-type running --distance 50km
+gccli goals add "Ride 10 h" --period one-month --duration 10h   # starts on the 1st of this month
+gccli goals update <id> --calories 3000   # a new target replaces the old one
+gccli goals delete <id>           # (with confirmation)
+gccli goals effective steps --date 2026-11-01   # also floors-climbed, intensity-minutes, hydration, weight-grams
 gccli goals weight --start 2026-01-01 --end 2026-06-30
+gccli goals weight set 72.5       # kg, or --unit lbs
+gccli goals weight delete         # (with confirmation) an earlier weight goal applies again
 gccli goals set floors-climbed 12   # also intensity-minutes (minutes) and hydration (ml)
 gccli goals set hydration 2500 --date 2026-11-01
 gccli goals steps set 9000
@@ -1516,9 +1523,40 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 
 - `gccli goals list [flags]`: List goals. Also runs as `gccli goals [flags]`.
   - `--status="active"`: Goal status: active, future, past.
-- `gccli goals weight [flags]`: Show the effective weight goal for a date range.
+- `gccli goals add --period=STRING <name> [flags]`: Add an activity goal.
+  - `<name>`: Goal name, 1 to 49 characters.
+  - `--period=STRING`: Goal period: seven-days, thirty-days, one-month or annual.
+  - `--activity-type="all"`: Activity type key, as activities types prints it (e.g. running, cycling), or all.
+  - `--start=DATE`: First day of the goal (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today, and to the first day of this month for a one-month goal.
+  - `--distance=DISTANCE`: Distance to cover (e.g. 50km, 30mi, 5000m).
+  - `--duration=DURATION`: Time to spend (e.g. 10h, 90m).
+  - `--calories=KCAL`: Kilocalories to burn.
+  - `--activities=N`: Number of activities to do.
+- `gccli goals update <id> [flags]`: Change an activity goal.
+  - `<id>`: Goal ID, as goals list prints it.
+  - `--name=FREE-TEXT`: New name, 1 to 49 characters.
+  - `--period=PERIOD`: New period: seven-days, thirty-days, one-month or annual.
+  - `--activity-type=FREE-TEXT`: New activity type key, as activities types prints it (e.g. running, cycling), or all.
+  - `--start=DATE`: New first day of the goal (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--distance=DISTANCE`: Distance to cover (e.g. 50km, 30mi, 5000m).
+  - `--duration=DURATION`: Time to spend (e.g. 10h, 90m).
+  - `--calories=KCAL`: Kilocalories to burn.
+  - `--activities=N`: Number of activities to do.
+- `gccli goals delete <id> [flags]`: Delete an activity goal.
+  - `<id>`: Goal ID, as goals list prints it.
+  - `-f, --force`: Skip confirmation prompt.
+- `gccli goals effective <type> [flags]`: Show the daily goal of one type that applies on a date.
+  - `<type>`: Goal type: floors-climbed, intensity-minutes, hydration, steps or weight-grams.
+  - `--date=DATE`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli goals weight view [flags]`: Show the effective weight goal for a date range. Also runs as `gccli goals weight [flags]`.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli goals weight set <weight> [flags]`: Set the weight goal.
+  - `<weight>`: Goal weight.
+  - `--unit="kg"`: Unit of the weight: kg or lbs.
+  - `--date="today"`: First day of the goal (YYYY-MM-DD, today, yesterday, 3d). The goal stays for the days after it.
+- `gccli goals weight delete [flags]`: Delete the current weight goal. An earlier weight goal then applies again.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli goals set <type> <value> [flags]`: Set the daily goal for floors climbed, intensity minutes or hydration.
   - `<type>`: Goal type: floors-climbed, intensity-minutes or hydration.
   - `<value>`: Daily goal: floors for floors-climbed, minutes for intensity-minutes, milliliters for hydration.

@@ -231,8 +231,16 @@ Commands:
   gear collections delete          Delete a gear collection. The gear items
                                    stay.
   goals list                       List goals.
-  goals weight                     Show the effective weight goal for a date
+  goals add                        Add an activity goal.
+  goals update                     Change an activity goal.
+  goals delete                     Delete an activity goal.
+  goals effective                  Show the daily goal of one type that applies
+                                   on a date.
+  goals weight view                Show the effective weight goal for a date
                                    range.
+  goals weight set                 Set the weight goal.
+  goals weight delete              Delete the current weight goal. An earlier
+                                   weight goal then applies again.
   goals set                        Set the daily goal for floors climbed,
                                    intensity minutes or hydration.
   goals steps set                  Set a fixed daily steps goal.
@@ -1533,12 +1541,44 @@ Flags:
       --version           Print version information.
 
 Commands:
-  goals list          List goals.
-  goals weight        Show the effective weight goal for a date range.
-  goals set           Set the daily goal for floors climbed, intensity minutes
-                      or hydration.
-  goals steps set     Set a fixed daily steps goal.
-  goals steps auto    Set Garmin's automatic steps goal.
+  goals list             List goals.
+  goals add              Add an activity goal.
+  goals update           Change an activity goal.
+  goals delete           Delete an activity goal.
+  goals effective        Show the daily goal of one type that applies on a date.
+  goals weight view      Show the effective weight goal for a date range.
+  goals weight set       Set the weight goal.
+  goals weight delete    Delete the current weight goal. An earlier weight goal
+                         then applies again.
+  goals set              Set the daily goal for floors climbed, intensity
+                         minutes or hydration.
+  goals steps set        Set a fixed daily steps goal.
+  goals steps auto       Set Garmin's automatic steps goal.
+
+$ gccli goals weight --help
+Usage: gccli goals weight <command>
+
+View, set and delete the weight goal.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  goals weight view      Show the effective weight goal for a date range.
+  goals weight set       Set the weight goal.
+  goals weight delete    Delete the current weight goal. An earlier weight goal
+                         then applies again.
 
 $ gccli goals steps --help
 Usage: gccli goals steps <command>

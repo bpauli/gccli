@@ -582,9 +582,40 @@ Date shortcuts
 
 - `gccli goals list [flags]`: List goals. Also runs as `gccli goals [flags]`.
   - `--status="active"`: Goal status: active, future, past.
-- `gccli goals weight [flags]`: Show the effective weight goal for a date range.
+- `gccli goals add --period=STRING <name> [flags]`: Add an activity goal.
+  - `<name>`: Goal name, 1 to 49 characters.
+  - `--period=STRING`: Goal period: seven-days, thirty-days, one-month or annual.
+  - `--activity-type="all"`: Activity type key, as activities types prints it (e.g. running, cycling), or all.
+  - `--start=DATE`: First day of the goal (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today, and to the first day of this month for a one-month goal.
+  - `--distance=DISTANCE`: Distance to cover (e.g. 50km, 30mi, 5000m).
+  - `--duration=DURATION`: Time to spend (e.g. 10h, 90m).
+  - `--calories=KCAL`: Kilocalories to burn.
+  - `--activities=N`: Number of activities to do.
+- `gccli goals update <id> [flags]`: Change an activity goal.
+  - `<id>`: Goal ID, as goals list prints it.
+  - `--name=FREE-TEXT`: New name, 1 to 49 characters.
+  - `--period=PERIOD`: New period: seven-days, thirty-days, one-month or annual.
+  - `--activity-type=FREE-TEXT`: New activity type key, as activities types prints it (e.g. running, cycling), or all.
+  - `--start=DATE`: New first day of the goal (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--distance=DISTANCE`: Distance to cover (e.g. 50km, 30mi, 5000m).
+  - `--duration=DURATION`: Time to spend (e.g. 10h, 90m).
+  - `--calories=KCAL`: Kilocalories to burn.
+  - `--activities=N`: Number of activities to do.
+- `gccli goals delete <id> [flags]`: Delete an activity goal.
+  - `<id>`: Goal ID, as goals list prints it.
+  - `-f, --force`: Skip confirmation prompt.
+- `gccli goals effective <type> [flags]`: Show the daily goal of one type that applies on a date.
+  - `<type>`: Goal type: floors-climbed, intensity-minutes, hydration, steps or weight-grams.
+  - `--date=DATE`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli goals weight view [flags]`: Show the effective weight goal for a date range. Also runs as `gccli goals weight [flags]`.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli goals weight set <weight> [flags]`: Set the weight goal.
+  - `<weight>`: Goal weight.
+  - `--unit="kg"`: Unit of the weight: kg or lbs.
+  - `--date="today"`: First day of the goal (YYYY-MM-DD, today, yesterday, 3d). The goal stays for the days after it.
+- `gccli goals weight delete [flags]`: Delete the current weight goal. An earlier weight goal then applies again.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli goals set <type> <value> [flags]`: Set the daily goal for floors climbed, intensity minutes or hydration.
   - `<type>`: Goal type: floors-climbed, intensity-minutes or hydration.
   - `<value>`: Daily goal: floors for floors-climbed, minutes for intensity-minutes, milliliters for hydration.
@@ -953,6 +984,8 @@ Worked examples
 - Notification preference: `gccli notifications preferences` shows the keys. `gccli notifications preferences set allowEmailWeeklySummary false` turns one off. A key that is not in the preferences fails before any write, and the error lists the keys.
 - Notifications: `gccli notifications list` gives 50 notifications per page (`--limit` changes it). For the next page, pass `pagination.nextCursor` of the JSON output: `gccli notifications list --cursor <nextCursor>`. `gccli notifications dismiss <id>` removes a notification from the list, and `gccli notifications undismiss <id>` brings it back. `gccli notifications unread` prints `{"unreadBubble": true}` when there are unread notifications.
 - Privacy zone: `gccli profile privacy-zones add --lat 51.5 --lon=-0.12 --radius 500` prints the zone ID. A negative value needs the `=` form. The radius is 500 to 1500 meters. `gccli profile privacy-zones delete <id> --force` deletes it.
+- Activity goal: `gccli goals add "Run 50 km" --period seven-days --activity-type running --distance 50km` prints the goal ID. Then `gccli goals update <id> --distance 60km` changes the target, and `gccli goals delete <id> --force` deletes the goal.
+- Weight goal: `gccli goals weight set 72.5` (or `--unit lbs`) sets it from today. `gccli goals effective weight-grams` shows the goal that applies, in grams, and `gccli goals weight delete --force` deletes it.
 - Race event with a goal time and training priority: `gccli events add --name "Spring 10K" --date 2026-05-10 --type running --race --distance 10km --goal 40m --training`
 - Food search: `gccli nutrition search "greek yogurt" --limit 5 --json` lists foods with their servings under `results[].nutritionContents`. `gccli nutrition recent` and `gccli nutrition favorites` list the foods logged recently and the favorite foods.
 - Log a food: search first, then pass the food ID and the same search text: `gccli nutrition add today 35718 --query apple --meal lunch --serving oz --servings 3`. Garmin has no read of one food by ID, so `--query` is required. `--serving` takes a `servingUnit` or `servingId` from the search JSON (default the first). `--servings` counts that serving, and a serving can hold more than one unit: the `g` serving of a food is often 100 g (`numberOfUnits`). The message prints the log ID of the new entry.
@@ -1028,6 +1061,8 @@ Notes
 - Download formats: FIT (default), GPX, TCX, KML, CSV.
 - Workout step format: `type:duration[@target:low-high]`. Types: warmup, run, recovery, cooldown; targets: pace (min:sec), hr (bpm), power (watts), cadence.
 - `goals set` and `goals steps` change the goal from `--date` (default today) onward; the days before keep their goal. `gccli health summary <date> --json` shows the steps, floors and intensity minutes goals (`dailyStepGoal`, `userFloorsAscendedGoal`, `intensityMinutesGoal`).
+- `goals add` takes exactly one target: `--distance` (such as `50km`, `30mi`, `5000m`), `--duration` (such as `10h`, `90m`), `--calories` or `--activities`. `--period` is `seven-days`, `thirty-days`, `one-month` or `annual`. A `one-month` goal starts on the first day of a month; without `--start` it starts on the first day of this month. `--activity-type` is a key as `activities types` prints it, or `all` (the default). Garmin computes the end date. `goals update` reads the goal and changes only the flags you give; a new target replaces the old one.
+- The weight goal is one value per start date. `goals weight set` adds a goal from `--date` (default today). `goals weight delete` deletes the current one, and an earlier weight goal then applies again. It fails with exit code 1 when there is no weight goal. `goals weight` without a child runs `goals weight view`.
 - `wellness menstrual-log set` changes only the fields you give. Garmin replaces the whole day on a write, so gccli reads the log first and sends the other fields again. The values are lower-case kebab (`light`, `tender-breasts`, `no-discharge`), the lists are comma-separated, and an empty value (`""`) clears a field. `--no-ovulation` removes the ovulation mark. The writes need cycle tracking set up in Garmin Connect; without it, Garmin answers 400 "MCT settings were not found". `wellness menstrual-log` prints `{}` for a day without a log, and `delete` of such a day fails with exit code 1. `wellness menstrual-cycle` and `wellness menstrual-summary` take one date (default today) and print `{}` for a day outside a tracked cycle. `wellness pregnancy-summary` prints `{}` when there is no pregnancy.
 - `wellness jet-lag add --from <place> --to <place> --depart <time> --arrive <time>` adds a jet lag trip. `--return-depart` and `--return-arrive` add the return flight. Each time is the local time at its place with the UTC offset there, such as `2026-11-02T10:00+01:00`; a time without an offset is a usage error. For a flight with a stop, give the first departure and the last arrival. `add` prints the trip ID. `update` and `delete` find the trip in the trip list, because Garmin has no read of one trip; an unknown ID exits 1. `update` changes only the flags you give, and `--from`/`--to` also change the return flight. It refuses a trip of more than two flights (made in the web app).
 - `workouts update` replaces the whole workout, so build the file from `gccli workouts detail <id>` and edit it. `workoutId` is set from the ID argument, so an `upload` payload works unchanged. The workout keeps its ID and its calendar entries.
