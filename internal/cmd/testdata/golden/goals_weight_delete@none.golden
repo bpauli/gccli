@@ -1,0 +1,35 @@
+Garmin answers 204 when there is no weight goal. That is an error, and no DELETE is sent.
+-- args --
+goals
+weight
+delete
+--force
+-- route GET /goal-service/goal/user/WEIGHT_GRAMS/DAILY 204 --
+-- table stdout --
+-- table stderr --
+no weight goal to delete
+-- table exit --
+1
+-- table requests --
+GET /goal-service/goal/user/WEIGHT_GRAMS/DAILY
+-- plain stdout --
+-- plain stderr --
+no weight goal to delete
+-- plain exit --
+1
+-- plain requests --
+GET /goal-service/goal/user/WEIGHT_GRAMS/DAILY
+-- plain-header stdout --
+-- plain-header stderr --
+no weight goal to delete
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /goal-service/goal/user/WEIGHT_GRAMS/DAILY
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"no weight goal to delete"}}
+-- json exit --
+1
+-- json requests --
+GET /goal-service/goal/user/WEIGHT_GRAMS/DAILY

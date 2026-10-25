@@ -1,0 +1,169 @@
+Moving a goal to one-month needs a start on the first day of a month.
+-- args --
+goals
+update
+12345678
+--period
+one-month
+--start
+2026-10-12
+-- table stdout --
+-- table stderr --
+Usage: gccli goals update <id> [flags]
+
+Change an activity goal.
+
+Arguments:
+  <id>    Goal ID, as goals list prints it.
+
+Flags:
+  -h, --help                       Show context-sensitive help.
+  -j, --json                       Output as JSON ($GCCLI_JSON).
+      --plain                      Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                     Print the column names as the first line of
+                                   --plain output ($GCCLI_HEADER).
+      --color="auto"               Color mode: auto, always, never
+                                   ($GCCLI_COLOR).
+      --account=STRING             Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"               Unit system for distances, speeds, paces,
+                                   elevations and weights in table and plain
+                                   output: auto (Garmin profile), metric,
+                                   statute_us, statute_uk ($GCCLI_UNITS).
+      --version                    Print version information.
+
+      --name=FREE-TEXT             New name, 1 to 49 characters.
+      --period=PERIOD              New period: seven-days, thirty-days,
+                                   one-month or annual.
+      --activity-type=FREE-TEXT    New activity type key, as activities types
+                                   prints it (e.g. running, cycling), or all.
+      --start=DATE                 New first day of the goal (YYYY-MM-DD, today,
+                                   yesterday, 3d, +30d).
+      --distance=DISTANCE          Distance to cover (e.g. 50km, 30mi, 5000m).
+      --duration=DURATION          Time to spend (e.g. 10h, 90m).
+      --calories=KCAL              Kilocalories to burn.
+      --activities=N               Number of activities to do.
+
+gccli: error: goals update: a one-month goal starts on the first day of a month, not 2026-10-12
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli goals update <id> [flags]
+
+Change an activity goal.
+
+Arguments:
+  <id>    Goal ID, as goals list prints it.
+
+Flags:
+  -h, --help                       Show context-sensitive help.
+  -j, --json                       Output as JSON ($GCCLI_JSON).
+      --plain                      Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                     Print the column names as the first line of
+                                   --plain output ($GCCLI_HEADER).
+      --color="auto"               Color mode: auto, always, never
+                                   ($GCCLI_COLOR).
+      --account=STRING             Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"               Unit system for distances, speeds, paces,
+                                   elevations and weights in table and plain
+                                   output: auto (Garmin profile), metric,
+                                   statute_us, statute_uk ($GCCLI_UNITS).
+      --version                    Print version information.
+
+      --name=FREE-TEXT             New name, 1 to 49 characters.
+      --period=PERIOD              New period: seven-days, thirty-days,
+                                   one-month or annual.
+      --activity-type=FREE-TEXT    New activity type key, as activities types
+                                   prints it (e.g. running, cycling), or all.
+      --start=DATE                 New first day of the goal (YYYY-MM-DD, today,
+                                   yesterday, 3d, +30d).
+      --distance=DISTANCE          Distance to cover (e.g. 50km, 30mi, 5000m).
+      --duration=DURATION          Time to spend (e.g. 10h, 90m).
+      --calories=KCAL              Kilocalories to burn.
+      --activities=N               Number of activities to do.
+
+gccli: error: goals update: a one-month goal starts on the first day of a month, not 2026-10-12
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli goals update <id> [flags]
+
+Change an activity goal.
+
+Arguments:
+  <id>    Goal ID, as goals list prints it.
+
+Flags:
+  -h, --help                       Show context-sensitive help.
+  -j, --json                       Output as JSON ($GCCLI_JSON).
+      --plain                      Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                     Print the column names as the first line of
+                                   --plain output ($GCCLI_HEADER).
+      --color="auto"               Color mode: auto, always, never
+                                   ($GCCLI_COLOR).
+      --account=STRING             Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"               Unit system for distances, speeds, paces,
+                                   elevations and weights in table and plain
+                                   output: auto (Garmin profile), metric,
+                                   statute_us, statute_uk ($GCCLI_UNITS).
+      --version                    Print version information.
+
+      --name=FREE-TEXT             New name, 1 to 49 characters.
+      --period=PERIOD              New period: seven-days, thirty-days,
+                                   one-month or annual.
+      --activity-type=FREE-TEXT    New activity type key, as activities types
+                                   prints it (e.g. running, cycling), or all.
+      --start=DATE                 New first day of the goal (YYYY-MM-DD, today,
+                                   yesterday, 3d, +30d).
+      --distance=DISTANCE          Distance to cover (e.g. 50km, 30mi, 5000m).
+      --duration=DURATION          Time to spend (e.g. 10h, 90m).
+      --calories=KCAL              Kilocalories to burn.
+      --activities=N               Number of activities to do.
+
+gccli: error: goals update: a one-month goal starts on the first day of a month, not 2026-10-12
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli goals update <id> [flags]
+
+Change an activity goal.
+
+Arguments:
+  <id>    Goal ID, as goals list prints it.
+
+Flags:
+  -h, --help                       Show context-sensitive help.
+  -j, --json                       Output as JSON ($GCCLI_JSON).
+      --plain                      Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                     Print the column names as the first line of
+                                   --plain output ($GCCLI_HEADER).
+      --color="auto"               Color mode: auto, always, never
+                                   ($GCCLI_COLOR).
+      --account=STRING             Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"               Unit system for distances, speeds, paces,
+                                   elevations and weights in table and plain
+                                   output: auto (Garmin profile), metric,
+                                   statute_us, statute_uk ($GCCLI_UNITS).
+      --version                    Print version information.
+
+      --name=FREE-TEXT             New name, 1 to 49 characters.
+      --period=PERIOD              New period: seven-days, thirty-days,
+                                   one-month or annual.
+      --activity-type=FREE-TEXT    New activity type key, as activities types
+                                   prints it (e.g. running, cycling), or all.
+      --start=DATE                 New first day of the goal (YYYY-MM-DD, today,
+                                   yesterday, 3d, +30d).
+      --distance=DISTANCE          Distance to cover (e.g. 50km, 30mi, 5000m).
+      --duration=DURATION          Time to spend (e.g. 10h, 90m).
+      --calories=KCAL              Kilocalories to burn.
+      --activities=N               Number of activities to do.
+
+gccli: error: goals update: a one-month goal starts on the first day of a month, not 2026-10-12
+-- json exit --
+2
+-- json requests --

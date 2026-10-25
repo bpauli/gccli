@@ -1,0 +1,37 @@
+Any answer other than y or yes cancels, so no DELETE is sent.
+-- args --
+goals
+weight
+delete
+-- stdin --
+n
+-- route GET /goal-service/goal/user/WEIGHT_GRAMS/DAILY --
+{"userGoalPk":987654321,"userProfilePk":3141592,"userGoalCategory":"MANUAL","userGoalType":"WEIGHT_GRAMS","startDate":"2026-10-01","endDate":null,"goalName":null,"goalValue":72500.0,"updateDate":"2026-10-01T08:00:00.0","createDate":"2026-10-01T08:00:00.0","rulePk":null,"activityTypePk":0,"trackingPeriodType":"DAILY"}
+-- table stdout --
+-- table stderr --
+Delete weight goal of 72.5 kg from 2026-10-01? [y/N]: Cancelled
+-- table exit --
+0
+-- table requests --
+GET /goal-service/goal/user/WEIGHT_GRAMS/DAILY
+-- plain stdout --
+-- plain stderr --
+Delete weight goal of 72.5 kg from 2026-10-01? [y/N]: Cancelled
+-- plain exit --
+0
+-- plain requests --
+GET /goal-service/goal/user/WEIGHT_GRAMS/DAILY
+-- plain-header stdout --
+-- plain-header stderr --
+Delete weight goal of 72.5 kg from 2026-10-01? [y/N]: Cancelled
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /goal-service/goal/user/WEIGHT_GRAMS/DAILY
+-- json stdout --
+-- json stderr --
+Delete weight goal of 72.5 kg from 2026-10-01? [y/N]: Cancelled
+-- json exit --
+0
+-- json requests --
+GET /goal-service/goal/user/WEIGHT_GRAMS/DAILY

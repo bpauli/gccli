@@ -54,9 +54,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `social follow-requests` lists the users who asked to follow you, and `social accept <display-name>` and `social decline <display-name>` answer a request. Garmin takes the request ID, so both find it in the inbox first, and exit 1 when the user has no request. (#77)
 - `social mute <display-name>` mutes a user that you follow, `social unmute <display-name>` unmutes one (exit 1 when the user is not muted), and `social muted` lists them. (#77)
 - `social search <query>` searches users by name, with `--limit` (default 20) and `--offset`. The table shows the display name, the name, the location and the follow status. `--json` prints the Garmin answer. (#77)
+- `goals add <name> --period <period>` adds an activity goal with one target: `--distance` (such as `50km` or `30mi`), `--duration` (such as `10h`), `--calories` or `--activities`, for an `--activity-type` (default `all`). A `one-month` goal starts on the first day of a month, by default this month. `goals update <id>` changes the flags you give, and `goals delete <id>` deletes a goal after a prompt (`--force` skips it). (#68)
+- `goals weight set <weight> [--unit kg|lbs] [--date]` sets the weight goal, and `goals weight delete` deletes the current one after a prompt. An earlier weight goal then applies again. (#68)
+- `goals effective <type> [--date]` shows the daily goal that applies on a date: `floors-climbed`, `intensity-minutes`, `hydration`, `steps` or `weight-grams`. (#68)
 
 ### Changed
 
+- `goals weight` is now a group with `view`, `set` and `delete`. Without a child it runs `view` with `--start` and `--end`, with the same output and exit codes as before. (#68)
 - `health acclimation` is now a group with `range` and `daily`. Without a child it runs `range` with `--start` and `--end`, with the same output and exit codes as before. (#73)
 - `profile power-zones` is now a group with `list` and `sport`. Without a child it runs `list`, with the same output and exit codes as before. (#74)
 - `health endurance-score` and `health hill-score` are now groups with `view` and `stats`. Without a child they run `view`, with the same output and exit codes as before. (#73)

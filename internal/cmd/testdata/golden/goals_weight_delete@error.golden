@@ -1,0 +1,39 @@
+The weight goal read fails.
+-- args --
+goals
+weight
+delete
+--force
+-- route GET /goal-service/goal/user/WEIGHT_GRAMS/DAILY 400 --
+{"message":"Bad request","error":"BadRequestException"}
+-- table stdout --
+-- table stderr --
+get weight goal: garmin api: 400 Bad Request: {"message":"Bad request","error":"BadRequestException"}
+
+-- table exit --
+1
+-- table requests --
+GET /goal-service/goal/user/WEIGHT_GRAMS/DAILY
+-- plain stdout --
+-- plain stderr --
+get weight goal: garmin api: 400 Bad Request: {"message":"Bad request","error":"BadRequestException"}
+
+-- plain exit --
+1
+-- plain requests --
+GET /goal-service/goal/user/WEIGHT_GRAMS/DAILY
+-- plain-header stdout --
+-- plain-header stderr --
+get weight goal: garmin api: 400 Bad Request: {"message":"Bad request","error":"BadRequestException"}
+
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /goal-service/goal/user/WEIGHT_GRAMS/DAILY
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"get weight goal: garmin api: 400 Bad Request: {\"message\":\"Bad request\",\"error\":\"BadRequestException\"}\n"}}
+-- json exit --
+1
+-- json requests --
+GET /goal-service/goal/user/WEIGHT_GRAMS/DAILY
