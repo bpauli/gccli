@@ -285,6 +285,7 @@ var skipped = map[string]string{
 // clockBodies names the leaves that send a time from the clock in a request
 // body. The suite compares their output, but not their requests.
 var clockBodies = map[string]bool{
+	"activities privacy set":  true,
 	"body add-blood-pressure": true,
 	"body add-composition":    true,
 	"body add-weight":         true,

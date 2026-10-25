@@ -1,0 +1,74 @@
+Without --type, the body changes all activity types. connections goes to Garmin as subscribers.
+-- args --
+activities
+privacy
+set
+connections
+--force
+-- route POST /activity-service/activity/privacy/bulk --
+{"userId":3141592,"requestId":4242,"createDate":"2026-01-10T09:19:06.870","updateDate":"2026-01-10T09:19:06.870","status":"REQUESTED","errorDetails":null,"updates":{"all":"subscribers"},"numberOfActivitiesAtStart":0,"numberOfUpdatedActivities":0,"remainingActivitiesToBeUpdated":0}
+-- table stdout --
+-- table stderr --
+Requested privacy connections for all past activities
+-- table exit --
+0
+-- table requests --
+POST /activity-service/activity/privacy/bulk
+  {
+    "createDate": "2026-10-15T09:30:00.000Z",
+    "updates": {
+      "all": "subscribers"
+    }
+  }
+-- plain stdout --
+-- plain stderr --
+Requested privacy connections for all past activities
+-- plain exit --
+0
+-- plain requests --
+POST /activity-service/activity/privacy/bulk
+  {
+    "createDate": "2026-10-15T09:30:00.000Z",
+    "updates": {
+      "all": "subscribers"
+    }
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Requested privacy connections for all past activities
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /activity-service/activity/privacy/bulk
+  {
+    "createDate": "2026-10-15T09:30:00.000Z",
+    "updates": {
+      "all": "subscribers"
+    }
+  }
+-- json stdout --
+{
+  "userId": 3141592,
+  "requestId": 4242,
+  "createDate": "2026-01-10T09:19:06.870",
+  "updateDate": "2026-01-10T09:19:06.870",
+  "status": "REQUESTED",
+  "errorDetails": null,
+  "updates": {
+    "all": "subscribers"
+  },
+  "numberOfActivitiesAtStart": 0,
+  "numberOfUpdatedActivities": 0,
+  "remainingActivitiesToBeUpdated": 0
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /activity-service/activity/privacy/bulk
+  {
+    "createDate": "2026-10-15T09:30:00.000Z",
+    "updates": {
+      "all": "subscribers"
+    }
+  }

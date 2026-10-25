@@ -11,7 +11,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 
 ## Features
 
-- **Activities** - list, search, view details, download (FIT/GPX/TCX/KML/CSV), upload, create manual entries (with date), rename, retype, describe, change privacy, mark as favorite, list favorites, trim the start or end and restore the original, delete, set exercise sets for strength training, list activity types, list pending activities, list, add, edit and delete comments, like and unlike activities and comments
+- **Activities** - list, search, view details, download (FIT/GPX/TCX/KML/CSV), upload, create manual entries (with date), rename, retype, describe, change privacy, mark as favorite, list favorites, trim the start or end and restore the original, change the privacy of all past activities, delete, set exercise sets for strength training, list activity types, list pending activities, list, add, edit and delete comments, like and unlike activities and comments
 - **Exercise Catalog** — browse Garmin's exercise categories and exercises for strength training
 - **Health Data** - daily summaries, steps, heart rate, resting HR, sleep, stress, HRV, SpO2, respiration, body battery (with daily low and high), floors, training readiness, daily and weekly training status, VO2max, fitness age, race predictions, endurance and hill scores with statistics, intensity minutes, lactate threshold, cycling FTP, critical swim speed, power curve, running economy, heat and altitude acclimation, running tolerance, cycling ability, activity progress totals per period
 - **Body Composition** - weight tracking, latest weigh-in, weekly weight summaries, body fat, muscle mass, blood pressure, glucose, FIT file encoding for composition uploads
@@ -361,6 +361,11 @@ gccli activities count
 gccli activities search --start 2024-01-01 --end 2024-12-31
 gccli activities pending
 gccli activities favorites --limit 5
+
+# Change the privacy of all past activities, or of past running and cycling activities, and show the progress
+gccli activities privacy set connections
+gccli activities privacy set private --type running,cycling --force
+gccli activities privacy status
 gccli activities stats
 gccli activities stats monthly
 
@@ -1026,6 +1031,11 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli activities pending`: List pending activities.
 - `gccli activities stats view`: Show activity totals by activity type. Also runs as `gccli activities stats`.
 - `gccli activities stats monthly`: Show monthly activity totals by activity type.
+- `gccli activities privacy status`: Show the last privacy change of past activities. Also runs as `gccli activities privacy`.
+- `gccli activities privacy set <level> [flags]`: Change the privacy of all past activities, or of past activities of some types.
+  - `<level>`: Who can see the activities: public, private or connections.
+  - `--type=KEY,...`: Top-level activity type key (e.g. running, cycling). Repeat the flag or separate with commas. Default: all activity types.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli activity summary <id>`: Show activity summary. Also runs as `gccli activity <id>`.
   - `<id>`: Activity ID.
 - `gccli activity details <id> [flags]`: Show full activity details.

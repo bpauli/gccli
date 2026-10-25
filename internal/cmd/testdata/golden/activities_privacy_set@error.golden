@@ -1,0 +1,61 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+activities
+privacy
+set
+private
+--force
+-- route POST /activity-service/activity/privacy/bulk 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+change privacy of past activities: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+POST /activity-service/activity/privacy/bulk
+  {
+    "createDate": "2026-10-15T09:30:00.000Z",
+    "updates": {
+      "all": "private"
+    }
+  }
+-- plain stdout --
+-- plain stderr --
+change privacy of past activities: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+POST /activity-service/activity/privacy/bulk
+  {
+    "createDate": "2026-10-15T09:30:00.000Z",
+    "updates": {
+      "all": "private"
+    }
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+change privacy of past activities: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+POST /activity-service/activity/privacy/bulk
+  {
+    "createDate": "2026-10-15T09:30:00.000Z",
+    "updates": {
+      "all": "private"
+    }
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"change privacy of past activities: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+POST /activity-service/activity/privacy/bulk
+  {
+    "createDate": "2026-10-15T09:30:00.000Z",
+    "updates": {
+      "all": "private"
+    }
+  }

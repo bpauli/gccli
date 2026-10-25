@@ -1,0 +1,30 @@
+Without --force and with no answer to the question, the command cancels: exit 0 and no POST.
+-- args --
+activities
+privacy
+set
+public
+-- table stdout --
+-- table stderr --
+Change the privacy of all past activities to public? [y/N]: Cancelled
+-- table exit --
+0
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Change the privacy of all past activities to public? [y/N]: Cancelled
+-- plain exit --
+0
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Change the privacy of all past activities to public? [y/N]: Cancelled
+-- plain-header exit --
+0
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Change the privacy of all past activities to public? [y/N]: Cancelled
+-- json exit --
+0
+-- json requests --

@@ -35,6 +35,10 @@ Commands:
   activities stats view            Show activity totals by activity type.
   activities stats monthly         Show monthly activity totals by activity
                                    type.
+  activities privacy status        Show the last privacy change of past
+                                   activities.
+  activities privacy set           Change the privacy of all past activities,
+                                   or of past activities of some types.
   activity summary                 Show activity summary.
   activity details                 Show full activity details.
   activity splits                  Show activity splits.
@@ -496,14 +500,17 @@ Flags:
       --version           Print version information.
 
 Commands:
-  activities list             List recent activities.
-  activities count            Show total activity count.
-  activities search           Search activities by date range.
-  activities favorites        List your favorite activities.
-  activities types            List all activity types supported by Garmin.
-  activities pending          List pending activities.
-  activities stats view       Show activity totals by activity type.
-  activities stats monthly    Show monthly activity totals by activity type.
+  activities list              List recent activities.
+  activities count             Show total activity count.
+  activities search            Search activities by date range.
+  activities favorites         List your favorite activities.
+  activities types             List all activity types supported by Garmin.
+  activities pending           List pending activities.
+  activities stats view        Show activity totals by activity type.
+  activities stats monthly     Show monthly activity totals by activity type.
+  activities privacy status    Show the last privacy change of past activities.
+  activities privacy set       Change the privacy of all past activities,
+                               or of past activities of some types.
 
 $ gccli activities stats --help
 Usage: gccli activities stats <command>
@@ -527,6 +534,30 @@ Flags:
 Commands:
   activities stats view       Show activity totals by activity type.
   activities stats monthly    Show monthly activity totals by activity type.
+
+$ gccli activities privacy --help
+Usage: gccli activities privacy <command>
+
+Show or change the privacy of all past activities.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  activities privacy status    Show the last privacy change of past activities.
+  activities privacy set       Change the privacy of all past activities,
+                               or of past activities of some types.
 
 $ gccli activity --help
 Usage: gccli activity <command> [flags]
