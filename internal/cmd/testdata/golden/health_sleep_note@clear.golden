@@ -1,0 +1,51 @@
+Garmin removes the note when the text is empty, so --clear sends an empty userNote.
+-- args --
+health
+sleep
+note
+2026-10-15
+--clear
+-- route PUT /sleep-service/sleep/dailySleep/2026-10-15/note --
+{"userNote":""}
+-- table stdout --
+-- table stderr --
+Removed the sleep note of 2026-10-15
+-- table exit --
+0
+-- table requests --
+PUT /sleep-service/sleep/dailySleep/2026-10-15/note
+  {
+    "userNote": ""
+  }
+-- plain stdout --
+-- plain stderr --
+Removed the sleep note of 2026-10-15
+-- plain exit --
+0
+-- plain requests --
+PUT /sleep-service/sleep/dailySleep/2026-10-15/note
+  {
+    "userNote": ""
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Removed the sleep note of 2026-10-15
+-- plain-header exit --
+0
+-- plain-header requests --
+PUT /sleep-service/sleep/dailySleep/2026-10-15/note
+  {
+    "userNote": ""
+  }
+-- json stdout --
+{
+  "userNote": ""
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+PUT /sleep-service/sleep/dailySleep/2026-10-15/note
+  {
+    "userNote": ""
+  }
