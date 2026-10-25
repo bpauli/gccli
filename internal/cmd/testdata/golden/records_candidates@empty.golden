@@ -1,0 +1,39 @@
+Garmin answers an empty body, so the command prints [].
+-- args --
+records
+candidates
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- route GET /personalrecord-service/personalrecordcandidate/tester --
+-- table stdout --
+[]
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /userprofile-service/userprofile/settings
+GET /personalrecord-service/personalrecordcandidate/tester
+-- plain stdout --
+[]
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+GET /personalrecord-service/personalrecordcandidate/tester
+-- plain-header stdout --
+[]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /personalrecord-service/personalrecordcandidate/tester
+-- json stdout --
+[]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /userprofile-service/userprofile/settings
+GET /personalrecord-service/personalrecordcandidate/tester

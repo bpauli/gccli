@@ -689,6 +689,14 @@ Date shortcuts
 - `gccli records types`: List personal record types.
 - `gccli records activity <id>`: List the personal records set in an activity.
   - `<id>`: Activity ID.
+- `gccli records candidates`: List the personal record candidates that wait for your review.
+- `gccli records hide <type-id>`: Hide a personal record type on the records page.
+  - `<type-id>`: Record type ID, as records types prints it.
+- `gccli records unhide <type-id>`: Show a hidden personal record type on the records page again.
+  - `<type-id>`: Record type ID, as records types prints it.
+- `gccli records delete <id> [flags]`: Delete a personal record. This cannot be undone.
+  - `<id>`: Personal record ID, as records list prints it.
+  - `-f, --force`: Skip confirmation prompt.
 
 ### Events
 
@@ -1076,6 +1084,7 @@ Notes
 - `goals set` and `goals steps` change the goal from `--date` (default today) onward; the days before keep their goal. `gccli health summary <date> --json` shows the steps, floors and intensity minutes goals (`dailyStepGoal`, `userFloorsAscendedGoal`, `intensityMinutesGoal`).
 - `goals add` takes exactly one target: `--distance` (such as `50km`, `30mi`, `5000m`), `--duration` (such as `10h`, `90m`), `--calories` or `--activities`. `--period` is `seven-days`, `thirty-days`, `one-month` or `annual`. A `one-month` goal starts on the first day of a month; without `--start` it starts on the first day of this month. `--activity-type` is a key as `activities types` prints it, or `all` (the default). Garmin computes the end date. `goals update` reads the goal and changes only the flags you give; a new target replaces the old one.
 - The weight goal is one value per start date. `goals weight set` adds a goal from `--date` (default today). `goals weight delete` deletes the current one, and an earlier weight goal then applies again. It fails with exit code 1 when there is no weight goal. `goals weight` without a child runs `goals weight view`.
+- `records candidates` lists the records that Garmin did not accept yet. `records hide <type-id>` and `records unhide <type-id>` take the `id` of `records types`. They change only the records page, not the records. `records delete <id>` takes the `id` of `records list`, and Garmin has no undo for it. A record that does not exist gives exit 4.
 - `wellness menstrual-log set` changes only the fields you give. Garmin replaces the whole day on a write, so gccli reads the log first and sends the other fields again. The values are lower-case kebab (`light`, `tender-breasts`, `no-discharge`), the lists are comma-separated, and an empty value (`""`) clears a field. `--no-ovulation` removes the ovulation mark. The writes need cycle tracking set up in Garmin Connect; without it, Garmin answers 400 "MCT settings were not found". `wellness menstrual-log` prints `{}` for a day without a log, and `delete` of such a day fails with exit code 1. `wellness menstrual-cycle` and `wellness menstrual-summary` take one date (default today) and print `{}` for a day outside a tracked cycle. `wellness pregnancy-summary` prints `{}` when there is no pregnancy.
 - `wellness jet-lag add --from <place> --to <place> --depart <time> --arrive <time>` adds a jet lag trip. `--return-depart` and `--return-arrive` add the return flight. Each time is the local time at its place with the UTC offset there, such as `2026-11-02T10:00+01:00`; a time without an offset is a usage error. For a flight with a stop, give the first departure and the last arrival. `add` prints the trip ID. `update` and `delete` find the trip in the trip list, because Garmin has no read of one trip; an unknown ID exits 1. `update` changes only the flags you give, and `--from`/`--to` also change the return flight. It refuses a trip of more than two flights (made in the web app).
 - `gear set-default` and `gear unset-default` take an activity type key as `activities types` prints it (`running`, `trail_running`). Garmin answers 400 for an unknown key. An activity type can have more than one default gear, so `set-default` does not remove the old default: run `unset-default` on it. `unset-default` of a type the gear does not have fails with exit code 1. `gear models <words>` searches Garmin's brand and model list; use its BRAND and MODEL in `gear add --brand --model`.

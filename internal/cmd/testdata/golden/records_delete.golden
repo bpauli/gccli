@@ -1,0 +1,39 @@
+Garmin answers the delete with 204 and no body.
+-- args --
+records
+delete
+4100001
+-- stdin --
+y
+-- route DELETE /personalrecord-service/personalrecord/v2/4100001 204 --
+-- table stdout --
+-- table stderr --
+Delete personal record 4100001? [y/N]: Deleted personal record 4100001
+-- table exit --
+0
+-- table requests --
+DELETE /personalrecord-service/personalrecord/v2/4100001
+-- plain stdout --
+-- plain stderr --
+Delete personal record 4100001? [y/N]: Deleted personal record 4100001
+-- plain exit --
+0
+-- plain requests --
+DELETE /personalrecord-service/personalrecord/v2/4100001
+-- plain-header stdout --
+-- plain-header stderr --
+Delete personal record 4100001? [y/N]: Deleted personal record 4100001
+-- plain-header exit --
+0
+-- plain-header requests --
+DELETE /personalrecord-service/personalrecord/v2/4100001
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr noeol --
+Delete personal record 4100001? [y/N]: 
+-- json exit --
+0
+-- json requests --
+DELETE /personalrecord-service/personalrecord/v2/4100001

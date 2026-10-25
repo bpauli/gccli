@@ -1,0 +1,57 @@
+-- args --
+records
+hide
+3
+-- route PUT /personalrecord-service/personalrecordtype/3 --
+{"id":3,"key":"pr.label.5k.run","visible":false,"sport":"RUNNING","minValue":4980.0,"maxValue":5079.0}
+-- table stdout --
+-- table stderr --
+Hid personal record type 3
+-- table exit --
+0
+-- table requests --
+PUT /personalrecord-service/personalrecordtype/3
+  {
+    "id": 3,
+    "visible": false
+  }
+-- plain stdout --
+-- plain stderr --
+Hid personal record type 3
+-- plain exit --
+0
+-- plain requests --
+PUT /personalrecord-service/personalrecordtype/3
+  {
+    "id": 3,
+    "visible": false
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Hid personal record type 3
+-- plain-header exit --
+0
+-- plain-header requests --
+PUT /personalrecord-service/personalrecordtype/3
+  {
+    "id": 3,
+    "visible": false
+  }
+-- json stdout --
+{
+  "id": 3,
+  "key": "pr.label.5k.run",
+  "visible": false,
+  "sport": "RUNNING",
+  "minValue": 4980.0,
+  "maxValue": 5079.0
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+PUT /personalrecord-service/personalrecordtype/3
+  {
+    "id": 3,
+    "visible": false
+  }

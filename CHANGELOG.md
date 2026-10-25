@@ -60,6 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `gear set-default <uuid> <activity-type>` makes a gear item a default gear for an activity type, and `gear unset-default` removes it. More than one gear item can be a default for one type, so `set-default` keeps the other defaults. `unset-default` of a type that the gear does not have exits 1. (#69)
 - `gear models <words>` searches the Garmin list of gear brands and models, as help for `gear add --brand --model`. (#69)
 - `gear collections remove <collection-uuid> <gear-uuid>` removes a gear item from a collection. (#69)
+- `records candidates` lists the personal record candidates that wait for your review. `records hide <type-id>` hides a record type on the records page, and `records unhide <type-id>` shows it again. `--json` prints the record type that Garmin sends back. `records delete <id>` deletes a personal record after a prompt (`--force` skips it). Garmin has no undo for it, and a record that does not exist gives exit 4. (#87)
 
 ### Changed
 

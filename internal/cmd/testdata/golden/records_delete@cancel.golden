@@ -1,0 +1,31 @@
+No at the prompt sends no request.
+-- args --
+records
+delete
+4100001
+-- stdin --
+n
+-- table stdout --
+-- table stderr --
+Delete personal record 4100001? [y/N]: Cancelled
+-- table exit --
+0
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Delete personal record 4100001? [y/N]: Cancelled
+-- plain exit --
+0
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Delete personal record 4100001? [y/N]: Cancelled
+-- plain-header exit --
+0
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Delete personal record 4100001? [y/N]: Cancelled
+-- json exit --
+0
+-- json requests --
