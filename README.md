@@ -19,7 +19,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Courses** — list courses, view favorites, get full course detail, download as FIT/GPX, import GPX files as new courses, send courses directly to a device, delete courses
 - **Segments** - list your segments and favorites, search segments by name or map area, view a segment, its leaderboard and your rank, list the segments that an activity crossed, create a segment from a part of an activity, add and remove favorites, delete segments
 - **Devices** - list registered devices, view settings, solar data, alarms, primary/last-used device, set the primary activity tracker, paired sensors, backup summary and device backups, historical devices, device messages, cancel a pending device message
-- **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities, gear types, add, update, retire, unretire and delete gear, list, create, rename and delete gear collections, add gear to a collection
+- **Gear** — list gear, usage stats, linked activities, defaults per activity type and set or unset them, link/unlink to activities, gear types, search gear brands and models, add, update, retire, unretire and delete gear, list, create, rename and delete gear collections, add gear to a collection and remove it
 - **Goals & Badges** - list, add, update and delete activity goals, set daily goals for steps, floors, intensity minutes and hydration, set and delete the weight goal, earned/available/in-progress badges, badge details, challenges (show, join and leave badge and virtual challenges; create, view, answer, leave and delete ad-hoc challenges and invite people to them), personal records
 - **Training** - browse, search and view training plans, show a plan's schedule, join and leave a plan, move and delete its workouts, show your active plans, list adaptive coaching workout types
 - **Profile** - user profile and settings, privacy settings, list, add and delete privacy zones, heart rate zones, power zones for all sports or one sport
@@ -701,9 +701,11 @@ gccli gear list
 gccli gear stats <uuid>
 gccli gear activities <uuid> --limit 20
 gccli gear defaults
+gccli gear set-default <uuid> running     # also unset-default; a type can have more than one default gear
 gccli gear link <uuid> <activity-id>
 gccli gear unlink <uuid> <activity-id>
 gccli gear types
+gccli gear models "brooks ghost"   # Garmin's brands and models, for gear add --brand and --model
 gccli gear add "Pegasus 41" --brand Nike --model Pegasus --type shoes
 gccli gear update <uuid> --name "Pegasus 41 (old)"
 gccli gear retire <uuid>          # gear unretire <uuid> undoes it
@@ -711,6 +713,7 @@ gccli gear delete <uuid> --force
 gccli gear collections list
 gccli gear collections create "Road shoes"
 gccli gear collections add <collection-uuid> <gear-uuid>
+gccli gear collections remove <collection-uuid> <gear-uuid>
 ```
 
 ### Goals, Badges & Challenges
@@ -1484,7 +1487,15 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli gear unlink <uuid> <activity-id>`: Unlink gear from an activity.
   - `<uuid>`: Gear UUID.
   - `<activity-id>`: Activity ID.
+- `gccli gear set-default <uuid> <activity-type>`: Make a gear item a default gear for an activity type.
+  - `<uuid>`: Gear UUID, with or without dashes.
+  - `<activity-type>`: Activity type key, as activities types prints it (e.g. running, trail_running).
+- `gccli gear unset-default <uuid> <activity-type>`: Stop a gear item being a default gear for an activity type.
+  - `<uuid>`: Gear UUID, with or without dashes.
+  - `<activity-type>`: Activity type key, as activities types prints it (e.g. running, trail_running).
 - `gccli gear types`: List gear types.
+- `gccli gear models <search>`: Search the Garmin list of gear brands and models.
+  - `<search>`: Brand or model words, such as "brooks ghost".
 - `gccli gear add --brand=FREE-TEXT --model=FREE-TEXT <name> [flags]`: Add a gear item.
   - `<name>`: Gear name.
   - `--type="shoes"`: Gear type. One of: shoes, bike, other.
@@ -1515,6 +1526,10 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli gear collections add <uuid> <gear-uuid>`: Add a gear item to a gear collection.
   - `<uuid>`: Collection UUID.
   - `<gear-uuid>`: Gear UUID, with or without dashes.
+- `gccli gear collections remove <uuid> <gear-uuid> [flags]`: Remove a gear item from a gear collection. The gear item stays.
+  - `<uuid>`: Collection UUID.
+  - `<gear-uuid>`: Gear UUID, with or without dashes.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli gear collections delete <uuid> [flags]`: Delete a gear collection. The gear items stay.
   - `<uuid>`: Collection UUID.
   - `-f, --force`: Skip confirmation prompt.
