@@ -258,6 +258,8 @@ func requestValue(v reflect.Value) (value string, ok bool) {
 		return string(x), true
 	case ID:
 		return string(x), true
+	case NumericID:
+		return x.String(), true
 	case FreeText:
 		return string(x), true
 	case GearUUID:

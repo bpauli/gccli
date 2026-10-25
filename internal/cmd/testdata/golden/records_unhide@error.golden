@@ -1,0 +1,51 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+records
+unhide
+3
+-- route PUT /personalrecord-service/personalrecordtype/3 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+unhide personal record type: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+PUT /personalrecord-service/personalrecordtype/3
+  {
+    "id": 3,
+    "visible": true
+  }
+-- plain stdout --
+-- plain stderr --
+unhide personal record type: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+PUT /personalrecord-service/personalrecordtype/3
+  {
+    "id": 3,
+    "visible": true
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+unhide personal record type: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+PUT /personalrecord-service/personalrecordtype/3
+  {
+    "id": 3,
+    "visible": true
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"unhide personal record type: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+PUT /personalrecord-service/personalrecordtype/3
+  {
+    "id": 3,
+    "visible": true
+  }

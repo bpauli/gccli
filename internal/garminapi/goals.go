@@ -72,6 +72,9 @@ var goalsEndpoints = []Endpoint{
 	{Name: "records.list", Method: http.MethodGet, Host: ConnectAPI, Path: "/personalrecord-service/personalrecord/prs/{displayName}"},
 	{Name: "records.types", Method: http.MethodGet, Host: ConnectAPI, Path: "/personalrecord-service/personalrecordtype/prtypes/{displayName}"},
 	{Name: "records.activity", Method: http.MethodGet, Host: ConnectAPI, Path: "/personalrecord-service/personalrecord/prByActivityId/{activityID}"},
+	{Name: "records.candidates", Method: http.MethodGet, Host: ConnectAPI, Path: "/personalrecord-service/personalrecordcandidate/{displayName}"},
+	{Name: "records.type.update", Method: http.MethodPut, Host: ConnectAPI, Path: "/personalrecord-service/personalrecordtype/{typeID}", Body: true},
+	{Name: "records.delete", Method: http.MethodDelete, Host: ConnectAPI, Path: "/personalrecord-service/personalrecord/v2/{recordID}"},
 }
 
 // GoalTarget is what an activity goal counts: a distance, a duration,
