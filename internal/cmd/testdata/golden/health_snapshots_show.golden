@@ -1,0 +1,108 @@
+-- args --
+health
+snapshots
+show
+2026-10-14
+1b4e28ba-2fa1-11d2-883f-0016d3cca427
+-- route GET /wellnessactivity-service/activity/summary/2026-10-14/1b4e28ba-2fa1-11d2-883f-0016d3cca427 --
+{"activityUuid":{"uuid":"1b4e28ba-2fa1-11d2-883f-0016d3cca427"},"activityName":"Health Snapshot","calendarDate":"2026-10-14","startTimestampLocal":"2026-10-14T08:00:00.0","duration":120.0,"summaryTypeDataList":[{"summaryType":"HEART_RATE","avgValue":62.0},{"summaryType":"STRESS","avgValue":21.0}]}
+-- table stdout --
+{
+  "activityUuid": {
+    "uuid": "1b4e28ba-2fa1-11d2-883f-0016d3cca427"
+  },
+  "activityName": "Health Snapshot",
+  "calendarDate": "2026-10-14",
+  "startTimestampLocal": "2026-10-14T08:00:00.0",
+  "duration": 120.0,
+  "summaryTypeDataList": [
+    {
+      "summaryType": "HEART_RATE",
+      "avgValue": 62.0
+    },
+    {
+      "summaryType": "STRESS",
+      "avgValue": 21.0
+    }
+  ]
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /wellnessactivity-service/activity/summary/2026-10-14/1b4e28ba-2fa1-11d2-883f-0016d3cca427
+-- plain stdout --
+{
+  "activityUuid": {
+    "uuid": "1b4e28ba-2fa1-11d2-883f-0016d3cca427"
+  },
+  "activityName": "Health Snapshot",
+  "calendarDate": "2026-10-14",
+  "startTimestampLocal": "2026-10-14T08:00:00.0",
+  "duration": 120.0,
+  "summaryTypeDataList": [
+    {
+      "summaryType": "HEART_RATE",
+      "avgValue": 62.0
+    },
+    {
+      "summaryType": "STRESS",
+      "avgValue": 21.0
+    }
+  ]
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /wellnessactivity-service/activity/summary/2026-10-14/1b4e28ba-2fa1-11d2-883f-0016d3cca427
+-- plain-header stdout --
+{
+  "activityUuid": {
+    "uuid": "1b4e28ba-2fa1-11d2-883f-0016d3cca427"
+  },
+  "activityName": "Health Snapshot",
+  "calendarDate": "2026-10-14",
+  "startTimestampLocal": "2026-10-14T08:00:00.0",
+  "duration": 120.0,
+  "summaryTypeDataList": [
+    {
+      "summaryType": "HEART_RATE",
+      "avgValue": 62.0
+    },
+    {
+      "summaryType": "STRESS",
+      "avgValue": 21.0
+    }
+  ]
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /wellnessactivity-service/activity/summary/2026-10-14/1b4e28ba-2fa1-11d2-883f-0016d3cca427
+-- json stdout --
+{
+  "activityUuid": {
+    "uuid": "1b4e28ba-2fa1-11d2-883f-0016d3cca427"
+  },
+  "activityName": "Health Snapshot",
+  "calendarDate": "2026-10-14",
+  "startTimestampLocal": "2026-10-14T08:00:00.0",
+  "duration": 120.0,
+  "summaryTypeDataList": [
+    {
+      "summaryType": "HEART_RATE",
+      "avgValue": 62.0
+    },
+    {
+      "summaryType": "STRESS",
+      "avgValue": 21.0
+    }
+  ]
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /wellnessactivity-service/activity/summary/2026-10-14/1b4e28ba-2fa1-11d2-883f-0016d3cca427

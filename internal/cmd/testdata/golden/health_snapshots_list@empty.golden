@@ -1,0 +1,34 @@
+An empty body prints [].
+-- args --
+health
+snapshots
+list
+-- route GET /wellnessactivity-service/activity/summary/list?limit=20&start=1&until=2026-10-15 204 --
+-- table stdout --
+[]
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /wellnessactivity-service/activity/summary/list?limit=20&start=1&until=2026-10-15
+-- plain stdout --
+[]
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /wellnessactivity-service/activity/summary/list?limit=20&start=1&until=2026-10-15
+-- plain-header stdout --
+[]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /wellnessactivity-service/activity/summary/list?limit=20&start=1&until=2026-10-15
+-- json stdout --
+[]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /wellnessactivity-service/activity/summary/list?limit=20&start=1&until=2026-10-15

@@ -1,0 +1,122 @@
+Error case: a negative --offset fails before any request, and the exit code is 2 (usage).
+-- args --
+health
+snapshots
+list
+--offset=-1
+-- table stdout --
+-- table stderr --
+Usage: gccli health snapshots list [flags]
+
+List Health Snapshot sessions up to a date.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+  -l, --limit=20          Maximum number of sessions to return.
+      --offset=0          Number of sessions to skip.
+      --until=DATE        Last date (YYYY-MM-DD, today, yesterday, 3d). Defaults
+                          to today.
+
+gccli: error: health snapshots list: --offset must not be negative, got -1
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli health snapshots list [flags]
+
+List Health Snapshot sessions up to a date.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+  -l, --limit=20          Maximum number of sessions to return.
+      --offset=0          Number of sessions to skip.
+      --until=DATE        Last date (YYYY-MM-DD, today, yesterday, 3d). Defaults
+                          to today.
+
+gccli: error: health snapshots list: --offset must not be negative, got -1
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli health snapshots list [flags]
+
+List Health Snapshot sessions up to a date.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+  -l, --limit=20          Maximum number of sessions to return.
+      --offset=0          Number of sessions to skip.
+      --until=DATE        Last date (YYYY-MM-DD, today, yesterday, 3d). Defaults
+                          to today.
+
+gccli: error: health snapshots list: --offset must not be negative, got -1
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli health snapshots list [flags]
+
+List Health Snapshot sessions up to a date.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+  -l, --limit=20          Maximum number of sessions to return.
+      --offset=0          Number of sessions to skip.
+      --until=DATE        Last date (YYYY-MM-DD, today, yesterday, 3d). Defaults
+                          to today.
+
+gccli: error: health snapshots list: --offset must not be negative, got -1
+-- json exit --
+2
+-- json requests --
