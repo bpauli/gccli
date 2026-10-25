@@ -483,6 +483,70 @@ var writeCases = map[string]writeCase{
 		human:    "Added jet lag trip from Berlin to Tokyo (ID: 4711)\n",
 		fallback: "Added jet lag trip from Berlin to Tokyo\n",
 	},
+	"social follow": {
+		args:     []string{"anna"},
+		routes:   map[string]string{"POST /follower-service/follow/followings/anna": `{"id":7,"requestStatus":"CREATED"}`},
+		json:     "{\n  \"id\": 7,\n  \"requestStatus\": \"CREATED\"\n}\n",
+		human:    "Sent a follow request to anna\n",
+		fallback: "Followed anna\n",
+	},
+	"social unfollow": {
+		args: []string{"anna"},
+		routes: map[string]string{
+			"GET /follower-service/follow/anna/profileStatus": `{"userFollowProfile":{"followStatus":{"relationshipStatus":"FOLLOWING"}}}`,
+			"DELETE /follower-service/follow/followings/anna": noContent,
+		},
+		result:   "DELETE /follower-service/follow/followings/anna",
+		prompt:   "Unfollow anna?",
+		json:     okOut,
+		human:    "Unfollowed anna\n",
+		fallback: "Unfollowed anna\n",
+	},
+	"social remove-follower": {
+		args: []string{"anna"},
+		routes: map[string]string{
+			"GET /follower-service/follow/anna/profileStatus": `{"userFollowProfile":{"followStatus":{"relationshipStatus":"FOLLOWED"}}}`,
+			"DELETE /follower-service/follow/followers/anna":  noContent,
+		},
+		result:   "DELETE /follower-service/follow/followers/anna",
+		prompt:   "Remove anna from your followers?",
+		json:     okOut,
+		human:    "Removed follower anna\n",
+		fallback: "Removed follower anna\n",
+	},
+	"social accept": {
+		args: []string{"anna"},
+		routes: map[string]string{
+			"GET /web-gateway/inbox/v2/requests?req=8":       `{"requests":[{"data":{"displayName":"anna","followRequestId":7}}],"nextCursor":null}`,
+			"PUT /follower-service/follow/requests/7/accept": noContent,
+		},
+		result:   "PUT /follower-service/follow/requests/7/accept",
+		json:     okOut,
+		human:    "Accepted the follow request of anna\n",
+		fallback: "Accepted the follow request of anna\n",
+	},
+	"social decline": {
+		args: []string{"anna"},
+		routes: map[string]string{
+			"GET /web-gateway/inbox/v2/requests?req=8":        `{"requests":[{"data":{"displayName":"anna","followRequestId":7}}],"nextCursor":null}`,
+			"PUT /follower-service/follow/requests/7/decline": noContent,
+		},
+		result:   "PUT /follower-service/follow/requests/7/decline",
+		json:     okOut,
+		human:    "Declined the follow request of anna\n",
+		fallback: "Declined the follow request of anna\n",
+	},
+	"social unmute": {
+		args: []string{"anna"},
+		routes: map[string]string{
+			"GET /follower-service/muteuser":         `{"mutedUserList":[{"displayName":"anna"}],"mutedUserCount":1}`,
+			"DELETE /follower-service/muteuser/anna": noContent,
+		},
+		result:   "DELETE /follower-service/muteuser/anna",
+		json:     okOut,
+		human:    "Unmuted anna\n",
+		fallback: "Unmuted anna\n",
+	},
 	"wellness jet-lag update": {
 		args: []string{"4711", "--to", "Osaka"},
 		routes: map[string]string{

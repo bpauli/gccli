@@ -389,6 +389,17 @@ Commands:
   social following                 List the users that a user follows.
   social requests                  List pending connection requests.
   social feed                      Show your newsfeed.
+  social follow                    Follow a user. A user with a private profile
+                                   gets a follow request.
+  social unfollow                  Stop following a user.
+  social follow-requests           List the users who asked to follow you.
+  social accept                    Accept the follow request of a user.
+  social decline                   Decline the follow request of a user.
+  social remove-follower           Remove a user from your followers.
+  social mute                      Mute a user that you follow.
+  social unmute                    Unmute a user.
+  social muted                     List the users that you muted.
+  social search                    Search Garmin Connect users by name.
   groups list                      List your groups.
   insights options                 List the genders, ages, dates, activities and
                                    fields for insights compare.
@@ -2320,7 +2331,7 @@ Commands:
 $ gccli social --help
 Usage: gccli social <command> [flags]
 
-View connections, followers, following and the newsfeed.
+Follow, mute and search users. View connections and the newsfeed.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -2337,11 +2348,22 @@ Flags:
       --version           Print version information.
 
 Commands:
-  social connections    List your connections.
-  social followers      List the followers of a user.
-  social following      List the users that a user follows.
-  social requests       List pending connection requests.
-  social feed           Show your newsfeed.
+  social connections        List your connections.
+  social followers          List the followers of a user.
+  social following          List the users that a user follows.
+  social requests           List pending connection requests.
+  social feed               Show your newsfeed.
+  social follow             Follow a user. A user with a private profile gets a
+                            follow request.
+  social unfollow           Stop following a user.
+  social follow-requests    List the users who asked to follow you.
+  social accept             Accept the follow request of a user.
+  social decline            Decline the follow request of a user.
+  social remove-follower    Remove a user from your followers.
+  social mute               Mute a user that you follow.
+  social unmute             Unmute a user.
+  social muted              List the users that you muted.
+  social search             Search Garmin Connect users by name.
 
 $ gccli groups --help
 Usage: gccli groups <command> [flags]

@@ -1,0 +1,37 @@
+No answer to the question cancels: exit 0 and no DELETE.
+-- args --
+social
+unfollow
+runner-anna
+-- stdin --
+n
+-- route GET /follower-service/follow/runner-anna/profileStatus --
+{"userFollowProfile":{"userId":2718281,"displayName":"runner-anna","fullName":"Anna Runner","location":"Hamburg","userLevel":3,"userPoint":120,"profileImageUrls":{},"followStatus":{"relationshipStatus":"FOLLOWING","sentRequest":null,"receivedRequest":null,"blocking":null,"blocked":false,"muting":null,"favorite":null}},"followingCount":1,"followerCount":1}
+-- table stdout --
+-- table stderr --
+Unfollow runner-anna? [y/N]: Cancelled
+-- table exit --
+0
+-- table requests --
+GET /follower-service/follow/runner-anna/profileStatus
+-- plain stdout --
+-- plain stderr --
+Unfollow runner-anna? [y/N]: Cancelled
+-- plain exit --
+0
+-- plain requests --
+GET /follower-service/follow/runner-anna/profileStatus
+-- plain-header stdout --
+-- plain-header stderr --
+Unfollow runner-anna? [y/N]: Cancelled
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /follower-service/follow/runner-anna/profileStatus
+-- json stdout --
+-- json stderr --
+Unfollow runner-anna? [y/N]: Cancelled
+-- json exit --
+0
+-- json requests --
+GET /follower-service/follow/runner-anna/profileStatus
