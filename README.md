@@ -22,7 +22,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Gear** — list gear, usage stats, linked activities, defaults per activity type and set or unset them, link/unlink to activities, gear types, search gear brands and models, add, update, retire, unretire and delete gear, list, create, rename and delete gear collections, add gear to a collection and remove it
 - **Goals & Badges** - list, add, update and delete activity goals, set daily goals for steps, floors, intensity minutes and hydration, set and delete the weight goal, earned/available/in-progress badges, badge details, challenges (show, join and leave badge and virtual challenges; create, view, answer, leave and delete ad-hoc challenges and invite people to them), personal records and record candidates, hide or show a record type, delete a personal record
 - **Training** - browse, search and view training plans, show a plan's schedule, join and leave a plan, move and delete its workouts, show your active plans, list adaptive coaching workout types
-- **Profile** - user profile and settings, privacy settings, list, add and delete privacy zones, heart rate zones, power zones for all sports or one sport
+- **Profile** - user profile and settings, view and change privacy settings, list, add and delete privacy zones, heart rate zones, power zones for all sports or one sport
 - **Hydration** — view and log daily water intake
 - **Nutrition** - view daily food logs, meals, and nutrition settings, search the Garmin food database, list recent and favorite foods, log foods and quick entries in a meal, delete log entries, and add and remove favorite foods (all but the first three need Garmin Connect+)
 - **Events** — list, list upcoming, add, and delete calendar events (races, group rides, etc.) with goals and training priority support
@@ -775,6 +775,8 @@ gccli records delete <recordId>   # asks first; --force skips the prompt
 gccli profile
 gccli profile settings
 gccli profile privacy
+gccli profile privacy set --activities connections --badges private
+gccli profile privacy set --profile public --wellness groups
 gccli profile privacy-zones
 gccli profile privacy-zones add --lat 52.52 --lon 13.405 --radius 500
 gccli profile privacy-zones add --lat 40.7 --lon=-74.0 --radius 1000   # A negative value needs the = form
