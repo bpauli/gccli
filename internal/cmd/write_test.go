@@ -92,6 +92,14 @@ var writeCases = map[string]writeCase{
 		human:    "Changed activity 1 privacy to connections\n",
 		fallback: "Changed activity 1 privacy to connections\n",
 	},
+	"activities privacy set": {
+		args:     []string{"private"},
+		routes:   map[string]string{"POST /activity-service/activity/privacy/bulk": `{"requestId":5,"status":"REQUESTED"}`},
+		prompt:   "Change the privacy of all past activities to private?",
+		json:     "{\n  \"requestId\": 5,\n  \"status\": \"REQUESTED\"\n}\n",
+		human:    "Requested privacy private for all past activities\n",
+		fallback: "Requested privacy private for all past activities\n",
+	},
 	"activity trim": {
 		args:   []string{"1", "--from", "2m"},
 		result: "PUT /activity-service/activity/1/reconstruct",

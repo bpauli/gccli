@@ -43,6 +43,8 @@ var activitiesEndpoints = []Endpoint{
 	{Name: "activities.reconstruct", Method: http.MethodPut, Host: ConnectAPI, Path: "/activity-service/activity/{activityID}/reconstruct", Body: true},
 	{Name: "activities.delete", Method: http.MethodDelete, Host: ConnectAPI, Path: "/activity-service/activity/{activityID}"},
 	{Name: "activities.favorites", Method: http.MethodGet, Host: ConnectAPI, Path: "/activitylist-service/activities/favorite/{displayName}?limit={limit}"},
+	{Name: "activities.bulk-privacy", Method: http.MethodGet, Host: ConnectAPI, Path: "/activity-service/activity/privacy/bulk"},
+	{Name: "activities.set-bulk-privacy", Method: http.MethodPost, Host: ConnectAPI, Path: "/activity-service/activity/privacy/bulk", Body: true},
 	{Name: "activities.types", Method: http.MethodGet, Host: ConnectAPI, Path: "/activity-service/activity/activityTypes"},
 	{Name: "activities.pending", Method: http.MethodGet, Host: ConnectAPI, Path: "/pendingactivity-service/pending-activities"},
 	{Name: "activities.statistics", Method: http.MethodGet, Host: ConnectAPI, Path: "/userstats-service/statistics/{displayName}"},

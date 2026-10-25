@@ -70,6 +70,11 @@ Date shortcuts
 - `gccli activities pending`: List pending activities.
 - `gccli activities stats view`: Show activity totals by activity type. Also runs as `gccli activities stats`.
 - `gccli activities stats monthly`: Show monthly activity totals by activity type.
+- `gccli activities privacy status`: Show the last privacy change of past activities. Also runs as `gccli activities privacy`.
+- `gccli activities privacy set <level> [flags]`: Change the privacy of all past activities, or of past activities of some types.
+  - `<level>`: Who can see the activities: public, private or connections.
+  - `--type=KEY,...`: Top-level activity type key (e.g. running, cycling). Repeat the flag or separate with commas. Default: all activity types.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli activity summary <id>`: Show activity summary. Also runs as `gccli activity <id>`.
   - `<id>`: Activity ID.
 - `gccli activity details <id> [flags]`: Show full activity details.
@@ -1093,6 +1098,7 @@ Notes
 - `challenges join <uuid>` and `challenges leave <uuid>` take the `uuid` of a badge or virtual challenge, as the list commands print it. `leave` has no prompt, because `join` undoes it. `challenges adhoc` covers ad-hoc challenges with other people. Garmin invites only mutual followers: people the user follows and who follow the user. `challenges adhoc invites <uuid>` lists the open invites with their `adHocChallengeInviteId`, which `adhoc accept` and `adhoc decline` take. `challenges adhoc leave` has no undo, because only a new invite gets the user back in, so confirm with the user first. `challenges adhoc delete` works only for a challenge that the user created.
 - `activities favorites` takes `--limit` but no `--offset`, because Garmin does not page this list by an offset.
 - `activity trim <id> --from <duration> --to <duration>` keeps only that part of an activity. Both times count from the activity start, in the form `2m` or `1h5m`. Give at least one: `--from` defaults to the start and `--to` to the end. Garmin applies the trim in a few seconds, and the activity keeps its ID. `activity restore <id>` brings back the original. Both are for single-sport activities only, not for multisport activities.
+- `activities privacy set <level>` changes the privacy of every past activity, and with `--type running,cycling` of every past activity of those types. The types are top-level activity type keys. There is no bulk undo, so confirm with the user first, then pass `--force`. Garmin applies the change within minutes, and `activities privacy status` shows the progress. To change one activity, use `activity privacy <id> <level>`.
 - Delete commands fail without a terminal unless `--force` is set. Confirm with the user first, then pass `--force`.
 - Download formats: FIT (default), GPX, TCX, KML, CSV.
 - Workout step format: `type:duration[@target:low-high]`. Types: warmup, run, recovery, cooldown; targets: pace (min:sec), hr (bpm), power (watts), cadence.

@@ -1,0 +1,87 @@
+The last privacy change of past activities, right after the request.
+-- args --
+activities
+privacy
+status
+-- route GET /activity-service/activity/privacy/bulk --
+{"userId":3141592,"requestId":4242,"createDate":"2026-01-10T09:19:06.870","updateDate":"2026-01-10T09:19:06.870","status":"REQUESTED","errorDetails":null,"updates":{"all":"subscribers"},"numberOfActivitiesAtStart":0,"numberOfUpdatedActivities":0,"remainingActivitiesToBeUpdated":0}
+-- table stdout --
+{
+  "userId": 3141592,
+  "requestId": 4242,
+  "createDate": "2026-01-10T09:19:06.870",
+  "updateDate": "2026-01-10T09:19:06.870",
+  "status": "REQUESTED",
+  "errorDetails": null,
+  "updates": {
+    "all": "subscribers"
+  },
+  "numberOfActivitiesAtStart": 0,
+  "numberOfUpdatedActivities": 0,
+  "remainingActivitiesToBeUpdated": 0
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /activity-service/activity/privacy/bulk
+-- plain stdout --
+{
+  "userId": 3141592,
+  "requestId": 4242,
+  "createDate": "2026-01-10T09:19:06.870",
+  "updateDate": "2026-01-10T09:19:06.870",
+  "status": "REQUESTED",
+  "errorDetails": null,
+  "updates": {
+    "all": "subscribers"
+  },
+  "numberOfActivitiesAtStart": 0,
+  "numberOfUpdatedActivities": 0,
+  "remainingActivitiesToBeUpdated": 0
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /activity-service/activity/privacy/bulk
+-- plain-header stdout --
+{
+  "userId": 3141592,
+  "requestId": 4242,
+  "createDate": "2026-01-10T09:19:06.870",
+  "updateDate": "2026-01-10T09:19:06.870",
+  "status": "REQUESTED",
+  "errorDetails": null,
+  "updates": {
+    "all": "subscribers"
+  },
+  "numberOfActivitiesAtStart": 0,
+  "numberOfUpdatedActivities": 0,
+  "remainingActivitiesToBeUpdated": 0
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /activity-service/activity/privacy/bulk
+-- json stdout --
+{
+  "userId": 3141592,
+  "requestId": 4242,
+  "createDate": "2026-01-10T09:19:06.870",
+  "updateDate": "2026-01-10T09:19:06.870",
+  "status": "REQUESTED",
+  "errorDetails": null,
+  "updates": {
+    "all": "subscribers"
+  },
+  "numberOfActivitiesAtStart": 0,
+  "numberOfUpdatedActivities": 0,
+  "remainingActivitiesToBeUpdated": 0
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /activity-service/activity/privacy/bulk
