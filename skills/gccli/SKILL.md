@@ -814,6 +814,11 @@ Date shortcuts
   - `<id>`: Group ID.
 - `gccli groups challenges <id>`: List the open challenges of a group. Garmin answers 403 to a non-member.
   - `<id>`: Group ID.
+- `gccli groups join <id>`: Join a public group. gccli does not send the request that a private group needs.
+  - `<id>`: Group ID.
+- `gccli groups leave <id> [flags]`: Leave a group.
+  - `<id>`: Group ID.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli notifications list [flags]`: List notifications. Also runs as `gccli notifications [flags]`.
   - `--limit=50`: Maximum number of notifications to return.
   - `--cursor=STRING`: Start after this cursor. Use pagination.nextCursor from the JSON output of the last page.
