@@ -1,0 +1,32 @@
+Any answer other than y or yes cancels, so no request is sent.
+-- args --
+activities
+privacy
+set
+public
+-- stdin --
+n
+-- table stdout --
+-- table stderr --
+Change the privacy of all past activities to public? [y/N]: Cancelled
+-- table exit --
+0
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Change the privacy of all past activities to public? [y/N]: Cancelled
+-- plain exit --
+0
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Change the privacy of all past activities to public? [y/N]: Cancelled
+-- plain-header exit --
+0
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Change the privacy of all past activities to public? [y/N]: Cancelled
+-- json exit --
+0
+-- json requests --

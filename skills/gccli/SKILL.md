@@ -19,12 +19,12 @@ Setup (once)
 Output
 
 - Default: human-friendly tables. Use `--json` / `-j` for JSON.
-- `--plain` prints TSV with no header row (add `--header` for the column names as the first line), but only for `activities list`, `activities search`, `activities types`, `activity summary`, `body weekly`, `courses list`, `courses favorites`, `courses import`, `events list`, `nutrition search`, `nutrition recent`, `nutrition favorites`, `workouts list`, `workouts schedule list` and `exercises list` (without `-c`). Most other commands print JSON in all modes.
+- `--plain` prints TSV with no header row (add `--header` for the column names as the first line), but only for `activities list`, `activities search`, `activities favorites`, `activities types`, `activity summary`, `body weekly`, `courses list`, `courses favorites`, `courses import`, `events list`, `nutrition search`, `nutrition recent`, `nutrition favorites`, `workouts list`, `workouts schedule list` and `exercises list` (without `-c`). Most other commands print JSON in all modes.
 - `--header` works only with `--plain`. With table or `--json` output it is a usage error (exit code 2). `GCCLI_HEADER=1` does the same as `--header` in plain mode, and table and JSON output ignore it.
 - Table and `--plain` output escape a backslash as `\\`, a tab as `\t`, a newline as `\n`, a carriage return as `\r`, a vertical tab as `\v` and a form feed as `\f`, so each record is one line. `--json` is not escaped this way.
 - Data goes to stdout, messages/errors to stderr.
 - Write commands (add, create, upload, import, update, set, clear, rename, retype, describe, change, favorite, unfavorite, schedule, send, link, unlink, remove, reload, delete) print the Garmin response with `--json`, or `{"ok": true}` when the response is empty. Without `--json` they print a message on stderr and nothing on stdout. Only `courses import` prints a table on stdout instead (TSV with `--plain`).
-- An empty answer is not an error. When Garmin sends no body, the exit code is 0 and the output follows the shape of the Garmin answer: a command whose answer is a list prints `[]` with `--json`, and a command whose answer is one object prints `{}` in every mode. A list command that prints columns (`activities list`, `activities search`, `activities types`, `body weekly`, `courses list`, `courses favorites`, `events list`, `nutrition search`, `nutrition recent`, `nutrition favorites`, `workouts list` and `workouts schedule list`) prints the header only as a table and nothing with `--plain` (the header line with `--header`); every other list command prints `[]` in every mode. `activity summary` and `exercises list` show one object, so they print `{}` with `--json` and no row otherwise. The file `internal/cmd/testdata/answer_shapes.tsv` in the gccli repository records the shape of the Garmin answer of every command that prints it (`array`, `object` or `unknown`, with the evidence for each; a shape that no Garmin answer confirmed is `unknown` and prints `{}`), and a test keeps the commands in step with it. `activities count` prints `0` (`{"count": 0}` with `--json`). A list answer without its list key gives no rows, and `--json` prints the answer unchanged.
+- An empty answer is not an error. When Garmin sends no body, the exit code is 0 and the output follows the shape of the Garmin answer: a command whose answer is a list prints `[]` with `--json`, and a command whose answer is one object prints `{}` in every mode. A list command that prints columns (`activities list`, `activities search`, `activities favorites`, `activities types`, `body weekly`, `courses list`, `courses favorites`, `events list`, `nutrition search`, `nutrition recent`, `nutrition favorites`, `workouts list` and `workouts schedule list`) prints the header only as a table and nothing with `--plain` (the header line with `--header`); every other list command prints `[]` in every mode. `activity summary` and `exercises list` show one object, so they print `{}` with `--json` and no row otherwise. The file `internal/cmd/testdata/answer_shapes.tsv` in the gccli repository records the shape of the Garmin answer of every command that prints it (`array`, `object` or `unknown`, with the evidence for each; a shape that no Garmin answer confirmed is `unknown` and prints `{}`), and a test keeps the commands in step with it. `activities count` prints `0` (`{"count": 0}` with `--json`). A list answer without its list key gives no rows, and `--json` prints the answer unchanged.
 - Always use `--json` when parsing output programmatically.
 - Tables show distance, speed, pace, elevation and weight in the user's Garmin unit system (`metric`, `statute_us`, or `statute_uk`, which is miles with elevation in metres). Weight is kg in `metric` and lbs in both statute systems. Override with `--units <system>` or `GCCLI_UNITS`. JSON is never converted (meters, m/s, grams).
 
@@ -64,10 +64,17 @@ Date shortcuts
   - `--offset=0`: Number of activities to skip.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli activities favorites [flags]`: List your favorite activities.
+  - `-l, --limit=20`: Maximum number of activities to return.
 - `gccli activities types`: List all activity types supported by Garmin.
 - `gccli activities pending`: List pending activities.
 - `gccli activities stats view`: Show activity totals by activity type. Also runs as `gccli activities stats`.
 - `gccli activities stats monthly`: Show monthly activity totals by activity type.
+- `gccli activities privacy status`: Show the last privacy change of past activities. Also runs as `gccli activities privacy`.
+- `gccli activities privacy set <level> [flags]`: Change the privacy of all past activities, or of past activities of some types.
+  - `<level>`: Who can see the activities: public, private or connections.
+  - `--type=KEY,...`: Top-level activity type key (e.g. running, cycling). Repeat the flag or separate with commas. Default: all activity types.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli activity summary <id>`: Show activity summary. Also runs as `gccli activity <id>`.
   - `<id>`: Activity ID.
 - `gccli activity details <id> [flags]`: Show full activity details.
@@ -146,6 +153,12 @@ Date shortcuts
 - `gccli activity privacy <id> <level>`: Change who can see an activity.
   - `<id>`: Activity ID.
   - `<level>`: Who can see the activity: public, private or connections.
+- `gccli activity trim <id> [flags]`: Trim the start or end of an activity.
+  - `<id>`: Activity ID.
+  - `--from=FROM`: New start, as the time since the activity start (e.g. 2m, 1h5m). Default: the activity start.
+  - `--to=TO`: New end, as the time since the activity start (e.g. 50m, 1h5m). Default: the activity end.
+- `gccli activity restore <id>`: Restore the original of a trimmed activity.
+  - `<id>`: Activity ID.
 - `gccli activity favorite <id>`: Mark an activity as a favorite.
   - `<id>`: Activity ID.
 - `gccli activity unfavorite <id>`: Remove the favorite mark from an activity.
@@ -1083,6 +1096,9 @@ Notes
 - `health progress` (also as `health progress summary`) totals metrics per period, and `health progress activities` lists the values of each activity. Take the `--metric` and `--activity-type` values from `gccli health progress metrics`, which lists the metrics of each activity type (`running`, `cycling`, ...). Repeat a flag or separate its values with commas. Distances are meters and durations seconds. The totals of each summary period are under `.stats.all`, also with `--activity-type`.
 - Range limits that Garmin sets: `health body-battery daily` at most 28 days, `health endurance-score stats`, `health hill-score stats` and `health cycling-ability` at most 400 days, `health cycling-ability --aggregation daily` at most 30 days. A longer range fails with exit 1 and the Garmin message.
 - `challenges join <uuid>` and `challenges leave <uuid>` take the `uuid` of a badge or virtual challenge, as the list commands print it. `leave` has no prompt, because `join` undoes it. `challenges adhoc` covers ad-hoc challenges with other people. Garmin invites only mutual followers: people the user follows and who follow the user. `challenges adhoc invites <uuid>` lists the open invites with their `adHocChallengeInviteId`, which `adhoc accept` and `adhoc decline` take. `challenges adhoc leave` has no undo, because only a new invite gets the user back in, so confirm with the user first. `challenges adhoc delete` works only for a challenge that the user created.
+- `activities favorites` takes `--limit` but no `--offset`, because Garmin does not page this list by an offset.
+- `activity trim <id> --from <duration> --to <duration>` keeps only that part of an activity. Both times count from the activity start, in the form `2m` or `1h5m`. Give at least one: `--from` defaults to the start and `--to` to the end. Garmin applies the trim in a few seconds, and the activity keeps its ID. `activity restore <id>` brings back the original. Both are for single-sport activities only, not for multisport activities.
+- `activities privacy set <level>` changes the privacy of every past activity, and with `--type running,cycling` of every past activity of those types. The types are top-level activity type keys. There is no bulk undo, so confirm with the user first, then pass `--force`. Garmin applies the change within minutes, and `activities privacy status` shows the progress. To change one activity, use `activity privacy <id> <level>`.
 - Delete commands fail without a terminal unless `--force` is set. Confirm with the user first, then pass `--force`.
 - Download formats: FIT (default), GPX, TCX, KML, CSV.
 - Workout step format: `type:duration[@target:low-high]`. Types: warmup, run, recovery, cooldown; targets: pace (min:sec), hr (bpm), power (watts), cadence.

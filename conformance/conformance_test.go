@@ -283,8 +283,10 @@ var skipped = map[string]string{
 }
 
 // clockBodies names the leaves that send a time from the clock in a request
-// body. The suite compares their output, but not their requests.
+// body. The suite compares their output, but not their requests. A case
+// that sends no request, such as a usage error, compares them too.
 var clockBodies = map[string]bool{
+	"activities privacy set":  true,
 	"body add-blood-pressure": true,
 	"body add-composition":    true,
 	"body add-weight":         true,
@@ -407,7 +409,7 @@ func TestGolden(t *testing.T) {
 						t.Fatalf("%s has no %q section", file, m.name+" "+part)
 					}
 					switch {
-					case part == "requests" && clockBodies[f.leaf]:
+					case part == "requests" && clockBodies[f.leaf] && want != "":
 						if got[part] == want {
 							t.Errorf("%q in %s mode: the requests match %s, so no body takes a time from the clock: remove %q from clockBodies", name, m.name, file, f.leaf)
 						}

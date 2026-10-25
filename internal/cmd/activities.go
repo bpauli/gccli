@@ -43,9 +43,22 @@ var activitiesGroup = Group{Name: "activities", Help: "List and search activitie
 		Verb:     "search activities",
 		Output:   Rows{Noun: "activities", Columns: activityColumns},
 	},
+	Leaf{
+		Name: "favorites", Help: "List your favorite activities.",
+		// Garmin reads limit as the last item and start as the first, from 1,
+		// so the command sends only limit and has no --offset.
+		Spec: argsOf(&struct {
+			MaxItems `embed:"" set:"items=activities"`
+		}{}),
+		Endpoint: "activities.favorites",
+		Params:   Params{"displayName": DisplayName, "limit": In("Limit")},
+		Verb:     "list favorite activities",
+		Output:   Rows{Noun: "favorite activities", Items: "activityList", Columns: activityColumns},
+	},
 	Custom{Name: "types", Help: "List all activity types supported by Garmin.", Cmd: &ActivitiesTypesCmd{}},
 	Leaf{Name: "pending", Help: "List pending activities.", Endpoint: "activities.pending", Verb: "get pending activities", Output: JSON{}},
 	activitiesStatsGroup,
+	activitiesPrivacyGroup,
 }}
 
 var activitiesStatsGroup = Group{Name: "stats", Help: "Show activity statistics.", Children: []Node{
