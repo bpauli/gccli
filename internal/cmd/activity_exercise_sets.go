@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/alecthomas/kong"
@@ -29,6 +30,16 @@ func (e *Exercise) Decode(ctx *kong.DecodeContext) error {
 		return fmt.Errorf("invalid exercise %q: %w", raw, err)
 	}
 	*e = Exercise(v)
+	return nil
+}
+
+// Validate rejects --exercise "", which Kong splits into an empty list that
+// passes the required check. Kong leaves the list nil when the flag is not
+// given, and its own missing-flag error covers that case.
+func (c *ActivityExerciseSetsSetCmd) Validate() error {
+	if c.Exercise != nil && len(c.Exercise) == 0 {
+		return errors.New("--exercise must not be empty")
+	}
 	return nil
 }
 
