@@ -2,6 +2,7 @@ Error case: Garmin answers 400, so the exit code is 1 (error).
 -- args --
 records
 candidates
+list
 -- route GET /userprofile-service/userprofile/settings --
 {"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
 -- route GET /personalrecord-service/personalrecordcandidate/tester 400 noeol --

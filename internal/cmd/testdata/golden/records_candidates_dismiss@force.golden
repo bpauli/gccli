@@ -1,0 +1,38 @@
+--force skips the question.
+-- args --
+records
+candidates
+dismiss
+4200001
+--force
+-- route DELETE /personalrecord-service/personalrecordcandidate/v2/4200001 204 --
+-- table stdout --
+-- table stderr --
+Dismissed personal record candidate 4200001
+-- table exit --
+0
+-- table requests --
+DELETE /personalrecord-service/personalrecordcandidate/v2/4200001
+-- plain stdout --
+-- plain stderr --
+Dismissed personal record candidate 4200001
+-- plain exit --
+0
+-- plain requests --
+DELETE /personalrecord-service/personalrecordcandidate/v2/4200001
+-- plain-header stdout --
+-- plain-header stderr --
+Dismissed personal record candidate 4200001
+-- plain-header exit --
+0
+-- plain-header requests --
+DELETE /personalrecord-service/personalrecordcandidate/v2/4200001
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+DELETE /personalrecord-service/personalrecordcandidate/v2/4200001

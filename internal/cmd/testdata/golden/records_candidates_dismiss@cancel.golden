@@ -1,0 +1,32 @@
+No at the prompt sends no request.
+-- args --
+records
+candidates
+dismiss
+4200001
+-- stdin --
+n
+-- table stdout --
+-- table stderr --
+Dismiss personal record candidate 4200001? [y/N]: Cancelled
+-- table exit --
+0
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Dismiss personal record candidate 4200001? [y/N]: Cancelled
+-- plain exit --
+0
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Dismiss personal record candidate 4200001? [y/N]: Cancelled
+-- plain-header exit --
+0
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Dismiss personal record candidate 4200001? [y/N]: Cancelled
+-- json exit --
+0
+-- json requests --

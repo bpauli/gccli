@@ -2,6 +2,7 @@ Garmin answers an empty body, so the command prints [].
 -- args --
 records
 candidates
+list
 -- route GET /userprofile-service/userprofile/settings --
 {"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
 -- route GET /personalrecord-service/personalrecordcandidate/tester --

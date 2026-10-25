@@ -1,0 +1,112 @@
+Error case: Garmin answers 400 to the accept, so the exit code is 1 (error).
+-- args --
+records
+candidates
+accept
+4200001
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- route GET /personalrecord-service/personalrecordcandidate/tester --
+[{"id":4200001,"typeId":23,"status":"CANDIDATE","activityId":5100001,"activityName":"Pool Swim","activityType":"lap_swimming","value":1210.0,"prStartTimeGmt":1760000000000,"prStartTimeLocal":null,"poolLengthUnit":{"id":1,"key":"meter","factor":100.0}},{"id":4200002,"typeId":7,"status":"CANDIDATE","activityId":5100002,"activityName":"Long Run","activityType":"running","value":42195.0,"prStartTimeGmt":1760100000000,"prStartTimeLocal":null,"poolLengthUnit":null}]
+-- route PUT /personalrecord-service/personalrecord/ 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+accept personal record candidate: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /userprofile-service/userprofile/settings
+GET /personalrecord-service/personalrecordcandidate/tester
+PUT /personalrecord-service/personalrecord/
+  {
+    "activityId": 5100001,
+    "activityName": "Pool Swim",
+    "activityType": "lap_swimming",
+    "id": null,
+    "poolLengthUnit": {
+      "id": 1,
+      "key": "meter",
+      "factor": 100.0
+    },
+    "prStartTimeGmt": 1760000000000,
+    "prStartTimeLocal": null,
+    "status": "CANDIDATE",
+    "typeId": 23,
+    "value": 1210.0
+  }
+-- plain stdout --
+-- plain stderr --
+accept personal record candidate: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+GET /personalrecord-service/personalrecordcandidate/tester
+PUT /personalrecord-service/personalrecord/
+  {
+    "activityId": 5100001,
+    "activityName": "Pool Swim",
+    "activityType": "lap_swimming",
+    "id": null,
+    "poolLengthUnit": {
+      "id": 1,
+      "key": "meter",
+      "factor": 100.0
+    },
+    "prStartTimeGmt": 1760000000000,
+    "prStartTimeLocal": null,
+    "status": "CANDIDATE",
+    "typeId": 23,
+    "value": 1210.0
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+accept personal record candidate: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /personalrecord-service/personalrecordcandidate/tester
+PUT /personalrecord-service/personalrecord/
+  {
+    "activityId": 5100001,
+    "activityName": "Pool Swim",
+    "activityType": "lap_swimming",
+    "id": null,
+    "poolLengthUnit": {
+      "id": 1,
+      "key": "meter",
+      "factor": 100.0
+    },
+    "prStartTimeGmt": 1760000000000,
+    "prStartTimeLocal": null,
+    "status": "CANDIDATE",
+    "typeId": 23,
+    "value": 1210.0
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"accept personal record candidate: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /userprofile-service/userprofile/settings
+GET /personalrecord-service/personalrecordcandidate/tester
+PUT /personalrecord-service/personalrecord/
+  {
+    "activityId": 5100001,
+    "activityName": "Pool Swim",
+    "activityType": "lap_swimming",
+    "id": null,
+    "poolLengthUnit": {
+      "id": 1,
+      "key": "meter",
+      "factor": 100.0
+    },
+    "prStartTimeGmt": 1760000000000,
+    "prStartTimeLocal": null,
+    "status": "CANDIDATE",
+    "typeId": 23,
+    "value": 1210.0
+  }

@@ -1,0 +1,42 @@
+Garmin answers 400 to the candidate list, so the command sends no write and the exit code is 1 (error).
+-- args --
+records
+candidates
+accept
+4200001
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- route GET /personalrecord-service/personalrecordcandidate/tester 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+get personal record candidates: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /userprofile-service/userprofile/settings
+GET /personalrecord-service/personalrecordcandidate/tester
+-- plain stdout --
+-- plain stderr --
+get personal record candidates: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+GET /personalrecord-service/personalrecordcandidate/tester
+-- plain-header stdout --
+-- plain-header stderr --
+get personal record candidates: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /personalrecord-service/personalrecordcandidate/tester
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"get personal record candidates: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /userprofile-service/userprofile/settings
+GET /personalrecord-service/personalrecordcandidate/tester

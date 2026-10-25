@@ -69,9 +69,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `gear models <words>` searches the Garmin list of gear brands and models, as help for `gear add --brand --model`. (#69)
 - `gear collections remove <collection-uuid> <gear-uuid>` removes a gear item from a collection. (#69)
 - `records candidates` lists the personal record candidates that wait for your review. `records hide <type-id>` hides a record type on the records page, and `records unhide <type-id>` shows it again. `--json` prints the record type that Garmin sends back. `records delete <id>` deletes a personal record after a prompt (`--force` skips it). Garmin has no undo for it, and a record that does not exist gives exit 4. (#87)
+- `records candidates accept <id>` accepts a personal record candidate. Like the Garmin Connect web app, gccli sends the candidate back as a new record, and `--json` prints the record that Garmin saves. A candidate ID that the list does not have fails with exit 1 before the write. `records candidates dismiss <id>` dismisses a candidate after a prompt (`--force` skips it). Garmin has no undo for it, and a candidate that does not exist gives exit 4. (#87)
 
 ### Changed
 
+- `records candidates` is now a group with `list`, `accept` and `dismiss`. Without a child it runs `list`, with the same output and exit codes as before. The help and the shell completion now list the children. (#87)
 - `goals weight` is now a group with `view`, `set` and `delete`. Without a child it runs `view` with `--start` and `--end`, with the same output and exit codes as before. (#68)
 - `health acclimation` is now a group with `range` and `daily`. Without a child it runs `range` with `--start` and `--end`, with the same output and exit codes as before. (#73)
 - `profile power-zones` is now a group with `list` and `sport`. Without a child it runs `list`, with the same output and exit codes as before. (#74)
