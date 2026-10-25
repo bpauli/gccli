@@ -690,6 +690,12 @@ var writeCases = map[string]writeCase{
 		human:    "Added nap on 2026-10-15 from 09:00 to 09:20\n",
 		fallback: "Added nap on 2026-10-15 from 09:00 to 09:20\n",
 	},
+	"health sleep note": {
+		args:   []string{"2026-10-15", "Slept badly"},
+		routes: map[string]string{"PUT /sleep-service/sleep/dailySleep/2026-10-15/note": `{"userNote":"Slept badly"}`},
+		json:   "{\n  \"userNote\": \"Slept badly\"\n}\n",
+		human:  "Set the sleep note of 2026-10-15\n",
+	},
 	"health sleep naps delete": {
 		args: []string{"2026-10-15", "09:00"},
 		routes: map[string]string{

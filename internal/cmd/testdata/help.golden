@@ -120,6 +120,7 @@ Commands:
   health sleep naps add            Add a nap for today. Garmin takes naps only
                                    for the current day.
   health sleep naps delete         Delete a nap.
+  health sleep note                Set or remove the note of a night of sleep.
   health sleep daily               Show daily sleep statistics for a date range
                                    (at most 28 days).
   health sleep weekly              Show weekly sleep statistics for the 52 weeks
@@ -864,6 +865,7 @@ Commands:
   health sleep naps add            Add a nap for today. Garmin takes naps only
                                    for the current day.
   health sleep naps delete         Delete a nap.
+  health sleep note                Set or remove the note of a night of sleep.
   health sleep daily               Show daily sleep statistics for a date range
                                    (at most 28 days).
   health sleep weekly              Show weekly sleep statistics for the 52 weeks
@@ -1077,6 +1079,7 @@ Commands:
   health sleep naps add       Add a nap for today. Garmin takes naps only for
                               the current day.
   health sleep naps delete    Delete a nap.
+  health sleep note           Set or remove the note of a night of sleep.
   health sleep daily          Show daily sleep statistics for a date range (at
                               most 28 days).
   health sleep weekly         Show weekly sleep statistics for the 52 weeks up

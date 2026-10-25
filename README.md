@@ -446,6 +446,8 @@ gccli health sleep [date]              # Sleep data
 gccli health sleep naps [date]
 gccli health sleep naps add 13:30 13:50   # Add a nap for today (times in your Garmin time zone)
 gccli health sleep naps delete today 13:30  # Delete the nap that starts at 13:30 (with confirmation)
+gccli health sleep note yesterday "Late coffee"  # Set the note of a night
+gccli health sleep note yesterday --clear       # Remove it
 gccli health sleep daily --start 2024-01-01 --end 2024-01-28
 gccli health sleep weekly
 gccli health sleep overall --start 2024-01-01 --end 2024-01-31
@@ -1190,6 +1192,10 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `<date>`: Date of the nap (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `<start>`: Start time of the nap (HH:MM) in your Garmin time zone.
   - `-f, --force`: Skip confirmation prompt.
+- `gccli health sleep note <date> [<text>] [flags]`: Set or remove the note of a night of sleep.
+  - `<date>`: Date of the sleep (YYYY-MM-DD, today, yesterday, 3d), as 'health sleep' takes it.
+  - `[<text>]`: Note text. It replaces the note of that night.
+  - `--clear`: Remove the note instead of setting a text.
 - `gccli health sleep daily --start=DATE --end=DATE`: Show daily sleep statistics for a date range (at most 28 days).
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
