@@ -892,6 +892,11 @@ Date shortcuts
 - `gccli profile view`: Show user profile. Also runs as `gccli profile`.
 - `gccli profile settings`: Show user settings.
 - `gccli profile privacy view`: Show privacy settings. Also runs as `gccli profile privacy`.
+- `gccli profile privacy set [flags]`: Change who can see your profile, activities, wellness data and badges.
+  - `--profile=LEVEL`: Who can see your profile. One of: public, private, connections, groups.
+  - `--activities=LEVEL`: Who can see your activities by default. Past activities keep their privacy; change one with activity privacy. One of: public, private, connections, groups.
+  - `--wellness=LEVEL`: Who can see your wellness data, such as steps. One of: public, private, connections, groups.
+  - `--badges=LEVEL`: Who can see your badges. One of: public, private, connections, groups.
 - `gccli profile privacy-zones list`: List privacy zones. Also runs as `gccli profile privacy-zones`.
 - `gccli profile privacy-zones add --lat=DEGREES --lon=DEGREES --radius=METERS`: Add a privacy zone around a point.
   - `--lat=DEGREES`: Latitude of the center, -90 to 90. Give a negative value as --lat=-33.9.

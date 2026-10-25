@@ -1,0 +1,55 @@
+The badge PUT answers 500.
+-- args --
+profile
+privacy
+set
+--badges
+private
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","profileId":3141592}
+-- route PUT /userprofile-service/socialProfile/privacy/badge/tester 500 noeol --
+{"message":"Internal Server Error"}
+-- table stdout --
+-- table stderr --
+change badge privacy: garmin api: 500 Internal Server Error: {"message":"Internal Server Error"}
+-- table exit --
+1
+-- table requests --
+GET /userprofile-service/userprofile/settings
+PUT /userprofile-service/socialProfile/privacy/badge/tester
+  {
+    "badgeVisibility": "private"
+  }
+-- plain stdout --
+-- plain stderr --
+change badge privacy: garmin api: 500 Internal Server Error: {"message":"Internal Server Error"}
+-- plain exit --
+1
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+PUT /userprofile-service/socialProfile/privacy/badge/tester
+  {
+    "badgeVisibility": "private"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+change badge privacy: garmin api: 500 Internal Server Error: {"message":"Internal Server Error"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+PUT /userprofile-service/socialProfile/privacy/badge/tester
+  {
+    "badgeVisibility": "private"
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":500,"message":"change badge privacy: garmin api: 500 Internal Server Error: {\"message\":\"Internal Server Error\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /userprofile-service/userprofile/settings
+PUT /userprofile-service/socialProfile/privacy/badge/tester
+  {
+    "badgeVisibility": "private"
+  }
