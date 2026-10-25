@@ -1,0 +1,115 @@
+Without its last type the list is empty, which clears the defaults of the gear.
+-- args --
+gear
+unset-default
+0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+running
+-- route GET /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e --
+{"uuid":"0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e","userProfilePk":3141592,"gearType":"SHOES","status":"ACTIVE","name":"Pegasus 41","brand":"Nike","model":"Pegasus","usageType":"DISTANCE","maxUsageDurationSeconds":0,"firstUseDate":"2026-10-01","distanceUsedMeters":0.0,"processing":false,"notes":"Pegasus 41","images":[],"collections":[],"associatedActivityTypes":[{"activityTypeKey":"running","defaultGear":true,"preferredGear":false}]}
+-- route PUT /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e 204 --
+-- table stdout --
+-- table stderr --
+Gear 0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e is no longer a default gear for running
+-- table exit --
+0
+-- table requests --
+GET /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+PUT /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+  {
+    "associatedActivityTypes": [],
+    "brand": "Nike",
+    "collections": [],
+    "distanceUsedMeters": 0.0,
+    "firstUseDate": "2026-10-01",
+    "gearType": "SHOES",
+    "images": [],
+    "maxUsageDurationSeconds": 0,
+    "model": "Pegasus",
+    "name": "Pegasus 41",
+    "notes": "Pegasus 41",
+    "processing": false,
+    "status": "ACTIVE",
+    "usageType": "DISTANCE",
+    "userProfilePk": 3141592,
+    "uuid": "0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e"
+  }
+-- plain stdout --
+-- plain stderr --
+Gear 0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e is no longer a default gear for running
+-- plain exit --
+0
+-- plain requests --
+GET /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+PUT /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+  {
+    "associatedActivityTypes": [],
+    "brand": "Nike",
+    "collections": [],
+    "distanceUsedMeters": 0.0,
+    "firstUseDate": "2026-10-01",
+    "gearType": "SHOES",
+    "images": [],
+    "maxUsageDurationSeconds": 0,
+    "model": "Pegasus",
+    "name": "Pegasus 41",
+    "notes": "Pegasus 41",
+    "processing": false,
+    "status": "ACTIVE",
+    "usageType": "DISTANCE",
+    "userProfilePk": 3141592,
+    "uuid": "0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Gear 0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e is no longer a default gear for running
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+PUT /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+  {
+    "associatedActivityTypes": [],
+    "brand": "Nike",
+    "collections": [],
+    "distanceUsedMeters": 0.0,
+    "firstUseDate": "2026-10-01",
+    "gearType": "SHOES",
+    "images": [],
+    "maxUsageDurationSeconds": 0,
+    "model": "Pegasus",
+    "name": "Pegasus 41",
+    "notes": "Pegasus 41",
+    "processing": false,
+    "status": "ACTIVE",
+    "usageType": "DISTANCE",
+    "userProfilePk": 3141592,
+    "uuid": "0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e"
+  }
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+PUT /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+  {
+    "associatedActivityTypes": [],
+    "brand": "Nike",
+    "collections": [],
+    "distanceUsedMeters": 0.0,
+    "firstUseDate": "2026-10-01",
+    "gearType": "SHOES",
+    "images": [],
+    "maxUsageDurationSeconds": 0,
+    "model": "Pegasus",
+    "name": "Pegasus 41",
+    "notes": "Pegasus 41",
+    "processing": false,
+    "status": "ACTIVE",
+    "usageType": "DISTANCE",
+    "userProfilePk": 3141592,
+    "uuid": "0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e"
+  }

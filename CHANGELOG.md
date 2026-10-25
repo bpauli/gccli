@@ -57,6 +57,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `goals add <name> --period <period>` adds an activity goal with one target: `--distance` (such as `50km` or `30mi`), `--duration` (such as `10h`), `--calories` or `--activities`, for an `--activity-type` (default `all`). A `one-month` goal starts on the first day of a month, by default this month. `goals update <id>` changes the flags you give, and `goals delete <id>` deletes a goal after a prompt (`--force` skips it). (#68)
 - `goals weight set <weight> [--unit kg|lbs] [--date]` sets the weight goal, and `goals weight delete` deletes the current one after a prompt. An earlier weight goal then applies again. (#68)
 - `goals effective <type> [--date]` shows the daily goal that applies on a date: `floors-climbed`, `intensity-minutes`, `hydration`, `steps` or `weight-grams`. (#68)
+- `gear set-default <uuid> <activity-type>` makes a gear item a default gear for an activity type, and `gear unset-default` removes it. More than one gear item can be a default for one type, so `set-default` keeps the other defaults. `unset-default` of a type that the gear does not have exits 1. (#69)
+- `gear models <words>` searches the Garmin list of gear brands and models, as help for `gear add --brand --model`. (#69)
+- `gear collections remove <collection-uuid> <gear-uuid>` removes a gear item from a collection. (#69)
 
 ### Changed
 

@@ -3,6 +3,7 @@ package garminapi
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 )
@@ -26,7 +27,54 @@ var gearEndpoints = []Endpoint{
 	{Name: "gear.collection.create", Method: http.MethodPost, Host: ConnectAPI, Path: "/gear-service/collection", Body: true},
 	{Name: "gear.collection.update", Method: http.MethodPut, Host: ConnectAPI, Path: "/gear-service/collection/{collectionUUID}", Body: true},
 	{Name: "gear.collection.add-gear", Method: http.MethodPost, Host: ConnectAPI, Path: "/gear-service/collection/{collectionUUID}/gear/{gearUUID}"},
+	{Name: "gear.collection.remove-gear", Method: http.MethodDelete, Host: ConnectAPI, Path: "/gear-service/collection/{collectionUUID}/gear/{gearUUID}"},
 	{Name: "gear.collection.delete", Method: http.MethodDelete, Host: ConnectAPI, Path: "/gear-service/collection/{collectionUUID}"},
+	{Name: "gear.models", Method: http.MethodGet, Host: ConnectAPI, Path: "/gear-service/gear/makemodels?keywords={keywords}"},
+}
+
+// ErrNotDefaultGear means that the gear is not a default gear for the
+// activity type, so there is no default to remove.
+var ErrNotDefaultGear = errors.New("the gear is not a default gear for the activity type")
+
+// SetGearDefault makes the gear a default gear for the activity type, or
+// with on false removes it as a default. It reads the gear and sends the full
+// object back with the changed associatedActivityTypes, because Garmin
+// rejects a partial body. Other gear can be a default for the same type too.
+func (c *Client) SetGearDefault(ctx context.Context, uuid, activityType string, on bool) (json.RawMessage, error) {
+	params := map[string]string{"gearUUID": uuid}
+	data, err := c.Call(ctx, "gear.get", params, nil)
+	if err != nil {
+		return nil, err
+	}
+	var gear struct {
+		Types []map[string]any `json:"associatedActivityTypes"`
+	}
+	if err := json.Unmarshal(data, &gear); err != nil {
+		return nil, fmt.Errorf("parse gear %s: %w", uuid, err)
+	}
+	types := []map[string]any{}
+	found := false
+	for _, t := range gear.Types {
+		if t["activityTypeKey"] == activityType {
+			found = true
+			if !on {
+				continue
+			}
+			t["defaultGear"] = true
+		}
+		types = append(types, t)
+	}
+	switch {
+	case on && !found:
+		types = append(types, map[string]any{"activityTypeKey": activityType, "defaultGear": true, "preferredGear": false})
+	case !on && !found:
+		return nil, ErrNotDefaultGear
+	}
+	body, err := setFields(data, "gear "+uuid, map[string]any{"associatedActivityTypes": types})
+	if err != nil {
+		return nil, err
+	}
+	return c.Call(ctx, "gear.update", params, body)
 }
 
 // NewGear is the input of a new gear item. Type is a Garmin gear type such as
