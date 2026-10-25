@@ -1,0 +1,44 @@
+No match: an empty profileList.
+-- args --
+social
+search
+zz
+-- route POST /usersearch-service/search/v3?displayMutedStatus=true --
+{"start":1,"limit":20,"originalKeyword":"zz","effectiveKeyword":"zz","profileList":[]}
+-- table stdout --
+DISPLAY NAME  NAME  LOCATION  FOLLOW
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+POST /usersearch-service/search/v3?displayMutedStatus=true
+  "keyword=zz&limit=20&start=1"
+-- plain stdout --
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+POST /usersearch-service/search/v3?displayMutedStatus=true
+  "keyword=zz&limit=20&start=1"
+-- plain-header stdout --
+DISPLAY NAME	NAME	LOCATION	FOLLOW
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /usersearch-service/search/v3?displayMutedStatus=true
+  "keyword=zz&limit=20&start=1"
+-- json stdout --
+{
+  "start": 1,
+  "limit": 20,
+  "originalKeyword": "zz",
+  "effectiveKeyword": "zz",
+  "profileList": []
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /usersearch-service/search/v3?displayMutedStatus=true
+  "keyword=zz&limit=20&start=1"

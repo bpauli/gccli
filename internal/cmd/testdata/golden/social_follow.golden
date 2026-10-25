@@ -1,0 +1,43 @@
+A user with a private profile gets a follow request: Garmin answers requestStatus CREATED, live 2026-10-22.
+-- args --
+social
+follow
+runner-anna
+-- route POST /follower-service/follow/followings/runner-anna --
+{"id":4242,"requesteeId":2718281,"requestorId":3141592,"requestStatus":"CREATED","requestStartTime":"2026-10-22T10:00:00.0","requestEndTime":null,"requestViewed":false}
+-- table stdout --
+-- table stderr --
+Sent a follow request to runner-anna
+-- table exit --
+0
+-- table requests --
+POST /follower-service/follow/followings/runner-anna
+-- plain stdout --
+-- plain stderr --
+Sent a follow request to runner-anna
+-- plain exit --
+0
+-- plain requests --
+POST /follower-service/follow/followings/runner-anna
+-- plain-header stdout --
+-- plain-header stderr --
+Sent a follow request to runner-anna
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /follower-service/follow/followings/runner-anna
+-- json stdout --
+{
+  "id": 4242,
+  "requesteeId": 2718281,
+  "requestorId": 3141592,
+  "requestStatus": "CREATED",
+  "requestStartTime": "2026-10-22T10:00:00.0",
+  "requestEndTime": null,
+  "requestViewed": false
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /follower-service/follow/followings/runner-anna

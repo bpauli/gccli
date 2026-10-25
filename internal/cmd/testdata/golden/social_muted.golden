@@ -1,0 +1,90 @@
+The muted users, in the shape of the live answer of 2026-10-22.
+-- args --
+social
+muted
+-- route GET /follower-service/muteuser --
+{"mutedUserList":[{"userProfileId":2718281,"displayName":"runner-anna","fullName":"Anna Runner","userLevel":3,"profileImageUrlLarge":null,"profileImageUrlMedium":null,"profileImageUrlSmall":null,"location":null}],"mutedUserCount":1}
+-- table stdout --
+{
+  "mutedUserList": [
+    {
+      "userProfileId": 2718281,
+      "displayName": "runner-anna",
+      "fullName": "Anna Runner",
+      "userLevel": 3,
+      "profileImageUrlLarge": null,
+      "profileImageUrlMedium": null,
+      "profileImageUrlSmall": null,
+      "location": null
+    }
+  ],
+  "mutedUserCount": 1
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /follower-service/muteuser
+-- plain stdout --
+{
+  "mutedUserList": [
+    {
+      "userProfileId": 2718281,
+      "displayName": "runner-anna",
+      "fullName": "Anna Runner",
+      "userLevel": 3,
+      "profileImageUrlLarge": null,
+      "profileImageUrlMedium": null,
+      "profileImageUrlSmall": null,
+      "location": null
+    }
+  ],
+  "mutedUserCount": 1
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /follower-service/muteuser
+-- plain-header stdout --
+{
+  "mutedUserList": [
+    {
+      "userProfileId": 2718281,
+      "displayName": "runner-anna",
+      "fullName": "Anna Runner",
+      "userLevel": 3,
+      "profileImageUrlLarge": null,
+      "profileImageUrlMedium": null,
+      "profileImageUrlSmall": null,
+      "location": null
+    }
+  ],
+  "mutedUserCount": 1
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /follower-service/muteuser
+-- json stdout --
+{
+  "mutedUserList": [
+    {
+      "userProfileId": 2718281,
+      "displayName": "runner-anna",
+      "fullName": "Anna Runner",
+      "userLevel": 3,
+      "profileImageUrlLarge": null,
+      "profileImageUrlMedium": null,
+      "profileImageUrlSmall": null,
+      "location": null
+    }
+  ],
+  "mutedUserCount": 1
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /follower-service/muteuser

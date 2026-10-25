@@ -1,0 +1,126 @@
+The pending follow requests, in the shape of the live answer of 2026-10-22. followRequestId is null in this list.
+-- args --
+social
+follow-requests
+-- route GET /follower-service/follow/pending --
+{"requestCount":1,"pendingFollowRequests":[{"userId":2718281,"displayName":"runner-anna","fullName":"Anna Runner","location":"Hamburg","userLevel":3,"userPoint":120,"profileImageUrls":{},"followRequestId":null,"followStatus":{"relationshipStatus":"NONE","sentRequest":null,"receivedRequest":null,"blocking":null,"blocked":false,"muting":null,"favorite":null}}]}
+-- table stdout --
+{
+  "requestCount": 1,
+  "pendingFollowRequests": [
+    {
+      "userId": 2718281,
+      "displayName": "runner-anna",
+      "fullName": "Anna Runner",
+      "location": "Hamburg",
+      "userLevel": 3,
+      "userPoint": 120,
+      "profileImageUrls": {},
+      "followRequestId": null,
+      "followStatus": {
+        "relationshipStatus": "NONE",
+        "sentRequest": null,
+        "receivedRequest": null,
+        "blocking": null,
+        "blocked": false,
+        "muting": null,
+        "favorite": null
+      }
+    }
+  ]
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /follower-service/follow/pending
+-- plain stdout --
+{
+  "requestCount": 1,
+  "pendingFollowRequests": [
+    {
+      "userId": 2718281,
+      "displayName": "runner-anna",
+      "fullName": "Anna Runner",
+      "location": "Hamburg",
+      "userLevel": 3,
+      "userPoint": 120,
+      "profileImageUrls": {},
+      "followRequestId": null,
+      "followStatus": {
+        "relationshipStatus": "NONE",
+        "sentRequest": null,
+        "receivedRequest": null,
+        "blocking": null,
+        "blocked": false,
+        "muting": null,
+        "favorite": null
+      }
+    }
+  ]
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /follower-service/follow/pending
+-- plain-header stdout --
+{
+  "requestCount": 1,
+  "pendingFollowRequests": [
+    {
+      "userId": 2718281,
+      "displayName": "runner-anna",
+      "fullName": "Anna Runner",
+      "location": "Hamburg",
+      "userLevel": 3,
+      "userPoint": 120,
+      "profileImageUrls": {},
+      "followRequestId": null,
+      "followStatus": {
+        "relationshipStatus": "NONE",
+        "sentRequest": null,
+        "receivedRequest": null,
+        "blocking": null,
+        "blocked": false,
+        "muting": null,
+        "favorite": null
+      }
+    }
+  ]
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /follower-service/follow/pending
+-- json stdout --
+{
+  "requestCount": 1,
+  "pendingFollowRequests": [
+    {
+      "userId": 2718281,
+      "displayName": "runner-anna",
+      "fullName": "Anna Runner",
+      "location": "Hamburg",
+      "userLevel": 3,
+      "userPoint": 120,
+      "profileImageUrls": {},
+      "followRequestId": null,
+      "followStatus": {
+        "relationshipStatus": "NONE",
+        "sentRequest": null,
+        "receivedRequest": null,
+        "blocking": null,
+        "blocked": false,
+        "muting": null,
+        "favorite": null
+      }
+    }
+  ]
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /follower-service/follow/pending

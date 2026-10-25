@@ -1,0 +1,45 @@
+The follow status comes first, because Garmin answers 204 to the removal whether the user follows you or not (live 2026-10-22).
+-- args --
+social
+remove-follower
+runner-anna
+-- stdin --
+y
+-- route GET /follower-service/follow/runner-anna/profileStatus --
+{"userFollowProfile":{"userId":2718281,"displayName":"runner-anna","fullName":"Anna Runner","location":"Hamburg","userLevel":3,"userPoint":120,"profileImageUrls":{},"followStatus":{"relationshipStatus":"FOLLOWED","sentRequest":null,"receivedRequest":null,"blocking":null,"blocked":false,"muting":null,"favorite":null}},"followingCount":1,"followerCount":1}
+-- route DELETE /follower-service/follow/followers/runner-anna 204 --
+-- table stdout --
+-- table stderr --
+Remove runner-anna from your followers? [y/N]: Removed follower runner-anna
+-- table exit --
+0
+-- table requests --
+GET /follower-service/follow/runner-anna/profileStatus
+DELETE /follower-service/follow/followers/runner-anna
+-- plain stdout --
+-- plain stderr --
+Remove runner-anna from your followers? [y/N]: Removed follower runner-anna
+-- plain exit --
+0
+-- plain requests --
+GET /follower-service/follow/runner-anna/profileStatus
+DELETE /follower-service/follow/followers/runner-anna
+-- plain-header stdout --
+-- plain-header stderr --
+Remove runner-anna from your followers? [y/N]: Removed follower runner-anna
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /follower-service/follow/runner-anna/profileStatus
+DELETE /follower-service/follow/followers/runner-anna
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr noeol --
+Remove runner-anna from your followers? [y/N]: 
+-- json exit --
+0
+-- json requests --
+GET /follower-service/follow/runner-anna/profileStatus
+DELETE /follower-service/follow/followers/runner-anna

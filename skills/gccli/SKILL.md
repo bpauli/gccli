@@ -713,6 +713,28 @@ Date shortcuts
   - `[<display-name>]`: Display name of the user. Defaults to your display name.
 - `gccli social requests`: List pending connection requests.
 - `gccli social feed`: Show your newsfeed.
+- `gccli social follow <display-name>`: Follow a user. A user with a private profile gets a follow request.
+  - `<display-name>`: Display name of the user.
+- `gccli social unfollow <display-name> [flags]`: Stop following a user.
+  - `<display-name>`: Display name of the user.
+  - `-f, --force`: Skip confirmation prompt.
+- `gccli social follow-requests`: List the users who asked to follow you.
+- `gccli social accept <display-name>`: Accept the follow request of a user.
+  - `<display-name>`: Display name of the user, as social follow-requests lists it.
+- `gccli social decline <display-name>`: Decline the follow request of a user.
+  - `<display-name>`: Display name of the user, as social follow-requests lists it.
+- `gccli social remove-follower <display-name> [flags]`: Remove a user from your followers.
+  - `<display-name>`: Display name of the user.
+  - `-f, --force`: Skip confirmation prompt.
+- `gccli social mute <display-name>`: Mute a user that you follow.
+  - `<display-name>`: Display name of the user.
+- `gccli social unmute <display-name>`: Unmute a user.
+  - `<display-name>`: Display name of the user.
+- `gccli social muted`: List the users that you muted.
+- `gccli social search <query> [flags]`: Search Garmin Connect users by name.
+  - `<query>`: Name to search for, at least 2 characters.
+  - `-l, --limit=20`: Maximum number of users to return.
+  - `--offset=0`: Number of users to skip.
 - `gccli groups list`: List your groups. Also runs as `gccli groups`.
 - `gccli notifications list [flags]`: List notifications. Also runs as `gccli notifications [flags]`.
   - `--limit=50`: Maximum number of notifications to return.
@@ -921,6 +943,7 @@ Worked examples
 - Menstrual daily log: `gccli wellness menstrual-log set 2026-10-01 --flow light --symptoms cramps,tender-breasts --ovulation` sets fields of the log of a day. `gccli wellness menstrual-log set 2026-10-01 --symptoms ""` clears the symptoms and keeps the other fields. `gccli wellness menstrual-log 2026-10-01` shows the log, and `gccli wellness menstrual-log delete 2026-10-01 --force` deletes it.
 - Jet lag trip: `gccli wellness jet-lag add --from "Frankfurt, Germany" --to "New York, USA" --depart 2026-11-02T10:00+01:00 --arrive 2026-11-02T13:00-05:00` prints the trip ID. Then `gccli wellness jet-lag update <id> --arrive 2026-11-02T14:00-05:00` moves the arrival, and `gccli wellness jet-lag delete <id> --force` deletes the trip.
 - Nap: `gccli health sleep naps add 13:30 13:50` adds a nap for today. Garmin takes only naps that end today, and the times are in the time zone of the Garmin profile, not of the machine. `gccli health sleep naps delete today 13:30 --force` deletes the nap that starts at 13:30.
+- Follow: `gccli social search anna` lists users with their display name. `gccli social follow <display-name>` follows a user. A user with a private profile gets a follow request first, and the message says so. `gccli social unfollow <display-name> --force` stops following. `gccli social follow-requests` lists who asked to follow you, and `gccli social accept <display-name>` or `gccli social decline <display-name>` answers the request. `gccli social remove-follower <display-name> --force` removes a follower. `gccli social mute <display-name>` mutes a user that you follow, `gccli social muted` lists them, and `gccli social unmute <display-name>` unmutes. Garmin no longer takes new connection requests.
 - Activity like: `gccli activity likes add <id>` likes an activity, and a second add changes nothing. `gccli activity likes <id>` lists the likes. `gccli activity likes remove <id>` removes your like with no prompt. It fails with exit code 1 (`activity <id> is not liked`) when there is no like to remove.
 - Activity comment: `gccli activity comments add <id> "Nice run"` prints the comment ID (`conversationCommentUuid` in `gccli activity comments <id>`). `gccli activity comments edit <id> <comment-id> "Great run"` changes your own comment, and `gccli activity comments delete <id> <comment-id> --force` deletes your comment or a comment on your activity. `gccli activity comments likes add <comment-id>` likes a comment, `gccli activity comments likes <comment-id>` lists its likes, and `gccli activity comments likes remove <comment-id>` removes your like. Garmin answers 403 (exit code 1) when there is no like. Garmin can refuse a comment from an account with 403 and no message, even when likes work.
 - Calendar month: `gccli calendar month 2026 10` lists the activities, workouts, events, notes and other items of October 2026. `gccli calendar month --json | jq '[.calendarItems[] | select(.itemType == "activity")]'` keeps the activities of this month's grid.
