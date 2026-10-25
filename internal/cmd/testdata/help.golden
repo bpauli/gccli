@@ -136,6 +136,11 @@ Commands:
                                    range.
   health spo2                      Show SpO2 (blood oxygen) data.
   health hrv                       Show heart rate variability data.
+  health snapshots list            List Health Snapshot sessions up to a date.
+  health snapshots show            Show the summary of a Health Snapshot
+                                   session.
+  health snapshots epochs          Show the measurements of a Health Snapshot
+                                   session.
   health body-battery view         Show body battery data for a date.
   health body-battery range        Show body battery data for a date range.
   health body-battery daily        Show the daily low and high body battery for
@@ -881,6 +886,11 @@ Commands:
                                    range.
   health spo2                      Show SpO2 (blood oxygen) data.
   health hrv                       Show heart rate variability data.
+  health snapshots list            List Health Snapshot sessions up to a date.
+  health snapshots show            Show the summary of a Health Snapshot
+                                   session.
+  health snapshots epochs          Show the measurements of a Health Snapshot
+                                   session.
   health body-battery view         Show body battery data for a date.
   health body-battery range        Show body battery data for a date range.
   health body-battery daily        Show the daily low and high body battery for
@@ -1158,6 +1168,30 @@ Commands:
   health respiration view     Show respiration data for a date.
   health respiration daily    Show daily respiration statistics for a date
                               range.
+
+$ gccli health snapshots --help
+Usage: gccli health snapshots <command>
+
+List and show Health Snapshot sessions.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+Commands:
+  health snapshots list      List Health Snapshot sessions up to a date.
+  health snapshots show      Show the summary of a Health Snapshot session.
+  health snapshots epochs    Show the measurements of a Health Snapshot session.
 
 $ gccli health body-battery --help
 Usage: gccli health body-battery <command>

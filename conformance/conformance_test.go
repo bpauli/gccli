@@ -267,6 +267,7 @@ var skipped = map[string]string{
 	"health pushes weekly":            clockSkip,
 	"health running-economy":          clockSkip,
 	"health sleep naps view":          clockSkip,
+	"health snapshots list":           clockSkip,
 	"health sleep weekly":             clockSkip,
 	"health steps monthly":            clockSkip,
 	"health steps weekly":             clockSkip,

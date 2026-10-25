@@ -258,6 +258,15 @@ Date shortcuts
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli health hrv [<date>]`: Show heart rate variability data.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
+- `gccli health snapshots list [flags]`: List Health Snapshot sessions up to a date. Also runs as `gccli health snapshots [flags]`.
+  - `-l, --limit=20`: Maximum number of sessions to return.
+  - `--offset=0`: Number of sessions to skip.
+  - `--until=DATE`: Last date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
+- `gccli health snapshots show <date> <uuid>`: Show the summary of a Health Snapshot session.
+  - `<date>`: Date of the session (YYYY-MM-DD, today, yesterday, 3d).
+  - `<uuid>`: Session UUID (activityUuid.uuid in 'health snapshots list').
+- `gccli health snapshots epochs <uuid>`: Show the measurements of a Health Snapshot session.
+  - `<uuid>`: Session UUID (activityUuid.uuid in 'health snapshots list').
 - `gccli health body-battery view [<date>]`: Show body battery data for a date. Also runs as `gccli health body-battery [<date>]`.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli health body-battery range --start=DATE --end=DATE`: Show body battery data for a date range.
@@ -1130,6 +1139,7 @@ Notes
 - `activities favorites` takes `--limit` but no `--offset`, because Garmin does not page this list by an offset.
 - `activity trim <id> --from <duration> --to <duration>` keeps only that part of an activity. Both times count from the activity start, in the form `2m` or `1h5m`. Give at least one: `--from` defaults to the start and `--to` to the end. Garmin applies the trim in a few seconds, and the activity keeps its ID. `activity restore <id>` brings back the original. Both are for single-sport activities only, not for multisport activities.
 - `activities privacy set <level>` changes the privacy of every past activity, and with `--type running,cycling` of every past activity of those types. The types are top-level activity type keys. There is no bulk undo, so confirm with the user first, then pass `--force`. Garmin applies the change within minutes, and `activities privacy status` shows the progress. To change one activity, use `activity privacy <id> <level>`.
+- `health snapshots list` (also as `health snapshots`) lists the Health Snapshot sessions up to `--until` (default today). A Health Snapshot is a 2-minute session that newer watches record. `health snapshots show <date> <uuid>` and `health snapshots epochs <uuid>` take the date and `activityUuid.uuid` of a list item. `show` prints `{}` for a UUID that has no session, because Garmin answers 204. ECG recordings are not available: Garmin does not route the ECG service on the API host that gccli uses.
 - Delete commands fail without a terminal unless `--force` is set. Confirm with the user first, then pass `--force`.
 - Download formats: FIT (default), GPX, TCX, KML, CSV.
 - Workout step format: `type:duration[@target:low-high]`. Types: warmup, run, recovery, cooldown; targets: pace (min:sec), hr (bpm), power (watts), cadence.

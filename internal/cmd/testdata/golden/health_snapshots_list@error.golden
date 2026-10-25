@@ -1,0 +1,35 @@
+Error case: Garmin answers 500, so the exit code is 1 (error).
+-- args --
+health
+snapshots
+list
+-- route GET /wellnessactivity-service/activity/summary/list?limit=20&start=1&until=2026-10-15 500 noeol --
+{"error":"IllegalArgumentException"}
+-- table stdout --
+-- table stderr --
+get health snapshots: garmin api: 500 Internal Server Error: {"error":"IllegalArgumentException"}
+-- table exit --
+1
+-- table requests --
+GET /wellnessactivity-service/activity/summary/list?limit=20&start=1&until=2026-10-15
+-- plain stdout --
+-- plain stderr --
+get health snapshots: garmin api: 500 Internal Server Error: {"error":"IllegalArgumentException"}
+-- plain exit --
+1
+-- plain requests --
+GET /wellnessactivity-service/activity/summary/list?limit=20&start=1&until=2026-10-15
+-- plain-header stdout --
+-- plain-header stderr --
+get health snapshots: garmin api: 500 Internal Server Error: {"error":"IllegalArgumentException"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /wellnessactivity-service/activity/summary/list?limit=20&start=1&until=2026-10-15
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":500,"message":"get health snapshots: garmin api: 500 Internal Server Error: {\"error\":\"IllegalArgumentException\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /wellnessactivity-service/activity/summary/list?limit=20&start=1&until=2026-10-15
