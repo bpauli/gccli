@@ -1,0 +1,87 @@
+Without --from, the range starts at the activity start.
+-- args --
+activity
+trim
+12345678
+--to
+50m
+-- route GET /activity-service/activity/12345678 --
+{"activityId":12345678,"activityName":"Morning Run","summaryDTO":{"startTimeGMT":"2026-01-10T08:00:00.0","startTimeLocal":"2026-01-10T09:00:00.0","elapsedDuration":3461.0,"duration":3400.5}}
+-- route PUT /activity-service/activity/12345678/reconstruct 202 --
+{"detailedImportResult":{"uploadId":987654,"uploadUuid":{"uuid":"0b5c4c2e-1111-2222-3333-444455556666"},"owner":3141592,"processingTime":42,"creationDate":"2026-01-11 10:00:00.0 GMT","successes":[],"failures":[]}}
+-- table stdout --
+-- table stderr --
+Trimmed activity 12345678 to 0s - 50m0s
+-- table exit --
+0
+-- table requests --
+GET /activity-service/activity/12345678
+PUT /activity-service/activity/12345678/reconstruct
+  {
+    "timeRanges": [
+      {
+        "endTime": 1768035000000,
+        "startTime": 1768032000000
+      }
+    ]
+  }
+-- plain stdout --
+-- plain stderr --
+Trimmed activity 12345678 to 0s - 50m0s
+-- plain exit --
+0
+-- plain requests --
+GET /activity-service/activity/12345678
+PUT /activity-service/activity/12345678/reconstruct
+  {
+    "timeRanges": [
+      {
+        "endTime": 1768035000000,
+        "startTime": 1768032000000
+      }
+    ]
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Trimmed activity 12345678 to 0s - 50m0s
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /activity-service/activity/12345678
+PUT /activity-service/activity/12345678/reconstruct
+  {
+    "timeRanges": [
+      {
+        "endTime": 1768035000000,
+        "startTime": 1768032000000
+      }
+    ]
+  }
+-- json stdout --
+{
+  "detailedImportResult": {
+    "uploadId": 987654,
+    "uploadUuid": {
+      "uuid": "0b5c4c2e-1111-2222-3333-444455556666"
+    },
+    "owner": 3141592,
+    "processingTime": 42,
+    "creationDate": "2026-01-11 10:00:00.0 GMT",
+    "successes": [],
+    "failures": []
+  }
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /activity-service/activity/12345678
+PUT /activity-service/activity/12345678/reconstruct
+  {
+    "timeRanges": [
+      {
+        "endTime": 1768035000000,
+        "startTime": 1768032000000
+      }
+    ]
+  }

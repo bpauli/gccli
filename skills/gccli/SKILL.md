@@ -148,6 +148,12 @@ Date shortcuts
 - `gccli activity privacy <id> <level>`: Change who can see an activity.
   - `<id>`: Activity ID.
   - `<level>`: Who can see the activity: public, private or connections.
+- `gccli activity trim <id> [flags]`: Trim the start or end of an activity.
+  - `<id>`: Activity ID.
+  - `--from=FROM`: New start, as the time since the activity start (e.g. 2m, 1h5m). Default: the activity start.
+  - `--to=TO`: New end, as the time since the activity start (e.g. 50m, 1h5m). Default: the activity end.
+- `gccli activity restore <id>`: Restore the original of a trimmed activity.
+  - `<id>`: Activity ID.
 - `gccli activity favorite <id>`: Mark an activity as a favorite.
   - `<id>`: Activity ID.
 - `gccli activity unfavorite <id>`: Remove the favorite mark from an activity.
