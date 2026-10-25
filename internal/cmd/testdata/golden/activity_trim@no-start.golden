@@ -1,0 +1,37 @@
+Error case: the activity has no summaryDTO.startTimeGMT, so the exit code is 1 (error) and no PUT is sent.
+-- args --
+activity
+trim
+12345678
+--from
+2m
+-- route GET /activity-service/activity/12345678 --
+{"activityId":12345678,"activityName":"Morning Run","summaryDTO":{"elapsedDuration":3461.0}}
+-- table stdout --
+-- table stderr --
+activity 12345678: the answer has no summaryDTO.startTimeGMT
+-- table exit --
+1
+-- table requests --
+GET /activity-service/activity/12345678
+-- plain stdout --
+-- plain stderr --
+activity 12345678: the answer has no summaryDTO.startTimeGMT
+-- plain exit --
+1
+-- plain requests --
+GET /activity-service/activity/12345678
+-- plain-header stdout --
+-- plain-header stderr --
+activity 12345678: the answer has no summaryDTO.startTimeGMT
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /activity-service/activity/12345678
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"activity 12345678: the answer has no summaryDTO.startTimeGMT"}}
+-- json exit --
+1
+-- json requests --
+GET /activity-service/activity/12345678

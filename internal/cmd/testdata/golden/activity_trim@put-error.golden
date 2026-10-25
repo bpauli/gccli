@@ -1,0 +1,75 @@
+Error case: Garmin answers the PUT with 400 after the GET, so the exit code is 1 (error).
+-- args --
+activity
+trim
+12345678
+--from
+2m
+-- route GET /activity-service/activity/12345678 --
+{"activityId":12345678,"activityName":"Morning Run","summaryDTO":{"startTimeGMT":"2026-01-10T08:00:00.0","startTimeLocal":"2026-01-10T09:00:00.0","elapsedDuration":3461.0,"duration":3400.5}}
+-- route PUT /activity-service/activity/12345678/reconstruct 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+trim activity: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /activity-service/activity/12345678
+PUT /activity-service/activity/12345678/reconstruct
+  {
+    "timeRanges": [
+      {
+        "endTime": 1768035461000,
+        "startTime": 1768032120000
+      }
+    ]
+  }
+-- plain stdout --
+-- plain stderr --
+trim activity: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /activity-service/activity/12345678
+PUT /activity-service/activity/12345678/reconstruct
+  {
+    "timeRanges": [
+      {
+        "endTime": 1768035461000,
+        "startTime": 1768032120000
+      }
+    ]
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+trim activity: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /activity-service/activity/12345678
+PUT /activity-service/activity/12345678/reconstruct
+  {
+    "timeRanges": [
+      {
+        "endTime": 1768035461000,
+        "startTime": 1768032120000
+      }
+    ]
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"trim activity: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /activity-service/activity/12345678
+PUT /activity-service/activity/12345678/reconstruct
+  {
+    "timeRanges": [
+      {
+        "endTime": 1768035461000,
+        "startTime": 1768032120000
+      }
+    ]
+  }
