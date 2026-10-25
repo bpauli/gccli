@@ -1,0 +1,39 @@
+The gear read fails, so no PUT is sent.
+-- args --
+gear
+set-default
+0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+running
+-- route GET /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e 404 --
+{"message":"Gear not found","error":"NotFoundException"}
+-- table stdout --
+-- table stderr --
+set default gear: garmin api: 404 Not Found: {"message":"Gear not found","error":"NotFoundException"}
+
+-- table exit --
+4
+-- table requests --
+GET /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+-- plain stdout --
+-- plain stderr --
+set default gear: garmin api: 404 Not Found: {"message":"Gear not found","error":"NotFoundException"}
+
+-- plain exit --
+4
+-- plain requests --
+GET /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+-- plain-header stdout --
+-- plain-header stderr --
+set default gear: garmin api: 404 Not Found: {"message":"Gear not found","error":"NotFoundException"}
+
+-- plain-header exit --
+4
+-- plain-header requests --
+GET /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+-- json stdout --
+-- json stderr --
+{"error":{"code":"not_found","status":404,"message":"set default gear: garmin api: 404 Not Found: {\"message\":\"Gear not found\",\"error\":\"NotFoundException\"}\n"}}
+-- json exit --
+4
+-- json requests --
+GET /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e

@@ -217,7 +217,13 @@ Commands:
   gear defaults                    Show default gear per activity type.
   gear link                        Link gear to an activity.
   gear unlink                      Unlink gear from an activity.
+  gear set-default                 Make a gear item a default gear for an
+                                   activity type.
+  gear unset-default               Stop a gear item being a default gear for an
+                                   activity type.
   gear types                       List gear types.
+  gear models                      Search the Garmin list of gear brands and
+                                   models.
   gear add                         Add a gear item.
   gear update                      Change the name, brand, model or notes of a
                                    gear item.
@@ -228,6 +234,8 @@ Commands:
   gear collections create          Create a gear collection.
   gear collections rename          Rename a gear collection.
   gear collections add             Add a gear item to a gear collection.
+  gear collections remove          Remove a gear item from a gear collection.
+                                   The gear item stays.
   gear collections delete          Delete a gear collection. The gear items
                                    stay.
   goals list                       List goals.
@@ -1482,7 +1490,12 @@ Commands:
   gear defaults              Show default gear per activity type.
   gear link                  Link gear to an activity.
   gear unlink                Unlink gear from an activity.
+  gear set-default           Make a gear item a default gear for an activity
+                             type.
+  gear unset-default         Stop a gear item being a default gear for an
+                             activity type.
   gear types                 List gear types.
+  gear models                Search the Garmin list of gear brands and models.
   gear add                   Add a gear item.
   gear update                Change the name, brand, model or notes of a gear
                              item.
@@ -1493,6 +1506,8 @@ Commands:
   gear collections create    Create a gear collection.
   gear collections rename    Rename a gear collection.
   gear collections add       Add a gear item to a gear collection.
+  gear collections remove    Remove a gear item from a gear collection. The gear
+                             item stays.
   gear collections delete    Delete a gear collection. The gear items stay.
 
 $ gccli gear collections --help
@@ -1519,6 +1534,8 @@ Commands:
   gear collections create    Create a gear collection.
   gear collections rename    Rename a gear collection.
   gear collections add       Add a gear item to a gear collection.
+  gear collections remove    Remove a gear item from a gear collection. The gear
+                             item stays.
   gear collections delete    Delete a gear collection. The gear items stay.
 
 $ gccli goals --help

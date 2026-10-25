@@ -1,0 +1,41 @@
+The gear UUID without dashes goes to Garmin in the dashed form.
+-- args --
+gear
+collections
+remove
+7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b
+0b5c3d2e1f4a4b6c8d7e9f0a1b2c3d4e
+-- stdin --
+y
+-- route DELETE /gear-service/collection/7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b/gear/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e 204 --
+-- table stdout --
+-- table stderr --
+Remove gear 0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e from collection 7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b? [y/N]: Removed gear 0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e from collection 7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b
+-- table exit --
+0
+-- table requests --
+DELETE /gear-service/collection/7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b/gear/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+-- plain stdout --
+-- plain stderr --
+Remove gear 0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e from collection 7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b? [y/N]: Removed gear 0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e from collection 7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b
+-- plain exit --
+0
+-- plain requests --
+DELETE /gear-service/collection/7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b/gear/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+-- plain-header stdout --
+-- plain-header stderr --
+Remove gear 0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e from collection 7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b? [y/N]: Removed gear 0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e from collection 7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b
+-- plain-header exit --
+0
+-- plain-header requests --
+DELETE /gear-service/collection/7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b/gear/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr noeol --
+Remove gear 0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e from collection 7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b? [y/N]: 
+-- json exit --
+0
+-- json requests --
+DELETE /gear-service/collection/7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b/gear/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e

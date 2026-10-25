@@ -543,7 +543,15 @@ Date shortcuts
 - `gccli gear unlink <uuid> <activity-id>`: Unlink gear from an activity.
   - `<uuid>`: Gear UUID.
   - `<activity-id>`: Activity ID.
+- `gccli gear set-default <uuid> <activity-type>`: Make a gear item a default gear for an activity type.
+  - `<uuid>`: Gear UUID, with or without dashes.
+  - `<activity-type>`: Activity type key, as activities types prints it (e.g. running, trail_running).
+- `gccli gear unset-default <uuid> <activity-type>`: Stop a gear item being a default gear for an activity type.
+  - `<uuid>`: Gear UUID, with or without dashes.
+  - `<activity-type>`: Activity type key, as activities types prints it (e.g. running, trail_running).
 - `gccli gear types`: List gear types.
+- `gccli gear models <search>`: Search the Garmin list of gear brands and models.
+  - `<search>`: Brand or model words, such as "brooks ghost".
 - `gccli gear add --brand=FREE-TEXT --model=FREE-TEXT <name> [flags]`: Add a gear item.
   - `<name>`: Gear name.
   - `--type="shoes"`: Gear type. One of: shoes, bike, other.
@@ -574,6 +582,10 @@ Date shortcuts
 - `gccli gear collections add <uuid> <gear-uuid>`: Add a gear item to a gear collection.
   - `<uuid>`: Collection UUID.
   - `<gear-uuid>`: Gear UUID, with or without dashes.
+- `gccli gear collections remove <uuid> <gear-uuid> [flags]`: Remove a gear item from a gear collection. The gear item stays.
+  - `<uuid>`: Collection UUID.
+  - `<gear-uuid>`: Gear UUID, with or without dashes.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli gear collections delete <uuid> [flags]`: Delete a gear collection. The gear items stay.
   - `<uuid>`: Collection UUID.
   - `-f, --force`: Skip confirmation prompt.
@@ -986,6 +998,7 @@ Worked examples
 - Privacy zone: `gccli profile privacy-zones add --lat 51.5 --lon=-0.12 --radius 500` prints the zone ID. A negative value needs the `=` form. The radius is 500 to 1500 meters. `gccli profile privacy-zones delete <id> --force` deletes it.
 - Activity goal: `gccli goals add "Run 50 km" --period seven-days --activity-type running --distance 50km` prints the goal ID. Then `gccli goals update <id> --distance 60km` changes the target, and `gccli goals delete <id> --force` deletes the goal.
 - Weight goal: `gccli goals weight set 72.5` (or `--unit lbs`) sets it from today. `gccli goals effective weight-grams` shows the goal that applies, in grams, and `gccli goals weight delete --force` deletes it.
+- Default gear: `gccli gear set-default <uuid> running` makes the gear a default gear for running, and `gccli gear defaults` lists the defaults (by `activityTypePk`). `gccli gear unset-default <uuid> running` removes it again.
 - Race event with a goal time and training priority: `gccli events add --name "Spring 10K" --date 2026-05-10 --type running --race --distance 10km --goal 40m --training`
 - Food search: `gccli nutrition search "greek yogurt" --limit 5 --json` lists foods with their servings under `results[].nutritionContents`. `gccli nutrition recent` and `gccli nutrition favorites` list the foods logged recently and the favorite foods.
 - Log a food: search first, then pass the food ID and the same search text: `gccli nutrition add today 35718 --query apple --meal lunch --serving oz --servings 3`. Garmin has no read of one food by ID, so `--query` is required. `--serving` takes a `servingUnit` or `servingId` from the search JSON (default the first). `--servings` counts that serving, and a serving can hold more than one unit: the `g` serving of a food is often 100 g (`numberOfUnits`). The message prints the log ID of the new entry.
@@ -1065,4 +1078,5 @@ Notes
 - The weight goal is one value per start date. `goals weight set` adds a goal from `--date` (default today). `goals weight delete` deletes the current one, and an earlier weight goal then applies again. It fails with exit code 1 when there is no weight goal. `goals weight` without a child runs `goals weight view`.
 - `wellness menstrual-log set` changes only the fields you give. Garmin replaces the whole day on a write, so gccli reads the log first and sends the other fields again. The values are lower-case kebab (`light`, `tender-breasts`, `no-discharge`), the lists are comma-separated, and an empty value (`""`) clears a field. `--no-ovulation` removes the ovulation mark. The writes need cycle tracking set up in Garmin Connect; without it, Garmin answers 400 "MCT settings were not found". `wellness menstrual-log` prints `{}` for a day without a log, and `delete` of such a day fails with exit code 1. `wellness menstrual-cycle` and `wellness menstrual-summary` take one date (default today) and print `{}` for a day outside a tracked cycle. `wellness pregnancy-summary` prints `{}` when there is no pregnancy.
 - `wellness jet-lag add --from <place> --to <place> --depart <time> --arrive <time>` adds a jet lag trip. `--return-depart` and `--return-arrive` add the return flight. Each time is the local time at its place with the UTC offset there, such as `2026-11-02T10:00+01:00`; a time without an offset is a usage error. For a flight with a stop, give the first departure and the last arrival. `add` prints the trip ID. `update` and `delete` find the trip in the trip list, because Garmin has no read of one trip; an unknown ID exits 1. `update` changes only the flags you give, and `--from`/`--to` also change the return flight. It refuses a trip of more than two flights (made in the web app).
+- `gear set-default` and `gear unset-default` take an activity type key as `activities types` prints it (`running`, `trail_running`). Garmin answers 400 for an unknown key. An activity type can have more than one default gear, so `set-default` does not remove the old default: run `unset-default` on it. `unset-default` of a type the gear does not have fails with exit code 1. `gear models <words>` searches Garmin's brand and model list; use its BRAND and MODEL in `gear add --brand --model`.
 - `workouts update` replaces the whole workout, so build the file from `gccli workouts detail <id>` and edit it. `workoutId` is set from the ID argument, so an `upload` payload works unchanged. The workout keeps its ID and its calendar entries.

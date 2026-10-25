@@ -428,6 +428,28 @@ var writeCases = map[string]writeCase{
 		human:    "Updated gear 0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e\n",
 		fallback: "Updated gear 0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e\n",
 	},
+	"gear set-default": {
+		args: []string{"0b5c3d2e1f4a4b6c8d7e9f0a1b2c3d4e", "running"},
+		routes: map[string]string{
+			"GET /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e": `{"uuid":"0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e","name":"Pegasus"}`,
+			"PUT /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e": noContent,
+		},
+		result:   "PUT /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e",
+		json:     okOut,
+		human:    "Gear 0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e is a default gear for running\n",
+		fallback: "Gear 0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e is a default gear for running\n",
+	},
+	"gear unset-default": {
+		args: []string{"0b5c3d2e1f4a4b6c8d7e9f0a1b2c3d4e", "running"},
+		routes: map[string]string{
+			"GET /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e": `{"uuid":"0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e","associatedActivityTypes":[{"activityTypeKey":"running","defaultGear":true,"preferredGear":false}]}`,
+			"PUT /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e": noContent,
+		},
+		result:   "PUT /gear-service/gear/v2/0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e",
+		json:     okOut,
+		human:    "Gear 0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e is no longer a default gear for running\n",
+		fallback: "Gear 0b5c3d2e-1f4a-4b6c-8d7e-9f0a1b2c3d4e is no longer a default gear for running\n",
+	},
 	"gear collections create": {
 		args:     []string{"Road shoes", "--first-use", "2024-06-01"},
 		routes:   map[string]string{"POST /gear-service/collection": `{"uuid":"7a1e9c40-2b3d-4e5f-8a6b-9c0d1e2f3a4b","name":"Road shoes"}`},
