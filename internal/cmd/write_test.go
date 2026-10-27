@@ -306,12 +306,6 @@ var writeCases = map[string]writeCase{
 		json:   "true\n",
 		human:  "Cancelled message 777\n",
 	},
-	"devices set-primary-tracker": {
-		args:   []string{"12345"},
-		routes: map[string]string{"PUT /device-service/deviceservice/device-info/12345/primary-activity-tracker": noContent},
-		json:   okOut,
-		human:  "Set device 12345 as the primary activity tracker\n",
-	},
 	"events add": {
 		args:     []string{"--name", "Race", "--date", "2024-06-01", "--type", "running"},
 		routes:   map[string]string{"POST /calendar-service/event": `{"id":11,"eventName":"Race","date":"2024-06-01"}`},

@@ -17,7 +17,16 @@ var devicesGroup = Group{Name: "devices", Help: "Manage devices.", Children: []N
 		Verb:     "get device settings", Output: JSON{},
 	},
 	Leaf{Name: "primary", Help: "Show primary training device.", Endpoint: "devices.primary-training", Verb: "get primary training device", Output: JSON{}},
-	Custom{Name: "set-primary-tracker", Help: "Set the primary activity tracker (not the 'devices primary' training device).", Cmd: &DevicesSetPrimaryTrackerCmd{}},
+	Leaf{
+		Name: "set-primary-tracker", Help: "Set the primary activity tracker (not the 'devices primary' training device).",
+		Spec: argsOf(&struct {
+			DeviceID ID `arg:"" help:"Device ID (from 'devices list')."`
+		}{}),
+		Endpoint: "devices.set-primary-tracker",
+		Params:   Params{"deviceID": In("DeviceID")},
+		Verb:     "set primary activity tracker",
+		Output:   Write{Done: "Set device {DeviceID} as the primary activity tracker"},
+	},
 	Leaf{
 		Name: "solar", Help: "Show solar charging data for a device.",
 		Spec: argsOf(&struct {
@@ -50,23 +59,6 @@ var devicesMessagesGroup = Group{Name: "messages", Help: "List and cancel device
 	Leaf{Name: "list", Help: "List device messages.", Default: true, Endpoint: "devices.messages", Verb: "get device messages", Output: JSON{}},
 	Custom{Name: "cancel", Help: "Cancel a device message, such as a sent workout, before the device syncs.", Cmd: &DeviceMessageCancelCmd{}},
 }}
-
-// DevicesSetPrimaryTrackerCmd makes a device the primary activity tracker.
-type DevicesSetPrimaryTrackerCmd struct {
-	DeviceID ID `arg:"" help:"Device ID (from 'devices list')."`
-}
-
-func (c *DevicesSetPrimaryTrackerCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-	data, err := client.Call(g.Context, "devices.set-primary-tracker", map[string]string{"deviceID": string(c.DeviceID)}, nil)
-	if err != nil {
-		return fmt.Errorf("set primary activity tracker: %w", err)
-	}
-	return reportWrite(g, data, "Set device %s as the primary activity tracker", c.DeviceID)
-}
 
 // DeviceMessageCancelCmd cancels a pending device message.
 type DeviceMessageCancelCmd struct {
