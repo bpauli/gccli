@@ -23,16 +23,9 @@ const (
 	reportHealthSnapshot = "wellnessactivity"
 )
 
-// ReportFormat is a file format of a blood pressure report. Garmin offers
-// PDF and JSON and answers 400 to any other value, CSV included.
-type ReportFormat string
-
-const (
-	ReportPDF  ReportFormat = "PDF"
-	ReportJSON ReportFormat = "JSON"
-)
-
 // ReportPeriod is the layout of a blood pressure report, as Garmin names it.
+// It also fixes the range: Garmin answers DATA_NOT_FOUND when the dates do
+// not span Days() days, even if readings exist.
 type ReportPeriod string
 
 const (
@@ -41,6 +34,20 @@ const (
 	PeriodFourWeeks ReportPeriod = "FourWeeks"
 	PeriodYearly    ReportPeriod = "Yearly"
 )
+
+// Days is the length of the range that the period covers, end date included.
+func (p ReportPeriod) Days() int {
+	switch p {
+	case PeriodSevenDays:
+		return 7
+	case PeriodFourWeeks:
+		return 28
+	case PeriodYearly:
+		return 364
+	default:
+		return 1
+	}
+}
 
 // ReportPreferences are the profile settings the web app puts in a report
 // request: the language of the report and the date format of its tables.
@@ -87,13 +94,13 @@ type ReportRequest struct {
 }
 
 // BloodPressureReport asks for the blood pressure report of a date range.
-func BloodPressureReport(start, end string, period ReportPeriod, format ReportFormat, prefs ReportPreferences) ReportRequest {
+func BloodPressureReport(start, end string, period ReportPeriod, prefs ReportPreferences) ReportRequest {
 	return ReportRequest{
 		category: reportBloodPressure, start: start, end: end, locale: prefs.Locale,
 		body: map[string]any{
 			"contentToSkip":          []string{},
 			"reportSubCategory":      period,
-			"reportFormat":           format,
+			"reportFormat":           "PDF",
 			"requestedDateFormatKey": prefs.DateFormatKey,
 		},
 	}

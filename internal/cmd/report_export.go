@@ -3,47 +3,21 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/bpauli/gccli/internal/garminapi"
 )
 
-// BodyExportBloodPressureCmd saves the Garmin blood pressure report of a
-// date range as a PDF or JSON file.
+// BodyExportBloodPressureCmd saves the Garmin blood pressure report that
+// ends on a date. The period sets the layout and the length of the range.
 type BodyExportBloodPressureCmd struct {
-	StartDate Date    `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"start"`
-	EndDate   Date    `help:"End date (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:"" name:"end"`
-	Period    *string `help:"Report layout: daily, seven-days, four-weeks or yearly. Default: the shortest one that covers the range." enum:"daily,seven-days,four-weeks,yearly"`
-	Format    string  `help:"File format: pdf or json." default:"pdf" enum:"pdf,json"`
-	Output    string  `help:"Output file path (default: blood_pressure_{start}_{end}.{format})." short:"o"`
+	Period  string `help:"Report layout and range: daily (1 day), seven-days, four-weeks (28 days) or yearly (52 weeks)." default:"daily" enum:"daily,seven-days,four-weeks,yearly"`
+	EndDate Date   `help:"Last day of the report (YYYY-MM-DD, today, yesterday, 3d). Defaults to today." default:"today" name:"end"`
+	Output  string `help:"Output file path (default: blood_pressure_{period}_{end}.pdf)." short:"o"`
 }
 
 func (c *BodyExportBloodPressureCmd) Help() string {
-	return "Garmin creates the report and the command waits for it, up to two minutes. Garmin offers PDF and JSON only. An existing output file is overwritten. For the readings as data, use body blood-pressure."
-}
-
-func (c *BodyExportBloodPressureCmd) Validate() error {
-	if c.StartDate == "" || c.EndDate == "" {
-		return nil
-	}
-	_, err := c.days()
-	return err
-}
-
-func (c *BodyExportBloodPressureCmd) days() (int, error) {
-	start, err := time.Parse(time.DateOnly, string(c.StartDate))
-	if err != nil {
-		return 0, fmt.Errorf("--start: %w", err)
-	}
-	end, err := time.Parse(time.DateOnly, string(c.EndDate))
-	if err != nil {
-		return 0, fmt.Errorf("--end: %w", err)
-	}
-	if end.Before(start) {
-		return 0, fmt.Errorf("--end %s is before --start %s", c.EndDate, c.StartDate)
-	}
-	return int(end.Sub(start).Hours()/24) + 1, nil
+	return "Garmin creates the report and the command waits for it, up to two minutes. The report is a PDF: Garmin also accepts JSON as a format but returns a PDF for it. The period fixes the range, because Garmin answers DATA_NOT_FOUND for any other length. An existing output file is overwritten. For the readings as data, use body blood-pressure."
 }
 
 var bloodPressurePeriods = map[string]garminapi.ReportPeriod{
@@ -53,24 +27,14 @@ var bloodPressurePeriods = map[string]garminapi.ReportPeriod{
 	"yearly":     garminapi.PeriodYearly,
 }
 
-func (c *BodyExportBloodPressureCmd) period() garminapi.ReportPeriod {
-	if c.Period != nil {
-		return bloodPressurePeriods[*c.Period]
-	}
-	days, _ := c.days()
-	switch {
-	case days <= 1:
-		return garminapi.PeriodDaily
-	case days <= 7:
-		return garminapi.PeriodSevenDays
-	case days <= 28:
-		return garminapi.PeriodFourWeeks
-	default:
-		return garminapi.PeriodYearly
-	}
-}
-
 func (c *BodyExportBloodPressureCmd) Run(g *Globals) error {
+	end, err := time.Parse(time.DateOnly, string(c.EndDate))
+	if err != nil {
+		return fmt.Errorf("--end: %w", err)
+	}
+	period := bloodPressurePeriods[c.Period]
+	start := end.AddDate(0, 0, 1-period.Days()).Format(time.DateOnly)
+
 	client, err := resolveClient(g)
 	if err != nil {
 		return err
@@ -79,13 +43,11 @@ func (c *BodyExportBloodPressureCmd) Run(g *Globals) error {
 	if err != nil {
 		return fmt.Errorf("get profile settings: %w", err)
 	}
-	format := garminapi.ReportFormat(strings.ToUpper(c.Format))
-	req := garminapi.BloodPressureReport(string(c.StartDate), string(c.EndDate), c.period(), format, prefs)
 	out := c.Output
 	if out == "" {
-		out = fmt.Sprintf("blood_pressure_%s_%s.%s", c.StartDate, c.EndDate, c.Format)
+		out = fmt.Sprintf("blood_pressure_%s_%s.pdf", c.Period, c.EndDate)
 	}
-	return saveReport(g, client, req, out, "export blood pressure report")
+	return saveReport(g, client, garminapi.BloodPressureReport(start, string(c.EndDate), period, prefs), out, "export blood pressure report")
 }
 
 // HealthSnapshotReportCmd saves the Garmin PDF report of a Health Snapshot

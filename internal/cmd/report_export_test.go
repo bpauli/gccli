@@ -86,7 +86,7 @@ func TestBodyExportBloodPressureSavesTheReport(t *testing.T) {
 	out := filepath.Join(t.TempDir(), "bp.pdf")
 
 	code, stdout, stderr := runReportCommand(t, flow,
-		"body", "export-blood-pressure", "--start", "2026-10-21", "--end", "2026-10-27", "-o", out)
+		"body", "export-blood-pressure", "--period", "seven-days", "--end", "2026-10-27", "-o", out)
 
 	if code != 0 || stdout != "" {
 		t.Fatalf("exit %d, stdout %q, stderr %q", code, stdout, stderr)
@@ -106,48 +106,45 @@ func TestBodyExportBloodPressureSavesTheReport(t *testing.T) {
 	}
 }
 
-func TestBodyExportBloodPressureFormatAndDefaultFilename(t *testing.T) {
+func TestBodyExportBloodPressureDefaultsToTodayAndNamesTheFile(t *testing.T) {
 	flow := &reportFlow{status: "READY"}
 	dir := t.TempDir()
 	t.Chdir(dir)
 
-	code, _, stderr := runReportCommand(t, flow,
-		"body", "export-blood-pressure", "--start", "2026-10-27", "--end", "2026-10-27", "--format", "json")
+	code, _, stderr := runReportCommand(t, flow, "body", "export-blood-pressure", "--end", "2026-10-27")
 
 	if code != 0 {
 		t.Fatalf("exit %d, stderr %q", code, stderr)
 	}
-	if got, _ := os.ReadFile(filepath.Join(dir, "blood_pressure_2026-10-27_2026-10-27.json")); string(got) != "REPORT-BYTES" {
+	if got, _ := os.ReadFile(filepath.Join(dir, "blood_pressure_daily_2026-10-27.pdf")); string(got) != "REPORT-BYTES" {
 		t.Errorf("default file = %q", got)
 	}
-	if flow.initBody["reportFormat"] != "JSON" || flow.initBody["reportSubCategory"] != "Daily" {
-		t.Errorf("init body = %v, want JSON and Daily", flow.initBody)
+	if flow.initBody["reportSubCategory"] != "Daily" {
+		t.Errorf("reportSubCategory = %v, want Daily", flow.initBody["reportSubCategory"])
 	}
 }
 
-func TestBodyExportBloodPressurePeriod(t *testing.T) {
+func TestBodyExportBloodPressureRange(t *testing.T) {
 	tests := []struct {
-		name string
-		args []string
-		want string
+		period, sub, start string
 	}{
-		{"one day", []string{"--start", "2026-10-27", "--end", "2026-10-27"}, "Daily"},
-		{"two days", []string{"--start", "2026-10-26", "--end", "2026-10-27"}, "SevenDays"},
-		{"seven days", []string{"--start", "2026-10-21", "--end", "2026-10-27"}, "SevenDays"},
-		{"eight days", []string{"--start", "2026-10-20", "--end", "2026-10-27"}, "FourWeeks"},
-		{"28 days", []string{"--start", "2026-09-30", "--end", "2026-10-27"}, "FourWeeks"},
-		{"29 days", []string{"--start", "2026-09-29", "--end", "2026-10-27"}, "Yearly"},
-		{"flag wins", []string{"--start", "2026-10-27", "--end", "2026-10-27", "--period", "yearly"}, "Yearly"},
+		{"daily", "Daily", "2026-10-27"},
+		{"seven-days", "SevenDays", "2026-10-21"},
+		{"four-weeks", "FourWeeks", "2026-09-30"},
+		{"yearly", "Yearly", "2025-10-29"},
 	}
 	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
+		t.Run(tc.period, func(t *testing.T) {
 			flow := &reportFlow{status: "READY"}
-			args := append([]string{"body", "export-blood-pressure", "-o", filepath.Join(t.TempDir(), "x")}, tc.args...)
-			if code, _, stderr := runReportCommand(t, flow, args...); code != 0 {
+			out := filepath.Join(t.TempDir(), "x")
+			if code, _, stderr := runReportCommand(t, flow, "body", "export-blood-pressure", "--period", tc.period, "--end", "2026-10-27", "-o", out); code != 0 {
 				t.Fatalf("exit %d, stderr %q", code, stderr)
 			}
-			if flow.initBody["reportSubCategory"] != tc.want {
-				t.Errorf("reportSubCategory = %v, want %s", flow.initBody["reportSubCategory"], tc.want)
+			if want := "POST /reportexport-service/export/init/bloodPressure/" + tc.start + "/2026-10-27?locale=de"; flow.initRequest() != want {
+				t.Errorf("init = %q, want %q", flow.initRequest(), want)
+			}
+			if flow.initBody["reportSubCategory"] != tc.sub {
+				t.Errorf("reportSubCategory = %v, want %s", flow.initBody["reportSubCategory"], tc.sub)
 			}
 		})
 	}
@@ -161,7 +158,7 @@ func TestBodyExportBloodPressureWithoutDataKeepsTheOldFile(t *testing.T) {
 	}
 
 	code, stdout, stderr := runReportCommand(t, flow,
-		"body", "export-blood-pressure", "--start", "2020-01-01", "--end", "2020-01-01", "-o", out)
+		"body", "export-blood-pressure", "--end", "2020-01-01", "-o", out)
 
 	if code != 1 || stdout != "" {
 		t.Fatalf("exit %d, stdout %q, want 1 and no stdout", code, stdout)
@@ -178,7 +175,7 @@ func TestBodyExportBloodPressureJSONError(t *testing.T) {
 	flow := &reportFlow{status: "DATA_NOT_FOUND"}
 
 	code, stdout, stderr := runReportCommand(t, flow, "--json",
-		"body", "export-blood-pressure", "--start", "2020-01-01", "--end", "2020-01-01", "-o", filepath.Join(t.TempDir(), "x"))
+		"body", "export-blood-pressure", "--end", "2020-01-01", "-o", filepath.Join(t.TempDir(), "x"))
 
 	want := `{"error":{"code":"error","message":"export blood pressure report: Garmin has no data for this report (status DATA_NOT_FOUND)"}}`
 	if code != 1 || stdout != "" || strings.TrimSpace(stderr) != want {
@@ -190,7 +187,7 @@ func TestBodyExportBloodPressureRateLimited(t *testing.T) {
 	flow := &reportFlow{initCode: http.StatusTooManyRequests}
 
 	code, _, stderr := runReportCommand(t, flow,
-		"body", "export-blood-pressure", "--start", "2026-10-27", "--end", "2026-10-27", "-o", filepath.Join(t.TempDir(), "x"))
+		"body", "export-blood-pressure", "-o", filepath.Join(t.TempDir(), "x"))
 
 	if code != 5 {
 		t.Errorf("exit %d, want 5; stderr %q", code, stderr)
@@ -203,10 +200,9 @@ func TestBodyExportBloodPressureUsageErrors(t *testing.T) {
 		args []string
 		want string
 	}{
-		{"end before start", []string{"--start", "2026-10-27", "--end", "2026-10-26"}, "--end 2026-10-26 is before --start 2026-10-27"},
-		{"csv", []string{"--start", "2026-10-27", "--end", "2026-10-27", "--format", "csv"}, "--format must be one of"},
-		{"period", []string{"--start", "2026-10-27", "--end", "2026-10-27", "--period", "weekly"}, "--period must be one of"},
-		{"no range", nil, "missing flags: --end=DATE, --start=DATE"},
+		{"unknown period", []string{"--period", "weekly"}, "--period must be one of"},
+		{"no format flag, Garmin only makes PDF", []string{"--format", "csv"}, "unknown flag --format"},
+		{"no start flag, the period sets the range", []string{"--start", "2026-10-01"}, "unknown flag --start"},
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {

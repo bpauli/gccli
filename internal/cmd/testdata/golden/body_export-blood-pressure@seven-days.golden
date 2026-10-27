@@ -1,13 +1,11 @@
-A week as JSON: the layout defaults to SevenDays and the file gets the json extension.
+The seven-days period spans the 7 days that end on --end, and the file name carries the period.
 -- args --
 body
 export-blood-pressure
---start
-2026-10-09
+--period
+seven-days
 --end
 2026-10-15
---format
-json
 -- route GET /userprofile-service/userprofile/settings --
 {"preferredLocale":"de","dateFormat":{"formatKey":"ddmmyyyy"}}
 -- route POST /reportexport-service/export/init/bloodPressure/2026-10-09/2026-10-15?locale=de --
@@ -15,10 +13,10 @@ json
 -- route GET /reportexport-service/export/reportStatus/abc123== --
 {"progress":{"status":"READY","responseMessage":null},"reportId":"abc123=="}
 -- route GET /reportexport-service/export/reportContent/abc123== --
-{"measurements":[]}
+%PDF-1.4 report
 -- table stdout --
 -- table stderr --
-Downloaded blood_pressure_2026-10-09_2026-10-15.json (20 bytes)
+Downloaded blood_pressure_seven-days_2026-10-15.pdf (16 bytes)
 -- table exit --
 0
 -- table requests --
@@ -26,7 +24,7 @@ GET /userprofile-service/userprofile/settings
 POST /reportexport-service/export/init/bloodPressure/2026-10-09/2026-10-15?locale=de
   {
     "contentToSkip": [],
-    "reportFormat": "JSON",
+    "reportFormat": "PDF",
     "reportSubCategory": "SevenDays",
     "requestedDateFormatKey": "ddmmyyyy"
   }
@@ -34,7 +32,7 @@ GET /reportexport-service/export/reportStatus/abc123==
 GET /reportexport-service/export/reportContent/abc123==
 -- plain stdout --
 -- plain stderr --
-Downloaded blood_pressure_2026-10-09_2026-10-15.json (20 bytes)
+Downloaded blood_pressure_seven-days_2026-10-15.pdf (16 bytes)
 -- plain exit --
 0
 -- plain requests --
@@ -42,7 +40,7 @@ GET /userprofile-service/userprofile/settings
 POST /reportexport-service/export/init/bloodPressure/2026-10-09/2026-10-15?locale=de
   {
     "contentToSkip": [],
-    "reportFormat": "JSON",
+    "reportFormat": "PDF",
     "reportSubCategory": "SevenDays",
     "requestedDateFormatKey": "ddmmyyyy"
   }
@@ -50,7 +48,7 @@ GET /reportexport-service/export/reportStatus/abc123==
 GET /reportexport-service/export/reportContent/abc123==
 -- plain-header stdout --
 -- plain-header stderr --
-Downloaded blood_pressure_2026-10-09_2026-10-15.json (20 bytes)
+Downloaded blood_pressure_seven-days_2026-10-15.pdf (16 bytes)
 -- plain-header exit --
 0
 -- plain-header requests --
@@ -58,7 +56,7 @@ GET /userprofile-service/userprofile/settings
 POST /reportexport-service/export/init/bloodPressure/2026-10-09/2026-10-15?locale=de
   {
     "contentToSkip": [],
-    "reportFormat": "JSON",
+    "reportFormat": "PDF",
     "reportSubCategory": "SevenDays",
     "requestedDateFormatKey": "ddmmyyyy"
   }
@@ -66,7 +64,7 @@ GET /reportexport-service/export/reportStatus/abc123==
 GET /reportexport-service/export/reportContent/abc123==
 -- json stdout --
 -- json stderr --
-Downloaded blood_pressure_2026-10-09_2026-10-15.json (20 bytes)
+Downloaded blood_pressure_seven-days_2026-10-15.pdf (16 bytes)
 -- json exit --
 0
 -- json requests --
@@ -74,7 +72,7 @@ GET /userprofile-service/userprofile/settings
 POST /reportexport-service/export/init/bloodPressure/2026-10-09/2026-10-15?locale=de
   {
     "contentToSkip": [],
-    "reportFormat": "JSON",
+    "reportFormat": "PDF",
     "reportSubCategory": "SevenDays",
     "requestedDateFormatKey": "ddmmyyyy"
   }

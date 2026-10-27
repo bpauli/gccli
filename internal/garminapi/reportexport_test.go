@@ -68,7 +68,7 @@ func TestExportReportBloodPressure(t *testing.T) {
 	recordWaits(client, &waits)
 
 	got, err := client.ExportReport(context.Background(),
-		BloodPressureReport("2026-10-27", "2026-10-27", PeriodDaily, ReportPDF, ReportPreferences{Locale: "de", DateFormatKey: "ddmmyyyy"}))
+		BloodPressureReport("2026-10-27", "2026-10-27", PeriodDaily, ReportPreferences{Locale: "de", DateFormatKey: "ddmmyyyy"}))
 	if err != nil || string(got) != "%PDF-1.4 body" {
 		t.Fatalf("ExportReport = %q, %v", got, err)
 	}

@@ -1,21 +1,21 @@
-An end before the start is a usage error at parse time, with no request.
+An unknown period is a usage error at parse time, with no request.
 -- args --
 body
 export-blood-pressure
---start
-2026-10-15
---end
-2026-10-14
+--period
+weekly
 
 -- table stdout --
 -- table stderr --
-Usage: gccli body export-blood-pressure --start=DATE --end=DATE [flags]
+Usage: gccli body export-blood-pressure [flags]
 
-Save the blood pressure report of a date range as PDF or JSON.
+Save the blood pressure report as a PDF.
 
 Garmin creates the report and the command waits for it, up to two minutes.
-Garmin offers PDF and JSON only. An existing output file is overwritten. For the
-readings as data, use body blood-pressure.
+The report is a PDF: Garmin also accepts JSON as a format but returns a PDF for
+it. The period fixes the range, because Garmin answers DATA_NOT_FOUND for any
+other length. An existing output file is overwritten. For the readings as data,
+use body blood-pressure.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -31,14 +31,12 @@ Flags:
                           ($GCCLI_UNITS).
       --version           Print version information.
 
-      --start=DATE        Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
-      --end=DATE          End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
-      --period=PERIOD     Report layout: daily, seven-days, four-weeks or
-                          yearly. Default: the shortest one that covers the
-                          range.
-      --format="pdf"      File format: pdf or json.
+      --period="daily"    Report layout and range: daily (1 day), seven-days,
+                          four-weeks (28 days) or yearly (52 weeks).
+      --end="today"       Last day of the report (YYYY-MM-DD, today, yesterday,
+                          3d). Defaults to today.
   -o, --output=STRING     Output file path (default:
-                          blood_pressure_{start}_{end}.{format}).
+                          blood_pressure_{period}_{end}.pdf).
 
 gccli: error: unexpected argument 
 -- table exit --
@@ -46,13 +44,15 @@ gccli: error: unexpected argument
 -- table requests --
 -- plain stdout --
 -- plain stderr --
-Usage: gccli body export-blood-pressure --start=DATE --end=DATE [flags]
+Usage: gccli body export-blood-pressure [flags]
 
-Save the blood pressure report of a date range as PDF or JSON.
+Save the blood pressure report as a PDF.
 
 Garmin creates the report and the command waits for it, up to two minutes.
-Garmin offers PDF and JSON only. An existing output file is overwritten. For the
-readings as data, use body blood-pressure.
+The report is a PDF: Garmin also accepts JSON as a format but returns a PDF for
+it. The period fixes the range, because Garmin answers DATA_NOT_FOUND for any
+other length. An existing output file is overwritten. For the readings as data,
+use body blood-pressure.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -68,14 +68,12 @@ Flags:
                           ($GCCLI_UNITS).
       --version           Print version information.
 
-      --start=DATE        Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
-      --end=DATE          End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
-      --period=PERIOD     Report layout: daily, seven-days, four-weeks or
-                          yearly. Default: the shortest one that covers the
-                          range.
-      --format="pdf"      File format: pdf or json.
+      --period="daily"    Report layout and range: daily (1 day), seven-days,
+                          four-weeks (28 days) or yearly (52 weeks).
+      --end="today"       Last day of the report (YYYY-MM-DD, today, yesterday,
+                          3d). Defaults to today.
   -o, --output=STRING     Output file path (default:
-                          blood_pressure_{start}_{end}.{format}).
+                          blood_pressure_{period}_{end}.pdf).
 
 gccli: error: unexpected argument 
 -- plain exit --
@@ -83,13 +81,15 @@ gccli: error: unexpected argument
 -- plain requests --
 -- plain-header stdout --
 -- plain-header stderr --
-Usage: gccli body export-blood-pressure --start=DATE --end=DATE [flags]
+Usage: gccli body export-blood-pressure [flags]
 
-Save the blood pressure report of a date range as PDF or JSON.
+Save the blood pressure report as a PDF.
 
 Garmin creates the report and the command waits for it, up to two minutes.
-Garmin offers PDF and JSON only. An existing output file is overwritten. For the
-readings as data, use body blood-pressure.
+The report is a PDF: Garmin also accepts JSON as a format but returns a PDF for
+it. The period fixes the range, because Garmin answers DATA_NOT_FOUND for any
+other length. An existing output file is overwritten. For the readings as data,
+use body blood-pressure.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -105,14 +105,12 @@ Flags:
                           ($GCCLI_UNITS).
       --version           Print version information.
 
-      --start=DATE        Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
-      --end=DATE          End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
-      --period=PERIOD     Report layout: daily, seven-days, four-weeks or
-                          yearly. Default: the shortest one that covers the
-                          range.
-      --format="pdf"      File format: pdf or json.
+      --period="daily"    Report layout and range: daily (1 day), seven-days,
+                          four-weeks (28 days) or yearly (52 weeks).
+      --end="today"       Last day of the report (YYYY-MM-DD, today, yesterday,
+                          3d). Defaults to today.
   -o, --output=STRING     Output file path (default:
-                          blood_pressure_{start}_{end}.{format}).
+                          blood_pressure_{period}_{end}.pdf).
 
 gccli: error: unexpected argument 
 -- plain-header exit --
@@ -120,13 +118,15 @@ gccli: error: unexpected argument
 -- plain-header requests --
 -- json stdout --
 -- json stderr --
-Usage: gccli body export-blood-pressure --start=DATE --end=DATE [flags]
+Usage: gccli body export-blood-pressure [flags]
 
-Save the blood pressure report of a date range as PDF or JSON.
+Save the blood pressure report as a PDF.
 
 Garmin creates the report and the command waits for it, up to two minutes.
-Garmin offers PDF and JSON only. An existing output file is overwritten. For the
-readings as data, use body blood-pressure.
+The report is a PDF: Garmin also accepts JSON as a format but returns a PDF for
+it. The period fixes the range, because Garmin answers DATA_NOT_FOUND for any
+other length. An existing output file is overwritten. For the readings as data,
+use body blood-pressure.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -142,14 +142,12 @@ Flags:
                           ($GCCLI_UNITS).
       --version           Print version information.
 
-      --start=DATE        Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
-      --end=DATE          End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
-      --period=PERIOD     Report layout: daily, seven-days, four-weeks or
-                          yearly. Default: the shortest one that covers the
-                          range.
-      --format="pdf"      File format: pdf or json.
+      --period="daily"    Report layout and range: daily (1 day), seven-days,
+                          four-weeks (28 days) or yearly (52 weeks).
+      --end="today"       Last day of the report (YYYY-MM-DD, today, yesterday,
+                          3d). Defaults to today.
   -o, --output=STRING     Output file path (default:
-                          blood_pressure_{start}_{end}.{format}).
+                          blood_pressure_{period}_{end}.pdf).
 
 gccli: error: unexpected argument 
 -- json exit --

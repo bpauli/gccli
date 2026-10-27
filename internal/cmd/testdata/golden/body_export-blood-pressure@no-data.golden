@@ -1,11 +1,7 @@
-A range without readings ends in DATA_NOT_FOUND: exit 1, no content request and no file.
+A day without readings ends in DATA_NOT_FOUND: exit 1, no content request and no file.
 -- args --
 body
 export-blood-pressure
---start
-2026-10-15
---end
-2026-10-15
 -- route GET /userprofile-service/userprofile/settings --
 {"preferredLocale":"de","dateFormat":{"formatKey":"ddmmyyyy"}}
 -- route POST /reportexport-service/export/init/bloodPressure/2026-10-15/2026-10-15?locale=de --

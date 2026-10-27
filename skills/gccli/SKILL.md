@@ -411,12 +411,10 @@ Date shortcuts
 - `gccli body blood-pressure --start=DATE --end=DATE`: Show blood pressure data.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
-- `gccli body export-blood-pressure --start=DATE --end=DATE [flags]`: Save the blood pressure report of a date range as PDF or JSON.
-  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
-  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
-  - `--period=PERIOD`: Report layout: daily, seven-days, four-weeks or yearly. Default: the shortest one that covers the range.
-  - `--format="pdf"`: File format: pdf or json.
-  - `-o, --output=STRING`: Output file path (default: blood_pressure_{start}_{end}.{format}).
+- `gccli body export-blood-pressure [flags]`: Save the blood pressure report as a PDF.
+  - `--period="daily"`: Report layout and range: daily (1 day), seven-days, four-weeks (28 days) or yearly (52 weeks).
+  - `--end="today"`: Last day of the report (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
+  - `-o, --output=STRING`: Output file path (default: blood_pressure_{period}_{end}.pdf).
 - `gccli body add-blood-pressure --systolic=INT --diastolic=INT --pulse=INT [flags]`: Add a blood pressure measurement.
   - `--systolic=INT`: Systolic pressure (mmHg).
   - `--diastolic=INT`: Diastolic pressure (mmHg).
@@ -1155,7 +1153,7 @@ Notes
 - `activity trim <id> --from <duration> --to <duration>` keeps only that part of an activity. Both times count from the activity start, in the form `2m` or `1h5m`. Give at least one: `--from` defaults to the start and `--to` to the end. Garmin applies the trim in a few seconds, and the activity keeps its ID. `activity restore <id>` brings back the original. Both are for single-sport activities only, not for multisport activities.
 - `activities privacy set <level>` changes the privacy of every past activity, and with `--type running,cycling` of every past activity of those types. The types are top-level activity type keys. There is no bulk undo, so confirm with the user first, then pass `--force`. Garmin applies the change within minutes, and `activities privacy status` shows the progress. To change one activity, use `activity privacy <id> <level>`.
 - `health snapshots list` (also as `health snapshots`) lists the Health Snapshot sessions up to `--until` (default today). A Health Snapshot is a 2-minute session that newer watches record. `health snapshots show <date> <uuid>` and `health snapshots epochs <uuid>` take the date and `activityUuid.uuid` of a list item. `show` prints `{}` for a UUID that has no session, because Garmin answers 204. ECG recordings are not available: Garmin does not route the ECG service on the API host that gccli uses.
-- `body export-blood-pressure --start --end` saves the Garmin blood pressure report of a range to a file (`--format pdf` by default, or `json`; Garmin offers no CSV). The layout (`--period`) defaults to the shortest of daily, seven-days, four-weeks and yearly that covers the range. `health snapshots report <date> <uuid>` saves the PDF report of a Health Snapshot session. Both ask Garmin to create the report, wait for it for up to two minutes, and print `Downloaded <file> (<n> bytes)` on stderr. They write nothing to stdout, they overwrite an existing file, and they leave it alone when the export fails. A range without readings fails with exit 1 and `status DATA_NOT_FOUND`. Garmin limits how many reports an account can start in a short time and then answers 429, which is exit 5.
+- `body export-blood-pressure` saves the Garmin blood pressure report as a PDF. `--period` is `daily` (default), `seven-days`, `four-weeks` or `yearly` and fixes the range that ends on `--end` (default today): 1, 7, 28 or 364 days. Garmin answers DATA_NOT_FOUND for any other length, so there is no `--start`. Garmin has no CSV, and its JSON format also returns a PDF, so the command offers no format flag. `health snapshots report <date> <uuid>` saves the PDF report of a Health Snapshot session. Both ask Garmin to create the report, wait for it for up to two minutes, and print `Downloaded <file> (<n> bytes)` on stderr. They write nothing to stdout, they overwrite an existing file, and they leave it alone when the export fails. A report without readings fails with exit 1 and `status DATA_NOT_FOUND`. Garmin limits how many reports an account can start per hour (10 in our tests) and then answers 429, which is exit 5.
 - Delete commands fail without a terminal unless `--force` is set. Confirm with the user first, then pass `--force`.
 - Download formats: FIT (default), GPX, TCX, KML, CSV.
 - Workout step format: `type:duration[@target:low-high]`. Types: warmup, run, recovery, cooldown; targets: pace (min:sec), hr (bpm), power (watts), cadence.

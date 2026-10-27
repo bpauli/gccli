@@ -208,8 +208,7 @@ Commands:
                                    muscle mass, etc.) via FIT upload.
   body delete-weight               Delete a weigh-in entry.
   body blood-pressure              Show blood pressure data.
-  body export-blood-pressure       Save the blood pressure report of a date
-                                   range as PDF or JSON.
+  body export-blood-pressure       Save the blood pressure report as a PDF.
   body add-blood-pressure          Add a blood pressure measurement.
   body delete-blood-pressure       Delete a blood pressure entry.
   body glucose                     Show glucose readings for a date.
@@ -1484,8 +1483,7 @@ Commands:
                                 muscle mass, etc.) via FIT upload.
   body delete-weight            Delete a weigh-in entry.
   body blood-pressure           Show blood pressure data.
-  body export-blood-pressure    Save the blood pressure report of a date range
-                                as PDF or JSON.
+  body export-blood-pressure    Save the blood pressure report as a PDF.
   body add-blood-pressure       Add a blood pressure measurement.
   body delete-blood-pressure    Delete a blood pressure entry.
   body glucose                  Show glucose readings for a date.

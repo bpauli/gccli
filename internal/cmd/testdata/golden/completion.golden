@@ -168,7 +168,6 @@ _gccli_completions() {
             "health progress summary --aggregation") COMPREPLY=($(compgen -W 'daily weekly monthly yearly all' -- "$cur")) ;;
             "body add-weight --unit") COMPREPLY=($(compgen -W 'kg lbs' -- "$cur")) ;;
             "body export-blood-pressure --period") COMPREPLY=($(compgen -W 'daily seven-days four-weeks yearly' -- "$cur")) ;;
-            "body export-blood-pressure --format") COMPREPLY=($(compgen -W 'pdf json' -- "$cur")) ;;
             "gear add --type") COMPREPLY=($(compgen -W 'shoes bike other' -- "$cur")) ;;
             "goals list --status") COMPREPLY=($(compgen -W 'active future past' -- "$cur")) ;;
             "goals add --period") COMPREPLY=($(compgen -W 'seven-days thirty-days one-month annual' -- "$cur")) ;;
@@ -315,7 +314,7 @@ _gccli_completions() {
         "body add-composition") COMPREPLY=($(compgen -W '--body-fat --percent-hydration --visceral-fat-mass --bone-mass --muscle-mass --basal-met --active-met --physique-rating --metabolic-age --visceral-fat-rating --bmi' -- "$cur")) ;;
         "body delete-weight") COMPREPLY=($(compgen -W '--date --force -f' -- "$cur")) ;;
         "body blood-pressure") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
-        "body export-blood-pressure") COMPREPLY=($(compgen -W '--start --end --period --format --output -o' -- "$cur")) ;;
+        "body export-blood-pressure") COMPREPLY=($(compgen -W '--period --end --output -o' -- "$cur")) ;;
         "body add-blood-pressure") COMPREPLY=($(compgen -W '--systolic --diastolic --pulse --notes' -- "$cur")) ;;
         "body delete-blood-pressure") COMPREPLY=($(compgen -W '--date --force -f' -- "$cur")) ;;
         "devices") COMPREPLY=($(compgen -W 'list settings primary set-primary-tracker solar alarms last-used sensors backups historical messages' -- "$cur")) ;;
@@ -611,7 +610,6 @@ _gccli_completions() {
             "health progress summary --aggregation") COMPREPLY=($(compgen -W 'daily weekly monthly yearly all' -- "$cur")) ;;
             "body add-weight --unit") COMPREPLY=($(compgen -W 'kg lbs' -- "$cur")) ;;
             "body export-blood-pressure --period") COMPREPLY=($(compgen -W 'daily seven-days four-weeks yearly' -- "$cur")) ;;
-            "body export-blood-pressure --format") COMPREPLY=($(compgen -W 'pdf json' -- "$cur")) ;;
             "gear add --type") COMPREPLY=($(compgen -W 'shoes bike other' -- "$cur")) ;;
             "goals list --status") COMPREPLY=($(compgen -W 'active future past' -- "$cur")) ;;
             "goals add --period") COMPREPLY=($(compgen -W 'seven-days thirty-days one-month annual' -- "$cur")) ;;
@@ -758,7 +756,7 @@ _gccli_completions() {
         "body add-composition") COMPREPLY=($(compgen -W '--body-fat --percent-hydration --visceral-fat-mass --bone-mass --muscle-mass --basal-met --active-met --physique-rating --metabolic-age --visceral-fat-rating --bmi' -- "$cur")) ;;
         "body delete-weight") COMPREPLY=($(compgen -W '--date --force -f' -- "$cur")) ;;
         "body blood-pressure") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
-        "body export-blood-pressure") COMPREPLY=($(compgen -W '--start --end --period --format --output -o' -- "$cur")) ;;
+        "body export-blood-pressure") COMPREPLY=($(compgen -W '--period --end --output -o' -- "$cur")) ;;
         "body add-blood-pressure") COMPREPLY=($(compgen -W '--systolic --diastolic --pulse --notes' -- "$cur")) ;;
         "body delete-blood-pressure") COMPREPLY=($(compgen -W '--date --force -f' -- "$cur")) ;;
         "devices") COMPREPLY=($(compgen -W 'list settings primary set-primary-tracker solar alarms last-used sensors backups historical messages' -- "$cur")) ;;
@@ -1054,7 +1052,6 @@ _gccli_completions() {
             "health progress summary --aggregation") COMPREPLY=($(compgen -W 'daily weekly monthly yearly all' -- "$cur")) ;;
             "body add-weight --unit") COMPREPLY=($(compgen -W 'kg lbs' -- "$cur")) ;;
             "body export-blood-pressure --period") COMPREPLY=($(compgen -W 'daily seven-days four-weeks yearly' -- "$cur")) ;;
-            "body export-blood-pressure --format") COMPREPLY=($(compgen -W 'pdf json' -- "$cur")) ;;
             "gear add --type") COMPREPLY=($(compgen -W 'shoes bike other' -- "$cur")) ;;
             "goals list --status") COMPREPLY=($(compgen -W 'active future past' -- "$cur")) ;;
             "goals add --period") COMPREPLY=($(compgen -W 'seven-days thirty-days one-month annual' -- "$cur")) ;;
@@ -1201,7 +1198,7 @@ _gccli_completions() {
         "body add-composition") COMPREPLY=($(compgen -W '--body-fat --percent-hydration --visceral-fat-mass --bone-mass --muscle-mass --basal-met --active-met --physique-rating --metabolic-age --visceral-fat-rating --bmi' -- "$cur")) ;;
         "body delete-weight") COMPREPLY=($(compgen -W '--date --force -f' -- "$cur")) ;;
         "body blood-pressure") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
-        "body export-blood-pressure") COMPREPLY=($(compgen -W '--start --end --period --format --output -o' -- "$cur")) ;;
+        "body export-blood-pressure") COMPREPLY=($(compgen -W '--period --end --output -o' -- "$cur")) ;;
         "body add-blood-pressure") COMPREPLY=($(compgen -W '--systolic --diastolic --pulse --notes' -- "$cur")) ;;
         "body delete-blood-pressure") COMPREPLY=($(compgen -W '--date --force -f' -- "$cur")) ;;
         "devices") COMPREPLY=($(compgen -W 'list settings primary set-primary-tracker solar alarms last-used sensors backups historical messages' -- "$cur")) ;;
@@ -1497,7 +1494,6 @@ _gccli_completions() {
             "health progress summary --aggregation") COMPREPLY=($(compgen -W 'daily weekly monthly yearly all' -- "$cur")) ;;
             "body add-weight --unit") COMPREPLY=($(compgen -W 'kg lbs' -- "$cur")) ;;
             "body export-blood-pressure --period") COMPREPLY=($(compgen -W 'daily seven-days four-weeks yearly' -- "$cur")) ;;
-            "body export-blood-pressure --format") COMPREPLY=($(compgen -W 'pdf json' -- "$cur")) ;;
             "gear add --type") COMPREPLY=($(compgen -W 'shoes bike other' -- "$cur")) ;;
             "goals list --status") COMPREPLY=($(compgen -W 'active future past' -- "$cur")) ;;
             "goals add --period") COMPREPLY=($(compgen -W 'seven-days thirty-days one-month annual' -- "$cur")) ;;
@@ -1644,7 +1640,7 @@ _gccli_completions() {
         "body add-composition") COMPREPLY=($(compgen -W '--body-fat --percent-hydration --visceral-fat-mass --bone-mass --muscle-mass --basal-met --active-met --physique-rating --metabolic-age --visceral-fat-rating --bmi' -- "$cur")) ;;
         "body delete-weight") COMPREPLY=($(compgen -W '--date --force -f' -- "$cur")) ;;
         "body blood-pressure") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
-        "body export-blood-pressure") COMPREPLY=($(compgen -W '--start --end --period --format --output -o' -- "$cur")) ;;
+        "body export-blood-pressure") COMPREPLY=($(compgen -W '--period --end --output -o' -- "$cur")) ;;
         "body add-blood-pressure") COMPREPLY=($(compgen -W '--systolic --diastolic --pulse --notes' -- "$cur")) ;;
         "body delete-blood-pressure") COMPREPLY=($(compgen -W '--date --force -f' -- "$cur")) ;;
         "devices") COMPREPLY=($(compgen -W 'list settings primary set-primary-tracker solar alarms last-used sensors backups historical messages' -- "$cur")) ;;
