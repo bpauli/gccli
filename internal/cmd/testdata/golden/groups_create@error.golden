@@ -1,0 +1,111 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+groups
+create
+E2E Club
+-- route POST /group-service/group 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+create group: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+POST /group-service/group
+  {
+    "activityFeedTypes": [],
+    "defaultImageName": "running_01",
+    "facebookUrl": "",
+    "featureTypes": [],
+    "groupDescription": "",
+    "groupName": "E2E Club",
+    "groupPrivacy": "PUBLIC",
+    "groupVisibility": "VISIBLE",
+    "leaderboardTypes": [],
+    "location": "",
+    "otherPrimaryActivity": "",
+    "primaryActivities": [],
+    "profileImageUrlLarge": null,
+    "profileImageUrlMedium": null,
+    "profileImageUrlSmall": null,
+    "twitterUrl": "",
+    "websiteUrl": ""
+  }
+-- plain stdout --
+-- plain stderr --
+create group: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+POST /group-service/group
+  {
+    "activityFeedTypes": [],
+    "defaultImageName": "running_01",
+    "facebookUrl": "",
+    "featureTypes": [],
+    "groupDescription": "",
+    "groupName": "E2E Club",
+    "groupPrivacy": "PUBLIC",
+    "groupVisibility": "VISIBLE",
+    "leaderboardTypes": [],
+    "location": "",
+    "otherPrimaryActivity": "",
+    "primaryActivities": [],
+    "profileImageUrlLarge": null,
+    "profileImageUrlMedium": null,
+    "profileImageUrlSmall": null,
+    "twitterUrl": "",
+    "websiteUrl": ""
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+create group: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+POST /group-service/group
+  {
+    "activityFeedTypes": [],
+    "defaultImageName": "running_01",
+    "facebookUrl": "",
+    "featureTypes": [],
+    "groupDescription": "",
+    "groupName": "E2E Club",
+    "groupPrivacy": "PUBLIC",
+    "groupVisibility": "VISIBLE",
+    "leaderboardTypes": [],
+    "location": "",
+    "otherPrimaryActivity": "",
+    "primaryActivities": [],
+    "profileImageUrlLarge": null,
+    "profileImageUrlMedium": null,
+    "profileImageUrlSmall": null,
+    "twitterUrl": "",
+    "websiteUrl": ""
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"create group: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+POST /group-service/group
+  {
+    "activityFeedTypes": [],
+    "defaultImageName": "running_01",
+    "facebookUrl": "",
+    "featureTypes": [],
+    "groupDescription": "",
+    "groupName": "E2E Club",
+    "groupPrivacy": "PUBLIC",
+    "groupVisibility": "VISIBLE",
+    "leaderboardTypes": [],
+    "location": "",
+    "otherPrimaryActivity": "",
+    "primaryActivities": [],
+    "profileImageUrlLarge": null,
+    "profileImageUrlMedium": null,
+    "profileImageUrlSmall": null,
+    "twitterUrl": "",
+    "websiteUrl": ""
+  }

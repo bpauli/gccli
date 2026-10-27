@@ -843,6 +843,23 @@ Date shortcuts
 - `gccli groups leave <id> [flags]`: Leave a group.
   - `<id>`: Group ID.
   - `-f, --force`: Skip confirmation prompt.
+- `gccli groups create <name> [flags]`: Create a group.
+  - `<name>`: Group name.
+  - `--description=STRING`: Group description.
+  - `--location=STRING`: Group location.
+  - `--visibility="VISIBLE"`: Who can find the group. A hidden group is invite-only. One of: VISIBLE, HIDDEN.
+  - `--privacy=PRIVACY`: Who can join: PUBLIC, PRIVATE or INVITE. Defaults to PUBLIC, or INVITE for a hidden group.
+  - `--image="running_01"`: Default group image. One of: running_01, roadcycling_01, mountain_cycling_01, swimming_01, health_fitness_01, golf_01, para_sports_01.
+- `gccli groups edit <id> [flags]`: Edit a group you own.
+  - `<id>`: Group ID.
+  - `--name=STRING`: New name.
+  - `--description=STRING`: New description. An empty text clears it.
+  - `--location=STRING`: New location. An empty text clears it.
+  - `--visibility=VISIBILITY`: Who can find the group. Hiding a group makes it invite-only. One of: VISIBLE, HIDDEN.
+  - `--privacy=PRIVACY`: Who can join: PUBLIC, PRIVATE or INVITE.
+- `gccli groups delete <id> [flags]`: Delete a group you own.
+  - `<id>`: Group ID.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli notifications list [flags]`: List notifications. Also runs as `gccli notifications [flags]`.
   - `--limit=50`: Maximum number of notifications to return.
   - `--cursor=STRING`: Start after this cursor. Use pagination.nextCursor from the JSON output of the last page.

@@ -1,0 +1,112 @@
+Garmin answers without an id: the command still reports the creation.
+-- args --
+groups
+create
+E2E Club
+-- route POST /group-service/group 204 --
+-- table stdout --
+-- table stderr --
+Created group "E2E Club"
+-- table exit --
+0
+-- table requests --
+POST /group-service/group
+  {
+    "activityFeedTypes": [],
+    "defaultImageName": "running_01",
+    "facebookUrl": "",
+    "featureTypes": [],
+    "groupDescription": "",
+    "groupName": "E2E Club",
+    "groupPrivacy": "PUBLIC",
+    "groupVisibility": "VISIBLE",
+    "leaderboardTypes": [],
+    "location": "",
+    "otherPrimaryActivity": "",
+    "primaryActivities": [],
+    "profileImageUrlLarge": null,
+    "profileImageUrlMedium": null,
+    "profileImageUrlSmall": null,
+    "twitterUrl": "",
+    "websiteUrl": ""
+  }
+-- plain stdout --
+-- plain stderr --
+Created group "E2E Club"
+-- plain exit --
+0
+-- plain requests --
+POST /group-service/group
+  {
+    "activityFeedTypes": [],
+    "defaultImageName": "running_01",
+    "facebookUrl": "",
+    "featureTypes": [],
+    "groupDescription": "",
+    "groupName": "E2E Club",
+    "groupPrivacy": "PUBLIC",
+    "groupVisibility": "VISIBLE",
+    "leaderboardTypes": [],
+    "location": "",
+    "otherPrimaryActivity": "",
+    "primaryActivities": [],
+    "profileImageUrlLarge": null,
+    "profileImageUrlMedium": null,
+    "profileImageUrlSmall": null,
+    "twitterUrl": "",
+    "websiteUrl": ""
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Created group "E2E Club"
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /group-service/group
+  {
+    "activityFeedTypes": [],
+    "defaultImageName": "running_01",
+    "facebookUrl": "",
+    "featureTypes": [],
+    "groupDescription": "",
+    "groupName": "E2E Club",
+    "groupPrivacy": "PUBLIC",
+    "groupVisibility": "VISIBLE",
+    "leaderboardTypes": [],
+    "location": "",
+    "otherPrimaryActivity": "",
+    "primaryActivities": [],
+    "profileImageUrlLarge": null,
+    "profileImageUrlMedium": null,
+    "profileImageUrlSmall": null,
+    "twitterUrl": "",
+    "websiteUrl": ""
+  }
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /group-service/group
+  {
+    "activityFeedTypes": [],
+    "defaultImageName": "running_01",
+    "facebookUrl": "",
+    "featureTypes": [],
+    "groupDescription": "",
+    "groupName": "E2E Club",
+    "groupPrivacy": "PUBLIC",
+    "groupVisibility": "VISIBLE",
+    "leaderboardTypes": [],
+    "location": "",
+    "otherPrimaryActivity": "",
+    "primaryActivities": [],
+    "profileImageUrlLarge": null,
+    "profileImageUrlMedium": null,
+    "profileImageUrlSmall": null,
+    "twitterUrl": "",
+    "websiteUrl": ""
+  }

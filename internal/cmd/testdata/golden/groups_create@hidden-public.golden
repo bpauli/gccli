@@ -1,0 +1,153 @@
+A hidden group cannot be public: usage error, no request.
+-- args --
+groups
+create
+E2E Club
+--visibility
+HIDDEN
+--privacy
+PUBLIC
+-- table stdout --
+-- table stderr --
+Usage: gccli groups create <name> [flags]
+
+Create a group.
+
+Arguments:
+  <name>    Group name.
+
+Flags:
+  -h, --help                    Show context-sensitive help.
+  -j, --json                    Output as JSON ($GCCLI_JSON).
+      --plain                   Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                  Print the column names as the first line of
+                                --plain output ($GCCLI_HEADER).
+      --color="auto"            Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING          Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"            Unit system for distances, speeds, paces,
+                                elevations and weights in table and plain
+                                output: auto (Garmin profile), metric,
+                                statute_us, statute_uk ($GCCLI_UNITS).
+      --version                 Print version information.
+
+      --description=STRING      Group description.
+      --location=STRING         Group location.
+      --visibility="VISIBLE"    Who can find the group. A hidden group is
+                                invite-only.
+      --privacy=PRIVACY         Who can join: PUBLIC, PRIVATE or INVITE.
+                                Defaults to PUBLIC, or INVITE for a hidden
+                                group.
+      --image="running_01"      Default group image.
+
+gccli: error: groups create: a hidden group is invite-only: use --privacy INVITE or --visibility VISIBLE
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli groups create <name> [flags]
+
+Create a group.
+
+Arguments:
+  <name>    Group name.
+
+Flags:
+  -h, --help                    Show context-sensitive help.
+  -j, --json                    Output as JSON ($GCCLI_JSON).
+      --plain                   Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                  Print the column names as the first line of
+                                --plain output ($GCCLI_HEADER).
+      --color="auto"            Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING          Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"            Unit system for distances, speeds, paces,
+                                elevations and weights in table and plain
+                                output: auto (Garmin profile), metric,
+                                statute_us, statute_uk ($GCCLI_UNITS).
+      --version                 Print version information.
+
+      --description=STRING      Group description.
+      --location=STRING         Group location.
+      --visibility="VISIBLE"    Who can find the group. A hidden group is
+                                invite-only.
+      --privacy=PRIVACY         Who can join: PUBLIC, PRIVATE or INVITE.
+                                Defaults to PUBLIC, or INVITE for a hidden
+                                group.
+      --image="running_01"      Default group image.
+
+gccli: error: groups create: a hidden group is invite-only: use --privacy INVITE or --visibility VISIBLE
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli groups create <name> [flags]
+
+Create a group.
+
+Arguments:
+  <name>    Group name.
+
+Flags:
+  -h, --help                    Show context-sensitive help.
+  -j, --json                    Output as JSON ($GCCLI_JSON).
+      --plain                   Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                  Print the column names as the first line of
+                                --plain output ($GCCLI_HEADER).
+      --color="auto"            Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING          Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"            Unit system for distances, speeds, paces,
+                                elevations and weights in table and plain
+                                output: auto (Garmin profile), metric,
+                                statute_us, statute_uk ($GCCLI_UNITS).
+      --version                 Print version information.
+
+      --description=STRING      Group description.
+      --location=STRING         Group location.
+      --visibility="VISIBLE"    Who can find the group. A hidden group is
+                                invite-only.
+      --privacy=PRIVACY         Who can join: PUBLIC, PRIVATE or INVITE.
+                                Defaults to PUBLIC, or INVITE for a hidden
+                                group.
+      --image="running_01"      Default group image.
+
+gccli: error: groups create: a hidden group is invite-only: use --privacy INVITE or --visibility VISIBLE
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli groups create <name> [flags]
+
+Create a group.
+
+Arguments:
+  <name>    Group name.
+
+Flags:
+  -h, --help                    Show context-sensitive help.
+  -j, --json                    Output as JSON ($GCCLI_JSON).
+      --plain                   Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                  Print the column names as the first line of
+                                --plain output ($GCCLI_HEADER).
+      --color="auto"            Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING          Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"            Unit system for distances, speeds, paces,
+                                elevations and weights in table and plain
+                                output: auto (Garmin profile), metric,
+                                statute_us, statute_uk ($GCCLI_UNITS).
+      --version                 Print version information.
+
+      --description=STRING      Group description.
+      --location=STRING         Group location.
+      --visibility="VISIBLE"    Who can find the group. A hidden group is
+                                invite-only.
+      --privacy=PRIVACY         Who can join: PUBLIC, PRIVATE or INVITE.
+                                Defaults to PUBLIC, or INVITE for a hidden
+                                group.
+      --image="running_01"      Default group image.
+
+gccli: error: groups create: a hidden group is invite-only: use --privacy INVITE or --visibility VISIBLE
+-- json exit --
+2
+-- json requests --

@@ -1,0 +1,123 @@
+Error case: the PUT answers 403 (a group the account does not own), so the exit code is 1 (error).
+-- args --
+groups
+edit
+1001
+--name
+New name
+-- route GET /group-service/group/1001?includeMembership=true --
+{"id":1001,"groupName":"E2E Club","groupDescription":"Old text","groupVisibility":"VISIBLE","groupPrivacy":"PUBLIC","ownerId":3141592,"defaultImageName":"running_01","profileImageUrlLarge":null,"profileImageUrlMedium":null,"profileImageUrlSmall":null,"location":null,"primaryActivities":["RUNNING"],"leaderboardTypes":[],"featureTypes":[],"activityFeedTypes":[],"membershipStatus":"OWNER"}
+-- route PUT /group-service/group/1001 403 noeol --
+{"message":"Forbidden"}
+-- table stdout --
+-- table stderr --
+edit group: garmin api: 403 Forbidden: {"message":"Forbidden"}
+-- table exit --
+1
+-- table requests --
+GET /group-service/group/1001?includeMembership=true
+PUT /group-service/group/1001
+  {
+    "activityFeedTypes": [],
+    "defaultImageName": "running_01",
+    "featureTypes": [],
+    "groupDescription": "Old text",
+    "groupName": "New name",
+    "groupPrivacy": "PUBLIC",
+    "groupVisibility": "VISIBLE",
+    "id": 1001,
+    "leaderboardTypes": [],
+    "location": null,
+    "membershipStatus": "OWNER",
+    "ownerId": 3141592,
+    "primaryActivities": [
+      "RUNNING"
+    ],
+    "profileImageUrlLarge": null,
+    "profileImageUrlMedium": null,
+    "profileImageUrlSmall": null
+  }
+-- plain stdout --
+-- plain stderr --
+edit group: garmin api: 403 Forbidden: {"message":"Forbidden"}
+-- plain exit --
+1
+-- plain requests --
+GET /group-service/group/1001?includeMembership=true
+PUT /group-service/group/1001
+  {
+    "activityFeedTypes": [],
+    "defaultImageName": "running_01",
+    "featureTypes": [],
+    "groupDescription": "Old text",
+    "groupName": "New name",
+    "groupPrivacy": "PUBLIC",
+    "groupVisibility": "VISIBLE",
+    "id": 1001,
+    "leaderboardTypes": [],
+    "location": null,
+    "membershipStatus": "OWNER",
+    "ownerId": 3141592,
+    "primaryActivities": [
+      "RUNNING"
+    ],
+    "profileImageUrlLarge": null,
+    "profileImageUrlMedium": null,
+    "profileImageUrlSmall": null
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+edit group: garmin api: 403 Forbidden: {"message":"Forbidden"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /group-service/group/1001?includeMembership=true
+PUT /group-service/group/1001
+  {
+    "activityFeedTypes": [],
+    "defaultImageName": "running_01",
+    "featureTypes": [],
+    "groupDescription": "Old text",
+    "groupName": "New name",
+    "groupPrivacy": "PUBLIC",
+    "groupVisibility": "VISIBLE",
+    "id": 1001,
+    "leaderboardTypes": [],
+    "location": null,
+    "membershipStatus": "OWNER",
+    "ownerId": 3141592,
+    "primaryActivities": [
+      "RUNNING"
+    ],
+    "profileImageUrlLarge": null,
+    "profileImageUrlMedium": null,
+    "profileImageUrlSmall": null
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":403,"message":"edit group: garmin api: 403 Forbidden: {\"message\":\"Forbidden\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /group-service/group/1001?includeMembership=true
+PUT /group-service/group/1001
+  {
+    "activityFeedTypes": [],
+    "defaultImageName": "running_01",
+    "featureTypes": [],
+    "groupDescription": "Old text",
+    "groupName": "New name",
+    "groupPrivacy": "PUBLIC",
+    "groupVisibility": "VISIBLE",
+    "id": 1001,
+    "leaderboardTypes": [],
+    "location": null,
+    "membershipStatus": "OWNER",
+    "ownerId": 3141592,
+    "primaryActivities": [
+      "RUNNING"
+    ],
+    "profileImageUrlLarge": null,
+    "profileImageUrlMedium": null,
+    "profileImageUrlSmall": null
+  }

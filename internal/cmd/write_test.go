@@ -396,6 +396,24 @@ var writeCases = map[string]writeCase{
 		human:    "Joined group 1001\n",
 		fallback: "Joined group 1001\n",
 	},
+	"groups create": {
+		args:     []string{"Club", "--visibility", "HIDDEN"},
+		routes:   map[string]string{"POST /group-service/group": `{"id":2002,"groupName":"Club"}`},
+		json:     "{\n  \"id\": 2002,\n  \"groupName\": \"Club\"\n}\n",
+		human:    "Created group \"Club\" (ID: 2002)\n",
+		fallback: "Created group \"Club\"\n",
+	},
+	"groups edit": {
+		args: []string{"1001", "--name", "Club"},
+		routes: map[string]string{
+			"GET /group-service/group/1001?includeMembership=true": `{"id":1001,"groupName":"Old","groupVisibility":"VISIBLE","groupPrivacy":"PUBLIC"}`,
+			"PUT /group-service/group/1001":                        noContent,
+		},
+		result:   "PUT /group-service/group/1001",
+		json:     okOut,
+		human:    "Updated group 1001\n",
+		fallback: "Updated group 1001\n",
+	},
 	"calendar notes add": {
 		args:     []string{"2026-10-20", "Long run", "--content", "Easy pace"},
 		routes:   map[string]string{"POST /calendar-service/note": `{"id":118934,"noteName":"Long run","date":"2026-10-20"}`},

@@ -1,0 +1,31 @@
+Any answer other than y or yes cancels, so no request is sent.
+-- args --
+groups
+delete
+1001
+-- stdin --
+n
+-- table stdout --
+-- table stderr --
+Delete group 1001? This removes it for all members. [y/N]: Cancelled
+-- table exit --
+0
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Delete group 1001? This removes it for all members. [y/N]: Cancelled
+-- plain exit --
+0
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Delete group 1001? This removes it for all members. [y/N]: Cancelled
+-- plain-header exit --
+0
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Delete group 1001? This removes it for all members. [y/N]: Cancelled
+-- json exit --
+0
+-- json requests --
