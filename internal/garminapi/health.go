@@ -110,14 +110,14 @@ var healthEndpoints = []Endpoint{
 
 // The critical swim speed Garmin accepts, in millimeters per second.
 const (
-	MinCriticalSwimSpeed = 333
-	MaxCriticalSwimSpeed = 2000
+	minCriticalSwimSpeed = 333
+	maxCriticalSwimSpeed = 2000
 )
 
 // ValidateCriticalSwimSpeed rejects a speed that Garmin answers with a 400.
 func ValidateCriticalSwimSpeed(mmPerSecond int) error {
-	if mmPerSecond < MinCriticalSwimSpeed || mmPerSecond > MaxCriticalSwimSpeed {
-		return fmt.Errorf("critical swim speed %d mm/s is outside the %d to %d mm/s Garmin accepts", mmPerSecond, MinCriticalSwimSpeed, MaxCriticalSwimSpeed)
+	if mmPerSecond < minCriticalSwimSpeed || mmPerSecond > maxCriticalSwimSpeed {
+		return fmt.Errorf("critical swim speed %d mm/s is outside the %d to %d mm/s Garmin accepts", mmPerSecond, minCriticalSwimSpeed, maxCriticalSwimSpeed)
 	}
 	return nil
 }

@@ -519,12 +519,20 @@ var healthCriticalSwimSpeedGroup = Group{Name: "critical-swim-speed", Help: "Sho
 		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
 		Verb:     "get critical swim speed range", Output: JSON{},
 	},
-	Custom{Name: "set", Help: "Save a critical swim speed measured now, from a pace per 100 m or 100 yd.", Cmd: &HealthCriticalSwimSpeedSetCmd{}},
-	Custom{Name: "delete", Help: "Delete a critical swim speed entry by the timestamp and version that critical-swim-speed range prints.", Cmd: &HealthCriticalSwimSpeedDeleteCmd{}},
+	Custom{Name: "set", Help: "Save a critical swim speed measured now, from a pace per 100 m or 100 yd. Garmin refuses to delete the last record, so delete cannot undo the first save.", Cmd: &HealthCriticalSwimSpeedSetCmd{}},
+	Leaf{
+		Name: "delete", Help: "Delete a critical swim speed entry by its timestamp and version, as critical-swim-speed range prints them. Garmin refuses to delete the last record.",
+		Spec: argsOf(&struct {
+			Timestamp ConnectTimestamp `arg:"" help:"Local timestamp of the entry, as measurementTimestampLocal prints it, such as 2026-10-27T09:05:03.07."`
+			Version   ID               `arg:"" help:"Version of the entry."`
+		}{}),
+		Endpoint: "health.delete-critical-swim-speed",
+		Params:   Params{"timestamp": In("Timestamp"), "version": In("Version")},
+		Verb:     "delete critical swim speed",
+		Output:   Write{Done: "Deleted critical swim speed {Timestamp}", Confirm: "Delete the critical swim speed of {Timestamp}?"},
+	},
 }}
 
-// HealthCriticalSwimSpeedSetCmd saves a critical swim speed. Garmin stores
-// it in millimeters per second, and the web app takes a pace per 100 m.
 type HealthCriticalSwimSpeedSetCmd struct {
 	Pace string `arg:"" help:"Pace per 100 m or per 100 yd as m:ss, such as 2:00."`
 	Unit string `help:"Distance of the pace: m for 100 m, yd for 100 yd." default:"m" enum:"m,yd"`
@@ -719,40 +727,4 @@ func resolveDate(s string) (string, error) {
 	}
 
 	return s, nil
-}
-
-// HealthCriticalSwimSpeedDeleteCmd deletes the entry that has a measurement
-// timestamp and a version.
-type HealthCriticalSwimSpeedDeleteCmd struct {
-	Timestamp string `arg:"" help:"Local timestamp of the entry, as measurementTimestampLocal prints it, such as 2026-10-27T09:05:03.07."`
-	Version   ID     `arg:"" help:"Version of the entry."`
-	Force     bool   `help:"Skip confirmation prompt." short:"f"`
-}
-
-func (c *HealthCriticalSwimSpeedDeleteCmd) Validate() error {
-	if _, err := time.Parse("2006-01-02T15:04:05", c.Timestamp); err != nil {
-		return fmt.Errorf("invalid timestamp %q: expected YYYY-MM-DDTHH:MM:SS with optional fractional seconds, such as 2026-10-27T09:05:03.07", c.Timestamp)
-	}
-	return nil
-}
-
-func (c *HealthCriticalSwimSpeedDeleteCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-	ok, err := confirm(g.Stderr, fmt.Sprintf("Delete the critical swim speed of %s?", c.Timestamp), c.Force)
-	if err != nil {
-		return err
-	}
-	if !ok {
-		g.UI.Infof("Cancelled")
-		return nil
-	}
-	args := map[string]string{"timestamp": c.Timestamp, "version": string(c.Version)}
-	data, err := client.Call(g.Context, "health.delete-critical-swim-speed", args, nil)
-	if err != nil {
-		return fmt.Errorf("delete critical swim speed: %w", err)
-	}
-	return reportWrite(g, data, "Deleted critical swim speed %s", c.Timestamp)
 }

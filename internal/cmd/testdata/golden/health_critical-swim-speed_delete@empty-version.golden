@@ -9,8 +9,8 @@ delete
 -- table stderr --
 Usage: gccli health critical-swim-speed delete <timestamp> <version> [flags]
 
-Delete a critical swim speed entry by the timestamp and version that
-critical-swim-speed range prints.
+Delete a critical swim speed entry by its timestamp and version, as
+critical-swim-speed range prints them. Garmin refuses to delete the last record.
 
 Arguments:
   <timestamp>    Local timestamp of the entry, as measurementTimestampLocal
@@ -41,8 +41,8 @@ gccli: error: <version>: must not be empty
 -- plain stderr --
 Usage: gccli health critical-swim-speed delete <timestamp> <version> [flags]
 
-Delete a critical swim speed entry by the timestamp and version that
-critical-swim-speed range prints.
+Delete a critical swim speed entry by its timestamp and version, as
+critical-swim-speed range prints them. Garmin refuses to delete the last record.
 
 Arguments:
   <timestamp>    Local timestamp of the entry, as measurementTimestampLocal
@@ -73,8 +73,8 @@ gccli: error: <version>: must not be empty
 -- plain-header stderr --
 Usage: gccli health critical-swim-speed delete <timestamp> <version> [flags]
 
-Delete a critical swim speed entry by the timestamp and version that
-critical-swim-speed range prints.
+Delete a critical swim speed entry by its timestamp and version, as
+critical-swim-speed range prints them. Garmin refuses to delete the last record.
 
 Arguments:
   <timestamp>    Local timestamp of the entry, as measurementTimestampLocal
@@ -105,8 +105,8 @@ gccli: error: <version>: must not be empty
 -- json stderr --
 Usage: gccli health critical-swim-speed delete <timestamp> <version> [flags]
 
-Delete a critical swim speed entry by the timestamp and version that
-critical-swim-speed range prints.
+Delete a critical swim speed entry by its timestamp and version, as
+critical-swim-speed range prints them. Garmin refuses to delete the last record.
 
 Arguments:
   <timestamp>    Local timestamp of the entry, as measurementTimestampLocal

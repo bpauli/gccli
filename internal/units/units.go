@@ -197,8 +197,7 @@ func (s System) Weight(grams float64) string {
 }
 
 // SwimSpeed converts a swim pace of seconds per 100 m, or per 100 yd when
-// yards is true, to millimeters per second, rounded as Garmin Connect rounds
-// it.
+// yards is true, to millimeters per second.
 func SwimSpeed(secondsPer100 float64, yards bool) int {
 	meters := 100.0
 	if yards {

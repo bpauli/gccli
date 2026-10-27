@@ -163,11 +163,14 @@ Commands:
                                    Show critical swim speed for a date range.
   health critical-swim-speed set
                                    Save a critical swim speed measured now,
-                                   from a pace per 100 m or 100 yd.
+                                   from a pace per 100 m or 100 yd. Garmin
+                                   refuses to delete the last record, so delete
+                                   cannot undo the first save.
   health critical-swim-speed delete
-                                   Delete a critical swim speed entry
-                                   by the timestamp and version that
-                                   critical-swim-speed range prints.
+                                   Delete a critical swim speed entry by its
+                                   timestamp and version, as critical-swim-speed
+                                   range prints them. Garmin refuses to delete
+                                   the last record.
   health power-to-weight           Show latest power-to-weight data as of a
                                    date.
   health thresholds cycling-ftp    Show cycling FTP for a date range.
@@ -924,11 +927,14 @@ Commands:
                                    Show critical swim speed for a date range.
   health critical-swim-speed set
                                    Save a critical swim speed measured now,
-                                   from a pace per 100 m or 100 yd.
+                                   from a pace per 100 m or 100 yd. Garmin
+                                   refuses to delete the last record, so delete
+                                   cannot undo the first save.
   health critical-swim-speed delete
-                                   Delete a critical swim speed entry
-                                   by the timestamp and version that
-                                   critical-swim-speed range prints.
+                                   Delete a critical swim speed entry by its
+                                   timestamp and version, as critical-swim-speed
+                                   range prints them. Garmin refuses to delete
+                                   the last record.
   health power-to-weight           Show latest power-to-weight data as of a
                                    date.
   health thresholds cycling-ftp    Show cycling FTP for a date range.
@@ -1311,9 +1317,12 @@ Commands:
       Show critical swim speed for a date range.
   health critical-swim-speed set
       Save a critical swim speed measured now, from a pace per 100 m or 100 yd.
+      Garmin refuses to delete the last record, so delete cannot undo the first
+      save.
   health critical-swim-speed delete
-      Delete a critical swim speed entry by the timestamp and version that
-      critical-swim-speed range prints.
+      Delete a critical swim speed entry by its timestamp and version,
+      as critical-swim-speed range prints them. Garmin refuses to delete the
+      last record.
 
 $ gccli health thresholds --help
 Usage: gccli health thresholds <command>

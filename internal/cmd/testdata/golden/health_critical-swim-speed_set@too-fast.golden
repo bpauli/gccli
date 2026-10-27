@@ -9,6 +9,7 @@ set
 Usage: gccli health critical-swim-speed set <pace> [flags]
 
 Save a critical swim speed measured now, from a pace per 100 m or 100 yd.
+Garmin refuses to delete the last record, so delete cannot undo the first save.
 
 Arguments:
   <pace>    Pace per 100 m or per 100 yd as m:ss, such as 2:00.
@@ -38,6 +39,7 @@ gccli: error: health critical-swim-speed set: pace 0:49 per 100 m: critical swim
 Usage: gccli health critical-swim-speed set <pace> [flags]
 
 Save a critical swim speed measured now, from a pace per 100 m or 100 yd.
+Garmin refuses to delete the last record, so delete cannot undo the first save.
 
 Arguments:
   <pace>    Pace per 100 m or per 100 yd as m:ss, such as 2:00.
@@ -67,6 +69,7 @@ gccli: error: health critical-swim-speed set: pace 0:49 per 100 m: critical swim
 Usage: gccli health critical-swim-speed set <pace> [flags]
 
 Save a critical swim speed measured now, from a pace per 100 m or 100 yd.
+Garmin refuses to delete the last record, so delete cannot undo the first save.
 
 Arguments:
   <pace>    Pace per 100 m or per 100 yd as m:ss, such as 2:00.
@@ -96,6 +99,7 @@ gccli: error: health critical-swim-speed set: pace 0:49 per 100 m: critical swim
 Usage: gccli health critical-swim-speed set <pace> [flags]
 
 Save a critical swim speed measured now, from a pace per 100 m or 100 yd.
+Garmin refuses to delete the last record, so delete cannot undo the first save.
 
 Arguments:
   <pace>    Pace per 100 m or per 100 yd as m:ss, such as 2:00.

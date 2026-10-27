@@ -9,8 +9,8 @@ delete
 -- table stderr --
 Usage: gccli health critical-swim-speed delete <timestamp> <version> [flags]
 
-Delete a critical swim speed entry by the timestamp and version that
-critical-swim-speed range prints.
+Delete a critical swim speed entry by its timestamp and version, as
+critical-swim-speed range prints them. Garmin refuses to delete the last record.
 
 Arguments:
   <timestamp>    Local timestamp of the entry, as measurementTimestampLocal
@@ -33,7 +33,7 @@ Flags:
 
   -f, --force             Skip confirmation prompt.
 
-gccli: error: health critical-swim-speed delete: invalid timestamp "2026-10-15": expected YYYY-MM-DDTHH:MM:SS with optional fractional seconds, such as 2026-10-27T09:05:03.07
+gccli: error: <timestamp>: invalid timestamp "2026-10-15": expected YYYY-MM-DDTHH:MM:SS with optional fractional seconds, such as 2026-10-27T09:05:03.07
 -- table exit --
 2
 -- table requests --
@@ -41,8 +41,8 @@ gccli: error: health critical-swim-speed delete: invalid timestamp "2026-10-15":
 -- plain stderr --
 Usage: gccli health critical-swim-speed delete <timestamp> <version> [flags]
 
-Delete a critical swim speed entry by the timestamp and version that
-critical-swim-speed range prints.
+Delete a critical swim speed entry by its timestamp and version, as
+critical-swim-speed range prints them. Garmin refuses to delete the last record.
 
 Arguments:
   <timestamp>    Local timestamp of the entry, as measurementTimestampLocal
@@ -65,7 +65,7 @@ Flags:
 
   -f, --force             Skip confirmation prompt.
 
-gccli: error: health critical-swim-speed delete: invalid timestamp "2026-10-15": expected YYYY-MM-DDTHH:MM:SS with optional fractional seconds, such as 2026-10-27T09:05:03.07
+gccli: error: <timestamp>: invalid timestamp "2026-10-15": expected YYYY-MM-DDTHH:MM:SS with optional fractional seconds, such as 2026-10-27T09:05:03.07
 -- plain exit --
 2
 -- plain requests --
@@ -73,8 +73,8 @@ gccli: error: health critical-swim-speed delete: invalid timestamp "2026-10-15":
 -- plain-header stderr --
 Usage: gccli health critical-swim-speed delete <timestamp> <version> [flags]
 
-Delete a critical swim speed entry by the timestamp and version that
-critical-swim-speed range prints.
+Delete a critical swim speed entry by its timestamp and version, as
+critical-swim-speed range prints them. Garmin refuses to delete the last record.
 
 Arguments:
   <timestamp>    Local timestamp of the entry, as measurementTimestampLocal
@@ -97,7 +97,7 @@ Flags:
 
   -f, --force             Skip confirmation prompt.
 
-gccli: error: health critical-swim-speed delete: invalid timestamp "2026-10-15": expected YYYY-MM-DDTHH:MM:SS with optional fractional seconds, such as 2026-10-27T09:05:03.07
+gccli: error: <timestamp>: invalid timestamp "2026-10-15": expected YYYY-MM-DDTHH:MM:SS with optional fractional seconds, such as 2026-10-27T09:05:03.07
 -- plain-header exit --
 2
 -- plain-header requests --
@@ -105,8 +105,8 @@ gccli: error: health critical-swim-speed delete: invalid timestamp "2026-10-15":
 -- json stderr --
 Usage: gccli health critical-swim-speed delete <timestamp> <version> [flags]
 
-Delete a critical swim speed entry by the timestamp and version that
-critical-swim-speed range prints.
+Delete a critical swim speed entry by its timestamp and version, as
+critical-swim-speed range prints them. Garmin refuses to delete the last record.
 
 Arguments:
   <timestamp>    Local timestamp of the entry, as measurementTimestampLocal
@@ -129,7 +129,7 @@ Flags:
 
   -f, --force             Skip confirmation prompt.
 
-gccli: error: health critical-swim-speed delete: invalid timestamp "2026-10-15": expected YYYY-MM-DDTHH:MM:SS with optional fractional seconds, such as 2026-10-27T09:05:03.07
+gccli: error: <timestamp>: invalid timestamp "2026-10-15": expected YYYY-MM-DDTHH:MM:SS with optional fractional seconds, such as 2026-10-27T09:05:03.07
 -- json exit --
 2
 -- json requests --

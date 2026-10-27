@@ -1266,10 +1266,10 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli health critical-swim-speed range --start=DATE --end=DATE`: Show critical swim speed for a date range.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
-- `gccli health critical-swim-speed set <pace> [flags]`: Save a critical swim speed measured now, from a pace per 100 m or 100 yd.
+- `gccli health critical-swim-speed set <pace> [flags]`: Save a critical swim speed measured now, from a pace per 100 m or 100 yd. Garmin refuses to delete the last record, so delete cannot undo the first save.
   - `<pace>`: Pace per 100 m or per 100 yd as m:ss, such as 2:00.
   - `--unit="m"`: Distance of the pace: m for 100 m, yd for 100 yd.
-- `gccli health critical-swim-speed delete <timestamp> <version> [flags]`: Delete a critical swim speed entry by the timestamp and version that critical-swim-speed range prints.
+- `gccli health critical-swim-speed delete <timestamp> <version> [flags]`: Delete a critical swim speed entry by its timestamp and version, as critical-swim-speed range prints them. Garmin refuses to delete the last record.
   - `<timestamp>`: Local timestamp of the entry, as measurementTimestampLocal prints it, such as 2026-10-27T09:05:03.07.
   - `<version>`: Version of the entry.
   - `-f, --force`: Skip confirmation prompt.
