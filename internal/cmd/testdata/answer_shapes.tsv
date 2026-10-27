@@ -187,9 +187,12 @@ social following	array	live 2026-10-20
 social muted	object	live 2026-10-22
 social requests	array	live 2026-10-20
 training active	object	live 2026-10-20
+training coach-plan	object	live GET 2026-10-27 connectapi with catalog Garmin Coach, strength and ITP template IDs
 training coach-workouts	array	live 2026-10-20
+training phased-plan	unknown	400 Not a phased plan live 2026-10-27 with catalog ITP and Garmin Coach template IDs
 training plan	object	live 2026-10-22 with a catalog and a joined plan ID
 training plans	object	live 2026-10-20
+training strength-plan	unknown	500 live 2026-10-27 with catalog strength template IDs
 wellness jet-lag list	array	live 2026-10-20
 wellness jet-lag status	unknown	empty body live 2026-10-20
 wellness menstrual-calendar	object	live 2026-10-20

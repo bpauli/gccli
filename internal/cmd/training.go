@@ -27,6 +27,33 @@ var trainingGroup = Group{Name: "training", Help: "Find, join and change trainin
 		Verb:     "get training plan", Output: JSON{},
 	},
 	Leaf{
+		Name: "coach-plan", Help: "Show a Garmin Coach plan, a plan of category FBT_ADAPTIVE.",
+		Spec: argsOf(&struct {
+			ID ID `arg:"" help:"Training plan ID, as training search or training active prints it."`
+		}{}),
+		Endpoint: "training.coach-plan",
+		Params:   Params{"planID": In("ID")},
+		Verb:     "get Garmin Coach plan", Output: JSON{},
+	},
+	Leaf{
+		Name: "phased-plan", Help: "Show a joined phased training plan, an ITP plan with peak weeks.",
+		Spec: argsOf(&struct {
+			ID ID `arg:"" help:"ID of the joined training plan, as training active prints it."`
+		}{}),
+		Endpoint: "training.phased-plan",
+		Params:   Params{"planID": In("ID")},
+		Verb:     "get phased training plan", Output: JSON{},
+	},
+	Leaf{
+		Name: "strength-plan", Help: "Show a joined strength training plan, a plan of category STRENGTH.",
+		Spec: argsOf(&struct {
+			ID ID `arg:"" help:"ID of the joined training plan, as training active prints it."`
+		}{}),
+		Endpoint: "training.strength-plan",
+		Params:   Params{"planID": In("ID")},
+		Verb:     "get strength training plan", Output: JSON{},
+	},
+	Leaf{
 		Name: "active", Help: "Show active training plans.",
 		Spec: argsOf(&struct {
 			StartDate Date `help:"Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today." name:"start"`

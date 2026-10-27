@@ -12,6 +12,9 @@ func TestTrainingEndpoints(t *testing.T) {
 		{"training.plans", map[string]string{"locale": ""}, "GET /trainingplan-service/trainingplan/plans?locale=en"},
 		{"training.plans", nil, "GET /trainingplan-service/trainingplan/plans?locale=en"},
 		{"training.plan", map[string]string{"planID": "42"}, "GET /trainingplan-service/trainingplan/42"},
+		{"training.coach-plan", map[string]string{"planID": "42"}, "GET /trainingplan-service/trainingplan/fbt-adaptive/42"},
+		{"training.phased-plan", map[string]string{"planID": "42"}, "GET /trainingplan-service/trainingplan/phased/42"},
+		{"training.strength-plan", map[string]string{"planID": "42"}, "GET /trainingplan-service/trainingplan/strength/42"},
 		{"training.active-plans", map[string]string{"startDate": "2024-01-15"}, "GET /trainingplan-service/trainingplan/active-plans?startDate=2024-01-15"},
 		{"training.search", nil, "POST /trainingplan-service/trainingplan/search?start=1&limit=1000&locale=en"},
 		{

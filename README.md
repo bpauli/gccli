@@ -21,7 +21,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Devices** - list registered devices, view settings, solar data, alarms, primary/last-used device, set the primary activity tracker, paired sensors, backup summary and device backups, historical devices, device messages, cancel a pending device message
 - **Gear** — list gear, usage stats, linked activities, defaults per activity type and set or unset them, link/unlink to activities, gear types, search gear brands and models, add, update, retire, unretire and delete gear, list, create, rename and delete gear collections, add gear to a collection and remove it
 - **Goals & Badges** - list, add, update and delete activity goals, set daily goals for steps, floors, intensity minutes and hydration, set and delete the weight goal, earned/available/in-progress badges, badge details, challenges (show, join and leave badge and virtual challenges; create, view, answer, leave and delete ad-hoc challenges and invite people to them), personal records and record candidates (accept or dismiss a candidate), hide or show a record type, delete a personal record
-- **Training** - browse, search and view training plans, show a plan's schedule, join and leave a plan, move and delete its workouts, show your active plans, list adaptive coaching workout types
+- **Training** - browse, search (also by category, such as Garmin Coach or strength) and view training plans, show Garmin Coach, phased and strength plans, show a plan's schedule, join and leave a plan, move and delete its workouts, show your active plans, list adaptive coaching workout types
 - **Profile** - user profile and settings, view and change privacy settings, list, add and delete privacy zones, heart rate zones, power zones for all sports or one sport
 - **Hydration** — view and log daily water intake
 - **Nutrition** - view daily food logs, meals, and nutrition settings, search the Garmin food database, list recent and favorite foods, log foods and quick entries in a meal, delete log entries, and add and remove favorite foods (all but the first three need Garmin Connect+)
@@ -1935,6 +1935,12 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `--locale="en"`: Locale for training plans (e.g. en, de, fr).
 - `gccli training plan <id>`: Show a specific training plan.
   - `<id>`: Training plan ID.
+- `gccli training coach-plan <id>`: Show a Garmin Coach plan, a plan of category FBT_ADAPTIVE.
+  - `<id>`: Training plan ID, as training search or training active prints it.
+- `gccli training phased-plan <id>`: Show a joined phased training plan, an ITP plan with peak weeks.
+  - `<id>`: ID of the joined training plan, as training active prints it.
+- `gccli training strength-plan <id>`: Show a joined strength training plan, a plan of category STRENGTH.
+  - `<id>`: ID of the joined training plan, as training active prints it.
 - `gccli training active [flags]`: Show active training plans.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli training search [flags]`: Search the Garmin catalog of training plans.

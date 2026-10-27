@@ -373,6 +373,12 @@ Commands:
                                    Needs Garmin Connect+.
   training plans                   List training plans.
   training plan                    Show a specific training plan.
+  training coach-plan              Show a Garmin Coach plan, a plan of category
+                                   FBT_ADAPTIVE.
+  training phased-plan             Show a joined phased training plan, an ITP
+                                   plan with peak weeks.
+  training strength-plan           Show a joined strength training plan,
+                                   a plan of category STRENGTH.
   training active                  Show active training plans.
   training search                  Search the Garmin catalog of training plans.
   training schedule                List the workouts and notes of a training
@@ -2193,6 +2199,12 @@ Flags:
 Commands:
   training plans             List training plans.
   training plan              Show a specific training plan.
+  training coach-plan        Show a Garmin Coach plan, a plan of category
+                             FBT_ADAPTIVE.
+  training phased-plan       Show a joined phased training plan, an ITP plan
+                             with peak weeks.
+  training strength-plan     Show a joined strength training plan, a plan of
+                             category STRENGTH.
   training active            Show active training plans.
   training search            Search the Garmin catalog of training plans.
   training schedule          List the workouts and notes of a training plan by

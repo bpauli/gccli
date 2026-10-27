@@ -9,6 +9,9 @@ var trainingEndpoints = []Endpoint{
 		Params: []Param{{Name: "locale", Default: "en"}},
 	},
 	{Name: "training.plan", Method: http.MethodGet, Host: ConnectAPI, Path: "/trainingplan-service/trainingplan/{planID}"},
+	{Name: "training.coach-plan", Method: http.MethodGet, Host: ConnectAPI, Path: "/trainingplan-service/trainingplan/fbt-adaptive/{planID}"},
+	{Name: "training.phased-plan", Method: http.MethodGet, Host: ConnectAPI, Path: "/trainingplan-service/trainingplan/phased/{planID}"},
+	{Name: "training.strength-plan", Method: http.MethodGet, Host: ConnectAPI, Path: "/trainingplan-service/trainingplan/strength/{planID}"},
 	{Name: "training.active-plans", Method: http.MethodGet, Host: ConnectAPI, Path: "/trainingplan-service/trainingplan/active-plans?startDate={startDate}"},
 	// training.search takes the filter in the query and an empty form body.
 	// Garmin's start and limit counts are not consistent, so the row asks
