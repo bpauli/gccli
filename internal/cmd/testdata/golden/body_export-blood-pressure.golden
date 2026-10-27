@@ -1,11 +1,13 @@
-Without flags the command saves today's daily report under the default file name.
+The daily report that ends on --end is saved under the default file name.
 -- args --
 body
 export-blood-pressure
+--end
+2026-10-15
 -- route GET /userprofile-service/userprofile/settings --
 {"preferredLocale":"de","dateFormat":{"formatKey":"ddmmyyyy"}}
 -- route POST /reportexport-service/export/init/bloodPressure/2026-10-15/2026-10-15?locale=de --
-{"estimatedTimeForStatusCheck":5000,"reportId":"abc123=="}
+{"estimatedTimeForStatusCheck":100,"reportId":"abc123=="}
 -- route GET /reportexport-service/export/reportStatus/abc123== --
 {"progress":{"status":"READY","responseMessage":null},"reportId":"abc123=="}
 -- route GET /reportexport-service/export/reportContent/abc123== --

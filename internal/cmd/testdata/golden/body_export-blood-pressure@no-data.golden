@@ -2,10 +2,12 @@ A day without readings ends in DATA_NOT_FOUND: exit 1, no content request and no
 -- args --
 body
 export-blood-pressure
+--end
+2026-10-15
 -- route GET /userprofile-service/userprofile/settings --
 {"preferredLocale":"de","dateFormat":{"formatKey":"ddmmyyyy"}}
 -- route POST /reportexport-service/export/init/bloodPressure/2026-10-15/2026-10-15?locale=de --
-{"estimatedTimeForStatusCheck":5000,"reportId":"abc123=="}
+{"estimatedTimeForStatusCheck":100,"reportId":"abc123=="}
 -- route GET /reportexport-service/export/reportStatus/abc123== --
 {"progress":{"status":"DATA_NOT_FOUND","responseMessage":null},"reportId":"abc123=="}
 -- table stdout --

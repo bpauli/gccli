@@ -10,6 +10,7 @@ import (
 	"strings"
 	"sync"
 	"testing"
+	"time"
 )
 
 type reportFlow struct {
@@ -111,7 +112,9 @@ func TestBodyExportBloodPressureDefaultsToTodayAndNamesTheFile(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)
 
-	code, _, stderr := runReportCommand(t, flow, "body", "export-blood-pressure", "--end", "2026-10-27")
+	stub(t, &nowFn, func() time.Time { return time.Date(2026, 10, 27, 9, 0, 0, 0, time.UTC) })
+
+	code, _, stderr := runReportCommand(t, flow, "body", "export-blood-pressure")
 
 	if code != 0 {
 		t.Fatalf("exit %d, stderr %q", code, stderr)

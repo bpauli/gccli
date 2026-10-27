@@ -2,6 +2,8 @@ Error case: Garmin answers 400 to the init request, so the exit code is 1 (error
 -- args --
 body
 export-blood-pressure
+--end
+2026-10-15
 -- route GET /userprofile-service/userprofile/settings --
 {"preferredLocale":"de","dateFormat":{"formatKey":"ddmmyyyy"}}
 -- route POST /reportexport-service/export/init/bloodPressure/2026-10-15/2026-10-15?locale=de 400 noeol --

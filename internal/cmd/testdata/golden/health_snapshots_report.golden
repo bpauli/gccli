@@ -8,7 +8,7 @@ uuid-1
 -- route GET /userprofile-service/userprofile/settings --
 {"preferredLocale":"de","dateFormat":{"formatKey":"ddmmyyyy"}}
 -- route POST /reportexport-service/export/init/wellnessactivity/2026-10-01/2026-10-01?locale=de --
-{"estimatedTimeForStatusCheck":3000,"reportId":"abc123=="}
+{"estimatedTimeForStatusCheck":100,"reportId":"abc123=="}
 -- route GET /reportexport-service/export/reportStatus/abc123== --
 {"progress":{"status":"READY","responseMessage":null},"reportId":"abc123=="}
 -- route GET /reportexport-service/export/reportContent/abc123== --
