@@ -18,6 +18,7 @@ activity details	object	live 2026-10-20 with a real activity ID
 activity exercise-sets show	object	live 2026-10-20 with a real activity ID
 activity gear	unknown	405 live 2026-10-20 with a real activity ID
 activity hr-zones	array	recording conformance/testdata/recorded/get_activity-service.activity.1.hrTimeInZones_200_80d5bbb6.json
+activity legs	object	live 2026-10-27 GET v2 reconstruct of a multisport parent, a leg and a single-sport activity
 activity likes list	array	live 2026-10-20 with a real activity ID
 activity power-zones	array	live 2026-10-20 with a real activity ID
 activity split-summaries	object	live 2026-10-20 with a real activity ID

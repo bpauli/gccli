@@ -71,6 +71,7 @@ Commands:
   activity retype                  Change activity type.
   activity describe                Set or clear the description of an activity.
   activity privacy                 Change who can see an activity.
+  activity legs                    List the legs of a multisport activity.
   activity trim                    Trim the start or end of an activity.
   activity restore                 Restore the original of a trimmed activity.
   activity favorite                Mark an activity as a favorite.
@@ -633,6 +634,7 @@ Commands:
   activity retype                 Change activity type.
   activity describe               Set or clear the description of an activity.
   activity privacy                Change who can see an activity.
+  activity legs                   List the legs of a multisport activity.
   activity trim                   Trim the start or end of an activity.
   activity restore                Restore the original of a trimmed activity.
   activity favorite               Mark an activity as a favorite.

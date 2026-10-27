@@ -1,0 +1,33 @@
+An empty answer has no legs: the table has no rows and --json prints {}.
+-- args --
+activity
+legs
+12345678
+-- route GET /activity-service/activity/v2/12345678/reconstruct --
+-- table stdout --
+ID  TYPE  START  DURATION
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /activity-service/activity/v2/12345678/reconstruct
+-- plain stdout --
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /activity-service/activity/v2/12345678/reconstruct
+-- plain-header stdout --
+ID	TYPE	START	DURATION
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /activity-service/activity/v2/12345678/reconstruct
+-- json stdout --
+{}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /activity-service/activity/v2/12345678/reconstruct

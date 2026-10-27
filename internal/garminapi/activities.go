@@ -41,6 +41,7 @@ var activitiesEndpoints = []Endpoint{
 	{Name: "activities.update", Method: http.MethodPut, Host: ConnectAPI, Path: "/activity-service/activity/{activityID}", Body: true},
 	// A body with timeRanges trims the activity to that range, and {} restores the original.
 	{Name: "activities.reconstruct", Method: http.MethodPut, Host: ConnectAPI, Path: "/activity-service/activity/{activityID}/reconstruct", Body: true},
+	{Name: "activities.legs", Method: http.MethodGet, Host: ConnectAPI, Path: "/activity-service/activity/v2/{activityID}/reconstruct"},
 	{Name: "activities.delete", Method: http.MethodDelete, Host: ConnectAPI, Path: "/activity-service/activity/{activityID}"},
 	{Name: "activities.favorites", Method: http.MethodGet, Host: ConnectAPI, Path: "/activitylist-service/activities/favorite/{displayName}?limit={limit}"},
 	{Name: "activities.bulk-privacy", Method: http.MethodGet, Host: ConnectAPI, Path: "/activity-service/activity/privacy/bulk"},

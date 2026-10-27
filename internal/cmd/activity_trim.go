@@ -4,7 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strconv"
 	"time"
+
+	"github.com/bpauli/gccli/internal/outfmt"
 )
 
 // ActivityTrimCmd trims the start or end of an activity. Nil means that
@@ -126,4 +129,51 @@ func (c *ActivityRestoreCmd) Run(g *Globals) error {
 		return fmt.Errorf("restore activity: %w", err)
 	}
 	return reportWrite(g, data, "Restored the original of activity %s", c.ID)
+}
+
+type ActivityLegsCmd struct {
+	ID NumericID `arg:"" help:"Activity ID."`
+}
+
+func (c *ActivityLegsCmd) Help() string {
+	return "START is in UTC. A single-sport activity has one leg."
+}
+
+func (c *ActivityLegsCmd) Run(g *Globals) error {
+	client, err := resolveClient(g)
+	if err != nil {
+		return err
+	}
+	data, err := client.Call(g.Context, "activities.legs", map[string]string{"activityID": c.ID.String()}, nil)
+	if err != nil {
+		return fmt.Errorf("get activity legs: %w", err)
+	}
+	if outfmt.IsJSON(g.Context) {
+		return writeObject(g, data)
+	}
+	var a struct {
+		Reconstruct struct {
+			Legs []struct {
+				ActivityID int64 `json:"activityId"`
+				Type       struct {
+					Key string `json:"typeKey"`
+				} `json:"activityTypeDTO"`
+				StartTime int64 `json:"startTime"`
+				EndTime   int64 `json:"endTime"`
+			} `json:"reconstructRequest"`
+		} `json:"activityReconstructDTO"`
+	}
+	if err := unmarshalAnswer(data, &a); err != nil {
+		return fmt.Errorf("parse activity legs: %w", err)
+	}
+	rows := make([][]string, 0, len(a.Reconstruct.Legs))
+	for _, leg := range a.Reconstruct.Legs {
+		rows = append(rows, []string{
+			strconv.FormatInt(leg.ActivityID, 10),
+			leg.Type.Key,
+			time.UnixMilli(leg.StartTime).UTC().Format(time.RFC3339),
+			formatDuration(float64(leg.EndTime-leg.StartTime) / 1000),
+		})
+	}
+	return outfmt.WriteRows(g.Context, g.Stdout, []string{"ID", "TYPE", "START", "DURATION"}, rows)
 }

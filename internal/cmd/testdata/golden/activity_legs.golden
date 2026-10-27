@@ -1,0 +1,109 @@
+The legs of a multisport activity, from GET v2 reconstruct. START is UTC, from the epoch milliseconds of startTime, and DURATION is endTime - startTime.
+-- args --
+activity
+legs
+12345678
+-- route GET /activity-service/activity/v2/12345678/reconstruct --
+{"activityDetailMetrics":[{"metrics":[1768032000000,102]}],"activityReconstructDTO":{"reconstructRequest":[{"activityId":12345001,"operation":null,"activityTypeDTO":{"typeId":28,"typeKey":"open_water_swimming","parentTypeId":26,"isHidden":false,"restricted":false,"trimmable":true},"startTime":1768032000000,"endTime":1768034400000},{"activityId":12345002,"operation":null,"activityTypeDTO":{"typeId":189,"typeKey":"transition_v2","parentTypeId":4,"isHidden":false,"restricted":false,"trimmable":true},"startTime":1768034405000,"endTime":1768034525000},{"activityId":12345003,"operation":null,"activityTypeDTO":{"typeId":2,"typeKey":"cycling","parentTypeId":17,"isHidden":false,"restricted":false,"trimmable":true},"startTime":1768034526000,"endTime":1768040000000}]},"metricDescriptors":[{"metricsIndex":0,"key":"directTimestamp","unit":{"id":120,"key":"gmt","factor":0}}]}
+-- table stdout --
+ID        TYPE                 START                 DURATION
+12345001  open_water_swimming  2026-01-10T08:00:00Z  40:00
+12345002  transition_v2        2026-01-10T08:40:05Z  2:00
+12345003  cycling              2026-01-10T08:42:06Z  1:31:14
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /activity-service/activity/v2/12345678/reconstruct
+-- plain stdout --
+12345001	open_water_swimming	2026-01-10T08:00:00Z	40:00
+12345002	transition_v2	2026-01-10T08:40:05Z	2:00
+12345003	cycling	2026-01-10T08:42:06Z	1:31:14
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /activity-service/activity/v2/12345678/reconstruct
+-- plain-header stdout --
+ID	TYPE	START	DURATION
+12345001	open_water_swimming	2026-01-10T08:00:00Z	40:00
+12345002	transition_v2	2026-01-10T08:40:05Z	2:00
+12345003	cycling	2026-01-10T08:42:06Z	1:31:14
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /activity-service/activity/v2/12345678/reconstruct
+-- json stdout --
+{
+  "activityDetailMetrics": [
+    {
+      "metrics": [
+        1768032000000,
+        102
+      ]
+    }
+  ],
+  "activityReconstructDTO": {
+    "reconstructRequest": [
+      {
+        "activityId": 12345001,
+        "operation": null,
+        "activityTypeDTO": {
+          "typeId": 28,
+          "typeKey": "open_water_swimming",
+          "parentTypeId": 26,
+          "isHidden": false,
+          "restricted": false,
+          "trimmable": true
+        },
+        "startTime": 1768032000000,
+        "endTime": 1768034400000
+      },
+      {
+        "activityId": 12345002,
+        "operation": null,
+        "activityTypeDTO": {
+          "typeId": 189,
+          "typeKey": "transition_v2",
+          "parentTypeId": 4,
+          "isHidden": false,
+          "restricted": false,
+          "trimmable": true
+        },
+        "startTime": 1768034405000,
+        "endTime": 1768034525000
+      },
+      {
+        "activityId": 12345003,
+        "operation": null,
+        "activityTypeDTO": {
+          "typeId": 2,
+          "typeKey": "cycling",
+          "parentTypeId": 17,
+          "isHidden": false,
+          "restricted": false,
+          "trimmable": true
+        },
+        "startTime": 1768034526000,
+        "endTime": 1768040000000
+      }
+    ]
+  },
+  "metricDescriptors": [
+    {
+      "metricsIndex": 0,
+      "key": "directTimestamp",
+      "unit": {
+        "id": 120,
+        "key": "gmt",
+        "factor": 0
+      }
+    }
+  ]
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /activity-service/activity/v2/12345678/reconstruct

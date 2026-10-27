@@ -1,0 +1,35 @@
+Error case: Garmin answers 404 for an unknown activity, so the exit code is 4 (not found).
+-- args --
+activity
+legs
+12345678
+-- route GET /activity-service/activity/v2/12345678/reconstruct 404 noeol --
+{"message":"HTTP 404 Not Found","error":"NotFoundException"}
+-- table stdout --
+-- table stderr --
+get activity legs: garmin api: 404 Not Found: {"message":"HTTP 404 Not Found","error":"NotFoundException"}
+-- table exit --
+4
+-- table requests --
+GET /activity-service/activity/v2/12345678/reconstruct
+-- plain stdout --
+-- plain stderr --
+get activity legs: garmin api: 404 Not Found: {"message":"HTTP 404 Not Found","error":"NotFoundException"}
+-- plain exit --
+4
+-- plain requests --
+GET /activity-service/activity/v2/12345678/reconstruct
+-- plain-header stdout --
+-- plain-header stderr --
+get activity legs: garmin api: 404 Not Found: {"message":"HTTP 404 Not Found","error":"NotFoundException"}
+-- plain-header exit --
+4
+-- plain-header requests --
+GET /activity-service/activity/v2/12345678/reconstruct
+-- json stdout --
+-- json stderr --
+{"error":{"code":"not_found","status":404,"message":"get activity legs: garmin api: 404 Not Found: {\"message\":\"HTTP 404 Not Found\",\"error\":\"NotFoundException\"}"}}
+-- json exit --
+4
+-- json requests --
+GET /activity-service/activity/v2/12345678/reconstruct
