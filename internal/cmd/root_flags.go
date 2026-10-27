@@ -16,7 +16,7 @@ type RootFlags struct {
 	Header  bool   `help:"Print the column names as the first line of --plain output." env:"GCCLI_HEADER"`
 	Color   string `help:"Color mode: auto, always, never." default:"auto" enum:"auto,always,never" env:"GCCLI_COLOR"`
 	Account string `help:"Garmin account email." env:"GCCLI_ACCOUNT"`
-	Units   string `help:"Unit system for distances, speeds, paces, elevations and weights in table and plain output: auto (Garmin profile), metric, statute_us, statute_uk." default:"auto" enum:"${units}" env:"GCCLI_UNITS"`
+	Units   string `help:"Unit system for distances, speeds, paces, elevations and weights in table and plain output: auto (Garmin profile), metric, statute_us, statute_uk." default:"auto" enum:"auto,metric,statute_us,statute_uk" env:"GCCLI_UNITS"`
 }
 
 // Kong calls Validate after parsing. Only --header on the command line is an

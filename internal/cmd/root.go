@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"strings"
 
 	"github.com/alecthomas/kong"
 
@@ -31,9 +30,23 @@ type Globals struct {
 type CLI struct {
 	RootFlags
 
-	Version kong.VersionFlag `help:"Print version information." name:"version"`
+	Version versionFlag `help:"Print version information." name:"version"`
 
 	kong.Plugins
+}
+
+// versionFlag replaces kong.VersionFlag, which reads the version from
+// kong.Vars. The tree passes no kong.Vars: for every flag and argument,
+// kong.New copies the Vars and interpolates each entry, which slows the
+// many parsers the tests build.
+type versionFlag bool
+
+type versionText string
+
+func (versionFlag) BeforeReset(app *kong.Kong, v versionText) error {
+	_, _ = fmt.Fprintln(app.Stdout, v)
+	app.Exit(0)
+	return nil
 }
 
 var commands = []Node{
@@ -102,10 +115,7 @@ func execute(args []string, version, commit, date string, stdout, stderr io.Writ
 			Compact: true,
 		}),
 		kong.Help(colorHelpPrinter),
-		kong.Vars{
-			"version": versionStr,
-			"units":   strings.Join(units.PreferenceNames(), ","),
-		},
+		kong.Bind(versionText(versionStr)),
 	)
 	if err != nil {
 		_, _ = fmt.Fprintf(stderr, "gccli: %s\n", err)

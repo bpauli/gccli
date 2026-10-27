@@ -13,8 +13,6 @@ import (
 	"testing"
 
 	"github.com/alecthomas/kong"
-
-	"github.com/bpauli/gccli/internal/units"
 )
 
 func newTestParser(t *testing.T) *kong.Kong {
@@ -23,7 +21,6 @@ func newTestParser(t *testing.T) *kong.Kong {
 	parser, err := kong.New(&cli,
 		kong.Name("gccli"),
 		kong.Description("Garmin Connect CLI"),
-		kong.Vars{"units": strings.Join(units.PreferenceNames(), ",")},
 	)
 	if err != nil {
 		t.Fatalf("failed to create parser: %v", err)
