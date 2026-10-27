@@ -116,7 +116,7 @@ type ActivityRestoreCmd struct {
 }
 
 func (c *ActivityRestoreCmd) Help() string {
-	return "For single-sport activities. An activity that is not trimmed does not change."
+	return "For a multisport activity, Garmin restores all of its legs. An activity that is not trimmed does not change."
 }
 
 func (c *ActivityRestoreCmd) Run(g *Globals) error {
@@ -124,11 +124,37 @@ func (c *ActivityRestoreCmd) Run(g *Globals) error {
 	if err != nil {
 		return err
 	}
-	data, err := client.Call(g.Context, "activities.reconstruct", map[string]string{"activityID": c.ID.String()}, []byte("{}"))
+	args := map[string]string{"activityID": c.ID.String()}
+	data, err := client.Call(g.Context, "activities.get", args, nil)
+	if err != nil {
+		return fmt.Errorf("get activity: %w", err)
+	}
+	parent, err := isMultiSportParent(data)
+	if err != nil {
+		return fmt.Errorf("activity %s: %w", c.ID, err)
+	}
+	if parent {
+		data, err = client.Call(g.Context, "activities.restore-multisport", args, nil)
+		if err != nil {
+			return fmt.Errorf("restore activity: %w", err)
+		}
+		return reportWrite(g, data, "Restored the original of multisport activity %s", c.ID)
+	}
+	data, err = client.Call(g.Context, "activities.reconstruct", args, []byte("{}"))
 	if err != nil {
 		return fmt.Errorf("restore activity: %w", err)
 	}
 	return reportWrite(g, data, "Restored the original of activity %s", c.ID)
+}
+
+func isMultiSportParent(data json.RawMessage) (bool, error) {
+	var a struct {
+		IsMultiSportParent bool `json:"isMultiSportParent"`
+	}
+	if err := unmarshalAnswer(data, &a); err != nil {
+		return false, fmt.Errorf("parse activity: %w", err)
+	}
+	return a.IsMultiSportParent, nil
 }
 
 type ActivityLegsCmd struct {

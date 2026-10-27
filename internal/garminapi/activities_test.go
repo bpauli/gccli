@@ -47,6 +47,7 @@ func TestActivitiesEndpoints(t *testing.T) {
 		{"activities.update", id, "PUT /activity-service/activity/123"},
 		{"activities.reconstruct", id, "PUT /activity-service/activity/123/reconstruct"},
 		{"activities.legs", id, "GET /activity-service/activity/v2/123/reconstruct"},
+		{"activities.restore-multisport", id, "DELETE /activity-service/activity/v2/123/reconstruct"},
 		{"activities.delete", id, "DELETE /activity-service/activity/123"},
 		{"activities.favorites", map[string]string{"displayName": "jo", "limit": "20"}, "GET /activitylist-service/activities/favorite/jo?limit=20"},
 		{"activities.bulk-privacy", nil, "GET /activity-service/activity/privacy/bulk"},

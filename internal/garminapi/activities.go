@@ -39,9 +39,10 @@ var activitiesEndpoints = []Endpoint{
 	{Name: "activities.set-exercise-sets", Method: http.MethodPut, Host: ConnectAPI, Path: "/activity-service/activity/{activityID}/exerciseSets", Body: true},
 	{Name: "activities.create", Method: http.MethodPost, Host: ConnectAPI, Path: "/activity-service/activity", Body: true},
 	{Name: "activities.update", Method: http.MethodPut, Host: ConnectAPI, Path: "/activity-service/activity/{activityID}", Body: true},
-	// A body with timeRanges trims the activity to that range, and {} restores the original.
+	// A body with timeRanges trims the activity to that range, and {} restores the original of one that is not a multisport parent.
 	{Name: "activities.reconstruct", Method: http.MethodPut, Host: ConnectAPI, Path: "/activity-service/activity/{activityID}/reconstruct", Body: true},
 	{Name: "activities.legs", Method: http.MethodGet, Host: ConnectAPI, Path: "/activity-service/activity/v2/{activityID}/reconstruct"},
+	{Name: "activities.restore-multisport", Method: http.MethodDelete, Host: ConnectAPI, Path: "/activity-service/activity/v2/{activityID}/reconstruct"},
 	{Name: "activities.delete", Method: http.MethodDelete, Host: ConnectAPI, Path: "/activity-service/activity/{activityID}"},
 	{Name: "activities.favorites", Method: http.MethodGet, Host: ConnectAPI, Path: "/activitylist-service/activities/favorite/{displayName}?limit={limit}"},
 	{Name: "activities.bulk-privacy", Method: http.MethodGet, Host: ConnectAPI, Path: "/activity-service/activity/privacy/bulk"},

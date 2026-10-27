@@ -112,8 +112,12 @@ var writeCases = map[string]writeCase{
 		fallback: "Trimmed activity 1 to 2m0s - 10m0s\n",
 	},
 	"activity restore": {
-		args:     []string{"1"},
-		routes:   map[string]string{"PUT /activity-service/activity/1/reconstruct": `{"detailedImportResult":{"uploadId":5}}`},
+		args:   []string{"1"},
+		result: "PUT /activity-service/activity/1/reconstruct",
+		routes: map[string]string{
+			"GET /activity-service/activity/1":             `{"activityId":1,"isMultiSportParent":false}`,
+			"PUT /activity-service/activity/1/reconstruct": `{"detailedImportResult":{"uploadId":5}}`,
+		},
 		json:     "{\n  \"detailedImportResult\": {\n    \"uploadId\": 5\n  }\n}\n",
 		human:    "Restored the original of activity 1\n",
 		fallback: "Restored the original of activity 1\n",

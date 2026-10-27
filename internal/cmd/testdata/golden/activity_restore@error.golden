@@ -1,8 +1,10 @@
-Error case: Garmin answers 400, so the exit code is 1 (error).
+Error case: Garmin answers 400 to the restore, so the exit code is 1 (error).
 -- args --
 activity
 restore
 12345678
+-- route GET /activity-service/activity/12345678 --
+{"activityId":12345678,"activityName":"Morning Run","isMultiSportParent":false,"activityTypeDTO":{"typeId":1,"typeKey":"running"}}
 -- route PUT /activity-service/activity/12345678/reconstruct 400 noeol --
 {"message":"Bad Request"}
 -- table stdout --
@@ -11,6 +13,7 @@ restore activity: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- table exit --
 1
 -- table requests --
+GET /activity-service/activity/12345678
 PUT /activity-service/activity/12345678/reconstruct
   {}
 -- plain stdout --
@@ -19,6 +22,7 @@ restore activity: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- plain exit --
 1
 -- plain requests --
+GET /activity-service/activity/12345678
 PUT /activity-service/activity/12345678/reconstruct
   {}
 -- plain-header stdout --
@@ -27,6 +31,7 @@ restore activity: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- plain-header exit --
 1
 -- plain-header requests --
+GET /activity-service/activity/12345678
 PUT /activity-service/activity/12345678/reconstruct
   {}
 -- json stdout --
@@ -35,5 +40,6 @@ PUT /activity-service/activity/12345678/reconstruct
 -- json exit --
 1
 -- json requests --
+GET /activity-service/activity/12345678
 PUT /activity-service/activity/12345678/reconstruct
   {}

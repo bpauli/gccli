@@ -1,0 +1,42 @@
+A multisport parent (isMultiSportParent true) is restored as the Garmin Connect web app does it: DELETE v2 reconstruct without a body. Garmin answers 202 and applies the restore in a few seconds.
+-- args --
+activity
+restore
+12345678
+-- route GET /activity-service/activity/12345678 --
+{"activityId":12345678,"activityName":"Triathlon","isMultiSportParent":true,"activityTypeDTO":{"typeId":89,"typeKey":"multi_sport"},"metadataDTO":{"childIds":[12345001,12345002,12345003],"trimmed":false},"summaryDTO":{"startTimeGMT":"2026-01-10T08:00:00.0","elapsedDuration":8000.0}}
+-- route DELETE /activity-service/activity/v2/12345678/reconstruct 202 --
+-- table stdout --
+-- table stderr --
+Restored the original of multisport activity 12345678
+-- table exit --
+0
+-- table requests --
+GET /activity-service/activity/12345678
+DELETE /activity-service/activity/v2/12345678/reconstruct
+-- plain stdout --
+-- plain stderr --
+Restored the original of multisport activity 12345678
+-- plain exit --
+0
+-- plain requests --
+GET /activity-service/activity/12345678
+DELETE /activity-service/activity/v2/12345678/reconstruct
+-- plain-header stdout --
+-- plain-header stderr --
+Restored the original of multisport activity 12345678
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /activity-service/activity/12345678
+DELETE /activity-service/activity/v2/12345678/reconstruct
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /activity-service/activity/12345678
+DELETE /activity-service/activity/v2/12345678/reconstruct

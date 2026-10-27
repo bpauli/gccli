@@ -1,0 +1,57 @@
+A leg of a multisport activity is not a parent, so it keeps PUT {} on the leg, as the Garmin Connect web app does.
+-- args --
+activity
+restore
+12345002
+-- route GET /activity-service/activity/12345002 --
+{"activityId":12345002,"activityName":"Bike","isMultiSportParent":false,"parentId":12345678,"activityTypeDTO":{"typeId":2,"typeKey":"cycling"},"summaryDTO":{"startTimeGMT":"2026-01-10T08:42:06.0","elapsedDuration":5474.0}}
+-- route PUT /activity-service/activity/12345002/reconstruct 202 --
+{"detailedImportResult":{"uploadId":987654,"uploadUuid":{"uuid":"0b5c4c2e-1111-2222-3333-444455556666"},"owner":3141592,"processingTime":42,"creationDate":"2026-01-11 10:00:00.0 GMT","successes":[],"failures":[]}}
+-- table stdout --
+-- table stderr --
+Restored the original of activity 12345002
+-- table exit --
+0
+-- table requests --
+GET /activity-service/activity/12345002
+PUT /activity-service/activity/12345002/reconstruct
+  {}
+-- plain stdout --
+-- plain stderr --
+Restored the original of activity 12345002
+-- plain exit --
+0
+-- plain requests --
+GET /activity-service/activity/12345002
+PUT /activity-service/activity/12345002/reconstruct
+  {}
+-- plain-header stdout --
+-- plain-header stderr --
+Restored the original of activity 12345002
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /activity-service/activity/12345002
+PUT /activity-service/activity/12345002/reconstruct
+  {}
+-- json stdout --
+{
+  "detailedImportResult": {
+    "uploadId": 987654,
+    "uploadUuid": {
+      "uuid": "0b5c4c2e-1111-2222-3333-444455556666"
+    },
+    "owner": 3141592,
+    "processingTime": 42,
+    "creationDate": "2026-01-11 10:00:00.0 GMT",
+    "successes": [],
+    "failures": []
+  }
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /activity-service/activity/12345002
+PUT /activity-service/activity/12345002/reconstruct
+  {}

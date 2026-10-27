@@ -1,8 +1,10 @@
-The body {} restores the original activity.
+The body {} restores the original activity. The activity is not a multisport parent, so the restore is PUT {} on the activity.
 -- args --
 activity
 restore
 12345678
+-- route GET /activity-service/activity/12345678 --
+{"activityId":12345678,"activityName":"Morning Run","isMultiSportParent":false,"activityTypeDTO":{"typeId":1,"typeKey":"running"}}
 -- route PUT /activity-service/activity/12345678/reconstruct 202 --
 {"detailedImportResult":{"uploadId":987654,"uploadUuid":{"uuid":"0b5c4c2e-1111-2222-3333-444455556666"},"owner":3141592,"processingTime":42,"creationDate":"2026-01-11 10:00:00.0 GMT","successes":[],"failures":[]}}
 -- table stdout --
@@ -11,6 +13,7 @@ Restored the original of activity 12345678
 -- table exit --
 0
 -- table requests --
+GET /activity-service/activity/12345678
 PUT /activity-service/activity/12345678/reconstruct
   {}
 -- plain stdout --
@@ -19,6 +22,7 @@ Restored the original of activity 12345678
 -- plain exit --
 0
 -- plain requests --
+GET /activity-service/activity/12345678
 PUT /activity-service/activity/12345678/reconstruct
   {}
 -- plain-header stdout --
@@ -27,6 +31,7 @@ Restored the original of activity 12345678
 -- plain-header exit --
 0
 -- plain-header requests --
+GET /activity-service/activity/12345678
 PUT /activity-service/activity/12345678/reconstruct
   {}
 -- json stdout --
@@ -47,5 +52,6 @@ PUT /activity-service/activity/12345678/reconstruct
 -- json exit --
 0
 -- json requests --
+GET /activity-service/activity/12345678
 PUT /activity-service/activity/12345678/reconstruct
   {}

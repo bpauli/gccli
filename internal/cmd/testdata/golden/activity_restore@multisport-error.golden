@@ -1,0 +1,41 @@
+Error case: Garmin answers 400 to the restore of a multisport parent, so the exit code is 1 (error).
+-- args --
+activity
+restore
+12345678
+-- route GET /activity-service/activity/12345678 --
+{"activityId":12345678,"activityName":"Triathlon","isMultiSportParent":true,"activityTypeDTO":{"typeId":89,"typeKey":"multi_sport"},"metadataDTO":{"childIds":[12345001,12345002,12345003],"trimmed":false},"summaryDTO":{"startTimeGMT":"2026-01-10T08:00:00.0","elapsedDuration":8000.0}}
+-- route DELETE /activity-service/activity/v2/12345678/reconstruct 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+restore activity: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /activity-service/activity/12345678
+DELETE /activity-service/activity/v2/12345678/reconstruct
+-- plain stdout --
+-- plain stderr --
+restore activity: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /activity-service/activity/12345678
+DELETE /activity-service/activity/v2/12345678/reconstruct
+-- plain-header stdout --
+-- plain-header stderr --
+restore activity: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /activity-service/activity/12345678
+DELETE /activity-service/activity/v2/12345678/reconstruct
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"restore activity: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /activity-service/activity/12345678
+DELETE /activity-service/activity/v2/12345678/reconstruct

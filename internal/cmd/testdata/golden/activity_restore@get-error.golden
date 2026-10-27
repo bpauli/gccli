@@ -1,0 +1,35 @@
+An unknown activity fails at the read with exit code 4 (not found), before any write.
+-- args --
+activity
+restore
+12345678
+-- route GET /activity-service/activity/12345678 404 noeol --
+{"message":"HTTP 404 Not Found","error":"NotFoundException"}
+-- table stdout --
+-- table stderr --
+get activity: garmin api: 404 Not Found: {"message":"HTTP 404 Not Found","error":"NotFoundException"}
+-- table exit --
+4
+-- table requests --
+GET /activity-service/activity/12345678
+-- plain stdout --
+-- plain stderr --
+get activity: garmin api: 404 Not Found: {"message":"HTTP 404 Not Found","error":"NotFoundException"}
+-- plain exit --
+4
+-- plain requests --
+GET /activity-service/activity/12345678
+-- plain-header stdout --
+-- plain-header stderr --
+get activity: garmin api: 404 Not Found: {"message":"HTTP 404 Not Found","error":"NotFoundException"}
+-- plain-header exit --
+4
+-- plain-header requests --
+GET /activity-service/activity/12345678
+-- json stdout --
+-- json stderr --
+{"error":{"code":"not_found","status":404,"message":"get activity: garmin api: 404 Not Found: {\"message\":\"HTTP 404 Not Found\",\"error\":\"NotFoundException\"}"}}
+-- json exit --
+4
+-- json requests --
+GET /activity-service/activity/12345678
