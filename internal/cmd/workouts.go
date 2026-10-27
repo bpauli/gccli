@@ -15,7 +15,15 @@ import (
 
 var workoutsGroup = Group{Name: "workouts", Help: "Manage workouts.", Children: []Node{
 	Custom{Name: "list", Help: "List workouts.", Default: true, Cmd: &WorkoutsListCmd{}},
-	Custom{Name: "detail", Help: "View workout details.", Cmd: &WorkoutDetailCmd{}},
+	Leaf{
+		Name: "detail", Help: "View workout details.",
+		Spec: argsOf(&struct {
+			ID ID `arg:"" help:"Workout ID."`
+		}{}),
+		Endpoint: "workouts.get",
+		Params:   Params{"workoutID": In("ID")},
+		Verb:     "get workout", Output: JSON{},
+	},
 	Custom{Name: "download", Help: "Download workout as FIT file.", Cmd: &WorkoutDownloadCmd{}},
 	Custom{Name: "upload", Help: "Upload workout from JSON file.", Cmd: &WorkoutUploadCmd{}},
 	Custom{Name: "update", Help: "Update an existing workout from a JSON file.", Cmd: &WorkoutUpdateCmd{}},
@@ -63,25 +71,6 @@ func (c *WorkoutsListCmd) Run(g *Globals) error {
 	}
 
 	return list{noun: "workouts", keys: []string{"workouts", "results"}, header: []string{"ID", "NAME", "TYPE", "OWNER"}, rows: formatWorkoutRows}.print(g, data)
-}
-
-// WorkoutDetailCmd shows workout details.
-type WorkoutDetailCmd struct {
-	ID ID `arg:"" help:"Workout ID."`
-}
-
-func (c *WorkoutDetailCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.Call(g.Context, "workouts.get", map[string]string{"workoutID": string(c.ID)}, nil)
-	if err != nil {
-		return fmt.Errorf("get workout: %w", err)
-	}
-
-	return writeObject(g, data)
 }
 
 // WorkoutDownloadCmd downloads a workout as FIT.

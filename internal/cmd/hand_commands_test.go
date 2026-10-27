@@ -16,7 +16,6 @@ var handPassthroughAllowed = map[string]string{
 	"activity comments likes remove": "a DELETE Leaf row must confirm, and a removed like comes back with one add, so the command does not prompt",
 	"courses detail":                 "pending Leaf conversion",
 	"devices set-primary-tracker":    "pending Leaf conversion",
-	"workouts detail":                "pending Leaf conversion",
 }
 
 func TestHandCommandsHaveLogic(t *testing.T) {

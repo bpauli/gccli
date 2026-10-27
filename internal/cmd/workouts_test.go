@@ -166,26 +166,6 @@ func TestWorkoutsList_Plain(t *testing.T) {
 	}
 }
 
-// --- WorkoutDetailCmd tests ---
-
-func TestWorkoutDetail_Success(t *testing.T) {
-	server := workoutsTestServer(t)
-	defer server.Close()
-
-	store := newTestSecretsStore(t)
-	overrideLoadSecrets(t, store)
-	overrideNewClient(t, server)
-	storeTestTokens(t, store, "test@example.com", testTokens())
-
-	var buf bytes.Buffer
-	g := testGlobals(t, &buf, outfmt.Table, "test@example.com")
-	cmd := &WorkoutDetailCmd{ID: "42"}
-	err := cmd.Run(g)
-	if err != nil {
-		t.Fatalf("expected no error, got: %v", err)
-	}
-}
-
 // --- WorkoutDownloadCmd tests ---
 
 func TestWorkoutDownload_Success(t *testing.T) {
