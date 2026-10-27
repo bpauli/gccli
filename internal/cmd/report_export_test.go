@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"context"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -11,10 +10,6 @@ import (
 	"strings"
 	"sync"
 	"testing"
-	"time"
-
-	"github.com/bpauli/gccli/internal/garminapi"
-	"github.com/bpauli/gccli/internal/garminauth"
 )
 
 type reportFlow struct {
@@ -77,15 +72,7 @@ func runReportCommand(t *testing.T, flow *reportFlow, args ...string) (code int,
 	store := newTestSecretsStore(t)
 	overrideLoadSecrets(t, store)
 	storeTestTokens(t, store, "test@example.com", testTokens())
-	orig := newClientFn
-	newClientFn = func(tokens *garminauth.Tokens) *garminapi.Client {
-		return garminapi.NewClient(tokens,
-			garminapi.WithHTTPClient(server.Client()),
-			garminapi.WithBaseURL(server.URL),
-			garminapi.WithReportWait(func(context.Context, time.Duration) error { return nil }),
-		)
-	}
-	t.Cleanup(func() { newClientFn = orig })
+	overrideNewClient(t, server)
 
 	args = append([]string{"--color", "never", "--account", "test@example.com"}, args...)
 	stdout, stderr = captureOutput(t, func() {

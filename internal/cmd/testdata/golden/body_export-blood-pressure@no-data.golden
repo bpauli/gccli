@@ -1,0 +1,74 @@
+A range without readings ends in DATA_NOT_FOUND: exit 1, no content request and no file.
+-- args --
+body
+export-blood-pressure
+--start
+2026-10-15
+--end
+2026-10-15
+-- route GET /userprofile-service/userprofile/settings --
+{"preferredLocale":"de","dateFormat":{"formatKey":"ddmmyyyy"}}
+-- route POST /reportexport-service/export/init/bloodPressure/2026-10-15/2026-10-15?locale=de --
+{"estimatedTimeForStatusCheck":5000,"reportId":"abc123=="}
+-- route GET /reportexport-service/export/reportStatus/abc123== --
+{"progress":{"status":"DATA_NOT_FOUND","responseMessage":null},"reportId":"abc123=="}
+-- table stdout --
+-- table stderr --
+export blood pressure report: Garmin has no data for this report (status DATA_NOT_FOUND)
+-- table exit --
+1
+-- table requests --
+GET /userprofile-service/userprofile/settings
+POST /reportexport-service/export/init/bloodPressure/2026-10-15/2026-10-15?locale=de
+  {
+    "contentToSkip": [],
+    "reportFormat": "PDF",
+    "reportSubCategory": "Daily",
+    "requestedDateFormatKey": "ddmmyyyy"
+  }
+GET /reportexport-service/export/reportStatus/abc123==
+-- plain stdout --
+-- plain stderr --
+export blood pressure report: Garmin has no data for this report (status DATA_NOT_FOUND)
+-- plain exit --
+1
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+POST /reportexport-service/export/init/bloodPressure/2026-10-15/2026-10-15?locale=de
+  {
+    "contentToSkip": [],
+    "reportFormat": "PDF",
+    "reportSubCategory": "Daily",
+    "requestedDateFormatKey": "ddmmyyyy"
+  }
+GET /reportexport-service/export/reportStatus/abc123==
+-- plain-header stdout --
+-- plain-header stderr --
+export blood pressure report: Garmin has no data for this report (status DATA_NOT_FOUND)
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+POST /reportexport-service/export/init/bloodPressure/2026-10-15/2026-10-15?locale=de
+  {
+    "contentToSkip": [],
+    "reportFormat": "PDF",
+    "reportSubCategory": "Daily",
+    "requestedDateFormatKey": "ddmmyyyy"
+  }
+GET /reportexport-service/export/reportStatus/abc123==
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"export blood pressure report: Garmin has no data for this report (status DATA_NOT_FOUND)"}}
+-- json exit --
+1
+-- json requests --
+GET /userprofile-service/userprofile/settings
+POST /reportexport-service/export/init/bloodPressure/2026-10-15/2026-10-15?locale=de
+  {
+    "contentToSkip": [],
+    "reportFormat": "PDF",
+    "reportSubCategory": "Daily",
+    "requestedDateFormatKey": "ddmmyyyy"
+  }
+GET /reportexport-service/export/reportStatus/abc123==
