@@ -1,8 +1,10 @@
 package garminapi
 
 import (
+	"encoding/json"
 	"maps"
 	"testing"
+	"time"
 )
 
 func TestHealthEndpoints(t *testing.T) {
@@ -63,6 +65,8 @@ func TestHealthEndpoints(t *testing.T) {
 		{"health.cycling-ftp", nil, "GET /biometric-service/biometric/latestFunctionalThresholdPower/CYCLING"},
 		{"health.critical-swim-speed", day, "GET /biometric-service/criticalSwimSpeed/latest/2024-01-15"},
 		{"health.critical-swim-speed-range", span, "GET /biometric-service/criticalSwimSpeed/range/2024-01-01/2024-01-31"},
+		{"health.set-critical-swim-speed", nil, "POST /biometric-service/criticalSwimSpeed"},
+		{"health.delete-critical-swim-speed", map[string]string{"timestamp": "2024-01-15T10:30:00.12", "version": "0"}, "DELETE /biometric-service/criticalSwimSpeed/2024-01-15T10:30:00.12/0"},
 		{"health.power-to-weight", day, "GET /biometric-service/biometric/powerToWeight/latest/2024-01-15"},
 		{"health.cycling-ftp-range", span, "GET /biometric-service/stats/functionalThresholdPower/range/2024-01-01/2024-01-31?sport=CYCLING"},
 		{"health.lactate-heart-rate-range", span, "GET /biometric-service/stats/lactateThresholdHeartRate/range/2024-01-01/2024-01-31"},
@@ -95,4 +99,52 @@ func TestHealthEndpoints(t *testing.T) {
 		{"health.race-predictions-range", map[string]string{"displayName": "jo", "startDate": "2024-01-01", "endDate": "2024-01-31"}, "GET /metrics-service/metrics/racepredictions/daily/jo?fromCalendarDate=2024-01-01&toCalendarDate=2024-01-31"},
 		{"health.one-rep-max", day, "GET /fitnessstats-service/vbt-stats/one-rep-max/current/2024-01-15"},
 	})
+}
+
+func TestCriticalSwimSpeedBody(t *testing.T) {
+	zone := time.FixedZone("UTC+2", 2*60*60)
+	for _, tc := range []struct {
+		name      string
+		now       time.Time
+		wantLocal string
+		wantGMT   string
+	}{
+		{"two-digit milliseconds", time.Date(2026, 10, 27, 9, 5, 3, 7_000_000, zone), "2026-10-27T09:05:03.07", "2026-10-27T07:05:03.07"},
+		{"three-digit milliseconds", time.Date(2026, 10, 27, 9, 5, 3, 123_000_000, zone), "2026-10-27T09:05:03.123", "2026-10-27T07:05:03.123"},
+		{"zero milliseconds", time.Date(2026, 1, 2, 0, 0, 0, 0, zone), "2026-01-02T00:00:00.00", "2026-01-01T22:00:00.00"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			raw, err := CriticalSwimSpeedBody(833, tc.now)
+			if err != nil {
+				t.Fatalf("CriticalSwimSpeedBody: %v", err)
+			}
+			var got map[string]any
+			if err := json.Unmarshal(raw, &got); err != nil {
+				t.Fatalf("unmarshal body: %v", err)
+			}
+			want := map[string]any{
+				"version":                   float64(0),
+				"criticalSwimSpeed":         float64(833),
+				"measurementTimestampLocal": tc.wantLocal,
+				"measurementTimestampGMT":   tc.wantGMT,
+				"biometricSourceType":       "MANUAL",
+			}
+			if !maps.Equal(got, want) {
+				t.Errorf("body = %v, want %v", got, want)
+			}
+		})
+	}
+}
+
+func TestValidateCriticalSwimSpeed(t *testing.T) {
+	for _, mm := range []int{333, 834, 2000} {
+		if err := ValidateCriticalSwimSpeed(mm); err != nil {
+			t.Errorf("ValidateCriticalSwimSpeed(%d) = %v, want nil", mm, err)
+		}
+	}
+	for _, mm := range []int{-1, 0, 332, 2001, 3333} {
+		if err := ValidateCriticalSwimSpeed(mm); err == nil {
+			t.Errorf("ValidateCriticalSwimSpeed(%d) = nil, want an error", mm)
+		}
+	}
 }
