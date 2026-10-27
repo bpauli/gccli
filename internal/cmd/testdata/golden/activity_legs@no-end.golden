@@ -1,0 +1,52 @@
+A leg without endTime has no duration, so DURATION is -.
+-- args --
+activity
+legs
+12345678
+-- route GET /activity-service/activity/v2/12345678/reconstruct --
+{"activityReconstructDTO":{"reconstructRequest":[{"activityId":12345001,"operation":null,"activityTypeDTO":{"typeId":1,"typeKey":"running"},"startTime":1768032000000,"endTime":null}]}}
+-- table stdout --
+ID        TYPE     START                 DURATION
+12345001  running  2026-01-10T08:00:00Z  -
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /activity-service/activity/v2/12345678/reconstruct
+-- plain stdout --
+12345001	running	2026-01-10T08:00:00Z	-
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /activity-service/activity/v2/12345678/reconstruct
+-- plain-header stdout --
+ID	TYPE	START	DURATION
+12345001	running	2026-01-10T08:00:00Z	-
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /activity-service/activity/v2/12345678/reconstruct
+-- json stdout --
+{
+  "activityReconstructDTO": {
+    "reconstructRequest": [
+      {
+        "activityId": 12345001,
+        "operation": null,
+        "activityTypeDTO": {
+          "typeId": 1,
+          "typeKey": "running"
+        },
+        "startTime": 1768032000000,
+        "endTime": null
+      }
+    ]
+  }
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /activity-service/activity/v2/12345678/reconstruct

@@ -205,7 +205,7 @@ func (c *ActivityLegsCmd) Run(g *Globals) error {
 			strconv.FormatInt(leg.ActivityID, 10),
 			leg.Type.Key,
 			time.UnixMilli(leg.StartTime).UTC().Format(time.RFC3339),
-			formatDuration(float64(leg.EndTime-leg.StartTime) / 1000),
+			formatDuration(float64(max(leg.EndTime-leg.StartTime, 0)) / 1000),
 		})
 	}
 	return outfmt.WriteRows(g.Context, g.Stdout, []string{"ID", "TYPE", "START", "DURATION"}, rows)

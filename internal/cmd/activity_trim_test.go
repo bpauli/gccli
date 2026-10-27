@@ -41,3 +41,17 @@ func TestActivityClock(t *testing.T) {
 		})
 	}
 }
+
+func TestActivityLegsStartIsUTC(t *testing.T) {
+	local := time.Local
+	time.Local = time.FixedZone("UTC-5", -5*60*60)
+	t.Cleanup(func() { time.Local = local })
+	h := newHarness(t, harnessInput{routes: map[string]mockReply{
+		"GET /activity-service/activity/v2/1/reconstruct": {body: `{"activityReconstructDTO":{"reconstructRequest":[{"activityId":2,"activityTypeDTO":{"typeKey":"running"},"startTime":1768032000000,"endTime":1768035600000}]}}`},
+	}})
+
+	stdout, stderr, code := h.run([]string{"--plain"}, []string{"activity", "legs", "1"})
+	if want := "2\trunning\t2026-01-10T08:00:00Z\t1:00:00\n"; code != 0 || stdout != want {
+		t.Errorf("exit %d, stdout %q, stderr %q; want exit 0, stdout %q", code, stdout, stderr, want)
+	}
+}
