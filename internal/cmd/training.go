@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
+	"strings"
 )
 
 var trainingGroup = Group{Name: "training", Help: "Find, join and change training plans, and view adaptive coaching workouts.", Children: []Node{
@@ -87,6 +88,7 @@ var trainingTaskGroup = Group{Name: "task", Help: "Move and delete the workouts 
 var trainingSearchRows = Rows{Noun: "training plans", Items: "trainingPlanList", Columns: []Column{
 	{Label: "ID", Path: "trainingPlanId"},
 	{Label: "NAME", Path: "name"},
+	{Label: "CATEGORY", Path: "trainingPlanCategory"},
 	{Label: "SPORT", Path: "trainingType.typeKey"},
 	{Label: "GOAL", Path: "trainingSubType.subTypeKey"},
 	{Label: "LEVEL", Path: "trainingLevel.levelKey"},
@@ -96,11 +98,12 @@ var trainingSearchRows = Rows{Noun: "training plans", Items: "trainingPlanList",
 
 // TrainingSearchCmd searches the Garmin catalog of training plans.
 type TrainingSearchCmd struct {
-	Sport  string `help:"Sport as Garmin prints it in the SPORT column, such as Running."`
-	Goal   string `help:"Goal as Garmin prints it in the GOAL column, such as 5k, 10k, HalfMarathon or Marathon."`
-	Level  string `help:"Level as Garmin prints it in the LEVEL column, such as Beginner, Intermediate or Advanced."`
-	Target string `help:"Workout target as Garmin prints it in the TARGET column, such as HeartRate or Time."`
-	Locale string `help:"Locale for plan names (e.g. en, de, fr)." default:"en"`
+	Sport    string   `help:"Sport as Garmin prints it in the SPORT column, such as Running."`
+	Goal     string   `help:"Goal as Garmin prints it in the GOAL column, such as 5k, 10k, HalfMarathon or Marathon."`
+	Level    string   `help:"Level as Garmin prints it in the LEVEL column, such as Beginner, Intermediate or Advanced."`
+	Target   string   `help:"Workout target as Garmin prints it in the TARGET column, such as HeartRate or Time."`
+	Category []string `help:"Plan category: FBT_ADAPTIVE (Garmin Coach), STRENGTH, ITP or STATIC. Repeat the flag or separate with commas. Default: all categories." enum:"FBT_ADAPTIVE,STRENGTH,ITP,STATIC" placeholder:"CATEGORY"`
+	Locale   string   `help:"Locale for plan names (e.g. en, de, fr)." default:"en"`
 }
 
 func (c *TrainingSearchCmd) Run(g *Globals) error {
@@ -108,7 +111,7 @@ func (c *TrainingSearchCmd) Run(g *Globals) error {
 	if err != nil {
 		return err
 	}
-	params := map[string]string{"locale": c.Locale, "sport": c.Sport, "goal": c.Goal, "level": c.Level, "target": c.Target}
+	params := map[string]string{"locale": c.Locale, "sport": c.Sport, "goal": c.Goal, "level": c.Level, "target": c.Target, "category": strings.Join(c.Category, ",")}
 	data, err := client.Call(g.Context, "training.search", params, []byte{})
 	if err != nil {
 		return fmt.Errorf("search training plans: %w", err)

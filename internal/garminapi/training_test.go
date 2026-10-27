@@ -19,6 +19,11 @@ func TestTrainingEndpoints(t *testing.T) {
 			map[string]string{"locale": "de", "sport": "Running", "goal": "5k", "level": "Beginner", "target": "HeartRate"},
 			"POST /trainingplan-service/trainingplan/search?start=1&limit=1000&locale=de&types=Running&subTypes=5k&levels=Beginner&version=HeartRate",
 		},
+		{
+			"training.search",
+			map[string]string{"category": "FBT_ADAPTIVE,STRENGTH"},
+			"POST /trainingplan-service/trainingplan/search?start=1&limit=1000&locale=en&categories=FBT_ADAPTIVE&categories=STRENGTH",
+		},
 		{"training.schedule", map[string]string{"planID": "42"}, "GET /trainingplan-service/trainingplan/tasks/42?localeKey=en"},
 		{"training.schedule", map[string]string{"planID": "42", "locale": "de"}, "GET /trainingplan-service/trainingplan/tasks/42?localeKey=de"},
 		{"training.join", map[string]string{"planID": "42", "startDate": "2026-10-26"}, "GET /trainingplan-service/trainingplan/schedule/42?startDate=2026-10-26"},

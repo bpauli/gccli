@@ -190,6 +190,7 @@ _gccli_completions() {
             "profile privacy set --activities") COMPREPLY=($(compgen -W 'public private connections groups' -- "$cur")) ;;
             "profile privacy set --wellness") COMPREPLY=($(compgen -W 'public private connections groups' -- "$cur")) ;;
             "profile privacy set --badges") COMPREPLY=($(compgen -W 'public private connections groups' -- "$cur")) ;;
+            "training search --category") COMPREPLY=($(compgen -W 'FBT_ADAPTIVE STRENGTH ITP STATIC' -- "$cur")) ;;
             "events list --sort") COMPREPLY=($(compgen -W 'eventDate_asc eventDate_desc' -- "$cur")) ;;
             "events add --type"|"events add -t") COMPREPLY=($(compgen -W 'running trail_running cycling gravel_cycling mountain_biking swimming triathlon multi_sport hiking walking fitness_equipment motorcycling winter_sport other' -- "$cur")) ;;
             "wellness menstrual-log set --flow") COMPREPLY=($(compgen -W 'light medium heavy' -- "$cur")) ;;
@@ -385,7 +386,7 @@ _gccli_completions() {
         "training") COMPREPLY=($(compgen -W 'plans plan active search schedule join leave task coach-workouts' -- "$cur")) ;;
         "training plans") COMPREPLY=($(compgen -W '--locale' -- "$cur")) ;;
         "training active") COMPREPLY=($(compgen -W '--start' -- "$cur")) ;;
-        "training search") COMPREPLY=($(compgen -W '--sport --goal --level --target --locale' -- "$cur")) ;;
+        "training search") COMPREPLY=($(compgen -W '--sport --goal --level --target --category --locale' -- "$cur")) ;;
         "training schedule") COMPREPLY=($(compgen -W '--locale' -- "$cur")) ;;
         "training join") COMPREPLY=($(compgen -W '--start' -- "$cur")) ;;
         "training leave") COMPREPLY=($(compgen -W '--force -f' -- "$cur")) ;;
@@ -629,6 +630,7 @@ _gccli_completions() {
             "profile privacy set --activities") COMPREPLY=($(compgen -W 'public private connections groups' -- "$cur")) ;;
             "profile privacy set --wellness") COMPREPLY=($(compgen -W 'public private connections groups' -- "$cur")) ;;
             "profile privacy set --badges") COMPREPLY=($(compgen -W 'public private connections groups' -- "$cur")) ;;
+            "training search --category") COMPREPLY=($(compgen -W 'FBT_ADAPTIVE STRENGTH ITP STATIC' -- "$cur")) ;;
             "events list --sort") COMPREPLY=($(compgen -W 'eventDate_asc eventDate_desc' -- "$cur")) ;;
             "events add --type"|"events add -t") COMPREPLY=($(compgen -W 'running trail_running cycling gravel_cycling mountain_biking swimming triathlon multi_sport hiking walking fitness_equipment motorcycling winter_sport other' -- "$cur")) ;;
             "wellness menstrual-log set --flow") COMPREPLY=($(compgen -W 'light medium heavy' -- "$cur")) ;;
@@ -824,7 +826,7 @@ _gccli_completions() {
         "training") COMPREPLY=($(compgen -W 'plans plan active search schedule join leave task coach-workouts' -- "$cur")) ;;
         "training plans") COMPREPLY=($(compgen -W '--locale' -- "$cur")) ;;
         "training active") COMPREPLY=($(compgen -W '--start' -- "$cur")) ;;
-        "training search") COMPREPLY=($(compgen -W '--sport --goal --level --target --locale' -- "$cur")) ;;
+        "training search") COMPREPLY=($(compgen -W '--sport --goal --level --target --category --locale' -- "$cur")) ;;
         "training schedule") COMPREPLY=($(compgen -W '--locale' -- "$cur")) ;;
         "training join") COMPREPLY=($(compgen -W '--start' -- "$cur")) ;;
         "training leave") COMPREPLY=($(compgen -W '--force -f' -- "$cur")) ;;
@@ -1068,6 +1070,7 @@ _gccli_completions() {
             "profile privacy set --activities") COMPREPLY=($(compgen -W 'public private connections groups' -- "$cur")) ;;
             "profile privacy set --wellness") COMPREPLY=($(compgen -W 'public private connections groups' -- "$cur")) ;;
             "profile privacy set --badges") COMPREPLY=($(compgen -W 'public private connections groups' -- "$cur")) ;;
+            "training search --category") COMPREPLY=($(compgen -W 'FBT_ADAPTIVE STRENGTH ITP STATIC' -- "$cur")) ;;
             "events list --sort") COMPREPLY=($(compgen -W 'eventDate_asc eventDate_desc' -- "$cur")) ;;
             "events add --type"|"events add -t") COMPREPLY=($(compgen -W 'running trail_running cycling gravel_cycling mountain_biking swimming triathlon multi_sport hiking walking fitness_equipment motorcycling winter_sport other' -- "$cur")) ;;
             "wellness menstrual-log set --flow") COMPREPLY=($(compgen -W 'light medium heavy' -- "$cur")) ;;
@@ -1263,7 +1266,7 @@ _gccli_completions() {
         "training") COMPREPLY=($(compgen -W 'plans plan active search schedule join leave task coach-workouts' -- "$cur")) ;;
         "training plans") COMPREPLY=($(compgen -W '--locale' -- "$cur")) ;;
         "training active") COMPREPLY=($(compgen -W '--start' -- "$cur")) ;;
-        "training search") COMPREPLY=($(compgen -W '--sport --goal --level --target --locale' -- "$cur")) ;;
+        "training search") COMPREPLY=($(compgen -W '--sport --goal --level --target --category --locale' -- "$cur")) ;;
         "training schedule") COMPREPLY=($(compgen -W '--locale' -- "$cur")) ;;
         "training join") COMPREPLY=($(compgen -W '--start' -- "$cur")) ;;
         "training leave") COMPREPLY=($(compgen -W '--force -f' -- "$cur")) ;;
@@ -1507,6 +1510,7 @@ _gccli_completions() {
             "profile privacy set --activities") COMPREPLY=($(compgen -W 'public private connections groups' -- "$cur")) ;;
             "profile privacy set --wellness") COMPREPLY=($(compgen -W 'public private connections groups' -- "$cur")) ;;
             "profile privacy set --badges") COMPREPLY=($(compgen -W 'public private connections groups' -- "$cur")) ;;
+            "training search --category") COMPREPLY=($(compgen -W 'FBT_ADAPTIVE STRENGTH ITP STATIC' -- "$cur")) ;;
             "events list --sort") COMPREPLY=($(compgen -W 'eventDate_asc eventDate_desc' -- "$cur")) ;;
             "events add --type"|"events add -t") COMPREPLY=($(compgen -W 'running trail_running cycling gravel_cycling mountain_biking swimming triathlon multi_sport hiking walking fitness_equipment motorcycling winter_sport other' -- "$cur")) ;;
             "wellness menstrual-log set --flow") COMPREPLY=($(compgen -W 'light medium heavy' -- "$cur")) ;;
@@ -1702,7 +1706,7 @@ _gccli_completions() {
         "training") COMPREPLY=($(compgen -W 'plans plan active search schedule join leave task coach-workouts' -- "$cur")) ;;
         "training plans") COMPREPLY=($(compgen -W '--locale' -- "$cur")) ;;
         "training active") COMPREPLY=($(compgen -W '--start' -- "$cur")) ;;
-        "training search") COMPREPLY=($(compgen -W '--sport --goal --level --target --locale' -- "$cur")) ;;
+        "training search") COMPREPLY=($(compgen -W '--sport --goal --level --target --category --locale' -- "$cur")) ;;
         "training schedule") COMPREPLY=($(compgen -W '--locale' -- "$cur")) ;;
         "training join") COMPREPLY=($(compgen -W '--start' -- "$cur")) ;;
         "training leave") COMPREPLY=($(compgen -W '--force -f' -- "$cur")) ;;

@@ -15,13 +15,14 @@ var trainingEndpoints = []Endpoint{
 	// for the first 1000 plans, as the web app does.
 	{
 		Name: "training.search", Method: http.MethodPost, Host: ConnectAPI,
-		Path: "/trainingplan-service/trainingplan/search?start=1&limit=1000&locale={locale}&types={sport}&subTypes={goal}&levels={level}&version={target}",
+		Path: "/trainingplan-service/trainingplan/search?start=1&limit=1000&locale={locale}&types={sport}&subTypes={goal}&levels={level}&version={target}&categories={category}",
 		Params: []Param{
 			{Name: "locale", Default: "en"},
 			{Name: "sport", Optional: true},
 			{Name: "goal", Optional: true},
 			{Name: "level", Optional: true},
 			{Name: "target", Optional: true},
+			{Name: "category", Optional: true, List: true},
 		},
 		Body: true, Form: true, Read: true,
 	},

@@ -1,0 +1,154 @@
+Usage error: Garmin answers 400 to a category it does not know, so the flag takes only the four categories the catalog search accepts and no request is sent.
+-- args --
+training
+search
+--category
+fbt_adaptive
+-- table stdout --
+-- table stderr --
+Usage: gccli training search [flags]
+
+Search the Garmin catalog of training plans.
+
+Flags:
+  -h, --help                     Show context-sensitive help.
+  -j, --json                     Output as JSON ($GCCLI_JSON).
+      --plain                    Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                   Print the column names as the first line of
+                                 --plain output ($GCCLI_HEADER).
+      --color="auto"             Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING           Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"             Unit system for distances, speeds, paces,
+                                 elevations and weights in table and plain
+                                 output: auto (Garmin profile), metric,
+                                 statute_us, statute_uk ($GCCLI_UNITS).
+      --version                  Print version information.
+
+      --sport=STRING             Sport as Garmin prints it in the SPORT column,
+                                 such as Running.
+      --goal=STRING              Goal as Garmin prints it in the GOAL column,
+                                 such as 5k, 10k, HalfMarathon or Marathon.
+      --level=STRING             Level as Garmin prints it in the LEVEL column,
+                                 such as Beginner, Intermediate or Advanced.
+      --target=STRING            Workout target as Garmin prints it in the
+                                 TARGET column, such as HeartRate or Time.
+      --category=CATEGORY,...    Plan category: FBT_ADAPTIVE (Garmin Coach),
+                                 STRENGTH, ITP or STATIC. Repeat the flag or
+                                 separate with commas. Default: all categories.
+      --locale="en"              Locale for plan names (e.g. en, de, fr).
+
+gccli: error: --category must be one of "FBT_ADAPTIVE","STRENGTH","ITP","STATIC" but got "fbt_adaptive"
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli training search [flags]
+
+Search the Garmin catalog of training plans.
+
+Flags:
+  -h, --help                     Show context-sensitive help.
+  -j, --json                     Output as JSON ($GCCLI_JSON).
+      --plain                    Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                   Print the column names as the first line of
+                                 --plain output ($GCCLI_HEADER).
+      --color="auto"             Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING           Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"             Unit system for distances, speeds, paces,
+                                 elevations and weights in table and plain
+                                 output: auto (Garmin profile), metric,
+                                 statute_us, statute_uk ($GCCLI_UNITS).
+      --version                  Print version information.
+
+      --sport=STRING             Sport as Garmin prints it in the SPORT column,
+                                 such as Running.
+      --goal=STRING              Goal as Garmin prints it in the GOAL column,
+                                 such as 5k, 10k, HalfMarathon or Marathon.
+      --level=STRING             Level as Garmin prints it in the LEVEL column,
+                                 such as Beginner, Intermediate or Advanced.
+      --target=STRING            Workout target as Garmin prints it in the
+                                 TARGET column, such as HeartRate or Time.
+      --category=CATEGORY,...    Plan category: FBT_ADAPTIVE (Garmin Coach),
+                                 STRENGTH, ITP or STATIC. Repeat the flag or
+                                 separate with commas. Default: all categories.
+      --locale="en"              Locale for plan names (e.g. en, de, fr).
+
+gccli: error: --category must be one of "FBT_ADAPTIVE","STRENGTH","ITP","STATIC" but got "fbt_adaptive"
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli training search [flags]
+
+Search the Garmin catalog of training plans.
+
+Flags:
+  -h, --help                     Show context-sensitive help.
+  -j, --json                     Output as JSON ($GCCLI_JSON).
+      --plain                    Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                   Print the column names as the first line of
+                                 --plain output ($GCCLI_HEADER).
+      --color="auto"             Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING           Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"             Unit system for distances, speeds, paces,
+                                 elevations and weights in table and plain
+                                 output: auto (Garmin profile), metric,
+                                 statute_us, statute_uk ($GCCLI_UNITS).
+      --version                  Print version information.
+
+      --sport=STRING             Sport as Garmin prints it in the SPORT column,
+                                 such as Running.
+      --goal=STRING              Goal as Garmin prints it in the GOAL column,
+                                 such as 5k, 10k, HalfMarathon or Marathon.
+      --level=STRING             Level as Garmin prints it in the LEVEL column,
+                                 such as Beginner, Intermediate or Advanced.
+      --target=STRING            Workout target as Garmin prints it in the
+                                 TARGET column, such as HeartRate or Time.
+      --category=CATEGORY,...    Plan category: FBT_ADAPTIVE (Garmin Coach),
+                                 STRENGTH, ITP or STATIC. Repeat the flag or
+                                 separate with commas. Default: all categories.
+      --locale="en"              Locale for plan names (e.g. en, de, fr).
+
+gccli: error: --category must be one of "FBT_ADAPTIVE","STRENGTH","ITP","STATIC" but got "fbt_adaptive"
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli training search [flags]
+
+Search the Garmin catalog of training plans.
+
+Flags:
+  -h, --help                     Show context-sensitive help.
+  -j, --json                     Output as JSON ($GCCLI_JSON).
+      --plain                    Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                   Print the column names as the first line of
+                                 --plain output ($GCCLI_HEADER).
+      --color="auto"             Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING           Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"             Unit system for distances, speeds, paces,
+                                 elevations and weights in table and plain
+                                 output: auto (Garmin profile), metric,
+                                 statute_us, statute_uk ($GCCLI_UNITS).
+      --version                  Print version information.
+
+      --sport=STRING             Sport as Garmin prints it in the SPORT column,
+                                 such as Running.
+      --goal=STRING              Goal as Garmin prints it in the GOAL column,
+                                 such as 5k, 10k, HalfMarathon or Marathon.
+      --level=STRING             Level as Garmin prints it in the LEVEL column,
+                                 such as Beginner, Intermediate or Advanced.
+      --target=STRING            Workout target as Garmin prints it in the
+                                 TARGET column, such as HeartRate or Time.
+      --category=CATEGORY,...    Plan category: FBT_ADAPTIVE (Garmin Coach),
+                                 STRENGTH, ITP or STATIC. Repeat the flag or
+                                 separate with commas. Default: all categories.
+      --locale="en"              Locale for plan names (e.g. en, de, fr).
+
+gccli: error: --category must be one of "FBT_ADAPTIVE","STRENGTH","ITP","STATIC" but got "fbt_adaptive"
+-- json exit --
+2
+-- json requests --

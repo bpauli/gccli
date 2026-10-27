@@ -976,6 +976,7 @@ Date shortcuts
   - `--goal=STRING`: Goal as Garmin prints it in the GOAL column, such as 5k, 10k, HalfMarathon or Marathon.
   - `--level=STRING`: Level as Garmin prints it in the LEVEL column, such as Beginner, Intermediate or Advanced.
   - `--target=STRING`: Workout target as Garmin prints it in the TARGET column, such as HeartRate or Time.
+  - `--category=CATEGORY,...`: Plan category: FBT_ADAPTIVE (Garmin Coach), STRENGTH, ITP or STATIC. Repeat the flag or separate with commas. Default: all categories.
   - `--locale="en"`: Locale for plan names (e.g. en, de, fr).
 - `gccli training schedule <id> [flags]`: List the workouts and notes of a training plan by week and day.
   - `<id>`: Training plan ID.

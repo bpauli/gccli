@@ -7,7 +7,7 @@ Cycling
 -- route POST /trainingplan-service/trainingplan/search?start=1&limit=1000&locale=en&types=Cycling --
 {"searchFilter":{},"trainingPlanList":[]}
 -- table stdout --
-ID  NAME  SPORT  GOAL  LEVEL  TARGET  WEEKS
+ID  NAME  CATEGORY  SPORT  GOAL  LEVEL  TARGET  WEEKS
 -- table stderr --
 -- table exit --
 0
@@ -20,7 +20,7 @@ POST /trainingplan-service/trainingplan/search?start=1&limit=1000&locale=en&type
 -- plain requests --
 POST /trainingplan-service/trainingplan/search?start=1&limit=1000&locale=en&types=Cycling
 -- plain-header stdout --
-ID	NAME	SPORT	GOAL	LEVEL	TARGET	WEEKS
+ID	NAME	CATEGORY	SPORT	GOAL	LEVEL	TARGET	WEEKS
 -- plain-header stderr --
 -- plain-header exit --
 0
