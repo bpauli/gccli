@@ -1,0 +1,37 @@
+A multisport parent fails before any write. Garmin Connect trims a multisport activity through its legs, not with timeRanges on the parent.
+-- args --
+activity
+trim
+12345678
+--from
+2m
+-- route GET /activity-service/activity/12345678 --
+{"activityId":12345678,"activityName":"Triathlon","isMultiSportParent":true,"activityTypeDTO":{"typeId":89,"typeKey":"multi_sport"},"metadataDTO":{"childIds":[12345001,12345002,12345003],"trimmed":false},"summaryDTO":{"startTimeGMT":"2026-01-10T08:00:00.0","elapsedDuration":8000.0}}
+-- table stdout --
+-- table stderr --
+cannot trim multisport activity 12345678 as a whole: trim one of its legs instead (activity legs 12345678 lists them)
+-- table exit --
+1
+-- table requests --
+GET /activity-service/activity/12345678
+-- plain stdout --
+-- plain stderr --
+cannot trim multisport activity 12345678 as a whole: trim one of its legs instead (activity legs 12345678 lists them)
+-- plain exit --
+1
+-- plain requests --
+GET /activity-service/activity/12345678
+-- plain-header stdout --
+-- plain-header stderr --
+cannot trim multisport activity 12345678 as a whole: trim one of its legs instead (activity legs 12345678 lists them)
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /activity-service/activity/12345678
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"cannot trim multisport activity 12345678 as a whole: trim one of its legs instead (activity legs 12345678 lists them)"}}
+-- json exit --
+1
+-- json requests --
+GET /activity-service/activity/12345678

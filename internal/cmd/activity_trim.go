@@ -19,7 +19,7 @@ type ActivityTrimCmd struct {
 }
 
 func (c *ActivityTrimCmd) Help() string {
-	return "For single-sport activities. Give --from, --to or both. Garmin applies the trim in a few seconds. To bring back the original, use activity restore."
+	return "For single-sport activities and the legs of a multisport activity. Give --from, --to or both. Garmin applies the trim in a few seconds. To bring back the original, use activity restore."
 }
 
 func (c *ActivityTrimCmd) Validate() error {
@@ -52,6 +52,13 @@ func (c *ActivityTrimCmd) Run(g *Globals) error {
 	data, err := client.Call(g.Context, "activities.get", args, nil)
 	if err != nil {
 		return fmt.Errorf("get activity: %w", err)
+	}
+	parent, err := isMultiSportParent(data)
+	if err != nil {
+		return fmt.Errorf("activity %s: %w", c.ID, err)
+	}
+	if parent {
+		return fmt.Errorf("cannot trim multisport activity %s as a whole: trim one of its legs instead (activity legs %s lists them)", c.ID, c.ID)
 	}
 	start, elapsed, err := activityClock(data)
 	if err != nil {
