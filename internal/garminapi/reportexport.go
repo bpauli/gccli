@@ -58,8 +58,8 @@ type ReportPreferences struct {
 
 // GetReportPreferences reads preferredLocale and dateFormat.formatKey from
 // the profile settings. A profile without a locale gets "en". A profile
-// without a date format key is an error, because Garmin needs one for a
-// blood pressure report.
+// without a date format key is an error, because the blood pressure request
+// carries it.
 func (c *Client) GetReportPreferences(ctx context.Context) (ReportPreferences, error) {
 	data, err := c.Call(ctx, "profile.get", nil, nil)
 	if err != nil {
