@@ -1,0 +1,171 @@
+Usage error: Garmin takes the day names in capitals, so a day in lower case fails before any request.
+-- args --
+training
+coach-join
+101
+--name
+Base Run
+--end
+2026-11-24
+--day
+monday
+-- table stdout --
+-- table stderr --
+Usage: gccli training coach-join --name=STRING --end=DATE --day=DAY,... <id> [flags]
+
+Start a Garmin Coach plan from a template and schedule its workouts in the
+calendar.
+
+Arguments:
+  <id>    Catalog ID of a Garmin Coach template, as training search --category
+          FBT_ADAPTIVE prints it.
+
+Flags:
+  -h, --help                Show context-sensitive help.
+  -j, --json                Output as JSON ($GCCLI_JSON).
+      --plain               Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header              Print the column names as the first line of --plain
+                            output ($GCCLI_HEADER).
+      --color="auto"        Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING      Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"        Unit system for distances, speeds, paces,
+                            elevations and weights in table and plain output:
+                            auto (Garmin profile), metric, statute_us,
+                            statute_uk ($GCCLI_UNITS).
+      --version             Print version information.
+
+      --name=STRING         Name of the new plan.
+      --end=DATE            Last day of the plan (YYYY-MM-DD, today, yesterday,
+                            3d, +30d).
+      --day=DAY,...         Training day: MONDAY to SUNDAY. Repeat the flag
+                            or separate with commas. Each coach template sets
+                            how many days it needs, and Garmin rejects another
+                            number.
+      --long-day=DAY,...    Day for the long workout: MONDAY to SUNDAY. Repeat
+                            the flag or separate with commas.
+      --locale="en"         Locale for workout names (e.g. en, de, fr).
+
+gccli: error: --day must be one of "MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY","SUNDAY" but got "monday"
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli training coach-join --name=STRING --end=DATE --day=DAY,... <id> [flags]
+
+Start a Garmin Coach plan from a template and schedule its workouts in the
+calendar.
+
+Arguments:
+  <id>    Catalog ID of a Garmin Coach template, as training search --category
+          FBT_ADAPTIVE prints it.
+
+Flags:
+  -h, --help                Show context-sensitive help.
+  -j, --json                Output as JSON ($GCCLI_JSON).
+      --plain               Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header              Print the column names as the first line of --plain
+                            output ($GCCLI_HEADER).
+      --color="auto"        Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING      Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"        Unit system for distances, speeds, paces,
+                            elevations and weights in table and plain output:
+                            auto (Garmin profile), metric, statute_us,
+                            statute_uk ($GCCLI_UNITS).
+      --version             Print version information.
+
+      --name=STRING         Name of the new plan.
+      --end=DATE            Last day of the plan (YYYY-MM-DD, today, yesterday,
+                            3d, +30d).
+      --day=DAY,...         Training day: MONDAY to SUNDAY. Repeat the flag
+                            or separate with commas. Each coach template sets
+                            how many days it needs, and Garmin rejects another
+                            number.
+      --long-day=DAY,...    Day for the long workout: MONDAY to SUNDAY. Repeat
+                            the flag or separate with commas.
+      --locale="en"         Locale for workout names (e.g. en, de, fr).
+
+gccli: error: --day must be one of "MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY","SUNDAY" but got "monday"
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli training coach-join --name=STRING --end=DATE --day=DAY,... <id> [flags]
+
+Start a Garmin Coach plan from a template and schedule its workouts in the
+calendar.
+
+Arguments:
+  <id>    Catalog ID of a Garmin Coach template, as training search --category
+          FBT_ADAPTIVE prints it.
+
+Flags:
+  -h, --help                Show context-sensitive help.
+  -j, --json                Output as JSON ($GCCLI_JSON).
+      --plain               Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header              Print the column names as the first line of --plain
+                            output ($GCCLI_HEADER).
+      --color="auto"        Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING      Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"        Unit system for distances, speeds, paces,
+                            elevations and weights in table and plain output:
+                            auto (Garmin profile), metric, statute_us,
+                            statute_uk ($GCCLI_UNITS).
+      --version             Print version information.
+
+      --name=STRING         Name of the new plan.
+      --end=DATE            Last day of the plan (YYYY-MM-DD, today, yesterday,
+                            3d, +30d).
+      --day=DAY,...         Training day: MONDAY to SUNDAY. Repeat the flag
+                            or separate with commas. Each coach template sets
+                            how many days it needs, and Garmin rejects another
+                            number.
+      --long-day=DAY,...    Day for the long workout: MONDAY to SUNDAY. Repeat
+                            the flag or separate with commas.
+      --locale="en"         Locale for workout names (e.g. en, de, fr).
+
+gccli: error: --day must be one of "MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY","SUNDAY" but got "monday"
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli training coach-join --name=STRING --end=DATE --day=DAY,... <id> [flags]
+
+Start a Garmin Coach plan from a template and schedule its workouts in the
+calendar.
+
+Arguments:
+  <id>    Catalog ID of a Garmin Coach template, as training search --category
+          FBT_ADAPTIVE prints it.
+
+Flags:
+  -h, --help                Show context-sensitive help.
+  -j, --json                Output as JSON ($GCCLI_JSON).
+      --plain               Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header              Print the column names as the first line of --plain
+                            output ($GCCLI_HEADER).
+      --color="auto"        Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING      Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"        Unit system for distances, speeds, paces,
+                            elevations and weights in table and plain output:
+                            auto (Garmin profile), metric, statute_us,
+                            statute_uk ($GCCLI_UNITS).
+      --version             Print version information.
+
+      --name=STRING         Name of the new plan.
+      --end=DATE            Last day of the plan (YYYY-MM-DD, today, yesterday,
+                            3d, +30d).
+      --day=DAY,...         Training day: MONDAY to SUNDAY. Repeat the flag
+                            or separate with commas. Each coach template sets
+                            how many days it needs, and Garmin rejects another
+                            number.
+      --long-day=DAY,...    Day for the long workout: MONDAY to SUNDAY. Repeat
+                            the flag or separate with commas.
+      --locale="en"         Locale for workout names (e.g. en, de, fr).
+
+gccli: error: --day must be one of "MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY","SUNDAY" but got "monday"
+-- json exit --
+2
+-- json requests --

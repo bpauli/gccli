@@ -1,0 +1,127 @@
+Garmin checks the number of training days per template and answers 400 with its own message, which the command passes on.
+-- args --
+training
+coach-join
+101
+--name
+Base Run
+--end
+2026-11-24
+--day
+MONDAY
+--day
+WEDNESDAY
+--day
+FRIDAY
+-- route GET /userprofile-service/userprofile/adaptive-coaching-workouts --
+[{"userProfilePk":1,"sport":"RUNNING","adaptiveCoachingWorkoutType":"PACE"}]
+-- route POST /trainingplan-service/trainingplan/fbt-adaptive 400 noeol --
+{"message":"5 available training days are required for this plan type","error":"BadRequestException"}
+-- table stdout --
+-- table stderr --
+join Garmin Coach plan: garmin api: 400 Bad Request: {"message":"5 available training days are required for this plan type","error":"BadRequestException"}
+-- table exit --
+1
+-- table requests --
+GET /userprofile-service/userprofile/adaptive-coaching-workouts
+POST /trainingplan-service/trainingplan/fbt-adaptive
+  {
+    "templatePlanId": 101,
+    "customPlanName": "Base Run",
+    "planEndDate": "2026-11-24",
+    "availableTrainingDays": [
+      "MONDAY",
+      "WEDNESDAY",
+      "FRIDAY"
+    ],
+    "preferredLongTrainingDays": [],
+    "localeKey": "en",
+    "workoutTargetTypePrefs": [
+      {
+        "userProfilePk": 1,
+        "sport": "RUNNING",
+        "adaptiveCoachingWorkoutType": "PACE"
+      }
+    ]
+  }
+-- plain stdout --
+-- plain stderr --
+join Garmin Coach plan: garmin api: 400 Bad Request: {"message":"5 available training days are required for this plan type","error":"BadRequestException"}
+-- plain exit --
+1
+-- plain requests --
+GET /userprofile-service/userprofile/adaptive-coaching-workouts
+POST /trainingplan-service/trainingplan/fbt-adaptive
+  {
+    "templatePlanId": 101,
+    "customPlanName": "Base Run",
+    "planEndDate": "2026-11-24",
+    "availableTrainingDays": [
+      "MONDAY",
+      "WEDNESDAY",
+      "FRIDAY"
+    ],
+    "preferredLongTrainingDays": [],
+    "localeKey": "en",
+    "workoutTargetTypePrefs": [
+      {
+        "userProfilePk": 1,
+        "sport": "RUNNING",
+        "adaptiveCoachingWorkoutType": "PACE"
+      }
+    ]
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+join Garmin Coach plan: garmin api: 400 Bad Request: {"message":"5 available training days are required for this plan type","error":"BadRequestException"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /userprofile-service/userprofile/adaptive-coaching-workouts
+POST /trainingplan-service/trainingplan/fbt-adaptive
+  {
+    "templatePlanId": 101,
+    "customPlanName": "Base Run",
+    "planEndDate": "2026-11-24",
+    "availableTrainingDays": [
+      "MONDAY",
+      "WEDNESDAY",
+      "FRIDAY"
+    ],
+    "preferredLongTrainingDays": [],
+    "localeKey": "en",
+    "workoutTargetTypePrefs": [
+      {
+        "userProfilePk": 1,
+        "sport": "RUNNING",
+        "adaptiveCoachingWorkoutType": "PACE"
+      }
+    ]
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"join Garmin Coach plan: garmin api: 400 Bad Request: {\"message\":\"5 available training days are required for this plan type\",\"error\":\"BadRequestException\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /userprofile-service/userprofile/adaptive-coaching-workouts
+POST /trainingplan-service/trainingplan/fbt-adaptive
+  {
+    "templatePlanId": 101,
+    "customPlanName": "Base Run",
+    "planEndDate": "2026-11-24",
+    "availableTrainingDays": [
+      "MONDAY",
+      "WEDNESDAY",
+      "FRIDAY"
+    ],
+    "preferredLongTrainingDays": [],
+    "localeKey": "en",
+    "workoutTargetTypePrefs": [
+      {
+        "userProfilePk": 1,
+        "sport": "RUNNING",
+        "adaptiveCoachingWorkoutType": "PACE"
+      }
+    ]
+  }

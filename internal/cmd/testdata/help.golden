@@ -378,14 +378,17 @@ Commands:
   training phased-plan             Show a joined phased training plan, an ITP
                                    plan with peak weeks. Garmin answers 400 for
                                    a plan that is not phased.
-  training strength-plan           Show a joined strength training plan,
-                                   a plan of category STRENGTH.
+  training strength-plan           Show a joined strength training plan, a plan
+                                   of category STRENGTH. Garmin answers 400 for
+                                   a plan that is not a strength plan.
   training active                  Show active training plans.
   training search                  Search the Garmin catalog of training plans.
   training schedule                List the workouts and notes of a training
                                    plan by week and day.
   training join                    Join a catalog training plan and schedule its
                                    workouts in the calendar.
+  training coach-join              Start a Garmin Coach plan from a template and
+                                   schedule its workouts in the calendar.
   training leave                   Leave a joined training plan and remove its
                                    workouts from the calendar.
   training task move               Move a workout of a joined training plan to
@@ -2206,13 +2209,16 @@ Commands:
                              with peak weeks. Garmin answers 400 for a plan that
                              is not phased.
   training strength-plan     Show a joined strength training plan, a plan of
-                             category STRENGTH.
+                             category STRENGTH. Garmin answers 400 for a plan
+                             that is not a strength plan.
   training active            Show active training plans.
   training search            Search the Garmin catalog of training plans.
   training schedule          List the workouts and notes of a training plan by
                              week and day.
   training join              Join a catalog training plan and schedule its
                              workouts in the calendar.
+  training coach-join        Start a Garmin Coach plan from a template and
+                             schedule its workouts in the calendar.
   training leave             Leave a joined training plan and remove its
                              workouts from the calendar.
   training task move         Move a workout of a joined training plan to another

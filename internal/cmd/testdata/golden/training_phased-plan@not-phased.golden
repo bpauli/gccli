@@ -1,0 +1,35 @@
+Garmin answers 400 for a plan that is not phased, such as a Garmin Coach plan.
+-- args --
+training
+phased-plan
+123
+-- route GET /trainingplan-service/trainingplan/phased/123 400 noeol --
+{"message":"Not a phased plan.","error":"BadRequestException"}
+-- table stdout --
+-- table stderr --
+get phased training plan: garmin api: 400 Bad Request: {"message":"Not a phased plan.","error":"BadRequestException"}
+-- table exit --
+1
+-- table requests --
+GET /trainingplan-service/trainingplan/phased/123
+-- plain stdout --
+-- plain stderr --
+get phased training plan: garmin api: 400 Bad Request: {"message":"Not a phased plan.","error":"BadRequestException"}
+-- plain exit --
+1
+-- plain requests --
+GET /trainingplan-service/trainingplan/phased/123
+-- plain-header stdout --
+-- plain-header stderr --
+get phased training plan: garmin api: 400 Bad Request: {"message":"Not a phased plan.","error":"BadRequestException"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /trainingplan-service/trainingplan/phased/123
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"get phased training plan: garmin api: 400 Bad Request: {\"message\":\"Not a phased plan.\",\"error\":\"BadRequestException\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /trainingplan-service/trainingplan/phased/123

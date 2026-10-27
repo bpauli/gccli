@@ -30,6 +30,7 @@ func TestTrainingEndpoints(t *testing.T) {
 		{"training.schedule", map[string]string{"planID": "42"}, "GET /trainingplan-service/trainingplan/tasks/42?localeKey=en"},
 		{"training.schedule", map[string]string{"planID": "42", "locale": "de"}, "GET /trainingplan-service/trainingplan/tasks/42?localeKey=de"},
 		{"training.join", map[string]string{"planID": "42", "startDate": "2026-10-26"}, "GET /trainingplan-service/trainingplan/schedule/42?startDate=2026-10-26"},
+		{"training.coach-join", nil, "POST /trainingplan-service/trainingplan/fbt-adaptive"},
 		{"training.leave", map[string]string{"planID": "42"}, "DELETE /trainingplan-service/trainingplan/trainingplan/42"},
 		{"training.move-task", map[string]string{"planID": "42"}, "POST /trainingplan-service/trainingplan/moveWorkoutTask/42"},
 		{"training.delete-task", map[string]string{"planID": "42", "taskID": "7"}, "DELETE /trainingplan-service/trainingplan/workoutTask/42/7"},

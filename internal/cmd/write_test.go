@@ -352,6 +352,17 @@ var writeCases = map[string]writeCase{
 		human:    "Created segment \"Park Hill\" (UUID: a1b2c3d4-0000-4000-8000-000000000009)\n",
 		fallback: "Created segment \"Park Hill\"\n",
 	},
+	"training coach-join": {
+		args: []string{"101", "--name", "Base Run", "--end", "2026-11-24", "--day", "MONDAY"},
+		routes: map[string]string{
+			"GET /userprofile-service/userprofile/adaptive-coaching-workouts": `[]`,
+			"POST /trainingplan-service/trainingplan/fbt-adaptive":            `{"trainingPlanId":456}`,
+		},
+		result:   "POST /trainingplan-service/trainingplan/fbt-adaptive",
+		json:     "{\n  \"trainingPlanId\": 456\n}\n",
+		human:    "Joined Garmin Coach template 101 as plan 456\n",
+		fallback: "Joined Garmin Coach template 101\n",
+	},
 	"training task move": {
 		args:     []string{"456", "789", "2026-10-28"},
 		routes:   map[string]string{"POST /trainingplan-service/trainingplan/moveWorkoutTask/456": `{"taskWorkout":{"workoutScheduleId":790}}`},

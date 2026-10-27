@@ -37,6 +37,7 @@ var trainingEndpoints = []Endpoint{
 	// training.join is a GET, but it adds a copy of the plan to the account
 	// and schedules its workouts from startDate.
 	{Name: "training.join", Method: http.MethodGet, Host: ConnectAPI, Path: "/trainingplan-service/trainingplan/schedule/{planID}?startDate={startDate}"},
+	{Name: "training.coach-join", Method: http.MethodPost, Host: ConnectAPI, Path: "/trainingplan-service/trainingplan/fbt-adaptive", Body: true},
 	{Name: "training.leave", Method: http.MethodDelete, Host: ConnectAPI, Path: "/trainingplan-service/trainingplan/trainingplan/{planID}"},
 	{Name: "training.move-task", Method: http.MethodPost, Host: ConnectAPI, Path: "/trainingplan-service/trainingplan/moveWorkoutTask/{planID}", Body: true, Form: true},
 	{Name: "training.delete-task", Method: http.MethodDelete, Host: ConnectAPI, Path: "/trainingplan-service/trainingplan/workoutTask/{planID}/{taskID}"},

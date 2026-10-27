@@ -45,7 +45,7 @@ var trainingGroup = Group{Name: "training", Help: "Find, join and change trainin
 		Verb:     "get phased training plan", Output: JSON{},
 	},
 	Leaf{
-		Name: "strength-plan", Help: "Show a joined strength training plan, a plan of category STRENGTH.",
+		Name: "strength-plan", Help: "Show a joined strength training plan, a plan of category STRENGTH. Garmin answers 400 for a plan that is not a strength plan.",
 		Spec: argsOf(&struct {
 			ID ID `arg:"" help:"ID of the joined training plan, as training active prints it."`
 		}{}),
@@ -82,6 +82,7 @@ var trainingGroup = Group{Name: "training", Help: "Find, join and change trainin
 		}},
 	},
 	Custom{Name: "join", Help: "Join a catalog training plan and schedule its workouts in the calendar.", Cmd: &TrainingJoinCmd{}},
+	Custom{Name: "coach-join", Help: "Start a Garmin Coach plan from a template and schedule its workouts in the calendar.", Cmd: &TrainingCoachJoinCmd{}},
 	Leaf{
 		Name: "leave", Help: "Leave a joined training plan and remove its workouts from the calendar.",
 		Spec: argsOf(&struct {
@@ -170,6 +171,63 @@ func (c *TrainingJoinCmd) Run(g *Globals) error {
 		return reportWrite(g, data, "Joined training plan %s from %s as plan %s", c.ID, start, plan.ID)
 	}
 	return reportWrite(g, data, "Joined training plan %s from %s", c.ID, start)
+}
+
+// TrainingCoachJoinCmd starts a Garmin Coach plan from a catalog template.
+type TrainingCoachJoinCmd struct {
+	ID      NumericID `arg:"" help:"Catalog ID of a Garmin Coach template, as training search --category FBT_ADAPTIVE prints it."`
+	Name    string    `help:"Name of the new plan." required:""`
+	End     Date      `help:"Last day of the plan (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:""`
+	Day     []string  `help:"Training day: MONDAY to SUNDAY. Repeat the flag or separate with commas. Each coach template sets how many days it needs, and Garmin rejects another number." required:"" enum:"MONDAY,TUESDAY,WEDNESDAY,THURSDAY,FRIDAY,SATURDAY,SUNDAY" placeholder:"DAY"`
+	LongDay []string  `help:"Day for the long workout: MONDAY to SUNDAY. Repeat the flag or separate with commas." name:"long-day" enum:"MONDAY,TUESDAY,WEDNESDAY,THURSDAY,FRIDAY,SATURDAY,SUNDAY" placeholder:"DAY"`
+	Locale  string    `help:"Locale for workout names (e.g. en, de, fr)." default:"en"`
+}
+
+type coachPlanRequest struct {
+	TemplatePlanID            NumericID       `json:"templatePlanId"`
+	CustomPlanName            string          `json:"customPlanName"`
+	PlanEndDate               string          `json:"planEndDate"`
+	AvailableTrainingDays     []string        `json:"availableTrainingDays"`
+	PreferredLongTrainingDays []string        `json:"preferredLongTrainingDays"`
+	LocaleKey                 string          `json:"localeKey"`
+	WorkoutTargetTypePrefs    json.RawMessage `json:"workoutTargetTypePrefs"`
+}
+
+func (c *TrainingCoachJoinCmd) Run(g *Globals) error {
+	client, err := resolveClient(g)
+	if err != nil {
+		return err
+	}
+	prefs, err := client.Call(g.Context, "training.adaptive-coaching-workouts", nil, nil)
+	if err != nil {
+		return fmt.Errorf("get coach workouts: %w", err)
+	}
+	if prefs == nil {
+		prefs = json.RawMessage("[]")
+	}
+	body, err := json.Marshal(coachPlanRequest{
+		TemplatePlanID:            c.ID,
+		CustomPlanName:            c.Name,
+		PlanEndDate:               string(c.End),
+		AvailableTrainingDays:     c.Day,
+		PreferredLongTrainingDays: append([]string{}, c.LongDay...),
+		LocaleKey:                 c.Locale,
+		WorkoutTargetTypePrefs:    prefs,
+	})
+	if err != nil {
+		return fmt.Errorf("join Garmin Coach plan: %w", err)
+	}
+	data, err := client.Call(g.Context, "training.coach-join", nil, body)
+	if err != nil {
+		return fmt.Errorf("join Garmin Coach plan: %w", err)
+	}
+	var plan struct {
+		ID json.Number `json:"trainingPlanId"`
+	}
+	if unmarshalAnswer(data, &plan) == nil && plan.ID != "" {
+		return reportWrite(g, data, "Joined Garmin Coach template %s as plan %s", c.ID, plan.ID)
+	}
+	return reportWrite(g, data, "Joined Garmin Coach template %s", c.ID)
 }
 
 // TrainingTaskMoveCmd moves a workout of a joined plan to another day.

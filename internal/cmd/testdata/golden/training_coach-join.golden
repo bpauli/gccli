@@ -1,0 +1,179 @@
+Garmin Coach builds the plan from a template. The body carries the coach workout targets that the account saved, as the web app sends them.
+-- args --
+training
+coach-join
+101
+--name
+Base Run
+--end
+2026-11-24
+--day
+MONDAY,TUESDAY,THURSDAY
+--day
+FRIDAY,SATURDAY
+--long-day
+SATURDAY
+-- route GET /userprofile-service/userprofile/adaptive-coaching-workouts --
+[{"userProfilePk":1,"sport":"RUNNING","adaptiveCoachingWorkoutType":"PACE"},{"userProfilePk":1,"sport":"CYCLING","adaptiveCoachingWorkoutType":"POWER"}]
+-- route POST /trainingplan-service/trainingplan/fbt-adaptive --
+{"trainingPlanId":456,"trainingPlanCategory":"FBT_ADAPTIVE","trainingType":{"typeId":2,"typeKey":"Running"},"trainingStatus":{"statusId":1,"statusKey":"Scheduled"},"name":"Base Run","parentPlanId":101,"startDate":"2026-10-27","endDate":"2026-11-24","taskList":[]}
+-- table stdout --
+-- table stderr --
+Joined Garmin Coach template 101 as plan 456
+-- table exit --
+0
+-- table requests --
+GET /userprofile-service/userprofile/adaptive-coaching-workouts
+POST /trainingplan-service/trainingplan/fbt-adaptive
+  {
+    "templatePlanId": 101,
+    "customPlanName": "Base Run",
+    "planEndDate": "2026-11-24",
+    "availableTrainingDays": [
+      "MONDAY",
+      "TUESDAY",
+      "THURSDAY",
+      "FRIDAY",
+      "SATURDAY"
+    ],
+    "preferredLongTrainingDays": [
+      "SATURDAY"
+    ],
+    "localeKey": "en",
+    "workoutTargetTypePrefs": [
+      {
+        "userProfilePk": 1,
+        "sport": "RUNNING",
+        "adaptiveCoachingWorkoutType": "PACE"
+      },
+      {
+        "userProfilePk": 1,
+        "sport": "CYCLING",
+        "adaptiveCoachingWorkoutType": "POWER"
+      }
+    ]
+  }
+-- plain stdout --
+-- plain stderr --
+Joined Garmin Coach template 101 as plan 456
+-- plain exit --
+0
+-- plain requests --
+GET /userprofile-service/userprofile/adaptive-coaching-workouts
+POST /trainingplan-service/trainingplan/fbt-adaptive
+  {
+    "templatePlanId": 101,
+    "customPlanName": "Base Run",
+    "planEndDate": "2026-11-24",
+    "availableTrainingDays": [
+      "MONDAY",
+      "TUESDAY",
+      "THURSDAY",
+      "FRIDAY",
+      "SATURDAY"
+    ],
+    "preferredLongTrainingDays": [
+      "SATURDAY"
+    ],
+    "localeKey": "en",
+    "workoutTargetTypePrefs": [
+      {
+        "userProfilePk": 1,
+        "sport": "RUNNING",
+        "adaptiveCoachingWorkoutType": "PACE"
+      },
+      {
+        "userProfilePk": 1,
+        "sport": "CYCLING",
+        "adaptiveCoachingWorkoutType": "POWER"
+      }
+    ]
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Joined Garmin Coach template 101 as plan 456
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /userprofile-service/userprofile/adaptive-coaching-workouts
+POST /trainingplan-service/trainingplan/fbt-adaptive
+  {
+    "templatePlanId": 101,
+    "customPlanName": "Base Run",
+    "planEndDate": "2026-11-24",
+    "availableTrainingDays": [
+      "MONDAY",
+      "TUESDAY",
+      "THURSDAY",
+      "FRIDAY",
+      "SATURDAY"
+    ],
+    "preferredLongTrainingDays": [
+      "SATURDAY"
+    ],
+    "localeKey": "en",
+    "workoutTargetTypePrefs": [
+      {
+        "userProfilePk": 1,
+        "sport": "RUNNING",
+        "adaptiveCoachingWorkoutType": "PACE"
+      },
+      {
+        "userProfilePk": 1,
+        "sport": "CYCLING",
+        "adaptiveCoachingWorkoutType": "POWER"
+      }
+    ]
+  }
+-- json stdout --
+{
+  "trainingPlanId": 456,
+  "trainingPlanCategory": "FBT_ADAPTIVE",
+  "trainingType": {
+    "typeId": 2,
+    "typeKey": "Running"
+  },
+  "trainingStatus": {
+    "statusId": 1,
+    "statusKey": "Scheduled"
+  },
+  "name": "Base Run",
+  "parentPlanId": 101,
+  "startDate": "2026-10-27",
+  "endDate": "2026-11-24",
+  "taskList": []
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /userprofile-service/userprofile/adaptive-coaching-workouts
+POST /trainingplan-service/trainingplan/fbt-adaptive
+  {
+    "templatePlanId": 101,
+    "customPlanName": "Base Run",
+    "planEndDate": "2026-11-24",
+    "availableTrainingDays": [
+      "MONDAY",
+      "TUESDAY",
+      "THURSDAY",
+      "FRIDAY",
+      "SATURDAY"
+    ],
+    "preferredLongTrainingDays": [
+      "SATURDAY"
+    ],
+    "localeKey": "en",
+    "workoutTargetTypePrefs": [
+      {
+        "userProfilePk": 1,
+        "sport": "RUNNING",
+        "adaptiveCoachingWorkoutType": "PACE"
+      },
+      {
+        "userProfilePk": 1,
+        "sport": "CYCLING",
+        "adaptiveCoachingWorkoutType": "POWER"
+      }
+    ]
+  }

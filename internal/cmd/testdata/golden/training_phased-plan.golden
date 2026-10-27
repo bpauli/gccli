@@ -4,13 +4,31 @@ training
 phased-plan
 123
 -- route GET /trainingplan-service/trainingplan/phased/123 --
-{"trainingPlanId":123,"name":"Gran Fondo","trainingPlanCategory":"ITP","peakWeeks":2}
+{"trainingPlanId":123,"trainingPlanCategory":"ITP","trainingType":{"typeId":5,"typeKey":"Cycling"},"trainingStatus":{"statusId":1,"statusKey":"Scheduled"},"name":"Gran Fondo","durationInWeeks":13,"baseWeeks":5,"buildWeeks":6,"peakWeeks":2,"weekTypes":{"RECOVERY":[3,7]},"taskList":[]}
 -- table stdout --
 {
   "trainingPlanId": 123,
-  "name": "Gran Fondo",
   "trainingPlanCategory": "ITP",
-  "peakWeeks": 2
+  "trainingType": {
+    "typeId": 5,
+    "typeKey": "Cycling"
+  },
+  "trainingStatus": {
+    "statusId": 1,
+    "statusKey": "Scheduled"
+  },
+  "name": "Gran Fondo",
+  "durationInWeeks": 13,
+  "baseWeeks": 5,
+  "buildWeeks": 6,
+  "peakWeeks": 2,
+  "weekTypes": {
+    "RECOVERY": [
+      3,
+      7
+    ]
+  },
+  "taskList": []
 }
 -- table stderr --
 -- table exit --
@@ -20,9 +38,27 @@ GET /trainingplan-service/trainingplan/phased/123
 -- plain stdout --
 {
   "trainingPlanId": 123,
-  "name": "Gran Fondo",
   "trainingPlanCategory": "ITP",
-  "peakWeeks": 2
+  "trainingType": {
+    "typeId": 5,
+    "typeKey": "Cycling"
+  },
+  "trainingStatus": {
+    "statusId": 1,
+    "statusKey": "Scheduled"
+  },
+  "name": "Gran Fondo",
+  "durationInWeeks": 13,
+  "baseWeeks": 5,
+  "buildWeeks": 6,
+  "peakWeeks": 2,
+  "weekTypes": {
+    "RECOVERY": [
+      3,
+      7
+    ]
+  },
+  "taskList": []
 }
 -- plain stderr --
 -- plain exit --
@@ -32,9 +68,27 @@ GET /trainingplan-service/trainingplan/phased/123
 -- plain-header stdout --
 {
   "trainingPlanId": 123,
-  "name": "Gran Fondo",
   "trainingPlanCategory": "ITP",
-  "peakWeeks": 2
+  "trainingType": {
+    "typeId": 5,
+    "typeKey": "Cycling"
+  },
+  "trainingStatus": {
+    "statusId": 1,
+    "statusKey": "Scheduled"
+  },
+  "name": "Gran Fondo",
+  "durationInWeeks": 13,
+  "baseWeeks": 5,
+  "buildWeeks": 6,
+  "peakWeeks": 2,
+  "weekTypes": {
+    "RECOVERY": [
+      3,
+      7
+    ]
+  },
+  "taskList": []
 }
 -- plain-header stderr --
 -- plain-header exit --
@@ -44,9 +98,27 @@ GET /trainingplan-service/trainingplan/phased/123
 -- json stdout --
 {
   "trainingPlanId": 123,
-  "name": "Gran Fondo",
   "trainingPlanCategory": "ITP",
-  "peakWeeks": 2
+  "trainingType": {
+    "typeId": 5,
+    "typeKey": "Cycling"
+  },
+  "trainingStatus": {
+    "statusId": 1,
+    "statusKey": "Scheduled"
+  },
+  "name": "Gran Fondo",
+  "durationInWeeks": 13,
+  "baseWeeks": 5,
+  "buildWeeks": 6,
+  "peakWeeks": 2,
+  "weekTypes": {
+    "RECOVERY": [
+      3,
+      7
+    ]
+  },
+  "taskList": []
 }
 -- json stderr --
 -- json exit --
