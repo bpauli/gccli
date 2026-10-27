@@ -6,7 +6,7 @@ trim
 --from
 2m
 -- route GET /activity-service/activity/12345678 --
-{"activityId":12345678,"activityName":"Morning Run","summaryDTO":{"startTimeGMT":"2026-01-10T08:00:00.0","startTimeLocal":"2026-01-10T09:00:00.0","elapsedDuration":3461.0,"duration":3400.5}}
+{"activityId":12345678,"activityName":"Morning Run","isMultiSportParent":false,"summaryDTO":{"startTimeGMT":"2026-01-10T08:00:00.0","startTimeLocal":"2026-01-10T09:00:00.0","elapsedDuration":3461.0,"duration":3400.5}}
 -- route PUT /activity-service/activity/12345678/reconstruct 400 noeol --
 {"message":"Bad Request"}
 -- table stdout --

@@ -104,7 +104,7 @@ var writeCases = map[string]writeCase{
 		args:   []string{"1", "--from", "2m"},
 		result: "PUT /activity-service/activity/1/reconstruct",
 		routes: map[string]string{
-			"GET /activity-service/activity/1":             `{"summaryDTO":{"startTimeGMT":"2026-01-10T08:00:00.0","elapsedDuration":600.0}}`,
+			"GET /activity-service/activity/1":             `{"isMultiSportParent":false,"summaryDTO":{"startTimeGMT":"2026-01-10T08:00:00.0","elapsedDuration":600.0}}`,
 			"PUT /activity-service/activity/1/reconstruct": `{"detailedImportResult":{"uploadId":5}}`,
 		},
 		json:     "{\n  \"detailedImportResult\": {\n    \"uploadId\": 5\n  }\n}\n",

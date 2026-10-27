@@ -1,0 +1,37 @@
+A leg of a multisport activity (parentId set) fails before any write. The Garmin Connect web app offers trim only for a single-sport activity, and edits the legs of a multisport activity from the parent.
+-- args --
+activity
+trim
+12345002
+--from
+2m
+-- route GET /activity-service/activity/12345002 --
+{"activityId":12345002,"activityName":"Bike","isMultiSportParent":false,"parentId":12345678,"activityTypeDTO":{"typeId":2,"typeKey":"cycling"},"summaryDTO":{"startTimeGMT":"2026-01-10T08:42:06.0","elapsedDuration":5474.0}}
+-- table stdout --
+-- table stderr --
+cannot trim activity 12345002: it is a leg of multisport activity 12345678, and Garmin Connect does not trim a leg
+-- table exit --
+1
+-- table requests --
+GET /activity-service/activity/12345002
+-- plain stdout --
+-- plain stderr --
+cannot trim activity 12345002: it is a leg of multisport activity 12345678, and Garmin Connect does not trim a leg
+-- plain exit --
+1
+-- plain requests --
+GET /activity-service/activity/12345002
+-- plain-header stdout --
+-- plain-header stderr --
+cannot trim activity 12345002: it is a leg of multisport activity 12345678, and Garmin Connect does not trim a leg
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /activity-service/activity/12345002
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"cannot trim activity 12345002: it is a leg of multisport activity 12345678, and Garmin Connect does not trim a leg"}}
+-- json exit --
+1
+-- json requests --
+GET /activity-service/activity/12345002

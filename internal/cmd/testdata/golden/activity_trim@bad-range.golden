@@ -13,9 +13,9 @@ Usage: gccli activity trim <id> [flags]
 
 Trim the start or end of an activity.
 
-For single-sport activities and the legs of a multisport activity. Give --from,
---to or both. Garmin applies the trim in a few seconds. To bring back the
-original, use activity restore.
+For single-sport activities. A multisport activity or one of its legs fails
+before any write. Give --from, --to or both. Garmin applies the trim in a few
+seconds. To bring back the original, use activity restore.
 
 Arguments:
   <id>    Activity ID.
@@ -49,9 +49,9 @@ Usage: gccli activity trim <id> [flags]
 
 Trim the start or end of an activity.
 
-For single-sport activities and the legs of a multisport activity. Give --from,
---to or both. Garmin applies the trim in a few seconds. To bring back the
-original, use activity restore.
+For single-sport activities. A multisport activity or one of its legs fails
+before any write. Give --from, --to or both. Garmin applies the trim in a few
+seconds. To bring back the original, use activity restore.
 
 Arguments:
   <id>    Activity ID.
@@ -85,9 +85,9 @@ Usage: gccli activity trim <id> [flags]
 
 Trim the start or end of an activity.
 
-For single-sport activities and the legs of a multisport activity. Give --from,
---to or both. Garmin applies the trim in a few seconds. To bring back the
-original, use activity restore.
+For single-sport activities. A multisport activity or one of its legs fails
+before any write. Give --from, --to or both. Garmin applies the trim in a few
+seconds. To bring back the original, use activity restore.
 
 Arguments:
   <id>    Activity ID.
@@ -121,9 +121,9 @@ Usage: gccli activity trim <id> [flags]
 
 Trim the start or end of an activity.
 
-For single-sport activities and the legs of a multisport activity. Give --from,
---to or both. Garmin applies the trim in a few seconds. To bring back the
-original, use activity restore.
+For single-sport activities. A multisport activity or one of its legs fails
+before any write. Give --from, --to or both. Garmin applies the trim in a few
+seconds. To bring back the original, use activity restore.
 
 Arguments:
   <id>    Activity ID.

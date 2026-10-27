@@ -19,7 +19,7 @@ type ActivityTrimCmd struct {
 }
 
 func (c *ActivityTrimCmd) Help() string {
-	return "For single-sport activities and the legs of a multisport activity. Give --from, --to or both. Garmin applies the trim in a few seconds. To bring back the original, use activity restore."
+	return "For single-sport activities. A multisport activity or one of its legs fails before any write. Give --from, --to or both. Garmin applies the trim in a few seconds. To bring back the original, use activity restore."
 }
 
 func (c *ActivityTrimCmd) Validate() error {
@@ -53,12 +53,15 @@ func (c *ActivityTrimCmd) Run(g *Globals) error {
 	if err != nil {
 		return fmt.Errorf("get activity: %w", err)
 	}
-	parent, err := isMultiSportParent(data)
+	parent, parentID, err := multiSport(data)
 	if err != nil {
 		return fmt.Errorf("activity %s: %w", c.ID, err)
 	}
-	if parent {
-		return fmt.Errorf("cannot trim multisport activity %s as a whole: trim one of its legs instead (activity legs %s lists them)", c.ID, c.ID)
+	switch {
+	case parent:
+		return fmt.Errorf("cannot trim multisport activity %s: Garmin Connect edits its legs instead, and gccli cannot edit legs yet (activity legs %s lists them)", c.ID, c.ID)
+	case parentID != 0:
+		return fmt.Errorf("cannot trim activity %s: it is a leg of multisport activity %d, and Garmin Connect does not trim a leg", c.ID, parentID)
 	}
 	start, elapsed, err := activityClock(data)
 	if err != nil {
@@ -123,7 +126,7 @@ type ActivityRestoreCmd struct {
 }
 
 func (c *ActivityRestoreCmd) Help() string {
-	return "For a multisport activity, Garmin restores all of its legs. An activity that is not trimmed does not change."
+	return "For a multisport activity, Garmin restores all of its legs. Garmin applies the restore in a few seconds. An activity that is not trimmed does not change."
 }
 
 func (c *ActivityRestoreCmd) Run(g *Globals) error {
@@ -136,7 +139,7 @@ func (c *ActivityRestoreCmd) Run(g *Globals) error {
 	if err != nil {
 		return fmt.Errorf("get activity: %w", err)
 	}
-	parent, err := isMultiSportParent(data)
+	parent, _, err := multiSport(data)
 	if err != nil {
 		return fmt.Errorf("activity %s: %w", c.ID, err)
 	}
@@ -154,14 +157,21 @@ func (c *ActivityRestoreCmd) Run(g *Globals) error {
 	return reportWrite(g, data, "Restored the original of activity %s", c.ID)
 }
 
-func isMultiSportParent(data json.RawMessage) (bool, error) {
+// multiSport reads from the answer of activities.get whether the activity
+// is a multisport parent, and the parent ID of a leg (0 for other
+// activities).
+func multiSport(data json.RawMessage) (parent bool, parentID int64, err error) {
 	var a struct {
-		IsMultiSportParent bool `json:"isMultiSportParent"`
+		IsMultiSportParent *bool `json:"isMultiSportParent"`
+		ParentID           int64 `json:"parentId"`
 	}
 	if err := unmarshalAnswer(data, &a); err != nil {
-		return false, fmt.Errorf("parse activity: %w", err)
+		return false, 0, fmt.Errorf("parse activity: %w", err)
 	}
-	return a.IsMultiSportParent, nil
+	if a.IsMultiSportParent == nil {
+		return false, 0, errors.New("the answer has no isMultiSportParent")
+	}
+	return *a.IsMultiSportParent, a.ParentID, nil
 }
 
 type ActivityLegsCmd struct {

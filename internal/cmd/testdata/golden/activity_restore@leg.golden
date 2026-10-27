@@ -1,4 +1,4 @@
-A leg of a multisport activity is not a parent, so it keeps PUT {} on the leg, as the Garmin Connect web app does.
+A leg of a multisport activity is not a parent, so it keeps PUT {} on the leg. The restore request of the web app sends PUT {} for every activity that is not a parent.
 -- args --
 activity
 restore
