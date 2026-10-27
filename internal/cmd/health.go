@@ -519,9 +519,9 @@ var healthCriticalSwimSpeedGroup = Group{Name: "critical-swim-speed", Help: "Sho
 		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
 		Verb:     "get critical swim speed range", Output: JSON{},
 	},
-	Custom{Name: "set", Help: "Save a critical swim speed measured now, from a pace per 100 m or 100 yd. Garmin refuses to delete the last record, so delete cannot undo the first save.", Cmd: &HealthCriticalSwimSpeedSetCmd{}},
+	Custom{Name: "set", Help: "Save a critical swim speed measured now, from a pace per 100 m or 100 yd.", Cmd: &HealthCriticalSwimSpeedSetCmd{}},
 	Leaf{
-		Name: "delete", Help: "Delete a critical swim speed entry by its timestamp and version, as critical-swim-speed range prints them. Garmin refuses to delete the last record.",
+		Name: "delete", Help: "Delete a critical swim speed entry. Garmin refuses to delete the last one.",
 		Spec: argsOf(&struct {
 			Timestamp ConnectTimestamp `arg:"" help:"Local timestamp of the entry, as measurementTimestampLocal prints it, such as 2026-10-27T09:05:03.07."`
 			Version   ID               `arg:"" help:"Version of the entry."`
@@ -534,7 +534,7 @@ var healthCriticalSwimSpeedGroup = Group{Name: "critical-swim-speed", Help: "Sho
 }}
 
 type HealthCriticalSwimSpeedSetCmd struct {
-	Pace FreeText `arg:"" help:"Pace per 100 m or per 100 yd as m:ss, such as 2:00."`
+	Pace FreeText `arg:"" help:"Pace per 100 m or per 100 yd as m:ss, such as 2:00. Garmin refuses to delete the last record, so delete cannot undo a first save."`
 	Unit string   `help:"Distance of the pace: m for 100 m, yd for 100 yd." default:"m" enum:"m,yd"`
 }
 

@@ -691,6 +691,14 @@ var writeCases = map[string]writeCase{
 		human:    "Deleted jet lag trip 4711\n",
 		fallback: "Deleted jet lag trip 4711\n",
 	},
+	"health critical-swim-speed set": {
+		args:     []string{"2:00"},
+		routes:   map[string]string{"POST /biometric-service/criticalSwimSpeed": `{"criticalSwimSpeed":833}`},
+		result:   "POST /biometric-service/criticalSwimSpeed",
+		json:     "{\n  \"criticalSwimSpeed\": 833\n}\n",
+		human:    "Set critical swim speed to 2:00 per 100 m (833 mm/s)\n",
+		fallback: "Set critical swim speed to 2:00 per 100 m (833 mm/s)\n",
+	},
 	"health sleep naps add": {
 		args: []string{"09:00", "09:20"},
 		routes: map[string]string{
