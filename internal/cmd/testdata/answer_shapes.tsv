@@ -82,7 +82,9 @@ golf shot-stats	object	live GET 2026-10-22 connectapi
 golf stats	object	live GET 2026-10-22 connectapi
 groups challenges	array	live GET 2026-10-23 connectapi
 groups feed	object	live GET 2026-10-23 connectapi 207
+groups leaderboard	object	live GET 2026-10-27 connectapi
 groups list	array	live 2026-10-20
+groups requests	array	live GET 2026-10-27 connectapi 200 []
 groups show	object	live GET 2026-10-23 connectapi
 health acclimation daily	object	live GET 2026-10-22 connectapi
 health acclimation range	object	live 2026-10-20

@@ -838,6 +838,15 @@ Date shortcuts
   - `<id>`: Group ID.
 - `gccli groups challenges <id>`: List the open challenges of a group. Garmin answers 403 to a non-member.
   - `<id>`: Group ID.
+- `gccli groups leaderboard <id> [flags]`: Rank the members of a group by steps, calories, pushes or distance.
+  - `<id>`: Group ID.
+  - `--metric="steps"`: What to rank: steps, calories, pushes or distance. The first three show nothing for a group you have not joined.
+  - `--activity=ACTIVITY`: Count only the distance of one activity: walking, running, cycling, swimming or pushing. Only with --metric distance.
+  - `--start=DATE`: First day (YYYY-MM-DD, today, yesterday, 3d, +30d). Default: Monday of this week.
+  - `--end=DATE`: Last day. Default: 6 days after --start.
+  - `-l, --limit=20`: Maximum number of members to return.
+  - `--offset=0`: Number of members to skip.
+- `gccli groups requests`: List your pending requests to join private groups.
 - `gccli groups join <id>`: Join a public group. gccli does not send the request that a private group needs.
   - `<id>`: Group ID.
 - `gccli groups leave <id> [flags]`: Leave a group.
@@ -1063,7 +1072,7 @@ Worked examples
 - Calendar feed: `gccli calendar export enable` turns on the feed and prints its URL, and `gccli calendar export show --plain` prints the URL alone. `gccli calendar export disable --force` turns it off.
 - Calendar preference: `gccli calendar preferences` shows the keys. `gccli calendar preferences set showWeeklyTotal false` turns one off.
 - Training plan: `gccli training search --sport Running --goal 5k --level Beginner` lists catalog plans with their ID. `gccli training join <id> --start 2026-11-02` joins one and prints the ID of your copy, which the other plan commands take. `gccli training schedule <plan-id>` lists the workouts with their task IDs. `gccli training task move <plan-id> <task-id> 2026-11-04` moves a workout and prints its new task ID, and `gccli training task delete <plan-id> <task-id> --force` puts a rest day in its place. `gccli training leave <plan-id> --force` leaves the plan and removes its workouts from the calendar.
-- Groups: `gccli groups search running --limit 10` lists groups with their ID, name, privacy and location (`--offset` skips groups). `gccli groups show <group-id>` shows one group, and `gccli groups members <group-id>` lists its members with their role. `gccli groups feed <group-id>` prints the latest posts and activities as JSON, and `gccli groups activities <group-id>` lists the latest activities of the members. `gccli groups challenges <group-id>` lists the open challenges; Garmin answers 403 (exit code 1) when you are not a member. `gccli groups join <group-id>` joins a public group at once. gccli does not send the join request that a private group needs. `gccli groups leave <group-id> --force` leaves a group.
+- Groups: `gccli groups search running --limit 10` lists groups with their ID, name, privacy and location (`--offset` skips groups). `gccli groups show <group-id>` shows one group, and `gccli groups members <group-id>` lists its members with their role. `gccli groups feed <group-id>` prints the latest posts and activities as JSON, and `gccli groups activities <group-id>` lists the latest activities of the members. `gccli groups challenges <group-id>` lists the open challenges; Garmin answers 403 (exit code 1) when you are not a member. `gccli groups leaderboard <group-id>` ranks the members by `--metric steps` (the default), `calories`, `pushes` or `distance` (with `--activity running` and so on for one activity) over `--start` to `--end`, by default this week from Monday. Garmin shows the first three metrics only to members and answers an empty list to anyone else. `gccli groups requests` lists your pending requests to join private groups. `gccli groups join <group-id>` joins a public group at once. gccli does not send the join request that a private group needs. `gccli groups leave <group-id> --force` leaves a group.
 - Notification preference: `gccli notifications preferences` shows the keys. `gccli notifications preferences set allowEmailWeeklySummary false` turns one off. A key that is not in the preferences fails before any write, and the error lists the keys.
 - Notifications: `gccli notifications list` gives 50 notifications per page (`--limit` changes it). For the next page, pass `pagination.nextCursor` of the JSON output: `gccli notifications list --cursor <nextCursor>`. `gccli notifications dismiss <id>` removes a notification from the list, and `gccli notifications undismiss <id>` brings it back. `gccli notifications unread` prints `{"unreadBubble": true}` when there are unread notifications.
 - Privacy zone: `gccli profile privacy-zones add --lat 51.5 --lon=-0.12 --radius 500` prints the zone ID. A negative value needs the `=` form. The radius is 500 to 1500 meters. `gccli profile privacy-zones delete <id> --force` deletes it.

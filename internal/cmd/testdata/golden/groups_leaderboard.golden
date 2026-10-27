@@ -1,0 +1,81 @@
+Distance of the running members in a week. Garmin sends the entries in rank order and the distance in meters.
+-- args --
+groups
+leaderboard
+1001
+--metric
+distance
+--activity
+running
+--start
+2026-10-19
+--end
+2026-10-25
+-- route GET /groupchallenge-service/leaderboard/activity/group/1001?start=1&limit=20&todayDate=2026-10-15&startDate=2026-10-19&endDate=2026-10-25&metricId=17&actTypeId=1 --
+{"userProfileId":3141592,"statisticsStartDate":"2026-10-19","statisticsEndDate":"2026-10-25","allMetrics":{"metricsMap":{"ACTIVITY_TOTAL_DISTANCE":[{"value":72355.44,"todayValue":null,"lastSyncTime":null,"userInfo":{"userProfilePk":2718281,"displayname":"runner-one","fullname":"Runner One","userPro":false},"hasPrivate":false},{"value":5000,"userInfo":{"userProfilePk":3141592,"displayname":"tester","fullname":"Test User","userPro":true},"hasPrivate":false}]}},"groupedMetrics":null}
+-- table stdout --
+RANK  NAME        VALUE
+1     Runner One  72.36 km
+2     Test User   5.00 km
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /groupchallenge-service/leaderboard/activity/group/1001?start=1&limit=20&todayDate=2026-10-15&startDate=2026-10-19&endDate=2026-10-25&metricId=17&actTypeId=1
+-- plain stdout --
+1	Runner One	72.36 km
+2	Test User	5.00 km
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /groupchallenge-service/leaderboard/activity/group/1001?start=1&limit=20&todayDate=2026-10-15&startDate=2026-10-19&endDate=2026-10-25&metricId=17&actTypeId=1
+-- plain-header stdout --
+RANK	NAME	VALUE
+1	Runner One	72.36 km
+2	Test User	5.00 km
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /groupchallenge-service/leaderboard/activity/group/1001?start=1&limit=20&todayDate=2026-10-15&startDate=2026-10-19&endDate=2026-10-25&metricId=17&actTypeId=1
+-- json stdout --
+{
+  "userProfileId": 3141592,
+  "statisticsStartDate": "2026-10-19",
+  "statisticsEndDate": "2026-10-25",
+  "allMetrics": {
+    "metricsMap": {
+      "ACTIVITY_TOTAL_DISTANCE": [
+        {
+          "value": 72355.44,
+          "todayValue": null,
+          "lastSyncTime": null,
+          "userInfo": {
+            "userProfilePk": 2718281,
+            "displayname": "runner-one",
+            "fullname": "Runner One",
+            "userPro": false
+          },
+          "hasPrivate": false
+        },
+        {
+          "value": 5000,
+          "userInfo": {
+            "userProfilePk": 3141592,
+            "displayname": "tester",
+            "fullname": "Test User",
+            "userPro": true
+          },
+          "hasPrivate": false
+        }
+      ]
+    }
+  },
+  "groupedMetrics": null
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /groupchallenge-service/leaderboard/activity/group/1001?start=1&limit=20&todayDate=2026-10-15&startDate=2026-10-19&endDate=2026-10-25&metricId=17&actTypeId=1
