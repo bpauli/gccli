@@ -534,12 +534,12 @@ var healthCriticalSwimSpeedGroup = Group{Name: "critical-swim-speed", Help: "Sho
 }}
 
 type HealthCriticalSwimSpeedSetCmd struct {
-	Pace string `arg:"" help:"Pace per 100 m or per 100 yd as m:ss, such as 2:00."`
-	Unit string `help:"Distance of the pace: m for 100 m, yd for 100 yd." default:"m" enum:"m,yd"`
+	Pace FreeText `arg:"" help:"Pace per 100 m or per 100 yd as m:ss, such as 2:00."`
+	Unit string   `help:"Distance of the pace: m for 100 m, yd for 100 yd." default:"m" enum:"m,yd"`
 }
 
 func (c *HealthCriticalSwimSpeedSetCmd) speed() (int, error) {
-	seconds, err := payload.ParsePaceSeconds(c.Pace)
+	seconds, err := payload.ParsePaceSeconds(string(c.Pace))
 	if err != nil {
 		return 0, err
 	}

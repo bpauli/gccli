@@ -1,0 +1,126 @@
+An empty pace is a usage error at parse time, before the login, with no request. The fifth args line is the empty argument.
+-- args --
+health
+critical-swim-speed
+set
+
+-- table stdout --
+-- table stderr --
+Usage: gccli health critical-swim-speed set <pace> [flags]
+
+Save a critical swim speed measured now, from a pace per 100 m or 100 yd.
+Garmin refuses to delete the last record, so delete cannot undo the first save.
+
+Arguments:
+  <pace>    Pace per 100 m or per 100 yd as m:ss, such as 2:00.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --unit="m"          Distance of the pace: m for 100 m, yd for 100 yd.
+
+gccli: error: <pace>: must not be empty
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli health critical-swim-speed set <pace> [flags]
+
+Save a critical swim speed measured now, from a pace per 100 m or 100 yd.
+Garmin refuses to delete the last record, so delete cannot undo the first save.
+
+Arguments:
+  <pace>    Pace per 100 m or per 100 yd as m:ss, such as 2:00.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --unit="m"          Distance of the pace: m for 100 m, yd for 100 yd.
+
+gccli: error: <pace>: must not be empty
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli health critical-swim-speed set <pace> [flags]
+
+Save a critical swim speed measured now, from a pace per 100 m or 100 yd.
+Garmin refuses to delete the last record, so delete cannot undo the first save.
+
+Arguments:
+  <pace>    Pace per 100 m or per 100 yd as m:ss, such as 2:00.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --unit="m"          Distance of the pace: m for 100 m, yd for 100 yd.
+
+gccli: error: <pace>: must not be empty
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli health critical-swim-speed set <pace> [flags]
+
+Save a critical swim speed measured now, from a pace per 100 m or 100 yd.
+Garmin refuses to delete the last record, so delete cannot undo the first save.
+
+Arguments:
+  <pace>    Pace per 100 m or per 100 yd as m:ss, such as 2:00.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --unit="m"          Distance of the pace: m for 100 m, yd for 100 yd.
+
+gccli: error: <pace>: must not be empty
+-- json exit --
+2
+-- json requests --
