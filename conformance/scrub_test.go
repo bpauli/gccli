@@ -307,8 +307,10 @@ func TestScrubDirWritesNothingOnFailure(t *testing.T) {
 	}
 }
 
+const committedRecordedDir = "testdata/recorded"
+
 func recordedDir() string {
-	return cmp.Or(os.Getenv("GCCLI_RECORDED_DIR"), "testdata/recorded")
+	return cmp.Or(os.Getenv("GCCLI_RECORDED_DIR"), committedRecordedDir)
 }
 
 type recordedFile struct {
