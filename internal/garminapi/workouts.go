@@ -149,9 +149,8 @@ type Workout struct {
 
 // WorkoutStep is a step of a workout segment, or a repeat group of steps.
 type WorkoutStep struct {
-	Type string `json:"type"`
-	// Iterations is null for a step that is not a repeat group.
-	Iterations *int `json:"numberOfIterations"`
+	Type       string `json:"type"`
+	Iterations *int   `json:"numberOfIterations"`
 	StepType   struct {
 		Key string `json:"stepTypeKey"`
 	} `json:"stepType"`
@@ -159,8 +158,7 @@ type WorkoutStep struct {
 }
 
 // stepCount counts the steps of the workout as the Garmin Connect web app
-// does for its step limit: a repeat group counts its steps once per
-// iteration, and rest steps do not count.
+// does for its step limit.
 func (w Workout) stepCount() int {
 	n := 0
 	for _, s := range w.Segments {

@@ -76,15 +76,12 @@ type DeviceMessageCancelCmd struct {
 	Force bool `help:"Skip the prompt for a message that is not a workout or a course." short:"f"`
 }
 
-// deviceMessage is a message of the devices.messages queue.
 type deviceMessage struct {
 	ID         json.Number `json:"messageId"`
 	Type       string      `json:"messageType"`
 	DeviceName string      `json:"deviceName"`
 }
 
-// resendableMessageTypes are the message types that a new workouts send or
-// courses send restores, so their cancel needs no prompt.
 var resendableMessageTypes = []string{"workouts", "courses"}
 
 // Run cancels the message. The queue read comes first, because the cancel
