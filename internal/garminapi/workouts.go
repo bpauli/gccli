@@ -142,8 +142,48 @@ type Workout struct {
 	Name      string    `json:"workoutName"`
 	SportType SportType `json:"sportType"`
 	Segments  []struct {
-		SportType SportType `json:"sportType"`
+		SportType SportType     `json:"sportType"`
+		Steps     []WorkoutStep `json:"workoutSteps"`
 	} `json:"workoutSegments"`
+}
+
+// WorkoutStep is a step of a workout segment, or a repeat group of steps.
+type WorkoutStep struct {
+	Type string `json:"type"`
+	// Iterations is null for a step that is not a repeat group.
+	Iterations *int `json:"numberOfIterations"`
+	StepType   struct {
+		Key string `json:"stepTypeKey"`
+	} `json:"stepType"`
+	Steps []WorkoutStep `json:"workoutSteps"`
+}
+
+// stepCount counts the steps of the workout as the Garmin Connect web app
+// does for its step limit: a repeat group counts its steps once per
+// iteration, and rest steps do not count.
+func (w Workout) stepCount() int {
+	n := 0
+	for _, s := range w.Segments {
+		n += countSteps(s.Steps, 1)
+	}
+	return n
+}
+
+func countSteps(steps []WorkoutStep, times int) int {
+	n := 0
+	for _, s := range steps {
+		switch {
+		case s.Type == "RepeatGroupDTO":
+			iterations := 1
+			if s.Iterations != nil {
+				iterations = *s.Iterations
+			}
+			n += countSteps(s.Steps, iterations*times)
+		case s.StepType.Key != "rest":
+			n += times
+		}
+	}
+	return n
 }
 
 // SportType is the sport of a workout or of a workout segment.
