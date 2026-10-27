@@ -36,18 +36,18 @@ var trainingGroup = Group{Name: "training", Help: "Find, join and change trainin
 		Verb:     "get Garmin Coach plan", Output: JSON{},
 	},
 	Leaf{
-		Name: "phased-plan", Help: "Show a joined phased training plan, an ITP plan with peak weeks. Garmin answers 400 for a plan that is not phased.",
+		Name: "phased-plan", Help: "Show a joined phased training plan, an ITP plan with peak weeks.",
 		Spec: argsOf(&struct {
-			ID ID `arg:"" help:"ID of the joined training plan, as training active prints it."`
+			ID ID `arg:"" help:"ID of the joined training plan, as training active prints it. Garmin answers 400 for a plan that is not phased."`
 		}{}),
 		Endpoint: "training.phased-plan",
 		Params:   Params{"planID": In("ID")},
 		Verb:     "get phased training plan", Output: JSON{},
 	},
 	Leaf{
-		Name: "strength-plan", Help: "Show a joined strength training plan, a plan of category STRENGTH. Garmin answers 400 for a plan that is not a strength plan.",
+		Name: "strength-plan", Help: "Show a joined strength training plan, a plan of category STRENGTH.",
 		Spec: argsOf(&struct {
-			ID ID `arg:"" help:"ID of the joined training plan, as training active prints it."`
+			ID ID `arg:"" help:"ID of the joined training plan, as training active prints it. Garmin answers 400 for a plan that is not a strength plan."`
 		}{}),
 		Endpoint: "training.strength-plan",
 		Params:   Params{"planID": In("ID")},
@@ -82,7 +82,7 @@ var trainingGroup = Group{Name: "training", Help: "Find, join and change trainin
 		}},
 	},
 	Custom{Name: "join", Help: "Join a catalog training plan and schedule its workouts in the calendar.", Cmd: &TrainingJoinCmd{}},
-	Custom{Name: "coach-join", Help: "Start a Garmin Coach plan from a template and schedule its workouts in the calendar.", Cmd: &TrainingCoachJoinCmd{}},
+	Custom{Name: "coach-join", Help: "Start a Garmin Coach plan from a template.", Cmd: &TrainingCoachJoinCmd{}},
 	Leaf{
 		Name: "leave", Help: "Leave a joined training plan and remove its workouts from the calendar.",
 		Spec: argsOf(&struct {
@@ -176,7 +176,7 @@ func (c *TrainingJoinCmd) Run(g *Globals) error {
 // TrainingCoachJoinCmd starts a Garmin Coach plan from a catalog template.
 type TrainingCoachJoinCmd struct {
 	ID      NumericID `arg:"" help:"Catalog ID of a Garmin Coach template, as training search --category FBT_ADAPTIVE prints it."`
-	Name    string    `help:"Name of the new plan." required:""`
+	Name    FreeText  `help:"Name of the new plan." required:""`
 	End     Date      `help:"Last day of the plan (YYYY-MM-DD, today, yesterday, 3d, +30d)." required:""`
 	Day     []string  `help:"Training day: MONDAY to SUNDAY. Repeat the flag or separate with commas. Each coach template sets how many days it needs, and Garmin rejects another number." required:"" enum:"MONDAY,TUESDAY,WEDNESDAY,THURSDAY,FRIDAY,SATURDAY,SUNDAY" placeholder:"DAY"`
 	LongDay []string  `help:"Day for the long workout: MONDAY to SUNDAY. Repeat the flag or separate with commas." name:"long-day" enum:"MONDAY,TUESDAY,WEDNESDAY,THURSDAY,FRIDAY,SATURDAY,SUNDAY" placeholder:"DAY"`
@@ -185,7 +185,7 @@ type TrainingCoachJoinCmd struct {
 
 type coachPlanRequest struct {
 	TemplatePlanID            NumericID       `json:"templatePlanId"`
-	CustomPlanName            string          `json:"customPlanName"`
+	CustomPlanName            FreeText        `json:"customPlanName"`
 	PlanEndDate               string          `json:"planEndDate"`
 	AvailableTrainingDays     []string        `json:"availableTrainingDays"`
 	PreferredLongTrainingDays []string        `json:"preferredLongTrainingDays"`

@@ -11,10 +11,9 @@ Base Run
 monday
 -- table stdout --
 -- table stderr --
-Usage: gccli training coach-join --name=STRING --end=DATE --day=DAY,... <id> [flags]
+Usage: gccli training coach-join --name=FREE-TEXT --end=DATE --day=DAY,... <id> [flags]
 
-Start a Garmin Coach plan from a template and schedule its workouts in the
-calendar.
+Start a Garmin Coach plan from a template.
 
 Arguments:
   <id>    Catalog ID of a Garmin Coach template, as training search --category
@@ -34,7 +33,7 @@ Flags:
                             statute_uk ($GCCLI_UNITS).
       --version             Print version information.
 
-      --name=STRING         Name of the new plan.
+      --name=FREE-TEXT      Name of the new plan.
       --end=DATE            Last day of the plan (YYYY-MM-DD, today, yesterday,
                             3d, +30d).
       --day=DAY,...         Training day: MONDAY to SUNDAY. Repeat the flag
@@ -51,10 +50,9 @@ gccli: error: --day must be one of "MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FR
 -- table requests --
 -- plain stdout --
 -- plain stderr --
-Usage: gccli training coach-join --name=STRING --end=DATE --day=DAY,... <id> [flags]
+Usage: gccli training coach-join --name=FREE-TEXT --end=DATE --day=DAY,... <id> [flags]
 
-Start a Garmin Coach plan from a template and schedule its workouts in the
-calendar.
+Start a Garmin Coach plan from a template.
 
 Arguments:
   <id>    Catalog ID of a Garmin Coach template, as training search --category
@@ -74,7 +72,7 @@ Flags:
                             statute_uk ($GCCLI_UNITS).
       --version             Print version information.
 
-      --name=STRING         Name of the new plan.
+      --name=FREE-TEXT      Name of the new plan.
       --end=DATE            Last day of the plan (YYYY-MM-DD, today, yesterday,
                             3d, +30d).
       --day=DAY,...         Training day: MONDAY to SUNDAY. Repeat the flag
@@ -91,10 +89,9 @@ gccli: error: --day must be one of "MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FR
 -- plain requests --
 -- plain-header stdout --
 -- plain-header stderr --
-Usage: gccli training coach-join --name=STRING --end=DATE --day=DAY,... <id> [flags]
+Usage: gccli training coach-join --name=FREE-TEXT --end=DATE --day=DAY,... <id> [flags]
 
-Start a Garmin Coach plan from a template and schedule its workouts in the
-calendar.
+Start a Garmin Coach plan from a template.
 
 Arguments:
   <id>    Catalog ID of a Garmin Coach template, as training search --category
@@ -114,7 +111,7 @@ Flags:
                             statute_uk ($GCCLI_UNITS).
       --version             Print version information.
 
-      --name=STRING         Name of the new plan.
+      --name=FREE-TEXT      Name of the new plan.
       --end=DATE            Last day of the plan (YYYY-MM-DD, today, yesterday,
                             3d, +30d).
       --day=DAY,...         Training day: MONDAY to SUNDAY. Repeat the flag
@@ -131,10 +128,9 @@ gccli: error: --day must be one of "MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FR
 -- plain-header requests --
 -- json stdout --
 -- json stderr --
-Usage: gccli training coach-join --name=STRING --end=DATE --day=DAY,... <id> [flags]
+Usage: gccli training coach-join --name=FREE-TEXT --end=DATE --day=DAY,... <id> [flags]
 
-Start a Garmin Coach plan from a template and schedule its workouts in the
-calendar.
+Start a Garmin Coach plan from a template.
 
 Arguments:
   <id>    Catalog ID of a Garmin Coach template, as training search --category
@@ -154,7 +150,7 @@ Flags:
                             statute_uk ($GCCLI_UNITS).
       --version             Print version information.
 
-      --name=STRING         Name of the new plan.
+      --name=FREE-TEXT      Name of the new plan.
       --end=DATE            Last day of the plan (YYYY-MM-DD, today, yesterday,
                             3d, +30d).
       --day=DAY,...         Training day: MONDAY to SUNDAY. Repeat the flag

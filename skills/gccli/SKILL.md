@@ -971,10 +971,10 @@ Date shortcuts
   - `<id>`: Training plan ID.
 - `gccli training coach-plan <id>`: Show a Garmin Coach plan, a plan of category FBT_ADAPTIVE.
   - `<id>`: Training plan ID, as training search or training active prints it.
-- `gccli training phased-plan <id>`: Show a joined phased training plan, an ITP plan with peak weeks. Garmin answers 400 for a plan that is not phased.
-  - `<id>`: ID of the joined training plan, as training active prints it.
-- `gccli training strength-plan <id>`: Show a joined strength training plan, a plan of category STRENGTH. Garmin answers 400 for a plan that is not a strength plan.
-  - `<id>`: ID of the joined training plan, as training active prints it.
+- `gccli training phased-plan <id>`: Show a joined phased training plan, an ITP plan with peak weeks.
+  - `<id>`: ID of the joined training plan, as training active prints it. Garmin answers 400 for a plan that is not phased.
+- `gccli training strength-plan <id>`: Show a joined strength training plan, a plan of category STRENGTH.
+  - `<id>`: ID of the joined training plan, as training active prints it. Garmin answers 400 for a plan that is not a strength plan.
 - `gccli training active [flags]`: Show active training plans.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli training search [flags]`: Search the Garmin catalog of training plans.
@@ -990,9 +990,9 @@ Date shortcuts
 - `gccli training join <id> [flags]`: Join a catalog training plan and schedule its workouts in the calendar.
   - `<id>`: Catalog training plan ID, as training search prints it.
   - `--start=DATE`: Day of the first workout (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
-- `gccli training coach-join --name=STRING --end=DATE --day=DAY,... <id> [flags]`: Start a Garmin Coach plan from a template and schedule its workouts in the calendar.
+- `gccli training coach-join --name=FREE-TEXT --end=DATE --day=DAY,... <id> [flags]`: Start a Garmin Coach plan from a template.
   - `<id>`: Catalog ID of a Garmin Coach template, as training search --category FBT_ADAPTIVE prints it.
-  - `--name=STRING`: Name of the new plan.
+  - `--name=FREE-TEXT`: Name of the new plan.
   - `--end=DATE`: Last day of the plan (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--day=DAY,...`: Training day: MONDAY to SUNDAY. Repeat the flag or separate with commas. Each coach template sets how many days it needs, and Garmin rejects another number. One of: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY.
   - `--long-day=DAY,...`: Day for the long workout: MONDAY to SUNDAY. Repeat the flag or separate with commas. One of: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY.
