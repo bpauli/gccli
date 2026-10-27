@@ -50,9 +50,27 @@ lint:
 	@$(call require-tools,golangci-lint)
 	$(TOOLS_DIR)/golangci-lint run ./...
 
+# The internal/cmd tests set package variables, the environment and the
+# working directory, so they cannot call t.Parallel. make test runs them in
+# four processes at once instead, split by measured time.
+CMD_TEST_SHARDS := golden-a-g golden-h-z write-account rest
+CMD_TEST_RUN_golden-a-g    := -run '^TestGolden$$/^[a-g]'
+CMD_TEST_RUN_golden-h-z    := -run '^TestGolden$$/^[^a-g]'
+CMD_TEST_RUN_write-account := -run '^TestWriteCommand|^TestEveryLeafNeedsAccount$$'
+CMD_TEST_RUN_rest          := -skip '^TestGolden$$|^TestWriteCommand|^TestEveryLeafNeedsAccount$$'
+
 .PHONY: test
 test:
-	go test -race -timeout 20m ./...
+	go test -race -run '^$$' ./internal/cmd
+	@$(MAKE) --no-print-directory -j test-other-packages $(addprefix test-cmd-,$(CMD_TEST_SHARDS))
+
+.PHONY: test-other-packages
+test-other-packages:
+	go test -race -timeout 20m $$(go list ./... | grep -v '/internal/cmd$$')
+
+.PHONY: $(addprefix test-cmd-,$(CMD_TEST_SHARDS))
+$(addprefix test-cmd-,$(CMD_TEST_SHARDS)): test-cmd-%:
+	go test -race -timeout 20m $(CMD_TEST_RUN_$*) ./internal/cmd
 
 .PHONY: test-e2e
 test-e2e:
