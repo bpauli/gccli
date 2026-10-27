@@ -61,6 +61,7 @@ var bodyGroup = Group{Name: "body", Help: "Body composition and weight data.", C
 		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
 		Verb:     "get blood pressure", Output: JSON{},
 	},
+	Custom{Name: "export-blood-pressure", Help: "Save the blood pressure report of a date range as PDF or JSON.", Cmd: &BodyExportBloodPressureCmd{}},
 	Custom{Name: "add-blood-pressure", Help: "Add a blood pressure measurement.", Cmd: &BodyAddBPCmd{}},
 	Leaf{
 		Name: "delete-blood-pressure", Help: "Delete a blood pressure entry.",

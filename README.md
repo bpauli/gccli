@@ -13,8 +13,8 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 
 - **Activities** - list, search, view details, download (FIT/GPX/TCX/KML/CSV), upload, create manual entries (with date), rename, retype, describe, change privacy, mark as favorite, list favorites, trim the start or end and restore the original, change the privacy of all past activities, delete, set exercise sets for strength training, list activity types, list pending activities, list, add, edit and delete comments, like and unlike activities and comments
 - **Exercise Catalog** — browse Garmin's exercise categories and exercises for strength training
-- **Health Data** - daily summaries, steps, heart rate, resting HR, sleep, stress, HRV, SpO2, respiration, body battery (with daily low and high), Health Snapshot sessions, floors, training readiness, daily and weekly training status, VO2max, fitness age, race predictions, endurance and hill scores with statistics, intensity minutes, lactate threshold, cycling FTP, critical swim speed, power curve, running economy, heat and altitude acclimation, running tolerance, cycling ability, activity progress totals per period
-- **Body Composition** - weight tracking, latest weigh-in, weekly weight summaries, body fat, muscle mass, blood pressure, glucose, FIT file encoding for composition uploads
+- **Health Data** - daily summaries, steps, heart rate, resting HR, sleep, stress, HRV, SpO2, respiration, body battery (with daily low and high), Health Snapshot sessions (and their PDF report), floors, training readiness, daily and weekly training status, VO2max, fitness age, race predictions, endurance and hill scores with statistics, intensity minutes, lactate threshold, cycling FTP, critical swim speed, power curve, running economy, heat and altitude acclimation, running tolerance, cycling ability, activity progress totals per period
+- **Body Composition** - weight tracking, latest weigh-in, weekly weight summaries, body fat, muscle mass, blood pressure (and its PDF or JSON report), glucose, FIT file encoding for composition uploads
 - **Workouts** - list, view, download as FIT, upload from JSON, update in place from JSON, create with sport types and targets (pace/HR/power/cadence), schedule (add/list/remove/export), send to a device, list workout types and sport types, view, set and clear strength benchmarks, delete
 - **Courses** — list courses, view favorites, get full course detail, download as FIT/GPX, import GPX files as new courses, send courses directly to a device, delete courses
 - **Segments** - list your segments and favorites, search segments by name or map area, view a segment, its leaderboard and your rank, list the segments that an activity crossed, create a segment from a part of an activity, add and remove favorites, delete segments
@@ -458,6 +458,7 @@ gccli health hrv [date]                # Heart rate variability
 gccli health snapshots                 # Health Snapshot sessions (--limit, --offset, --until)
 gccli health snapshots show 2026-10-21 <uuid>
 gccli health snapshots epochs <uuid>   # Measurements of one session
+gccli health snapshots report 2026-10-21 <uuid> --output snapshot.pdf   # PDF report of one session
 
 # Stress and recovery
 gccli health stress                    # Stress for today
@@ -525,6 +526,8 @@ gccli body add-composition 75.5 --body-fat 15.2 --muscle-mass 35.0
 
 # Blood pressure
 gccli body blood-pressure --start 2024-01-01 --end 2024-01-31
+gccli body export-blood-pressure --start 2024-01-01 --end 2024-01-31 --output bp.pdf   # Garmin report, PDF by default
+gccli body export-blood-pressure --start 2024-01-01 --end 2024-01-31 --format json --output bp.json
 gccli body add-blood-pressure --systolic 120 --diastolic 80 --pulse 65
 
 # Glucose
@@ -1233,6 +1236,10 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `<uuid>`: Session UUID (activityUuid.uuid in 'health snapshots list').
 - `gccli health snapshots epochs <uuid>`: Show the measurements of a Health Snapshot session.
   - `<uuid>`: Session UUID (activityUuid.uuid in 'health snapshots list').
+- `gccli health snapshots report <date> <uuid> [flags]`: Save the PDF report of a Health Snapshot session.
+  - `<date>`: Date of the session (YYYY-MM-DD, today, yesterday, 3d).
+  - `<uuid>`: Session UUID (activityUuid.uuid in 'health snapshots list').
+  - `-o, --output=STRING`: Output file path (default: health_snapshot_{uuid}.pdf).
 - `gccli health body-battery view [<date>]`: Show body battery data for a date. Also runs as `gccli health body-battery [<date>]`.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli health body-battery range --start=DATE --end=DATE`: Show body battery data for a date range.
@@ -1373,6 +1380,12 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli body blood-pressure --start=DATE --end=DATE`: Show blood pressure data.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli body export-blood-pressure --start=DATE --end=DATE [flags]`: Save the blood pressure report of a date range as PDF or JSON.
+  - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--period=PERIOD`: Report layout: daily, seven-days, four-weeks or yearly. Default: the shortest one that covers the range.
+  - `--format="pdf"`: File format: pdf or json.
+  - `-o, --output=STRING`: Output file path (default: blood_pressure_{start}_{end}.{format}).
 - `gccli body add-blood-pressure --systolic=INT --diastolic=INT --pulse=INT [flags]`: Add a blood pressure measurement.
   - `--systolic=INT`: Systolic pressure (mmHg).
   - `--diastolic=INT`: Diastolic pressure (mmHg).
