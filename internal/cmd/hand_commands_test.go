@@ -14,13 +14,6 @@ import (
 
 var handPassthroughAllowed = map[string]string{
 	"activity comments likes remove": "a DELETE Leaf row must confirm, and a removed like comes back with one add, so the command does not prompt",
-	"activity details":               "pending Leaf conversion",
-	"activity exercise-sets show":    "pending Leaf conversion",
-	"activity gear":                  "pending Leaf conversion",
-	"activity split-summaries":       "pending Leaf conversion",
-	"activity splits":                "pending Leaf conversion",
-	"activity typed-splits":          "pending Leaf conversion",
-	"activity weather":               "pending Leaf conversion",
 	"courses detail":                 "pending Leaf conversion",
 	"devices set-primary-tracker":    "pending Leaf conversion",
 	"workouts detail":                "pending Leaf conversion",
