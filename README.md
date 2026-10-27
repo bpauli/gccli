@@ -1937,7 +1937,7 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `<id>`: Training plan ID.
 - `gccli training coach-plan <id>`: Show a Garmin Coach plan, a plan of category FBT_ADAPTIVE.
   - `<id>`: Training plan ID, as training search or training active prints it.
-- `gccli training phased-plan <id>`: Show a joined phased training plan, an ITP plan with peak weeks.
+- `gccli training phased-plan <id>`: Show a joined phased training plan, an ITP plan with peak weeks. Garmin answers 400 for a plan that is not phased.
   - `<id>`: ID of the joined training plan, as training active prints it.
 - `gccli training strength-plan <id>`: Show a joined strength training plan, a plan of category STRENGTH.
   - `<id>`: ID of the joined training plan, as training active prints it.

@@ -36,7 +36,7 @@ var trainingGroup = Group{Name: "training", Help: "Find, join and change trainin
 		Verb:     "get Garmin Coach plan", Output: JSON{},
 	},
 	Leaf{
-		Name: "phased-plan", Help: "Show a joined phased training plan, an ITP plan with peak weeks.",
+		Name: "phased-plan", Help: "Show a joined phased training plan, an ITP plan with peak weeks. Garmin answers 400 for a plan that is not phased.",
 		Spec: argsOf(&struct {
 			ID ID `arg:"" help:"ID of the joined training plan, as training active prints it."`
 		}{}),

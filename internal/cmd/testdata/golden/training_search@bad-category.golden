@@ -1,9 +1,9 @@
-Usage error: Garmin answers 400 to a category it does not know, so the flag takes only the four categories the catalog search accepts and no request is sent.
+Usage error: Garmin answers 400 to a category it does not know, so the flag takes only the four categories the catalog search accepts. One bad value in a comma list is enough, and no request is sent.
 -- args --
 training
 search
 --category
-fbt_adaptive
+FBT_ADAPTIVE,fbt_adaptive
 -- table stdout --
 -- table stderr --
 Usage: gccli training search [flags]

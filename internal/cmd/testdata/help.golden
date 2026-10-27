@@ -376,7 +376,8 @@ Commands:
   training coach-plan              Show a Garmin Coach plan, a plan of category
                                    FBT_ADAPTIVE.
   training phased-plan             Show a joined phased training plan, an ITP
-                                   plan with peak weeks.
+                                   plan with peak weeks. Garmin answers 400 for
+                                   a plan that is not phased.
   training strength-plan           Show a joined strength training plan,
                                    a plan of category STRENGTH.
   training active                  Show active training plans.
@@ -2202,7 +2203,8 @@ Commands:
   training coach-plan        Show a Garmin Coach plan, a plan of category
                              FBT_ADAPTIVE.
   training phased-plan       Show a joined phased training plan, an ITP plan
-                             with peak weeks.
+                             with peak weeks. Garmin answers 400 for a plan that
+                             is not phased.
   training strength-plan     Show a joined strength training plan, a plan of
                              category STRENGTH.
   training active            Show active training plans.
