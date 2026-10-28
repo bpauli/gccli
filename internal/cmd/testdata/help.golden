@@ -141,6 +141,8 @@ Commands:
                                    session.
   health snapshots epochs          Show the measurements of a Health Snapshot
                                    session.
+  health snapshots report          Save the PDF report of a Health Snapshot
+                                   session.
   health body-battery view         Show body battery data for a date.
   health body-battery range        Show body battery data for a date range.
   health body-battery daily        Show the daily low and high body battery for
@@ -206,6 +208,7 @@ Commands:
                                    muscle mass, etc.) via FIT upload.
   body delete-weight               Delete a weigh-in entry.
   body blood-pressure              Show blood pressure data.
+  body export-blood-pressure       Save the blood pressure report as a PDF.
   body add-blood-pressure          Add a blood pressure measurement.
   body delete-blood-pressure       Delete a blood pressure entry.
   body glucose                     Show glucose readings for a date.
@@ -898,6 +901,8 @@ Commands:
                                    session.
   health snapshots epochs          Show the measurements of a Health Snapshot
                                    session.
+  health snapshots report          Save the PDF report of a Health Snapshot
+                                   session.
   health body-battery view         Show body battery data for a date.
   health body-battery range        Show body battery data for a date range.
   health body-battery daily        Show the daily low and high body battery for
@@ -1199,6 +1204,7 @@ Commands:
   health snapshots list      List Health Snapshot sessions up to a date.
   health snapshots show      Show the summary of a Health Snapshot session.
   health snapshots epochs    Show the measurements of a Health Snapshot session.
+  health snapshots report    Save the PDF report of a Health Snapshot session.
 
 $ gccli health body-battery --help
 Usage: gccli health body-battery <command>
@@ -1480,6 +1486,7 @@ Commands:
                                 muscle mass, etc.) via FIT upload.
   body delete-weight            Delete a weigh-in entry.
   body blood-pressure           Show blood pressure data.
+  body export-blood-pressure    Save the blood pressure report as a PDF.
   body add-blood-pressure       Add a blood pressure measurement.
   body delete-blood-pressure    Delete a blood pressure entry.
   body glucose                  Show glucose readings for a date.

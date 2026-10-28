@@ -1,0 +1,67 @@
+The PDF report of a Health Snapshot session is saved under the default file name.
+-- args --
+health
+snapshots
+report
+2026-10-01
+uuid-1
+-- route GET /userprofile-service/userprofile/settings --
+{"preferredLocale":"de","dateFormat":{"formatKey":"ddmmyyyy"}}
+-- route POST /reportexport-service/export/init/wellnessactivity/2026-10-01/2026-10-01?locale=de --
+{"estimatedTimeForStatusCheck":100,"reportId":"abc123=="}
+-- route GET /reportexport-service/export/reportStatus/abc123== --
+{"progress":{"status":"READY","responseMessage":null},"reportId":"abc123=="}
+-- route GET /reportexport-service/export/reportContent/abc123== --
+%PDF-1.4 report
+-- table stdout --
+-- table stderr --
+Downloaded health_snapshot_uuid-1.pdf (16 bytes)
+-- table exit --
+0
+-- table requests --
+GET /userprofile-service/userprofile/settings
+POST /reportexport-service/export/init/wellnessactivity/2026-10-01/2026-10-01?locale=de
+  {
+    "supplementalId": "uuid-1"
+  }
+GET /reportexport-service/export/reportStatus/abc123==
+GET /reportexport-service/export/reportContent/abc123==
+-- plain stdout --
+-- plain stderr --
+Downloaded health_snapshot_uuid-1.pdf (16 bytes)
+-- plain exit --
+0
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+POST /reportexport-service/export/init/wellnessactivity/2026-10-01/2026-10-01?locale=de
+  {
+    "supplementalId": "uuid-1"
+  }
+GET /reportexport-service/export/reportStatus/abc123==
+GET /reportexport-service/export/reportContent/abc123==
+-- plain-header stdout --
+-- plain-header stderr --
+Downloaded health_snapshot_uuid-1.pdf (16 bytes)
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+POST /reportexport-service/export/init/wellnessactivity/2026-10-01/2026-10-01?locale=de
+  {
+    "supplementalId": "uuid-1"
+  }
+GET /reportexport-service/export/reportStatus/abc123==
+GET /reportexport-service/export/reportContent/abc123==
+-- json stdout --
+-- json stderr --
+Downloaded health_snapshot_uuid-1.pdf (16 bytes)
+-- json exit --
+0
+-- json requests --
+GET /userprofile-service/userprofile/settings
+POST /reportexport-service/export/init/wellnessactivity/2026-10-01/2026-10-01?locale=de
+  {
+    "supplementalId": "uuid-1"
+  }
+GET /reportexport-service/export/reportStatus/abc123==
+GET /reportexport-service/export/reportContent/abc123==

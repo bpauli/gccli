@@ -2,10 +2,12 @@ package cmd
 
 import (
 	"bytes"
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/bpauli/gccli/internal/garminapi"
 	"github.com/bpauli/gccli/internal/garminauth"
@@ -67,7 +69,11 @@ func overrideNewClient(t *testing.T, server *httptest.Server) {
 	t.Helper()
 	orig := newClientFn
 	newClientFn = func(tokens *garminauth.Tokens) *garminapi.Client {
-		return garminapi.NewClient(tokens, garminapi.WithHTTPClient(server.Client()), garminapi.WithBaseURL(server.URL))
+		return garminapi.NewClient(tokens,
+			garminapi.WithHTTPClient(server.Client()),
+			garminapi.WithBaseURL(server.URL),
+			garminapi.WithReportWait(func(context.Context, time.Duration) error { return nil }),
+		)
 	}
 	t.Cleanup(func() { newClientFn = orig })
 }

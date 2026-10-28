@@ -1,0 +1,61 @@
+A session that Garmin has no data for ends in DATA_NOT_FOUND: exit 1, no content request and no file.
+-- args --
+health
+snapshots
+report
+2026-10-01
+uuid-1
+-- route GET /userprofile-service/userprofile/settings --
+{"preferredLocale":"de","dateFormat":{"formatKey":"ddmmyyyy"}}
+-- route POST /reportexport-service/export/init/wellnessactivity/2026-10-01/2026-10-01?locale=de --
+{"estimatedTimeForStatusCheck":100,"reportId":"abc123=="}
+-- route GET /reportexport-service/export/reportStatus/abc123== --
+{"progress":{"status":"DATA_NOT_FOUND","responseMessage":null},"reportId":"abc123=="}
+-- table stdout --
+-- table stderr --
+export health snapshot report: Garmin has no data for this report (status DATA_NOT_FOUND)
+-- table exit --
+1
+-- table requests --
+GET /userprofile-service/userprofile/settings
+POST /reportexport-service/export/init/wellnessactivity/2026-10-01/2026-10-01?locale=de
+  {
+    "supplementalId": "uuid-1"
+  }
+GET /reportexport-service/export/reportStatus/abc123==
+-- plain stdout --
+-- plain stderr --
+export health snapshot report: Garmin has no data for this report (status DATA_NOT_FOUND)
+-- plain exit --
+1
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+POST /reportexport-service/export/init/wellnessactivity/2026-10-01/2026-10-01?locale=de
+  {
+    "supplementalId": "uuid-1"
+  }
+GET /reportexport-service/export/reportStatus/abc123==
+-- plain-header stdout --
+-- plain-header stderr --
+export health snapshot report: Garmin has no data for this report (status DATA_NOT_FOUND)
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+POST /reportexport-service/export/init/wellnessactivity/2026-10-01/2026-10-01?locale=de
+  {
+    "supplementalId": "uuid-1"
+  }
+GET /reportexport-service/export/reportStatus/abc123==
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"export health snapshot report: Garmin has no data for this report (status DATA_NOT_FOUND)"}}
+-- json exit --
+1
+-- json requests --
+GET /userprofile-service/userprofile/settings
+POST /reportexport-service/export/init/wellnessactivity/2026-10-01/2026-10-01?locale=de
+  {
+    "supplementalId": "uuid-1"
+  }
+GET /reportexport-service/export/reportStatus/abc123==
