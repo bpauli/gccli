@@ -199,6 +199,28 @@ func TestDeviceCanReceive(t *testing.T) {
 	run := workout(`{"sportType":{"sportTypeKey":"running"}}`)
 	brick := workout(`{"sportType":{"sportTypeKey":"multi_sport"},"workoutSegments":[{"sportType":{"sportTypeKey":"cycling"}},{"sportType":{"sportTypeKey":"running"}}]}`)
 	unknown := workout(`{"sportType":{"sportTypeKey":"new_sport"}}`)
+	step := func(key string) string {
+		return `{"type":"ExecutableStepDTO","stepType":{"stepTypeKey":"` + key + `"}}`
+	}
+	repeat := func(times string, steps ...string) string {
+		return `{"type":"RepeatGroupDTO","numberOfIterations":` + times + `,"stepType":{"stepTypeKey":"repeat"},"workoutSteps":[` + strings.Join(steps, ",") + `]}`
+	}
+	steps := func(sport string, segments ...string) Workout {
+		segs := make([]string, len(segments))
+		for i, s := range segments {
+			segs[i] = `{"sportType":{"sportTypeKey":"` + sport + `"},"workoutSteps":[` + s + `]}`
+		}
+		return workout(`{"sportType":{"sportTypeKey":"` + sport + `"},"workoutSegments":[` + strings.Join(segs, ",") + `]}`)
+	}
+	run51 := steps("running", step("warmup")+","+repeat("25", step("interval"), step("recovery")))
+	run50 := steps("running", repeat("25", step("interval"), step("recovery")))
+	run50Rest := steps("running", repeat("25", step("interval"), step("recovery"), step("rest")))
+	nested52 := steps("running", repeat("2", repeat("13", step("interval"), step("recovery"))))
+	nullIterations := steps("running", repeat("null", step("interval"))+","+repeat("25", step("interval"), step("recovery")))
+	segments52 := steps("running", repeat("13", step("interval"), step("recovery")), repeat("13", step("interval"), step("recovery")))
+	yoga60 := steps("yoga", repeat("60", step("interval")))
+	const runner = `{"workoutCapable":true,"runningWorkoutCapable":true}`
+	const enhancedRunner = `{"workoutCapable":true,"runningWorkoutCapable":true,"enhancedWorkoutStepCapable":true}`
 
 	tests := []struct {
 		name    string
@@ -214,6 +236,14 @@ func TestDeviceCanReceive(t *testing.T) {
 		{"multisport with every segment flag", `{"workoutCapable":true,"multisportWorkoutCapable":true,"cyclingWorkoutCapable":true,"runningWorkoutCapable":true}`, brick, true},
 		{"multisport without a segment flag", `{"workoutCapable":true,"multisportWorkoutCapable":true,"cyclingWorkoutCapable":true}`, brick, false},
 		{"multisport without the multisport flag", `{"workoutCapable":true,"cyclingWorkoutCapable":true,"runningWorkoutCapable":true}`, brick, false},
+		{"51 steps need enhancedWorkoutStepCapable", runner, run51, false},
+		{"51 steps with enhancedWorkoutStepCapable", enhancedRunner, run51, true},
+		{"50 steps need no enhanced steps", runner, run50, true},
+		{"rest steps do not count", runner, run50Rest, true},
+		{"nested repeats multiply", runner, nested52, false},
+		{"a repeat without numberOfIterations counts once", runner, nullIterations, false},
+		{"the steps of every segment count", runner, segments52, false},
+		{"yoga has no step limit", `{"workoutCapable":true,"yogaWorkoutCapable":true}`, yoga60, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

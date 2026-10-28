@@ -1,0 +1,138 @@
+Error case: 0 reps is below the web app's 1 to 20, so it is a usage error before any request.
+-- args --
+workouts
+benchmarks
+set
+BARBELL_ROW
+--weight
+50
+--reps
+0
+-- table stdout --
+-- table stderr --
+Usage: gccli workouts benchmarks set --weight=WEIGHT --reps=N <key> [flags]
+
+Set a strength benchmark from a weight and reps.
+
+Arguments:
+  <key>    Benchmark key, such as BARBELL_ROW (from 'workouts benchmarks list').
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --weight=WEIGHT     Heaviest weight lifted for the reps, 0.1 to 453.5 kg
+                          or 0.1 to 999.9 lbs.
+      --reps=N            Number of reps lifted with the weight, 1 to 20.
+      --unit="kg"         Unit of the weight: kg or lbs.
+
+gccli: error: workouts benchmarks set: --reps must be between 1 and 20
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli workouts benchmarks set --weight=WEIGHT --reps=N <key> [flags]
+
+Set a strength benchmark from a weight and reps.
+
+Arguments:
+  <key>    Benchmark key, such as BARBELL_ROW (from 'workouts benchmarks list').
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --weight=WEIGHT     Heaviest weight lifted for the reps, 0.1 to 453.5 kg
+                          or 0.1 to 999.9 lbs.
+      --reps=N            Number of reps lifted with the weight, 1 to 20.
+      --unit="kg"         Unit of the weight: kg or lbs.
+
+gccli: error: workouts benchmarks set: --reps must be between 1 and 20
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli workouts benchmarks set --weight=WEIGHT --reps=N <key> [flags]
+
+Set a strength benchmark from a weight and reps.
+
+Arguments:
+  <key>    Benchmark key, such as BARBELL_ROW (from 'workouts benchmarks list').
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --weight=WEIGHT     Heaviest weight lifted for the reps, 0.1 to 453.5 kg
+                          or 0.1 to 999.9 lbs.
+      --reps=N            Number of reps lifted with the weight, 1 to 20.
+      --unit="kg"         Unit of the weight: kg or lbs.
+
+gccli: error: workouts benchmarks set: --reps must be between 1 and 20
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli workouts benchmarks set --weight=WEIGHT --reps=N <key> [flags]
+
+Set a strength benchmark from a weight and reps.
+
+Arguments:
+  <key>    Benchmark key, such as BARBELL_ROW (from 'workouts benchmarks list').
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --weight=WEIGHT     Heaviest weight lifted for the reps, 0.1 to 453.5 kg
+                          or 0.1 to 999.9 lbs.
+      --reps=N            Number of reps lifted with the weight, 1 to 20.
+      --unit="kg"         Unit of the weight: kg or lbs.
+
+gccli: error: workouts benchmarks set: --reps must be between 1 and 20
+-- json exit --
+2
+-- json requests --

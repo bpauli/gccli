@@ -767,3 +767,57 @@ func TestFlightTimeDecode(t *testing.T) {
 		})
 	}
 }
+
+func TestConnectTimestampDecode(t *testing.T) {
+	accepted := []string{
+		"2026-10-27T09:05:03",
+		"2026-10-27T09:05:03.07",
+		"2026-10-27T09:05:03.123",
+	}
+	rejected := []string{
+		"",
+		" ",
+		"2026-10-27",
+		"2026-10-27T09:05",
+		"2026-10-27 09:05:03",
+		"2026-10-27T09:05:03,07",
+		"2026-10-27T09:05:03.",
+		"2026-10-27T09:05:03Z",
+		"2026-13-27T09:05:03.07",
+		"abc",
+	}
+	decode := func(t *testing.T, raw string) (ConnectTimestamp, error) {
+		t.Helper()
+		var cli struct {
+			At ConnectTimestamp `name:"at"`
+		}
+		parser, err := kong.New(&cli)
+		if err != nil {
+			t.Fatal(err)
+		}
+		_, err = parser.Parse([]string{"--at=" + raw})
+		return cli.At, err
+	}
+	for _, raw := range accepted {
+		t.Run(raw, func(t *testing.T) {
+			got, err := decode(t, raw)
+			if err != nil {
+				t.Fatalf("%q: err = %v", raw, err)
+			}
+			if string(got) != raw {
+				t.Errorf("%q = %q, want it kept as given", raw, got)
+			}
+		})
+	}
+	for _, raw := range rejected {
+		t.Run("rejected/"+raw, func(t *testing.T) {
+			got, err := decode(t, raw)
+			if err == nil {
+				t.Fatalf("%q = %q, want a usage error", raw, got)
+			}
+			if want := "--at: invalid timestamp " + strconv.Quote(raw) + ": expected YYYY-MM-DDTHH:MM:SS with optional fractional seconds"; !strings.Contains(err.Error(), want) {
+				t.Errorf("%q: err = %v, want %q", raw, err, want)
+			}
+		})
+	}
+}

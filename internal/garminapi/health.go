@@ -1,6 +1,11 @@
 package garminapi
 
-import "net/http"
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"time"
+)
 
 var healthEndpoints = []Endpoint{
 	{Name: "health.daily-summary", Method: http.MethodGet, Host: ConnectAPI, Path: "/usersummary-service/usersummary/daily/{displayName}?calendarDate={date}"},
@@ -51,6 +56,8 @@ var healthEndpoints = []Endpoint{
 	{Name: "health.cycling-ftp", Method: http.MethodGet, Host: ConnectAPI, Path: "/biometric-service/biometric/latestFunctionalThresholdPower/CYCLING"},
 	{Name: "health.critical-swim-speed", Method: http.MethodGet, Host: ConnectAPI, Path: "/biometric-service/criticalSwimSpeed/latest/{date}"},
 	{Name: "health.critical-swim-speed-range", Method: http.MethodGet, Host: ConnectAPI, Path: "/biometric-service/criticalSwimSpeed/range/{startDate}/{endDate}"},
+	{Name: "health.set-critical-swim-speed", Method: http.MethodPost, Host: ConnectAPI, Path: "/biometric-service/criticalSwimSpeed", Body: true},
+	{Name: "health.delete-critical-swim-speed", Method: http.MethodDelete, Host: ConnectAPI, Path: "/biometric-service/criticalSwimSpeed/{timestamp}/{version}"},
 	{Name: "health.power-to-weight", Method: http.MethodGet, Host: ConnectAPI, Path: "/biometric-service/biometric/powerToWeight/latest/{date}"},
 	{Name: "health.cycling-ftp-range", Method: http.MethodGet, Host: ConnectAPI, Path: "/biometric-service/stats/functionalThresholdPower/range/{startDate}/{endDate}?sport=CYCLING"},
 	{Name: "health.lactate-heart-rate-range", Method: http.MethodGet, Host: ConnectAPI, Path: "/biometric-service/stats/lactateThresholdHeartRate/range/{startDate}/{endDate}"},
@@ -99,4 +106,36 @@ var healthEndpoints = []Endpoint{
 	{Name: "health.race-predictions", Method: http.MethodGet, Host: ConnectAPI, Path: "/metrics-service/metrics/racepredictions/latest/{displayName}"},
 	{Name: "health.race-predictions-range", Method: http.MethodGet, Host: ConnectAPI, Path: "/metrics-service/metrics/racepredictions/daily/{displayName}?fromCalendarDate={startDate}&toCalendarDate={endDate}"},
 	{Name: "health.one-rep-max", Method: http.MethodGet, Host: ConnectAPI, Path: "/fitnessstats-service/vbt-stats/one-rep-max/current/{date}"},
+}
+
+// The critical swim speed Garmin accepts, in millimeters per second.
+const (
+	minCriticalSwimSpeed = 333
+	maxCriticalSwimSpeed = 2000
+)
+
+// ValidateCriticalSwimSpeed rejects a speed that Garmin answers with a 400.
+func ValidateCriticalSwimSpeed(mmPerSecond int) error {
+	if mmPerSecond < minCriticalSwimSpeed || mmPerSecond > maxCriticalSwimSpeed {
+		return fmt.Errorf("critical swim speed %d mm/s is outside the %d to %d mm/s Garmin accepts", mmPerSecond, minCriticalSwimSpeed, maxCriticalSwimSpeed)
+	}
+	return nil
+}
+
+// CriticalSwimSpeedBody returns the body of a manual critical swim speed
+// measured at now.
+func CriticalSwimSpeedBody(mmPerSecond int, now time.Time) ([]byte, error) {
+	return json.Marshal(map[string]any{
+		"version":                   0,
+		"criticalSwimSpeed":         mmPerSecond,
+		"measurementTimestampLocal": connectTimestamp(now),
+		"measurementTimestampGMT":   connectTimestamp(now.UTC()),
+		"biometricSourceType":       "MANUAL",
+	})
+}
+
+// connectTimestamp formats t as the Garmin Connect web app does: the
+// milliseconds have at least two digits, so 7 ms is ".07".
+func connectTimestamp(t time.Time) string {
+	return fmt.Sprintf("%s.%02d", t.Format("2006-01-02T15:04:05"), t.Nanosecond()/int(time.Millisecond))
 }

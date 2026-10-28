@@ -4,6 +4,8 @@ devices
 messages
 cancel
 777
+-- route GET /device-service/devicemessage/messages noeol --
+{"serviceHost":"https://example.com","numOfMessages":3,"messages":[{"messageId":777,"messageType":"workouts","messageStatus":"new","deviceId":3001,"deviceName":"Forerunner 265","metaData":{"messageName":"Tempo Run"}},{"messageId":778,"messageType":"settings-change","messageStatus":"new","deviceId":3001,"deviceName":"Forerunner 265","metaData":{"messageName":"settings"}},{"messageId":779,"messageType":"courses","messageStatus":"new","deviceId":3001,"deviceName":"Forerunner 265","metaData":{"messageName":"Loop"}}]}
 -- route DELETE /device-service/devicemessage/message/777 --
 -- table stdout --
 -- table stderr --
@@ -11,6 +13,7 @@ Cancelled message 777
 -- table exit --
 0
 -- table requests --
+GET /device-service/devicemessage/messages
 DELETE /device-service/devicemessage/message/777
 -- plain stdout --
 -- plain stderr --
@@ -18,6 +21,7 @@ Cancelled message 777
 -- plain exit --
 0
 -- plain requests --
+GET /device-service/devicemessage/messages
 DELETE /device-service/devicemessage/message/777
 -- plain-header stdout --
 -- plain-header stderr --
@@ -25,6 +29,7 @@ Cancelled message 777
 -- plain-header exit --
 0
 -- plain-header requests --
+GET /device-service/devicemessage/messages
 DELETE /device-service/devicemessage/message/777
 -- json stdout --
 {
@@ -34,4 +39,5 @@ DELETE /device-service/devicemessage/message/777
 -- json exit --
 0
 -- json requests --
+GET /device-service/devicemessage/messages
 DELETE /device-service/devicemessage/message/777

@@ -1,0 +1,65 @@
+-- args --
+health
+critical-swim-speed
+set
+2:00
+-- route POST /biometric-service/criticalSwimSpeed --
+{"ok":true}
+-- table stdout --
+-- table stderr --
+Set critical swim speed to 2:00 per 100 m (833 mm/s)
+-- table exit --
+0
+-- table requests --
+POST /biometric-service/criticalSwimSpeed
+  {
+    "biometricSourceType": "MANUAL",
+    "criticalSwimSpeed": 833,
+    "measurementTimestampGMT": "2026-10-15T09:30:00.00",
+    "measurementTimestampLocal": "2026-10-15T09:30:00.00",
+    "version": 0
+  }
+-- plain stdout --
+-- plain stderr --
+Set critical swim speed to 2:00 per 100 m (833 mm/s)
+-- plain exit --
+0
+-- plain requests --
+POST /biometric-service/criticalSwimSpeed
+  {
+    "biometricSourceType": "MANUAL",
+    "criticalSwimSpeed": 833,
+    "measurementTimestampGMT": "2026-10-15T09:30:00.00",
+    "measurementTimestampLocal": "2026-10-15T09:30:00.00",
+    "version": 0
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Set critical swim speed to 2:00 per 100 m (833 mm/s)
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /biometric-service/criticalSwimSpeed
+  {
+    "biometricSourceType": "MANUAL",
+    "criticalSwimSpeed": 833,
+    "measurementTimestampGMT": "2026-10-15T09:30:00.00",
+    "measurementTimestampLocal": "2026-10-15T09:30:00.00",
+    "version": 0
+  }
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /biometric-service/criticalSwimSpeed
+  {
+    "biometricSourceType": "MANUAL",
+    "criticalSwimSpeed": 833,
+    "measurementTimestampGMT": "2026-10-15T09:30:00.00",
+    "measurementTimestampLocal": "2026-10-15T09:30:00.00",
+    "version": 0
+  }

@@ -267,6 +267,10 @@ Date shortcuts
   - `<uuid>`: Session UUID (activityUuid.uuid in 'health snapshots list').
 - `gccli health snapshots epochs <uuid>`: Show the measurements of a Health Snapshot session.
   - `<uuid>`: Session UUID (activityUuid.uuid in 'health snapshots list').
+- `gccli health snapshots report <date> <uuid> [flags]`: Save the PDF report of a Health Snapshot session.
+  - `<date>`: Date of the session (YYYY-MM-DD, today, yesterday, 3d).
+  - `<uuid>`: Session UUID (activityUuid.uuid in 'health snapshots list').
+  - `-o, --output=STRING`: Output file path (default: health_snapshot_{uuid}.pdf).
 - `gccli health body-battery view [<date>]`: Show body battery data for a date. Also runs as `gccli health body-battery [<date>]`.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli health body-battery range --start=DATE --end=DATE`: Show body battery data for a date range.
@@ -300,6 +304,13 @@ Date shortcuts
 - `gccli health critical-swim-speed range --start=DATE --end=DATE`: Show critical swim speed for a date range.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli health critical-swim-speed set <pace> [flags]`: Save a critical swim speed measured now, from a pace per 100 m or 100 yd.
+  - `<pace>`: Pace per 100 m or per 100 yd as m:ss, such as 2:00. Garmin refuses to delete the last record, so delete cannot undo a first save.
+  - `--unit="m"`: Distance of the pace: m for 100 m, yd for 100 yd.
+- `gccli health critical-swim-speed delete <timestamp> <version> [flags]`: Delete a critical swim speed entry. Garmin refuses to delete the last one.
+  - `<timestamp>`: Local timestamp of the entry, as measurementTimestampLocal prints it, such as 2026-10-27T09:05:03.07.
+  - `<version>`: Version of the entry.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli health power-to-weight [<date>]`: Show latest power-to-weight data as of a date.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli health thresholds cycling-ftp --start=DATE --end=DATE`: Show cycling FTP for a date range.
@@ -407,6 +418,10 @@ Date shortcuts
 - `gccli body blood-pressure --start=DATE --end=DATE`: Show blood pressure data.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli body export-blood-pressure [flags]`: Save the blood pressure report as a PDF.
+  - `--period="daily"`: Report layout and range: daily (1 day), seven-days, four-weeks (28 days) or yearly (52 weeks).
+  - `--end="today"`: Last day of the report (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
+  - `-o, --output=STRING`: Output file path (default: blood_pressure_{period}_{end}.pdf).
 - `gccli body add-blood-pressure --systolic=INT --diastolic=INT --pulse=INT [flags]`: Add a blood pressure measurement.
   - `--systolic=INT`: Systolic pressure (mmHg).
   - `--diastolic=INT`: Diastolic pressure (mmHg).
@@ -557,8 +572,9 @@ Date shortcuts
 - `gccli devices backups list`: List device backups.
 - `gccli devices historical`: List historical devices.
 - `gccli devices messages list`: List device messages. Also runs as `gccli devices messages`.
-- `gccli devices messages cancel <id>`: Cancel a device message, such as a sent workout, before the device syncs.
+- `gccli devices messages cancel <id> [flags]`: Cancel a device message, such as a sent workout, before the device syncs.
   - `<id>`: Message ID (from 'devices messages').
+  - `-f, --force`: Skip the prompt for a message that is not a workout or a course.
 
 ### Gear
 
@@ -838,9 +854,35 @@ Date shortcuts
   - `<id>`: Group ID.
 - `gccli groups challenges <id>`: List the open challenges of a group. Garmin answers 403 to a non-member.
   - `<id>`: Group ID.
+- `gccli groups leaderboard <id> [flags]`: Rank the members of a group by steps, calories, pushes or distance.
+  - `<id>`: Group ID.
+  - `--metric="steps"`: What to rank: steps, calories, pushes or distance. The first three show nothing for a group you have not joined.
+  - `--activity=ACTIVITY`: Count only the distance of one activity: walking, running, cycling, swimming or pushing. Only with --metric distance.
+  - `--start=DATE`: First day (YYYY-MM-DD, today, yesterday, 3d, +30d). Default: Monday of this week.
+  - `--end=DATE`: Last day. Default: 6 days after --start.
+  - `-l, --limit=20`: Maximum number of members to return.
+  - `--offset=0`: Number of members to skip.
+- `gccli groups requests`: List your pending requests to join private groups.
 - `gccli groups join <id>`: Join a public group. gccli does not send the request that a private group needs.
   - `<id>`: Group ID.
 - `gccli groups leave <id> [flags]`: Leave a group.
+  - `<id>`: Group ID.
+  - `-f, --force`: Skip confirmation prompt.
+- `gccli groups create <name> [flags]`: Create a group.
+  - `<name>`: Group name.
+  - `--description=STRING`: Group description.
+  - `--location=STRING`: Group location.
+  - `--visibility="VISIBLE"`: Who can find the group. A hidden group is invite-only. One of: VISIBLE, HIDDEN.
+  - `--privacy=PRIVACY`: Who can join: PUBLIC, PRIVATE or INVITE. Defaults to PUBLIC, or INVITE for a hidden group.
+  - `--image="running_01"`: Default group image. One of: running_01, roadcycling_01, mountain_cycling_01, swimming_01, health_fitness_01, golf_01, para_sports_01.
+- `gccli groups edit <id> [flags]`: Edit a group you own.
+  - `<id>`: Group ID.
+  - `--name=STRING`: New name.
+  - `--description=STRING`: New description. An empty text clears it.
+  - `--location=STRING`: New location. An empty text clears it.
+  - `--visibility=VISIBILITY`: Who can find the group. Hiding a group makes it invite-only. One of: VISIBLE, HIDDEN.
+  - `--privacy=PRIVACY`: Who can join: PUBLIC, PRIVATE or INVITE.
+- `gccli groups delete <id> [flags]`: Delete a group you own.
   - `<id>`: Group ID.
   - `-f, --force`: Skip confirmation prompt.
 - `gccli notifications list [flags]`: List notifications. Also runs as `gccli notifications [flags]`.
@@ -878,11 +920,14 @@ Date shortcuts
 - `gccli golf courses [flags]`: List the golf courses you played.
   - `-l, --limit=20`: Maximum number of courses to return.
   - `--offset=0`: Number of courses to skip.
+- `gccli golf course <id>`: Show one golf course by its course snapshot ID.
+  - `<id>`: Course snapshot ID.
 - `gccli golf stats`: Show your golf statistics.
 - `gccli golf shot-stats <kind>`: Show your golf shot statistics of one shot type.
   - `<kind>`: Shot type: drive, approach, chip or putt.
 - `gccli golf clubs`: List the golf clubs in your bag.
 - `gccli golf club-types`: List the golf club types with their loft and lie angles.
+- `gccli golf club-flex-types`: List the golf club shaft flex types.
 - `gccli golf leaderboards [flags]`: List the golf leaderboards you played in.
   - `-l, --limit=20`: Maximum number of leaderboards to return.
   - `--offset=0`: Number of leaderboards to skip.
@@ -1077,7 +1122,7 @@ Worked examples
 - Calendar feed: `gccli calendar export enable` turns on the feed and prints its URL, and `gccli calendar export show --plain` prints the URL alone. `gccli calendar export disable --force` turns it off.
 - Calendar preference: `gccli calendar preferences` shows the keys. `gccli calendar preferences set showWeeklyTotal false` turns one off.
 - Training plan: `gccli training search --sport Running --goal 5k --level Beginner` lists catalog plans with their ID and category. `gccli training search --category FBT_ADAPTIVE` lists the Garmin Coach plans, and `gccli training coach-plan <id>` shows one. `gccli training coach-join <template-id> --name "My plan" --end 2026-12-20 --day MONDAY,TUESDAY,THURSDAY,FRIDAY,SATURDAY --long-day SATURDAY` starts one and prints the ID of the new plan. Each template sets how many `--day` values it needs, and Garmin answers 400 with its own message for another number. A joined plan of category `STRENGTH` reads with `gccli training strength-plan <id>`, and a joined phased plan (an `ITP` plan with peak weeks) with `gccli training phased-plan <id>`. Garmin answers 400 to `phased-plan` for a plan that is not phased. `gccli training join <id> --start 2026-11-02` joins one and prints the ID of your copy, which the other plan commands take. `gccli training schedule <plan-id>` lists the workouts with their task IDs. `gccli training task move <plan-id> <task-id> 2026-11-04` moves a workout and prints its new task ID, and `gccli training task delete <plan-id> <task-id> --force` puts a rest day in its place. `gccli training leave <plan-id> --force` leaves the plan and removes its workouts from the calendar.
-- Groups: `gccli groups search running --limit 10` lists groups with their ID, name, privacy and location (`--offset` skips groups). `gccli groups show <group-id>` shows one group, and `gccli groups members <group-id>` lists its members with their role. `gccli groups feed <group-id>` prints the latest posts and activities as JSON, and `gccli groups activities <group-id>` lists the latest activities of the members. `gccli groups challenges <group-id>` lists the open challenges; Garmin answers 403 (exit code 1) when you are not a member. `gccli groups join <group-id>` joins a public group at once. gccli does not send the join request that a private group needs. `gccli groups leave <group-id> --force` leaves a group.
+- Groups: `gccli groups search running --limit 10` lists groups with their ID, name, privacy and location (`--offset` skips groups). `gccli groups show <group-id>` shows one group, and `gccli groups members <group-id>` lists its members with their role. `gccli groups feed <group-id>` prints the latest posts and activities as JSON, and `gccli groups activities <group-id>` lists the latest activities of the members. `gccli groups challenges <group-id>` lists the open challenges; Garmin answers 403 (exit code 1) when you are not a member. `gccli groups leaderboard <group-id>` ranks the members by `--metric steps` (the default), `calories`, `pushes` or `distance` (with `--activity running` and so on for one activity) over `--start` to `--end`, by default this week from Monday. Garmin shows the first three metrics only to members and answers an empty list to anyone else. `gccli groups requests` lists your pending requests to join private groups. `gccli groups join <group-id>` joins a public group at once. gccli does not send the join request that a private group needs. `gccli groups leave <group-id> --force` leaves a group.
 - Notification preference: `gccli notifications preferences` shows the keys. `gccli notifications preferences set allowEmailWeeklySummary false` turns one off. A key that is not in the preferences fails before any write, and the error lists the keys.
 - Notifications: `gccli notifications list` gives 50 notifications per page (`--limit` changes it). For the next page, pass `pagination.nextCursor` of the JSON output: `gccli notifications list --cursor <nextCursor>`. `gccli notifications dismiss <id>` removes a notification from the list, and `gccli notifications undismiss <id>` brings it back. `gccli notifications unread` prints `{"unreadBubble": true}` when there are unread notifications.
 - Privacy zone: `gccli profile privacy-zones add --lat 51.5 --lon=-0.12 --radius 500` prints the zone ID. A negative value needs the `=` form. The radius is 500 to 1500 meters. `gccli profile privacy-zones delete <id> --force` deletes it.
@@ -1092,7 +1137,7 @@ Worked examples
 - Favorite foods: `gccli nutrition favorites add 35718 --query apple` and `gccli nutrition favorites remove 35718`. Garmin refuses an add of a food that is a favorite already (exit 1), and a remove of a food that is not a favorite fails with exit 1.
 - Strength benchmark: `gccli workouts benchmarks list` shows each benchmark key. `gccli workouts benchmarks set BARBELL_ROW --weight 50 --reps 5` saves the benchmark with an estimated one-rep max of 56.3 kg (Brzycki, as the Garmin Connect web app). A repeat run updates the same benchmark. `--unit lbs` takes pounds. `gccli workouts benchmarks clear BARBELL_ROW --force` clears it, and fails with exit code 1 when the benchmark is not set.
 - Workout sport types: `gccli workouts sport-types` lists the ID and the key of each sport type a workout can have.
-- Send a workout to a watch: `gccli workouts send <id>` sends to the only device that can receive the workout. With more such devices it fails before any write and lists their IDs; then add `--device <device-id>`. The device gets the workout at its next sync. Until then `gccli devices messages cancel <message-id>` removes it; the send prints the message ID (`messageId` with `--json`). The cancel fails with exit code 1 (`message <id> is not pending (already delivered or unknown)`) when the device has synced.
+- Send a workout to a watch: `gccli workouts send <id>` sends to the only device that can receive the workout. With more such devices it fails before any write and lists their IDs; then add `--device <device-id>`. The device gets the workout at its next sync. Until then `gccli devices messages cancel <message-id>` removes it; the send prints the message ID (`messageId` with `--json`). The cancel fails with exit code 1 (`message <id> is not pending (already delivered or unknown)`) when the device has synced or the ID is not in the queue. A message of another type than `workouts` or `courses` asks first; add `--force` only after checking `messageType` in `gccli devices messages`, because gccli cannot send such a message again. A workout of more than 50 steps (rest steps not counted, repeats counted per iteration, yoga excepted) goes only to a device with `enhancedWorkoutStepCapable`.
 - Primary activity tracker: `gccli devices set-primary-tracker <device-id>` makes a device the primary activity tracker. Only one device has this setting at a time, and `devices list` shows it as `primaryActivityTrackerIndicator`. It is not the primary training device that `gccli devices primary` shows.
 - Device backups: `gccli devices backups` shows the backup summary (also `devices backups summary`). `gccli devices backups list` lists the backups, `[]` when there are none.
 - Ad-hoc challenge: `gccli challenges adhoc create "Step up" --type steps --invite ann --invite bob` creates a steps challenge of a week from today and invites two people. It prints the UUID (`uuid` with `--json`). `--duration` is `day`, `weekend` (`--start` must be a Saturday; default the Saturday of this week), `week` (default), `month` (default from the first day of this month to its last day) or `custom` (needs `--end`, at most 60 days after the first day). Later, `gccli challenges adhoc invite <uuid> carol` invites one more person. Garmin invites only people who follow the user and whom the user follows: take the display names from `gccli social followers` and `gccli social following`. A display name that is not such a person fails with exit 1 before any write, and the error names the person.
@@ -1151,7 +1196,7 @@ Notes
 - `calendar export show` prints the iCalendar feed URL that calendar apps subscribe to, or a note on stderr when the feed is off. `calendar export enable` keeps a feed that is on, because a second create gets 403 from Garmin. `calendar export disable` asks first (`--force` skips it); the URL then gives an empty answer. With `--json` the commands print Garmin's object. Its `id` is the feed ID (`NOT_PUBLISHED` when the feed is off), and its `baseUrl` names localhost, so take the URL from `--plain` output.
 - `segments search` needs `--name` or `--bbox MINLAT,MINLON,MAXLAT,MAXLON`. Without one Garmin finds nothing, so the command exits 2. Take the `--classification` and `--surface` values from `gccli segments classifications` and `gccli segments surface-types`. Garmin's `all` means no filter: leave the flag out. In `--json` output, segment distances are kilometers and leaderboard times are milliseconds. One leaderboard page has 26 rows: `--from-rank 27` gives the next page. `--group` goes only with `--scope all`. `segments create` takes the track points of `--from-activity` from `--start-km` to `--end-km`. Garmin refuses a segment shorter than 0.08 km with 400, and the command exits 1. `segments favorite` and `segments unfavorite` take the UUID, as the other segment commands do.
 - `insights compare` needs Insights turned on in Garmin Connect. Without it, Garmin answers 403 `User is not opted into Insights` and the command exits 1, so tell the user. Take every flag value (`--activity`, `--field`, `--age`, `--year`, `--month`) from `gccli insights options` as it prints them, such as `--age 75+`. Some dates, such as the current year without `--month`, give `{}`.
-- The `golf` commands print the Garmin answer as JSON. `golf scorecards`, `golf courses` and `golf leaderboards` page by `--limit`, so `--offset` must be a multiple of `--limit`. For an account without golf rounds, the answer has `totalRows: 0` and no list. `golf clubs` gives each club a `clubTypeId`, and `golf club-types` gives the name of each type ID as `value`.
+- The `golf` commands print the Garmin answer as JSON. `golf scorecards`, `golf courses` and `golf leaderboards` page by `--limit`, so `--offset` must be a multiple of `--limit`. For an account without golf rounds, the answer has `totalRows: 0` and no list. `golf clubs` gives each club a `clubTypeId`, and `golf club-types` gives the name of each type ID as `value`. `golf course <id>` takes a course snapshot ID, works without a round, and prints a one-item array (`[]` for an unknown ID). Garmin takes one ID per request.
 - `health progress` (also as `health progress summary`) totals metrics per period, and `health progress activities` lists the values of each activity. Take the `--metric` and `--activity-type` values from `gccli health progress metrics`, which lists the metrics of each activity type (`running`, `cycling`, ...). Repeat a flag or separate its values with commas. Distances are meters and durations seconds. The totals of each summary period are under `.stats.all`, also with `--activity-type`.
 - Range limits that Garmin sets: `health body-battery daily` at most 28 days, `health endurance-score stats`, `health hill-score stats` and `health cycling-ability` at most 400 days, `health cycling-ability --aggregation daily` at most 30 days. A longer range fails with exit 1 and the Garmin message.
 - `challenges join <uuid>` and `challenges leave <uuid>` take the `uuid` of a badge or virtual challenge, as the list commands print it. `leave` has no prompt, because `join` undoes it. `challenges adhoc` covers ad-hoc challenges with other people. Garmin invites only mutual followers: people the user follows and who follow the user. `challenges adhoc invites <uuid>` lists the open invites with their `adHocChallengeInviteId`, which `adhoc accept` and `adhoc decline` take. `challenges adhoc leave` has no undo, because only a new invite gets the user back in, so confirm with the user first. `challenges adhoc delete` works only for a challenge that the user created.
@@ -1159,6 +1204,7 @@ Notes
 - `activity trim <id> --from <duration> --to <duration>` keeps only that part of an activity. Both times count from the activity start, in the form `2m` or `1h5m`. Give at least one: `--from` defaults to the start and `--to` to the end. Garmin applies the trim in a few seconds, and the activity keeps its ID. `activity restore <id>` brings back the original. Both are for single-sport activities only, not for multisport activities.
 - `activities privacy set <level>` changes the privacy of every past activity, and with `--type running,cycling` of every past activity of those types. The types are top-level activity type keys. There is no bulk undo, so confirm with the user first, then pass `--force`. Garmin applies the change within minutes, and `activities privacy status` shows the progress. To change one activity, use `activity privacy <id> <level>`.
 - `health snapshots list` (also as `health snapshots`) lists the Health Snapshot sessions up to `--until` (default today). A Health Snapshot is a 2-minute session that newer watches record. `health snapshots show <date> <uuid>` and `health snapshots epochs <uuid>` take the date and `activityUuid.uuid` of a list item. `show` prints `{}` for a UUID that has no session, because Garmin answers 204. ECG recordings are not available: Garmin does not route the ECG service on the API host that gccli uses.
+- `body export-blood-pressure` saves the Garmin blood pressure report as a PDF. `--period` is `daily` (default), `seven-days`, `four-weeks` or `yearly` and fixes the range that ends on `--end` (default today): 1, 7, 28 or 364 days. Garmin answers DATA_NOT_FOUND for any other length, so there is no `--start`. Garmin has no CSV, and its JSON format also returns a PDF, so the command offers no format flag. `health snapshots report <date> <uuid>` saves the PDF report of a Health Snapshot session. Both ask Garmin to create the report, wait for it for up to two minutes, and print `Downloaded <file> (<n> bytes)` on stderr. They write nothing to stdout, they overwrite an existing file, and they leave it alone when the export fails. A report without readings fails with exit 1 and `status DATA_NOT_FOUND`. Garmin limits how many reports an account can start per hour (10 in our tests) and then answers 429, which is exit 5.
 - Delete commands fail without a terminal unless `--force` is set. Confirm with the user first, then pass `--force`.
 - Download formats: FIT (default), GPX, TCX, KML, CSV.
 - Workout step format: `type:duration[@target:low-high]`. Types: warmup, run, recovery, cooldown; targets: pace (min:sec), hr (bpm), power (watts), cadence.

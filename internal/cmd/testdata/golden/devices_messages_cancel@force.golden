@@ -1,0 +1,43 @@
+--force skips the prompt.
+-- args --
+devices
+messages
+cancel
+778
+--force
+-- route GET /device-service/devicemessage/messages noeol --
+{"serviceHost":"https://example.com","numOfMessages":3,"messages":[{"messageId":777,"messageType":"workouts","messageStatus":"new","deviceId":3001,"deviceName":"Forerunner 265","metaData":{"messageName":"Tempo Run"}},{"messageId":778,"messageType":"settings-change","messageStatus":"new","deviceId":3001,"deviceName":"Forerunner 265","metaData":{"messageName":"settings"}},{"messageId":779,"messageType":"courses","messageStatus":"new","deviceId":3001,"deviceName":"Forerunner 265","metaData":{"messageName":"Loop"}}]}
+-- route DELETE /device-service/devicemessage/message/778 noeol --
+true
+-- table stdout --
+-- table stderr --
+Cancelled message 778
+-- table exit --
+0
+-- table requests --
+GET /device-service/devicemessage/messages
+DELETE /device-service/devicemessage/message/778
+-- plain stdout --
+-- plain stderr --
+Cancelled message 778
+-- plain exit --
+0
+-- plain requests --
+GET /device-service/devicemessage/messages
+DELETE /device-service/devicemessage/message/778
+-- plain-header stdout --
+-- plain-header stderr --
+Cancelled message 778
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /device-service/devicemessage/messages
+DELETE /device-service/devicemessage/message/778
+-- json stdout --
+true
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /device-service/devicemessage/messages
+DELETE /device-service/devicemessage/message/778

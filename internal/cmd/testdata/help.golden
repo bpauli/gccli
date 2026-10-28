@@ -141,6 +141,8 @@ Commands:
                                    session.
   health snapshots epochs          Show the measurements of a Health Snapshot
                                    session.
+  health snapshots report          Save the PDF report of a Health Snapshot
+                                   session.
   health body-battery view         Show body battery data for a date.
   health body-battery range        Show body battery data for a date range.
   health body-battery daily        Show the daily low and high body battery for
@@ -161,6 +163,12 @@ Commands:
                                    Show latest critical swim speed as of a date.
   health critical-swim-speed range
                                    Show critical swim speed for a date range.
+  health critical-swim-speed set
+                                   Save a critical swim speed measured now,
+                                   from a pace per 100 m or 100 yd.
+  health critical-swim-speed delete
+                                   Delete a critical swim speed entry. Garmin
+                                   refuses to delete the last one.
   health power-to-weight           Show latest power-to-weight data as of a
                                    date.
   health thresholds cycling-ftp    Show cycling FTP for a date range.
@@ -206,6 +214,7 @@ Commands:
                                    muscle mass, etc.) via FIT upload.
   body delete-weight               Delete a weigh-in entry.
   body blood-pressure              Show blood pressure data.
+  body export-blood-pressure       Save the blood pressure report as a PDF.
   body add-blood-pressure          Add a blood pressure measurement.
   body delete-blood-pressure       Delete a blood pressure entry.
   body glucose                     Show glucose readings for a date.
@@ -460,9 +469,16 @@ Commands:
                                    members.
   groups challenges                List the open challenges of a group. Garmin
                                    answers 403 to a non-member.
+  groups leaderboard               Rank the members of a group by steps,
+                                   calories, pushes or distance.
+  groups requests                  List your pending requests to join private
+                                   groups.
   groups join                      Join a public group. gccli does not send the
                                    request that a private group needs.
   groups leave                     Leave a group.
+  groups create                    Create a group.
+  groups edit                      Edit a group you own.
+  groups delete                    Delete a group you own.
   insights options                 List the genders, ages, dates, activities and
                                    fields for insights compare.
   insights compare                 Compare a metric with your age group.
@@ -470,12 +486,15 @@ Commands:
   insights preferences             Show your saved Insights comparisons.
   golf scorecards                  List your golf scorecards.
   golf courses                     List the golf courses you played.
+  golf course                      Show one golf course by its course snapshot
+                                   ID.
   golf stats                       Show your golf statistics.
   golf shot-stats                  Show your golf shot statistics of one shot
                                    type.
   golf clubs                       List the golf clubs in your bag.
   golf club-types                  List the golf club types with their loft and
                                    lie angles.
+  golf club-flex-types             List the golf club shaft flex types.
   golf leaderboards                List the golf leaderboards you played in.
   reload                           Request data reload for a date.
   completion                       Generate shell completion script.
@@ -902,6 +921,8 @@ Commands:
                                    session.
   health snapshots epochs          Show the measurements of a Health Snapshot
                                    session.
+  health snapshots report          Save the PDF report of a Health Snapshot
+                                   session.
   health body-battery view         Show body battery data for a date.
   health body-battery range        Show body battery data for a date range.
   health body-battery daily        Show the daily low and high body battery for
@@ -922,6 +943,12 @@ Commands:
                                    Show latest critical swim speed as of a date.
   health critical-swim-speed range
                                    Show critical swim speed for a date range.
+  health critical-swim-speed set
+                                   Save a critical swim speed measured now,
+                                   from a pace per 100 m or 100 yd.
+  health critical-swim-speed delete
+                                   Delete a critical swim speed entry. Garmin
+                                   refuses to delete the last one.
   health power-to-weight           Show latest power-to-weight data as of a
                                    date.
   health thresholds cycling-ftp    Show cycling FTP for a date range.
@@ -1203,6 +1230,7 @@ Commands:
   health snapshots list      List Health Snapshot sessions up to a date.
   health snapshots show      Show the summary of a Health Snapshot session.
   health snapshots epochs    Show the measurements of a Health Snapshot session.
+  health snapshots report    Save the PDF report of a Health Snapshot session.
 
 $ gccli health body-battery --help
 Usage: gccli health body-battery <command>
@@ -1302,6 +1330,10 @@ Commands:
       Show latest critical swim speed as of a date.
   health critical-swim-speed range
       Show critical swim speed for a date range.
+  health critical-swim-speed set
+      Save a critical swim speed measured now, from a pace per 100 m or 100 yd.
+  health critical-swim-speed delete
+      Delete a critical swim speed entry. Garmin refuses to delete the last one.
 
 $ gccli health thresholds --help
 Usage: gccli health thresholds <command>
@@ -1484,6 +1516,7 @@ Commands:
                                 muscle mass, etc.) via FIT upload.
   body delete-weight            Delete a weigh-in entry.
   body blood-pressure           Show blood pressure data.
+  body export-blood-pressure    Save the blood pressure report as a PDF.
   body add-blood-pressure       Add a blood pressure measurement.
   body delete-blood-pressure    Delete a blood pressure entry.
   body glucose                  Show glucose readings for a date.
@@ -2580,7 +2613,7 @@ Commands:
 $ gccli groups --help
 Usage: gccli groups <command> [flags]
 
-List, search, join and leave groups.
+List, search, create, edit, delete, join and leave groups.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -2597,17 +2630,23 @@ Flags:
       --version           Print version information.
 
 Commands:
-  groups list          List your groups.
-  groups search        Search groups by keyword.
-  groups show          Show a group.
-  groups members       List the members of a group.
-  groups feed          Show the latest posts and activities of the group feed.
-  groups activities    List the latest activities of the group members.
-  groups challenges    List the open challenges of a group. Garmin answers 403
-                       to a non-member.
-  groups join          Join a public group. gccli does not send the request that
-                       a private group needs.
-  groups leave         Leave a group.
+  groups list           List your groups.
+  groups search         Search groups by keyword.
+  groups show           Show a group.
+  groups members        List the members of a group.
+  groups feed           Show the latest posts and activities of the group feed.
+  groups activities     List the latest activities of the group members.
+  groups challenges     List the open challenges of a group. Garmin answers 403
+                        to a non-member.
+  groups leaderboard    Rank the members of a group by steps, calories, pushes
+                        or distance.
+  groups requests       List your pending requests to join private groups.
+  groups join           Join a public group. gccli does not send the request
+                        that a private group needs.
+  groups leave          Leave a group.
+  groups create         Create a group.
+  groups edit           Edit a group you own.
+  groups delete         Delete a group you own.
 
 $ gccli insights --help
 Usage: gccli insights <command> [flags]
@@ -2655,11 +2694,14 @@ Flags:
       --version           Print version information.
 
 Commands:
-  golf scorecards      List your golf scorecards.
-  golf courses         List the golf courses you played.
-  golf stats           Show your golf statistics.
-  golf shot-stats      Show your golf shot statistics of one shot type.
-  golf clubs           List the golf clubs in your bag.
-  golf club-types      List the golf club types with their loft and lie angles.
-  golf leaderboards    List the golf leaderboards you played in.
+  golf scorecards         List your golf scorecards.
+  golf courses            List the golf courses you played.
+  golf course             Show one golf course by its course snapshot ID.
+  golf stats              Show your golf statistics.
+  golf shot-stats         Show your golf shot statistics of one shot type.
+  golf clubs              List the golf clubs in your bag.
+  golf club-types         List the golf club types with their loft and lie
+                          angles.
+  golf club-flex-types    List the golf club shaft flex types.
+  golf leaderboards       List the golf leaderboards you played in.
 

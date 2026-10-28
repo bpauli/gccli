@@ -13,8 +13,8 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 
 - **Activities** - list, search, view details, download (FIT/GPX/TCX/KML/CSV), upload, create manual entries (with date), rename, retype, describe, change privacy, mark as favorite, list favorites, trim the start or end and restore the original, change the privacy of all past activities, delete, set exercise sets for strength training, list activity types, list pending activities, list, add, edit and delete comments, like and unlike activities and comments
 - **Exercise Catalog** — browse Garmin's exercise categories and exercises for strength training
-- **Health Data** - daily summaries, steps, heart rate, resting HR, sleep, stress, HRV, SpO2, respiration, body battery (with daily low and high), Health Snapshot sessions, floors, training readiness, daily and weekly training status, VO2max, fitness age, race predictions, endurance and hill scores with statistics, intensity minutes, lactate threshold, cycling FTP, critical swim speed, power curve, running economy, heat and altitude acclimation, running tolerance, cycling ability, activity progress totals per period
-- **Body Composition** - weight tracking, latest weigh-in, weekly weight summaries, body fat, muscle mass, blood pressure, glucose, FIT file encoding for composition uploads
+- **Health Data** - daily summaries, steps, heart rate, resting HR, sleep, stress, HRV, SpO2, respiration, body battery (with daily low and high), Health Snapshot sessions (and their PDF report), floors, training readiness, daily and weekly training status, VO2max, fitness age, race predictions, endurance and hill scores with statistics, intensity minutes, lactate threshold, cycling FTP, critical swim speed, power curve, running economy, heat and altitude acclimation, running tolerance, cycling ability, activity progress totals per period
+- **Body Composition** - weight tracking, latest weigh-in, weekly weight summaries, body fat, muscle mass, blood pressure (and its PDF report), glucose, FIT file encoding for composition uploads
 - **Workouts** - list, view, download as FIT, upload from JSON, update in place from JSON, create with sport types and targets (pace/HR/power/cadence), schedule (add/list/remove/export), send to a device, list workout types and sport types, view, set and clear strength benchmarks, delete
 - **Courses** — list courses, view favorites, get full course detail, download as FIT/GPX, import GPX files as new courses, send courses directly to a device, delete courses
 - **Segments** - list your segments and favorites, search segments by name or map area, view a segment, its leaderboard and your rank, list the segments that an activity crossed, create a segment from a part of an activity, add and remove favorites, delete segments
@@ -28,9 +28,9 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Events** — list, list upcoming, add, and delete calendar events (races, group rides, etc.) with goals and training priority support
 - **Calendar** - month view of activities, workouts, events and notes, add, update, move and delete calendar notes, turn the iCalendar feed on and off, and change the web calendar preferences
 - **Wellness** - menstrual cycle data and calendar, menstrual daily log (view, set, delete), pregnancy summary, jet lag trips (list, add, update, delete) and status
-- **Social** - notifications (page with a cursor, dismiss and undismiss, unread state), view and change notification preferences, connections, connection requests, followers, following, follow and unfollow, follow requests, mute, user search, newsfeed, groups (search, show a group with its members, feed, member activities and open challenges, join a public group, leave a group)
+- **Social** - notifications (page with a cursor, dismiss and undismiss, unread state), view and change notification preferences, connections, connection requests, followers, following, follow and unfollow, follow requests, mute, user search, newsfeed, groups (search, show a group with its members, feed, member activities and open challenges, join a public group, leave a group, create, edit and delete a group of yours)
 - **Insights** - compare your steps, sleep, floors, VO2 max, speed, power and more with people of your age group and gender (needs Insights turned on in Garmin Connect)
-- **Golf** - scorecards, the courses you played, golf and shot stats (drive, approach, chip, putt), the clubs in your bag, club types and leaderboards
+- **Golf** - scorecards, the courses you played, golf and shot stats (drive, approach, chip, putt), one course by ID, the clubs in your bag, club and shaft flex types and leaderboards
 - **Agent-ready** - ships a bundled agent skill (`skills/gccli/`) that plugs into AI assistants like Claude Code, Codex, Hermes, and OpenClaw so you can drive Garmin Connect in plain language
 - **Multiple accounts** — manage multiple Garmin accounts via `--account` flag
 - **Credential storage** in the OS keyring (macOS Keychain, Linux Secret Service), with a file fallback (see [Credential Storage](#credential-storage))
@@ -458,6 +458,7 @@ gccli health hrv [date]                # Heart rate variability
 gccli health snapshots                 # Health Snapshot sessions (--limit, --offset, --until)
 gccli health snapshots show 2026-10-21 <uuid>
 gccli health snapshots epochs <uuid>   # Measurements of one session
+gccli health snapshots report 2026-10-21 <uuid> --output snapshot.pdf   # PDF report of one session
 
 # Stress and recovery
 gccli health stress                    # Stress for today
@@ -525,6 +526,8 @@ gccli body add-composition 75.5 --body-fat 15.2 --muscle-mass 35.0
 
 # Blood pressure
 gccli body blood-pressure --start 2024-01-01 --end 2024-01-31
+gccli body export-blood-pressure --output bp.pdf                          # Garmin report PDF for today
+gccli body export-blood-pressure --period four-weeks --end 2024-01-31     # the 28 days that end on 2024-01-31
 gccli body add-blood-pressure --systolic 120 --diastolic 80 --pulse 65
 
 # Glucose
@@ -603,7 +606,7 @@ gccli workouts update 123456 workout.json
 
 The workout keeps its ID and any calendar entries that point at it. `workoutId` in the file is set from the ID argument before the request goes out, so a payload written for `upload` works as-is; if the file already names a different workout, gccli warns and still updates the one given on the command line.
 
-**Sending a workout to a device.** `gccli workouts send <id>` puts the workout in the message queue of a device. The device downloads it at its next sync. gccli keeps the devices that can receive the workout, as the Garmin Connect web app does: the device must be workout-capable and support the sport of the workout. When exactly one device is left, gccli sends to it. When more are left, the command fails before any write, and the error lists their IDs for `--device`. The send prints the message ID. Until the device syncs, `gccli devices messages cancel <message-id>` removes the message. After the sync, the cancel fails with exit code 1.
+**Sending a workout to a device.** `gccli workouts send <id>` puts the workout in the message queue of a device. The device downloads it at its next sync. gccli keeps the devices that can receive the workout, as the Garmin Connect web app does: the device must be workout-capable and support the sport of the workout. A workout of more than 50 steps also needs a device with `enhancedWorkoutStepCapable`; rest steps do not count, a repeat counts its steps once per iteration, and yoga workouts have no limit. When exactly one device is left, gccli sends to it. When more are left, the command fails before any write, and the error lists their IDs for `--device`. The send prints the message ID. Until the device syncs, `gccli devices messages cancel <message-id>` removes the message. After the sync, or for an ID that is not in the queue, the cancel fails with exit code 1. A message of another type than `workouts` or `courses`, such as `settings-change`, needs a yes at a prompt or `--force`, because gccli cannot send it again.
 
 **Workout JSON structure** for `gccli workouts upload`:
 
@@ -958,8 +961,13 @@ gccli groups search running --limit 10 # Search groups by keyword
 gccli groups members <group-id>        # List the members of a group
 gccli groups activities <group-id>     # List the latest activities of the members
 gccli groups challenges <group-id>     # List the open challenges (members only)
+gccli groups leaderboard <group-id> --metric distance --activity running # Rank the members for this week
+gccli groups requests                  # List your pending requests to join private groups
 gccli groups join <group-id>           # Join a public group
 gccli groups leave <group-id>          # Leave a group (asks first, --force skips it)
+gccli groups create "Sunday runners" --visibility HIDDEN --image swimming_01
+gccli groups edit <group-id> --description "" --location Berlin   # An empty text clears the field
+gccli groups delete <group-id>         # Delete a group you own (asks first, --force skips it)
 ```
 
 `unfollow`, `remove-follower` and `unmute` read the follow status or the muted list first, because Garmin answers 204 whether there is something to remove or not. They exit 1 when there is nothing to remove. `unfollow` and `remove-follower` ask first (`--force` skips the question). Garmin no longer takes new connection requests (410 `API_DEPRECATED`), so gccli has no command to send one.
@@ -1233,6 +1241,10 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `<uuid>`: Session UUID (activityUuid.uuid in 'health snapshots list').
 - `gccli health snapshots epochs <uuid>`: Show the measurements of a Health Snapshot session.
   - `<uuid>`: Session UUID (activityUuid.uuid in 'health snapshots list').
+- `gccli health snapshots report <date> <uuid> [flags]`: Save the PDF report of a Health Snapshot session.
+  - `<date>`: Date of the session (YYYY-MM-DD, today, yesterday, 3d).
+  - `<uuid>`: Session UUID (activityUuid.uuid in 'health snapshots list').
+  - `-o, --output=STRING`: Output file path (default: health_snapshot_{uuid}.pdf).
 - `gccli health body-battery view [<date>]`: Show body battery data for a date. Also runs as `gccli health body-battery [<date>]`.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli health body-battery range --start=DATE --end=DATE`: Show body battery data for a date range.
@@ -1266,6 +1278,13 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli health critical-swim-speed range --start=DATE --end=DATE`: Show critical swim speed for a date range.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli health critical-swim-speed set <pace> [flags]`: Save a critical swim speed measured now, from a pace per 100 m or 100 yd.
+  - `<pace>`: Pace per 100 m or per 100 yd as m:ss, such as 2:00. Garmin refuses to delete the last record, so delete cannot undo a first save.
+  - `--unit="m"`: Distance of the pace: m for 100 m, yd for 100 yd.
+- `gccli health critical-swim-speed delete <timestamp> <version> [flags]`: Delete a critical swim speed entry. Garmin refuses to delete the last one.
+  - `<timestamp>`: Local timestamp of the entry, as measurementTimestampLocal prints it, such as 2026-10-27T09:05:03.07.
+  - `<version>`: Version of the entry.
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli health power-to-weight [<date>]`: Show latest power-to-weight data as of a date.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli health thresholds cycling-ftp --start=DATE --end=DATE`: Show cycling FTP for a date range.
@@ -1373,6 +1392,10 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli body blood-pressure --start=DATE --end=DATE`: Show blood pressure data.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d).
   - `--end=DATE`: End date (YYYY-MM-DD, today, yesterday, 3d, +30d).
+- `gccli body export-blood-pressure [flags]`: Save the blood pressure report as a PDF.
+  - `--period="daily"`: Report layout and range: daily (1 day), seven-days, four-weeks (28 days) or yearly (52 weeks).
+  - `--end="today"`: Last day of the report (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
+  - `-o, --output=STRING`: Output file path (default: blood_pressure_{period}_{end}.pdf).
 - `gccli body add-blood-pressure --systolic=INT --diastolic=INT --pulse=INT [flags]`: Add a blood pressure measurement.
   - `--systolic=INT`: Systolic pressure (mmHg).
   - `--diastolic=INT`: Diastolic pressure (mmHg).
@@ -1523,8 +1546,9 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli devices backups list`: List device backups.
 - `gccli devices historical`: List historical devices.
 - `gccli devices messages list`: List device messages. Also runs as `gccli devices messages`.
-- `gccli devices messages cancel <id>`: Cancel a device message, such as a sent workout, before the device syncs.
+- `gccli devices messages cancel <id> [flags]`: Cancel a device message, such as a sent workout, before the device syncs.
   - `<id>`: Message ID (from 'devices messages').
+  - `-f, --force`: Skip the prompt for a message that is not a workout or a course.
 
 ### Gear
 
@@ -1804,9 +1828,35 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `<id>`: Group ID.
 - `gccli groups challenges <id>`: List the open challenges of a group. Garmin answers 403 to a non-member.
   - `<id>`: Group ID.
+- `gccli groups leaderboard <id> [flags]`: Rank the members of a group by steps, calories, pushes or distance.
+  - `<id>`: Group ID.
+  - `--metric="steps"`: What to rank: steps, calories, pushes or distance. The first three show nothing for a group you have not joined.
+  - `--activity=ACTIVITY`: Count only the distance of one activity: walking, running, cycling, swimming or pushing. Only with --metric distance.
+  - `--start=DATE`: First day (YYYY-MM-DD, today, yesterday, 3d, +30d). Default: Monday of this week.
+  - `--end=DATE`: Last day. Default: 6 days after --start.
+  - `-l, --limit=20`: Maximum number of members to return.
+  - `--offset=0`: Number of members to skip.
+- `gccli groups requests`: List your pending requests to join private groups.
 - `gccli groups join <id>`: Join a public group. gccli does not send the request that a private group needs.
   - `<id>`: Group ID.
 - `gccli groups leave <id> [flags]`: Leave a group.
+  - `<id>`: Group ID.
+  - `-f, --force`: Skip confirmation prompt.
+- `gccli groups create <name> [flags]`: Create a group.
+  - `<name>`: Group name.
+  - `--description=STRING`: Group description.
+  - `--location=STRING`: Group location.
+  - `--visibility="VISIBLE"`: Who can find the group. A hidden group is invite-only. One of: VISIBLE, HIDDEN.
+  - `--privacy=PRIVACY`: Who can join: PUBLIC, PRIVATE or INVITE. Defaults to PUBLIC, or INVITE for a hidden group.
+  - `--image="running_01"`: Default group image. One of: running_01, roadcycling_01, mountain_cycling_01, swimming_01, health_fitness_01, golf_01, para_sports_01.
+- `gccli groups edit <id> [flags]`: Edit a group you own.
+  - `<id>`: Group ID.
+  - `--name=STRING`: New name.
+  - `--description=STRING`: New description. An empty text clears it.
+  - `--location=STRING`: New location. An empty text clears it.
+  - `--visibility=VISIBILITY`: Who can find the group. Hiding a group makes it invite-only. One of: VISIBLE, HIDDEN.
+  - `--privacy=PRIVACY`: Who can join: PUBLIC, PRIVATE or INVITE.
+- `gccli groups delete <id> [flags]`: Delete a group you own.
   - `<id>`: Group ID.
   - `-f, --force`: Skip confirmation prompt.
 - `gccli notifications list [flags]`: List notifications. Also runs as `gccli notifications [flags]`.
@@ -1844,11 +1894,14 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli golf courses [flags]`: List the golf courses you played.
   - `-l, --limit=20`: Maximum number of courses to return.
   - `--offset=0`: Number of courses to skip.
+- `gccli golf course <id>`: Show one golf course by its course snapshot ID.
+  - `<id>`: Course snapshot ID.
 - `gccli golf stats`: Show your golf statistics.
 - `gccli golf shot-stats <kind>`: Show your golf shot statistics of one shot type.
   - `<kind>`: Shot type: drive, approach, chip or putt.
 - `gccli golf clubs`: List the golf clubs in your bag.
 - `gccli golf club-types`: List the golf club types with their loft and lie angles.
+- `gccli golf club-flex-types`: List the golf club shaft flex types.
 - `gccli golf leaderboards [flags]`: List the golf leaderboards you played in.
   - `-l, --limit=20`: Maximum number of leaderboards to return.
   - `--offset=0`: Number of leaderboards to skip.

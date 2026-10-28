@@ -301,16 +301,14 @@ var writeCases = map[string]writeCase{
 		fallback: "Sent course \"Loop\" to device 99\n",
 	},
 	"devices messages cancel": {
-		args:   []string{"777"},
-		routes: map[string]string{"DELETE /device-service/devicemessage/message/777": "true"},
+		args: []string{"777"},
+		routes: map[string]string{
+			"GET /device-service/devicemessage/messages":       `{"messages":[{"messageId":777,"messageType":"workouts"}]}`,
+			"DELETE /device-service/devicemessage/message/777": "true",
+		},
+		result: "DELETE /device-service/devicemessage/message/777",
 		json:   "true\n",
 		human:  "Cancelled message 777\n",
-	},
-	"devices set-primary-tracker": {
-		args:   []string{"12345"},
-		routes: map[string]string{"PUT /device-service/deviceservice/device-info/12345/primary-activity-tracker": noContent},
-		json:   okOut,
-		human:  "Set device 12345 as the primary activity tracker\n",
 	},
 	"events add": {
 		args:     []string{"--name", "Race", "--date", "2024-06-01", "--type", "running"},
@@ -406,6 +404,24 @@ var writeCases = map[string]writeCase{
 		json:     "{\n  \"groupId\": 1001,\n  \"userProfileId\": 3141592,\n  \"groupRole\": \"MEMBER\"\n}\n",
 		human:    "Joined group 1001\n",
 		fallback: "Joined group 1001\n",
+	},
+	"groups create": {
+		args:     []string{"Club", "--visibility", "HIDDEN"},
+		routes:   map[string]string{"POST /group-service/group": `{"id":2002,"groupName":"Club"}`},
+		json:     "{\n  \"id\": 2002,\n  \"groupName\": \"Club\"\n}\n",
+		human:    "Created group \"Club\" (ID: 2002)\n",
+		fallback: "Created group \"Club\"\n",
+	},
+	"groups edit": {
+		args: []string{"1001", "--name", "Club"},
+		routes: map[string]string{
+			"GET /group-service/group/1001?includeMembership=true": `{"id":1001,"groupName":"Old","groupVisibility":"VISIBLE","groupPrivacy":"PUBLIC"}`,
+			"PUT /group-service/group/1001":                        noContent,
+		},
+		result:   "PUT /group-service/group/1001",
+		json:     okOut,
+		human:    "Updated group 1001\n",
+		fallback: "Updated group 1001\n",
 	},
 	"calendar notes add": {
 		args:     []string{"2026-10-20", "Long run", "--content", "Easy pace"},
@@ -701,6 +717,14 @@ var writeCases = map[string]writeCase{
 		json:     okOut,
 		human:    "Deleted jet lag trip 4711\n",
 		fallback: "Deleted jet lag trip 4711\n",
+	},
+	"health critical-swim-speed set": {
+		args:     []string{"2:00"},
+		routes:   map[string]string{"POST /biometric-service/criticalSwimSpeed": `{"criticalSwimSpeed":833}`},
+		result:   "POST /biometric-service/criticalSwimSpeed",
+		json:     "{\n  \"criticalSwimSpeed\": 833\n}\n",
+		human:    "Set critical swim speed to 2:00 per 100 m (833 mm/s)\n",
+		fallback: "Set critical swim speed to 2:00 per 100 m (833 mm/s)\n",
 	},
 	"health sleep naps add": {
 		args: []string{"09:00", "09:20"},

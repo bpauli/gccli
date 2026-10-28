@@ -121,10 +121,17 @@ var workoutSportCapability = map[string]string{
 	"walking":           "walkWorkoutCapable",
 }
 
+// enhancedStepLimit is the most steps that the Garmin Connect web app sends
+// to a device without enhancedWorkoutStepCapable. Yoga workouts have no limit.
+const enhancedStepLimit = 50
+
 // CanReceive reports whether the device takes the workout. A multisport
 // workout also needs the flag of the sport of each segment.
 func (d Device) CanReceive(w Workout) bool {
 	if !d.flags["workoutCapable"] {
+		return false
+	}
+	if w.SportType.Key != "yoga" && w.stepCount() > enhancedStepLimit && !d.flags["enhancedWorkoutStepCapable"] {
 		return false
 	}
 	sports := []string{w.SportType.Key}

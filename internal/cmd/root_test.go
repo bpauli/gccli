@@ -15,12 +15,14 @@ import (
 	"testing"
 
 	"github.com/bpauli/gccli/internal/garminapi"
+	"github.com/bpauli/gccli/internal/units"
 )
 
 func TestExecute_Version(t *testing.T) {
-	code := Execute([]string{"--version"}, "1.0.0", "abc123", "2024-01-01")
-	if code != 0 {
-		t.Fatalf("expected exit code 0, got %d", code)
+	var stdout, stderr bytes.Buffer
+	code := execute([]string{"--version"}, "1.0.0", "abc123", "2024-01-01", &stdout, &stderr)
+	if code != 0 || stdout.String() != "gccli 1.0.0 (abc123) built 2024-01-01\n" || stderr.Len() != 0 {
+		t.Errorf("exit %d, stdout %q, stderr %q", code, stdout.String(), stderr.String())
 	}
 }
 
@@ -421,4 +423,16 @@ func TestExecuteRunsAreIsolated(t *testing.T) {
 			t.Errorf("run %d requested another run's values: %s\nwant %s", i, strings.TrimSpace(out), want)
 		}
 	}
+}
+
+func TestUnitsEnumListsEveryPreference(t *testing.T) {
+	for _, flag := range newTestParser(t).Model.Flags {
+		if flag.Name == "units" {
+			if want := strings.Join(units.PreferenceNames(), ","); flag.Enum != want {
+				t.Errorf("--units enum = %q, units.PreferenceNames gives %q", flag.Enum, want)
+			}
+			return
+		}
+	}
+	t.Fatal("no --units flag")
 }

@@ -1,0 +1,35 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+golf
+course
+100000
+-- route GET /gcs-golfcommunity/api/v2/course-snapshot?course-snapshot-ids=100000&user-locale=en 400 noeol --
+{"errorMessage":"Invalid course-snapshot-ids in request"}
+-- table stdout --
+-- table stderr --
+get golf course: garmin api: 400 Bad Request: {"errorMessage":"Invalid course-snapshot-ids in request"}
+-- table exit --
+1
+-- table requests --
+GET /gcs-golfcommunity/api/v2/course-snapshot?course-snapshot-ids=100000&user-locale=en
+-- plain stdout --
+-- plain stderr --
+get golf course: garmin api: 400 Bad Request: {"errorMessage":"Invalid course-snapshot-ids in request"}
+-- plain exit --
+1
+-- plain requests --
+GET /gcs-golfcommunity/api/v2/course-snapshot?course-snapshot-ids=100000&user-locale=en
+-- plain-header stdout --
+-- plain-header stderr --
+get golf course: garmin api: 400 Bad Request: {"errorMessage":"Invalid course-snapshot-ids in request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /gcs-golfcommunity/api/v2/course-snapshot?course-snapshot-ids=100000&user-locale=en
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"get golf course: garmin api: 400 Bad Request: {\"errorMessage\":\"Invalid course-snapshot-ids in request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /gcs-golfcommunity/api/v2/course-snapshot?course-snapshot-ids=100000&user-locale=en

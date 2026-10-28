@@ -92,6 +92,7 @@ const (
 	metersPerKilometer = 1000.0
 	MetersPerMile      = 1609.344
 	metersPerFoot      = 0.3048
+	metersPerYard      = 0.9144
 	gramsPerKilogram   = 1000.0
 	GramsPerPound      = 453.59237
 )
@@ -193,4 +194,14 @@ func (s System) Weight(grams float64) string {
 	}
 	sc := s.scale()
 	return fmt.Sprintf("%.1f %s", grams/sc.weightPer, sc.weightUnit)
+}
+
+// SwimSpeed converts a swim pace of seconds per 100 m, or per 100 yd when
+// yards is true, to millimeters per second.
+func SwimSpeed(secondsPer100 float64, yards bool) int {
+	meters := 100.0
+	if yards {
+		meters = 100 * metersPerYard
+	}
+	return int(math.Round(meters * 1000 / secondsPer100))
 }

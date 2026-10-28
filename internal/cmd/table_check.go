@@ -271,6 +271,8 @@ func requestValue(v reflect.Value) (value string, ok bool) {
 		return string(x), true
 	case Month:
 		return string(x), true
+	case ConnectTimestamp:
+		return string(x), true
 	case Upper:
 		return x.wire(), true
 	case int:

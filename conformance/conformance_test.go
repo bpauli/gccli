@@ -256,6 +256,7 @@ var skipped = map[string]string{
 	"goals effective":                 clockSkip,
 	"goals weight set":                clockSkip,
 	"goals weight view":               clockSkip,
+	"groups leaderboard":              clockSkip,
 	"health acclimation daily":        clockSkip,
 	"health calories weekly":          clockSkip,
 	"health critical-swim-speed view": clockSkip,
@@ -287,10 +288,11 @@ var skipped = map[string]string{
 // body. The suite compares their output, but not their requests. A case
 // that sends no request, such as a usage error, compares them too.
 var clockBodies = map[string]bool{
-	"activities privacy set":  true,
-	"body add-blood-pressure": true,
-	"body add-composition":    true,
-	"body add-weight":         true,
+	"activities privacy set":         true,
+	"body add-blood-pressure":        true,
+	"body add-composition":           true,
+	"body add-weight":                true,
+	"health critical-swim-speed set": true,
 }
 
 var dateInURI = regexp.MustCompile(`\d{4}-\d{2}-\d{2}`)

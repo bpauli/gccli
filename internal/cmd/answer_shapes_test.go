@@ -11,6 +11,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"regexp"
 	"slices"
 	"strings"
 	"testing"
@@ -81,6 +82,25 @@ func TestBodyShape(t *testing.T) {
 				t.Errorf("bodyShape(%d, %q) = %q, want %q", tt.status, tt.body, got, tt.want)
 			}
 		})
+	}
+}
+
+func TestRecordsNoBody(t *testing.T) {
+	tests := []struct {
+		source string
+		want   bool
+	}{
+		{"empty body live 2026-10-20", true},
+		{"405 live 2026-10-20 with a real activity ID", true},
+		{"500 live 2026-10-20 with a fake UUID", true},
+		{"live 2026-10-20", false},
+		{"live GET 2026-10-23 connectapi 207", false},
+		{"the public exercise catalog is an object with a categories key", false},
+	}
+	for _, tt := range tests {
+		if got := recordsNoBody(tt.source); got != tt.want {
+			t.Errorf("recordsNoBody(%q) = %v, want %v", tt.source, got, tt.want)
+		}
 	}
 }
 
@@ -192,6 +212,13 @@ func runPrinters(t *testing.T) map[string]bool {
 	return printers
 }
 
+var noBodySource = regexp.MustCompile(`^(empty body|[0-9]{3} )`)
+
+// recordsNoBody reports whether a registry source says that the answer
+// had no body to classify: an empty body, or an error status. Such a line is
+// unknown, and a line with a body seen is not.
+func recordsNoBody(source string) bool { return noBodySource.MatchString(source) }
+
 // emptyValue is what a read of the shape prints for an empty body.
 func emptyValue(shape string) string {
 	if shape == "array" {
@@ -237,6 +264,12 @@ func TestAnswerShapes(t *testing.T) {
 			case s.Shape != "array" && out.List:
 				t.Errorf("%s: the row is JSON{List: true}, but %s says the answer is %s (%s): make the row JSON{}, or correct the registry with its evidence", path, answerShapesFile, s.Shape, s.Source)
 			}
+		}
+		switch noBody := recordsNoBody(s.Source); {
+		case noBody && s.Shape != "unknown":
+			t.Errorf("%s: %s says the answer is %s, but the source (%s) saw no body: set the shape to unknown, or correct the source with the evidence", path, answerShapesFile, s.Shape, s.Source)
+		case !noBody && s.Shape == "unknown":
+			t.Errorf("%s: %s says the shape is unknown, but the source (%s) does not say that the answer had no body: set the shape the source saw", path, answerShapesFile, s.Source)
 		}
 		if s.Shape == "unknown" {
 			continue

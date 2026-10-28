@@ -3,6 +3,7 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -99,6 +100,25 @@ func (f *FlightTime) Decode(ctx *kong.DecodeContext) error {
 		}
 	}
 	return fmt.Errorf("invalid date and time %q: expected YYYY-MM-DDTHH:MM with the UTC offset, such as 2026-11-02T10:00+01:00", raw)
+}
+
+// ConnectTimestamp is a local timestamp as Garmin Connect writes it, such as
+// 2026-10-27T09:05:03.07: seconds with optional fractional seconds. The value
+// is sent as given, because Garmin keys an entry by it.
+type ConnectTimestamp string
+
+var connectTimestampPattern = regexp.MustCompile(`^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?$`)
+
+func (t *ConnectTimestamp) Decode(ctx *kong.DecodeContext) error {
+	raw, err := popString(ctx, "timestamp")
+	if err != nil {
+		return err
+	}
+	if _, perr := time.Parse("2006-01-02T15:04:05", raw); perr != nil || !connectTimestampPattern.MatchString(raw) {
+		return fmt.Errorf("invalid timestamp %q: expected YYYY-MM-DDTHH:MM:SS with optional fractional seconds, such as 2026-10-27T09:05:03.07", raw)
+	}
+	*t = ConnectTimestamp(raw)
+	return nil
 }
 
 // NumericID is an ID that a request body carries as a number, such as an

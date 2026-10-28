@@ -11,8 +11,6 @@ import (
 	"testing"
 
 	"github.com/alecthomas/kong"
-
-	"github.com/bpauli/gccli/internal/units"
 )
 
 // fixtureTree is a small tree with one row of every shape the migration
@@ -143,7 +141,7 @@ func fixtureTree() []Node {
 type tableCLI struct {
 	RootFlags
 
-	Version kong.VersionFlag `help:"Print version information." name:"version"`
+	Version versionFlag `help:"Print version information." name:"version"`
 
 	kong.Plugins
 }
@@ -151,7 +149,7 @@ type tableCLI struct {
 type handCLI struct {
 	RootFlags
 
-	Version kong.VersionFlag `help:"Print version information." name:"version"`
+	Version versionFlag `help:"Print version information." name:"version"`
 
 	Goals struct {
 		List struct {
@@ -227,7 +225,7 @@ func newParserFor(t *testing.T, cli any, stdout, stderr io.Writer) *kong.Kong {
 		kong.Exit(func(int) {}),
 		kong.ConfigureHelp(kong.HelpOptions{Compact: true}),
 		kong.Help(colorHelpPrinter),
-		kong.Vars{"version": "test", "units": strings.Join(units.PreferenceNames(), ",")},
+		kong.Bind(versionText("test")),
 	)
 	if err != nil {
 		t.Fatalf("kong.New: %v", err)

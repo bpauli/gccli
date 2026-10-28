@@ -1,0 +1,51 @@
+The date argument builds the request path, so another night goes to another path.
+-- args --
+health
+sleep
+note
+2026-03-02
+Woke up twice
+-- route PUT /sleep-service/sleep/dailySleep/2026-03-02/note --
+{"userNote":"Woke up twice"}
+-- table stdout --
+-- table stderr --
+Set the sleep note of 2026-03-02
+-- table exit --
+0
+-- table requests --
+PUT /sleep-service/sleep/dailySleep/2026-03-02/note
+  {
+    "userNote": "Woke up twice"
+  }
+-- plain stdout --
+-- plain stderr --
+Set the sleep note of 2026-03-02
+-- plain exit --
+0
+-- plain requests --
+PUT /sleep-service/sleep/dailySleep/2026-03-02/note
+  {
+    "userNote": "Woke up twice"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Set the sleep note of 2026-03-02
+-- plain-header exit --
+0
+-- plain-header requests --
+PUT /sleep-service/sleep/dailySleep/2026-03-02/note
+  {
+    "userNote": "Woke up twice"
+  }
+-- json stdout --
+{
+  "userNote": "Woke up twice"
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+PUT /sleep-service/sleep/dailySleep/2026-03-02/note
+  {
+    "userNote": "Woke up twice"
+  }
