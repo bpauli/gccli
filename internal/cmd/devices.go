@@ -2,7 +2,9 @@ package cmd
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
+	"slices"
 )
 
 var devicesGroup = Group{Name: "devices", Help: "Manage devices.", Children: []Node{
@@ -17,7 +19,16 @@ var devicesGroup = Group{Name: "devices", Help: "Manage devices.", Children: []N
 		Verb:     "get device settings", Output: JSON{},
 	},
 	Leaf{Name: "primary", Help: "Show primary training device.", Endpoint: "devices.primary-training", Verb: "get primary training device", Output: JSON{}},
-	Custom{Name: "set-primary-tracker", Help: "Set the primary activity tracker (not the 'devices primary' training device).", Cmd: &DevicesSetPrimaryTrackerCmd{}},
+	Leaf{
+		Name: "set-primary-tracker", Help: "Set the primary activity tracker (not the 'devices primary' training device).",
+		Spec: argsOf(&struct {
+			DeviceID ID `arg:"" help:"Device ID (from 'devices list')."`
+		}{}),
+		Endpoint: "devices.set-primary-tracker",
+		Params:   Params{"deviceID": In("DeviceID")},
+		Verb:     "set primary activity tracker",
+		Output:   Write{Done: "Set device {DeviceID} as the primary activity tracker"},
+	},
 	Leaf{
 		Name: "solar", Help: "Show solar charging data for a device.",
 		Spec: argsOf(&struct {
@@ -51,41 +62,63 @@ var devicesMessagesGroup = Group{Name: "messages", Help: "List and cancel device
 	Custom{Name: "cancel", Help: "Cancel a device message, such as a sent workout, before the device syncs.", Cmd: &DeviceMessageCancelCmd{}},
 }}
 
-// DevicesSetPrimaryTrackerCmd makes a device the primary activity tracker.
-type DevicesSetPrimaryTrackerCmd struct {
-	DeviceID ID `arg:"" help:"Device ID (from 'devices list')."`
-}
-
-func (c *DevicesSetPrimaryTrackerCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-	data, err := client.Call(g.Context, "devices.set-primary-tracker", map[string]string{"deviceID": string(c.DeviceID)}, nil)
-	if err != nil {
-		return fmt.Errorf("set primary activity tracker: %w", err)
-	}
-	return reportWrite(g, data, "Set device %s as the primary activity tracker", c.DeviceID)
-}
-
 // DeviceMessageCancelCmd cancels a pending device message.
 type DeviceMessageCancelCmd struct {
-	ID ID `arg:"" help:"Message ID (from 'devices messages')."`
+	ID    ID   `arg:"" help:"Message ID (from 'devices messages')."`
+	Force bool `help:"Skip the prompt for a message that is not a workout or a course." short:"f"`
 }
 
-// Run cancels the message. Garmin answers false when there was nothing to
-// cancel: the device synced the message, or the ID is unknown.
+type deviceMessage struct {
+	ID         json.Number `json:"messageId"`
+	Type       string      `json:"messageType"`
+	DeviceName string      `json:"deviceName"`
+}
+
+var resendableMessageTypes = []string{"workouts", "courses"}
+
+// Run cancels the message. The queue read comes first, because the cancel
+// also removes system messages, such as settings-change, that gccli cannot
+// send again. Garmin answers false when there was nothing to cancel: the
+// device synced the message, or the ID is unknown.
 func (c *DeviceMessageCancelCmd) Run(g *Globals) error {
 	client, err := resolveClient(g)
 	if err != nil {
 		return err
 	}
-	data, err := client.Call(g.Context, "devices.cancel-message", map[string]string{"messageID": string(c.ID)}, nil)
+	notPending := fmt.Errorf("message %s is not pending (already delivered or unknown)", c.ID)
+
+	data, err := client.Call(g.Context, "devices.messages", nil, nil)
+	if err != nil {
+		return fmt.Errorf("get device messages: %w", err)
+	}
+	var queue struct {
+		Messages []deviceMessage `json:"messages"`
+	}
+	if err := unmarshalAnswer(data, &queue); err != nil {
+		return fmt.Errorf("parse device messages: %w", err)
+	}
+	i := slices.IndexFunc(queue.Messages, func(m deviceMessage) bool { return m.ID.String() == string(c.ID) })
+	if i < 0 {
+		return notPending
+	}
+	msg := queue.Messages[i]
+	if !slices.Contains(resendableMessageTypes, msg.Type) {
+		ok, err := confirm(g.Stderr, fmt.Sprintf("Cancel %s message %s for %s? gccli cannot send it again.", msg.Type, c.ID, msg.DeviceName), c.Force)
+		if err != nil {
+			return err
+		}
+		if !ok {
+			g.UI.Infof("Cancelled")
+			return nil
+		}
+	}
+
+	data, err = client.Call(g.Context, "devices.cancel-message", map[string]string{"messageID": string(c.ID)}, nil)
 	if err != nil {
 		return fmt.Errorf("cancel device message: %w", err)
 	}
 	if string(bytes.TrimSpace(data)) == "false" {
-		return fmt.Errorf("message %s is not pending (already delivered or unknown)", c.ID)
+		return notPending
 	}
 	return reportWrite(g, data, "Cancelled message %s", c.ID)
 }

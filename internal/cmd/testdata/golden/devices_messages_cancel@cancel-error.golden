@@ -1,0 +1,42 @@
+Error case: Garmin answers 400 to the cancel, so the exit code is 1 (error).
+-- args --
+devices
+messages
+cancel
+777
+-- route GET /device-service/devicemessage/messages noeol --
+{"serviceHost":"https://example.com","numOfMessages":3,"messages":[{"messageId":777,"messageType":"workouts","messageStatus":"new","deviceId":3001,"deviceName":"Forerunner 265","metaData":{"messageName":"Tempo Run"}},{"messageId":778,"messageType":"settings-change","messageStatus":"new","deviceId":3001,"deviceName":"Forerunner 265","metaData":{"messageName":"settings"}},{"messageId":779,"messageType":"courses","messageStatus":"new","deviceId":3001,"deviceName":"Forerunner 265","metaData":{"messageName":"Loop"}}]}
+-- route DELETE /device-service/devicemessage/message/777 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+cancel device message: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+GET /device-service/devicemessage/messages
+DELETE /device-service/devicemessage/message/777
+-- plain stdout --
+-- plain stderr --
+cancel device message: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+GET /device-service/devicemessage/messages
+DELETE /device-service/devicemessage/message/777
+-- plain-header stdout --
+-- plain-header stderr --
+cancel device message: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /device-service/devicemessage/messages
+DELETE /device-service/devicemessage/message/777
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"cancel device message: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /device-service/devicemessage/messages
+DELETE /device-service/devicemessage/message/777

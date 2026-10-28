@@ -1,113 +1,63 @@
-A group ID that is not positive is a usage error before the login, with no request.
+Group ID 0 is not special-cased: the command sends it, as groups show and leave do, and the Garmin error is the answer.
 -- args --
 groups
 join
 0
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- route GET /userprofile-service/socialProfile/tester --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- route POST /group-service/group/0/member/3141592 404 noeol --
+{"message":"Not Found"}
 -- table stdout --
 -- table stderr --
-Usage: gccli groups join <id>
-
-Join a public group. gccli does not send the request that a private group needs.
-
-Arguments:
-  <id>    Group ID.
-
-Flags:
-  -h, --help              Show context-sensitive help.
-  -j, --json              Output as JSON ($GCCLI_JSON).
-      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
-      --header            Print the column names as the first line of --plain
-                          output ($GCCLI_HEADER).
-      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
-      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
-      --units="auto"      Unit system for distances, speeds, paces,
-                          elevations and weights in table and plain output:
-                          auto (Garmin profile), metric, statute_us, statute_uk
-                          ($GCCLI_UNITS).
-      --version           Print version information.
-
-gccli: error: groups join: the group ID must be a positive number
+join group: garmin api: 404 Not Found: {"message":"Not Found"}
 -- table exit --
-2
+4
 -- table requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+POST /group-service/group/0/member/3141592
+  {
+    "groupId": 0,
+    "userProfileId": 3141592
+  }
 -- plain stdout --
 -- plain stderr --
-Usage: gccli groups join <id>
-
-Join a public group. gccli does not send the request that a private group needs.
-
-Arguments:
-  <id>    Group ID.
-
-Flags:
-  -h, --help              Show context-sensitive help.
-  -j, --json              Output as JSON ($GCCLI_JSON).
-      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
-      --header            Print the column names as the first line of --plain
-                          output ($GCCLI_HEADER).
-      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
-      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
-      --units="auto"      Unit system for distances, speeds, paces,
-                          elevations and weights in table and plain output:
-                          auto (Garmin profile), metric, statute_us, statute_uk
-                          ($GCCLI_UNITS).
-      --version           Print version information.
-
-gccli: error: groups join: the group ID must be a positive number
+join group: garmin api: 404 Not Found: {"message":"Not Found"}
 -- plain exit --
-2
+4
 -- plain requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+POST /group-service/group/0/member/3141592
+  {
+    "groupId": 0,
+    "userProfileId": 3141592
+  }
 -- plain-header stdout --
 -- plain-header stderr --
-Usage: gccli groups join <id>
-
-Join a public group. gccli does not send the request that a private group needs.
-
-Arguments:
-  <id>    Group ID.
-
-Flags:
-  -h, --help              Show context-sensitive help.
-  -j, --json              Output as JSON ($GCCLI_JSON).
-      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
-      --header            Print the column names as the first line of --plain
-                          output ($GCCLI_HEADER).
-      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
-      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
-      --units="auto"      Unit system for distances, speeds, paces,
-                          elevations and weights in table and plain output:
-                          auto (Garmin profile), metric, statute_us, statute_uk
-                          ($GCCLI_UNITS).
-      --version           Print version information.
-
-gccli: error: groups join: the group ID must be a positive number
+join group: garmin api: 404 Not Found: {"message":"Not Found"}
 -- plain-header exit --
-2
+4
 -- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+POST /group-service/group/0/member/3141592
+  {
+    "groupId": 0,
+    "userProfileId": 3141592
+  }
 -- json stdout --
 -- json stderr --
-Usage: gccli groups join <id>
-
-Join a public group. gccli does not send the request that a private group needs.
-
-Arguments:
-  <id>    Group ID.
-
-Flags:
-  -h, --help              Show context-sensitive help.
-  -j, --json              Output as JSON ($GCCLI_JSON).
-      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
-      --header            Print the column names as the first line of --plain
-                          output ($GCCLI_HEADER).
-      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
-      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
-      --units="auto"      Unit system for distances, speeds, paces,
-                          elevations and weights in table and plain output:
-                          auto (Garmin profile), metric, statute_us, statute_uk
-                          ($GCCLI_UNITS).
-      --version           Print version information.
-
-gccli: error: groups join: the group ID must be a positive number
+{"error":{"code":"not_found","status":404,"message":"join group: garmin api: 404 Not Found: {\"message\":\"Not Found\"}"}}
 -- json exit --
-2
+4
 -- json requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+POST /group-service/group/0/member/3141592
+  {
+    "groupId": 0,
+    "userProfileId": 3141592
+  }

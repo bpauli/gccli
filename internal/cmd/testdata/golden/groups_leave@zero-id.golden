@@ -1,0 +1,48 @@
+Group ID 0 is not special-cased: the command sends it, as groups show and leave do, and the Garmin error is the answer.
+-- args --
+groups
+leave
+0
+--force
+-- route GET /userprofile-service/userprofile/settings --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- route GET /userprofile-service/socialProfile/tester --
+{"displayName":"tester","profileId":3141592,"userData":{"measurementSystem":"metric"}}
+-- route DELETE /group-service/group/0/member/3141592 404 noeol --
+{"message":"Not Found"}
+-- table stdout --
+-- table stderr --
+leave group: garmin api: 404 Not Found: {"message":"Not Found"}
+-- table exit --
+4
+-- table requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+DELETE /group-service/group/0/member/3141592
+-- plain stdout --
+-- plain stderr --
+leave group: garmin api: 404 Not Found: {"message":"Not Found"}
+-- plain exit --
+4
+-- plain requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+DELETE /group-service/group/0/member/3141592
+-- plain-header stdout --
+-- plain-header stderr --
+leave group: garmin api: 404 Not Found: {"message":"Not Found"}
+-- plain-header exit --
+4
+-- plain-header requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+DELETE /group-service/group/0/member/3141592
+-- json stdout --
+-- json stderr --
+{"error":{"code":"not_found","status":404,"message":"leave group: garmin api: 404 Not Found: {\"message\":\"Not Found\"}"}}
+-- json exit --
+4
+-- json requests --
+GET /userprofile-service/userprofile/settings
+GET /userprofile-service/socialProfile/tester
+DELETE /group-service/group/0/member/3141592
