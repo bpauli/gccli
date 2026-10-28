@@ -185,17 +185,20 @@ func (c *GroupsLeaderboardCmd) Validate() error {
 		return fmt.Errorf("--activity %s goes only with --metric distance, not --metric %s", *c.Activity, c.Metric)
 	}
 	now := nowFn()
-	first := now.AddDate(0, 0, -int(now.Weekday()+6)%7)
+	day := func(date Date) (time.Time, error) {
+		return time.ParseInLocation(time.DateOnly, string(date), now.Location())
+	}
+	first := addDays(now, -int(now.Weekday()+6)%7)
 	if c.Start != "" {
 		var err error
-		if first, err = time.Parse("2006-01-02", string(c.Start)); err != nil {
+		if first, err = day(c.Start); err != nil {
 			return err
 		}
 	}
-	last := first.AddDate(0, 0, 6)
+	last := addDays(first, 6)
 	if c.End != "" {
 		var err error
-		if last, err = time.Parse("2006-01-02", string(c.End)); err != nil {
+		if last, err = day(c.End); err != nil {
 			return err
 		}
 	}
@@ -243,7 +246,9 @@ func (c *GroupsLeaderboardCmd) Run(g *Globals) error {
 	}
 	entries := answer.AllMetrics.MetricsMap[m.key]
 	for i, e := range entries {
-		e["rank"] = c.Offset + i + 1
+		if e != nil {
+			e["rank"] = c.Offset + i + 1
+		}
 	}
 	ranked, err := json.Marshal(map[string]any{"entries": entries})
 	if err != nil {
