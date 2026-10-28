@@ -603,7 +603,7 @@ gccli workouts update 123456 workout.json
 
 The workout keeps its ID and any calendar entries that point at it. `workoutId` in the file is set from the ID argument before the request goes out, so a payload written for `upload` works as-is; if the file already names a different workout, gccli warns and still updates the one given on the command line.
 
-**Sending a workout to a device.** `gccli workouts send <id>` puts the workout in the message queue of a device. The device downloads it at its next sync. gccli keeps the devices that can receive the workout, as the Garmin Connect web app does: the device must be workout-capable and support the sport of the workout. When exactly one device is left, gccli sends to it. When more are left, the command fails before any write, and the error lists their IDs for `--device`. The send prints the message ID. Until the device syncs, `gccli devices messages cancel <message-id>` removes the message. After the sync, the cancel fails with exit code 1.
+**Sending a workout to a device.** `gccli workouts send <id>` puts the workout in the message queue of a device. The device downloads it at its next sync. gccli keeps the devices that can receive the workout, as the Garmin Connect web app does: the device must be workout-capable and support the sport of the workout. A workout of more than 50 steps also needs a device with `enhancedWorkoutStepCapable`; rest steps do not count, a repeat counts its steps once per iteration, and yoga workouts have no limit. When exactly one device is left, gccli sends to it. When more are left, the command fails before any write, and the error lists their IDs for `--device`. The send prints the message ID. Until the device syncs, `gccli devices messages cancel <message-id>` removes the message. After the sync, or for an ID that is not in the queue, the cancel fails with exit code 1. A message of another type than `workouts` or `courses`, such as `settings-change`, needs a yes at a prompt or `--force`, because gccli cannot send it again.
 
 **Workout JSON structure** for `gccli workouts upload`:
 
@@ -1523,8 +1523,9 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli devices backups list`: List device backups.
 - `gccli devices historical`: List historical devices.
 - `gccli devices messages list`: List device messages. Also runs as `gccli devices messages`.
-- `gccli devices messages cancel <id>`: Cancel a device message, such as a sent workout, before the device syncs.
+- `gccli devices messages cancel <id> [flags]`: Cancel a device message, such as a sent workout, before the device syncs.
   - `<id>`: Message ID (from 'devices messages').
+  - `-f, --force`: Skip the prompt for a message that is not a workout or a course.
 
 ### Gear
 

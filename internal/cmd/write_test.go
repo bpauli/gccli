@@ -301,8 +301,12 @@ var writeCases = map[string]writeCase{
 		fallback: "Sent course \"Loop\" to device 99\n",
 	},
 	"devices messages cancel": {
-		args:   []string{"777"},
-		routes: map[string]string{"DELETE /device-service/devicemessage/message/777": "true"},
+		args: []string{"777"},
+		routes: map[string]string{
+			"GET /device-service/devicemessage/messages":       `{"messages":[{"messageId":777,"messageType":"workouts"}]}`,
+			"DELETE /device-service/devicemessage/message/777": "true",
+		},
+		result: "DELETE /device-service/devicemessage/message/777",
 		json:   "true\n",
 		human:  "Cancelled message 777\n",
 	},

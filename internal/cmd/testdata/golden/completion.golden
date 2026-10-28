@@ -318,6 +318,7 @@ _gccli_completions() {
         "devices solar") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "devices backups") COMPREPLY=($(compgen -W 'summary list' -- "$cur")) ;;
         "devices messages") COMPREPLY=($(compgen -W 'list cancel' -- "$cur")) ;;
+        "devices messages cancel") COMPREPLY=($(compgen -W '--force -f' -- "$cur")) ;;
         "gear") COMPREPLY=($(compgen -W 'list stats activities defaults link unlink set-default unset-default types models add update retire unretire delete collections' -- "$cur")) ;;
         "gear activities") COMPREPLY=($(compgen -W '--limit' -- "$cur")) ;;
         "gear add") COMPREPLY=($(compgen -W '--type --brand --model --notes --first-use' -- "$cur")) ;;
@@ -757,6 +758,7 @@ _gccli_completions() {
         "devices solar") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "devices backups") COMPREPLY=($(compgen -W 'summary list' -- "$cur")) ;;
         "devices messages") COMPREPLY=($(compgen -W 'list cancel' -- "$cur")) ;;
+        "devices messages cancel") COMPREPLY=($(compgen -W '--force -f' -- "$cur")) ;;
         "gear") COMPREPLY=($(compgen -W 'list stats activities defaults link unlink set-default unset-default types models add update retire unretire delete collections' -- "$cur")) ;;
         "gear activities") COMPREPLY=($(compgen -W '--limit' -- "$cur")) ;;
         "gear add") COMPREPLY=($(compgen -W '--type --brand --model --notes --first-use' -- "$cur")) ;;
@@ -1196,6 +1198,7 @@ _gccli_completions() {
         "devices solar") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "devices backups") COMPREPLY=($(compgen -W 'summary list' -- "$cur")) ;;
         "devices messages") COMPREPLY=($(compgen -W 'list cancel' -- "$cur")) ;;
+        "devices messages cancel") COMPREPLY=($(compgen -W '--force -f' -- "$cur")) ;;
         "gear") COMPREPLY=($(compgen -W 'list stats activities defaults link unlink set-default unset-default types models add update retire unretire delete collections' -- "$cur")) ;;
         "gear activities") COMPREPLY=($(compgen -W '--limit' -- "$cur")) ;;
         "gear add") COMPREPLY=($(compgen -W '--type --brand --model --notes --first-use' -- "$cur")) ;;
@@ -1635,6 +1638,7 @@ _gccli_completions() {
         "devices solar") COMPREPLY=($(compgen -W '--start --end' -- "$cur")) ;;
         "devices backups") COMPREPLY=($(compgen -W 'summary list' -- "$cur")) ;;
         "devices messages") COMPREPLY=($(compgen -W 'list cancel' -- "$cur")) ;;
+        "devices messages cancel") COMPREPLY=($(compgen -W '--force -f' -- "$cur")) ;;
         "gear") COMPREPLY=($(compgen -W 'list stats activities defaults link unlink set-default unset-default types models add update retire unretire delete collections' -- "$cur")) ;;
         "gear activities") COMPREPLY=($(compgen -W '--limit' -- "$cur")) ;;
         "gear add") COMPREPLY=($(compgen -W '--type --brand --model --notes --first-use' -- "$cur")) ;;
