@@ -1,0 +1,110 @@
+-- args --
+golf
+course
+100000
+-- route GET /gcs-golfcommunity/api/v2/course-snapshot?course-snapshot-ids=100000&user-locale=en --
+[{"courseGlobalId":9,"courseSnapshotId":100000,"name":"Course","holePars":"454","frontNinePar":4,"backNinePar":5,"roundPar":9,"releaseDate":"2020-01-01","tees":[{"name":"White","handicapType":"M","rating":70.1,"slope":120}]}]
+-- table stdout --
+[
+  {
+    "courseGlobalId": 9,
+    "courseSnapshotId": 100000,
+    "name": "Course",
+    "holePars": "454",
+    "frontNinePar": 4,
+    "backNinePar": 5,
+    "roundPar": 9,
+    "releaseDate": "2020-01-01",
+    "tees": [
+      {
+        "name": "White",
+        "handicapType": "M",
+        "rating": 70.1,
+        "slope": 120
+      }
+    ]
+  }
+]
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /gcs-golfcommunity/api/v2/course-snapshot?course-snapshot-ids=100000&user-locale=en
+-- plain stdout --
+[
+  {
+    "courseGlobalId": 9,
+    "courseSnapshotId": 100000,
+    "name": "Course",
+    "holePars": "454",
+    "frontNinePar": 4,
+    "backNinePar": 5,
+    "roundPar": 9,
+    "releaseDate": "2020-01-01",
+    "tees": [
+      {
+        "name": "White",
+        "handicapType": "M",
+        "rating": 70.1,
+        "slope": 120
+      }
+    ]
+  }
+]
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /gcs-golfcommunity/api/v2/course-snapshot?course-snapshot-ids=100000&user-locale=en
+-- plain-header stdout --
+[
+  {
+    "courseGlobalId": 9,
+    "courseSnapshotId": 100000,
+    "name": "Course",
+    "holePars": "454",
+    "frontNinePar": 4,
+    "backNinePar": 5,
+    "roundPar": 9,
+    "releaseDate": "2020-01-01",
+    "tees": [
+      {
+        "name": "White",
+        "handicapType": "M",
+        "rating": 70.1,
+        "slope": 120
+      }
+    ]
+  }
+]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /gcs-golfcommunity/api/v2/course-snapshot?course-snapshot-ids=100000&user-locale=en
+-- json stdout --
+[
+  {
+    "courseGlobalId": 9,
+    "courseSnapshotId": 100000,
+    "name": "Course",
+    "holePars": "454",
+    "frontNinePar": 4,
+    "backNinePar": 5,
+    "roundPar": 9,
+    "releaseDate": "2020-01-01",
+    "tees": [
+      {
+        "name": "White",
+        "handicapType": "M",
+        "rating": 70.1,
+        "slope": 120
+      }
+    ]
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /gcs-golfcommunity/api/v2/course-snapshot?course-snapshot-ids=100000&user-locale=en

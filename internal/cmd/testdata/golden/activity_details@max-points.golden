@@ -1,0 +1,46 @@
+-- args --
+activity
+details
+111
+--max-chart
+500
+--max-poly
+1000
+-- route GET /activity-service/activity/111/details?maxChartSize=500&maxPolylineSize=1000 --
+{"value":1}
+-- table stdout --
+{
+  "value": 1
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /activity-service/activity/111/details?maxChartSize=500&maxPolylineSize=1000
+-- plain stdout --
+{
+  "value": 1
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /activity-service/activity/111/details?maxChartSize=500&maxPolylineSize=1000
+-- plain-header stdout --
+{
+  "value": 1
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /activity-service/activity/111/details?maxChartSize=500&maxPolylineSize=1000
+-- json stdout --
+{
+  "value": 1
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /activity-service/activity/111/details?maxChartSize=500&maxPolylineSize=1000

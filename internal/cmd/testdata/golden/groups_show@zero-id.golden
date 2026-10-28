@@ -1,0 +1,35 @@
+Group ID 0 is not special-cased: the command sends it, as groups show and leave do, and the Garmin error is the answer.
+-- args --
+groups
+show
+0
+-- route GET /group-service/group/0?includeMembership=true 404 noeol --
+{"message":"Not Found"}
+-- table stdout --
+-- table stderr --
+get group: garmin api: 404 Not Found: {"message":"Not Found"}
+-- table exit --
+4
+-- table requests --
+GET /group-service/group/0?includeMembership=true
+-- plain stdout --
+-- plain stderr --
+get group: garmin api: 404 Not Found: {"message":"Not Found"}
+-- plain exit --
+4
+-- plain requests --
+GET /group-service/group/0?includeMembership=true
+-- plain-header stdout --
+-- plain-header stderr --
+get group: garmin api: 404 Not Found: {"message":"Not Found"}
+-- plain-header exit --
+4
+-- plain-header requests --
+GET /group-service/group/0?includeMembership=true
+-- json stdout --
+-- json stderr --
+{"error":{"code":"not_found","status":404,"message":"get group: garmin api: 404 Not Found: {\"message\":\"Not Found\"}"}}
+-- json exit --
+4
+-- json requests --
+GET /group-service/group/0?includeMembership=true

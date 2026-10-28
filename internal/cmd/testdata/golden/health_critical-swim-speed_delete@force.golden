@@ -1,0 +1,39 @@
+--force skips the prompt.
+-- args --
+health
+critical-swim-speed
+delete
+2026-10-15T09:30:00.12
+0
+--force
+-- route DELETE /biometric-service/criticalSwimSpeed/2026-10-15T09:30:00.12/0 204 --
+-- table stdout --
+-- table stderr --
+Deleted critical swim speed 2026-10-15T09:30:00.12
+-- table exit --
+0
+-- table requests --
+DELETE /biometric-service/criticalSwimSpeed/2026-10-15T09:30:00.12/0
+-- plain stdout --
+-- plain stderr --
+Deleted critical swim speed 2026-10-15T09:30:00.12
+-- plain exit --
+0
+-- plain requests --
+DELETE /biometric-service/criticalSwimSpeed/2026-10-15T09:30:00.12/0
+-- plain-header stdout --
+-- plain-header stderr --
+Deleted critical swim speed 2026-10-15T09:30:00.12
+-- plain-header exit --
+0
+-- plain-header requests --
+DELETE /biometric-service/criticalSwimSpeed/2026-10-15T09:30:00.12/0
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+DELETE /biometric-service/criticalSwimSpeed/2026-10-15T09:30:00.12/0

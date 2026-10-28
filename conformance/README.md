@@ -98,6 +98,8 @@ These tests read `testdata/recorded`, or the directory that `GCCLI_RECORDED_DIR`
 | `TestRecordedShapes` | For each golden case in `caseReads`, every recorded route answers 2xx with what the command reads from it in table and plain mode: the fields and their JSON types, or the top-level kind for a command that prints the body as it is. The test fails when a replayable case has no entry. It does not need `GCCLI_BIN`. |
 | `TestRecordedReplay` | Each golden leaf case whose routes all have a 2xx recording checks its `caseReads` entry, then runs in table mode against the recorded responses and must exit 0. A case file `<leaf>@<case>.golden` is not replayed: it runs the leaf's command on other mock data, and the recording replaces that data. |
 
+`TestCaseReadsHaveRecordings` checks the rows of `caseReads` against the committed set only, whatever `GCCLI_RECORDED_DIR` says, because the scheduled job records only the routes that the e2e suite calls. Every row must name a golden case. A row whose case calls a route without a recording must be in the `notRecorded` list in `replay_test.go`, because the replay does not check such a row, and deleting it would fail no test. The list only shrinks. The test fails when a row without a full recording is not in the list, and when the list names a row that has a full recording or has no row. To fix a failure, record the missing routes and delete the entry. This test does not need `GCCLI_BIN`.
+
 A request matches a recording by method, host and path. The query is not compared, and a number or date segment matches any number or date.
 
 ### The scheduled job

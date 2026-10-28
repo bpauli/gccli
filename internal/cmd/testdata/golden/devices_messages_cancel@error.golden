@@ -1,36 +1,36 @@
-Error case: Garmin answers 400, so the exit code is 1 (error).
+Error case: Garmin answers 400 to the queue read, so the exit code is 1 (error) and no DELETE goes out.
 -- args --
 devices
 messages
 cancel
 777
--- route DELETE /device-service/devicemessage/message/777 400 noeol --
+-- route GET /device-service/devicemessage/messages 400 noeol --
 {"message":"Bad Request"}
 -- table stdout --
 -- table stderr --
-cancel device message: garmin api: 400 Bad Request: {"message":"Bad Request"}
+get device messages: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- table exit --
 1
 -- table requests --
-DELETE /device-service/devicemessage/message/777
+GET /device-service/devicemessage/messages
 -- plain stdout --
 -- plain stderr --
-cancel device message: garmin api: 400 Bad Request: {"message":"Bad Request"}
+get device messages: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- plain exit --
 1
 -- plain requests --
-DELETE /device-service/devicemessage/message/777
+GET /device-service/devicemessage/messages
 -- plain-header stdout --
 -- plain-header stderr --
-cancel device message: garmin api: 400 Bad Request: {"message":"Bad Request"}
+get device messages: garmin api: 400 Bad Request: {"message":"Bad Request"}
 -- plain-header exit --
 1
 -- plain-header requests --
-DELETE /device-service/devicemessage/message/777
+GET /device-service/devicemessage/messages
 -- json stdout --
 -- json stderr --
-{"error":{"code":"error","status":400,"message":"cancel device message: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+{"error":{"code":"error","status":400,"message":"get device messages: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
 -- json exit --
 1
 -- json requests --
-DELETE /device-service/devicemessage/message/777
+GET /device-service/devicemessage/messages

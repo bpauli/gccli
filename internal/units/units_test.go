@@ -160,3 +160,22 @@ func TestPreferenceNames(t *testing.T) {
 		}
 	}
 }
+
+func TestSwimSpeed(t *testing.T) {
+	for _, tc := range []struct {
+		seconds float64
+		yards   bool
+		want    int
+	}{
+		{120, false, 833},
+		{50, false, 2000},
+		{300, false, 333},
+		{90, false, 1111},
+		{120, true, 762},
+		{100, true, 914},
+	} {
+		if got := SwimSpeed(tc.seconds, tc.yards); got != tc.want {
+			t.Errorf("SwimSpeed(%v, yards=%v) = %d, want %d", tc.seconds, tc.yards, got, tc.want)
+		}
+	}
+}

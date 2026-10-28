@@ -60,9 +60,9 @@ func TestParsePaceMPS(t *testing.T) {
 	for _, tt := range tests {
 		name := tt.input + "_" + tt.unit
 		t.Run(name, func(t *testing.T) {
-			secs, err := parsePaceSeconds(tt.input)
+			secs, err := ParsePaceSeconds(tt.input)
 			if (err != nil) != tt.wantErr {
-				t.Fatalf("parsePaceSeconds(%q) error = %v, wantErr %v", tt.input, err, tt.wantErr)
+				t.Fatalf("ParsePaceSeconds(%q) error = %v, wantErr %v", tt.input, err, tt.wantErr)
 			}
 			if got := paceMPS(secs, tt.unit); !tt.wantErr && math.Abs(got-tt.want) > 0.0001 {
 				t.Errorf("paceMPS(%q, %q) = %v, want %v", tt.input, tt.unit, got, tt.want)

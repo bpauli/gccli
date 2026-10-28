@@ -449,9 +449,7 @@ func caseProblems(reads []routeShape, c goldenCase, recorded map[string][]record
 func TestRecordedShapes(t *testing.T) {
 	recorded := recordedByKey(t, recordedDir())
 	served := servedRecords(recorded)
-	names := map[string]bool{}
 	for _, f := range goldenFiles(t) {
-		names[f.name] = true
 		reads, listed := caseReads[f.name]
 		if !listed {
 			if replayable(f, served) {
@@ -469,9 +467,63 @@ func TestRecordedShapes(t *testing.T) {
 			}
 		})
 	}
-	for name := range caseReads {
-		if !names[name] {
+}
+
+// notRecorded lists the caseReads rows whose golden case calls a route that
+// testdata/recorded has no recording for. The replay checks a row only for
+// the routes that have a recording, so such a row can be deleted or
+// changed and no test fails. Record the routes (README, "Refresh the
+// recorded set") and delete the entry; until then the list only shrinks.
+var notRecorded = []string{
+	"calendar notes add",
+	"calendar notes delete",
+	"calendar notes move",
+	"calendar notes update",
+	"goals set",
+	"goals steps auto",
+	"goals steps set",
+	"health sleep naps delete",
+	"notifications preferences set",
+	"profile privacy-zones add",
+	"profile privacy-zones delete",
+	"wellness menstrual-log delete",
+	"workouts copy",
+}
+
+// unrecordedRoute returns the first route of c, in sorted order, that has
+// no recording, or "" when every route has one.
+func unrecordedRoute(c goldenCase, recorded map[string][]recordedFile) string {
+	for _, route := range slices.Sorted(maps.Keys(c.routes)) {
+		if len(recorded[goldenRouteKey(route)]) == 0 {
+			return route
+		}
+	}
+	return ""
+}
+
+func TestCaseReadsHaveRecordings(t *testing.T) {
+	recorded := recordedByKey(t, committedRecordedDir)
+	cases := map[string]goldenCase{}
+	for _, f := range goldenFiles(t) {
+		cases[f.name] = f.goldenCase
+	}
+	for _, name := range slices.Sorted(maps.Keys(caseReads)) {
+		c, ok := cases[name]
+		if !ok {
 			t.Errorf("caseReads names %q, which has no golden file in %s", name, goldenDir)
+			continue
+		}
+		route := unrecordedRoute(c, recorded)
+		switch listed := slices.Contains(notRecorded, name); {
+		case route != "" && !listed:
+			t.Errorf("caseReads has a row for %q, but %s has no recording in %s: record it with the e2e suite, because notRecorded only shrinks", name, route, committedRecordedDir)
+		case route == "" && listed:
+			t.Errorf("notRecorded names %q, but every route of its case has a recording in %s: remove the entry", name, committedRecordedDir)
+		}
+	}
+	for _, name := range notRecorded {
+		if _, ok := caseReads[name]; !ok {
+			t.Errorf("notRecorded names %q, which has no row in caseReads: remove the entry", name)
 		}
 	}
 }
