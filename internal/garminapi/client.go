@@ -26,6 +26,7 @@ type Client struct {
 	httpClient *http.Client
 	baseURL    string
 	tokens     *garminauth.Tokens
+	reportWait func(context.Context, time.Duration) error
 
 	Refresher Refresher
 }
@@ -41,6 +42,12 @@ func WithHTTPClient(c *http.Client) ClientOption {
 // WithBaseURL overrides the API base URL.
 func WithBaseURL(u string) ClientOption {
 	return func(cl *Client) { cl.baseURL = u }
+}
+
+// WithReportWait replaces the sleep between the status checks of a report
+// export. Tests use it to poll without waiting.
+func WithReportWait(wait func(context.Context, time.Duration) error) ClientOption {
+	return func(cl *Client) { cl.reportWait = wait }
 }
 
 // WithAttemptTransport wraps the transport of each attempt with wrap. The
@@ -68,6 +75,7 @@ func NewClient(tokens *garminauth.Tokens, opts ...ClientOption) *Client {
 		httpClient: newHTTPClient(nil),
 		baseURL:    garminauth.NewEndpoints(tokens.Domain).ConnectAPI,
 		tokens:     tokens,
+		reportWait: sleepContext,
 		Refresher:  refreshInMemory,
 	}
 	for _, opt := range opts {

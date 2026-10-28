@@ -301,16 +301,14 @@ var writeCases = map[string]writeCase{
 		fallback: "Sent course \"Loop\" to device 99\n",
 	},
 	"devices messages cancel": {
-		args:   []string{"777"},
-		routes: map[string]string{"DELETE /device-service/devicemessage/message/777": "true"},
+		args: []string{"777"},
+		routes: map[string]string{
+			"GET /device-service/devicemessage/messages":       `{"messages":[{"messageId":777,"messageType":"workouts"}]}`,
+			"DELETE /device-service/devicemessage/message/777": "true",
+		},
+		result: "DELETE /device-service/devicemessage/message/777",
 		json:   "true\n",
 		human:  "Cancelled message 777\n",
-	},
-	"devices set-primary-tracker": {
-		args:   []string{"12345"},
-		routes: map[string]string{"PUT /device-service/deviceservice/device-info/12345/primary-activity-tracker": noContent},
-		json:   okOut,
-		human:  "Set device 12345 as the primary activity tracker\n",
 	},
 	"events add": {
 		args:     []string{"--name", "Race", "--date", "2024-06-01", "--type", "running"},
@@ -708,6 +706,14 @@ var writeCases = map[string]writeCase{
 		json:     okOut,
 		human:    "Deleted jet lag trip 4711\n",
 		fallback: "Deleted jet lag trip 4711\n",
+	},
+	"health critical-swim-speed set": {
+		args:     []string{"2:00"},
+		routes:   map[string]string{"POST /biometric-service/criticalSwimSpeed": `{"criticalSwimSpeed":833}`},
+		result:   "POST /biometric-service/criticalSwimSpeed",
+		json:     "{\n  \"criticalSwimSpeed\": 833\n}\n",
+		human:    "Set critical swim speed to 2:00 per 100 m (833 mm/s)\n",
+		fallback: "Set critical swim speed to 2:00 per 100 m (833 mm/s)\n",
 	},
 	"health sleep naps add": {
 		args: []string{"09:00", "09:20"},

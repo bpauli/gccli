@@ -1,0 +1,36 @@
+An ID that is not in the queue fails before any write, with the error of a message that is not pending.
+-- args --
+devices
+messages
+cancel
+999
+-- route GET /device-service/devicemessage/messages noeol --
+{"serviceHost":"https://example.com","numOfMessages":3,"messages":[{"messageId":777,"messageType":"workouts","messageStatus":"new","deviceId":3001,"deviceName":"Forerunner 265","metaData":{"messageName":"Tempo Run"}},{"messageId":778,"messageType":"settings-change","messageStatus":"new","deviceId":3001,"deviceName":"Forerunner 265","metaData":{"messageName":"settings"}},{"messageId":779,"messageType":"courses","messageStatus":"new","deviceId":3001,"deviceName":"Forerunner 265","metaData":{"messageName":"Loop"}}]}
+-- table stdout --
+-- table stderr --
+message 999 is not pending (already delivered or unknown)
+-- table exit --
+1
+-- table requests --
+GET /device-service/devicemessage/messages
+-- plain stdout --
+-- plain stderr --
+message 999 is not pending (already delivered or unknown)
+-- plain exit --
+1
+-- plain requests --
+GET /device-service/devicemessage/messages
+-- plain-header stdout --
+-- plain-header stderr --
+message 999 is not pending (already delivered or unknown)
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /device-service/devicemessage/messages
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"message 999 is not pending (already delivered or unknown)"}}
+-- json exit --
+1
+-- json requests --
+GET /device-service/devicemessage/messages

@@ -1,0 +1,38 @@
+A no at the prompt sends no DELETE.
+-- args --
+devices
+messages
+cancel
+778
+-- stdin --
+n
+-- route GET /device-service/devicemessage/messages noeol --
+{"serviceHost":"https://example.com","numOfMessages":3,"messages":[{"messageId":777,"messageType":"workouts","messageStatus":"new","deviceId":3001,"deviceName":"Forerunner 265","metaData":{"messageName":"Tempo Run"}},{"messageId":778,"messageType":"settings-change","messageStatus":"new","deviceId":3001,"deviceName":"Forerunner 265","metaData":{"messageName":"settings"}},{"messageId":779,"messageType":"courses","messageStatus":"new","deviceId":3001,"deviceName":"Forerunner 265","metaData":{"messageName":"Loop"}}]}
+-- table stdout --
+-- table stderr --
+Cancel settings-change message 778 for Forerunner 265? gccli cannot send it again. [y/N]: Cancelled
+-- table exit --
+0
+-- table requests --
+GET /device-service/devicemessage/messages
+-- plain stdout --
+-- plain stderr --
+Cancel settings-change message 778 for Forerunner 265? gccli cannot send it again. [y/N]: Cancelled
+-- plain exit --
+0
+-- plain requests --
+GET /device-service/devicemessage/messages
+-- plain-header stdout --
+-- plain-header stderr --
+Cancel settings-change message 778 for Forerunner 265? gccli cannot send it again. [y/N]: Cancelled
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /device-service/devicemessage/messages
+-- json stdout --
+-- json stderr --
+Cancel settings-change message 778 for Forerunner 265? gccli cannot send it again. [y/N]: Cancelled
+-- json exit --
+0
+-- json requests --
+GET /device-service/devicemessage/messages

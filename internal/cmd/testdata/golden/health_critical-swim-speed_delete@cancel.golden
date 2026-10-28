@@ -1,0 +1,33 @@
+A no at the prompt sends no DELETE.
+-- args --
+health
+critical-swim-speed
+delete
+2026-10-15T09:30:00.12
+0
+-- stdin --
+n
+-- table stdout --
+-- table stderr --
+Delete the critical swim speed of 2026-10-15T09:30:00.12? [y/N]: Cancelled
+-- table exit --
+0
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Delete the critical swim speed of 2026-10-15T09:30:00.12? [y/N]: Cancelled
+-- plain exit --
+0
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Delete the critical swim speed of 2026-10-15T09:30:00.12? [y/N]: Cancelled
+-- plain-header exit --
+0
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Delete the critical swim speed of 2026-10-15T09:30:00.12? [y/N]: Cancelled
+-- json exit --
+0
+-- json requests --

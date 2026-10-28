@@ -1,0 +1,103 @@
+A workout of more than 50 steps, not counting rest steps and counting each repeat, needs a device with enhancedWorkoutStepCapable, as in the web app. 25 repeats of two steps plus a warmup and a cooldown are 52 steps, so only one device is left.
+-- args --
+workouts
+send
+112
+-- route GET /workout-service/workout/112 noeol --
+{"workoutId":112,"workoutName":"Long Intervals","sportType":{"sportTypeId":1,"sportTypeKey":"running"},"workoutSegments":[{"segmentOrder":1,"sportType":{"sportTypeId":1,"sportTypeKey":"running"},"workoutSteps":[{"type":"ExecutableStepDTO","stepType":{"stepTypeKey":"warmup"}},{"type":"RepeatGroupDTO","numberOfIterations":25,"stepType":{"stepTypeKey":"repeat"},"workoutSteps":[{"type":"ExecutableStepDTO","stepType":{"stepTypeKey":"interval"}},{"type":"ExecutableStepDTO","stepType":{"stepTypeKey":"recovery"}}]},{"type":"ExecutableStepDTO","stepType":{"stepTypeKey":"cooldown"}}]}]}
+-- route GET /device-service/deviceregistration/devices noeol --
+[{"deviceId":3001,"displayName":"Forerunner 265","workoutCapable":true,"runningWorkoutCapable":true,"enhancedWorkoutStepCapable":true,"workoutFileType":"FIT"},{"deviceId":3005,"displayName":"Forerunner 55","workoutCapable":true,"runningWorkoutCapable":true,"enhancedWorkoutStepCapable":false,"workoutFileType":"FIT"}]
+-- route POST /device-service/devicemessage/messages noeol --
+[{"deviceId":3001,"deviceName":"Forerunner 265","messageId":890,"messageStatus":"new","metaDataId":112}]
+-- table stdout --
+-- table stderr --
+Sent workout "Long Intervals" to Forerunner 265 (message 890). It reaches the device at its next sync. To cancel it before then, run: gccli devices messages cancel 890
+-- table exit --
+0
+-- table requests --
+GET /workout-service/workout/112
+GET /device-service/deviceregistration/devices
+POST /device-service/devicemessage/messages
+  [
+    {
+      "deviceId": 3001,
+      "fileType": "FIT",
+      "groupName": null,
+      "messageName": "Long Intervals",
+      "messageType": "workouts",
+      "messageUrl": "workout-service/workout/FIT/112",
+      "metaDataId": 112,
+      "priority": 1
+    }
+  ]
+-- plain stdout --
+-- plain stderr --
+Sent workout "Long Intervals" to Forerunner 265 (message 890). It reaches the device at its next sync. To cancel it before then, run: gccli devices messages cancel 890
+-- plain exit --
+0
+-- plain requests --
+GET /workout-service/workout/112
+GET /device-service/deviceregistration/devices
+POST /device-service/devicemessage/messages
+  [
+    {
+      "deviceId": 3001,
+      "fileType": "FIT",
+      "groupName": null,
+      "messageName": "Long Intervals",
+      "messageType": "workouts",
+      "messageUrl": "workout-service/workout/FIT/112",
+      "metaDataId": 112,
+      "priority": 1
+    }
+  ]
+-- plain-header stdout --
+-- plain-header stderr --
+Sent workout "Long Intervals" to Forerunner 265 (message 890). It reaches the device at its next sync. To cancel it before then, run: gccli devices messages cancel 890
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /workout-service/workout/112
+GET /device-service/deviceregistration/devices
+POST /device-service/devicemessage/messages
+  [
+    {
+      "deviceId": 3001,
+      "fileType": "FIT",
+      "groupName": null,
+      "messageName": "Long Intervals",
+      "messageType": "workouts",
+      "messageUrl": "workout-service/workout/FIT/112",
+      "metaDataId": 112,
+      "priority": 1
+    }
+  ]
+-- json stdout --
+[
+  {
+    "deviceId": 3001,
+    "deviceName": "Forerunner 265",
+    "messageId": 890,
+    "messageStatus": "new",
+    "metaDataId": 112
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /workout-service/workout/112
+GET /device-service/deviceregistration/devices
+POST /device-service/devicemessage/messages
+  [
+    {
+      "deviceId": 3001,
+      "fileType": "FIT",
+      "groupName": null,
+      "messageName": "Long Intervals",
+      "messageType": "workouts",
+      "messageUrl": "workout-service/workout/FIT/112",
+      "metaDataId": 112,
+      "priority": 1
+    }
+  ]

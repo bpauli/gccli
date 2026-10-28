@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/bpauli/gccli/internal/config"
 	"github.com/bpauli/gccli/internal/outfmt"
@@ -11,11 +10,53 @@ import (
 
 var activityGroup = Group{Name: "activity", Help: "View activity details.", Children: []Node{
 	Custom{Name: "summary", Help: "Show activity summary.", Default: true, Cmd: &ActivitySummaryCmd{}},
-	Custom{Name: "details", Help: "Show full activity details.", Cmd: &ActivityDetailsCmd{}},
-	Custom{Name: "splits", Help: "Show activity splits.", Cmd: &ActivitySplitsCmd{}},
-	Custom{Name: "typed-splits", Help: "Show typed splits.", Cmd: &ActivityTypedSplitsCmd{}},
-	Custom{Name: "split-summaries", Help: "Show split summaries.", Cmd: &ActivitySplitSummariesCmd{}},
-	Custom{Name: "weather", Help: "Show weather conditions.", Cmd: &ActivityWeatherCmd{}},
+	Leaf{
+		Name: "details", Help: "Show full activity details.",
+		Spec: argsOf(&struct {
+			ID       ID  `arg:"" help:"Activity ID."`
+			MaxChart int `help:"Maximum chart data points." default:"2000" name:"max-chart"`
+			MaxPoly  int `help:"Maximum polyline data points." default:"4000" name:"max-poly"`
+		}{}),
+		Endpoint: "activities.details",
+		Params:   Params{"activityID": In("ID"), "maxChart": In("MaxChart"), "maxPoly": In("MaxPoly")},
+		Verb:     "get activity details", Output: JSON{},
+	},
+	Leaf{
+		Name: "splits", Help: "Show activity splits.",
+		Spec: argsOf(&struct {
+			ID ID `arg:"" help:"Activity ID."`
+		}{}),
+		Endpoint: "activities.splits",
+		Params:   Params{"activityID": In("ID")},
+		Verb:     "get activity splits", Output: JSON{},
+	},
+	Leaf{
+		Name: "typed-splits", Help: "Show typed splits.",
+		Spec: argsOf(&struct {
+			ID ID `arg:"" help:"Activity ID."`
+		}{}),
+		Endpoint: "activities.typed-splits",
+		Params:   Params{"activityID": In("ID")},
+		Verb:     "get activity typed splits", Output: JSON{},
+	},
+	Leaf{
+		Name: "split-summaries", Help: "Show split summaries.",
+		Spec: argsOf(&struct {
+			ID ID `arg:"" help:"Activity ID."`
+		}{}),
+		Endpoint: "activities.split-summaries",
+		Params:   Params{"activityID": In("ID")},
+		Verb:     "get activity split summaries", Output: JSON{},
+	},
+	Leaf{
+		Name: "weather", Help: "Show weather conditions.",
+		Spec: argsOf(&struct {
+			ID ID `arg:"" help:"Activity ID."`
+		}{}),
+		Endpoint: "activities.weather",
+		Params:   Params{"activityID": In("ID")},
+		Verb:     "get activity weather", Output: JSON{},
+	},
 	Leaf{
 		Name: "hr-zones", Help: "Show heart rate time in zones.",
 		Spec: argsOf(&struct {
@@ -49,7 +90,15 @@ var activityGroup = Group{Name: "activity", Help: "View activity details.", Chil
 		}},
 	},
 	activityExerciseSetsGroup,
-	Custom{Name: "gear", Help: "Show linked gear.", Cmd: &ActivityGearCmd{}},
+	Leaf{
+		Name: "gear", Help: "Show linked gear.",
+		Spec: argsOf(&struct {
+			ID ID `arg:"" help:"Activity ID."`
+		}{}),
+		Endpoint: "activities.gear",
+		Params:   Params{"activityID": In("ID")},
+		Verb:     "get activity gear", Output: JSON{},
+	},
 	activityCommentsGroup,
 	activityLikesGroup,
 	Custom{Name: "download", Help: "Download activity file.", Cmd: &ActivityDownloadCmd{}},
@@ -164,142 +213,15 @@ func formatHeartRate(hr float64) string {
 	return fmt.Sprintf("%d bpm", int(hr))
 }
 
-// ActivityDetailsCmd shows full activity details including charts and polylines.
-type ActivityDetailsCmd struct {
-	ID       ID  `arg:"" help:"Activity ID."`
-	MaxChart int `help:"Maximum chart data points." default:"2000" name:"max-chart"`
-	MaxPoly  int `help:"Maximum polyline data points." default:"4000" name:"max-poly"`
-}
-
-func (c *ActivityDetailsCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.Call(g.Context, "activities.details", map[string]string{"activityID": string(c.ID), "maxChart": strconv.Itoa(c.MaxChart), "maxPoly": strconv.Itoa(c.MaxPoly)}, nil)
-	if err != nil {
-		return fmt.Errorf("get activity details: %w", err)
-	}
-
-	return writeObject(g, data)
-}
-
-// ActivitySplitsCmd shows activity splits.
-type ActivitySplitsCmd struct {
-	ID ID `arg:"" help:"Activity ID."`
-}
-
-func (c *ActivitySplitsCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.Call(g.Context, "activities.splits", map[string]string{"activityID": string(c.ID)}, nil)
-	if err != nil {
-		return fmt.Errorf("get activity splits: %w", err)
-	}
-
-	return writeObject(g, data)
-}
-
-// ActivityTypedSplitsCmd shows typed splits for an activity.
-type ActivityTypedSplitsCmd struct {
-	ID ID `arg:"" help:"Activity ID."`
-}
-
-func (c *ActivityTypedSplitsCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.Call(g.Context, "activities.typed-splits", map[string]string{"activityID": string(c.ID)}, nil)
-	if err != nil {
-		return fmt.Errorf("get activity typed splits: %w", err)
-	}
-
-	return writeObject(g, data)
-}
-
-// ActivitySplitSummariesCmd shows split summaries for an activity.
-type ActivitySplitSummariesCmd struct {
-	ID ID `arg:"" help:"Activity ID."`
-}
-
-func (c *ActivitySplitSummariesCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.Call(g.Context, "activities.split-summaries", map[string]string{"activityID": string(c.ID)}, nil)
-	if err != nil {
-		return fmt.Errorf("get activity split summaries: %w", err)
-	}
-
-	return writeObject(g, data)
-}
-
-// ActivityWeatherCmd shows weather conditions for an activity.
-type ActivityWeatherCmd struct {
-	ID ID `arg:"" help:"Activity ID."`
-}
-
-func (c *ActivityWeatherCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.Call(g.Context, "activities.weather", map[string]string{"activityID": string(c.ID)}, nil)
-	if err != nil {
-		return fmt.Errorf("get activity weather: %w", err)
-	}
-
-	return writeObject(g, data)
-}
-
 var activityExerciseSetsGroup = Group{Name: "exercise-sets", Help: "Manage exercise sets.", Children: []Node{
-	Custom{Name: "show", Help: "Show exercise sets.", Default: true, Cmd: &ActivityExerciseSetsShowCmd{}},
+	Leaf{
+		Name: "show", Help: "Show exercise sets.", Default: true,
+		Spec: argsOf(&struct {
+			ID ID `arg:"" help:"Activity ID."`
+		}{}),
+		Endpoint: "activities.exercise-sets",
+		Params:   Params{"activityID": In("ID")},
+		Verb:     "get activity exercise sets", Output: JSON{},
+	},
 	Custom{Name: "set", Help: "Set exercise sets for a strength training activity.", Cmd: &ActivityExerciseSetsSetCmd{}},
 }}
-
-// ActivityExerciseSetsShowCmd shows exercise set data for strength training activities.
-type ActivityExerciseSetsShowCmd struct {
-	ID ID `arg:"" help:"Activity ID."`
-}
-
-func (c *ActivityExerciseSetsShowCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.Call(g.Context, "activities.exercise-sets", map[string]string{"activityID": string(c.ID)}, nil)
-	if err != nil {
-		return fmt.Errorf("get activity exercise sets: %w", err)
-	}
-
-	return writeObject(g, data)
-}
-
-// ActivityGearCmd shows gear linked to an activity.
-type ActivityGearCmd struct {
-	ID ID `arg:"" help:"Activity ID."`
-}
-
-func (c *ActivityGearCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.Call(g.Context, "activities.gear", map[string]string{"activityID": string(c.ID)}, nil)
-	if err != nil {
-		return fmt.Errorf("get activity gear: %w", err)
-	}
-
-	return writeObject(g, data)
-}

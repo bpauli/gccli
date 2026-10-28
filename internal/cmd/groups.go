@@ -133,13 +133,6 @@ type GroupsJoinCmd struct {
 	ID NumericID `arg:"" help:"Group ID."`
 }
 
-func (c *GroupsJoinCmd) Validate() error {
-	if c.ID < 1 {
-		return errors.New("the group ID must be a positive number")
-	}
-	return nil
-}
-
 func (c *GroupsJoinCmd) Run(g *Globals) error {
 	client, err := resolveClient(g)
 	if err != nil {

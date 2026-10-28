@@ -1,0 +1,105 @@
+Rest steps do not count: 24 repeats of an interval, a recovery and a rest plus a warmup and a cooldown are 50 steps, the most that a device without enhancedWorkoutStepCapable takes.
+-- args --
+workouts
+send
+112
+--device
+3005
+-- route GET /workout-service/workout/112 noeol --
+{"workoutId":112,"workoutName":"Fifty Steps","sportType":{"sportTypeId":1,"sportTypeKey":"running"},"workoutSegments":[{"segmentOrder":1,"sportType":{"sportTypeId":1,"sportTypeKey":"running"},"workoutSteps":[{"type":"ExecutableStepDTO","stepType":{"stepTypeKey":"warmup"}},{"type":"RepeatGroupDTO","numberOfIterations":24,"stepType":{"stepTypeKey":"repeat"},"workoutSteps":[{"type":"ExecutableStepDTO","stepType":{"stepTypeKey":"interval"}},{"type":"ExecutableStepDTO","stepType":{"stepTypeKey":"recovery"}},{"type":"ExecutableStepDTO","stepType":{"stepTypeKey":"rest"}}]},{"type":"ExecutableStepDTO","stepType":{"stepTypeKey":"cooldown"}}]}]}
+-- route GET /device-service/deviceregistration/devices noeol --
+[{"deviceId":3001,"displayName":"Forerunner 265","workoutCapable":true,"runningWorkoutCapable":true,"enhancedWorkoutStepCapable":true,"workoutFileType":"FIT"},{"deviceId":3005,"displayName":"Forerunner 55","workoutCapable":true,"runningWorkoutCapable":true,"enhancedWorkoutStepCapable":false,"workoutFileType":"FIT"}]
+-- route POST /device-service/devicemessage/messages noeol --
+[{"deviceId":3005,"deviceName":"Forerunner 55","messageId":891,"messageStatus":"new","metaDataId":112}]
+-- table stdout --
+-- table stderr --
+Sent workout "Fifty Steps" to Forerunner 55 (message 891). It reaches the device at its next sync. To cancel it before then, run: gccli devices messages cancel 891
+-- table exit --
+0
+-- table requests --
+GET /workout-service/workout/112
+GET /device-service/deviceregistration/devices
+POST /device-service/devicemessage/messages
+  [
+    {
+      "deviceId": 3005,
+      "fileType": "FIT",
+      "groupName": null,
+      "messageName": "Fifty Steps",
+      "messageType": "workouts",
+      "messageUrl": "workout-service/workout/FIT/112",
+      "metaDataId": 112,
+      "priority": 1
+    }
+  ]
+-- plain stdout --
+-- plain stderr --
+Sent workout "Fifty Steps" to Forerunner 55 (message 891). It reaches the device at its next sync. To cancel it before then, run: gccli devices messages cancel 891
+-- plain exit --
+0
+-- plain requests --
+GET /workout-service/workout/112
+GET /device-service/deviceregistration/devices
+POST /device-service/devicemessage/messages
+  [
+    {
+      "deviceId": 3005,
+      "fileType": "FIT",
+      "groupName": null,
+      "messageName": "Fifty Steps",
+      "messageType": "workouts",
+      "messageUrl": "workout-service/workout/FIT/112",
+      "metaDataId": 112,
+      "priority": 1
+    }
+  ]
+-- plain-header stdout --
+-- plain-header stderr --
+Sent workout "Fifty Steps" to Forerunner 55 (message 891). It reaches the device at its next sync. To cancel it before then, run: gccli devices messages cancel 891
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /workout-service/workout/112
+GET /device-service/deviceregistration/devices
+POST /device-service/devicemessage/messages
+  [
+    {
+      "deviceId": 3005,
+      "fileType": "FIT",
+      "groupName": null,
+      "messageName": "Fifty Steps",
+      "messageType": "workouts",
+      "messageUrl": "workout-service/workout/FIT/112",
+      "metaDataId": 112,
+      "priority": 1
+    }
+  ]
+-- json stdout --
+[
+  {
+    "deviceId": 3005,
+    "deviceName": "Forerunner 55",
+    "messageId": 891,
+    "messageStatus": "new",
+    "metaDataId": 112
+  }
+]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /workout-service/workout/112
+GET /device-service/deviceregistration/devices
+POST /device-service/devicemessage/messages
+  [
+    {
+      "deviceId": 3005,
+      "fileType": "FIT",
+      "groupName": null,
+      "messageName": "Fifty Steps",
+      "messageType": "workouts",
+      "messageUrl": "workout-service/workout/FIT/112",
+      "metaDataId": 112,
+      "priority": 1
+    }
+  ]

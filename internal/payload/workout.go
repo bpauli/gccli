@@ -217,12 +217,12 @@ func parsePaceRange(s string) (float64, float64, error) {
 	fastStr := s[:idx]
 	slowStr := s[idx+1:]
 
-	fast, err := parsePaceSeconds(fastStr)
+	fast, err := ParsePaceSeconds(fastStr)
 	if err != nil {
 		return 0, 0, err
 	}
 
-	slow, err := parsePaceSeconds(slowStr)
+	slow, err := ParsePaceSeconds(slowStr)
 	if err != nil {
 		return 0, 0, err
 	}
@@ -249,8 +249,8 @@ func findPaceSeparator(s string) int {
 	return -1
 }
 
-// parsePaceSeconds parses a pace such as "5:30" into seconds per unit.
-func parsePaceSeconds(s string) (float64, error) {
+// ParsePaceSeconds parses a pace such as "5:30" into seconds per unit.
+func ParsePaceSeconds(s string) (float64, error) {
 	m := paceRegexp.FindStringSubmatch(s)
 	if m == nil {
 		return 0, fmt.Errorf("invalid pace %q: expected format like 5:30", s)

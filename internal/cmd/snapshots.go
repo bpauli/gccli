@@ -30,4 +30,5 @@ var healthSnapshotsGroup = Group{Name: "snapshots", Help: "List and show Health 
 		Params:   Params{"uuid": In("UUID")},
 		Verb:     "get health snapshot epochs", Output: JSON{},
 	},
+	Custom{Name: "report", Help: "Save the PDF report of a Health Snapshot session.", Cmd: &HealthSnapshotReportCmd{}},
 }}

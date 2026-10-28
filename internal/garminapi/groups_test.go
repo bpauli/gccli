@@ -137,3 +137,22 @@ func TestCreateGroup_SendsTheFormFields(t *testing.T) {
 		t.Errorf("POST body:\n got %s\nwant %s", gotJSON, wantJSON)
 	}
 }
+
+func TestGroupsSearchIsAForm(t *testing.T) {
+	var contentType, body string
+	_, client := testServer(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		contentType = r.Header.Get("Content-Type")
+		b, _ := io.ReadAll(r.Body)
+		body = string(b)
+		_, _ = w.Write([]byte(`{}`))
+	}))
+	if _, err := client.Call(context.Background(), "groups.search", nil, []byte("keyword=running&limit=20&start=1")); err != nil {
+		t.Fatal(err)
+	}
+	if contentType != "application/x-www-form-urlencoded" {
+		t.Errorf("Content-Type = %q, want application/x-www-form-urlencoded", contentType)
+	}
+	if body != "keyword=running&limit=20&start=1" {
+		t.Errorf("body = %q, want the form as given", body)
+	}
+}

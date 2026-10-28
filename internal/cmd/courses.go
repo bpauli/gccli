@@ -29,7 +29,15 @@ var coursesGroup = Group{Name: "courses", Help: "Manage courses.", Children: []N
 		Endpoint: "courses.favorites", Verb: "list favorite courses",
 		Output: Rows{Noun: "favorite courses", Columns: courseColumns},
 	},
-	Custom{Name: "detail", Help: "View course details.", Cmd: &CourseDetailCmd{}},
+	Leaf{
+		Name: "detail", Help: "View course details.",
+		Spec: argsOf(&struct {
+			ID ID `arg:"" help:"Course ID."`
+		}{}),
+		Endpoint: "courses.get",
+		Params:   Params{"courseID": In("ID")},
+		Verb:     "get course", Output: JSON{},
+	},
 	Custom{Name: "download", Help: "Download course file.", Cmd: &CourseDownloadCmd{}},
 	Custom{Name: "import", Help: "Import a GPX file as a new course.", Cmd: &CourseImportCmd{}},
 	Custom{Name: "send", Help: "Send a course to a device.", Cmd: &CourseSendCmd{}},
@@ -44,25 +52,6 @@ var coursesGroup = Group{Name: "courses", Help: "Manage courses.", Children: []N
 		Output:   Write{Done: "Deleted course {ID}", Confirm: "Delete course {ID}?"},
 	},
 }}
-
-// CourseDetailCmd shows details for a course.
-type CourseDetailCmd struct {
-	ID ID `arg:"" help:"Course ID."`
-}
-
-func (c *CourseDetailCmd) Run(g *Globals) error {
-	client, err := resolveClient(g)
-	if err != nil {
-		return err
-	}
-
-	data, err := client.Call(g.Context, "courses.get", map[string]string{"courseID": string(c.ID)}, nil)
-	if err != nil {
-		return fmt.Errorf("get course: %w", err)
-	}
-
-	return writeObject(g, data)
-}
 
 // CourseDownloadCmd downloads a course in a specified format.
 type CourseDownloadCmd struct {
