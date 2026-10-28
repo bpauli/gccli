@@ -30,7 +30,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Wellness** - menstrual cycle data and calendar, menstrual daily log (view, set, delete), pregnancy summary, jet lag trips (list, add, update, delete) and status
 - **Social** - notifications (page with a cursor, dismiss and undismiss, unread state), view and change notification preferences, connections, connection requests, followers, following, follow and unfollow, follow requests, mute, user search, newsfeed, groups (search, show a group with its members, feed, member activities and open challenges, join a public group, leave a group)
 - **Insights** - compare your steps, sleep, floors, VO2 max, speed, power and more with people of your age group and gender (needs Insights turned on in Garmin Connect)
-- **Golf** - scorecards, the courses you played, golf and shot stats (drive, approach, chip, putt), the clubs in your bag, club types and leaderboards
+- **Golf** - scorecards, the courses you played, golf and shot stats (drive, approach, chip, putt), one course by ID, the clubs in your bag, club and shaft flex types and leaderboards
 - **Agent-ready** - ships a bundled agent skill (`skills/gccli/`) that plugs into AI assistants like Claude Code, Codex, Hermes, and OpenClaw so you can drive Garmin Connect in plain language
 - **Multiple accounts** — manage multiple Garmin accounts via `--account` flag
 - **Credential storage** in the OS keyring (macOS Keychain, Linux Secret Service), with a file fallback (see [Credential Storage](#credential-storage))
@@ -1845,11 +1845,14 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli golf courses [flags]`: List the golf courses you played.
   - `-l, --limit=20`: Maximum number of courses to return.
   - `--offset=0`: Number of courses to skip.
+- `gccli golf course <id>`: Show one golf course by its course snapshot ID.
+  - `<id>`: Course snapshot ID.
 - `gccli golf stats`: Show your golf statistics.
 - `gccli golf shot-stats <kind>`: Show your golf shot statistics of one shot type.
   - `<kind>`: Shot type: drive, approach, chip or putt.
 - `gccli golf clubs`: List the golf clubs in your bag.
 - `gccli golf club-types`: List the golf club types with their loft and lie angles.
+- `gccli golf club-flex-types`: List the golf club shaft flex types.
 - `gccli golf leaderboards [flags]`: List the golf leaderboards you played in.
   - `-l, --limit=20`: Maximum number of leaderboards to return.
   - `--offset=0`: Number of leaderboards to skip.
