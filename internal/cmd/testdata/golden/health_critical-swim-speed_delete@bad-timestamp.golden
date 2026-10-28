@@ -1,0 +1,131 @@
+A timestamp that is not YYYY-MM-DDTHH:MM:SS[.fff] is a usage error before the login, with no request.
+-- args --
+health
+critical-swim-speed
+delete
+2026-10-15
+0
+-- table stdout --
+-- table stderr --
+Usage: gccli health critical-swim-speed delete <timestamp> <version> [flags]
+
+Delete a critical swim speed entry. Garmin refuses to delete the last one.
+
+Arguments:
+  <timestamp>    Local timestamp of the entry, as measurementTimestampLocal
+                 prints it, such as 2026-10-27T09:05:03.07.
+  <version>      Version of the entry.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+  -f, --force             Skip confirmation prompt.
+
+gccli: error: <timestamp>: invalid timestamp "2026-10-15": expected YYYY-MM-DDTHH:MM:SS with optional fractional seconds, such as 2026-10-27T09:05:03.07
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli health critical-swim-speed delete <timestamp> <version> [flags]
+
+Delete a critical swim speed entry. Garmin refuses to delete the last one.
+
+Arguments:
+  <timestamp>    Local timestamp of the entry, as measurementTimestampLocal
+                 prints it, such as 2026-10-27T09:05:03.07.
+  <version>      Version of the entry.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+  -f, --force             Skip confirmation prompt.
+
+gccli: error: <timestamp>: invalid timestamp "2026-10-15": expected YYYY-MM-DDTHH:MM:SS with optional fractional seconds, such as 2026-10-27T09:05:03.07
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli health critical-swim-speed delete <timestamp> <version> [flags]
+
+Delete a critical swim speed entry. Garmin refuses to delete the last one.
+
+Arguments:
+  <timestamp>    Local timestamp of the entry, as measurementTimestampLocal
+                 prints it, such as 2026-10-27T09:05:03.07.
+  <version>      Version of the entry.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+  -f, --force             Skip confirmation prompt.
+
+gccli: error: <timestamp>: invalid timestamp "2026-10-15": expected YYYY-MM-DDTHH:MM:SS with optional fractional seconds, such as 2026-10-27T09:05:03.07
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli health critical-swim-speed delete <timestamp> <version> [flags]
+
+Delete a critical swim speed entry. Garmin refuses to delete the last one.
+
+Arguments:
+  <timestamp>    Local timestamp of the entry, as measurementTimestampLocal
+                 prints it, such as 2026-10-27T09:05:03.07.
+  <version>      Version of the entry.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+  -f, --force             Skip confirmation prompt.
+
+gccli: error: <timestamp>: invalid timestamp "2026-10-15": expected YYYY-MM-DDTHH:MM:SS with optional fractional seconds, such as 2026-10-27T09:05:03.07
+-- json exit --
+2
+-- json requests --

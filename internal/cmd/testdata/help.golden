@@ -163,6 +163,12 @@ Commands:
                                    Show latest critical swim speed as of a date.
   health critical-swim-speed range
                                    Show critical swim speed for a date range.
+  health critical-swim-speed set
+                                   Save a critical swim speed measured now,
+                                   from a pace per 100 m or 100 yd.
+  health critical-swim-speed delete
+                                   Delete a critical swim speed entry. Garmin
+                                   refuses to delete the last one.
   health power-to-weight           Show latest power-to-weight data as of a
                                    date.
   health thresholds cycling-ftp    Show cycling FTP for a date range.
@@ -923,6 +929,12 @@ Commands:
                                    Show latest critical swim speed as of a date.
   health critical-swim-speed range
                                    Show critical swim speed for a date range.
+  health critical-swim-speed set
+                                   Save a critical swim speed measured now,
+                                   from a pace per 100 m or 100 yd.
+  health critical-swim-speed delete
+                                   Delete a critical swim speed entry. Garmin
+                                   refuses to delete the last one.
   health power-to-weight           Show latest power-to-weight data as of a
                                    date.
   health thresholds cycling-ftp    Show cycling FTP for a date range.
@@ -1304,6 +1316,10 @@ Commands:
       Show latest critical swim speed as of a date.
   health critical-swim-speed range
       Show critical swim speed for a date range.
+  health critical-swim-speed set
+      Save a critical swim speed measured now, from a pace per 100 m or 100 yd.
+  health critical-swim-speed delete
+      Delete a critical swim speed entry. Garmin refuses to delete the last one.
 
 $ gccli health thresholds --help
 Usage: gccli health thresholds <command>

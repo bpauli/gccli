@@ -6,6 +6,10 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/bpauli/gccli/internal/garminapi"
+	"github.com/bpauli/gccli/internal/payload"
+	"github.com/bpauli/gccli/internal/units"
 )
 
 // nowFn returns the current time. Variable for testing.
@@ -515,7 +519,61 @@ var healthCriticalSwimSpeedGroup = Group{Name: "critical-swim-speed", Help: "Sho
 		Params:   Params{"startDate": In("StartDate"), "endDate": In("EndDate")},
 		Verb:     "get critical swim speed range", Output: JSON{},
 	},
+	Custom{Name: "set", Help: "Save a critical swim speed measured now, from a pace per 100 m or 100 yd.", Cmd: &HealthCriticalSwimSpeedSetCmd{}},
+	Leaf{
+		Name: "delete", Help: "Delete a critical swim speed entry. Garmin refuses to delete the last one.",
+		Spec: argsOf(&struct {
+			Timestamp ConnectTimestamp `arg:"" help:"Local timestamp of the entry, as measurementTimestampLocal prints it, such as 2026-10-27T09:05:03.07."`
+			Version   ID               `arg:"" help:"Version of the entry."`
+		}{}),
+		Endpoint: "health.delete-critical-swim-speed",
+		Params:   Params{"timestamp": In("Timestamp"), "version": In("Version")},
+		Verb:     "delete critical swim speed",
+		Output:   Write{Done: "Deleted critical swim speed {Timestamp}", Confirm: "Delete the critical swim speed of {Timestamp}?"},
+	},
 }}
+
+type HealthCriticalSwimSpeedSetCmd struct {
+	Pace FreeText `arg:"" help:"Pace per 100 m or per 100 yd as m:ss, such as 2:00. Garmin refuses to delete the last record, so delete cannot undo a first save."`
+	Unit string   `help:"Distance of the pace: m for 100 m, yd for 100 yd." default:"m" enum:"m,yd"`
+}
+
+func (c *HealthCriticalSwimSpeedSetCmd) speed() (int, error) {
+	seconds, err := payload.ParsePaceSeconds(string(c.Pace))
+	if err != nil {
+		return 0, err
+	}
+	mm := units.SwimSpeed(seconds, c.Unit == "yd")
+	if err := garminapi.ValidateCriticalSwimSpeed(mm); err != nil {
+		return 0, fmt.Errorf("pace %s per 100 %s: %w", c.Pace, c.Unit, err)
+	}
+	return mm, nil
+}
+
+func (c *HealthCriticalSwimSpeedSetCmd) Validate() error {
+	_, err := c.speed()
+	return err
+}
+
+func (c *HealthCriticalSwimSpeedSetCmd) Run(g *Globals) error {
+	mm, err := c.speed()
+	if err != nil {
+		return err
+	}
+	client, err := resolveClient(g)
+	if err != nil {
+		return err
+	}
+	body, err := garminapi.CriticalSwimSpeedBody(mm, nowFn())
+	if err != nil {
+		return fmt.Errorf("set critical swim speed: %w", err)
+	}
+	data, err := client.Call(g.Context, "health.set-critical-swim-speed", nil, body)
+	if err != nil {
+		return fmt.Errorf("set critical swim speed: %w", err)
+	}
+	return reportWrite(g, data, "Set critical swim speed to %s per 100 %s (%d mm/s)", c.Pace, c.Unit, mm)
+}
 
 var healthThresholdsGroup = Group{Name: "thresholds", Help: "Show threshold and power-to-weight data for a date range.", Children: []Node{
 	Leaf{

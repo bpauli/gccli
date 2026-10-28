@@ -1,0 +1,39 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+health
+critical-swim-speed
+delete
+2026-10-15T09:30:00.12
+0
+-- stdin --
+y
+-- route DELETE /biometric-service/criticalSwimSpeed/2026-10-15T09:30:00.12/0 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+Delete the critical swim speed of 2026-10-15T09:30:00.12? [y/N]: delete critical swim speed: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+DELETE /biometric-service/criticalSwimSpeed/2026-10-15T09:30:00.12/0
+-- plain stdout --
+-- plain stderr --
+Delete the critical swim speed of 2026-10-15T09:30:00.12? [y/N]: delete critical swim speed: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+DELETE /biometric-service/criticalSwimSpeed/2026-10-15T09:30:00.12/0
+-- plain-header stdout --
+-- plain-header stderr --
+Delete the critical swim speed of 2026-10-15T09:30:00.12? [y/N]: delete critical swim speed: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+DELETE /biometric-service/criticalSwimSpeed/2026-10-15T09:30:00.12/0
+-- json stdout --
+-- json stderr --
+Delete the critical swim speed of 2026-10-15T09:30:00.12? [y/N]: {"error":{"code":"error","status":400,"message":"delete critical swim speed: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+DELETE /biometric-service/criticalSwimSpeed/2026-10-15T09:30:00.12/0
