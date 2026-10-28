@@ -1,0 +1,56 @@
+--metric distance without --activity sends no actTypeId.
+-- args --
+groups
+leaderboard
+1001
+--metric
+distance
+--start
+2026-10-19
+--end
+2026-10-25
+-- route GET /groupchallenge-service/leaderboard/activity/group/1001?start=1&limit=20&todayDate=2026-10-15&startDate=2026-10-19&endDate=2026-10-25&metricId=17 --
+{"allMetrics":{"metricsMap":{"ACTIVITY_TOTAL_DISTANCE":[{"value":120000,"userInfo":{"fullname":"Cyclist One"}}]}}}
+-- table stdout --
+RANK  NAME         VALUE
+1     Cyclist One  120.00 km
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /groupchallenge-service/leaderboard/activity/group/1001?start=1&limit=20&todayDate=2026-10-15&startDate=2026-10-19&endDate=2026-10-25&metricId=17
+-- plain stdout --
+1	Cyclist One	120.00 km
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /groupchallenge-service/leaderboard/activity/group/1001?start=1&limit=20&todayDate=2026-10-15&startDate=2026-10-19&endDate=2026-10-25&metricId=17
+-- plain-header stdout --
+RANK	NAME	VALUE
+1	Cyclist One	120.00 km
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /groupchallenge-service/leaderboard/activity/group/1001?start=1&limit=20&todayDate=2026-10-15&startDate=2026-10-19&endDate=2026-10-25&metricId=17
+-- json stdout --
+{
+  "allMetrics": {
+    "metricsMap": {
+      "ACTIVITY_TOTAL_DISTANCE": [
+        {
+          "value": 120000,
+          "userInfo": {
+            "fullname": "Cyclist One"
+          }
+        }
+      ]
+    }
+  }
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /groupchallenge-service/leaderboard/activity/group/1001?start=1&limit=20&todayDate=2026-10-15&startDate=2026-10-19&endDate=2026-10-25&metricId=17

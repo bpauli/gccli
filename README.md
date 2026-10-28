@@ -961,6 +961,8 @@ gccli groups search running --limit 10 # Search groups by keyword
 gccli groups members <group-id>        # List the members of a group
 gccli groups activities <group-id>     # List the latest activities of the members
 gccli groups challenges <group-id>     # List the open challenges (members only)
+gccli groups leaderboard <group-id> --metric distance --activity running # Rank the members for this week
+gccli groups requests                  # List your pending requests to join private groups
 gccli groups join <group-id>           # Join a public group
 gccli groups leave <group-id>          # Leave a group (asks first, --force skips it)
 gccli groups create "Sunday runners" --visibility HIDDEN --image swimming_01
@@ -1826,6 +1828,15 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `<id>`: Group ID.
 - `gccli groups challenges <id>`: List the open challenges of a group. Garmin answers 403 to a non-member.
   - `<id>`: Group ID.
+- `gccli groups leaderboard <id> [flags]`: Rank the members of a group by steps, calories, pushes or distance.
+  - `<id>`: Group ID.
+  - `--metric="steps"`: What to rank: steps, calories, pushes or distance. The first three show nothing for a group you have not joined.
+  - `--activity=ACTIVITY`: Count only the distance of one activity: walking, running, cycling, swimming or pushing. Only with --metric distance.
+  - `--start=DATE`: First day (YYYY-MM-DD, today, yesterday, 3d, +30d). Default: Monday of this week.
+  - `--end=DATE`: Last day. Default: 6 days after --start.
+  - `-l, --limit=20`: Maximum number of members to return.
+  - `--offset=0`: Number of members to skip.
+- `gccli groups requests`: List your pending requests to join private groups.
 - `gccli groups join <id>`: Join a public group. gccli does not send the request that a private group needs.
   - `<id>`: Group ID.
 - `gccli groups leave <id> [flags]`: Leave a group.

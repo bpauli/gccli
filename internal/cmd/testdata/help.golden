@@ -462,6 +462,10 @@ Commands:
                                    members.
   groups challenges                List the open challenges of a group. Garmin
                                    answers 403 to a non-member.
+  groups leaderboard               Rank the members of a group by steps,
+                                   calories, pushes or distance.
+  groups requests                  List your pending requests to join private
+                                   groups.
   groups join                      Join a public group. gccli does not send the
                                    request that a private group needs.
   groups leave                     Leave a group.
@@ -2612,20 +2616,23 @@ Flags:
       --version           Print version information.
 
 Commands:
-  groups list          List your groups.
-  groups search        Search groups by keyword.
-  groups show          Show a group.
-  groups members       List the members of a group.
-  groups feed          Show the latest posts and activities of the group feed.
-  groups activities    List the latest activities of the group members.
-  groups challenges    List the open challenges of a group. Garmin answers 403
-                       to a non-member.
-  groups join          Join a public group. gccli does not send the request that
-                       a private group needs.
-  groups leave         Leave a group.
-  groups create        Create a group.
-  groups edit          Edit a group you own.
-  groups delete        Delete a group you own.
+  groups list           List your groups.
+  groups search         Search groups by keyword.
+  groups show           Show a group.
+  groups members        List the members of a group.
+  groups feed           Show the latest posts and activities of the group feed.
+  groups activities     List the latest activities of the group members.
+  groups challenges     List the open challenges of a group. Garmin answers 403
+                        to a non-member.
+  groups leaderboard    Rank the members of a group by steps, calories, pushes
+                        or distance.
+  groups requests       List your pending requests to join private groups.
+  groups join           Join a public group. gccli does not send the request
+                        that a private group needs.
+  groups leave          Leave a group.
+  groups create         Create a group.
+  groups edit           Edit a group you own.
+  groups delete         Delete a group you own.
 
 $ gccli insights --help
 Usage: gccli insights <command> [flags]

@@ -256,6 +256,7 @@ var skipped = map[string]string{
 	"goals effective":                 clockSkip,
 	"goals weight set":                clockSkip,
 	"goals weight view":               clockSkip,
+	"groups leaderboard":              clockSkip,
 	"health acclimation daily":        clockSkip,
 	"health calories weekly":          clockSkip,
 	"health critical-swim-speed view": clockSkip,
