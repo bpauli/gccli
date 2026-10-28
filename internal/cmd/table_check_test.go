@@ -115,6 +115,28 @@ func TestCheckTableRejects(t *testing.T) {
 			`goals list: Params["start"] binds StartIndex, which needs an embedded Pagination: it is --offset + 1`,
 		},
 		{
+			"Page with a named AlignedPagination field", "activities list",
+			func(l *Leaf) {
+				l.Spec = argsOf(&struct {
+					AlignedPagination AlignedPagination `embed:""`
+				}{})
+				l.Endpoint = "golf.scorecards"
+				l.Params = Params{"page": Page}
+			},
+			`activities list: Params["page"] binds Page, which needs an embedded AlignedPagination: only an --offset that is a multiple of --limit starts a page`,
+		},
+		{
+			"StartIndex with a named Pagination field", "goals list",
+			func(l *Leaf) {
+				l.Spec = argsOf(&struct {
+					Pagination Pagination `embed:""`
+				}{})
+				l.Endpoint = "health.snapshots"
+				l.Params = Params{"start": StartIndex}
+			},
+			`goals list: Params["start"] binds StartIndex, which needs an embedded Pagination: it is --offset + 1`,
+		},
+		{
 			"In names no field at all", "goals list",
 			func(l *Leaf) { l.Params = Params{"status": In("")} },
 			`goals list: Params["status"] binds In(""), which names no field`,

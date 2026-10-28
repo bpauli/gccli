@@ -1,0 +1,146 @@
+Error case: a negative --from is a usage error before any request.
+-- args --
+activity
+trim
+12345678
+--from=-1m
+-- table stdout --
+-- table stderr --
+Usage: gccli activity trim <id> [flags]
+
+Trim the start or end of an activity.
+
+For single-sport activities. Give --from, --to or both. Garmin applies the trim
+in a few seconds. To bring back the original, use activity restore.
+
+Arguments:
+  <id>    Activity ID.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --from=FROM         New start, as the time since the activity start (e.g.
+                          2m, 1h5m). Default: the activity start.
+      --to=TO             New end, as the time since the activity start (e.g.
+                          50m, 1h5m). Default: the activity end.
+
+gccli: error: activity trim: --from must not be negative, got -1m0s
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli activity trim <id> [flags]
+
+Trim the start or end of an activity.
+
+For single-sport activities. Give --from, --to or both. Garmin applies the trim
+in a few seconds. To bring back the original, use activity restore.
+
+Arguments:
+  <id>    Activity ID.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --from=FROM         New start, as the time since the activity start (e.g.
+                          2m, 1h5m). Default: the activity start.
+      --to=TO             New end, as the time since the activity start (e.g.
+                          50m, 1h5m). Default: the activity end.
+
+gccli: error: activity trim: --from must not be negative, got -1m0s
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli activity trim <id> [flags]
+
+Trim the start or end of an activity.
+
+For single-sport activities. Give --from, --to or both. Garmin applies the trim
+in a few seconds. To bring back the original, use activity restore.
+
+Arguments:
+  <id>    Activity ID.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --from=FROM         New start, as the time since the activity start (e.g.
+                          2m, 1h5m). Default: the activity start.
+      --to=TO             New end, as the time since the activity start (e.g.
+                          50m, 1h5m). Default: the activity end.
+
+gccli: error: activity trim: --from must not be negative, got -1m0s
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli activity trim <id> [flags]
+
+Trim the start or end of an activity.
+
+For single-sport activities. Give --from, --to or both. Garmin applies the trim
+in a few seconds. To bring back the original, use activity restore.
+
+Arguments:
+  <id>    Activity ID.
+
+Flags:
+  -h, --help              Show context-sensitive help.
+  -j, --json              Output as JSON ($GCCLI_JSON).
+      --plain             Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header            Print the column names as the first line of --plain
+                          output ($GCCLI_HEADER).
+      --color="auto"      Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING    Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"      Unit system for distances, speeds, paces,
+                          elevations and weights in table and plain output:
+                          auto (Garmin profile), metric, statute_us, statute_uk
+                          ($GCCLI_UNITS).
+      --version           Print version information.
+
+      --from=FROM         New start, as the time since the activity start (e.g.
+                          2m, 1h5m). Default: the activity start.
+      --to=TO             New end, as the time since the activity start (e.g.
+                          50m, 1h5m). Default: the activity end.
+
+gccli: error: activity trim: --from must not be negative, got -1m0s
+-- json exit --
+2
+-- json requests --
