@@ -1,0 +1,37 @@
+The saved group is hidden, so --privacy PUBLIC is refused before the PUT.
+-- args --
+groups
+edit
+1001
+--privacy
+PUBLIC
+-- route GET /group-service/group/1001?includeMembership=true --
+{"id":1001,"groupName":"E2E Club","groupDescription":"Old text","groupVisibility":"HIDDEN","groupPrivacy":"INVITE","ownerId":3141592,"defaultImageName":"running_01","profileImageUrlLarge":null,"profileImageUrlMedium":null,"profileImageUrlSmall":null,"location":null,"primaryActivities":["RUNNING"],"leaderboardTypes":[],"featureTypes":[],"activityFeedTypes":[],"membershipStatus":"OWNER"}
+-- table stdout --
+-- table stderr --
+edit group: a hidden group is invite-only: use --privacy INVITE or --visibility VISIBLE
+-- table exit --
+1
+-- table requests --
+GET /group-service/group/1001?includeMembership=true
+-- plain stdout --
+-- plain stderr --
+edit group: a hidden group is invite-only: use --privacy INVITE or --visibility VISIBLE
+-- plain exit --
+1
+-- plain requests --
+GET /group-service/group/1001?includeMembership=true
+-- plain-header stdout --
+-- plain-header stderr --
+edit group: a hidden group is invite-only: use --privacy INVITE or --visibility VISIBLE
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /group-service/group/1001?includeMembership=true
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","message":"edit group: a hidden group is invite-only: use --privacy INVITE or --visibility VISIBLE"}}
+-- json exit --
+1
+-- json requests --
+GET /group-service/group/1001?includeMembership=true

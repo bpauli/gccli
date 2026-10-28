@@ -1,0 +1,120 @@
+A hidden group is invite-only.
+-- args --
+groups
+create
+E2E Club
+--visibility
+HIDDEN
+--privacy
+INVITE
+--image
+swimming_01
+-- route POST /group-service/group --
+{"id":2002,"groupName":"E2E Club"}
+-- table stdout --
+-- table stderr --
+Created group "E2E Club" (ID: 2002)
+-- table exit --
+0
+-- table requests --
+POST /group-service/group
+  {
+    "activityFeedTypes": [],
+    "defaultImageName": "swimming_01",
+    "facebookUrl": "",
+    "featureTypes": [],
+    "groupDescription": "",
+    "groupName": "E2E Club",
+    "groupPrivacy": "INVITE",
+    "groupVisibility": "HIDDEN",
+    "leaderboardTypes": [],
+    "location": "",
+    "otherPrimaryActivity": "",
+    "primaryActivities": [],
+    "profileImageUrlLarge": null,
+    "profileImageUrlMedium": null,
+    "profileImageUrlSmall": null,
+    "twitterUrl": "",
+    "websiteUrl": ""
+  }
+-- plain stdout --
+-- plain stderr --
+Created group "E2E Club" (ID: 2002)
+-- plain exit --
+0
+-- plain requests --
+POST /group-service/group
+  {
+    "activityFeedTypes": [],
+    "defaultImageName": "swimming_01",
+    "facebookUrl": "",
+    "featureTypes": [],
+    "groupDescription": "",
+    "groupName": "E2E Club",
+    "groupPrivacy": "INVITE",
+    "groupVisibility": "HIDDEN",
+    "leaderboardTypes": [],
+    "location": "",
+    "otherPrimaryActivity": "",
+    "primaryActivities": [],
+    "profileImageUrlLarge": null,
+    "profileImageUrlMedium": null,
+    "profileImageUrlSmall": null,
+    "twitterUrl": "",
+    "websiteUrl": ""
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Created group "E2E Club" (ID: 2002)
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /group-service/group
+  {
+    "activityFeedTypes": [],
+    "defaultImageName": "swimming_01",
+    "facebookUrl": "",
+    "featureTypes": [],
+    "groupDescription": "",
+    "groupName": "E2E Club",
+    "groupPrivacy": "INVITE",
+    "groupVisibility": "HIDDEN",
+    "leaderboardTypes": [],
+    "location": "",
+    "otherPrimaryActivity": "",
+    "primaryActivities": [],
+    "profileImageUrlLarge": null,
+    "profileImageUrlMedium": null,
+    "profileImageUrlSmall": null,
+    "twitterUrl": "",
+    "websiteUrl": ""
+  }
+-- json stdout --
+{
+  "id": 2002,
+  "groupName": "E2E Club"
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /group-service/group
+  {
+    "activityFeedTypes": [],
+    "defaultImageName": "swimming_01",
+    "facebookUrl": "",
+    "featureTypes": [],
+    "groupDescription": "",
+    "groupName": "E2E Club",
+    "groupPrivacy": "INVITE",
+    "groupVisibility": "HIDDEN",
+    "leaderboardTypes": [],
+    "location": "",
+    "otherPrimaryActivity": "",
+    "primaryActivities": [],
+    "profileImageUrlLarge": null,
+    "profileImageUrlMedium": null,
+    "profileImageUrlSmall": null,
+    "twitterUrl": "",
+    "websiteUrl": ""
+  }

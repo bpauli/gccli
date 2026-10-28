@@ -28,7 +28,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Events** — list, list upcoming, add, and delete calendar events (races, group rides, etc.) with goals and training priority support
 - **Calendar** - month view of activities, workouts, events and notes, add, update, move and delete calendar notes, turn the iCalendar feed on and off, and change the web calendar preferences
 - **Wellness** - menstrual cycle data and calendar, menstrual daily log (view, set, delete), pregnancy summary, jet lag trips (list, add, update, delete) and status
-- **Social** - notifications (page with a cursor, dismiss and undismiss, unread state), view and change notification preferences, connections, connection requests, followers, following, follow and unfollow, follow requests, mute, user search, newsfeed, groups (search, show a group with its members, feed, member activities and open challenges, join a public group, leave a group)
+- **Social** - notifications (page with a cursor, dismiss and undismiss, unread state), view and change notification preferences, connections, connection requests, followers, following, follow and unfollow, follow requests, mute, user search, newsfeed, groups (search, show a group with its members, feed, member activities and open challenges, join a public group, leave a group, create, edit and delete a group of yours)
 - **Insights** - compare your steps, sleep, floors, VO2 max, speed, power and more with people of your age group and gender (needs Insights turned on in Garmin Connect)
 - **Golf** - scorecards, the courses you played, golf and shot stats (drive, approach, chip, putt), one course by ID, the clubs in your bag, club and shaft flex types and leaderboards
 - **Agent-ready** - ships a bundled agent skill (`skills/gccli/`) that plugs into AI assistants like Claude Code, Codex, Hermes, and OpenClaw so you can drive Garmin Connect in plain language
@@ -965,6 +965,9 @@ gccli groups leaderboard <group-id> --metric distance --activity running # Rank 
 gccli groups requests                  # List your pending requests to join private groups
 gccli groups join <group-id>           # Join a public group
 gccli groups leave <group-id>          # Leave a group (asks first, --force skips it)
+gccli groups create "Sunday runners" --visibility HIDDEN --image swimming_01
+gccli groups edit <group-id> --description "" --location Berlin   # An empty text clears the field
+gccli groups delete <group-id>         # Delete a group you own (asks first, --force skips it)
 ```
 
 `unfollow`, `remove-follower` and `unmute` read the follow status or the muted list first, because Garmin answers 204 whether there is something to remove or not. They exit 1 when there is nothing to remove. `unfollow` and `remove-follower` ask first (`--force` skips the question). Garmin no longer takes new connection requests (410 `API_DEPRECATED`), so gccli has no command to send one.
@@ -1837,6 +1840,23 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli groups join <id>`: Join a public group. gccli does not send the request that a private group needs.
   - `<id>`: Group ID.
 - `gccli groups leave <id> [flags]`: Leave a group.
+  - `<id>`: Group ID.
+  - `-f, --force`: Skip confirmation prompt.
+- `gccli groups create <name> [flags]`: Create a group.
+  - `<name>`: Group name.
+  - `--description=STRING`: Group description.
+  - `--location=STRING`: Group location.
+  - `--visibility="VISIBLE"`: Who can find the group. A hidden group is invite-only. One of: VISIBLE, HIDDEN.
+  - `--privacy=PRIVACY`: Who can join: PUBLIC, PRIVATE or INVITE. Defaults to PUBLIC, or INVITE for a hidden group.
+  - `--image="running_01"`: Default group image. One of: running_01, roadcycling_01, mountain_cycling_01, swimming_01, health_fitness_01, golf_01, para_sports_01.
+- `gccli groups edit <id> [flags]`: Edit a group you own.
+  - `<id>`: Group ID.
+  - `--name=STRING`: New name.
+  - `--description=STRING`: New description. An empty text clears it.
+  - `--location=STRING`: New location. An empty text clears it.
+  - `--visibility=VISIBILITY`: Who can find the group. Hiding a group makes it invite-only. One of: VISIBLE, HIDDEN.
+  - `--privacy=PRIVACY`: Who can join: PUBLIC, PRIVATE or INVITE.
+- `gccli groups delete <id> [flags]`: Delete a group you own.
   - `<id>`: Group ID.
   - `-f, --force`: Skip confirmation prompt.
 - `gccli notifications list [flags]`: List notifications. Also runs as `gccli notifications [flags]`.

@@ -1,0 +1,118 @@
+The default group is visible and public with the default image running_01. The body is the web form payload. Garmin also accepts a body without an image.
+-- args --
+groups
+create
+E2E Club
+--description
+Sunday runs
+--location
+Berlin
+-- route POST /group-service/group --
+{"id":2002,"groupName":"E2E Club"}
+-- table stdout --
+-- table stderr --
+Created group "E2E Club" (ID: 2002)
+-- table exit --
+0
+-- table requests --
+POST /group-service/group
+  {
+    "activityFeedTypes": [],
+    "defaultImageName": "running_01",
+    "facebookUrl": "",
+    "featureTypes": [],
+    "groupDescription": "Sunday runs",
+    "groupName": "E2E Club",
+    "groupPrivacy": "PUBLIC",
+    "groupVisibility": "VISIBLE",
+    "leaderboardTypes": [],
+    "location": "Berlin",
+    "otherPrimaryActivity": "",
+    "primaryActivities": [],
+    "profileImageUrlLarge": null,
+    "profileImageUrlMedium": null,
+    "profileImageUrlSmall": null,
+    "twitterUrl": "",
+    "websiteUrl": ""
+  }
+-- plain stdout --
+-- plain stderr --
+Created group "E2E Club" (ID: 2002)
+-- plain exit --
+0
+-- plain requests --
+POST /group-service/group
+  {
+    "activityFeedTypes": [],
+    "defaultImageName": "running_01",
+    "facebookUrl": "",
+    "featureTypes": [],
+    "groupDescription": "Sunday runs",
+    "groupName": "E2E Club",
+    "groupPrivacy": "PUBLIC",
+    "groupVisibility": "VISIBLE",
+    "leaderboardTypes": [],
+    "location": "Berlin",
+    "otherPrimaryActivity": "",
+    "primaryActivities": [],
+    "profileImageUrlLarge": null,
+    "profileImageUrlMedium": null,
+    "profileImageUrlSmall": null,
+    "twitterUrl": "",
+    "websiteUrl": ""
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Created group "E2E Club" (ID: 2002)
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /group-service/group
+  {
+    "activityFeedTypes": [],
+    "defaultImageName": "running_01",
+    "facebookUrl": "",
+    "featureTypes": [],
+    "groupDescription": "Sunday runs",
+    "groupName": "E2E Club",
+    "groupPrivacy": "PUBLIC",
+    "groupVisibility": "VISIBLE",
+    "leaderboardTypes": [],
+    "location": "Berlin",
+    "otherPrimaryActivity": "",
+    "primaryActivities": [],
+    "profileImageUrlLarge": null,
+    "profileImageUrlMedium": null,
+    "profileImageUrlSmall": null,
+    "twitterUrl": "",
+    "websiteUrl": ""
+  }
+-- json stdout --
+{
+  "id": 2002,
+  "groupName": "E2E Club"
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /group-service/group
+  {
+    "activityFeedTypes": [],
+    "defaultImageName": "running_01",
+    "facebookUrl": "",
+    "featureTypes": [],
+    "groupDescription": "Sunday runs",
+    "groupName": "E2E Club",
+    "groupPrivacy": "PUBLIC",
+    "groupVisibility": "VISIBLE",
+    "leaderboardTypes": [],
+    "location": "Berlin",
+    "otherPrimaryActivity": "",
+    "primaryActivities": [],
+    "profileImageUrlLarge": null,
+    "profileImageUrlMedium": null,
+    "profileImageUrlSmall": null,
+    "twitterUrl": "",
+    "websiteUrl": ""
+  }

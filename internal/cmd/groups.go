@@ -2,15 +2,18 @@ package cmd
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/url"
 	"strconv"
+	"strings"
 	"time"
 
+	"github.com/bpauli/gccli/internal/garminapi"
 	"github.com/bpauli/gccli/internal/outfmt"
 )
 
-var groupsGroup = Group{Name: "groups", Help: "List, search, join and leave groups.", Children: []Node{
+var groupsGroup = Group{Name: "groups", Help: "List, search, create, edit, delete, join and leave groups.", Children: []Node{
 	Leaf{
 		Name: "list", Help: "List your groups.", Default: true,
 		Endpoint: "groups.list",
@@ -87,6 +90,18 @@ var groupsGroup = Group{Name: "groups", Help: "List, search, join and leave grou
 		Params:   Params{"groupID": In("ID"), "profileID": ProfilePK},
 		Verb:     "leave group",
 		Output:   Write{Done: "Left group {ID}", Confirm: "Leave group {ID}?"},
+	},
+	Custom{Name: "create", Help: "Create a group.", Cmd: &GroupsCreateCmd{}},
+	Custom{Name: "edit", Help: "Edit a group you own.", Cmd: &GroupsEditCmd{}},
+	Leaf{
+		Name: "delete", Help: "Delete a group you own.",
+		Spec: argsOf(&struct {
+			ID ID `arg:"" help:"Group ID."`
+		}{}),
+		Endpoint: "groups.delete",
+		Params:   Params{"groupID": In("ID")},
+		Verb:     "delete group",
+		Output:   Write{Done: "Deleted group {ID}", Confirm: "Delete group {ID}? This removes it for all members."},
 	},
 }}
 
@@ -259,4 +274,88 @@ func (c *GroupsLeaderboardCmd) Run(g *Globals) error {
 		{Label: "NAME", Path: "userInfo.fullname"},
 		{Label: "VALUE", Path: "value", Format: m.format},
 	}}.print(g, client, ranked)
+}
+
+type GroupsCreateCmd struct {
+	Name        FreeText `arg:"" help:"Group name."`
+	Description string   `help:"Group description."`
+	Location    string   `help:"Group location."`
+	Visibility  string   `help:"Who can find the group. A hidden group is invite-only." enum:"VISIBLE,HIDDEN" default:"VISIBLE"`
+	Privacy     *string  `help:"Who can join: PUBLIC, PRIVATE or INVITE. Defaults to PUBLIC, or INVITE for a hidden group." enum:"PUBLIC,PRIVATE,INVITE" placeholder:"PRIVACY"`
+	Image       string   `help:"Default group image." enum:"running_01,roadcycling_01,mountain_cycling_01,swimming_01,health_fitness_01,golf_01,para_sports_01" default:"running_01"`
+}
+
+func (c *GroupsCreateCmd) Validate() error {
+	if c.Privacy != nil {
+		return garminapi.CheckGroupAccess(c.Visibility, *c.Privacy)
+	}
+	return nil
+}
+
+func (c *GroupsCreateCmd) Run(g *Globals) error {
+	client, err := resolveClient(g)
+	if err != nil {
+		return err
+	}
+	privacy := ""
+	if c.Privacy != nil {
+		privacy = *c.Privacy
+	}
+	data, err := client.CreateGroup(g.Context, garminapi.NewGroup{
+		Name:        string(c.Name),
+		Description: c.Description,
+		Location:    c.Location,
+		Visibility:  c.Visibility,
+		Privacy:     privacy,
+		Image:       c.Image,
+	})
+	if err != nil {
+		return fmt.Errorf("create group: %w", err)
+	}
+	var resp map[string]any
+	_ = json.Unmarshal(data, &resp)
+	if id := jsonString(resp, "id"); id != "" {
+		return reportWrite(g, data, "Created group %q (ID: %s)", c.Name, id)
+	}
+	return reportWrite(g, data, "Created group %q", c.Name)
+}
+
+type GroupsEditCmd struct {
+	ID          NumericID `arg:"" help:"Group ID."`
+	Name        *string   `help:"New name." placeholder:"STRING"`
+	Description *string   `help:"New description. An empty text clears it." placeholder:"STRING"`
+	Location    *string   `help:"New location. An empty text clears it." placeholder:"STRING"`
+	Visibility  *string   `help:"Who can find the group. Hiding a group makes it invite-only." enum:"VISIBLE,HIDDEN" placeholder:"VISIBILITY"`
+	Privacy     *string   `help:"Who can join: PUBLIC, PRIVATE or INVITE." enum:"PUBLIC,PRIVATE,INVITE" placeholder:"PRIVACY"`
+}
+
+func (c *GroupsEditCmd) Validate() error {
+	if c.ID < 1 {
+		return errors.New("the group ID must be a positive number")
+	}
+	if c.Name == nil && c.Description == nil && c.Location == nil && c.Visibility == nil && c.Privacy == nil {
+		return errors.New("nothing to change: give --name, --description, --location, --visibility or --privacy")
+	}
+	if c.Name != nil && strings.TrimSpace(*c.Name) == "" {
+		return errors.New("the group name must not be empty")
+	}
+	return nil
+}
+
+func (c *GroupsEditCmd) Run(g *Globals) error {
+	client, err := resolveClient(g)
+	if err != nil {
+		return err
+	}
+	data, err := client.UpdateGroup(g.Context, c.ID.String(), garminapi.GroupEdit{
+		Name:        c.Name,
+		Description: c.Description,
+		Location:    c.Location,
+		Visibility:  c.Visibility,
+		Privacy:     c.Privacy,
+	})
+	if err != nil {
+		return fmt.Errorf("edit group: %w", err)
+	}
+	return reportWrite(g, data, "Updated group %s", c.ID)
 }
