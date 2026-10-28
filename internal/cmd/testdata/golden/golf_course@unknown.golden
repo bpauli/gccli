@@ -1,0 +1,35 @@
+Garmin answers 200 with an empty list for a snapshot ID it does not know.
+-- args --
+golf
+course
+0
+-- route GET /gcs-golfcommunity/api/v2/course-snapshot?course-snapshot-ids=0&user-locale=en --
+[]
+-- table stdout --
+[]
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /gcs-golfcommunity/api/v2/course-snapshot?course-snapshot-ids=0&user-locale=en
+-- plain stdout --
+[]
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /gcs-golfcommunity/api/v2/course-snapshot?course-snapshot-ids=0&user-locale=en
+-- plain-header stdout --
+[]
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /gcs-golfcommunity/api/v2/course-snapshot?course-snapshot-ids=0&user-locale=en
+-- json stdout --
+[]
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /gcs-golfcommunity/api/v2/course-snapshot?course-snapshot-ids=0&user-locale=en

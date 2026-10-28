@@ -1,0 +1,81 @@
+A serving with no numberOfUnits counts as one unit. The message names the unit alone (2 x g), not 2 x 0 g.
+-- args --
+nutrition
+favorites
+add
+1001
+--query
+apple
+--serving
+g
+--servings
+2
+-- route GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50 noeol --
+{"moreDataAvailable":false,"results":[{"type":"FOOD","foodMetaData":{"foodId":"1001","foodName":"Test Apple","foodType":"GENERIC","source":"FATSECRET","regionCode":"US","languageCode":"en"},"foodImages":[],"nutritionContents":[{"servingId":"2001","servingUnit":"medium","numberOfUnits":1.0,"calories":95},{"servingId":"2003","servingUnit":"g","calories":52}],"isRecent":false,"isFavorite":false}]}
+-- route PUT /nutrition-service/favorite/food 204 --
+-- table stdout --
+-- table stderr --
+Added Test Apple (2 x g) to favorite foods
+-- table exit --
+0
+-- table requests --
+GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50
+PUT /nutrition-service/favorite/food
+  {
+    "foodId": "1001",
+    "servingId": "2003",
+    "source": "FATSECRET",
+    "servingQty": 2,
+    "regionCode": "US",
+    "languageCode": "en"
+  }
+-- plain stdout --
+-- plain stderr --
+Added Test Apple (2 x g) to favorite foods
+-- plain exit --
+0
+-- plain requests --
+GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50
+PUT /nutrition-service/favorite/food
+  {
+    "foodId": "1001",
+    "servingId": "2003",
+    "source": "FATSECRET",
+    "servingQty": 2,
+    "regionCode": "US",
+    "languageCode": "en"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Added Test Apple (2 x g) to favorite foods
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50
+PUT /nutrition-service/favorite/food
+  {
+    "foodId": "1001",
+    "servingId": "2003",
+    "source": "FATSECRET",
+    "servingQty": 2,
+    "regionCode": "US",
+    "languageCode": "en"
+  }
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /nutrition-service/food/search?searchExpression=apple&start=0&limit=50
+PUT /nutrition-service/favorite/food
+  {
+    "foodId": "1001",
+    "servingId": "2003",
+    "source": "FATSECRET",
+    "servingQty": 2,
+    "regionCode": "US",
+    "languageCode": "en"
+  }

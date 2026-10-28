@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/url"
 	"strconv"
@@ -116,13 +115,6 @@ func (c *GroupsSearchCmd) Run(g *Globals) error {
 // numbers, as the web app sends them.
 type GroupsJoinCmd struct {
 	ID NumericID `arg:"" help:"Group ID."`
-}
-
-func (c *GroupsJoinCmd) Validate() error {
-	if c.ID < 1 {
-		return errors.New("the group ID must be a positive number")
-	}
-	return nil
 }
 
 func (c *GroupsJoinCmd) Run(g *Globals) error {

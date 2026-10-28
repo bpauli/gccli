@@ -30,7 +30,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Wellness** - menstrual cycle data and calendar, menstrual daily log (view, set, delete), pregnancy summary, jet lag trips (list, add, update, delete) and status
 - **Social** - notifications (page with a cursor, dismiss and undismiss, unread state), view and change notification preferences, connections, connection requests, followers, following, follow and unfollow, follow requests, mute, user search, newsfeed, groups (search, show a group with its members, feed, member activities and open challenges, join a public group, leave a group)
 - **Insights** - compare your steps, sleep, floors, VO2 max, speed, power and more with people of your age group and gender (needs Insights turned on in Garmin Connect)
-- **Golf** - scorecards, the courses you played, golf and shot stats (drive, approach, chip, putt), the clubs in your bag, club types and leaderboards
+- **Golf** - scorecards, the courses you played, golf and shot stats (drive, approach, chip, putt), one course by ID, the clubs in your bag, club and shaft flex types and leaderboards
 - **Agent-ready** - ships a bundled agent skill (`skills/gccli/`) that plugs into AI assistants like Claude Code, Codex, Hermes, and OpenClaw so you can drive Garmin Connect in plain language
 - **Multiple accounts** — manage multiple Garmin accounts via `--account` flag
 - **Credential storage** in the OS keyring (macOS Keychain, Linux Secret Service), with a file fallback (see [Credential Storage](#credential-storage))
@@ -606,7 +606,7 @@ gccli workouts update 123456 workout.json
 
 The workout keeps its ID and any calendar entries that point at it. `workoutId` in the file is set from the ID argument before the request goes out, so a payload written for `upload` works as-is; if the file already names a different workout, gccli warns and still updates the one given on the command line.
 
-**Sending a workout to a device.** `gccli workouts send <id>` puts the workout in the message queue of a device. The device downloads it at its next sync. gccli keeps the devices that can receive the workout, as the Garmin Connect web app does: the device must be workout-capable and support the sport of the workout. When exactly one device is left, gccli sends to it. When more are left, the command fails before any write, and the error lists their IDs for `--device`. The send prints the message ID. Until the device syncs, `gccli devices messages cancel <message-id>` removes the message. After the sync, the cancel fails with exit code 1.
+**Sending a workout to a device.** `gccli workouts send <id>` puts the workout in the message queue of a device. The device downloads it at its next sync. gccli keeps the devices that can receive the workout, as the Garmin Connect web app does: the device must be workout-capable and support the sport of the workout. A workout of more than 50 steps also needs a device with `enhancedWorkoutStepCapable`; rest steps do not count, a repeat counts its steps once per iteration, and yoga workouts have no limit. When exactly one device is left, gccli sends to it. When more are left, the command fails before any write, and the error lists their IDs for `--device`. The send prints the message ID. Until the device syncs, `gccli devices messages cancel <message-id>` removes the message. After the sync, or for an ID that is not in the queue, the cancel fails with exit code 1. A message of another type than `workouts` or `courses`, such as `settings-change`, needs a yes at a prompt or `--force`, because gccli cannot send it again.
 
 **Workout JSON structure** for `gccli workouts upload`:
 
@@ -1534,8 +1534,9 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli devices backups list`: List device backups.
 - `gccli devices historical`: List historical devices.
 - `gccli devices messages list`: List device messages. Also runs as `gccli devices messages`.
-- `gccli devices messages cancel <id>`: Cancel a device message, such as a sent workout, before the device syncs.
+- `gccli devices messages cancel <id> [flags]`: Cancel a device message, such as a sent workout, before the device syncs.
   - `<id>`: Message ID (from 'devices messages').
+  - `-f, --force`: Skip the prompt for a message that is not a workout or a course.
 
 ### Gear
 
@@ -1855,11 +1856,14 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli golf courses [flags]`: List the golf courses you played.
   - `-l, --limit=20`: Maximum number of courses to return.
   - `--offset=0`: Number of courses to skip.
+- `gccli golf course <id>`: Show one golf course by its course snapshot ID.
+  - `<id>`: Course snapshot ID.
 - `gccli golf stats`: Show your golf statistics.
 - `gccli golf shot-stats <kind>`: Show your golf shot statistics of one shot type.
   - `<kind>`: Shot type: drive, approach, chip or putt.
 - `gccli golf clubs`: List the golf clubs in your bag.
 - `gccli golf club-types`: List the golf club types with their loft and lie angles.
+- `gccli golf club-flex-types`: List the golf club shaft flex types.
 - `gccli golf leaderboards [flags]`: List the golf leaderboards you played in.
   - `-l, --limit=20`: Maximum number of leaderboards to return.
   - `--offset=0`: Number of leaderboards to skip.

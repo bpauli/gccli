@@ -552,7 +552,7 @@ gccli activities list --limit 5</pre>
           <div class="feature-card fade-in">
             <div class="feature-icon green">&#x26f3;</div>
             <h3>Golf</h3>
-            <p>List your golf scorecards, the courses you played and your leaderboards. Show your golf stats and your drive, approach, chip and putt stats, and the clubs in your bag.</p>
+            <p>List your golf scorecards, the courses you played and your leaderboards. Show your golf stats and your drive, approach, chip and putt stats, one course by its snapshot ID, and the clubs in your bag.</p>
           </div>
           <div class="feature-card fade-in">
             <div class="feature-icon violet">&#x1f464;</div>
@@ -879,7 +879,7 @@ gccli activities list --limit 5</pre>
               <div class="cmd-row"><div class="cmd">gccli devices backups list</div><div class="desc">List device backups.</div></div>
               <div class="cmd-row"><div class="cmd">gccli devices historical</div><div class="desc">List historical devices.</div></div>
               <div class="cmd-row"><div class="cmd">gccli devices messages list</div><div class="desc">List device messages. Also runs as <span class="whole"><code>gccli devices messages</code>.</span></div></div>
-              <div class="cmd-row"><div class="cmd">gccli devices messages cancel &lt;id&gt;</div><div class="desc">Cancel a device message, such as a sent workout, before the device syncs.<br><code>&lt;id&gt;</code> Message ID (from &#39;devices messages&#39;).</div></div>
+              <div class="cmd-row"><div class="cmd">gccli devices messages cancel &lt;id&gt; [flags]</div><div class="desc">Cancel a device message, such as a sent workout, before the device syncs.<br><code>&lt;id&gt;</code> Message ID (from &#39;devices messages&#39;).<br><code><span class="nowrap">-f,</span> <span class="nowrap">--force</span></code> Skip the prompt for a message that is not a workout or a course.</div></div>
             </div>
           </div>
 
@@ -1038,10 +1038,12 @@ gccli activities list --limit 5</pre>
             <div class="cmd-body">
               <div class="cmd-row"><div class="cmd">gccli golf scorecards [flags]</div><div class="desc">List your golf scorecards. Also runs as <span class="whole"><code>gccli golf [flags]</code>.</span><br><code><span class="nowrap">-l,</span> <span class="nowrap">--limit=</span><wbr>20</code> Maximum number of scorecards to return.<br><code><span class="nowrap">--offset=</span><wbr>0</code> Number of scorecards to skip.</div></div>
               <div class="cmd-row"><div class="cmd">gccli golf courses [flags]</div><div class="desc">List the golf courses you played.<br><code><span class="nowrap">-l,</span> <span class="nowrap">--limit=</span><wbr>20</code> Maximum number of courses to return.<br><code><span class="nowrap">--offset=</span><wbr>0</code> Number of courses to skip.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli golf course &lt;id&gt;</div><div class="desc">Show one golf course by its course snapshot ID.<br><code>&lt;id&gt;</code> Course snapshot ID.</div></div>
               <div class="cmd-row"><div class="cmd">gccli golf stats</div><div class="desc">Show your golf statistics.</div></div>
               <div class="cmd-row"><div class="cmd">gccli golf <span class="nowrap">shot-stats</span> &lt;kind&gt;</div><div class="desc">Show your golf shot statistics of one shot type.<br><code>&lt;kind&gt;</code> Shot type: drive, approach, chip or putt.</div></div>
               <div class="cmd-row"><div class="cmd">gccli golf clubs</div><div class="desc">List the golf clubs in your bag.</div></div>
               <div class="cmd-row"><div class="cmd">gccli golf <span class="nowrap">club-types</span></div><div class="desc">List the golf club types with their loft and lie angles.</div></div>
+              <div class="cmd-row"><div class="cmd">gccli golf <span class="nowrap">club-flex-types</span></div><div class="desc">List the golf club shaft flex types.</div></div>
               <div class="cmd-row"><div class="cmd">gccli golf leaderboards [flags]</div><div class="desc">List the golf leaderboards you played in.<br><code><span class="nowrap">-l,</span> <span class="nowrap">--limit=</span><wbr>20</code> Maximum number of leaderboards to return.<br><code><span class="nowrap">--offset=</span><wbr>0</code> Number of leaderboards to skip.</div></div>
             </div>
           </div>
