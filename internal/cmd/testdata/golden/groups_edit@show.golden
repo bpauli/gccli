@@ -1,0 +1,125 @@
+Showing a hidden group keeps its saved privacy.
+-- args --
+groups
+edit
+1001
+--visibility
+VISIBLE
+-- route GET /group-service/group/1001?includeMembership=true --
+{"id":1001,"groupName":"E2E Club","groupDescription":"Old text","groupVisibility":"HIDDEN","groupPrivacy":"INVITE","ownerId":3141592,"defaultImageName":"running_01","profileImageUrlLarge":null,"profileImageUrlMedium":null,"profileImageUrlSmall":null,"location":null,"primaryActivities":["RUNNING"],"leaderboardTypes":[],"featureTypes":[],"activityFeedTypes":[],"membershipStatus":"OWNER"}
+-- route PUT /group-service/group/1001 --
+{"id":1001}
+-- table stdout --
+-- table stderr --
+Updated group 1001
+-- table exit --
+0
+-- table requests --
+GET /group-service/group/1001?includeMembership=true
+PUT /group-service/group/1001
+  {
+    "activityFeedTypes": [],
+    "defaultImageName": "running_01",
+    "featureTypes": [],
+    "groupDescription": "Old text",
+    "groupName": "E2E Club",
+    "groupPrivacy": "INVITE",
+    "groupVisibility": "VISIBLE",
+    "id": 1001,
+    "leaderboardTypes": [],
+    "location": null,
+    "membershipStatus": "OWNER",
+    "ownerId": 3141592,
+    "primaryActivities": [
+      "RUNNING"
+    ],
+    "profileImageUrlLarge": null,
+    "profileImageUrlMedium": null,
+    "profileImageUrlSmall": null
+  }
+-- plain stdout --
+-- plain stderr --
+Updated group 1001
+-- plain exit --
+0
+-- plain requests --
+GET /group-service/group/1001?includeMembership=true
+PUT /group-service/group/1001
+  {
+    "activityFeedTypes": [],
+    "defaultImageName": "running_01",
+    "featureTypes": [],
+    "groupDescription": "Old text",
+    "groupName": "E2E Club",
+    "groupPrivacy": "INVITE",
+    "groupVisibility": "VISIBLE",
+    "id": 1001,
+    "leaderboardTypes": [],
+    "location": null,
+    "membershipStatus": "OWNER",
+    "ownerId": 3141592,
+    "primaryActivities": [
+      "RUNNING"
+    ],
+    "profileImageUrlLarge": null,
+    "profileImageUrlMedium": null,
+    "profileImageUrlSmall": null
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Updated group 1001
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /group-service/group/1001?includeMembership=true
+PUT /group-service/group/1001
+  {
+    "activityFeedTypes": [],
+    "defaultImageName": "running_01",
+    "featureTypes": [],
+    "groupDescription": "Old text",
+    "groupName": "E2E Club",
+    "groupPrivacy": "INVITE",
+    "groupVisibility": "VISIBLE",
+    "id": 1001,
+    "leaderboardTypes": [],
+    "location": null,
+    "membershipStatus": "OWNER",
+    "ownerId": 3141592,
+    "primaryActivities": [
+      "RUNNING"
+    ],
+    "profileImageUrlLarge": null,
+    "profileImageUrlMedium": null,
+    "profileImageUrlSmall": null
+  }
+-- json stdout --
+{
+  "id": 1001
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /group-service/group/1001?includeMembership=true
+PUT /group-service/group/1001
+  {
+    "activityFeedTypes": [],
+    "defaultImageName": "running_01",
+    "featureTypes": [],
+    "groupDescription": "Old text",
+    "groupName": "E2E Club",
+    "groupPrivacy": "INVITE",
+    "groupVisibility": "VISIBLE",
+    "id": 1001,
+    "leaderboardTypes": [],
+    "location": null,
+    "membershipStatus": "OWNER",
+    "ownerId": 3141592,
+    "primaryActivities": [
+      "RUNNING"
+    ],
+    "profileImageUrlLarge": null,
+    "profileImageUrlMedium": null,
+    "profileImageUrlSmall": null
+  }

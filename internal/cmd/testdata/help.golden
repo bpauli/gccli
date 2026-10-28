@@ -465,6 +465,9 @@ Commands:
   groups join                      Join a public group. gccli does not send the
                                    request that a private group needs.
   groups leave                     Leave a group.
+  groups create                    Create a group.
+  groups edit                      Edit a group you own.
+  groups delete                    Delete a group you own.
   insights options                 List the genders, ages, dates, activities and
                                    fields for insights compare.
   insights compare                 Compare a metric with your age group.
@@ -2592,7 +2595,7 @@ Commands:
 $ gccli groups --help
 Usage: gccli groups <command> [flags]
 
-List, search, join and leave groups.
+List, search, create, edit, delete, join and leave groups.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -2620,6 +2623,9 @@ Commands:
   groups join          Join a public group. gccli does not send the request that
                        a private group needs.
   groups leave         Leave a group.
+  groups create        Create a group.
+  groups edit          Edit a group you own.
+  groups delete        Delete a group you own.
 
 $ gccli insights --help
 Usage: gccli insights <command> [flags]

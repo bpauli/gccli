@@ -1,0 +1,141 @@
+Error case: no flag names a change, so no request is sent and the exit code is 2 (usage).
+-- args --
+groups
+edit
+1001
+-- table stdout --
+-- table stderr --
+Usage: gccli groups edit <id> [flags]
+
+Edit a group you own.
+
+Arguments:
+  <id>    Group ID.
+
+Flags:
+  -h, --help                     Show context-sensitive help.
+  -j, --json                     Output as JSON ($GCCLI_JSON).
+      --plain                    Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                   Print the column names as the first line of
+                                 --plain output ($GCCLI_HEADER).
+      --color="auto"             Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING           Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"             Unit system for distances, speeds, paces,
+                                 elevations and weights in table and plain
+                                 output: auto (Garmin profile), metric,
+                                 statute_us, statute_uk ($GCCLI_UNITS).
+      --version                  Print version information.
+
+      --name=STRING              New name.
+      --description=STRING       New description. An empty text clears it.
+      --location=STRING          New location. An empty text clears it.
+      --visibility=VISIBILITY    Who can find the group. Hiding a group makes it
+                                 invite-only.
+      --privacy=PRIVACY          Who can join: PUBLIC, PRIVATE or INVITE.
+
+gccli: error: groups edit: nothing to change: give --name, --description, --location, --visibility or --privacy
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli groups edit <id> [flags]
+
+Edit a group you own.
+
+Arguments:
+  <id>    Group ID.
+
+Flags:
+  -h, --help                     Show context-sensitive help.
+  -j, --json                     Output as JSON ($GCCLI_JSON).
+      --plain                    Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                   Print the column names as the first line of
+                                 --plain output ($GCCLI_HEADER).
+      --color="auto"             Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING           Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"             Unit system for distances, speeds, paces,
+                                 elevations and weights in table and plain
+                                 output: auto (Garmin profile), metric,
+                                 statute_us, statute_uk ($GCCLI_UNITS).
+      --version                  Print version information.
+
+      --name=STRING              New name.
+      --description=STRING       New description. An empty text clears it.
+      --location=STRING          New location. An empty text clears it.
+      --visibility=VISIBILITY    Who can find the group. Hiding a group makes it
+                                 invite-only.
+      --privacy=PRIVACY          Who can join: PUBLIC, PRIVATE or INVITE.
+
+gccli: error: groups edit: nothing to change: give --name, --description, --location, --visibility or --privacy
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli groups edit <id> [flags]
+
+Edit a group you own.
+
+Arguments:
+  <id>    Group ID.
+
+Flags:
+  -h, --help                     Show context-sensitive help.
+  -j, --json                     Output as JSON ($GCCLI_JSON).
+      --plain                    Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                   Print the column names as the first line of
+                                 --plain output ($GCCLI_HEADER).
+      --color="auto"             Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING           Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"             Unit system for distances, speeds, paces,
+                                 elevations and weights in table and plain
+                                 output: auto (Garmin profile), metric,
+                                 statute_us, statute_uk ($GCCLI_UNITS).
+      --version                  Print version information.
+
+      --name=STRING              New name.
+      --description=STRING       New description. An empty text clears it.
+      --location=STRING          New location. An empty text clears it.
+      --visibility=VISIBILITY    Who can find the group. Hiding a group makes it
+                                 invite-only.
+      --privacy=PRIVACY          Who can join: PUBLIC, PRIVATE or INVITE.
+
+gccli: error: groups edit: nothing to change: give --name, --description, --location, --visibility or --privacy
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli groups edit <id> [flags]
+
+Edit a group you own.
+
+Arguments:
+  <id>    Group ID.
+
+Flags:
+  -h, --help                     Show context-sensitive help.
+  -j, --json                     Output as JSON ($GCCLI_JSON).
+      --plain                    Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header                   Print the column names as the first line of
+                                 --plain output ($GCCLI_HEADER).
+      --color="auto"             Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING           Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"             Unit system for distances, speeds, paces,
+                                 elevations and weights in table and plain
+                                 output: auto (Garmin profile), metric,
+                                 statute_us, statute_uk ($GCCLI_UNITS).
+      --version                  Print version information.
+
+      --name=STRING              New name.
+      --description=STRING       New description. An empty text clears it.
+      --location=STRING          New location. An empty text clears it.
+      --visibility=VISIBILITY    Who can find the group. Hiding a group makes it
+                                 invite-only.
+      --privacy=PRIVACY          Who can join: PUBLIC, PRIVATE or INVITE.
+
+gccli: error: groups edit: nothing to change: give --name, --description, --location, --visibility or --privacy
+-- json exit --
+2
+-- json requests --
