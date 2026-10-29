@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.0] - 2026-10-29
+
+v3.1 adds about 140 commands: groups, segments, golf, nutrition logging, social follows, Garmin Coach plans, ad-hoc challenges and more. It fixes 4 commands that failed on every call. No v3.0.0 command or flag was removed or renamed.
+
 ### Added
 
 - `body export-blood-pressure` saves the Garmin blood pressure report as a PDF. `--period` (`daily` by default, `seven-days`, `four-weeks` or `yearly`) sets the layout and the range that ends on `--end` (default today): 1, 7, 28 or 364 days, because Garmin answers DATA_NOT_FOUND for any other length. `--output` names the file (default `blood_pressure_{period}_{end}.pdf`) and replaces an existing file. The command asks Garmin to create the report and waits for it for up to two minutes. A report without readings fails with exit 1 (`status DATA_NOT_FOUND`) and leaves the output file alone. Garmin offers no CSV, and its JSON format also returns a PDF, so there is no format flag. Garmin limits how many reports an account can start per hour and then answers 429, which is exit 5. (#284)
@@ -97,6 +101,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `challenges list` (also as `challenges`) failed for every call with exit 4, because Garmin no longer has its route. It now sends the seven reads of the current challenges page of the Garmin Connect web app and prints one JSON object with the answer of each read under the key of the web app: `autoChallenge`, `groupChallenges`, `adHocChallenges`, `vivokidChallenges`, `teamStepsVivokidChallenges`, `badgeChallenges` and `virtualChallenges`. An empty answer is `{}` for `autoChallenge` and `[]` for the others. If one read fails, the command fails. (#267)
 - `challenges badge` failed for every call with exit 4, because Garmin no longer has its route. It now reads `/badgechallenge-service/badgeChallenge/non-completed`, the path of the web app, and shows the joined badge challenges that are not completed. An empty answer prints `[]`. (#267)
 - `badges in-progress` failed for every call with exit 4, because Garmin has no read for badges in progress any more. It now reads the earned and the available badges and keeps each badge with progress short of its target, or with its target reached and earned fewer times than its limit, as python-garminconnect does. It prints the kept badges as a JSON array, `[]` when there are none. (#267)
+- `activity exercise-sets set --exercise ""` and `--exercise=` passed the `required` check, exited 0 and sent `"exerciseSets": null`, which could clear the exercise sets of the activity. An empty `--exercise` is now a usage error (exit 2) before the login, and no request is sent. (#310)
 
 ## [3.0.0] - 2026-10-20
 
@@ -676,7 +681,8 @@ Initial release of gccli — a fast, script-friendly CLI for Garmin Connect.
 - **CI pipeline** — GitHub Actions for fmt-check, lint, and test
 - **Cross-platform builds** — macOS (amd64/arm64) and Linux (amd64/arm64) via goreleaser
 
-[Unreleased]: https://github.com/bpauli/gccli/compare/v3.0.0...HEAD
+[Unreleased]: https://github.com/bpauli/gccli/compare/v3.1.0...HEAD
+[3.1.0]: https://github.com/bpauli/gccli/releases/tag/v3.1.0
 [3.0.0]: https://github.com/bpauli/gccli/releases/tag/v3.0.0
 [2.3.0]: https://github.com/bpauli/gccli/releases/tag/v2.3.0
 [2.2.0]: https://github.com/bpauli/gccli/releases/tag/v2.2.0
