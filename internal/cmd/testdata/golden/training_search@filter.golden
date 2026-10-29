@@ -13,28 +13,28 @@ HeartRate
 --locale
 de
 -- route POST /trainingplan-service/trainingplan/search?start=1&limit=1000&locale=de&types=Running&subTypes=5k&levels=Beginner&version=HeartRate --
-{"searchFilter":{"start":1,"limit":1000},"trainingPlanList":[{"trainingPlanId":101,"name":"5K","trainingType":{"typeKey":"Running"},"trainingSubType":{"subTypeKey":"5k"},"trainingLevel":{"levelKey":"Beginner"},"trainingVersion":{"versionName":"HeartRate"},"durationInWeeks":12},{"trainingPlanId":102,"name":"Half Marathon","trainingType":{"typeKey":"Running"},"trainingSubType":{"subTypeKey":"HalfMarathon"},"trainingLevel":{"levelKey":"Advanced"},"trainingVersion":{"versionName":"Time"},"durationInWeeks":16}]}
+{"searchFilter":{"start":1,"limit":1000},"trainingPlanList":[{"trainingPlanId":101,"name":"5K","trainingPlanCategory":"ITP","trainingType":{"typeKey":"Running"},"trainingSubType":{"subTypeKey":"5k"},"trainingLevel":{"levelKey":"Beginner"},"trainingVersion":{"versionName":"HeartRate"},"durationInWeeks":12},{"trainingPlanId":102,"name":"Half Marathon","trainingPlanCategory":"STATIC","trainingType":{"typeKey":"Running"},"trainingSubType":{"subTypeKey":"HalfMarathon"},"trainingLevel":{"levelKey":"Advanced"},"trainingVersion":{"versionName":"Time"},"durationInWeeks":16}]}
 -- table stdout --
-ID   NAME           SPORT    GOAL          LEVEL     TARGET     WEEKS
-101  5K             Running  5k            Beginner  HeartRate  12
-102  Half Marathon  Running  HalfMarathon  Advanced  Time       16
+ID   NAME           CATEGORY  SPORT    GOAL          LEVEL     TARGET     WEEKS
+101  5K             ITP       Running  5k            Beginner  HeartRate  12
+102  Half Marathon  STATIC    Running  HalfMarathon  Advanced  Time       16
 -- table stderr --
 -- table exit --
 0
 -- table requests --
 POST /trainingplan-service/trainingplan/search?start=1&limit=1000&locale=de&types=Running&subTypes=5k&levels=Beginner&version=HeartRate
 -- plain stdout --
-101	5K	Running	5k	Beginner	HeartRate	12
-102	Half Marathon	Running	HalfMarathon	Advanced	Time	16
+101	5K	ITP	Running	5k	Beginner	HeartRate	12
+102	Half Marathon	STATIC	Running	HalfMarathon	Advanced	Time	16
 -- plain stderr --
 -- plain exit --
 0
 -- plain requests --
 POST /trainingplan-service/trainingplan/search?start=1&limit=1000&locale=de&types=Running&subTypes=5k&levels=Beginner&version=HeartRate
 -- plain-header stdout --
-ID	NAME	SPORT	GOAL	LEVEL	TARGET	WEEKS
-101	5K	Running	5k	Beginner	HeartRate	12
-102	Half Marathon	Running	HalfMarathon	Advanced	Time	16
+ID	NAME	CATEGORY	SPORT	GOAL	LEVEL	TARGET	WEEKS
+101	5K	ITP	Running	5k	Beginner	HeartRate	12
+102	Half Marathon	STATIC	Running	HalfMarathon	Advanced	Time	16
 -- plain-header stderr --
 -- plain-header exit --
 0
@@ -50,6 +50,7 @@ POST /trainingplan-service/trainingplan/search?start=1&limit=1000&locale=de&type
     {
       "trainingPlanId": 101,
       "name": "5K",
+      "trainingPlanCategory": "ITP",
       "trainingType": {
         "typeKey": "Running"
       },
@@ -67,6 +68,7 @@ POST /trainingplan-service/trainingplan/search?start=1&limit=1000&locale=de&type
     {
       "trainingPlanId": 102,
       "name": "Half Marathon",
+      "trainingPlanCategory": "STATIC",
       "trainingType": {
         "typeKey": "Running"
       },

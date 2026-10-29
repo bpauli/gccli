@@ -1014,6 +1014,12 @@ Date shortcuts
   - `--locale="en"`: Locale for training plans (e.g. en, de, fr).
 - `gccli training plan <id>`: Show a specific training plan.
   - `<id>`: Training plan ID.
+- `gccli training coach-plan <id>`: Show a Garmin Coach plan, a plan of category FBT_ADAPTIVE.
+  - `<id>`: Training plan ID, as training search or training active prints it.
+- `gccli training phased-plan <id>`: Show a joined phased training plan, an ITP plan with peak weeks.
+  - `<id>`: ID of the joined training plan, as training active prints it. Garmin answers 400 for a plan that is not phased.
+- `gccli training strength-plan <id>`: Show a joined strength training plan, a plan of category STRENGTH.
+  - `<id>`: ID of the joined training plan, as training active prints it. Garmin answers 400 for a plan that is not a strength plan.
 - `gccli training active [flags]`: Show active training plans.
   - `--start=DATE`: Start date (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
 - `gccli training search [flags]`: Search the Garmin catalog of training plans.
@@ -1021,6 +1027,7 @@ Date shortcuts
   - `--goal=STRING`: Goal as Garmin prints it in the GOAL column, such as 5k, 10k, HalfMarathon or Marathon.
   - `--level=STRING`: Level as Garmin prints it in the LEVEL column, such as Beginner, Intermediate or Advanced.
   - `--target=STRING`: Workout target as Garmin prints it in the TARGET column, such as HeartRate or Time.
+  - `--category=CATEGORY,...`: Plan category: FBT_ADAPTIVE (Garmin Coach), STRENGTH, ITP or STATIC. Repeat the flag or separate with commas. Default: all categories.
   - `--locale="en"`: Locale for plan names (e.g. en, de, fr).
 - `gccli training schedule <id> [flags]`: List the workouts and notes of a training plan by week and day.
   - `<id>`: Training plan ID.
@@ -1028,6 +1035,13 @@ Date shortcuts
 - `gccli training join <id> [flags]`: Join a catalog training plan and schedule its workouts in the calendar.
   - `<id>`: Catalog training plan ID, as training search prints it.
   - `--start=DATE`: Day of the first workout (YYYY-MM-DD, today, yesterday, 3d, +30d). Defaults to today.
+- `gccli training coach-join --name=FREE-TEXT --end=DATE --day=DAY,... <id> [flags]`: Start a Garmin Coach plan from a template.
+  - `<id>`: Catalog ID of a Garmin Coach template, as training search --category FBT_ADAPTIVE prints it.
+  - `--name=FREE-TEXT`: Name of the new plan.
+  - `--end=DATE`: Last day of the plan (YYYY-MM-DD, today, yesterday, 3d, +30d).
+  - `--day=DAY,...`: Training day: MONDAY to SUNDAY. Repeat the flag or separate with commas. Each coach template sets how many days it needs, and Garmin rejects another number. One of: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY.
+  - `--long-day=DAY,...`: Day for the long workout: MONDAY to SUNDAY. Repeat the flag or separate with commas. One of: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY.
+  - `--locale="en"`: Locale for workout names (e.g. en, de, fr).
 - `gccli training leave <id> [flags]`: Leave a joined training plan and remove its workouts from the calendar.
   - `<id>`: ID of the joined training plan, as training join or training active prints it.
   - `-f, --force`: Skip confirmation prompt.
@@ -1107,7 +1121,7 @@ Worked examples
 - Calendar month: `gccli calendar month 2026 10` lists the activities, workouts, events, notes and other items of October 2026. `gccli calendar month --json | jq '[.calendarItems[] | select(.itemType == "activity")]'` keeps the activities of this month's grid.
 - Calendar feed: `gccli calendar export enable` turns on the feed and prints its URL, and `gccli calendar export show --plain` prints the URL alone. `gccli calendar export disable --force` turns it off.
 - Calendar preference: `gccli calendar preferences` shows the keys. `gccli calendar preferences set showWeeklyTotal false` turns one off.
-- Training plan: `gccli training search --sport Running --goal 5k --level Beginner` lists catalog plans with their ID. `gccli training join <id> --start 2026-11-02` joins one and prints the ID of your copy, which the other plan commands take. `gccli training schedule <plan-id>` lists the workouts with their task IDs. `gccli training task move <plan-id> <task-id> 2026-11-04` moves a workout and prints its new task ID, and `gccli training task delete <plan-id> <task-id> --force` puts a rest day in its place. `gccli training leave <plan-id> --force` leaves the plan and removes its workouts from the calendar.
+- Training plan: `gccli training search --sport Running --goal 5k --level Beginner` lists catalog plans with their ID and category. `gccli training search --category FBT_ADAPTIVE` lists the Garmin Coach plans, and `gccli training coach-plan <id>` shows one. `gccli training coach-join <template-id> --name "My plan" --end 2026-12-20 --day MONDAY,TUESDAY,THURSDAY,FRIDAY,SATURDAY --long-day SATURDAY` starts one and prints the ID of the new plan. Each template sets how many `--day` values it needs, and Garmin answers 400 with its own message for another number. A joined plan of category `STRENGTH` reads with `gccli training strength-plan <id>`, and a joined phased plan (an `ITP` plan with peak weeks) with `gccli training phased-plan <id>`. Garmin answers 400 to `phased-plan` for a plan that is not phased. `gccli training join <id> --start 2026-11-02` joins one and prints the ID of your copy, which the other plan commands take. `gccli training schedule <plan-id>` lists the workouts with their task IDs. `gccli training task move <plan-id> <task-id> 2026-11-04` moves a workout and prints its new task ID, and `gccli training task delete <plan-id> <task-id> --force` puts a rest day in its place. `gccli training leave <plan-id> --force` leaves the plan and removes its workouts from the calendar.
 - Groups: `gccli groups search running --limit 10` lists groups with their ID, name, privacy and location (`--offset` skips groups). `gccli groups show <group-id>` shows one group, and `gccli groups members <group-id>` lists its members with their role. `gccli groups feed <group-id>` prints the latest posts and activities as JSON, and `gccli groups activities <group-id>` lists the latest activities of the members. `gccli groups challenges <group-id>` lists the open challenges; Garmin answers 403 (exit code 1) when you are not a member. `gccli groups leaderboard <group-id>` ranks the members by `--metric steps` (the default), `calories`, `pushes` or `distance` (with `--activity running` and so on for one activity) over `--start` to `--end`, by default this week from Monday. Garmin shows the first three metrics only to members and answers an empty list to anyone else. `gccli groups requests` lists your pending requests to join private groups. `gccli groups join <group-id>` joins a public group at once. gccli does not send the join request that a private group needs. `gccli groups leave <group-id> --force` leaves a group.
 - Notification preference: `gccli notifications preferences` shows the keys. `gccli notifications preferences set allowEmailWeeklySummary false` turns one off. A key that is not in the preferences fails before any write, and the error lists the keys.
 - Notifications: `gccli notifications list` gives 50 notifications per page (`--limit` changes it). For the next page, pass `pagination.nextCursor` of the JSON output: `gccli notifications list --cursor <nextCursor>`. `gccli notifications dismiss <id>` removes a notification from the list, and `gccli notifications undismiss <id>` brings it back. `gccli notifications unread` prints `{"unreadBubble": true}` when there are unread notifications.

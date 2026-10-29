@@ -1,0 +1,111 @@
+A Garmin Coach plan, read from the fbt-adaptive path that the web app uses for plans of category FBT_ADAPTIVE.
+-- args --
+training
+coach-plan
+123
+-- route GET /trainingplan-service/trainingplan/fbt-adaptive/123 --
+{"trainingPlanId":123,"trainingPlanCategory":"FBT_ADAPTIVE","trainingType":{"typeId":2,"typeKey":"Running"},"trainingStatus":{"statusId":1,"statusKey":"Scheduled"},"name":"Garmin Run Coach","durationInWeeks":4,"parentPlanId":101,"startDate":"2026-10-27","endDate":"2026-11-24","taskList":[],"adaptivePlanPhases":null,"planPhases":null}
+-- table stdout --
+{
+  "trainingPlanId": 123,
+  "trainingPlanCategory": "FBT_ADAPTIVE",
+  "trainingType": {
+    "typeId": 2,
+    "typeKey": "Running"
+  },
+  "trainingStatus": {
+    "statusId": 1,
+    "statusKey": "Scheduled"
+  },
+  "name": "Garmin Run Coach",
+  "durationInWeeks": 4,
+  "parentPlanId": 101,
+  "startDate": "2026-10-27",
+  "endDate": "2026-11-24",
+  "taskList": [],
+  "adaptivePlanPhases": null,
+  "planPhases": null
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /trainingplan-service/trainingplan/fbt-adaptive/123
+-- plain stdout --
+{
+  "trainingPlanId": 123,
+  "trainingPlanCategory": "FBT_ADAPTIVE",
+  "trainingType": {
+    "typeId": 2,
+    "typeKey": "Running"
+  },
+  "trainingStatus": {
+    "statusId": 1,
+    "statusKey": "Scheduled"
+  },
+  "name": "Garmin Run Coach",
+  "durationInWeeks": 4,
+  "parentPlanId": 101,
+  "startDate": "2026-10-27",
+  "endDate": "2026-11-24",
+  "taskList": [],
+  "adaptivePlanPhases": null,
+  "planPhases": null
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /trainingplan-service/trainingplan/fbt-adaptive/123
+-- plain-header stdout --
+{
+  "trainingPlanId": 123,
+  "trainingPlanCategory": "FBT_ADAPTIVE",
+  "trainingType": {
+    "typeId": 2,
+    "typeKey": "Running"
+  },
+  "trainingStatus": {
+    "statusId": 1,
+    "statusKey": "Scheduled"
+  },
+  "name": "Garmin Run Coach",
+  "durationInWeeks": 4,
+  "parentPlanId": 101,
+  "startDate": "2026-10-27",
+  "endDate": "2026-11-24",
+  "taskList": [],
+  "adaptivePlanPhases": null,
+  "planPhases": null
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /trainingplan-service/trainingplan/fbt-adaptive/123
+-- json stdout --
+{
+  "trainingPlanId": 123,
+  "trainingPlanCategory": "FBT_ADAPTIVE",
+  "trainingType": {
+    "typeId": 2,
+    "typeKey": "Running"
+  },
+  "trainingStatus": {
+    "statusId": 1,
+    "statusKey": "Scheduled"
+  },
+  "name": "Garmin Run Coach",
+  "durationInWeeks": 4,
+  "parentPlanId": 101,
+  "startDate": "2026-10-27",
+  "endDate": "2026-11-24",
+  "taskList": [],
+  "adaptivePlanPhases": null,
+  "planPhases": null
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /trainingplan-service/trainingplan/fbt-adaptive/123

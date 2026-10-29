@@ -1,0 +1,127 @@
+A phased plan, read from the phased path that the web app uses for ITP plans with peak weeks.
+-- args --
+training
+phased-plan
+123
+-- route GET /trainingplan-service/trainingplan/phased/123 --
+{"trainingPlanId":123,"trainingPlanCategory":"ITP","trainingType":{"typeId":5,"typeKey":"Cycling"},"trainingStatus":{"statusId":1,"statusKey":"Scheduled"},"name":"Gran Fondo","durationInWeeks":13,"baseWeeks":5,"buildWeeks":6,"peakWeeks":2,"weekTypes":{"RECOVERY":[3,7]},"taskList":[]}
+-- table stdout --
+{
+  "trainingPlanId": 123,
+  "trainingPlanCategory": "ITP",
+  "trainingType": {
+    "typeId": 5,
+    "typeKey": "Cycling"
+  },
+  "trainingStatus": {
+    "statusId": 1,
+    "statusKey": "Scheduled"
+  },
+  "name": "Gran Fondo",
+  "durationInWeeks": 13,
+  "baseWeeks": 5,
+  "buildWeeks": 6,
+  "peakWeeks": 2,
+  "weekTypes": {
+    "RECOVERY": [
+      3,
+      7
+    ]
+  },
+  "taskList": []
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /trainingplan-service/trainingplan/phased/123
+-- plain stdout --
+{
+  "trainingPlanId": 123,
+  "trainingPlanCategory": "ITP",
+  "trainingType": {
+    "typeId": 5,
+    "typeKey": "Cycling"
+  },
+  "trainingStatus": {
+    "statusId": 1,
+    "statusKey": "Scheduled"
+  },
+  "name": "Gran Fondo",
+  "durationInWeeks": 13,
+  "baseWeeks": 5,
+  "buildWeeks": 6,
+  "peakWeeks": 2,
+  "weekTypes": {
+    "RECOVERY": [
+      3,
+      7
+    ]
+  },
+  "taskList": []
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /trainingplan-service/trainingplan/phased/123
+-- plain-header stdout --
+{
+  "trainingPlanId": 123,
+  "trainingPlanCategory": "ITP",
+  "trainingType": {
+    "typeId": 5,
+    "typeKey": "Cycling"
+  },
+  "trainingStatus": {
+    "statusId": 1,
+    "statusKey": "Scheduled"
+  },
+  "name": "Gran Fondo",
+  "durationInWeeks": 13,
+  "baseWeeks": 5,
+  "buildWeeks": 6,
+  "peakWeeks": 2,
+  "weekTypes": {
+    "RECOVERY": [
+      3,
+      7
+    ]
+  },
+  "taskList": []
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /trainingplan-service/trainingplan/phased/123
+-- json stdout --
+{
+  "trainingPlanId": 123,
+  "trainingPlanCategory": "ITP",
+  "trainingType": {
+    "typeId": 5,
+    "typeKey": "Cycling"
+  },
+  "trainingStatus": {
+    "statusId": 1,
+    "statusKey": "Scheduled"
+  },
+  "name": "Gran Fondo",
+  "durationInWeeks": 13,
+  "baseWeeks": 5,
+  "buildWeeks": 6,
+  "peakWeeks": 2,
+  "weekTypes": {
+    "RECOVERY": [
+      3,
+      7
+    ]
+  },
+  "taskList": []
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /trainingplan-service/trainingplan/phased/123

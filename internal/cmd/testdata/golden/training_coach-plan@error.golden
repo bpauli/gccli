@@ -1,0 +1,35 @@
+Error case: Garmin answers 404, so the exit code is 4 (not found).
+-- args --
+training
+coach-plan
+123
+-- route GET /trainingplan-service/trainingplan/fbt-adaptive/123 404 noeol --
+{"message":"Not Found"}
+-- table stdout --
+-- table stderr --
+get Garmin Coach plan: garmin api: 404 Not Found: {"message":"Not Found"}
+-- table exit --
+4
+-- table requests --
+GET /trainingplan-service/trainingplan/fbt-adaptive/123
+-- plain stdout --
+-- plain stderr --
+get Garmin Coach plan: garmin api: 404 Not Found: {"message":"Not Found"}
+-- plain exit --
+4
+-- plain requests --
+GET /trainingplan-service/trainingplan/fbt-adaptive/123
+-- plain-header stdout --
+-- plain-header stderr --
+get Garmin Coach plan: garmin api: 404 Not Found: {"message":"Not Found"}
+-- plain-header exit --
+4
+-- plain-header requests --
+GET /trainingplan-service/trainingplan/fbt-adaptive/123
+-- json stdout --
+-- json stderr --
+{"error":{"code":"not_found","status":404,"message":"get Garmin Coach plan: garmin api: 404 Not Found: {\"message\":\"Not Found\"}"}}
+-- json exit --
+4
+-- json requests --
+GET /trainingplan-service/trainingplan/fbt-adaptive/123

@@ -1,0 +1,35 @@
+Error case: Garmin answers 403, so the exit code is 1 (error).
+-- args --
+training
+strength-plan
+123
+-- route GET /trainingplan-service/trainingplan/strength/123 403 noeol --
+{"message":"User not allowed to update training plan","error":"ForbiddenException"}
+-- table stdout --
+-- table stderr --
+get strength training plan: garmin api: 403 Forbidden: {"message":"User not allowed to update training plan","error":"ForbiddenException"}
+-- table exit --
+1
+-- table requests --
+GET /trainingplan-service/trainingplan/strength/123
+-- plain stdout --
+-- plain stderr --
+get strength training plan: garmin api: 403 Forbidden: {"message":"User not allowed to update training plan","error":"ForbiddenException"}
+-- plain exit --
+1
+-- plain requests --
+GET /trainingplan-service/trainingplan/strength/123
+-- plain-header stdout --
+-- plain-header stderr --
+get strength training plan: garmin api: 403 Forbidden: {"message":"User not allowed to update training plan","error":"ForbiddenException"}
+-- plain-header exit --
+1
+-- plain-header requests --
+GET /trainingplan-service/trainingplan/strength/123
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":403,"message":"get strength training plan: garmin api: 403 Forbidden: {\"message\":\"User not allowed to update training plan\",\"error\":\"ForbiddenException\"}"}}
+-- json exit --
+1
+-- json requests --
+GET /trainingplan-service/trainingplan/strength/123

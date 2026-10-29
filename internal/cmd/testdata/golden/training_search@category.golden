@@ -1,0 +1,86 @@
+Each --category value goes into the query as its own categories pair, in the order given. The flag repeats and takes a comma list.
+-- args --
+training
+search
+--category
+FBT_ADAPTIVE
+--category
+STRENGTH,ITP
+-- route POST /trainingplan-service/trainingplan/search?start=1&limit=1000&locale=en&categories=FBT_ADAPTIVE&categories=STRENGTH&categories=ITP --
+{"searchFilter":{"start":1,"limit":1000},"trainingPlanList":[{"trainingPlanId":201,"name":"Garmin Run Coach","trainingPlanCategory":"FBT_ADAPTIVE","trainingType":{"typeKey":"Running"},"trainingSubType":{"subTypeKey":"GarminRunningCoachOpenLoop"},"trainingLevel":{"levelKey":"Intermediate"},"trainingVersion":{"versionName":"Generic"},"durationInWeeks":12},{"trainingPlanId":202,"name":"Get Stronger","trainingPlanCategory":"STRENGTH","trainingType":{"typeKey":"Strength"},"trainingSubType":{"subTypeKey":"GetStronger"},"trainingLevel":{"levelKey":"Beginner"},"trainingVersion":{"versionName":"REP_3"},"durationInWeeks":8}]}
+-- table stdout --
+ID   NAME              CATEGORY      SPORT     GOAL                        LEVEL         TARGET   WEEKS
+201  Garmin Run Coach  FBT_ADAPTIVE  Running   GarminRunningCoachOpenLoop  Intermediate  Generic  12
+202  Get Stronger      STRENGTH      Strength  GetStronger                 Beginner      REP_3    8
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+POST /trainingplan-service/trainingplan/search?start=1&limit=1000&locale=en&categories=FBT_ADAPTIVE&categories=STRENGTH&categories=ITP
+-- plain stdout --
+201	Garmin Run Coach	FBT_ADAPTIVE	Running	GarminRunningCoachOpenLoop	Intermediate	Generic	12
+202	Get Stronger	STRENGTH	Strength	GetStronger	Beginner	REP_3	8
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+POST /trainingplan-service/trainingplan/search?start=1&limit=1000&locale=en&categories=FBT_ADAPTIVE&categories=STRENGTH&categories=ITP
+-- plain-header stdout --
+ID	NAME	CATEGORY	SPORT	GOAL	LEVEL	TARGET	WEEKS
+201	Garmin Run Coach	FBT_ADAPTIVE	Running	GarminRunningCoachOpenLoop	Intermediate	Generic	12
+202	Get Stronger	STRENGTH	Strength	GetStronger	Beginner	REP_3	8
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+POST /trainingplan-service/trainingplan/search?start=1&limit=1000&locale=en&categories=FBT_ADAPTIVE&categories=STRENGTH&categories=ITP
+-- json stdout --
+{
+  "searchFilter": {
+    "start": 1,
+    "limit": 1000
+  },
+  "trainingPlanList": [
+    {
+      "trainingPlanId": 201,
+      "name": "Garmin Run Coach",
+      "trainingPlanCategory": "FBT_ADAPTIVE",
+      "trainingType": {
+        "typeKey": "Running"
+      },
+      "trainingSubType": {
+        "subTypeKey": "GarminRunningCoachOpenLoop"
+      },
+      "trainingLevel": {
+        "levelKey": "Intermediate"
+      },
+      "trainingVersion": {
+        "versionName": "Generic"
+      },
+      "durationInWeeks": 12
+    },
+    {
+      "trainingPlanId": 202,
+      "name": "Get Stronger",
+      "trainingPlanCategory": "STRENGTH",
+      "trainingType": {
+        "typeKey": "Strength"
+      },
+      "trainingSubType": {
+        "subTypeKey": "GetStronger"
+      },
+      "trainingLevel": {
+        "levelKey": "Beginner"
+      },
+      "trainingVersion": {
+        "versionName": "REP_3"
+      },
+      "durationInWeeks": 8
+    }
+  ]
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+POST /trainingplan-service/trainingplan/search?start=1&limit=1000&locale=en&categories=FBT_ADAPTIVE&categories=STRENGTH&categories=ITP

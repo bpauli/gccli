@@ -1,0 +1,51 @@
+A strength plan, read from the strength path that the web app uses for plans of category STRENGTH.
+-- args --
+training
+strength-plan
+123
+-- route GET /trainingplan-service/trainingplan/strength/123 --
+{"trainingPlanId":123,"name":"Get Stronger","trainingPlanCategory":"STRENGTH"}
+-- table stdout --
+{
+  "trainingPlanId": 123,
+  "name": "Get Stronger",
+  "trainingPlanCategory": "STRENGTH"
+}
+-- table stderr --
+-- table exit --
+0
+-- table requests --
+GET /trainingplan-service/trainingplan/strength/123
+-- plain stdout --
+{
+  "trainingPlanId": 123,
+  "name": "Get Stronger",
+  "trainingPlanCategory": "STRENGTH"
+}
+-- plain stderr --
+-- plain exit --
+0
+-- plain requests --
+GET /trainingplan-service/trainingplan/strength/123
+-- plain-header stdout --
+{
+  "trainingPlanId": 123,
+  "name": "Get Stronger",
+  "trainingPlanCategory": "STRENGTH"
+}
+-- plain-header stderr --
+-- plain-header exit --
+0
+-- plain-header requests --
+GET /trainingplan-service/trainingplan/strength/123
+-- json stdout --
+{
+  "trainingPlanId": 123,
+  "name": "Get Stronger",
+  "trainingPlanCategory": "STRENGTH"
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+GET /trainingplan-service/trainingplan/strength/123
