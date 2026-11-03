@@ -56,14 +56,19 @@ var powerZoneRules = map[Upper]powerZoneRule{
 // Garmin changes only the sports in the body and also records the FTP.
 type ProfilePowerZonesSetCmd struct {
 	Sport  Upper `arg:"" help:"Sport: cycling, running, rowing or cross-country-skiing." enum:"cycling,running,rowing,cross-country-skiing"`
-	FTP    int   `name:"ftp" required:"" placeholder:"WATTS" help:"Functional threshold power in watts."`
+	FTP    *int  `name:"ftp" required:"" placeholder:"WATTS" help:"Functional threshold power in watts."`
 	Floors []int `placeholder:"WATTS" help:"Comma-separated lower limit of each zone in watts: 7 values, or 5 for running. Default for the other sports: 0, 55, 75, 90, 105, 120 and 150 percent of FTP."`
 }
 
 func (c *ProfilePowerZonesSetCmd) Validate() error {
-	rule := powerZoneRules[c.Sport]
+	rule, ok := powerZoneRules[c.Sport]
+	// Kong runs Validate before it checks the sport enum and the required
+	// --ftp, so leave those inputs to Kong's own message.
+	if !ok || c.FTP == nil {
+		return nil
+	}
 	switch {
-	case c.FTP <= 0:
+	case *c.FTP <= 0:
 		return errors.New("--ftp must be greater than 0")
 	case c.Floors == nil && rule.percents == nil:
 		return fmt.Errorf("%s has no default zone floors: give --floors with %d values", c.Sport, rule.zones)
@@ -81,6 +86,13 @@ func (c *ProfilePowerZonesSetCmd) Validate() error {
 	return nil
 }
 
+func (c *ProfilePowerZonesSetCmd) floors() []int {
+	if c.Floors != nil {
+		return c.Floors
+	}
+	return defaultPowerZoneFloors(*c.FTP, powerZoneRules[c.Sport].percents)
+}
+
 func defaultPowerZoneFloors(ftp int, percents []int) []int {
 	floors := make([]int, len(percents))
 	for i, p := range percents {
@@ -90,16 +102,13 @@ func defaultPowerZoneFloors(ftp int, percents []int) []int {
 }
 
 func (c *ProfilePowerZonesSetCmd) Run(g *Globals) error {
-	floors := c.Floors
-	if floors == nil {
-		floors = defaultPowerZoneFloors(c.FTP, powerZoneRules[c.Sport].percents)
-	}
+	floors := c.floors()
 	// Garmin keeps seven floors for every sport and 0 in the ones a sport does not use.
 	var zone [7]int
 	copy(zone[:], floors)
 	body, err := json.Marshal([]map[string]any{{
 		"sport":                    c.Sport.wire(),
-		"functionalThresholdPower": c.FTP,
+		"functionalThresholdPower": *c.FTP,
 		"zone1Floor":               zone[0],
 		"zone2Floor":               zone[1],
 		"zone3Floor":               zone[2],
@@ -124,7 +133,7 @@ func (c *ProfilePowerZonesSetCmd) Run(g *Globals) error {
 	for i, floor := range floors {
 		shown[i] = strconv.Itoa(floor)
 	}
-	return reportWrite(g, data, "Set %s FTP to %d W, zone floors %s W", c.Sport, c.FTP, strings.Join(shown, ", "))
+	return reportWrite(g, data, "Set %s FTP to %d W, zone floors %s W", c.Sport, *c.FTP, strings.Join(shown, ", "))
 }
 
 var profilePrivacyGroup = Group{Name: "privacy", Help: "View and change privacy settings.", Children: []Node{
