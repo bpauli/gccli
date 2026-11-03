@@ -64,6 +64,11 @@ func TestScrubReplacesEveryValue(t *testing.T) {
 			`{"allMetrics":{"metricsMap":{"WELLNESS_RESTING_HEART_RATE":[{"calendarDate":"2026-10-17","value":52.0}],"BODY_BATTERY":[]}},"byDate":{"2026-10-17":58,"2026-10-18":61}}`,
 			`{"allMetrics":{"metricsMap":{"BODY_BATTERY":[],"WELLNESS_RESTING_HEART_RATE":[{"calendarDate":"2026-01-01","value":0.5}]}},"byDate":{"2026-01-01":1}}`,
 		},
+		{
+			"numbered keys of the activity list stay", "/activitylist-service/activities/search/activities",
+			`[{"activityId":21234567890,"hrTimeInZone_1":12.5,"hrTimeInZone_5":0.0,"powerTimeInZone_7":3.0,"maxAvgPower_1":412,"maxAvgPower_1200":210}]`,
+			`[{"activityId":1,"hrTimeInZone_1":0.5,"hrTimeInZone_5":0.5,"maxAvgPower_1":1,"maxAvgPower_1200":1,"powerTimeInZone_7":0.5}]`,
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			got, err := scrubBody(t, "GET", tc.uri, tc.body)
@@ -177,6 +182,94 @@ func TestScrubReplacesPathAndQuery(t *testing.T) {
 	}
 }
 
+// The e2e suite sends every row of the endpoint table that it tests. A
+// scrub that knows only a hand list falls behind the table and fails the
+// scheduled job (#326).
+func TestScrubMatchesEndpointTableRoutes(t *testing.T) {
+	for _, tc := range []struct{ method, uri, want string }{
+		{"DELETE", "/gear-service/gear/v2/8f14e45f-ceea-467f-a0e6-0a1b2c3d4e5f", "/gear-service/gear/v2/tester"},
+		{"GET", "/calendar-service/note/4711", "/calendar-service/note/1"},
+		{"POST", "/calendar-service/note", "/calendar-service/note"},
+		{"DELETE", "/weight-service/weight/2026-10-18/byversion/1760738400000", "/weight-service/weight/2026-01-01/byversion/1"},
+		{"GET", "/conversation-service/conversation/likes/ACTIVITY/21234567890", "/conversation-service/conversation/likes/ACTIVITY/1"},
+		{"GET", "/userprofile-service/socialProfile/jane-runner", "/userprofile-service/socialProfile/tester"},
+	} {
+		got, err := Scrub(Record{Method: tc.method, Host: "connectapi.garmin.com", URI: tc.uri, Status: 200})
+		if err != nil {
+			t.Errorf("Scrub(%s %s): %v", tc.method, tc.uri, err)
+			continue
+		}
+		if got.URI != tc.want {
+			t.Errorf("Scrub(%s %s).URI = %s, want %s", tc.method, tc.uri, got.URI, tc.want)
+		}
+	}
+}
+
+// Each case is a request that a Client method builds outside the endpoint
+// table, so no table row gives its template.
+func TestScrubMatchesClientPaths(t *testing.T) {
+	for _, tc := range []struct{ client, method, uri, want string }{
+		{"CountActivities", "GET", "/activitylist-service/activities/count", "/activitylist-service/activities/count"},
+		{"GetCalendarWeek", "GET", "/calendar-service/year/2026/month/9/day/18/start/0", "/calendar-service/year/1/month/1/day/1/start/1"},
+		{"CopyWorkout", "POST", "/workout-service/workout/copy/123456", "/workout-service/workout/copy/1"},
+		{"DownloadWorkout", "GET", "/workout-service/workout/FIT/123456", "/workout-service/workout/FIT/1"},
+		{"ImportCourseGPX", "POST", "/course-service/course/import", "/course-service/course/import"},
+		{"UploadActivity", "POST", "/upload-service/upload", "/upload-service/upload"},
+		{"DownloadActivity FIT", "GET", "/download-service/files/activity/21234567890", "/download-service/files/activity/1"},
+		{"DownloadActivity TCX", "GET", "/download-service/export/tcx/activity/21234567890", "/download-service/export/tcx/activity/1"},
+		{"DownloadActivity GPX", "GET", "/download-service/export/gpx/activity/21234567890", "/download-service/export/gpx/activity/1"},
+		{"DownloadActivity KML", "GET", "/download-service/export/kml/activity/21234567890", "/download-service/export/kml/activity/1"},
+		{"DownloadActivity CSV", "GET", "/download-service/export/csv/activity/21234567890", "/download-service/export/csv/activity/1"},
+		{"DownloadCourse FIT", "GET", "/course-service/course/fit/987654/0?elevation=true", "/course-service/course/fit/1/0?elevation=tester"},
+		{"DownloadCourse GPX", "GET", "/course-service/course/gpx/987654", "/course-service/course/gpx/1"},
+		{"ExportReport", "GET", "/reportexport-service/export/reportContent/8f14e45f-ceea-467f-a0e6-0a1b2c3d4e5f", "/reportexport-service/export/reportContent/tester"},
+	} {
+		got, err := Scrub(Record{Method: tc.method, Host: "connectapi.garmin.com", URI: tc.uri, Status: 200})
+		if err != nil {
+			t.Errorf("%s: Scrub(%s %s): %v", tc.client, tc.method, tc.uri, err)
+			continue
+		}
+		if got.URI != tc.want {
+			t.Errorf("%s: Scrub(%s %s).URI = %s, want %s", tc.client, tc.method, tc.uri, got.URI, tc.want)
+		}
+	}
+}
+
+// Garmin keys are lower camelCase, lower camelCase with a numbered suffix
+// such as hrTimeInZone_1 or maxAvgPower_1200, or UPPER_SNAKE. Anything
+// else can be personal data and fails.
+func TestScrubKeyRule(t *testing.T) {
+	for _, tc := range []struct {
+		key string
+		ok  bool
+	}{
+		{"calendarDate", true},
+		{"WELLNESS_RESTING_HEART_RATE", true},
+		{"hrTimeInZone_1", true},
+		{"powerTimeInZone_7", true},
+		{"maxAvgPower_1200", true},
+		{"hr_time", false},
+		{"foo_bar1", false},
+		{"Foo_1", false},
+		{"foo_", false},
+		{"foo_1_2", false},
+		{"foo_1a", false},
+		{"_1", false},
+		{"foo-1", false},
+	} {
+		got, err := scrubBody(t, "GET", "/activitylist-service/activities/search/activities", `[{"`+tc.key+`":12.5}]`)
+		var bad *KeyError
+		switch {
+		case tc.ok && err != nil:
+			t.Errorf("key %q: Scrub refused it: %v", tc.key, err)
+		case tc.ok && string(got.Body) != `[{"`+tc.key+`":0.5}]`:
+			t.Errorf("key %q: Scrub body = %s, want the key kept", tc.key, got.Body)
+		case !tc.ok && !errors.As(err, &bad):
+			t.Errorf("key %q: Scrub accepted it, err = %v", tc.key, err)
+		}
+	}
+}
+
 func TestScrubFailsOnBadKey(t *testing.T) {
 	_, err := scrubBody(t, "GET", "/userprofile-service/userprofile/settings",
 		`{"displayName":"jane","userData":{"nickname":"Janey","Jane Runner":{"x":1},"pets":[null,{"a b":1},{"petName":"Rex"}]}}`)
@@ -205,12 +298,15 @@ func TestScrubFailsOnBadQueryKey(t *testing.T) {
 }
 
 func TestScrubFailsOnUnknownPath(t *testing.T) {
-	_, err := Scrub(Record{Method: "GET", Host: "connectapi.garmin.com", URI: "/usersummary-service/usersummary/weekly/jane-runner", Status: 200})
+	_, err := Scrub(Record{Method: "GET", Host: "connectapi.garmin.com", URI: "/usersummary-service/usersummary/jane-runner/2026-10-18", Status: 200})
 	if err == nil {
 		t.Fatal("Scrub accepted a path that matches no template")
 	}
 	if want := "/usersummary-service/usersummary/*/*"; !strings.Contains(err.Error(), want) {
 		t.Errorf("err = %v, want it to show the path as %s", err, want)
+	}
+	if strings.Contains(err.Error(), "jane") || strings.Contains(err.Error(), "2026-10-18") {
+		t.Errorf("the error prints a path segment from the data:\n%v", err)
 	}
 }
 
