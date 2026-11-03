@@ -75,11 +75,15 @@ func (c *ProfilePowerZonesSetCmd) Validate() error {
 	case c.Floors != nil && len(c.Floors) != rule.zones:
 		return fmt.Errorf("--floors needs %d values for %s, got %d", rule.zones, c.Sport, len(c.Floors))
 	}
-	for i, floor := range c.Floors {
+	floors := c.floors()
+	for i, floor := range floors {
 		if floor < 0 {
 			return errors.New("--floors must not be negative")
 		}
-		if i > 0 && floor <= c.Floors[i-1] {
+		if i > 0 && floor <= floors[i-1] {
+			if c.Floors == nil {
+				return fmt.Errorf("--ftp %d is too low for increasing default zone floors: give --floors", *c.FTP)
+			}
 			return errors.New("--floors must increase from zone to zone")
 		}
 	}
