@@ -11,6 +11,8 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+
+	"github.com/bpauli/gccli/internal/garminapi"
 )
 
 func compactJSON(t *testing.T, s string) string {
@@ -231,6 +233,45 @@ func TestScrubMatchesClientPaths(t *testing.T) {
 		}
 		if got.URI != tc.want {
 			t.Errorf("%s: Scrub(%s %s).URI = %s, want %s", tc.client, tc.method, tc.uri, got.URI, tc.want)
+		}
+	}
+}
+
+// A table row whose placeholder shares a segment with text, such as
+// /x/v{id}, never matches a request and fails the scrub of its route with
+// a masked message that names no cause. The table compiler allows such a
+// row, so the scrub checks for it here.
+func TestScrubPathsHaveWholeSegmentPlaceholders(t *testing.T) {
+	for _, tmpl := range scrubPaths {
+		for _, seg := range strings.Split(tmpl, "/") {
+			if strings.ContainsAny(seg, "{}") && !isPlaceholder(seg) {
+				t.Errorf("%s: segment %q mixes a placeholder with text", tmpl, seg)
+			}
+		}
+	}
+}
+
+// An entry that the table already gives is dead weight, and a row that
+// moves into the table must leave clientPaths.
+func TestClientPathsAreNotTableRows(t *testing.T) {
+	shape := func(tmpl string) string {
+		segs := strings.Split(tmpl, "/")
+		for i, seg := range segs {
+			if isPlaceholder(seg) {
+				segs[i] = "{}"
+			}
+		}
+		return strings.Join(segs, "/")
+	}
+	table := map[string]string{}
+	for _, name := range garminapi.Names() {
+		e, _ := garminapi.Describe(name)
+		path, _, _ := strings.Cut(e.Path, "?")
+		table[shape(path)] = name
+	}
+	for _, p := range clientPaths {
+		if name, ok := table[shape(p)]; ok {
+			t.Errorf("%s is the path of endpoint %s: delete it from clientPaths", p, name)
 		}
 	}
 }
