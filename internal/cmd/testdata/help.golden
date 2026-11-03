@@ -356,6 +356,7 @@ Commands:
   profile hr-zones                 Show heart rate zones.
   profile power-zones list         Show power zones for all sports.
   profile power-zones sport        Show power zones for one sport.
+  profile power-zones set          Set the FTP and the zone floors of one sport.
   hydration view                   Show hydration data for a date.
   hydration daily                  Show daily hydration statistics for a date
                                    range.
@@ -2049,6 +2050,7 @@ Commands:
   profile hr-zones                Show heart rate zones.
   profile power-zones list        Show power zones for all sports.
   profile power-zones sport       Show power zones for one sport.
+  profile power-zones set         Set the FTP and the zone floors of one sport.
 
 $ gccli profile privacy --help
 Usage: gccli profile privacy <command>
@@ -2101,7 +2103,7 @@ Commands:
 $ gccli profile power-zones --help
 Usage: gccli profile power-zones <command>
 
-Show power zones.
+Show and set power zones.
 
 Flags:
   -h, --help              Show context-sensitive help.
@@ -2120,6 +2122,7 @@ Flags:
 Commands:
   profile power-zones list     Show power zones for all sports.
   profile power-zones sport    Show power zones for one sport.
+  profile power-zones set      Set the FTP and the zone floors of one sport.
 
 $ gccli hydration --help
 Usage: gccli hydration <command> [flags]

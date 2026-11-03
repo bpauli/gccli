@@ -786,6 +786,13 @@ var writeCases = map[string]writeCase{
 		human:    "Added privacy zone of 800 m around 52.52, -30.5 (ID: 4321)\n",
 		fallback: "Added privacy zone of 800 m around 52.52, -30.5\n",
 	},
+	"profile power-zones set": {
+		args:     []string{"cycling", "--ftp", "279"},
+		routes:   map[string]string{"PUT /biometric-service/powerZones/all": noContent},
+		json:     okOut,
+		human:    "Set cycling FTP to 279 W, zone floors 0, 153, 209, 251, 293, 335, 419 W\n",
+		fallback: "Set cycling FTP to 279 W, zone floors 0, 153, 209, 251, 293, 335, 419 W\n",
+	},
 	"profile privacy set": {
 		args: []string{"--activities", "connections", "--badges", "private"},
 		routes: map[string]string{

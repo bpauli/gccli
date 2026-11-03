@@ -1,0 +1,95 @@
+The hyphenated sport is sent as CROSS_COUNTRY_SKIING. FTP 207 gives the floors Garmin stored for it.
+-- args --
+profile
+power-zones
+set
+cross-country-skiing
+--ftp
+207
+-- route PUT /biometric-service/powerZones/all 204 --
+-- table stdout --
+-- table stderr --
+Set cross-country-skiing FTP to 207 W, zone floors 0, 114, 155, 186, 217, 248, 311 W
+-- table exit --
+0
+-- table requests --
+PUT /biometric-service/powerZones/all
+  [
+    {
+      "functionalThresholdPower": 207,
+      "sport": "CROSS_COUNTRY_SKIING",
+      "userLocalTime": null,
+      "zone1Floor": 0,
+      "zone2Floor": 114,
+      "zone3Floor": 155,
+      "zone4Floor": 186,
+      "zone5Floor": 217,
+      "zone6Floor": 248,
+      "zone7Floor": 311
+    }
+  ]
+-- plain stdout --
+-- plain stderr --
+Set cross-country-skiing FTP to 207 W, zone floors 0, 114, 155, 186, 217, 248, 311 W
+-- plain exit --
+0
+-- plain requests --
+PUT /biometric-service/powerZones/all
+  [
+    {
+      "functionalThresholdPower": 207,
+      "sport": "CROSS_COUNTRY_SKIING",
+      "userLocalTime": null,
+      "zone1Floor": 0,
+      "zone2Floor": 114,
+      "zone3Floor": 155,
+      "zone4Floor": 186,
+      "zone5Floor": 217,
+      "zone6Floor": 248,
+      "zone7Floor": 311
+    }
+  ]
+-- plain-header stdout --
+-- plain-header stderr --
+Set cross-country-skiing FTP to 207 W, zone floors 0, 114, 155, 186, 217, 248, 311 W
+-- plain-header exit --
+0
+-- plain-header requests --
+PUT /biometric-service/powerZones/all
+  [
+    {
+      "functionalThresholdPower": 207,
+      "sport": "CROSS_COUNTRY_SKIING",
+      "userLocalTime": null,
+      "zone1Floor": 0,
+      "zone2Floor": 114,
+      "zone3Floor": 155,
+      "zone4Floor": 186,
+      "zone5Floor": 217,
+      "zone6Floor": 248,
+      "zone7Floor": 311
+    }
+  ]
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+PUT /biometric-service/powerZones/all
+  [
+    {
+      "functionalThresholdPower": 207,
+      "sport": "CROSS_COUNTRY_SKIING",
+      "userLocalTime": null,
+      "zone1Floor": 0,
+      "zone2Floor": 114,
+      "zone3Floor": 155,
+      "zone4Floor": 186,
+      "zone5Floor": 217,
+      "zone6Floor": 248,
+      "zone7Floor": 311
+    }
+  ]

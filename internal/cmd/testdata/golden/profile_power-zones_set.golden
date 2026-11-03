@@ -1,0 +1,95 @@
+Without --floors the floors are 0, 55, 75, 90, 105, 120 and 150 percent of FTP, rounded half up. These are the floors Garmin stored for FTP 279.
+-- args --
+profile
+power-zones
+set
+cycling
+--ftp
+279
+-- route PUT /biometric-service/powerZones/all 204 --
+-- table stdout --
+-- table stderr --
+Set cycling FTP to 279 W, zone floors 0, 153, 209, 251, 293, 335, 419 W
+-- table exit --
+0
+-- table requests --
+PUT /biometric-service/powerZones/all
+  [
+    {
+      "functionalThresholdPower": 279,
+      "sport": "CYCLING",
+      "userLocalTime": null,
+      "zone1Floor": 0,
+      "zone2Floor": 153,
+      "zone3Floor": 209,
+      "zone4Floor": 251,
+      "zone5Floor": 293,
+      "zone6Floor": 335,
+      "zone7Floor": 419
+    }
+  ]
+-- plain stdout --
+-- plain stderr --
+Set cycling FTP to 279 W, zone floors 0, 153, 209, 251, 293, 335, 419 W
+-- plain exit --
+0
+-- plain requests --
+PUT /biometric-service/powerZones/all
+  [
+    {
+      "functionalThresholdPower": 279,
+      "sport": "CYCLING",
+      "userLocalTime": null,
+      "zone1Floor": 0,
+      "zone2Floor": 153,
+      "zone3Floor": 209,
+      "zone4Floor": 251,
+      "zone5Floor": 293,
+      "zone6Floor": 335,
+      "zone7Floor": 419
+    }
+  ]
+-- plain-header stdout --
+-- plain-header stderr --
+Set cycling FTP to 279 W, zone floors 0, 153, 209, 251, 293, 335, 419 W
+-- plain-header exit --
+0
+-- plain-header requests --
+PUT /biometric-service/powerZones/all
+  [
+    {
+      "functionalThresholdPower": 279,
+      "sport": "CYCLING",
+      "userLocalTime": null,
+      "zone1Floor": 0,
+      "zone2Floor": 153,
+      "zone3Floor": 209,
+      "zone4Floor": 251,
+      "zone5Floor": 293,
+      "zone6Floor": 335,
+      "zone7Floor": 419
+    }
+  ]
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+PUT /biometric-service/powerZones/all
+  [
+    {
+      "functionalThresholdPower": 279,
+      "sport": "CYCLING",
+      "userLocalTime": null,
+      "zone1Floor": 0,
+      "zone2Floor": 153,
+      "zone3Floor": 209,
+      "zone4Floor": 251,
+      "zone5Floor": 293,
+      "zone6Floor": 335,
+      "zone7Floor": 419
+    }
+  ]
