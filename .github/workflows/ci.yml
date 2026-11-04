@@ -2,6 +2,7 @@ name: ci
 
 on:
   push:
+    branches: [main]
   pull_request:
 
 jobs:
@@ -43,7 +44,8 @@ jobs:
         with:
           go-version-file: go.mod
           cache: true
-      - name: Test
-        run: make test
+      # The Linux test job runs internal/cmd. It has no darwin-specific code.
+      - name: Test all packages except internal/cmd
+        run: make test-other-packages
       - name: Build (Keychain / cgo)
         run: CGO_ENABLED=1 go build ./cmd/gccli
