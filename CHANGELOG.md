@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- `courses list` and `courses favorites`: the CREATED column shows the date only, such as `2026-09-01`, from `createdDateFormatted`. `--json` output is unchanged. (#331)
+- `courses list` and `courses favorites`: the TYPE column shows the activity type of the course, such as `running`, from `activityType.typeKey`. On a real account it was empty. (#331)
+- `courses list` and `courses favorites`: the CREATED column shows the date only, such as `2026-09-01`, from `createdDateFormatted`. On a real account it showed milliseconds since the epoch. `--json` output of both commands is unchanged. (#331)
 
 ### Fixed
 
