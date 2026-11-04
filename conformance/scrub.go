@@ -15,6 +15,8 @@ import (
 	"regexp"
 	"slices"
 	"strings"
+
+	"github.com/bpauli/gccli/internal/garminapi"
 )
 
 // Record is one Garmin API response. Body is set only for a JSON response.
@@ -60,41 +62,41 @@ var garminHosts = []string{
 	"connectapi.garmin.cn", "connect.garmin.cn",
 }
 
-var scrubPaths = []string{
+// clientPaths are the paths that a Client method in garminapi builds
+// itself, outside the endpoint table: uploads, downloads and the few
+// requests with their own logic. Every other template comes from the table.
+var clientPaths = []string{
 	"/activitylist-service/activities/count",
-	"/activitylist-service/activities/search/activities",
-	"/activity-service/activity",
-	"/activity-service/activity/{activityId}",
-	"/activity-service/activity/{activityId}/exerciseSets",
-	"/activity-service/activity/{activityId}/hrTimeInZones",
-	"/activity-service/activity/{activityId}/splits",
-	"/activity-service/activity/{activityId}/weather",
-	"/calendar-service/event",
-	"/calendar-service/event/{eventId}",
-	"/calendar-service/events",
 	"/calendar-service/year/{year}/month/{month}/day/{day}/start/{start}",
-	"/course-service/course",
-	"/course-service/course/elevation",
-	"/course-service/course/favorites",
+	"/course-service/course/fit/{courseId}/0",
+	"/course-service/course/gpx/{courseId}",
 	"/course-service/course/import",
-	"/course-service/course/{courseId}",
-	"/device-service/deviceregistration/devices",
-	"/goal-service/goal/goals",
-	"/personalrecord-service/personalrecord/prs/{displayName}",
-	"/userprofile-service/userprofile/settings",
-	"/userprofile-service/userprofile/user-settings",
-	"/userstats-service/wellness/daily/{displayName}",
-	"/usersummary-service/usersummary/daily/{displayName}",
-	"/web-gateway/course/owner/",
-	"/wellness-service/wellness/dailyHeartRate/{displayName}",
-	"/wellness-service/wellness/dailySleepData/{displayName}",
-	"/wellness-service/wellness/dailySummaryChart/{displayName}",
-	"/workout-service/schedule/{id}",
-	"/workout-service/workout",
+	"/download-service/export/csv/activity/{activityId}",
+	"/download-service/export/gpx/activity/{activityId}",
+	"/download-service/export/kml/activity/{activityId}",
+	"/download-service/export/tcx/activity/{activityId}",
+	"/download-service/files/activity/{activityId}",
+	"/reportexport-service/export/reportContent/{reportId}",
+	"/upload-service/upload",
 	"/workout-service/workout/FIT/{workoutId}",
-	"/workout-service/workout/{workoutId}",
-	"/workout-service/workouts",
+	"/workout-service/workout/copy/{workoutId}",
 }
+
+// scrubPaths holds every path template, sorted: the path part of each
+// endpoint table row and clientPaths. The literal segments of a template
+// are code, not account data, so an error may show them.
+var scrubPaths = func() []string {
+	set := map[string]bool{}
+	for _, p := range clientPaths {
+		set[p] = true
+	}
+	for _, name := range garminapi.Names() {
+		e, _ := garminapi.Describe(name)
+		path, _, _ := strings.Cut(e.Path, "?")
+		set[path] = true
+	}
+	return slices.Sorted(maps.Keys(set))
+}()
 
 // goldenName is the display name in the golden routes, so a scrubbed path
 // still matches them. fixedDigits keeps a path segment numeric for replayKey.
@@ -110,9 +112,10 @@ var (
 	dateOnly   = regexp.MustCompile(`^\d{4}-\d{2}-\d{2}$`)
 	dateOrTime = regexp.MustCompile(`^(\d{4}-\d{2}-\d{2}([T ]\d{2}:\d{2}(:\d{2}(\.\d+)?)?)?|\d{2}:\d{2}(:\d{2})?)(Z|[+-]\d{2}:?\d{2})?$`)
 	digit      = regexp.MustCompile(`\d`)
-	// Garmin keys are lower camelCase, or UPPER_SNAKE in maps keyed by an
-	// enum such as metricsMap.
-	identifierKey = regexp.MustCompile(`^([a-z][A-Za-z0-9]*|[A-Z][A-Z0-9_]*)$`)
+	// Garmin keys are lower camelCase, lower camelCase with one numbered
+	// suffix such as hrTimeInZone_1 or maxAvgPower_1200 in the activity
+	// list, or UPPER_SNAKE in maps keyed by an enum such as metricsMap.
+	identifierKey = regexp.MustCompile(`^([a-z][A-Za-z0-9]*(_[0-9]+)?|[A-Z][A-Z0-9_]*)$`)
 )
 
 func fixedString(s string) string {
@@ -228,10 +231,10 @@ func merge(a, b any) any {
 // where any element has one, so neither a value, nor the length of a
 // series, nor the position of a null or of a key in it survives. An empty
 // array stays empty and an all-null array becomes [null]. Scrub fails when the
-// host is not a Garmin API host, when the path matches no template in
-// scrubPaths, or when an object or query key is neither an identifier nor
-// a date. The error names the route and the position, never a key or a
-// value.
+// host is not a Garmin API host, when the path matches no endpoint table
+// row and no clientPaths template, or when an object or query key is
+// neither an identifier nor a date. The error names the route and the
+// position, never a key or a value.
 func Scrub(r Record) (Record, error) {
 	if !slices.Contains(garminHosts, r.Host) {
 		return Record{}, fmt.Errorf("%s %s: not a Garmin API host", r.Method, r.Host)
@@ -242,7 +245,7 @@ func Scrub(r Record) (Record, error) {
 	}
 	tmpl, ok := matchTemplate(u.Path)
 	if !ok {
-		return Record{}, fmt.Errorf("%s %s: no template in scrubPaths matches this path", r.Method, maskPath(u.Path))
+		return Record{}, fmt.Errorf("%s %s: no endpoint table row and no clientPaths template matches this path", r.Method, maskPath(u.Path))
 	}
 	s := &scrubber{route: r.Method + " " + tmpl}
 

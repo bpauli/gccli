@@ -39,11 +39,11 @@ jobs:
           GARMIN_PASSWORD: ${{ secrets.GARMIN_PASSWORD }}
           HTTP_PROXY: socks5://localhost:1080
           HTTPS_PROXY: socks5://localhost:1080
-          GCCLI_RECORD_DIR: ${{ github.event_name == 'schedule' && format('{0}/recorded-raw', runner.temp) || '' }}
+          GCCLI_RECORD_DIR: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && format('{0}/recorded-raw', runner.temp) || '' }}
         run: make test-e2e
       - name: Scrub recorded responses
         id: scrub
-        if: github.event_name == 'schedule' && !cancelled()
+        if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && !cancelled()
         run: go run ./conformance/cmd/scrub "$RUNNER_TEMP/recorded-raw" "$RUNNER_TEMP/recorded"
       - name: Replay recorded responses
         if: ${{ !cancelled() && steps.scrub.outcome == 'success' }}
