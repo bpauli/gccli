@@ -291,7 +291,7 @@ func TestCheckShape(t *testing.T) {
 	}{
 		{"match", `[{"activityId": 1, "activityType": {"typeKey": "running"}, "extra": "x"}]`, nil},
 		{"null values pass", `[{"activityId": null, "activityType": null}, null]`, nil},
-		{"empty array", `[]`, []string{"(body): want at least one element to check its shape, the recording has none"}},
+		{"empty array", `[]`, nil},
 		{"object for array", `{"activities": []}`, []string{"(body): want array, the recording has object"}},
 		{"null body", `null`, []string{"(body): want array, the recording has null"}},
 		{"missing key", `[{"activityType": {"typeKey": "running"}}]`, []string{"[].activityId: missing"}},
@@ -528,13 +528,19 @@ func TestCaseReadsHaveRecordings(t *testing.T) {
 	}
 }
 
-func TestCaseProblems(t *testing.T) {
-	var goals goldenFile
+func goldenCaseNamed(t *testing.T, name string) goldenCase {
+	t.Helper()
 	for _, f := range goldenFiles(t) {
-		if f.name == "goals list" {
-			goals = f
+		if f.name == name {
+			return f.goldenCase
 		}
 	}
+	t.Fatalf("no golden case %q", name)
+	return goldenCase{}
+}
+
+func TestCaseProblems(t *testing.T) {
+	goals := goldenCaseNamed(t, "goals list")
 	key := routeKey("GET /goal-service/goal/goals")
 	route := "GET connectapi.garmin.com/goal-service/goal/goals?status=active"
 	for _, tc := range []struct {
@@ -551,7 +557,7 @@ func TestCaseProblems(t *testing.T) {
 		{"entry for a route the case does not call", []routeShape{{"GET /goal-service/goal/goals", passthrough("array")}, {"GET /badge-service/badge/earned", passthrough("array")}}, Record{Status: 200, Body: json.RawMessage(`[]`)}, []string{"caseReads names GET /badge-service/badge/earned, which this case does not call"}},
 	} {
 		recorded := map[string][]recordedFile{key: {{"goals.json", tc.rec}}}
-		problems, err := caseProblems(tc.reads, goals.goldenCase, recorded)
+		problems, err := caseProblems(tc.reads, goals, recorded)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -559,8 +565,35 @@ func TestCaseProblems(t *testing.T) {
 			t.Errorf("%s: caseProblems = %q, want %q", tc.name, problems, tc.want)
 		}
 	}
-	if problems, _ := caseProblems(nil, goals.goldenCase, map[string][]recordedFile{}); len(problems) != 0 {
+	if problems, _ := caseProblems(nil, goals, map[string][]recordedFile{}); len(problems) != 0 {
 		t.Errorf("caseProblems of a case without a recording = %q, want none", problems)
+	}
+}
+
+// An empty array is account state, such as an account without a workout
+// when the suite records, so it is not a problem. It tells nothing about
+// the element shape, so the check uses another recording of the route that
+// has an element, and names the path as unchecked when no recording has one.
+func TestCaseProblemsEmptyArrays(t *testing.T) {
+	goals := goldenCaseNamed(t, "goals list")
+	key := routeKey("GET /goal-service/goal/goals")
+	reads := []routeShape{{"GET /goal-service/goal/goals", arrayOf{object{"goalType": text}}}}
+	empty := recordedFile{"empty.json", Record{Status: 200, Body: json.RawMessage(`[]`)}}
+	filled := recordedFile{"filled.json", Record{Status: 200, Body: json.RawMessage(`[{"goalType": "x"}]`)}}
+	for _, tc := range []struct {
+		name  string
+		files []recordedFile
+	}{
+		{"an empty recording next to one with an element", []recordedFile{empty, filled}},
+		{"only empty recordings", []recordedFile{empty}},
+	} {
+		problems, err := caseProblems(reads, goals, map[string][]recordedFile{key: tc.files})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(problems) != 0 {
+			t.Errorf("%s: caseProblems = %q, want none", tc.name, problems)
+		}
 	}
 }
 
