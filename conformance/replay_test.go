@@ -21,7 +21,17 @@ import (
 // a value it does not have.
 type shape interface {
 	kind() string
-	check(got any, at string) []string
+	check(got any, at string) []finding
+}
+
+// A finding is one place where a recording does not give what the
+// commands read. An empty finding is an array without an element at the
+// path in text. It is not a problem, because an empty list is account
+// state, such as an account without a workout when the suite records, but
+// it leaves the element shape unchecked.
+type finding struct {
+	text  string
+	empty bool
 }
 
 type scalar string
@@ -79,50 +89,62 @@ func joinPath(path, key string) string {
 	return path + "." + key
 }
 
-func kindProblem(want shape, got any, at string) []string {
+func kindProblem(want shape, got any, at string) []finding {
 	if gk := jsonKind(got); gk != want.kind() {
-		return []string{fmt.Sprintf("%s: want %s, the recording has %s", cmp.Or(at, "(body)"), want.kind(), gk)}
+		return []finding{{text: fmt.Sprintf("%s: want %s, the recording has %s", cmp.Or(at, "(body)"), want.kind(), gk)}}
 	}
 	return nil
 }
 
-func (s scalar) check(got any, at string) []string      { return kindProblem(s, got, at) }
-func (p passthrough) check(got any, at string) []string { return kindProblem(p, got, at) }
-func (special) check(any, string) []string              { return nil }
+func (s scalar) check(got any, at string) []finding      { return kindProblem(s, got, at) }
+func (p passthrough) check(got any, at string) []finding { return kindProblem(p, got, at) }
+func (special) check(any, string) []finding              { return nil }
 
-func (a arrayOf) check(got any, at string) []string {
+func (a arrayOf) check(got any, at string) []finding {
 	if p := kindProblem(a, got, at); p != nil || a.elem == nil {
 		return p
 	}
 	if len(got.([]any)) == 0 {
-		return []string{fmt.Sprintf("%s: want at least one element to check its shape, the recording has none", cmp.Or(at, "(body)"))}
+		return []finding{{text: cmp.Or(at, "(body)"), empty: true}}
 	}
-	var problems []string
+	var found []finding
 	for _, x := range got.([]any) {
 		if x != nil {
-			problems = append(problems, a.elem.check(x, at+"[]")...)
+			found = append(found, a.elem.check(x, at+"[]")...)
 		}
 	}
-	slices.Sort(problems)
-	return slices.Compact(problems)
+	slices.SortFunc(found, func(a, b finding) int { return cmp.Compare(a.text, b.text) })
+	return slices.Compact(found)
 }
 
-func (o object) check(got any, at string) []string {
+func (o object) check(got any, at string) []finding {
 	if p := kindProblem(o, got, at); p != nil {
 		return p
 	}
 	g := got.(map[string]any)
-	var problems []string
+	var found []finding
 	for _, key := range slices.Sorted(maps.Keys(o)) {
 		x, ok := g[key]
 		switch {
 		case !ok:
-			problems = append(problems, joinPath(at, key)+": missing")
+			found = append(found, finding{text: joinPath(at, key) + ": missing"})
 		case x != nil:
-			problems = append(problems, o[key].check(x, joinPath(at, key))...)
+			found = append(found, o[key].check(x, joinPath(at, key))...)
 		}
 	}
-	return problems
+	return found
+}
+
+// split separates the findings into problems and the paths of empty arrays.
+func split(found []finding) (problems, empty []string) {
+	for _, f := range found {
+		if f.empty {
+			empty = append(empty, f.text)
+		} else {
+			problems = append(problems, f.text)
+		}
+	}
+	return problems, empty
 }
 
 type routeShape struct {
@@ -258,17 +280,17 @@ func succeeded(files []recordedFile) []recordedFile {
 	return ok
 }
 
-func checkRecord(want shape, r Record) ([]string, error) {
+func checkRecord(want shape, r Record) ([]finding, error) {
 	switch {
 	case want == unread:
 		return nil, nil
 	case want == download:
 		if r.NonJSONBytes == 0 {
-			return []string{"(body): want bytes that are not JSON, the recording has none"}, nil
+			return []finding{{text: "(body): want bytes that are not JSON, the recording has none"}}, nil
 		}
 		return nil, nil
 	case r.Body == nil:
-		return []string{"(body): want " + want.kind() + ", the recording has no JSON body"}, nil
+		return []finding{{text: "(body): want " + want.kind() + ", the recording has no JSON body"}}, nil
 	}
 	dec := json.NewDecoder(bytes.NewReader(r.Body))
 	dec.UseNumber()
@@ -279,7 +301,7 @@ func checkRecord(want shape, r Record) ([]string, error) {
 	return want.check(got, ""), nil
 }
 
-func checkShape(want shape, body json.RawMessage) ([]string, error) {
+func checkShape(want shape, body json.RawMessage) ([]finding, error) {
 	return checkRecord(want, Record{Body: body})
 }
 
@@ -292,6 +314,7 @@ func TestCheckShape(t *testing.T) {
 		{"match", `[{"activityId": 1, "activityType": {"typeKey": "running"}, "extra": "x"}]`, nil},
 		{"null values pass", `[{"activityId": null, "activityType": null}, null]`, nil},
 		{"empty array", `[]`, nil},
+		{"empty nested array", `[{"activityId": 1, "activityType": {"typeKey": "x"}, "laps": []}]`, nil},
 		{"object for array", `{"activities": []}`, []string{"(body): want array, the recording has object"}},
 		{"null body", `null`, []string{"(body): want array, the recording has null"}},
 		{"missing key", `[{"activityType": {"typeKey": "running"}}]`, []string{"[].activityId: missing"}},
@@ -300,12 +323,29 @@ func TestCheckShape(t *testing.T) {
 			"[].activityType.typeKey: want string, the recording has number",
 		}},
 	} {
-		got, err := checkShape(activities, json.RawMessage(tc.body))
+		found, err := checkShape(activities, json.RawMessage(tc.body))
 		if err != nil {
 			t.Fatal(err)
 		}
-		if !slices.Equal(got, tc.want) {
+		if got, _ := split(found); !slices.Equal(got, tc.want) {
 			t.Errorf("%s: checkShape = %q, want %q", tc.name, got, tc.want)
+		}
+	}
+	for _, tc := range []struct {
+		name, body string
+		want       []string
+	}{
+		{"empty body", `[]`, []string{"(body)"}},
+		{"empty nested array", `[{"laps": []}]`, []string{"[].laps"}},
+		{"a null array is not empty", `[{"laps": null}]`, nil},
+		{"an element", `[{"laps": [{}]}]`, nil},
+	} {
+		found, err := checkShape(arrayOf{object{"laps": arrayOf{object{}}}}, json.RawMessage(tc.body))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if _, empty := split(found); !slices.Equal(empty, tc.want) {
+			t.Errorf("%s: empty arrays = %q, want %q", tc.name, empty, tc.want)
 		}
 	}
 	for _, tc := range []struct {
@@ -323,7 +363,7 @@ func TestCheckShape(t *testing.T) {
 		{"download on bytes", download, Record{NonJSONBytes: 12}, 0},
 	} {
 		if got, _ := checkRecord(tc.want, tc.rec); len(got) != tc.n {
-			t.Errorf("%s: checkRecord = %q, want %d problems", tc.name, got, tc.n)
+			t.Errorf("%s: checkRecord = %+v, want %d problems", tc.name, got, tc.n)
 		}
 	}
 }
@@ -400,13 +440,14 @@ func replayable(f goldenFile, served map[string]Record) bool {
 // wants an entry in reads and a 2xx recording with the shapes of that
 // entry. A route without a recording is not checked, because the e2e
 // suite does not call every route. An entry for a route the case does not
-// call is a problem too.
-func caseProblems(reads []routeShape, c goldenCase, recorded map[string][]recordedFile) ([]string, error) {
+// call is a problem too. An array without an element is not a problem,
+// but when every 2xx recording of a route is empty at a path, the element
+// shape at that path is unchecked, and the second list names it.
+func caseProblems(reads []routeShape, c goldenCase, recorded map[string][]recordedFile) (problems, unchecked []string, err error) {
 	byKey := map[string][]routeShape{}
 	for _, r := range reads {
 		byKey[routeKey(r.route)] = append(byKey[routeKey(r.route)], r)
 	}
-	var problems []string
 	for _, route := range slices.Sorted(maps.Keys(c.routes)) {
 		key := goldenRouteKey(route)
 		entries := byKey[key]
@@ -428,22 +469,32 @@ func caseProblems(reads []routeShape, c goldenCase, recorded map[string][]record
 			problems = append(problems, fmt.Sprintf("%s answered %s, want 2xx", route, strings.Join(statuses, ", ")))
 			continue
 		}
+		emptyIn := map[string]int{}
 		for _, f := range ok {
-			for _, e := range entries {
+			for i, e := range entries {
 				found, err := checkRecord(e.shape, f.Record)
 				if err != nil {
-					return nil, fmt.Errorf("%s: %w", f.name, err)
+					return nil, nil, fmt.Errorf("%s: %w", f.name, err)
 				}
-				for _, p := range found {
+				wrong, empty := split(found)
+				for _, p := range wrong {
 					problems = append(problems, fmt.Sprintf("%s in %s: %s", route, f.name, p))
 				}
+				for _, at := range empty {
+					emptyIn[fmt.Sprintf("%d %s", i, at)]++
+				}
+			}
+		}
+		for _, k := range slices.Sorted(maps.Keys(emptyIn)) {
+			if _, at, _ := strings.Cut(k, " "); emptyIn[k] == len(ok) {
+				unchecked = append(unchecked, fmt.Sprintf("%s: no recording has an element at %s, so the shape of its elements is unchecked", route, at))
 			}
 		}
 	}
 	for _, key := range slices.Sorted(maps.Keys(byKey)) {
 		problems = append(problems, fmt.Sprintf("caseReads names %s, which this case does not call", byKey[key][0].route))
 	}
-	return problems, nil
+	return problems, unchecked, nil
 }
 
 func TestRecordedShapes(t *testing.T) {
@@ -458,12 +509,15 @@ func TestRecordedShapes(t *testing.T) {
 			continue
 		}
 		t.Run(f.name, func(t *testing.T) {
-			problems, err := caseProblems(reads, f.goldenCase, recorded)
+			problems, unchecked, err := caseProblems(reads, f.goldenCase, recorded)
 			if err != nil {
 				t.Fatal(err)
 			}
 			for _, p := range problems {
 				t.Error(p)
+			}
+			for _, u := range unchecked {
+				t.Log(u)
 			}
 		})
 	}
@@ -488,6 +542,22 @@ var notRecorded = []string{
 	"profile privacy-zones delete",
 	"wellness menstrual-log delete",
 	"workouts copy",
+}
+
+// notReplayed names the cases whose command needs a value that the scrub
+// replaces, with the reason. TestRecordedShapes checks their shapes, and
+// TestRecordedReplay does not run them, because they cannot exit 0 on
+// scrubbed responses.
+var notReplayed = map[string]string{
+	"health sleep naps delete": "the command finds the nap by its start in the time zone of the profile, and the scrub replaces the time zone name with tester and every start with the same fixed time",
+}
+
+func TestNotReplayedNamesRows(t *testing.T) {
+	for _, name := range slices.Sorted(maps.Keys(notReplayed)) {
+		if _, ok := caseReads[name]; !ok {
+			t.Errorf("notReplayed names %q, which has no row in caseReads", name)
+		}
+	}
 }
 
 // unrecordedRoute returns the first route of c, in sorted order, that has
@@ -557,16 +627,19 @@ func TestCaseProblems(t *testing.T) {
 		{"entry for a route the case does not call", []routeShape{{"GET /goal-service/goal/goals", passthrough("array")}, {"GET /badge-service/badge/earned", passthrough("array")}}, Record{Status: 200, Body: json.RawMessage(`[]`)}, []string{"caseReads names GET /badge-service/badge/earned, which this case does not call"}},
 	} {
 		recorded := map[string][]recordedFile{key: {{"goals.json", tc.rec}}}
-		problems, err := caseProblems(tc.reads, goals, recorded)
+		problems, unchecked, err := caseProblems(tc.reads, goals, recorded)
 		if err != nil {
 			t.Fatal(err)
 		}
 		if !slices.Equal(problems, tc.want) {
 			t.Errorf("%s: caseProblems = %q, want %q", tc.name, problems, tc.want)
 		}
+		if len(unchecked) != 0 {
+			t.Errorf("%s: unchecked = %q, want none from a passthrough", tc.name, unchecked)
+		}
 	}
-	if problems, _ := caseProblems(nil, goals, map[string][]recordedFile{}); len(problems) != 0 {
-		t.Errorf("caseProblems of a case without a recording = %q, want none", problems)
+	if problems, unchecked, _ := caseProblems(nil, goals, map[string][]recordedFile{}); len(problems) != 0 || len(unchecked) != 0 {
+		t.Errorf("caseProblems of a case without a recording = %q, %q, want none", problems, unchecked)
 	}
 }
 
@@ -581,18 +654,22 @@ func TestCaseProblemsEmptyArrays(t *testing.T) {
 	empty := recordedFile{"empty.json", Record{Status: 200, Body: json.RawMessage(`[]`)}}
 	filled := recordedFile{"filled.json", Record{Status: 200, Body: json.RawMessage(`[{"goalType": "x"}]`)}}
 	for _, tc := range []struct {
-		name  string
-		files []recordedFile
+		name      string
+		files     []recordedFile
+		unchecked []string
 	}{
-		{"an empty recording next to one with an element", []recordedFile{empty, filled}},
-		{"only empty recordings", []recordedFile{empty}},
+		{"an empty recording next to one with an element", []recordedFile{empty, filled}, nil},
+		{"only empty recordings", []recordedFile{empty}, []string{"GET connectapi.garmin.com/goal-service/goal/goals?status=active: no recording has an element at (body), so the shape of its elements is unchecked"}},
 	} {
-		problems, err := caseProblems(reads, goals, map[string][]recordedFile{key: tc.files})
+		problems, unchecked, err := caseProblems(reads, goals, map[string][]recordedFile{key: tc.files})
 		if err != nil {
 			t.Fatal(err)
 		}
 		if len(problems) != 0 {
 			t.Errorf("%s: caseProblems = %q, want none", tc.name, problems)
+		}
+		if !slices.Equal(unchecked, tc.unchecked) {
+			t.Errorf("%s: unchecked = %q, want %q", tc.name, unchecked, tc.unchecked)
 		}
 	}
 }
@@ -637,6 +714,10 @@ func TestRecordedReplay(t *testing.T) {
 		if !replayable(f, served) {
 			continue
 		}
+		if reason, ok := notReplayed[f.name]; ok {
+			t.Logf("%q is not run: %s", f.name, reason)
+			continue
+		}
 		ran++
 		t.Run(f.name, func(t *testing.T) {
 			t.Parallel()
@@ -644,12 +725,15 @@ func TestRecordedReplay(t *testing.T) {
 			if !listed {
 				t.Fatalf("caseReads has no entry for %q: name what the command reads from each route", f.name)
 			}
-			problems, err := caseProblems(reads, f.goldenCase, recorded)
+			problems, unchecked, err := caseProblems(reads, f.goldenCase, recorded)
 			if err != nil {
 				t.Fatal(err)
 			}
 			for _, p := range problems {
 				t.Error(p)
+			}
+			for _, u := range unchecked {
+				t.Log(u)
 			}
 			r := &recordedReplay{served: served}
 			s := newSandbox(t, bin, r)
