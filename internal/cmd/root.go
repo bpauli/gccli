@@ -38,15 +38,65 @@ type CLI struct {
 // versionFlag replaces kong.VersionFlag, which reads the version from
 // kong.Vars. The tree passes no kong.Vars: for every flag and argument,
 // kong.New copies the Vars and interpolates each entry, which slows the
-// many parsers the tests build.
+// build. The bound pointer lets each execute set the version of its run
+// on the reused parser.
 type versionFlag bool
 
 type versionText string
 
-func (versionFlag) BeforeReset(app *kong.Kong, v versionText) error {
-	_, _ = fmt.Fprintln(app.Stdout, v)
+func (versionFlag) BeforeReset(app *kong.Kong, v *versionText) error {
+	_, _ = fmt.Fprintln(app.Stdout, *v)
 	app.Exit(0)
 	return nil
+}
+
+// parserSet is a built Kong parser with its command tree. execute keeps one
+// idle set, so a process that runs many commands, such as the test suite,
+// builds the tree once instead of once per command.
+type parserSet struct {
+	cli     CLI
+	parser  *kong.Kong
+	version versionText
+}
+
+var idleParser = make(chan *parserSet, 1)
+
+// reset clears what a Parse leaves in the model. Parse zeroes every flag
+// and positional of every command before it applies the args (kong v1.16.1
+// context.go Reset), but it keeps Set, Active and Negated, which the
+// required-flag check, the existingfile mapper and the negatable bool
+// read in the next Parse.
+func (p *parserSet) reset() {
+	_ = kong.Visit(p.parser.Model.Node, func(node kong.Visitable, next kong.Next) error {
+		switch n := node.(type) {
+		case *kong.Node:
+			n.Active = false
+		case *kong.Flag:
+			n.Negated = false
+		case *kong.Value:
+			n.Set, n.Active = false, false
+		}
+		return next(nil)
+	})
+}
+
+func newParserSet() (*parserSet, error) {
+	p := &parserSet{cli: CLI{Plugins: attach(commands)}}
+	parser, err := kong.New(&p.cli,
+		kong.Name("gccli"),
+		kong.Description("Garmin Connect CLI"),
+		kong.UsageOnError(),
+		kong.ConfigureHelp(kong.HelpOptions{
+			Compact: true,
+		}),
+		kong.Help(colorHelpPrinter),
+		kong.Bind(&p.version),
+	)
+	if err != nil {
+		return nil, err
+	}
+	p.parser = parser
+	return p, nil
 }
 
 var commands = []Node{
@@ -96,38 +146,39 @@ func Execute(args []string, version, commit, date string) int {
 }
 
 func execute(args []string, version, commit, date string, stdout, stderr io.Writer) int {
-	versionStr := fmt.Sprintf("gccli %s (%s) built %s", version, commit, date)
-
-	if errs := checkTable(commands); len(errs) > 0 {
-		for _, err := range errs {
-			_, _ = fmt.Fprintf(stderr, "gccli: command table: %s\n", err)
+	// Concurrent calls each build their own set, and the idle slot keeps
+	// one of them for the next call.
+	var p *parserSet
+	select {
+	case p = <-idleParser:
+		p.reset()
+	default:
+		if errs := checkTable(commands); len(errs) > 0 {
+			for _, err := range errs {
+				_, _ = fmt.Fprintf(stderr, "gccli: command table: %s\n", err)
+			}
+			return 1
 		}
-		return 1
+		var err error
+		if p, err = newParserSet(); err != nil {
+			_, _ = fmt.Fprintf(stderr, "gccli: %s\n", err)
+			return 1
+		}
 	}
 
-	cli := CLI{Plugins: attach(commands)}
-	parser, err := kong.New(&cli,
-		kong.Name("gccli"),
-		kong.Description("Garmin Connect CLI"),
-		kong.UsageOnError(),
-		kong.Writers(stdout, stderr),
-		kong.ConfigureHelp(kong.HelpOptions{
-			Compact: true,
-		}),
-		kong.Help(colorHelpPrinter),
-		kong.Bind(versionText(versionStr)),
-	)
-	if err != nil {
-		_, _ = fmt.Fprintf(stderr, "gccli: %s\n", err)
-		return 1
-	}
-
+	p.version = versionText(fmt.Sprintf("gccli %s (%s) built %s", version, commit, date))
+	p.parser.Stdout, p.parser.Stderr = stdout, stderr
 	// Override Exit to avoid os.Exit during --help and --version.
-	parser.Exit = func(code int) {
+	p.parser.Exit = func(code int) {
 		panic(exitSignal{code: code})
 	}
 
-	return run(parser, &cli, args, stdout, stderr)
+	code := run(p.parser, &p.cli, args, stdout, stderr)
+	select {
+	case idleParser <- p:
+	default:
+	}
+	return code
 }
 
 func run(parser *kong.Kong, cli *CLI, args []string, stdout, stderr io.Writer) (code int) {

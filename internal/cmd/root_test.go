@@ -9,10 +9,13 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"reflect"
 	"strconv"
 	"strings"
 	"sync"
 	"testing"
+
+	"github.com/alecthomas/kong"
 
 	"github.com/bpauli/gccli/internal/garminapi"
 	"github.com/bpauli/gccli/internal/units"
@@ -362,10 +365,27 @@ func TestExecute_JSONModePrintsErrorObject(t *testing.T) {
 	}
 }
 
-func TestExecuteRejectsBadTable(t *testing.T) {
+// swapCommands replaces the command table for the test and drops the idle
+// parser, which execute built from the table before the swap.
+func swapCommands(t *testing.T, nodes []Node) {
+	t.Helper()
 	saved := commands
-	t.Cleanup(func() { commands = saved })
-	commands = []Node{Leaf{Name: "nope", Help: "Nope.", Endpoint: "nope.nope", Output: JSON{}}}
+	drop := func() {
+		select {
+		case <-idleParser:
+		default:
+		}
+	}
+	commands = nodes
+	drop()
+	t.Cleanup(func() {
+		commands = saved
+		drop()
+	})
+}
+
+func TestExecuteRejectsBadTable(t *testing.T) {
+	swapCommands(t, []Node{Leaf{Name: "nope", Help: "Nope.", Endpoint: "nope.nope", Output: JSON{}}})
 	var stdout, stderr bytes.Buffer
 	code := execute([]string{"--help"}, "test", "none", "never", &stdout, &stderr)
 	if code != 1 {
@@ -423,6 +443,151 @@ func TestExecuteRunsAreIsolated(t *testing.T) {
 			t.Errorf("run %d requested another run's values: %s\nwant %s", i, strings.TrimSpace(out), want)
 		}
 	}
+}
+
+// TestExecuteResetsFlagsBetweenRuns runs three commands in one process on
+// the reused parser. The first run gives pointer, list and negated flags,
+// the second run leaves them out, so its request must not carry them, and
+// the third run gives the bool flag in its positive form, which the negated
+// form of the first run must not flip.
+func TestExecuteResetsFlagsBetweenRuns(t *testing.T) {
+	const log = "/periodichealth-service/menstrualcycle/dailylog/2026-10-01"
+	saved := `{"calendarDate":"2026-10-01","flow":"LIGHT","notes":"x","ovulationDay":true}`
+	h := newHarness(t, harnessInput{routes: map[string]mockReply{
+		"GET " + log:  {body: saved},
+		"POST " + log: {body: saved},
+	}})
+	for _, args := range [][]string{
+		{"wellness", "menstrual-log", "set", "2026-10-01", "--flow", "heavy", "--symptoms", "acne,cramps", "--no-ovulation", "--notes", "y"},
+		{"wellness", "menstrual-log", "set", "2026-10-01", "--moods", "happy"},
+		{"wellness", "menstrual-log", "set", "2026-10-01", "--ovulation"},
+	} {
+		if _, stderr, code := h.run(nil, args); code != 0 {
+			t.Fatalf("%v: exit %d: %s", args, code, stderr)
+		}
+	}
+	reqs := h.requests()
+	if len(reqs) != 6 {
+		t.Fatalf("got %d requests, want 6", len(reqs))
+	}
+	body := func(fields string) string {
+		return "POST " + log + "\n  {\n    \"calendarDate\": \"2026-10-01\",\n    \"flow\": \"LIGHT\",\n" + fields +
+			"    \"notes\": \"x\",\n    \"ovulationDay\": true,\n    \"reportTimestamp\": \"2026-10-15T09:30:00.000\"\n  }"
+	}
+	for i, want := range map[int]string{
+		3: body("    \"moods\": [\n      \"HAPPY\"\n    ],\n"),
+		5: body(""),
+	} {
+		if got := strings.TrimRight(reqs[i].entry, "\n"); got != want {
+			t.Errorf("request %d:\n%s\nwant:\n%s", i, got, want)
+		}
+	}
+}
+
+// TestExecuteResetsParseChecksBetweenRuns covers the checks that read what
+// the Parse before left in the Kong model: a required flag the first run
+// gave and the second run leaves out, and a file positional the first run
+// gave and the second run points at a missing file. --help stops the first
+// run after the trace, before a request.
+func TestExecuteResetsParseChecksBetweenRuns(t *testing.T) {
+	h := newHarness(t, harnessInput{files: map[string]string{"workout.json": "{}"}})
+	for _, tt := range []struct {
+		name          string
+		first, second []string
+		wantErr       string
+	}{
+		{
+			name:    "required flag",
+			first:   []string{"health", "progress", "summary", "--start", "2026-01-01", "--end", "2026-01-02", "--metric", "distance", "--help"},
+			second:  []string{"health", "progress", "summary", "--start", "2026-01-01", "--end", "2026-01-02"},
+			wantErr: "gccli: error: missing flags: --metric=METRIC,...",
+		},
+		{
+			name:    "existing file",
+			first:   []string{"workouts", "upload", "workout.json", "--help"},
+			second:  []string{"workouts", "upload", "missing.json"},
+			wantErr: "/missing.json: no such file or directory",
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			if _, stderr, code := h.run(nil, tt.first); code != 0 {
+				t.Fatalf("first run: exit %d: %s", code, stderr)
+			}
+			_, stderr, code := h.run(nil, tt.second)
+			if code != kindUsage.exit {
+				t.Errorf("second run: exit %d, want %d", code, kindUsage.exit)
+			}
+			if !strings.Contains(stderr, tt.wantErr) {
+				t.Errorf("second run stderr:\n%s\nwant a line %q", stderr, tt.wantErr)
+			}
+		})
+	}
+	if reqs := h.requests(); len(reqs) != 0 {
+		t.Errorf("sent %d requests, want none", len(reqs))
+	}
+}
+
+// TestCommandStateIsResetByParse lists every field of the command tree that
+// Kong does not reset in Parse: an unexported field or a kong:"-" field.
+// execute reuses the command structs, so such a field keeps its value from
+// the run before. Each one must be set on every run before Run reads it, or
+// never change after attach. Add a field here after you check that.
+func TestCommandStateIsResetByParse(t *testing.T) {
+	known := map[string]bool{
+		"cmd.ChallengesAdhocCreateCmd.first": true,
+		"cmd.ChallengesAdhocCreateCmd.last":  true,
+		"cmd.GroupsLeaderboardCmd.first":     true,
+		"cmd.GroupsLeaderboardCmd.last":      true,
+		"cmd.specLeafG.leaf":                 true,
+	}
+	used := map[string]bool{}
+	seen := map[reflect.Type]bool{}
+	var walk func(typ reflect.Type)
+	walk = func(typ reflect.Type) {
+		for typ.Kind() == reflect.Pointer {
+			typ = typ.Elem()
+		}
+		if typ.Kind() != reflect.Struct || seen[typ] || typ.PkgPath() != reflect.TypeFor[CLI]().PkgPath() {
+			return
+		}
+		seen[typ] = true
+		typeName, _, _ := strings.Cut(typ.String(), "[")
+		for i := range typ.NumField() {
+			f := typ.Field(i)
+			name := typeName + "." + f.Name
+			switch {
+			case f.Anonymous:
+				walk(f.Type)
+			case !f.IsExported(), f.Tag.Get("kong") == "-":
+				if !known[name] {
+					t.Errorf("%s is not reset by Parse and is not in the known list", name)
+				}
+				used[name] = true
+			default:
+				walk(f.Type)
+			}
+		}
+	}
+	for _, p := range flatten(attach(commands)) {
+		walk(reflect.TypeOf(p).Elem().Field(0).Type)
+	}
+	for name := range known {
+		if !used[name] {
+			t.Errorf("%s is in the known list but not in the command tree", name)
+		}
+	}
+}
+
+func flatten(plugins kong.Plugins) []any {
+	var out []any
+	for _, p := range plugins {
+		if g, ok := reflect.ValueOf(p).Elem().Field(0).Interface().(group); ok {
+			out = append(out, flatten(g.Plugins)...)
+			continue
+		}
+		out = append(out, p)
+	}
+	return out
 }
 
 func TestUnitsEnumListsEveryPreference(t *testing.T) {
