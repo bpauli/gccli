@@ -222,11 +222,11 @@ func TestExecute_HeaderEnvAppliesOnlyToPlain(t *testing.T) {
 		args []string
 		want string
 	}{
-		{name: "table", want: "ID   NAME  TYPE     DISTANCE  CREATED\n111  Loop  running  8.20 km   2026-09-01T10:00:00.0\n"},
+		{name: "table", want: "ID   NAME  TYPE     DISTANCE  CREATED\n111  Loop  running  8.20 km   2026-09-01\n"},
 		{name: "json", args: []string{"--json"}, want: "{\n  \"coursesForUser\": [\n    {\n      \"courseId\": 111,"},
 		{name: "env json", env: map[string]string{"GCCLI_JSON": "1"}, want: "{\n  \"coursesForUser\": [\n    {\n      \"courseId\": 111,"},
-		{name: "plain", args: []string{"--plain"}, want: "ID\tNAME\tTYPE\tDISTANCE\tCREATED\n111\tLoop\trunning\t8.20 km\t2026-09-01T10:00:00.0\n"},
-		{name: "env plain", env: map[string]string{"GCCLI_PLAIN": "1"}, want: "ID\tNAME\tTYPE\tDISTANCE\tCREATED\n111\tLoop\trunning\t8.20 km\t2026-09-01T10:00:00.0\n"},
+		{name: "plain", args: []string{"--plain"}, want: "ID\tNAME\tTYPE\tDISTANCE\tCREATED\n111\tLoop\trunning\t8.20 km\t2026-09-01\n"},
+		{name: "env plain", env: map[string]string{"GCCLI_PLAIN": "1"}, want: "ID\tNAME\tTYPE\tDISTANCE\tCREATED\n111\tLoop\trunning\t8.20 km\t2026-09-01\n"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -239,7 +239,7 @@ func TestExecute_HeaderEnvAppliesOnlyToPlain(t *testing.T) {
 			}
 
 			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-				_, _ = io.WriteString(w, `{"coursesForUser":[{"courseId":111,"courseName":"Loop","courseType":{"typeKey":"running"},"distanceInMeters":8200,"createdDate":"2026-09-01T10:00:00.0"}]}`)
+				_, _ = io.WriteString(w, `{"coursesForUser":[{"courseId":111,"courseName":"Loop","activityType":{"typeKey":"running"},"distanceInMeters":8200,"createdDate":1788256800000,"createdDateFormatted":"2026-09-01 10:00:00.0 GMT"}]}`)
 			}))
 			defer server.Close()
 

@@ -136,7 +136,7 @@ var (
 		"activityId": number, "activityName": text, "startTimeLocal": text, "activityType": object{"typeKey": text},
 		"distance": number, "duration": number, "calories": number,
 	}}
-	courseRows = arrayOf{object{"courseId": number, "courseName": text, "courseType": object{"typeKey": text}, "distanceInMeters": number, "createdDate": text}}
+	courseRows = arrayOf{object{"courseId": number, "courseName": text, "activityType": object{"typeKey": text}, "distanceInMeters": number, "createdDateFormatted": text}}
 )
 
 // caseReads names, for each golden case the replay runs, what its command
