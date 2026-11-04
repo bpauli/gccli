@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `courses list` and `courses favorites`: the CREATED column shows the date only, such as `2026-09-01`, from `createdDateFormatted`. `--json` output is unchanged. (#331)
+
+### Fixed
+
+- `courses list` and `courses favorites` showed an empty TYPE column and the created date as milliseconds since the epoch, because they read `courseType` and `createdDate`, which Garmin does not send as the mock assumed. They now read `activityType.typeKey` and `createdDateFormatted`. (#331)
+
 ## [3.1.0] - 2026-10-29
 
 v3.1 adds about 140 commands: groups, segments, golf, nutrition logging, social follows, Garmin Coach plans, ad-hoc challenges and more. It fixes 4 commands that failed on every call. No v3.0.0 command or flag was removed or renamed.
