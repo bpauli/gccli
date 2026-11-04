@@ -20,7 +20,7 @@ var profileGroup = Group{Name: "profile", Help: "View user profile.", Children: 
 	profilePowerZonesGroup,
 }}
 
-var profilePowerZonesGroup = Group{Name: "power-zones", Help: "Show power zones.", Children: []Node{
+var profilePowerZonesGroup = Group{Name: "power-zones", Help: "Show and set power zones.", Children: []Node{
 	Leaf{Name: "list", Help: "Show power zones for all sports.", Default: true, Endpoint: "profile.power-zones", Verb: "get power zones", Output: JSON{List: true}},
 	Leaf{
 		Name: "sport", Help: "Show power zones for one sport.",
@@ -31,7 +31,114 @@ var profilePowerZonesGroup = Group{Name: "power-zones", Help: "Show power zones.
 		Params:   Params{"sport": In("Sport")},
 		Verb:     "get sport power zones", Output: JSON{},
 	},
+	Custom{Name: "set", Help: "Set the FTP and the zone floors of one sport.", Cmd: &ProfilePowerZonesSetCmd{}},
 }}
+
+// powerZoneRule is the zone count of a sport and the percents of FTP that give
+// its default zone floors. A nil percents means the sport has no default.
+type powerZoneRule struct {
+	zones    int
+	percents []int
+}
+
+// These percents, rounded half up, give the floors that Garmin stored for
+// cycling, rowing and cross-country skiing.
+var sevenZonePercents = []int{0, 55, 75, 90, 105, 120, 150}
+
+var powerZoneRules = map[Upper]powerZoneRule{
+	"cycling":              {zones: 7, percents: sevenZonePercents},
+	"rowing":               {zones: 7, percents: sevenZonePercents},
+	"cross-country-skiing": {zones: 7, percents: sevenZonePercents},
+	"running":              {zones: 5},
+}
+
+// ProfilePowerZonesSetCmd sets the FTP and the zone floors of one sport.
+// Garmin changes only the sports in the body and also records the FTP.
+type ProfilePowerZonesSetCmd struct {
+	Sport  Upper `arg:"" help:"Sport: cycling, running, rowing or cross-country-skiing." enum:"cycling,running,rowing,cross-country-skiing"`
+	FTP    *int  `name:"ftp" required:"" placeholder:"WATTS" help:"Functional threshold power in watts."`
+	Floors []int `placeholder:"WATTS" help:"Comma-separated lower limit of each zone in watts: 7 values, or 5 for running. Default for the other sports: 0, 55, 75, 90, 105, 120 and 150 percent of FTP."`
+}
+
+func (c *ProfilePowerZonesSetCmd) Validate() error {
+	rule, ok := powerZoneRules[c.Sport]
+	// Kong runs Validate before it checks the sport enum and the required
+	// --ftp, so leave those inputs to Kong's own message.
+	if !ok || c.FTP == nil {
+		return nil
+	}
+	switch {
+	case *c.FTP <= 0:
+		return errors.New("--ftp must be greater than 0")
+	case c.Floors == nil && rule.percents == nil:
+		return fmt.Errorf("%s has no default zone floors: give --floors with %d values", c.Sport, rule.zones)
+	case c.Floors != nil && len(c.Floors) != rule.zones:
+		return fmt.Errorf("--floors needs %d values for %s, got %d", rule.zones, c.Sport, len(c.Floors))
+	}
+	floors := c.floors()
+	for i, floor := range floors {
+		if floor < 0 {
+			return errors.New("--floors must not be negative")
+		}
+		if i > 0 && floor <= floors[i-1] {
+			if c.Floors == nil {
+				return fmt.Errorf("--ftp %d is too low for increasing default zone floors: give --floors", *c.FTP)
+			}
+			return errors.New("--floors must increase from zone to zone")
+		}
+	}
+	return nil
+}
+
+func (c *ProfilePowerZonesSetCmd) floors() []int {
+	if c.Floors != nil {
+		return c.Floors
+	}
+	return defaultPowerZoneFloors(*c.FTP, powerZoneRules[c.Sport].percents)
+}
+
+func defaultPowerZoneFloors(ftp int, percents []int) []int {
+	floors := make([]int, len(percents))
+	for i, p := range percents {
+		floors[i] = (ftp*p + 50) / 100
+	}
+	return floors
+}
+
+func (c *ProfilePowerZonesSetCmd) Run(g *Globals) error {
+	floors := c.floors()
+	// Garmin keeps seven floors for every sport and 0 in the ones a sport does not use.
+	var zone [7]int
+	copy(zone[:], floors)
+	body, err := json.Marshal([]map[string]any{{
+		"sport":                    c.Sport.wire(),
+		"functionalThresholdPower": *c.FTP,
+		"zone1Floor":               zone[0],
+		"zone2Floor":               zone[1],
+		"zone3Floor":               zone[2],
+		"zone4Floor":               zone[3],
+		"zone5Floor":               zone[4],
+		"zone6Floor":               zone[5],
+		"zone7Floor":               zone[6],
+		"userLocalTime":            nil,
+	}})
+	if err != nil {
+		return err
+	}
+	client, err := resolveClient(g)
+	if err != nil {
+		return err
+	}
+	data, err := client.Call(g.Context, "profile.power-zones.update", nil, body)
+	if err != nil {
+		return fmt.Errorf("set power zones: %w", err)
+	}
+	shown := make([]string, len(floors))
+	for i, floor := range floors {
+		shown[i] = strconv.Itoa(floor)
+	}
+	return reportWrite(g, data, "Set %s FTP to %d W, zone floors %s W", c.Sport, *c.FTP, strings.Join(shown, ", "))
+}
 
 var profilePrivacyGroup = Group{Name: "privacy", Help: "View and change privacy settings.", Children: []Node{
 	Leaf{Name: "view", Help: "Show privacy settings.", Default: true, Endpoint: "profile.privacy-settings", Verb: "get privacy settings", Output: JSON{}},

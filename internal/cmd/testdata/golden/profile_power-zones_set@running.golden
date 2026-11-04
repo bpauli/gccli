@@ -1,0 +1,97 @@
+Running has 5 zones. zone6Floor and zone7Floor are sent as 0, as Garmin stores them.
+-- args --
+profile
+power-zones
+set
+running
+--ftp
+179
+--floors
+116,143,162,179,206
+-- route PUT /biometric-service/powerZones/all 204 --
+-- table stdout --
+-- table stderr --
+Set running FTP to 179 W, zone floors 116, 143, 162, 179, 206 W
+-- table exit --
+0
+-- table requests --
+PUT /biometric-service/powerZones/all
+  [
+    {
+      "functionalThresholdPower": 179,
+      "sport": "RUNNING",
+      "userLocalTime": null,
+      "zone1Floor": 116,
+      "zone2Floor": 143,
+      "zone3Floor": 162,
+      "zone4Floor": 179,
+      "zone5Floor": 206,
+      "zone6Floor": 0,
+      "zone7Floor": 0
+    }
+  ]
+-- plain stdout --
+-- plain stderr --
+Set running FTP to 179 W, zone floors 116, 143, 162, 179, 206 W
+-- plain exit --
+0
+-- plain requests --
+PUT /biometric-service/powerZones/all
+  [
+    {
+      "functionalThresholdPower": 179,
+      "sport": "RUNNING",
+      "userLocalTime": null,
+      "zone1Floor": 116,
+      "zone2Floor": 143,
+      "zone3Floor": 162,
+      "zone4Floor": 179,
+      "zone5Floor": 206,
+      "zone6Floor": 0,
+      "zone7Floor": 0
+    }
+  ]
+-- plain-header stdout --
+-- plain-header stderr --
+Set running FTP to 179 W, zone floors 116, 143, 162, 179, 206 W
+-- plain-header exit --
+0
+-- plain-header requests --
+PUT /biometric-service/powerZones/all
+  [
+    {
+      "functionalThresholdPower": 179,
+      "sport": "RUNNING",
+      "userLocalTime": null,
+      "zone1Floor": 116,
+      "zone2Floor": 143,
+      "zone3Floor": 162,
+      "zone4Floor": 179,
+      "zone5Floor": 206,
+      "zone6Floor": 0,
+      "zone7Floor": 0
+    }
+  ]
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+PUT /biometric-service/powerZones/all
+  [
+    {
+      "functionalThresholdPower": 179,
+      "sport": "RUNNING",
+      "userLocalTime": null,
+      "zone1Floor": 116,
+      "zone2Floor": 143,
+      "zone3Floor": 162,
+      "zone4Floor": 179,
+      "zone5Floor": 206,
+      "zone6Floor": 0,
+      "zone7Floor": 0
+    }
+  ]

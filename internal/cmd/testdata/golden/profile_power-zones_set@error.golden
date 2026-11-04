@@ -1,0 +1,94 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+profile
+power-zones
+set
+cycling
+--ftp
+279
+-- route PUT /biometric-service/powerZones/all 400 noeol --
+{"message":"powerZonesDTO cannot be null","error":"BadRequestException"}
+-- table stdout --
+-- table stderr --
+set power zones: garmin api: 400 Bad Request: {"message":"powerZonesDTO cannot be null","error":"BadRequestException"}
+-- table exit --
+1
+-- table requests --
+PUT /biometric-service/powerZones/all
+  [
+    {
+      "functionalThresholdPower": 279,
+      "sport": "CYCLING",
+      "userLocalTime": null,
+      "zone1Floor": 0,
+      "zone2Floor": 153,
+      "zone3Floor": 209,
+      "zone4Floor": 251,
+      "zone5Floor": 293,
+      "zone6Floor": 335,
+      "zone7Floor": 419
+    }
+  ]
+-- plain stdout --
+-- plain stderr --
+set power zones: garmin api: 400 Bad Request: {"message":"powerZonesDTO cannot be null","error":"BadRequestException"}
+-- plain exit --
+1
+-- plain requests --
+PUT /biometric-service/powerZones/all
+  [
+    {
+      "functionalThresholdPower": 279,
+      "sport": "CYCLING",
+      "userLocalTime": null,
+      "zone1Floor": 0,
+      "zone2Floor": 153,
+      "zone3Floor": 209,
+      "zone4Floor": 251,
+      "zone5Floor": 293,
+      "zone6Floor": 335,
+      "zone7Floor": 419
+    }
+  ]
+-- plain-header stdout --
+-- plain-header stderr --
+set power zones: garmin api: 400 Bad Request: {"message":"powerZonesDTO cannot be null","error":"BadRequestException"}
+-- plain-header exit --
+1
+-- plain-header requests --
+PUT /biometric-service/powerZones/all
+  [
+    {
+      "functionalThresholdPower": 279,
+      "sport": "CYCLING",
+      "userLocalTime": null,
+      "zone1Floor": 0,
+      "zone2Floor": 153,
+      "zone3Floor": 209,
+      "zone4Floor": 251,
+      "zone5Floor": 293,
+      "zone6Floor": 335,
+      "zone7Floor": 419
+    }
+  ]
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"set power zones: garmin api: 400 Bad Request: {\"message\":\"powerZonesDTO cannot be null\",\"error\":\"BadRequestException\"}"}}
+-- json exit --
+1
+-- json requests --
+PUT /biometric-service/powerZones/all
+  [
+    {
+      "functionalThresholdPower": 279,
+      "sport": "CYCLING",
+      "userLocalTime": null,
+      "zone1Floor": 0,
+      "zone2Floor": 153,
+      "zone3Floor": 209,
+      "zone4Floor": 251,
+      "zone5Floor": 293,
+      "zone6Floor": 335,
+      "zone7Floor": 419
+    }
+  ]

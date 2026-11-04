@@ -31,6 +31,7 @@ var profileEndpoints = []Endpoint{
 		Name: "profile.sport-power-zones", Method: http.MethodGet, Host: ConnectAPI, Path: "/biometric-service/powerZones/sport/{sport}",
 		Params: []Param{{Name: "sport", Enum: []string{"CYCLING", "RUNNING", "ROWING", "CROSS_COUNTRY_SKIING"}}},
 	},
+	{Name: "profile.power-zones.update", Method: http.MethodPut, Host: ConnectAPI, Path: "/biometric-service/powerZones/all", Body: true},
 }
 
 // GetDisplayName returns the authenticated user's display name from profile settings.

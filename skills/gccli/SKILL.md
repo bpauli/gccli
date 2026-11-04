@@ -1010,6 +1010,10 @@ Date shortcuts
 - `gccli profile power-zones list`: Show power zones for all sports. Also runs as `gccli profile power-zones`.
 - `gccli profile power-zones sport <sport>`: Show power zones for one sport.
   - `<sport>`: Sport: cycling, running, rowing or cross-country-skiing.
+- `gccli profile power-zones set --ftp=WATTS <sport> [flags]`: Set the FTP and the zone floors of one sport.
+  - `<sport>`: Sport: cycling, running, rowing or cross-country-skiing.
+  - `--ftp=WATTS`: Functional threshold power in watts.
+  - `--floors=WATTS,...`: Comma-separated lower limit of each zone in watts: 7 values, or 5 for running. Default for the other sports: 0, 55, 75, 90, 105, 120 and 150 percent of FTP.
 - `gccli training plans [flags]`: List training plans. Also runs as `gccli training [flags]`.
   - `--locale="en"`: Locale for training plans (e.g. en, de, fr).
 - `gccli training plan <id>`: Show a specific training plan.

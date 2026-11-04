@@ -1,0 +1,138 @@
+Error case: a missing --ftp is Kong's missing-flag error. The exit code is 2 (usage) and no request is sent.
+-- args --
+profile
+power-zones
+set
+cycling
+-- table stdout --
+-- table stderr --
+Usage: gccli profile power-zones set --ftp=WATTS <sport> [flags]
+
+Set the FTP and the zone floors of one sport.
+
+Arguments:
+  <sport>    Sport: cycling, running, rowing or cross-country-skiing.
+
+Flags:
+  -h, --help                Show context-sensitive help.
+  -j, --json                Output as JSON ($GCCLI_JSON).
+      --plain               Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header              Print the column names as the first line of --plain
+                            output ($GCCLI_HEADER).
+      --color="auto"        Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING      Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"        Unit system for distances, speeds, paces,
+                            elevations and weights in table and plain output:
+                            auto (Garmin profile), metric, statute_us,
+                            statute_uk ($GCCLI_UNITS).
+      --version             Print version information.
+
+      --ftp=WATTS           Functional threshold power in watts.
+      --floors=WATTS,...    Comma-separated lower limit of each zone in watts:
+                            7 values, or 5 for running. Default for the other
+                            sports: 0, 55, 75, 90, 105, 120 and 150 percent of
+                            FTP.
+
+gccli: error: missing flags: --ftp=WATTS
+-- table exit --
+2
+-- table requests --
+-- plain stdout --
+-- plain stderr --
+Usage: gccli profile power-zones set --ftp=WATTS <sport> [flags]
+
+Set the FTP and the zone floors of one sport.
+
+Arguments:
+  <sport>    Sport: cycling, running, rowing or cross-country-skiing.
+
+Flags:
+  -h, --help                Show context-sensitive help.
+  -j, --json                Output as JSON ($GCCLI_JSON).
+      --plain               Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header              Print the column names as the first line of --plain
+                            output ($GCCLI_HEADER).
+      --color="auto"        Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING      Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"        Unit system for distances, speeds, paces,
+                            elevations and weights in table and plain output:
+                            auto (Garmin profile), metric, statute_us,
+                            statute_uk ($GCCLI_UNITS).
+      --version             Print version information.
+
+      --ftp=WATTS           Functional threshold power in watts.
+      --floors=WATTS,...    Comma-separated lower limit of each zone in watts:
+                            7 values, or 5 for running. Default for the other
+                            sports: 0, 55, 75, 90, 105, 120 and 150 percent of
+                            FTP.
+
+gccli: error: missing flags: --ftp=WATTS
+-- plain exit --
+2
+-- plain requests --
+-- plain-header stdout --
+-- plain-header stderr --
+Usage: gccli profile power-zones set --ftp=WATTS <sport> [flags]
+
+Set the FTP and the zone floors of one sport.
+
+Arguments:
+  <sport>    Sport: cycling, running, rowing or cross-country-skiing.
+
+Flags:
+  -h, --help                Show context-sensitive help.
+  -j, --json                Output as JSON ($GCCLI_JSON).
+      --plain               Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header              Print the column names as the first line of --plain
+                            output ($GCCLI_HEADER).
+      --color="auto"        Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING      Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"        Unit system for distances, speeds, paces,
+                            elevations and weights in table and plain output:
+                            auto (Garmin profile), metric, statute_us,
+                            statute_uk ($GCCLI_UNITS).
+      --version             Print version information.
+
+      --ftp=WATTS           Functional threshold power in watts.
+      --floors=WATTS,...    Comma-separated lower limit of each zone in watts:
+                            7 values, or 5 for running. Default for the other
+                            sports: 0, 55, 75, 90, 105, 120 and 150 percent of
+                            FTP.
+
+gccli: error: missing flags: --ftp=WATTS
+-- plain-header exit --
+2
+-- plain-header requests --
+-- json stdout --
+-- json stderr --
+Usage: gccli profile power-zones set --ftp=WATTS <sport> [flags]
+
+Set the FTP and the zone floors of one sport.
+
+Arguments:
+  <sport>    Sport: cycling, running, rowing or cross-country-skiing.
+
+Flags:
+  -h, --help                Show context-sensitive help.
+  -j, --json                Output as JSON ($GCCLI_JSON).
+      --plain               Output as plain text (TSV) ($GCCLI_PLAIN).
+      --header              Print the column names as the first line of --plain
+                            output ($GCCLI_HEADER).
+      --color="auto"        Color mode: auto, always, never ($GCCLI_COLOR).
+      --account=STRING      Garmin account email ($GCCLI_ACCOUNT).
+      --units="auto"        Unit system for distances, speeds, paces,
+                            elevations and weights in table and plain output:
+                            auto (Garmin profile), metric, statute_us,
+                            statute_uk ($GCCLI_UNITS).
+      --version             Print version information.
+
+      --ftp=WATTS           Functional threshold power in watts.
+      --floors=WATTS,...    Comma-separated lower limit of each zone in watts:
+                            7 values, or 5 for running. Default for the other
+                            sports: 0, 55, 75, 90, 105, 120 and 150 percent of
+                            FTP.
+
+gccli: error: missing flags: --ftp=WATTS
+-- json exit --
+2
+-- json requests --
