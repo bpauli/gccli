@@ -19,8 +19,8 @@ import (
 // response. The check fails when a field they read is missing or has
 // another JSON type. A null passes anywhere, because Garmin sends null for
 // a value it does not have. empty and filled name the paths of the arrays
-// without and with an element, so the caller can tell a path that no
-// recording lets it check.
+// without and with an element that is not null, so the caller can tell a
+// path that no recording lets it check.
 type shape interface {
 	kind() string
 	check(got any, at string) (problems, empty, filled []string)
@@ -110,17 +110,21 @@ func (a arrayOf) check(got any, at string) (problems, empty, filled []string) {
 	if p := kindProblem(a, got, at); p != nil || a.elem == nil {
 		return p, nil, nil
 	}
-	if len(got.([]any)) == 0 {
-		return nil, []string{cmp.Or(at, "(body)")}, nil
-	}
-	filled = []string{cmp.Or(at, "(body)")}
+	path := cmp.Or(at, "(body)")
+	checked := false
 	for _, x := range got.([]any) {
 		if x != nil {
+			checked = true
 			p, e, f := a.elem.check(x, at+"[]")
 			problems = append(problems, p...)
 			empty = append(empty, e...)
 			filled = append(filled, f...)
 		}
+	}
+	if checked {
+		filled = append(filled, path)
+	} else {
+		empty = append(empty, path)
 	}
 	slices.Sort(problems)
 	slices.Sort(empty)
@@ -355,6 +359,8 @@ func TestCheckShape(t *testing.T) {
 		empty, filled []string
 	}{
 		{"empty body", `[]`, []string{"(body)"}, nil},
+		{"only null elements", `[null, null]`, []string{"(body)"}, nil},
+		{"a nested array with only null elements", `[{"laps": [null]}]`, []string{"[].laps"}, []string{"(body)"}},
 		{"empty nested array", `[{"laps": []}]`, []string{"[].laps"}, []string{"(body)"}},
 		{"a null array is not empty", `[{"laps": null}]`, nil, []string{"(body)"}},
 		{"an element", `[{"laps": [{}]}]`, nil, []string{"(body)", "[].laps"}},
@@ -674,6 +680,7 @@ func TestCaseProblemsEmptyArrays(t *testing.T) {
 	key := routeKey("GET /goal-service/goal/goals")
 	reads := []routeShape{{"GET /goal-service/goal/goals", arrayOf{object{"goalType": text, "laps": arrayOf{object{}}}}}}
 	empty := recordedFile{"empty.json", Record{Status: 200, Body: json.RawMessage(`[]`)}}
+	nulls := recordedFile{"nulls.json", Record{Status: 200, Body: json.RawMessage(`[null]`)}}
 	filled := recordedFile{"filled.json", Record{Status: 200, Body: json.RawMessage(`[{"goalType": "x", "laps": [{}]}]`)}}
 	emptyLaps := recordedFile{"empty_laps.json", Record{Status: 200, Body: json.RawMessage(`[{"goalType": "x", "laps": []}]`)}}
 	mixedLaps := recordedFile{"mixed_laps.json", Record{Status: 200, Body: json.RawMessage(`[{"goalType": "x", "laps": []}, {"goalType": "y", "laps": [{}]}]`)}}
@@ -685,6 +692,8 @@ func TestCaseProblemsEmptyArrays(t *testing.T) {
 	}{
 		{"an empty recording next to one with an element", []recordedFile{empty, filled}, nil},
 		{"only empty recordings", []recordedFile{empty}, []string{fmt.Sprintf(uncheckedAt, "(body)")}},
+		{"only a recording with null elements", []recordedFile{nulls}, []string{fmt.Sprintf(uncheckedAt, "(body)")}},
+		{"a recording with null elements next to one with an element", []recordedFile{nulls, filled}, nil},
 		{"an empty recording next to one whose nested array is empty", []recordedFile{empty, emptyLaps}, []string{fmt.Sprintf(uncheckedAt, "[].laps")}},
 		{"an element with an empty nested array next to one with an element", []recordedFile{mixedLaps}, nil},
 	} {
