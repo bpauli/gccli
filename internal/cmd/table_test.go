@@ -217,6 +217,7 @@ type handGearUnlink struct {
 // printed as the binary prints it.
 func newParserFor(t *testing.T, cli any, stdout, stderr io.Writer) *kong.Kong {
 	t.Helper()
+	version := versionText("test")
 	parser, err := kong.New(cli,
 		kong.Name("gccli"),
 		kong.Description("Garmin Connect CLI"),
@@ -225,7 +226,7 @@ func newParserFor(t *testing.T, cli any, stdout, stderr io.Writer) *kong.Kong {
 		kong.Exit(func(int) {}),
 		kong.ConfigureHelp(kong.HelpOptions{Compact: true}),
 		kong.Help(colorHelpPrinter),
-		kong.Bind(versionText("test")),
+		kong.Bind(&version),
 	)
 	if err != nil {
 		t.Fatalf("kong.New: %v", err)
