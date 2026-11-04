@@ -18,10 +18,12 @@ import (
 // A shape names what the commands that call a route read from its
 // response. The check fails when a field they read is missing or has
 // another JSON type. A null passes anywhere, because Garmin sends null for
-// a value it does not have.
+// a value it does not have. empty and filled name the paths of the arrays
+// without and with an element, so the caller can tell a path that no
+// recording lets it check.
 type shape interface {
 	kind() string
-	check(got any, at string) (problems, empty []string)
+	check(got any, at string) (problems, empty, filled []string)
 }
 
 type scalar string
@@ -92,35 +94,43 @@ func kindProblem(want shape, got any, at string) []string {
 	return nil
 }
 
-func (s scalar) check(got any, at string) ([]string, []string) { return kindProblem(s, got, at), nil }
-func (p passthrough) check(got any, at string) ([]string, []string) {
-	return kindProblem(p, got, at), nil
+func (s scalar) check(got any, at string) ([]string, []string, []string) {
+	return kindProblem(s, got, at), nil, nil
 }
-func (special) check(any, string) ([]string, []string)           { return nil, nil }
-func (o optional) check(got any, at string) ([]string, []string) { return o.of.check(got, at) }
 
-func (a arrayOf) check(got any, at string) (problems, empty []string) {
+func (p passthrough) check(got any, at string) ([]string, []string, []string) {
+	return kindProblem(p, got, at), nil, nil
+}
+func (special) check(any, string) ([]string, []string, []string) { return nil, nil, nil }
+func (o optional) check(got any, at string) ([]string, []string, []string) {
+	return o.of.check(got, at)
+}
+
+func (a arrayOf) check(got any, at string) (problems, empty, filled []string) {
 	if p := kindProblem(a, got, at); p != nil || a.elem == nil {
-		return p, nil
+		return p, nil, nil
 	}
 	if len(got.([]any)) == 0 {
-		return nil, []string{cmp.Or(at, "(body)")}
+		return nil, []string{cmp.Or(at, "(body)")}, nil
 	}
+	filled = []string{cmp.Or(at, "(body)")}
 	for _, x := range got.([]any) {
 		if x != nil {
-			p, e := a.elem.check(x, at+"[]")
+			p, e, f := a.elem.check(x, at+"[]")
 			problems = append(problems, p...)
 			empty = append(empty, e...)
+			filled = append(filled, f...)
 		}
 	}
 	slices.Sort(problems)
 	slices.Sort(empty)
-	return slices.Compact(problems), slices.Compact(empty)
+	slices.Sort(filled)
+	return slices.Compact(problems), slices.Compact(empty), slices.Compact(filled)
 }
 
-func (o object) check(got any, at string) (problems, empty []string) {
+func (o object) check(got any, at string) (problems, empty, filled []string) {
 	if p := kindProblem(o, got, at); p != nil {
-		return p, nil
+		return p, nil, nil
 	}
 	g := got.(map[string]any)
 	for _, key := range slices.Sorted(maps.Keys(o)) {
@@ -130,12 +140,13 @@ func (o object) check(got any, at string) (problems, empty []string) {
 		case !ok && !opt:
 			problems = append(problems, joinPath(at, key)+": missing")
 		case ok && x != nil:
-			p, e := o[key].check(x, joinPath(at, key))
+			p, e, f := o[key].check(x, joinPath(at, key))
 			problems = append(problems, p...)
 			empty = append(empty, e...)
+			filled = append(filled, f...)
 		}
 	}
-	return problems, empty
+	return problems, empty, filled
 }
 
 type routeShape struct {
@@ -285,29 +296,29 @@ func succeeded(files []recordedFile) []recordedFile {
 	return ok
 }
 
-func checkRecord(want shape, r Record) (problems, empty []string, err error) {
+func checkRecord(want shape, r Record) (problems, empty, filled []string, err error) {
 	switch {
 	case want == unread:
-		return nil, nil, nil
+		return nil, nil, nil, nil
 	case want == download:
 		if r.NonJSONBytes == 0 {
-			return []string{"(body): want bytes that are not JSON, the recording has none"}, nil, nil
+			return []string{"(body): want bytes that are not JSON, the recording has none"}, nil, nil, nil
 		}
-		return nil, nil, nil
+		return nil, nil, nil, nil
 	case r.Body == nil:
-		return []string{"(body): want " + want.kind() + ", the recording has no JSON body"}, nil, nil
+		return []string{"(body): want " + want.kind() + ", the recording has no JSON body"}, nil, nil, nil
 	}
 	dec := json.NewDecoder(bytes.NewReader(r.Body))
 	dec.UseNumber()
 	var got any
 	if err := dec.Decode(&got); err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
-	problems, empty = want.check(got, "")
-	return problems, empty, nil
+	problems, empty, filled = want.check(got, "")
+	return problems, empty, filled, nil
 }
 
-func checkShape(want shape, body json.RawMessage) (problems, empty []string, err error) {
+func checkShape(want shape, body json.RawMessage) (problems, empty, filled []string, err error) {
 	return checkRecord(want, Record{Body: body})
 }
 
@@ -331,7 +342,7 @@ func TestCheckShape(t *testing.T) {
 			"[].activityType.typeKey: want string, the recording has number",
 		}},
 	} {
-		got, _, err := checkShape(activities, json.RawMessage(tc.body))
+		got, _, _, err := checkShape(activities, json.RawMessage(tc.body))
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -340,20 +351,21 @@ func TestCheckShape(t *testing.T) {
 		}
 	}
 	for _, tc := range []struct {
-		name, body string
-		want       []string
+		name, body    string
+		empty, filled []string
 	}{
-		{"empty body", `[]`, []string{"(body)"}},
-		{"empty nested array", `[{"laps": []}]`, []string{"[].laps"}},
-		{"a null array is not empty", `[{"laps": null}]`, nil},
-		{"an element", `[{"laps": [{}]}]`, nil},
+		{"empty body", `[]`, []string{"(body)"}, nil},
+		{"empty nested array", `[{"laps": []}]`, []string{"[].laps"}, []string{"(body)"}},
+		{"a null array is not empty", `[{"laps": null}]`, nil, []string{"(body)"}},
+		{"an element", `[{"laps": [{}]}]`, nil, []string{"(body)", "[].laps"}},
+		{"an empty nested array next to one with an element", `[{"laps": []}, {"laps": [{}]}]`, []string{"[].laps"}, []string{"(body)", "[].laps"}},
 	} {
-		_, empty, err := checkShape(arrayOf{object{"laps": arrayOf{object{}}}}, json.RawMessage(tc.body))
+		_, empty, filled, err := checkShape(arrayOf{object{"laps": arrayOf{object{}}}}, json.RawMessage(tc.body))
 		if err != nil {
 			t.Fatal(err)
 		}
-		if !slices.Equal(empty, tc.want) {
-			t.Errorf("%s: empty arrays = %q, want %q", tc.name, empty, tc.want)
+		if !slices.Equal(empty, tc.empty) || !slices.Equal(filled, tc.filled) {
+			t.Errorf("%s: empty, filled arrays = %q, %q, want %q, %q", tc.name, empty, filled, tc.empty, tc.filled)
 		}
 	}
 	for _, tc := range []struct {
@@ -370,7 +382,7 @@ func TestCheckShape(t *testing.T) {
 		{"download on a JSON body", download, Record{Body: json.RawMessage(`{}`)}, 1},
 		{"download on bytes", download, Record{NonJSONBytes: 12}, 0},
 	} {
-		if got, _, _ := checkRecord(tc.want, tc.rec); len(got) != tc.n {
+		if got, _, _, _ := checkRecord(tc.want, tc.rec); len(got) != tc.n {
 			t.Errorf("%s: checkRecord = %q, want %d problems", tc.name, got, tc.n)
 		}
 	}
@@ -475,23 +487,23 @@ func caseProblems(reads []routeShape, c goldenCase, recorded map[string][]record
 			problems = append(problems, fmt.Sprintf("%s answered %s, want 2xx", route, strings.Join(statuses, ", ")))
 			continue
 		}
-		emptyIn := map[string]int{}
+		var emptyAt, filledAt []string
 		for _, f := range ok {
-			for i, e := range entries {
-				wrong, empty, err := checkRecord(e.shape, f.Record)
+			for _, e := range entries {
+				wrong, empty, filled, err := checkRecord(e.shape, f.Record)
 				if err != nil {
 					return nil, nil, fmt.Errorf("%s: %w", f.name, err)
 				}
 				for _, p := range wrong {
 					problems = append(problems, fmt.Sprintf("%s in %s: %s", route, f.name, p))
 				}
-				for _, at := range empty {
-					emptyIn[fmt.Sprintf("%d %s", i, at)]++
-				}
+				emptyAt = append(emptyAt, empty...)
+				filledAt = append(filledAt, filled...)
 			}
 		}
-		for _, k := range slices.Sorted(maps.Keys(emptyIn)) {
-			if _, at, _ := strings.Cut(k, " "); emptyIn[k] == len(ok) {
+		slices.Sort(emptyAt)
+		for _, at := range slices.Compact(emptyAt) {
+			if !slices.Contains(filledAt, at) {
 				unchecked = append(unchecked, fmt.Sprintf("%s: no recording has an element at %s, so the shape of its elements is unchecked", route, at))
 			}
 		}
@@ -660,16 +672,21 @@ func TestCaseProblems(t *testing.T) {
 func TestCaseProblemsEmptyArrays(t *testing.T) {
 	goals := goldenCaseNamed(t, "goals list")
 	key := routeKey("GET /goal-service/goal/goals")
-	reads := []routeShape{{"GET /goal-service/goal/goals", arrayOf{object{"goalType": text}}}}
+	reads := []routeShape{{"GET /goal-service/goal/goals", arrayOf{object{"goalType": text, "laps": arrayOf{object{}}}}}}
 	empty := recordedFile{"empty.json", Record{Status: 200, Body: json.RawMessage(`[]`)}}
-	filled := recordedFile{"filled.json", Record{Status: 200, Body: json.RawMessage(`[{"goalType": "x"}]`)}}
+	filled := recordedFile{"filled.json", Record{Status: 200, Body: json.RawMessage(`[{"goalType": "x", "laps": [{}]}]`)}}
+	emptyLaps := recordedFile{"empty_laps.json", Record{Status: 200, Body: json.RawMessage(`[{"goalType": "x", "laps": []}]`)}}
+	mixedLaps := recordedFile{"mixed_laps.json", Record{Status: 200, Body: json.RawMessage(`[{"goalType": "x", "laps": []}, {"goalType": "y", "laps": [{}]}]`)}}
+	const uncheckedAt = "GET connectapi.garmin.com/goal-service/goal/goals?status=active: no recording has an element at %s, so the shape of its elements is unchecked"
 	for _, tc := range []struct {
 		name      string
 		files     []recordedFile
 		unchecked []string
 	}{
 		{"an empty recording next to one with an element", []recordedFile{empty, filled}, nil},
-		{"only empty recordings", []recordedFile{empty}, []string{"GET connectapi.garmin.com/goal-service/goal/goals?status=active: no recording has an element at (body), so the shape of its elements is unchecked"}},
+		{"only empty recordings", []recordedFile{empty}, []string{fmt.Sprintf(uncheckedAt, "(body)")}},
+		{"an empty recording next to one whose nested array is empty", []recordedFile{empty, emptyLaps}, []string{fmt.Sprintf(uncheckedAt, "[].laps")}},
+		{"an element with an empty nested array next to one with an element", []recordedFile{mixedLaps}, nil},
 	} {
 		problems, unchecked, err := caseProblems(reads, goals, map[string][]recordedFile{key: tc.files})
 		if err != nil {
