@@ -7,10 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.2.0] - 2026-11-04
+
+### Added
+
+- `profile power-zones set <sport> --ftp WATTS` sets the FTP and the zone floors of one sport: `cycling`, `running`, `rowing` or `cross-country-skiing`. `--floors` gives the lower limit of each zone in watts, comma-separated: 7 values, or 5 for running. Without `--floors`, cycling, rowing and cross-country skiing get the default floors at 0, 55, 75, 90, 105, 120 and 150 percent of the FTP. Running has no default and needs `--floors`. An FTP that is not greater than 0, a wrong number of floors, a negative floor, or floors that do not increase is a usage error (exit 2) before any request. `--json` prints the Garmin answer. (#328)
+
 ### Changed
 
 - `courses list` and `courses favorites`: the TYPE column shows the activity type of the course, such as `running`, from `activityType.typeKey`. On a real account it was empty. (#331)
 - `courses list` and `courses favorites`: the CREATED column shows the date only, such as `2026-09-01`, from `createdDateFormatted`. On a real account it showed milliseconds since the epoch. `--json` output of both commands is unchanged. (#331)
+- Bump dependencies in the minor-and-patch group: `golang.org/x/net` (0.61.0 -> 0.62.0). (#327)
 
 ### Fixed
 
@@ -690,7 +697,8 @@ Initial release of gccli — a fast, script-friendly CLI for Garmin Connect.
 - **CI pipeline** — GitHub Actions for fmt-check, lint, and test
 - **Cross-platform builds** — macOS (amd64/arm64) and Linux (amd64/arm64) via goreleaser
 
-[Unreleased]: https://github.com/bpauli/gccli/compare/v3.1.0...HEAD
+[Unreleased]: https://github.com/bpauli/gccli/compare/v3.2.0...HEAD
+[3.2.0]: https://github.com/bpauli/gccli/releases/tag/v3.2.0
 [3.1.0]: https://github.com/bpauli/gccli/releases/tag/v3.1.0
 [3.0.0]: https://github.com/bpauli/gccli/releases/tag/v3.0.0
 [2.3.0]: https://github.com/bpauli/gccli/releases/tag/v2.3.0
