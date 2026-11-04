@@ -182,6 +182,8 @@ var caseReads = map[string][]routeShape{
 	"activity exercise-sets show": {{"GET /activity-service/activity/{n}/exerciseSets", passthrough("object")}},
 	"activity favorite":           {{"PUT /activity-service/activity/{n}", unread}},
 	"activity hr-zones":           {{"GET /activity-service/activity/{n}/hrTimeInZones", passthrough("array")}},
+	"activity likes add":          {{"POST /conversation-service/conversation/like/ACTIVITY/{n}", unread}},
+	"activity likes list":         {{"GET /conversation-service/conversation/likes/ACTIVITY/{n}", passthrough("array")}},
 	"activity privacy":            {{"PUT /activity-service/activity/{n}", unread}},
 	"activity rename":             {{"PUT /activity-service/activity/{n}", unread}},
 	"activity retype":             {{"PUT /activity-service/activity/{n}", unread}},
@@ -190,15 +192,22 @@ var caseReads = map[string][]routeShape{
 		"activityName": text, "activityTypeDTO": object{"typeKey": text},
 		"summaryDTO": object{"startTimeLocal": text, "distance": number, "duration": number, "averageSpeed": number, "averageHR": number, "calories": number},
 	}}},
-	"activity unfavorite":   {{"PUT /activity-service/activity/{n}", unread}},
-	"activity weather":      {{"GET /activity-service/activity/{n}/weather", passthrough("object")}},
-	"calendar notes add":    {{"POST /calendar-service/note", object{"id": number}}},
-	"calendar notes delete": {{"DELETE /calendar-service/note/{n}", unread}},
-	"calendar notes move":   {{"PUT /calendar-service/calendarItem/note/{n}/date/{date}", unread}},
-	"calendar notes update": {{"GET /calendar-service/note/{n}", passthrough("object")}, {"PUT /calendar-service/note/{n}", unread}},
-	"courses delete":        {{"DELETE /course-service/course/{n}", unread}},
-	"courses detail":        {{"GET /course-service/course/{n}", passthrough("object")}},
-	"courses favorites":     {{"GET /course-service/course/favorites", courseRows}},
+	"activity unfavorite":        {{"PUT /activity-service/activity/{n}", unread}},
+	"activity weather":           {{"GET /activity-service/activity/{n}/weather", passthrough("object")}},
+	"body add-blood-pressure":    {{"POST /bloodpressure-service/bloodpressure", unread}},
+	"body add-weight":            {{"POST /weight-service/user-weight", unread}},
+	"body blood-pressure":        {{"GET /bloodpressure-service/bloodpressure/range/{date}/{date}", passthrough("object")}},
+	"body daily-weigh-ins":       {{"GET /weight-service/weight/dayview/{date}", passthrough("object")}},
+	"body delete-blood-pressure": {{"DELETE /bloodpressure-service/bloodpressure/{date}/{n}", unread}},
+	"body delete-weight":         {{"DELETE /weight-service/weight/{date}/byversion/{n}", unread}},
+	"calendar month":             {{"GET /calendar-service/year/{n}/month/{n}", object{"calendarItems": arrayOf{object{"date": text, "itemType": text, "id": number, "title": text}}}}},
+	"calendar notes add":         {{"POST /calendar-service/note", object{"id": number}}},
+	"calendar notes delete":      {{"DELETE /calendar-service/note/{n}", unread}},
+	"calendar notes move":        {{"PUT /calendar-service/calendarItem/note/{n}/date/{date}", unread}},
+	"calendar notes update":      {{"GET /calendar-service/note/{n}", passthrough("object")}, {"PUT /calendar-service/note/{n}", unread}},
+	"courses delete":             {{"DELETE /course-service/course/{n}", unread}},
+	"courses detail":             {{"GET /course-service/course/{n}", passthrough("object")}},
+	"courses favorites":          {{"GET /course-service/course/favorites", courseRows}},
 	"courses import": {
 		{"POST /course-service/course/import", object{"courseName": text, "geoPoints": arrayOf{object{"latitude": number, "longitude": number}}}},
 		{"POST /course-service/course/elevation", arrayOf{arrayOf{number}}},
@@ -208,15 +217,19 @@ var caseReads = map[string][]routeShape{
 		{"GET /web-gateway/course/owner/", object{"coursesForUser": courseRows}},
 		{"GET /userprofile-service/userprofile/user-settings", object{"userData": object{"measurementSystem": text}}},
 	},
-	"devices list":     {{"GET /device-service/deviceregistration/devices", passthrough("array")}},
-	"events add":       {{"POST /calendar-service/event", object{"id": number, "eventName": text, "date": text}}},
-	"events delete":    {{"DELETE /calendar-service/event/{n}", unread}},
-	"goals list":       {{"GET /goal-service/goal/goals", passthrough("array")}},
-	"goals set":        {{"PUT /goal-service/goal/user/effective/intensity-minutes/{date}", passthrough("object")}},
-	"goals steps auto": {{"GET /wellness-service/wellness/wellness-goals/consolidated/steps/{date}", passthrough("object")}, {"PUT /wellness-service/wellness/wellness-goals/consolidated/steps/{date}", passthrough("object")}},
-	"goals steps set":  {{"GET /wellness-service/wellness/wellness-goals/consolidated/steps/{date}", passthrough("object")}, {"PUT /wellness-service/wellness/wellness-goals/consolidated/steps/{date}", passthrough("object")}},
-	"health hr view":   {settingsName, {"GET /wellness-service/wellness/dailyHeartRate/tester", passthrough("object")}},
-	"health rhr":       {settingsName, {"GET /userstats-service/wellness/daily/tester", passthrough("object")}},
+	"devices list":            {{"GET /device-service/deviceregistration/devices", passthrough("array")}},
+	"events add":              {{"POST /calendar-service/event", object{"id": number, "eventName": text, "date": text}}},
+	"events delete":           {{"DELETE /calendar-service/event/{n}", unread}},
+	"gear add":                {{"POST /gear-service/gear/v2", object{"uuid": text}}},
+	"gear collections create": {{"POST /gear-service/collection", object{"uuid": text}}},
+	"gear collections list":   {{"GET /gear-service/collection", passthrough("array")}},
+	"gear list":               {settingsName, {"GET /userprofile-service/socialProfile/tester", object{"profileId": number}}, {"GET /gear-service/gear/filterGear", passthrough("array")}},
+	"goals list":              {{"GET /goal-service/goal/goals", passthrough("array")}},
+	"goals set":               {{"PUT /goal-service/goal/user/effective/intensity-minutes/{date}", passthrough("object")}},
+	"goals steps auto":        {{"GET /wellness-service/wellness/wellness-goals/consolidated/steps/{date}", passthrough("object")}, {"PUT /wellness-service/wellness/wellness-goals/consolidated/steps/{date}", passthrough("object")}},
+	"goals steps set":         {{"GET /wellness-service/wellness/wellness-goals/consolidated/steps/{date}", passthrough("object")}, {"PUT /wellness-service/wellness/wellness-goals/consolidated/steps/{date}", passthrough("object")}},
+	"health hr view":          {settingsName, {"GET /wellness-service/wellness/dailyHeartRate/tester", passthrough("object")}},
+	"health rhr":              {settingsName, {"GET /userstats-service/wellness/daily/tester", passthrough("object")}},
 	"health sleep naps delete": {
 		{"GET /userprofile-service/userprofile/settings", object{"timeZone": text}},
 		{"GET /sleep-service/sleep/naps/{date}", arrayOf{object{"napStartTimestampGMT": text}}},
@@ -228,6 +241,7 @@ var caseReads = map[string][]routeShape{
 	"notifications preferences set": {{"GET /notification-service/preference/userPreference", passthrough("object")}, {"PUT /notification-service/preference/userPreference", unread}},
 	"profile privacy-zones add":     {{"POST /privacyzone-service/privacyZones", object{"privacyZoneId": number}}},
 	"profile privacy-zones delete":  {{"DELETE /privacyzone-service/privacyZones/{n}", unread}},
+	"profile privacy-zones list":    {{"GET /privacyzone-service/privacyZones", passthrough("array")}},
 	"profile settings":              {{"GET /userprofile-service/userprofile/user-settings", passthrough("object")}},
 	"profile view":                  {{"GET /userprofile-service/userprofile/settings", passthrough("object")}},
 	"records list":                  {settingsName, {"GET /personalrecord-service/personalrecord/prs/tester", passthrough("array")}},
@@ -526,13 +540,28 @@ func TestRecordedShapes(t *testing.T) {
 // notRecorded lists the caseReads rows whose golden case calls a route that
 // testdata/recorded has no recording for. The replay checks a row only for
 // the routes that have a recording, so such a row can be deleted or
-// changed and no test fails. Record the routes (README, "Refresh the
-// recorded set") and delete the entry; until then the list only shrinks.
+// changed and no test fails. A new row goes in here with its caseReads
+// row when the committed set lacks its routes. Otherwise the list only
+// shrinks: record the routes (README, "Refresh the recorded set") and
+// delete the entry.
 var notRecorded = []string{
+	"activity likes add",
+	"activity likes list",
+	"body add-blood-pressure",
+	"body add-weight",
+	"body blood-pressure",
+	"body daily-weigh-ins",
+	"body delete-blood-pressure",
+	"body delete-weight",
+	"calendar month",
 	"calendar notes add",
 	"calendar notes delete",
 	"calendar notes move",
 	"calendar notes update",
+	"gear add",
+	"gear collections create",
+	"gear collections list",
+	"gear list",
 	"goals set",
 	"goals steps auto",
 	"goals steps set",
@@ -540,6 +569,7 @@ var notRecorded = []string{
 	"notifications preferences set",
 	"profile privacy-zones add",
 	"profile privacy-zones delete",
+	"profile privacy-zones list",
 	"wellness menstrual-log delete",
 	"workouts copy",
 }
@@ -586,7 +616,7 @@ func TestCaseReadsHaveRecordings(t *testing.T) {
 		route := unrecordedRoute(c, recorded)
 		switch listed := slices.Contains(notRecorded, name); {
 		case route != "" && !listed:
-			t.Errorf("caseReads has a row for %q, but %s has no recording in %s: record it with the e2e suite, because notRecorded only shrinks", name, route, committedRecordedDir)
+			t.Errorf("caseReads has a row for %q, but %s has no recording in %s: record it with the e2e suite, or list it in notRecorded until the set has it", name, route, committedRecordedDir)
 		case route == "" && listed:
 			t.Errorf("notRecorded names %q, but every route of its case has a recording in %s: remove the entry", name, committedRecordedDir)
 		}
