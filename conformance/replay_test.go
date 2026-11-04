@@ -166,8 +166,9 @@ var (
 // passthrough, unread or download. A field read through a helper, such as
 // displayName through resolveDisplayName, is listed too. The fields come
 // from the command code in internal/cmd. A field that a command reads only
-// when present, and that the golden mock does not send, is not listed:
-// activity summary reads parentTypeId, trainingEffect,
+// when present is not listed, whether the golden mock sends it or not:
+// activity summary prints "-" for averageHR and calories, which a manual
+// activity does not have, and reads parentTypeId, trainingEffect,
 // anaerobicTrainingEffect, directWorkoutFeel and directWorkoutRpe when
 // present, workouts list reads owner.displayName, and workouts schedule
 // list reads workoutId and sportTypeKey of workout items only.
@@ -190,7 +191,7 @@ var caseReads = map[string][]routeShape{
 	"activity splits":             {{"GET /activity-service/activity/{n}/splits", passthrough("object")}},
 	"activity summary": {{"GET /activity-service/activity/{n}", object{
 		"activityName": text, "activityTypeDTO": object{"typeKey": text},
-		"summaryDTO": object{"startTimeLocal": text, "distance": number, "duration": number, "averageSpeed": number, "averageHR": number, "calories": number},
+		"summaryDTO": object{"startTimeLocal": text, "distance": number, "duration": number, "averageSpeed": number},
 	}}},
 	"activity unfavorite":        {{"PUT /activity-service/activity/{n}", unread}},
 	"activity weather":           {{"GET /activity-service/activity/{n}/weather", passthrough("object")}},
