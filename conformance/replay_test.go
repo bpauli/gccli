@@ -21,17 +21,7 @@ import (
 // a value it does not have.
 type shape interface {
 	kind() string
-	check(got any, at string) []finding
-}
-
-// A finding is one place where a recording does not give what the
-// commands read. An empty finding is an array without an element at the
-// path in text. It is not a problem, because an empty list is account
-// state, such as an account without a workout when the suite records, but
-// it leaves the element shape unchecked.
-type finding struct {
-	text  string
-	empty bool
+	check(got any, at string) (problems, empty []string)
 }
 
 type scalar string
@@ -44,6 +34,11 @@ const (
 type arrayOf struct{ elem shape }
 
 type object map[string]shape
+
+// An optional field is one that the commands read only when it is present,
+// such as the calories of an activity. A missing one passes, and a present
+// one must have the shape.
+type optional struct{ of shape }
 
 // A passthrough route is one whose commands print the body as it is in
 // every mode and read nothing beneath the top level. It names the top
@@ -65,6 +60,7 @@ func (arrayOf) kind() string       { return "array" }
 func (object) kind() string        { return "object" }
 func (p passthrough) kind() string { return string(p) }
 func (s special) kind() string     { return string(s) }
+func (o optional) kind() string    { return o.of.kind() }
 
 func jsonKind(v any) string {
 	switch v.(type) {
@@ -89,59 +85,54 @@ func joinPath(path, key string) string {
 	return path + "." + key
 }
 
-func kindProblem(want shape, got any, at string) []finding {
+func kindProblem(want shape, got any, at string) []string {
 	if gk := jsonKind(got); gk != want.kind() {
-		return []finding{{text: fmt.Sprintf("%s: want %s, the recording has %s", cmp.Or(at, "(body)"), want.kind(), gk)}}
+		return []string{fmt.Sprintf("%s: want %s, the recording has %s", cmp.Or(at, "(body)"), want.kind(), gk)}
 	}
 	return nil
 }
 
-func (s scalar) check(got any, at string) []finding      { return kindProblem(s, got, at) }
-func (p passthrough) check(got any, at string) []finding { return kindProblem(p, got, at) }
-func (special) check(any, string) []finding              { return nil }
+func (s scalar) check(got any, at string) ([]string, []string) { return kindProblem(s, got, at), nil }
+func (p passthrough) check(got any, at string) ([]string, []string) {
+	return kindProblem(p, got, at), nil
+}
+func (special) check(any, string) ([]string, []string)           { return nil, nil }
+func (o optional) check(got any, at string) ([]string, []string) { return o.of.check(got, at) }
 
-func (a arrayOf) check(got any, at string) []finding {
+func (a arrayOf) check(got any, at string) (problems, empty []string) {
 	if p := kindProblem(a, got, at); p != nil || a.elem == nil {
-		return p
+		return p, nil
 	}
 	if len(got.([]any)) == 0 {
-		return []finding{{text: cmp.Or(at, "(body)"), empty: true}}
+		return nil, []string{cmp.Or(at, "(body)")}
 	}
-	var found []finding
 	for _, x := range got.([]any) {
 		if x != nil {
-			found = append(found, a.elem.check(x, at+"[]")...)
+			p, e := a.elem.check(x, at+"[]")
+			problems = append(problems, p...)
+			empty = append(empty, e...)
 		}
 	}
-	slices.SortFunc(found, func(a, b finding) int { return cmp.Compare(a.text, b.text) })
-	return slices.Compact(found)
+	slices.Sort(problems)
+	slices.Sort(empty)
+	return slices.Compact(problems), slices.Compact(empty)
 }
 
-func (o object) check(got any, at string) []finding {
+func (o object) check(got any, at string) (problems, empty []string) {
 	if p := kindProblem(o, got, at); p != nil {
-		return p
+		return p, nil
 	}
 	g := got.(map[string]any)
-	var found []finding
 	for _, key := range slices.Sorted(maps.Keys(o)) {
 		x, ok := g[key]
+		_, opt := o[key].(optional)
 		switch {
-		case !ok:
-			found = append(found, finding{text: joinPath(at, key) + ": missing"})
-		case x != nil:
-			found = append(found, o[key].check(x, joinPath(at, key))...)
-		}
-	}
-	return found
-}
-
-// split separates the findings into problems and the paths of empty arrays.
-func split(found []finding) (problems, empty []string) {
-	for _, f := range found {
-		if f.empty {
-			empty = append(empty, f.text)
-		} else {
-			problems = append(problems, f.text)
+		case !ok && !opt:
+			problems = append(problems, joinPath(at, key)+": missing")
+		case ok && x != nil:
+			p, e := o[key].check(x, joinPath(at, key))
+			problems = append(problems, p...)
+			empty = append(empty, e...)
 		}
 	}
 	return problems, empty
@@ -165,13 +156,8 @@ var (
 // reads from each route in table and plain mode: the fields, or
 // passthrough, unread or download. A field read through a helper, such as
 // displayName through resolveDisplayName, is listed too. The fields come
-// from the command code in internal/cmd. A field that a command reads only
-// when present is not listed, whether the golden mock sends it or not:
-// activity summary prints "-" for averageHR and calories, which a manual
-// activity does not have, and reads parentTypeId, trainingEffect,
-// anaerobicTrainingEffect, directWorkoutFeel and directWorkoutRpe when
-// present, workouts list reads owner.displayName, and workouts schedule
-// list reads workoutId and sportTypeKey of workout items only.
+// from the command code in internal/cmd. A field that the command reads
+// only when it is present is optional.
 var caseReads = map[string][]routeShape{
 	"activities count":            {{"GET /activitylist-service/activities/count", object{"totalCount": number}}},
 	"activities list":             {{"GET /activitylist-service/activities/search/activities", activityRows}},
@@ -190,8 +176,12 @@ var caseReads = map[string][]routeShape{
 	"activity retype":             {{"PUT /activity-service/activity/{n}", unread}},
 	"activity splits":             {{"GET /activity-service/activity/{n}/splits", passthrough("object")}},
 	"activity summary": {{"GET /activity-service/activity/{n}", object{
-		"activityName": text, "activityTypeDTO": object{"typeKey": text},
-		"summaryDTO": object{"startTimeLocal": text, "distance": number, "duration": number, "averageSpeed": number},
+		"activityName": text, "activityTypeDTO": object{"typeKey": text, "parentTypeId": optional{number}},
+		"summaryDTO": object{
+			"startTimeLocal": text, "distance": number, "duration": number, "averageSpeed": number,
+			"averageHR": optional{number}, "calories": optional{number}, "trainingEffect": optional{number},
+			"anaerobicTrainingEffect": optional{number}, "directWorkoutFeel": optional{number}, "directWorkoutRpe": optional{number},
+		},
 	}}},
 	"activity unfavorite":        {{"PUT /activity-service/activity/{n}", unread}},
 	"activity weather":           {{"GET /activity-service/activity/{n}/weather", passthrough("object")}},
@@ -252,9 +242,9 @@ var caseReads = map[string][]routeShape{
 	"workouts delete":               {{"DELETE /workout-service/workout/{n}", unread}},
 	"workouts detail":               {{"GET /workout-service/workout/{n}", passthrough("object")}},
 	"workouts download":             {{"GET /workout-service/workout/FIT/{n}", download}},
-	"workouts list":                 {{"GET /workout-service/workouts", arrayOf{object{"workoutId": number, "workoutName": text, "sportType": object{"sportTypeKey": text}}}}},
+	"workouts list":                 {{"GET /workout-service/workouts", arrayOf{object{"workoutId": number, "workoutName": text, "sportType": object{"sportTypeKey": text}, "owner": optional{object{"displayName": text}}}}}},
 	"workouts schedule add":         {{"POST /workout-service/schedule/{n}", unread}},
-	"workouts schedule list":        {{"GET /calendar-service/year/{n}/month/{n}/day/{n}/start/{n}", object{"calendarItems": arrayOf{object{"itemType": text, "date": text, "id": number, "title": text}}}}},
+	"workouts schedule list":        {{"GET /calendar-service/year/{n}/month/{n}/day/{n}/start/{n}", object{"calendarItems": arrayOf{object{"itemType": text, "date": text, "id": number, "title": text, "workoutId": optional{number}, "sportTypeKey": optional{text}}}}}},
 	"workouts schedule remove":      {{"DELETE /workout-service/schedule/{n}", unread}},
 	"workouts update":               {{"PUT /workout-service/workout/{n}", unread}},
 	"workouts upload":               {{"POST /workout-service/workout", unread}},
@@ -295,33 +285,34 @@ func succeeded(files []recordedFile) []recordedFile {
 	return ok
 }
 
-func checkRecord(want shape, r Record) ([]finding, error) {
+func checkRecord(want shape, r Record) (problems, empty []string, err error) {
 	switch {
 	case want == unread:
-		return nil, nil
+		return nil, nil, nil
 	case want == download:
 		if r.NonJSONBytes == 0 {
-			return []finding{{text: "(body): want bytes that are not JSON, the recording has none"}}, nil
+			return []string{"(body): want bytes that are not JSON, the recording has none"}, nil, nil
 		}
-		return nil, nil
+		return nil, nil, nil
 	case r.Body == nil:
-		return []finding{{text: "(body): want " + want.kind() + ", the recording has no JSON body"}}, nil
+		return []string{"(body): want " + want.kind() + ", the recording has no JSON body"}, nil, nil
 	}
 	dec := json.NewDecoder(bytes.NewReader(r.Body))
 	dec.UseNumber()
 	var got any
 	if err := dec.Decode(&got); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return want.check(got, ""), nil
+	problems, empty = want.check(got, "")
+	return problems, empty, nil
 }
 
-func checkShape(want shape, body json.RawMessage) ([]finding, error) {
+func checkShape(want shape, body json.RawMessage) (problems, empty []string, err error) {
 	return checkRecord(want, Record{Body: body})
 }
 
 func TestCheckShape(t *testing.T) {
-	activities := arrayOf{object{"activityId": number, "activityType": object{"typeKey": text}}}
+	activities := arrayOf{object{"activityId": number, "activityType": object{"typeKey": text}, "calories": optional{number}}}
 	for _, tc := range []struct {
 		name, body string
 		want       []string
@@ -330,6 +321,8 @@ func TestCheckShape(t *testing.T) {
 		{"null values pass", `[{"activityId": null, "activityType": null}, null]`, nil},
 		{"empty array", `[]`, nil},
 		{"empty nested array", `[{"activityId": 1, "activityType": {"typeKey": "x"}, "laps": []}]`, nil},
+		{"optional present", `[{"activityId": 1, "activityType": {"typeKey": "x"}, "calories": 7}]`, nil},
+		{"optional of another kind", `[{"activityId": 1, "activityType": {"typeKey": "x"}, "calories": "7"}]`, []string{"[].calories: want number, the recording has string"}},
 		{"object for array", `{"activities": []}`, []string{"(body): want array, the recording has object"}},
 		{"null body", `null`, []string{"(body): want array, the recording has null"}},
 		{"missing key", `[{"activityType": {"typeKey": "running"}}]`, []string{"[].activityId: missing"}},
@@ -338,11 +331,11 @@ func TestCheckShape(t *testing.T) {
 			"[].activityType.typeKey: want string, the recording has number",
 		}},
 	} {
-		found, err := checkShape(activities, json.RawMessage(tc.body))
+		got, _, err := checkShape(activities, json.RawMessage(tc.body))
 		if err != nil {
 			t.Fatal(err)
 		}
-		if got, _ := split(found); !slices.Equal(got, tc.want) {
+		if !slices.Equal(got, tc.want) {
 			t.Errorf("%s: checkShape = %q, want %q", tc.name, got, tc.want)
 		}
 	}
@@ -355,11 +348,11 @@ func TestCheckShape(t *testing.T) {
 		{"a null array is not empty", `[{"laps": null}]`, nil},
 		{"an element", `[{"laps": [{}]}]`, nil},
 	} {
-		found, err := checkShape(arrayOf{object{"laps": arrayOf{object{}}}}, json.RawMessage(tc.body))
+		_, empty, err := checkShape(arrayOf{object{"laps": arrayOf{object{}}}}, json.RawMessage(tc.body))
 		if err != nil {
 			t.Fatal(err)
 		}
-		if _, empty := split(found); !slices.Equal(empty, tc.want) {
+		if !slices.Equal(empty, tc.want) {
 			t.Errorf("%s: empty arrays = %q, want %q", tc.name, empty, tc.want)
 		}
 	}
@@ -377,8 +370,8 @@ func TestCheckShape(t *testing.T) {
 		{"download on a JSON body", download, Record{Body: json.RawMessage(`{}`)}, 1},
 		{"download on bytes", download, Record{NonJSONBytes: 12}, 0},
 	} {
-		if got, _ := checkRecord(tc.want, tc.rec); len(got) != tc.n {
-			t.Errorf("%s: checkRecord = %+v, want %d problems", tc.name, got, tc.n)
+		if got, _, _ := checkRecord(tc.want, tc.rec); len(got) != tc.n {
+			t.Errorf("%s: checkRecord = %q, want %d problems", tc.name, got, tc.n)
 		}
 	}
 }
@@ -455,9 +448,7 @@ func replayable(f goldenFile, served map[string]Record) bool {
 // wants an entry in reads and a 2xx recording with the shapes of that
 // entry. A route without a recording is not checked, because the e2e
 // suite does not call every route. An entry for a route the case does not
-// call is a problem too. An array without an element is not a problem,
-// but when every 2xx recording of a route is empty at a path, the element
-// shape at that path is unchecked, and the second list names it.
+// call is a problem too.
 func caseProblems(reads []routeShape, c goldenCase, recorded map[string][]recordedFile) (problems, unchecked []string, err error) {
 	byKey := map[string][]routeShape{}
 	for _, r := range reads {
@@ -487,11 +478,10 @@ func caseProblems(reads []routeShape, c goldenCase, recorded map[string][]record
 		emptyIn := map[string]int{}
 		for _, f := range ok {
 			for i, e := range entries {
-				found, err := checkRecord(e.shape, f.Record)
+				wrong, empty, err := checkRecord(e.shape, f.Record)
 				if err != nil {
 					return nil, nil, fmt.Errorf("%s: %w", f.name, err)
 				}
-				wrong, empty := split(found)
 				for _, p := range wrong {
 					problems = append(problems, fmt.Sprintf("%s in %s: %s", route, f.name, p))
 				}
@@ -541,10 +531,7 @@ func TestRecordedShapes(t *testing.T) {
 // notRecorded lists the caseReads rows whose golden case calls a route that
 // testdata/recorded has no recording for. The replay checks a row only for
 // the routes that have a recording, so such a row can be deleted or
-// changed and no test fails. A new row goes in here with its caseReads
-// row when the committed set lacks its routes. Otherwise the list only
-// shrinks: record the routes (README, "Refresh the recorded set") and
-// delete the entry.
+// changed and no test fails.
 var notRecorded = []string{
 	"activity likes add",
 	"activity likes list",
@@ -575,10 +562,6 @@ var notRecorded = []string{
 	"workouts copy",
 }
 
-// notReplayed names the cases whose command needs a value that the scrub
-// replaces, with the reason. TestRecordedShapes checks their shapes, and
-// TestRecordedReplay does not run them, because they cannot exit 0 on
-// scrubbed responses.
 var notReplayed = map[string]string{
 	"health sleep naps delete": "the command finds the nap by its start in the time zone of the profile, and the scrub replaces the time zone name with tester and every start with the same fixed time",
 }
@@ -674,10 +657,6 @@ func TestCaseProblems(t *testing.T) {
 	}
 }
 
-// An empty array is account state, such as an account without a workout
-// when the suite records, so it is not a problem. It tells nothing about
-// the element shape, so the check uses another recording of the route that
-// has an element, and names the path as unchecked when no recording has one.
 func TestCaseProblemsEmptyArrays(t *testing.T) {
 	goals := goldenCaseNamed(t, "goals list")
 	key := routeKey("GET /goal-service/goal/goals")

@@ -10,10 +10,8 @@ import (
 	"github.com/bpauli/gccli/internal/garminapi"
 )
 
-// courseColumns reads a course of the owner list and of the favorites
-// list. Garmin sends the type as activityType and the created date twice:
-// createdDate as milliseconds since the epoch, and createdDateFormatted as
-// "2026-09-01 10:00:00.0 GMT".
+// Garmin sends the created date twice: createdDate as milliseconds since
+// the epoch, and createdDateFormatted as "2026-09-01 10:00:00.0 GMT".
 var courseColumns = []Column{
 	{Label: "ID", Path: "courseId"},
 	{Label: "NAME", Path: "courseName"},
