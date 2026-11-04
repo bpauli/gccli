@@ -2,6 +2,7 @@ package conformance
 
 import (
 	"os"
+	"slices"
 	"strings"
 	"testing"
 )
@@ -23,5 +24,28 @@ func TestE2EWorkflowKeepsTheRecordedSetOnTheRunner(t *testing.T) {
 	}
 	if !strings.Contains(yml, "\npermissions:\n  contents: read\n\n") {
 		t.Error("e2e.yml must grant the workflow contents: read and nothing else")
+	}
+}
+
+// go test prints the log of a passing test only with -v. The replay tests
+// log a route whose elements no recording lets them check, and a case
+// they do not run. Without -v the scheduled job shows neither, and a
+// route that is always empty on the account passes with no signal.
+func TestE2EWorkflowReplaysVerbose(t *testing.T) {
+	data, err := os.ReadFile("../.github/workflows/e2e.yml")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var replays []string
+	for _, line := range strings.Split(string(data), "\n") {
+		if strings.Contains(line, "go test") && strings.Contains(line, "TestRecorded") {
+			replays = append(replays, line)
+		}
+	}
+	if len(replays) != 1 {
+		t.Fatalf("e2e.yml has %d go test lines that run TestRecorded, want 1", len(replays))
+	}
+	if !slices.Contains(strings.Fields(replays[0]), "-v") {
+		t.Errorf("the replay step %q runs go test without -v, so the job log never shows the routes the tests leave unchecked", strings.TrimSpace(replays[0]))
 	}
 }

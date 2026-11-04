@@ -1,0 +1,19 @@
+{
+  "method": "GET",
+  "host": "connectapi.garmin.com",
+  "uri": "/course-service/course/favorites",
+  "status": 200,
+  "body": [
+    {
+      "activityType": {
+        "typeId": 1,
+        "typeKey": "tester"
+      },
+      "courseId": 1,
+      "courseName": "tester",
+      "createdDate": 1,
+      "createdDateFormatted": "tester",
+      "distanceInMeters": 1
+    }
+  ]
+}

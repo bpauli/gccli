@@ -2,17 +2,17 @@
 courses
 favorites
 -- route GET /course-service/course/favorites --
-[{"courseId":111,"courseName":"Morning Loop","courseType":{"typeKey":"running"},"distanceInMeters":8200,"createdDate":"2026-09-01T10:00:00.0"}]
+[{"courseId":111,"courseName":"Morning Loop","activityType":{"typeId":1,"typeKey":"running"},"distanceInMeters":8200,"createdDate":1788256800000,"createdDateFormatted":"2026-09-01 10:00:00.0 GMT"}]
 -- table stdout --
 ID   NAME          TYPE     DISTANCE  CREATED
-111  Morning Loop  running  8.20 km   2026-09-01T10:00:00.0
+111  Morning Loop  running  8.20 km   2026-09-01
 -- table stderr --
 -- table exit --
 0
 -- table requests --
 GET /course-service/course/favorites
 -- plain stdout --
-111	Morning Loop	running	8.20 km	2026-09-01T10:00:00.0
+111	Morning Loop	running	8.20 km	2026-09-01
 -- plain stderr --
 -- plain exit --
 0
@@ -20,7 +20,7 @@ GET /course-service/course/favorites
 GET /course-service/course/favorites
 -- plain-header stdout --
 ID	NAME	TYPE	DISTANCE	CREATED
-111	Morning Loop	running	8.20 km	2026-09-01T10:00:00.0
+111	Morning Loop	running	8.20 km	2026-09-01
 -- plain-header stderr --
 -- plain-header exit --
 0
@@ -31,11 +31,13 @@ GET /course-service/course/favorites
   {
     "courseId": 111,
     "courseName": "Morning Loop",
-    "courseType": {
+    "activityType": {
+      "typeId": 1,
       "typeKey": "running"
     },
     "distanceInMeters": 8200,
-    "createdDate": "2026-09-01T10:00:00.0"
+    "createdDate": 1788256800000,
+    "createdDateFormatted": "2026-09-01 10:00:00.0 GMT"
   }
 ]
 -- json stderr --

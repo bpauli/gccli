@@ -20,7 +20,7 @@ func coursesTestServer(t *testing.T) *httptest.Server {
 
 	mux.HandleFunc("/web-gateway/course/owner/", func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(`{"coursesForUser":[{"courseId":123,"courseName":"Morning Run","courseType":{"typeKey":"running"},"distanceInMeters":5000,"createdDate":"2024-06-15 10:30:00"}]}`))
+		_, _ = w.Write([]byte(`{"coursesForUser":[{"courseId":123,"courseName":"Morning Run","activityType":{"typeKey":"running"},"distanceInMeters":5000,"createdDate":1718447400000,"createdDateFormatted":"2024-06-15 10:30:00.0 GMT"}]}`))
 	})
 
 	mux.HandleFunc("/course-service/course/import", func(w http.ResponseWriter, r *http.Request) {
@@ -43,7 +43,7 @@ func coursesTestServer(t *testing.T) *httptest.Server {
 
 	mux.HandleFunc("/course-service/course/favorites", func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(`[{"courseId":456,"courseName":"Fav Route","courseType":{"typeKey":"cycling"},"distanceInMeters":20000,"createdDate":"2024-03-01 08:00:00"}]`))
+		_, _ = w.Write([]byte(`[{"courseId":456,"courseName":"Fav Route","activityType":{"typeKey":"cycling"},"distanceInMeters":20000,"createdDate":1709280000000,"createdDateFormatted":"2024-03-01 08:00:00.0 GMT"}]`))
 	})
 
 	mux.HandleFunc("/course-service/course/", func(w http.ResponseWriter, r *http.Request) {

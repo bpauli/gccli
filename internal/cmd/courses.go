@@ -10,12 +10,14 @@ import (
 	"github.com/bpauli/gccli/internal/garminapi"
 )
 
+// Garmin sends the created date twice: createdDate as milliseconds since
+// the epoch, and createdDateFormatted as "2026-09-01 10:00:00.0 GMT".
 var courseColumns = []Column{
 	{Label: "ID", Path: "courseId"},
 	{Label: "NAME", Path: "courseName"},
-	{Label: "TYPE", Path: "courseType.typeKey"},
+	{Label: "TYPE", Path: "activityType.typeKey"},
 	{Label: "DISTANCE", Path: "distanceInMeters", Format: Distance},
-	{Label: "CREATED", Path: "createdDate", Format: DateOnly},
+	{Label: "CREATED", Path: "createdDateFormatted", Format: DateOnly},
 }
 
 var coursesGroup = Group{Name: "courses", Help: "Manage courses.", Children: []Node{

@@ -51,4 +51,4 @@ jobs:
           GCCLI_RECORDED_DIR: ${{ runner.temp }}/recorded
         run: |
           make build
-          GCCLI_BIN="$PWD/bin/gccli" go test -tags=conformance -count=1 -run TestRecorded ./conformance/
+          GCCLI_BIN="$PWD/bin/gccli" go test -tags=conformance -count=1 -v -run TestRecorded ./conformance/
