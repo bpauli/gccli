@@ -7,9 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.3.0] - 2026-11-10
+
 ### Added
 
 - `health snapshots rename <date> <uuid> <name>` renames a Health Snapshot session. `health snapshots note <date> <uuid> <text>` sets its note, and `--clear` removes it. After `--clear`, `health snapshots show` prints `notes` as `""`, because Garmin keeps an empty note. `health snapshots delete <date> <uuid>` deletes the session after a prompt (`--force` skips the prompt). It also exits 0 for a UUID that has no session, because Garmin answers the same for both. (#71)
+
+### Changed
+
+- Bump dependencies in the minor-and-patch group: `github.com/alecthomas/kong` (1.16.1 -> 1.17.0). (#337)
 
 ## [3.2.0] - 2026-11-04
 
@@ -701,7 +707,8 @@ Initial release of gccli — a fast, script-friendly CLI for Garmin Connect.
 - **CI pipeline** — GitHub Actions for fmt-check, lint, and test
 - **Cross-platform builds** — macOS (amd64/arm64) and Linux (amd64/arm64) via goreleaser
 
-[Unreleased]: https://github.com/bpauli/gccli/compare/v3.2.0...HEAD
+[Unreleased]: https://github.com/bpauli/gccli/compare/v3.3.0...HEAD
+[3.3.0]: https://github.com/bpauli/gccli/releases/tag/v3.3.0
 [3.2.0]: https://github.com/bpauli/gccli/releases/tag/v3.2.0
 [3.1.0]: https://github.com/bpauli/gccli/releases/tag/v3.1.0
 [3.0.0]: https://github.com/bpauli/gccli/releases/tag/v3.0.0
