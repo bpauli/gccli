@@ -1,0 +1,51 @@
+Garmin answers this write with an empty body (live 2026-11-10), so --json prints the ok object.
+-- args --
+health
+snapshots
+note
+2026-10-01
+uuid-1
+Felt rested
+-- route PATCH /wellnessactivity-service/activity/2026-10-01/uuid-1/notes 204 --
+-- table stdout --
+-- table stderr --
+Set the note of Health Snapshot uuid-1
+-- table exit --
+0
+-- table requests --
+PATCH /wellnessactivity-service/activity/2026-10-01/uuid-1/notes
+  {
+    "notes": "Felt rested"
+  }
+-- plain stdout --
+-- plain stderr --
+Set the note of Health Snapshot uuid-1
+-- plain exit --
+0
+-- plain requests --
+PATCH /wellnessactivity-service/activity/2026-10-01/uuid-1/notes
+  {
+    "notes": "Felt rested"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Set the note of Health Snapshot uuid-1
+-- plain-header exit --
+0
+-- plain-header requests --
+PATCH /wellnessactivity-service/activity/2026-10-01/uuid-1/notes
+  {
+    "notes": "Felt rested"
+  }
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+PATCH /wellnessactivity-service/activity/2026-10-01/uuid-1/notes
+  {
+    "notes": "Felt rested"
+  }

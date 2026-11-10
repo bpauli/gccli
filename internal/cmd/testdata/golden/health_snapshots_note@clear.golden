@@ -1,0 +1,51 @@
+--clear sends an empty notes text. Garmin then keeps an empty note: the session shows notes as "" (live 2026-11-10).
+-- args --
+health
+snapshots
+note
+2026-10-01
+uuid-1
+--clear
+-- route PATCH /wellnessactivity-service/activity/2026-10-01/uuid-1/notes 204 --
+-- table stdout --
+-- table stderr --
+Removed the note of Health Snapshot uuid-1
+-- table exit --
+0
+-- table requests --
+PATCH /wellnessactivity-service/activity/2026-10-01/uuid-1/notes
+  {
+    "notes": ""
+  }
+-- plain stdout --
+-- plain stderr --
+Removed the note of Health Snapshot uuid-1
+-- plain exit --
+0
+-- plain requests --
+PATCH /wellnessactivity-service/activity/2026-10-01/uuid-1/notes
+  {
+    "notes": ""
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+Removed the note of Health Snapshot uuid-1
+-- plain-header exit --
+0
+-- plain-header requests --
+PATCH /wellnessactivity-service/activity/2026-10-01/uuid-1/notes
+  {
+    "notes": ""
+  }
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr --
+-- json exit --
+0
+-- json requests --
+PATCH /wellnessactivity-service/activity/2026-10-01/uuid-1/notes
+  {
+    "notes": ""
+  }

@@ -1,0 +1,41 @@
+Garmin answers this delete with an empty body, also for a UUID that has no session (live 2026-11-10), so --json prints the ok object.
+-- args --
+health
+snapshots
+delete
+2026-10-01
+uuid-1
+-- stdin --
+y
+-- route DELETE /wellnessactivity-service/activity/2026-10-01/uuid-1 204 --
+-- table stdout --
+-- table stderr --
+Delete Health Snapshot uuid-1 of 2026-10-01? [y/N]: Deleted Health Snapshot uuid-1
+-- table exit --
+0
+-- table requests --
+DELETE /wellnessactivity-service/activity/2026-10-01/uuid-1
+-- plain stdout --
+-- plain stderr --
+Delete Health Snapshot uuid-1 of 2026-10-01? [y/N]: Deleted Health Snapshot uuid-1
+-- plain exit --
+0
+-- plain requests --
+DELETE /wellnessactivity-service/activity/2026-10-01/uuid-1
+-- plain-header stdout --
+-- plain-header stderr --
+Delete Health Snapshot uuid-1 of 2026-10-01? [y/N]: Deleted Health Snapshot uuid-1
+-- plain-header exit --
+0
+-- plain-header requests --
+DELETE /wellnessactivity-service/activity/2026-10-01/uuid-1
+-- json stdout --
+{
+  "ok": true
+}
+-- json stderr noeol --
+Delete Health Snapshot uuid-1 of 2026-10-01? [y/N]: 
+-- json exit --
+0
+-- json requests --
+DELETE /wellnessactivity-service/activity/2026-10-01/uuid-1

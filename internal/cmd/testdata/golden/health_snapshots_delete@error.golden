@@ -1,0 +1,39 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+health
+snapshots
+delete
+2026-10-01
+uuid-1
+-- stdin --
+y
+-- route DELETE /wellnessactivity-service/activity/2026-10-01/uuid-1 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+Delete Health Snapshot uuid-1 of 2026-10-01? [y/N]: delete health snapshot: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+DELETE /wellnessactivity-service/activity/2026-10-01/uuid-1
+-- plain stdout --
+-- plain stderr --
+Delete Health Snapshot uuid-1 of 2026-10-01? [y/N]: delete health snapshot: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+DELETE /wellnessactivity-service/activity/2026-10-01/uuid-1
+-- plain-header stdout --
+-- plain-header stderr --
+Delete Health Snapshot uuid-1 of 2026-10-01? [y/N]: delete health snapshot: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+DELETE /wellnessactivity-service/activity/2026-10-01/uuid-1
+-- json stdout --
+-- json stderr --
+Delete Health Snapshot uuid-1 of 2026-10-01? [y/N]: {"error":{"code":"error","status":400,"message":"delete health snapshot: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+DELETE /wellnessactivity-service/activity/2026-10-01/uuid-1

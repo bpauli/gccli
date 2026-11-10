@@ -459,6 +459,9 @@ gccli health snapshots                 # Health Snapshot sessions (--limit, --of
 gccli health snapshots show 2026-10-21 <uuid>
 gccli health snapshots epochs <uuid>   # Measurements of one session
 gccli health snapshots report 2026-10-21 <uuid> --output snapshot.pdf   # PDF report of one session
+gccli health snapshots rename 2026-10-21 <uuid> "Morning check"
+gccli health snapshots note 2026-10-21 <uuid> "Felt rested"   # --clear removes the note
+gccli health snapshots delete 2026-10-21 <uuid>   # Asks first; --force skips the prompt
 
 # Stress and recovery
 gccli health stress                    # Stress for today
@@ -1247,6 +1250,19 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `<date>`: Date of the session (YYYY-MM-DD, today, yesterday, 3d).
   - `<uuid>`: Session UUID (activityUuid.uuid in 'health snapshots list').
   - `-o, --output=STRING`: Output file path (default: health_snapshot_{uuid}.pdf).
+- `gccli health snapshots rename <date> <uuid> <name>`: Rename a Health Snapshot session.
+  - `<date>`: Date of the session (YYYY-MM-DD, today, yesterday, 3d).
+  - `<uuid>`: Session UUID (activityUuid.uuid in 'health snapshots list').
+  - `<name>`: New session name.
+- `gccli health snapshots note <date> <uuid> [<text>] [flags]`: Set or remove the note of a Health Snapshot session.
+  - `<date>`: Date of the session (YYYY-MM-DD, today, yesterday, 3d).
+  - `<uuid>`: Session UUID (activityUuid.uuid in 'health snapshots list').
+  - `[<text>]`: Note text. It replaces the note of the session.
+  - `--clear`: Remove the note instead of setting a text.
+- `gccli health snapshots delete <date> <uuid> [flags]`: Delete a Health Snapshot session.
+  - `<date>`: Date of the session (YYYY-MM-DD, today, yesterday, 3d).
+  - `<uuid>`: Session UUID (activityUuid.uuid in 'health snapshots list').
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli health body-battery view [<date>]`: Show body battery data for a date. Also runs as `gccli health body-battery [<date>]`.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli health body-battery range --start=DATE --end=DATE`: Show body battery data for a date range.

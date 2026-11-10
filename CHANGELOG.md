@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `health snapshots rename <date> <uuid> <name>` renames a Health Snapshot session. `health snapshots note <date> <uuid> <text>` sets its note, and `--clear` removes it. After `--clear`, `health snapshots show` prints `notes` as `""`, because Garmin keeps an empty note. `health snapshots delete <date> <uuid>` deletes the session after a prompt (`--force` skips the prompt). It also exits 0 for a UUID that has no session, because Garmin answers the same for both. (#71)
+
 ## [3.2.0] - 2026-11-04
 
 ### Added
