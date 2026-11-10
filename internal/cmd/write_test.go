@@ -743,6 +743,20 @@ var writeCases = map[string]writeCase{
 		json:   "{\n  \"userNote\": \"Slept badly\"\n}\n",
 		human:  "Set the sleep note of 2026-10-15\n",
 	},
+	"health snapshots rename": {
+		args:     []string{"2026-10-01", "uuid-1", "Morning check"},
+		routes:   map[string]string{"PATCH /wellnessactivity-service/activity/2026-10-01/uuid-1/name": noContent},
+		json:     okOut,
+		human:    "Renamed Health Snapshot uuid-1 to \"Morning check\"\n",
+		fallback: "Renamed Health Snapshot uuid-1 to \"Morning check\"\n",
+	},
+	"health snapshots note": {
+		args:     []string{"2026-10-01", "uuid-1", "Felt rested"},
+		routes:   map[string]string{"PATCH /wellnessactivity-service/activity/2026-10-01/uuid-1/notes": noContent},
+		json:     okOut,
+		human:    "Set the note of Health Snapshot uuid-1\n",
+		fallback: "Set the note of Health Snapshot uuid-1\n",
+	},
 	"health sleep naps delete": {
 		args: []string{"2026-10-15", "09:00"},
 		routes: map[string]string{

@@ -1,0 +1,50 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+health
+snapshots
+note
+2026-10-01
+uuid-1
+Felt rested
+-- route PATCH /wellnessactivity-service/activity/2026-10-01/uuid-1/notes 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+set health snapshot note: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+PATCH /wellnessactivity-service/activity/2026-10-01/uuid-1/notes
+  {
+    "notes": "Felt rested"
+  }
+-- plain stdout --
+-- plain stderr --
+set health snapshot note: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+PATCH /wellnessactivity-service/activity/2026-10-01/uuid-1/notes
+  {
+    "notes": "Felt rested"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+set health snapshot note: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+PATCH /wellnessactivity-service/activity/2026-10-01/uuid-1/notes
+  {
+    "notes": "Felt rested"
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"set health snapshot note: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+PATCH /wellnessactivity-service/activity/2026-10-01/uuid-1/notes
+  {
+    "notes": "Felt rested"
+  }

@@ -1,0 +1,50 @@
+Error case: Garmin answers 400, so the exit code is 1 (error).
+-- args --
+health
+snapshots
+rename
+2026-10-01
+uuid-1
+Morning check
+-- route PATCH /wellnessactivity-service/activity/2026-10-01/uuid-1/name 400 noeol --
+{"message":"Bad Request"}
+-- table stdout --
+-- table stderr --
+rename health snapshot: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- table exit --
+1
+-- table requests --
+PATCH /wellnessactivity-service/activity/2026-10-01/uuid-1/name
+  {
+    "name": "Morning check"
+  }
+-- plain stdout --
+-- plain stderr --
+rename health snapshot: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain exit --
+1
+-- plain requests --
+PATCH /wellnessactivity-service/activity/2026-10-01/uuid-1/name
+  {
+    "name": "Morning check"
+  }
+-- plain-header stdout --
+-- plain-header stderr --
+rename health snapshot: garmin api: 400 Bad Request: {"message":"Bad Request"}
+-- plain-header exit --
+1
+-- plain-header requests --
+PATCH /wellnessactivity-service/activity/2026-10-01/uuid-1/name
+  {
+    "name": "Morning check"
+  }
+-- json stdout --
+-- json stderr --
+{"error":{"code":"error","status":400,"message":"rename health snapshot: garmin api: 400 Bad Request: {\"message\":\"Bad Request\"}"}}
+-- json exit --
+1
+-- json requests --
+PATCH /wellnessactivity-service/activity/2026-10-01/uuid-1/name
+  {
+    "name": "Morning check"
+  }
