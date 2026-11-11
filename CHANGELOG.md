@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.3.1] - 2026-11-11
+
 ### Fixed
 
 - `auth login --headless` reported `extract CSRF: CSRF token not found in HTML` when Garmin answered the sign-in page with an error status, such as a block or a rate limit. It now stops with `sso signin page returned <status> (title="<page title>")` and does not send the credentials. (#340)
@@ -711,7 +713,8 @@ Initial release of gccli — a fast, script-friendly CLI for Garmin Connect.
 - **CI pipeline** — GitHub Actions for fmt-check, lint, and test
 - **Cross-platform builds** — macOS (amd64/arm64) and Linux (amd64/arm64) via goreleaser
 
-[Unreleased]: https://github.com/bpauli/gccli/compare/v3.3.0...HEAD
+[Unreleased]: https://github.com/bpauli/gccli/compare/v3.3.1...HEAD
+[3.3.1]: https://github.com/bpauli/gccli/releases/tag/v3.3.1
 [3.3.0]: https://github.com/bpauli/gccli/releases/tag/v3.3.0
 [3.2.0]: https://github.com/bpauli/gccli/releases/tag/v3.2.0
 [3.1.0]: https://github.com/bpauli/gccli/releases/tag/v3.1.0
