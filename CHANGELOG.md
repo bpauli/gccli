@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `auth login --headless` reported `extract CSRF: CSRF token not found in HTML` when Garmin answered the sign-in page with an error status, such as a block or a rate limit. It now stops with `sso signin page returned <status> (title="<page title>")` and does not send the credentials. (#340)
+
 ## [3.3.0] - 2026-11-10
 
 ### Added
