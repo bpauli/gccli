@@ -217,6 +217,35 @@ func TestLoginHeadless_AccountLocked(t *testing.T) {
 	}
 }
 
+func TestLoginHeadless_SigninPageBlocked(t *testing.T) {
+	posts := 0
+	mux := http.NewServeMux()
+	mux.HandleFunc("GET /sso/embed", func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	})
+	mux.HandleFunc("GET /sso/signin", func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(427)
+		_, _ = w.Write([]byte(`<html><head><title>Access denied</title></head><body></body></html>`))
+	})
+	mux.HandleFunc("POST /sso/signin", func(w http.ResponseWriter, _ *http.Request) {
+		posts++
+	})
+
+	_, ep := mockSSO(t, mux)
+
+	_, err := loginHeadless(context.Background(), "test@example.com", "pass", LoginOptions{}, ep)
+	if err == nil {
+		t.Fatal("expected error for a blocked signin page")
+	}
+	want := `sso signin page returned 427 (title="Access denied")`
+	if !strings.Contains(err.Error(), want) {
+		t.Errorf("error = %q, want to contain %q", err.Error(), want)
+	}
+	if posts != 0 {
+		t.Errorf("posts = %d, want 0: credentials must not be sent without a signin form", posts)
+	}
+}
+
 func TestLoginHeadless_CustomHTTPClient(t *testing.T) {
 	mux := ssoMux(t)
 	_, ep := mockSSO(t, mux)
