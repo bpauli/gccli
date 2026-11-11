@@ -107,6 +107,10 @@ func loginHeadless(ctx context.Context, email, password string, opts LoginOption
 	if err != nil {
 		return nil, fmt.Errorf("read signin page: %w", err)
 	}
+	if resp.StatusCode != http.StatusOK {
+		title, _ := getTitle(string(body))
+		return nil, fmt.Errorf("sso signin page returned %d (title=%q)", resp.StatusCode, title)
+	}
 
 	csrf, err := getCSRFToken(string(body))
 	if err != nil {
